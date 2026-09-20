@@ -149,7 +149,7 @@ public class ModularSlot extends SlotItemHandler {
     public void onCraftShiftClick(Player playerIn, ItemStack itemStack) {}
 
     @Override
-    public @Nullable Pair<Identifier, Identifier> getNoItemIcon() {
+    public @Nullable Identifier getNoItemIcon() {
         return null;
     }
 

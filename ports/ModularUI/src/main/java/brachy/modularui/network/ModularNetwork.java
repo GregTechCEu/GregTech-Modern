@@ -58,7 +58,7 @@ public abstract class ModularNetwork {
         @OnlyIn(Dist.CLIENT)
         @Override
         void sendPacket(CustomPacketPayload packet, Player player) {
-            PacketDistributor.sendToServer(packet);
+            net.neoforged.neoforge.client.network.ClientPacketDistributor.sendToServer(packet);
         }
 
         @OnlyIn(Dist.CLIENT)

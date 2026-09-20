@@ -395,10 +395,9 @@ public class GuiDraw {
             return;
         }
         Fluid fluid = content.getFluid();
-        Identifier fluidStill = IClientFluidTypeExtensions.of(fluid).getStillTexture(content);
-        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager()
-                .getAtlasOrThrow(net.minecraft.data.AtlasIds.BLOCKS).getSprite(fluidStill);
-        int fluidColor = IClientFluidTypeExtensions.of(fluid).getTintColor(content);
+        var model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.defaultFluidState());
+        TextureAtlasSprite sprite = model.stillMaterial().sprite();
+        int fluidColor = model.fluidTintSource() == null ? -1 : model.fluidTintSource().colorAsStack(content);
         int previousTint = GuiTint.get();
         try {
             GuiTint.set(net.minecraft.util.ARGB.multiply(previousTint, fluidColor));
@@ -731,13 +730,13 @@ public class GuiDraw {
         drawText(graphics, Minecraft.getInstance().font, text, x, y, scale, color, shadow);
     }
 
-    public static void drawText(GuiGraphicsExtractor graphics, net.minecraft.client.gui.Font font,
-                                FormattedCharSequence text, float x, float y, float scale, int color, boolean shadow) {
+    public static void drawText(GuiGraphicsExtractor graphics, net.minecraft.client.gui.Font font, FormattedCharSequence text,
+                                float x, float y, float scale, int color, boolean shadow) {
         graphics.pose().pushMatrix();
         try {
             graphics.pose().translate(x, y);
             graphics.pose().scale(scale, scale);
-            graphics.text(font, text, 0, 0, net.minecraft.util.ARGB.multiply(color, GuiTint.get()), shadow);
+            graphics.text(font, text, 0, 0, color, shadow);
         } finally {
             graphics.pose().popMatrix();
         }

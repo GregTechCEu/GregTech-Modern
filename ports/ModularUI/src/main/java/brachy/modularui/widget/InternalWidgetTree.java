@@ -9,7 +9,6 @@ import brachy.modularui.widget.sizer.ResizeNode;
 import brachy.modularui.widgets.layout.IExpander;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import com.google.common.base.Joiner;
 import org.jetbrains.annotations.Contract;
@@ -74,7 +73,7 @@ public class InternalWidgetTree {
 
         if (canBeSeen) {
             // draw widget
-            brachy.modularui.drawable.GuiTint.set(net.minecraft.util.ARGB.colorFromFloat(alpha, 1, 1, 1));
+            brachy.modularui.drawable.GuiTint.set(net.minecraft.util.ARGB.color((int) (255 * alpha), 255, 255, 255));
             WidgetThemeEntry<?> widgetTheme = parent.getWidgetTheme(parent.getPanel().getTheme());
             if (shouldDrawBackground) parent.drawBackground(context, widgetTheme);
             parent.draw(context, widgetTheme);
@@ -84,7 +83,7 @@ public class InternalWidgetTree {
         if (viewport != null) {
             if (canBeSeen) {
                 // draw viewport without children transformation
-                brachy.modularui.drawable.GuiTint.set(net.minecraft.util.ARGB.colorFromFloat(alpha, 1, 1, 1));
+                brachy.modularui.drawable.GuiTint.set(net.minecraft.util.ARGB.color((int) (255 * alpha), 255, 255, 255));
                 viewport.preDraw(context, false);
                 graphics.pose().popMatrix();
                 // apply children transformation of the viewport
@@ -121,7 +120,7 @@ public class InternalWidgetTree {
         if (viewport != null) {
             if (canBeSeen) {
                 // apply opengl transformations again and draw
-                brachy.modularui.drawable.GuiTint.set(net.minecraft.util.ARGB.colorFromFloat(alpha, 1, 1, 1));
+                brachy.modularui.drawable.GuiTint.set(net.minecraft.util.ARGB.color((int) (255 * alpha), 255, 255, 255));
                 graphics.pose().pushMatrix();
                 context.applyTo(graphics.pose());
                 viewport.postDraw(context, true);
@@ -163,7 +162,7 @@ public class InternalWidgetTree {
         context.applyTo(graphics.pose());
 
         // draw widget
-        brachy.modularui.drawable.GuiTint.set(net.minecraft.util.ARGB.colorFromFloat(alpha, 1, 1, 1));
+        brachy.modularui.drawable.GuiTint.set(net.minecraft.util.ARGB.color((int) (255 * alpha), 255, 255, 255));
         WidgetThemeEntry<?> widgetTheme = parent.getWidgetTheme(parent.getPanel().getTheme());
         parent.drawBackground(context, widgetTheme);
 

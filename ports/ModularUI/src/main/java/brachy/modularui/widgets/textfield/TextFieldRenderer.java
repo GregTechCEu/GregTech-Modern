@@ -149,9 +149,9 @@ public class TextFieldRenderer extends TextRenderer {
         x0 = (x0 - 0.8f) / this.scale;
         y0 = (y0 - 1) / this.scale;
 
-        graphics.pose().pushPose();
+        graphics.pose().pushMatrix();
         graphics.pose().scale(this.scale, this.scale, 1);
         GuiDraw.drawRect(graphics, x0, y0, 0.6f, 9, this.cursorColor);
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
     }
 }

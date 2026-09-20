@@ -28,6 +28,7 @@ public class RecipeScreenRenderingUtil {
         screen.getContext().setGraphics(guiGraphics);
         screen.getContext().updateState(mouseX, mouseY, partialTick);
         screen.getContext().graphicsPose().pushMatrix();
+        RenderSystem.applyModelViewMatrix();
 
         // copied from ClientScreenHandler#drawScreenInternal to
         // let us draw foreground elements separately after everything else.
@@ -36,12 +37,17 @@ public class RecipeScreenRenderingUtil {
 
         screen.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        guiGraphics.nextStratum();
+        RenderSystem.disableDepthTest();
+
         ClientScreenHandler.drawVanillaElements(guiGraphics, screen.getScreenWrapper().wrappedScreen(),
                 mouseX, mouseY, partialTick);
 
+        RenderSystem.enableDepthTest();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
         //screen.getContext().getStencil().pop();
         screen.getContext().graphicsPose().popMatrix();
+        RenderSystem.applyModelViewMatrix();
     }
 
     @ApiStatus.Internal
@@ -54,9 +60,14 @@ public class RecipeScreenRenderingUtil {
         // copied from ClientScreenHandler#drawScreenInternal to
         // let us draw foreground elements separately after everything else.
         //screen.getContext().getStencil().push(screen.getScreenArea());
+        RenderSystem.disableDepthTest();
+        Lighting.setupForFlatItems();
 
-        guiGraphics.nextStratum();
         screen.drawForeground(guiGraphics);
+
+        RenderSystem.enableDepthTest();
+        Lighting.setupFor3DItems();
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         //screen.getContext().getStencil().pop();
         //screen.getContext().graphicsPose().popMatrix();

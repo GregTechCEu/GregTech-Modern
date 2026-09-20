@@ -30,7 +30,6 @@ import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -40,14 +39,9 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.HitResult;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -55,7 +49,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.NeoForge;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -63,8 +56,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
-import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
 import java.util.List;
@@ -88,6 +79,8 @@ public class ClientScreenHandler {
     private static final ObjectArrayList<IMuiScreen> muiStack = new ObjectArrayList<>(8);
 
     private static boolean debugToggleActive = false;
+    private static int mouseModifiers;
+    private static boolean mouseDoubleClick;
 
     // we need to know the actual gui and not some fake screen some other mod overwrites
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -157,11 +150,11 @@ public class ClientScreenHandler {
     @SubscribeEvent
     public static void onScreenCharTyped(ScreenEvent.CharacterTyped.Pre event) {
         int codePoint = event.getCodePoint();
-        int modifiers = currentModifiers();
+        int modifiers = Interactable.currentModifiers();
         defaultContext.updateTypedChar(codePoint, modifiers);
         if (validateGui(event.getScreen())) currentScreen.getContext().updateTypedChar(codePoint, modifiers);
 
-        // Preserve the full Unicode code point delivered by Minecraft.
+        // Preserve the full Unicode code point through widget dispatch.
         if (doAction(currentScreen, ms -> ms.charTyped(codePoint, modifiers))) {
             event.setCanceled(true);
         }
@@ -169,8 +162,8 @@ public class ClientScreenHandler {
 
     @SubscribeEvent
     public static void onScreenMousePressed(ScreenEvent.MouseButtonPressed.Pre event) {
-        lastMouseModifiers = event.getMouseButtonEvent().modifiers();
-        lastDoubleClick = event.isDoubleClick();
+        mouseModifiers = event.getMouseButtonEvent().modifiers();
+        mouseDoubleClick = event.isDoubleClick();
         int button = event.getButton();
         defaultContext.updateMouseButton(button, true);
         if (validateGui(event.getScreen())) currentScreen.getContext().updateMouseButton(button, true);
@@ -187,7 +180,7 @@ public class ClientScreenHandler {
 
     @SubscribeEvent
     public static void onScreenMouseReleased(ScreenEvent.MouseButtonReleased.Pre event) {
-        lastMouseModifiers = event.getMouseButtonEvent().modifiers();
+        mouseModifiers = event.getMouseButtonEvent().modifiers();
         int button = event.getButton();
         defaultContext.updateMouseButton(button, false);
         if (validateGui(event.getScreen())) currentScreen.getContext().updateMouseButton(button, false);
@@ -213,7 +206,7 @@ public class ClientScreenHandler {
 
     @SubscribeEvent
     public static void onScreenMouseDragged(ScreenEvent.MouseDragged.Pre event) {
-        lastMouseModifiers = event.getMouseButtonEvent().modifiers();
+        mouseModifiers = event.getMouseButtonEvent().modifiers();
         if (doAction(currentScreen, ms -> ms.mouseDragged(
                 event.getMouseButton(), event.getDragX(), event.getDragY()))) {
             event.setCanceled(true);
@@ -253,7 +246,6 @@ public class ClientScreenHandler {
 
     @SubscribeEvent
     public static void onRenderTickPre(RenderFrameEvent.Pre event) {
-        GL11.glEnable(GL11.GL_STENCIL_TEST);
         Stencil.reset();
     }
 
@@ -389,24 +381,9 @@ public class ClientScreenHandler {
         }
     }
 
-    private static int lastMouseModifiers;
-    private static boolean lastDoubleClick;
-
-    private static int currentModifiers() {
-        var minecraft = Minecraft.getInstance();
-        return (minecraft.hasShiftDown() ? org.lwjgl.glfw.GLFW.GLFW_MOD_SHIFT : 0)
-                | (minecraft.hasControlDown() ? org.lwjgl.glfw.GLFW.GLFW_MOD_CONTROL : 0)
-                | (minecraft.hasAltDown() ? org.lwjgl.glfw.GLFW.GLFW_MOD_ALT : 0);
-    }
-
-    private static net.minecraft.client.input.MouseButtonEvent mouseEvent(GuiContext context, int button) {
-        return new net.minecraft.client.input.MouseButtonEvent(context.getAbsMouseX(), context.getAbsMouseY(),
-                new net.minecraft.client.input.MouseButtonInfo(button, lastMouseModifiers));
-    }
-
     public static void dragSlot(int button, double dragX, double dragY) {
         ModularGuiContext ctx = currentScreen.getContext();
-        getMCScreen().mouseDragged(mouseEvent(ctx, button), dragX, dragY);
+        getMCScreen().mouseDragged(slotMouseEvent(ctx, button), dragX, dragY);
     }
 
     public static void clickSlot(ModularScreen ms, Slot slot) {
@@ -420,7 +397,7 @@ public class ClientScreenHandler {
                 acc.setChildren(Collections.emptyList());
                 // set clicked slot to make sure the container clicks the desired slot
                 clickableScreen.modularui$setClickedSlot(slot);
-                screen.mouseClicked(mouseEvent(ctx, ctx.getLastMouseButton()), lastDoubleClick);
+                screen.mouseClicked(slotMouseEvent(ctx, ctx.getLastMouseButton()), mouseDoubleClick);
             } finally {
                 // undo modifications
                 clickableScreen.modularui$setClickedSlot(null);
@@ -432,12 +409,17 @@ public class ClientScreenHandler {
     public static void releaseSlot() {
         if (hasScreen() && getMCScreen() != null) {
             ModularGuiContext ctx = currentScreen.getContext();
-            getMCScreen().mouseReleased(mouseEvent(ctx, ctx.getLastMouseButton()));
+            getMCScreen().mouseReleased(slotMouseEvent(ctx, ctx.getLastMouseButton()));
         }
     }
 
     public static boolean shouldDrawWorldBackground() {
         return /* ModularUI.isBlurLoaded() || */Minecraft.getInstance().level == null;
+    }
+
+    private static net.minecraft.client.input.MouseButtonEvent slotMouseEvent(GuiContext context, int button) {
+        return new net.minecraft.client.input.MouseButtonEvent(context.getMouseX(), context.getMouseY(),
+                new net.minecraft.client.input.MouseButtonInfo(button, mouseModifiers));
     }
 
     public static void drawDarkBackground(Screen screen, GuiGraphicsExtractor guiGraphics,
@@ -466,54 +448,51 @@ public class ClientScreenHandler {
         }
     }
 
-    public static void drawScreenInternal(GuiGraphicsExtractor graphics, ModularScreen muiScreen, Screen mcScreen, int mouseX, int mouseY, float partialTicks) {
+    public static void drawScreenInternal(GuiGraphicsExtractor graphics, ModularScreen muiScreen, Screen mcScreen,
+                                          int mouseX, int mouseY, float partialTicks) {
         Stencil.reset();
         muiScreen.getContext().reset();
-        muiScreen.getContext().getStencil().push(muiScreen.getScreenArea());
-        muiScreen.render(graphics, mouseX, mouseY, partialTicks);
+        muiScreen.getContext().setGraphics(graphics);
+        mcScreen.extractBackground(graphics, mouseX, mouseY, partialTicks);
         graphics.nextStratum();
-        drawVanillaElements(graphics, mcScreen, mouseX, mouseY, partialTicks);
-        Color.resetGlColor();
-        muiScreen.drawForeground(graphics);
-        muiScreen.getContext().getStencil().pop();
+        muiScreen.getContext().getStencil().push(muiScreen.getScreenArea());
+        try {
+            muiScreen.render(graphics, mouseX, mouseY, partialTicks);
+            drawVanillaElements(graphics, mcScreen, mouseX, mouseY, partialTicks);
+            Color.resetGlColor();
+            muiScreen.drawForeground(graphics);
+        } finally {
+            muiScreen.getContext().getStencil().pop();
+        }
     }
 
-    public static void drawContainer(GuiGraphicsExtractor graphics, ModularScreen muiScreen, AbstractContainerScreen<?> mcScreen,
-                                     int mouseX, int mouseY, float partialTicks) {
+    public static void drawContainer(GuiGraphicsExtractor graphics, ModularScreen muiScreen,
+                                     AbstractContainerScreen<?> mcScreen, int mouseX, int mouseY, float partialTicks) {
         AbstractContainerScreenAccessor acc = (AbstractContainerScreenAccessor) mcScreen;
-
         Stencil.reset();
         muiScreen.getContext().reset();
-        muiScreen.getContext().getStencil().push(muiScreen.getScreenArea());
+        muiScreen.getContext().setGraphics(graphics);
+        // A background blur must happen before stencil commands, not in the middle of a live mask.
         mcScreen.extractBackground(graphics, mouseX, mouseY, partialTicks);
-        int x = mcScreen.getGuiLeft();
-        int y = mcScreen.getGuiTop();
-
-        muiScreen.render(graphics, mouseX, mouseY, partialTicks);
-        // mainly for invtweaks compat
         graphics.nextStratum();
-        drawVanillaElements(graphics, mcScreen, mouseX, mouseY, partialTicks);
-        acc.setHoveredSlot(null);
-        Color.resetGlColor();
-
-        acc.setHoveredSlot(null);
-        IWidget hovered = muiScreen.getContext().getTopHovered();
-        if (hovered instanceof IVanillaSlot vanillaSlot && vanillaSlot.handleAsVanillaSlot()) {
-            acc.setHoveredSlot(vanillaSlot.getVanillaSlot());
+        muiScreen.getContext().getStencil().push(muiScreen.getScreenArea());
+        try {
+            muiScreen.render(graphics, mouseX, mouseY, partialTicks);
+            drawVanillaElements(graphics, mcScreen, mouseX, mouseY, partialTicks);
+            acc.setHoveredSlot(null);
+            IWidget hovered = muiScreen.getContext().getTopHovered();
+            if (hovered instanceof IVanillaSlot vanillaSlot && vanillaSlot.handleAsVanillaSlot()) {
+                acc.setHoveredSlot(vanillaSlot.getVanillaSlot());
+            }
+            Color.resetGlColor();
+            // NeoForge 26.2 dispatches the foreground event in screen coordinates.
+            NeoForge.EVENT_BUS.post(new ScreenEvent.Render.Foreground(mcScreen, graphics, mouseX, mouseY, partialTicks));
+            graphics.nextStratum();
+            mcScreen.extractCarriedItem(graphics, mouseX, mouseY);
+            muiScreen.drawForeground(graphics);
+        } finally {
+            muiScreen.getContext().getStencil().pop();
         }
-
-        Color.resetGlColor();
-        graphics.pose().pushMatrix();
-        graphics.pose().translate(x, y);
-        // noinspection UnstableApiUsage
-        NeoForge.EVENT_BUS.post(new ScreenEvent.Render.Foreground(mcScreen, graphics, mouseX, mouseY, partialTicks));
-
-        graphics.pose().popMatrix();
-        mcScreen.extractCarriedItem(graphics, mouseX, mouseY);
-        graphics.nextStratum();
-
-        muiScreen.drawForeground(graphics);
-        muiScreen.getContext().getStencil().pop();
     }
 
     @ApiStatus.Internal
@@ -542,7 +521,10 @@ public class ClientScreenHandler {
             }
         }
 
+
+
         ModularGuiContext context = muiScreen.getContext();
+
 
         int mouseX = context.getAbsMouseX(), mouseY = context.getAbsMouseY();
         int screenH = muiScreen.getScreenArea().height;

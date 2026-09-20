@@ -12,7 +12,6 @@ import brachy.modularui.widget.sizer.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import org.joml.Matrix3x2fStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -160,11 +159,11 @@ public class GuiContext extends GuiViewportStack {
 
     public Matrix4f getLastGraphicsPose() {
         if (graphics == null) return new Matrix4f();
-        return brachy.modularui.drawable.GuiTransforms.toWorld(graphics.pose());
+        return brachy.modularui.utils.GuiPoseTransforms.snapshot(graphics.pose());
     }
 
-    public Matrix3x2fStack graphicsPose() {
-        if (graphics == null) return new Matrix3x2fStack(16);
+    public org.joml.Matrix3x2fStack graphicsPose() {
+        if (graphics == null) throw new IllegalStateException("No GUI graphics extractor is active");
         return graphics.pose();
     }
 

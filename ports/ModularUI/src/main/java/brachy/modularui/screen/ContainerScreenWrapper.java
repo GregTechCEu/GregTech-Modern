@@ -58,8 +58,9 @@ public class ContainerScreenWrapper extends AbstractContainerScreen<ModularConta
     public void updateGuiArea(Rectangle area) {
         this.leftPos = area.x;
         this.topPos = area.y;
-        ((brachy.modularui.core.mixins.client.AbstractContainerScreenAccessor) this).setImageWidth(area.width);
-        ((brachy.modularui.core.mixins.client.AbstractContainerScreenAccessor) this).setImageHeight(area.height);
+        var accessor = (brachy.modularui.core.mixins.client.AbstractContainerScreenAccessor) this;
+        accessor.setImageWidth(area.width);
+        accessor.setImageHeight(area.height);
     }
 
     @Override

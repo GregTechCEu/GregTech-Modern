@@ -106,7 +106,7 @@ public class CursorHandler {
 
     @ApiStatus.Internal
     public static void init() {
-        windowHandle = Minecraft.getInstance().getWindow().getWindow();
+        windowHandle = Minecraft.getInstance().getWindow().handle();
 
         // load platform-specific default cursors (instead of using custom textures)
 

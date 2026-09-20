@@ -7,9 +7,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import brachy.modularui.drawable.GuiTint;
+import brachy.modularui.utils.GuiPoseTransforms;
 
 import java.util.function.Predicate;
 
@@ -34,26 +33,31 @@ public class EmbedHandler {
     public static void drawEmbed(ModularScreen screen, GuiGraphicsExtractor graphics, float partialTicks, Predicate<Renderable> vanillaElementFilter) {
         screen.getContext().reset();
         var pose = graphics.pose();
-        var m = brachy.modularui.drawable.GuiTransforms.toWorld(pose);
+        var m = GuiPoseTransforms.snapshot(pose);
         pose.pushMatrix();
-        pose.identity(); // reset all current transformations and only reapply them for the main panel
-        screen.getMainPanel().transform((p, stack) -> {
-            stack.multiply(m);
-        });
+        int previousTint = GuiTint.get();
+        try {
+            pose.identity(); // only reapply the captured transform for the main panel
+            screen.getMainPanel().transform((p, stack) -> {
+                stack.multiply(m);
+            });
 
-        var defContext = ClientScreenHandler.getDefaultContext();
-        int mx = defContext.getAbsMouseX();
-        int my = defContext.getAbsMouseY();
-        screen.render(graphics, mx, my, partialTicks);
+            var defContext = ClientScreenHandler.getDefaultContext();
+            int mx = defContext.getAbsMouseX();
+            int my = defContext.getAbsMouseY();
+            screen.render(graphics, mx, my, partialTicks);
 
-        if (vanillaElementFilter != null) {
-            graphics.nextStratum();
-            ClientScreenHandler.drawVanillaElements(graphics, screen.getScreenWrapper().wrappedScreen(), mx, my, partialTicks, vanillaElementFilter);
+            if (vanillaElementFilter != null) {
+                graphics.nextStratum();
+                ClientScreenHandler.drawVanillaElements(graphics, screen.getScreenWrapper().wrappedScreen(), mx, my, partialTicks, vanillaElementFilter);
+            }
+
+            screen.drawForeground(graphics);
+
+        } finally {
+            GuiTint.set(previousTint);
+            pose.popMatrix();
         }
-
-        graphics.nextStratum();
-        screen.drawForeground(graphics);
-        pose.popMatrix();
     }
 
     public record EmbedWrapper(ModularScreen screen) implements IMuiScreen {

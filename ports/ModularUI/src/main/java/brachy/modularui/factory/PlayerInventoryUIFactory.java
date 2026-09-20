@@ -28,7 +28,7 @@ public class PlayerInventoryUIFactory extends AbstractUIFactory<PlayerInventoryG
 
     public void openFromHand(Player player, InteractionHand hand) {
         openFromPlayerInventory(player,
-                hand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND : player.getInventory().selected);
+                hand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND : player.getInventory().getSelectedSlot());
     }
 
     public void openFromCurios(Player player, String type, int index) {
@@ -52,7 +52,7 @@ public class PlayerInventoryUIFactory extends AbstractUIFactory<PlayerInventoryG
     public void openFromHandClient(InteractionHand hand) {
         openFromPlayerInventoryClient(
                 hand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND :
-                        MCHelper.getPlayer().getInventory().selected);
+                        MCHelper.getPlayer().getInventory().getSelectedSlot());
     }
 
     @OnlyIn(Dist.CLIENT)

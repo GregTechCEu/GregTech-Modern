@@ -9,7 +9,6 @@ import brachy.modularui.utils.Color;
 import brachy.modularui.widget.sizer.Area;
 import brachy.modularui.widget.sizer.Box;
 
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;

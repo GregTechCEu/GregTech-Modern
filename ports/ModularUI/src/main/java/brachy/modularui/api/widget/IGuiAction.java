@@ -35,7 +35,7 @@ public interface IGuiAction {
     @FunctionalInterface
     interface CharTyped extends IGuiAction {
 
-        boolean type(GuiContext context, char codePoint, int modifiers);
+        boolean type(GuiContext context, int codePoint, int modifiers);
     }
 
     @FunctionalInterface

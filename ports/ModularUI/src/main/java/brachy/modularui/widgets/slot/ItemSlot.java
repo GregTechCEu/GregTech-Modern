@@ -25,8 +25,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -97,7 +95,6 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         if (this.syncHandler == null) return;
-
         drawSlot(context, getSlot());
         drawOverlay(context);
     }
@@ -265,27 +262,22 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
         context.graphicsPose().pushMatrix();
         context.getGraphics().nextStratum();
 
-        if (isDragPreview) {
-            GuiDraw.drawRect(context.getGraphics(), 1, 1, 16, 16, 0x80FFFFFF);
-        }
-
-        if (!slotStack.isEmpty()) {
-
-            // render the item itself
-
-            context.getGraphics().item(slotStack, 1, 1);
-            if (amount < 0) {
-                amount = slotStack.getCount();
+        try {
+            if (isDragPreview) {
+                GuiDraw.drawRect(context.getGraphics(), 1, 1, 16, 16, 0x80FFFFFF);
             }
-            GuiDraw.drawStandardSlotAmountText(context, amount, format, getArea(), z);
-
-            ItemStack decorationStack = slotStack.copyWithCount(1);
-            // render other overlays like durability bar
-            context.getGraphics().itemDecorations(((ScreenAccessor) screen).getFont(), decorationStack, 1, 1,
-                    null);
-
+            if (!slotStack.isEmpty()) {
+                context.getGraphics().item(slotStack, 1, 1);
+                if (amount < 0) amount = slotStack.getCount();
+                GuiDraw.drawStandardSlotAmountText(context, amount, format, getArea(), z);
+                // A copied stack avoids mutating the live inventory during deferred extraction.
+                context.getGraphics().itemDecorations(((ScreenAccessor) screen).getFont(),
+                        slotStack.copyWithCount(1), 1, 1, "");
+            }
+        } finally {
+            context.graphicsPose().popMatrix();
         }
-        context.graphicsPose().popMatrix();
+
     }
 
     @Override

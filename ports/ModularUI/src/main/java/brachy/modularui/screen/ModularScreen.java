@@ -30,9 +30,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.Identifier;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.NeoForge;
@@ -47,7 +45,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -367,9 +364,8 @@ public class ModularScreen implements Renderable {
                         Color.argb(16, 16, 16, (int) (125 * panel.getAlpha())));
             }
             WidgetTree.drawTree(panel, this.context);
-            // Each subsequent panel occupies a new deferred GUI layer.
+            // Preserve panel order in the deferred GUI command stream.
             graphics.nextStratum();
-
         }
         this.context.updateZ(0);
         this.context.popViewport(null);
@@ -384,6 +380,7 @@ public class ModularScreen implements Renderable {
      */
     public void drawForeground(GuiGraphicsExtractor graphics) {
         this.context.setGraphics(graphics);
+        graphics.nextStratum();
 
         this.context.pushViewport(null, this.context.getScreenArea());
         for (ModularPanel<?> panel : this.panelManager.getReverseOpenPanels()) {

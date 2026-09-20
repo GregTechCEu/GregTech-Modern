@@ -33,7 +33,7 @@ public record TooltipComponentIcon(ClientTooltipComponent clientComponent) imple
 
     @Override
     public int getHeight() {
-        return clientComponent.getHeight(net.minecraft.client.Minecraft.getInstance().font);
+        return clientComponent.getHeight(Minecraft.getInstance().font);
     }
 
     @Override
@@ -46,20 +46,23 @@ public record TooltipComponentIcon(ClientTooltipComponent clientComponent) imple
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
         Font font = context.getFont();
         context.graphicsPose().pushMatrix();
-
+        try {
         // rescale the tooltip component if we happen to go out of its bounds
         float ratio = 1.0f;
         if (width < clientComponent.getWidth(font)) {
             ratio = (float) width / clientComponent.getWidth(font);
         }
-        if (height < clientComponent.getHeight(net.minecraft.client.Minecraft.getInstance().font)) {
-            ratio = Math.min(ratio, (float) height / clientComponent.getHeight(net.minecraft.client.Minecraft.getInstance().font));
+        if (height < clientComponent.getHeight(font)) {
+            ratio = Math.min(ratio, (float) height / clientComponent.getHeight(font));
         }
+        context.graphicsPose().translate(x, y);
         if (ratio != 1.0f) {
             context.graphicsPose().scale(ratio, ratio);
         }
-        clientComponent.extractImage(font, x, y, width, height, context.getGraphics());
-
-        context.graphicsPose().popMatrix();
+        clientComponent.extractText(context.getGraphics(), font, 0, 0);
+        clientComponent.extractImage(font, 0, 0, clientComponent.getWidth(font), clientComponent.getHeight(font), context.getGraphics());
+        } finally {
+            context.graphicsPose().popMatrix();
+        }
     }
 }

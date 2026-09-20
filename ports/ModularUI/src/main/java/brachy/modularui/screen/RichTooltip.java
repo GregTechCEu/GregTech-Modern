@@ -27,8 +27,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -195,18 +193,19 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
 
         context.getGraphics().nextStratum();
         context.getGraphics().pose().pushMatrix();
-        // Since we applied an offset to the mouse pos earlier, we need to correct it back, but only visually.
-        context.getGraphics().pose().translate(-screen.x, -screen.y);
-        GuiDraw.drawTooltipBackground(context, stack, components, area.x, area.y, area.width, area.height, copy);
-
-        // NeoForge.EVENT_BUS.post(new RenderTooltipEvent.PostBackground(stack, textLines, area.x, area.y,
-        // TextRenderer.getFont(), area.width, area.height));
-
-        renderer.setPos(area.x, area.y);
-        copy.compileAndDraw(renderer, context, false);
-        context.getGraphics().pose().popMatrix();
-
-        context.setOverrideFont(null);
+        int previousTint = brachy.modularui.drawable.GuiTint.get();
+        try {
+            // Undo the mouse-position offset visually, preserving the tooltip's extracted layout.
+            context.getGraphics().pose().translate(-screen.x, -screen.y);
+            GuiDraw.drawTooltipBackground(context, stack, components, area.x, area.y, area.width, area.height, copy);
+            brachy.modularui.drawable.GuiTint.set(-1);
+            renderer.setPos(area.x, area.y);
+            copy.compileAndDraw(renderer, context, false);
+        } finally {
+            context.getGraphics().pose().popMatrix();
+            brachy.modularui.drawable.GuiTint.set(previousTint);
+            context.setOverrideFont(null);
+        }
     }
 
     public Rectangle determineTooltipArea(RichText text, GuiContext context, TextRenderer renderer,

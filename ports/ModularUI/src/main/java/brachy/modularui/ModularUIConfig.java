@@ -64,7 +64,7 @@ public class ModularUIConfig {
     public static final ConfigValue<String> MOD_NAME_FORMAT = BUILDER
             .comment("The format prefix of the mod name tooltip line.", "Default: 'blue italic' (converted to §9§o)")
             .translation("config.modularui.modNameFormat")
-            .define("modNameFormat", ChatFormatting.BLUE.getName() + " " + ChatFormatting.ITALIC.getName());
+            .define("modNameFormat", "blue italic");
     public static final ConfigValue<String> DEBUG_TEXT_COLOR = BUILDER
             .comment("Debug text color. Prefix Hex values with a #. Common colors can be referred by their name.")
             .translation("config.modularui.debugTextColor")
@@ -179,7 +179,10 @@ public class ModularUIConfig {
             lastParsed = new ChatFormatting[split.length];
             for (int i = 0; i < split.length; i++) {
                 String name = split[i];
-                lastParsed[i] = ChatFormatting.getByName(name);
+                String normalized = name.toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z]", "");
+                lastParsed[i] = java.util.Arrays.stream(ChatFormatting.values())
+                        .filter(format -> format.name().toLowerCase(java.util.Locale.ROOT).replace("_", "").equals(normalized))
+                        .findFirst().orElse(null);
             }
         }
         return lastParsed;

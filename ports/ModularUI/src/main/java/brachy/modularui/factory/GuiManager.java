@@ -141,7 +141,7 @@ public class GuiManager {
         // server will send packet back to actually open the gui
         RegistryFriendlyByteBuf buffer = IRegistryFriendlyByteBufExtension.createEmpty(MCHelper.getMc().getConnection().registryAccess());
         factory.writeGuiData(guiData, buffer);
-        PacketDistributor.sendToServer(new OpenGuiPacket<>(0, 0, factory, buffer));
+        net.neoforged.neoforge.client.network.ClientPacketDistributor.sendToServer(new OpenGuiPacket<>(0, 0, factory, buffer));
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -11,6 +11,7 @@
         "client.AbstractContainerScreenMixin",
         "client.AbstractWidgetMixin",
         "client.MinecraftMixin",
+        "client.GuiLifecycleMixin",
         "client.ScreenAccessor",
         "client.StringSplitterAccessor",
         "emi.RecipeScreenMixin",

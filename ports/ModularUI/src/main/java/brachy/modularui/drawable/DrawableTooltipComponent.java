@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public record DrawableTooltipComponent(IDrawable drawable) implements ClientTooltipComponent, TooltipComponent {
 
     @Override
-    public int getHeight(@NotNull Font font) {
+    public int getHeight(Font font) {
         if (drawable instanceof IIcon icon) {
             return icon.getHeight();
         } else if (drawable instanceof Text key) {
