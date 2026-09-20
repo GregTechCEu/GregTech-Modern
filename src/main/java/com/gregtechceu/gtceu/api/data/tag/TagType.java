@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
 import net.minecraft.Util;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -58,6 +59,12 @@ public final class TagType {
 
     public static TagType withNoFormatter(String tagPath, boolean isVanilla) {
         TagType type = new TagType((prefix, material) -> TagUtil.createItemTag(tagPath, isVanilla));
+        type.isParentTag = true;
+        return type;
+    }
+
+    public static TagType ofTagKey(TagKey<?> tag) {
+        TagType type = new TagType((prefix, material) -> TagKey.create(Registries.ITEM, tag.location()));
         type.isParentTag = true;
         return type;
     }

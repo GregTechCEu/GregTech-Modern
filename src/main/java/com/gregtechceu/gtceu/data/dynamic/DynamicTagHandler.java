@@ -153,9 +153,12 @@ public final class DynamicTagHandler {
                     .map(DynamicTagHandler::makeBlockEntry)
                     .collect(toArrayList());
 
-            var prefixTagKeys = entry.tagPrefix().getAllBlockTags(material);
-            for (TagKey<Block> prefixTag : prefixTagKeys) {
+            var prefixTagKeys = entry.tagPrefix().getAllItemTags(material);
+            for (TagKey<Item> prefixTag : prefixTagKeys) {
                 tags.computeIfAbsent(prefixTag.location(), path -> new ArrayList<>()).addAll(entries);
+            }
+            for (TagKey<Item> materialTag : material.getItemTags()) {
+                tags.computeIfAbsent(materialTag.location(), path -> new ArrayList<>()).addAll(entries);
             }
 
             // Add mineability tags
@@ -184,16 +187,6 @@ public final class DynamicTagHandler {
                         tags.computeIfAbsent(tag.location(), path -> new ArrayList<>()).addAll(entries);
                     }
                 }
-            }
-
-            if (entry.tagPrefix() == TagPrefix.oreEndstone) {
-                // Make endstone-based ores dragon-immune
-                tags.computeIfAbsent(BlockTags.DRAGON_IMMUNE.location(), $ -> new ArrayList<>()).addAll(entries);
-            }
-
-            if (entry.tagPrefix() == TagPrefix.frameGt) {
-                tags.computeIfAbsent(CustomTags.SLOW_WALKABLE_BLOCKS.location(), path -> new ArrayList<>())
-                        .addAll(entries);
             }
         });
 

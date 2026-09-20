@@ -183,6 +183,8 @@ public class TagPrefix {
 
     public static final TagPrefix oreEndstone = oreTagPrefix(GTCEu.id("endstone"), BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("End %s Ore")
+            // Make endstone-based ores dragon-immune
+            .tag(BlockTags.DRAGON_IMMUNE)
             .registerOre(Blocks.END_STONE::defaultBlockState, () -> GTMaterials.Endstone,
                     BlockBehaviour.Properties.of().mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASEDRUM)
                             .requiresCorrectToolForDrops().strength(4.5F, 9.0F),
@@ -760,6 +762,7 @@ public class TagPrefix {
     public static final TagPrefix frameGt = new TagPrefix(GTCEu.id("frame"))
             .defaultTag("frames/%s")
             .unformattedTag("frames")
+            .tag(CustomTags.SLOW_WALKABLE_BLOCKS)
             .langValue("%s Frame")
             .materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.frameGt)
@@ -1227,6 +1230,14 @@ public class TagPrefix {
      */
     public TagPrefix unformattedTag(String path, boolean isVanilla) {
         this.tags.add(TagType.withNoFormatter(path, isVanilla));
+        return this;
+    }
+
+    /**
+     * Tag all generated items and blocks with the given tag key as it is.
+     */
+    public TagPrefix tag(TagKey<?> tag) {
+        this.tags.add(TagType.ofTagKey(tag));
         return this;
     }
 
