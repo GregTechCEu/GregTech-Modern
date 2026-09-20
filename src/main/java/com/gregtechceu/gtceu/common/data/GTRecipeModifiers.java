@@ -1,12 +1,19 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
+import com.gregtechceu.gtceu.api.item.component.SpoilContext;
+import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.ConsumedInputsData;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -20,8 +27,11 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -50,15 +60,43 @@ public class GTRecipeModifiers {
     public static final RecipeModifier OC_NON_PERFECT = ELECTRIC_OVERCLOCK.apply(NON_PERFECT_OVERCLOCK);
     public static final RecipeModifier OC_PERFECT_SUBTICK = ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK_SUBTICK);
     public static final RecipeModifier OC_NON_PERFECT_SUBTICK = ELECTRIC_OVERCLOCK.apply(NON_PERFECT_OVERCLOCK_SUBTICK);
+    public static final RecipeModifier SPOILAGE_TRANSFER = (machine, recipe) -> ModifierFunction.builder()
+            .modifyItemOutputs((r, stackObject) -> {
+                if (!(stackObject instanceof ItemStack stack)) return;
+                ISpoilableItem outputSpoilable = GTCapabilityHelper.getSpoilable(stack);
+                if (outputSpoilable == null) return;
+                SpoilUtils.update(stack, new SpoilContext(machine));
+                if (!r.keepSpoilingProgress) return;
+                double spoilProgress = 0;
+                int spoilableCount = 0;
+                ConsumedInputsData inputs = machine.getTraitOptional(RecipeLogic.class)
+                        .map(RecipeLogic::getConsumedInputs).orElse(null);
+                if (inputs == null) return;
+                for (Object inObject : inputs.getConsumedInputs(ItemRecipeCapability.CAP)) {
+                    if (!(inObject instanceof SizedIngredient ingredient)) continue;
+                    if (ingredient.getItems().length == 0) continue;
+                    ItemStack in = ingredient.getItems()[0];
+                    ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(in);
+                    if (spoilable != null && spoilable.shouldSpoil()) {
+                        spoilableCount += in.getCount();
+                        spoilProgress += in.getCount() * (double) spoilable.getTicksUntilSpoiled() /
+                                spoilable.getSpoilTicks();
+                    }
+                }
+                if (outputSpoilable.shouldSpoil() && spoilableCount > 0) {
+                    double spoiled = spoilProgress / spoilableCount;
+                    outputSpoilable.setTicksUntilSpoiled((long) (spoiled * outputSpoilable.getSpoilTicks()));
+                }
+            }).build();
 
-    public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
-            .memoize((condition, maxAllowedStrength) -> (machine, recipe) -> {
+    public static final BiFunction<Holder<MedicalCondition>, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
+            .memoize((conditionHolder, maxAllowedStrength) -> (machine, recipe) -> {
                 if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) return ModifierFunction.IDENTITY;
                 if (!(machine.getLevel() instanceof ServerLevel serverLevel)) return ModifierFunction.NULL;
 
                 EnvironmentalHazardSavedData data = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
                 BlockPos machinePos = machine.getBlockPos();
-                var zone = data.getZoneByContainedPosAndCondition(machinePos, condition);
+                var zone = data.getZoneByContainedPosAndCondition(machinePos, conditionHolder.value());
                 if (zone == null) return ModifierFunction.IDENTITY;
 
                 float strength = zone.strength();

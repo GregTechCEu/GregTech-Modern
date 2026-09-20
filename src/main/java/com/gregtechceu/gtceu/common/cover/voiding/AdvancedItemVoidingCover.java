@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.cover.voiding;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
-import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
@@ -103,11 +102,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
     public void setVoidingMode(VoidingMode voidingMode) {
         this.voidingMode = voidingMode;
-
-        if (!this.isRemote()) {
-            syncDataHolder.markClientSyncFieldDirty("voidingMode");
-            configureFilter();
-        }
+        syncDataHolder.markClientSyncFieldDirty("voidingMode");
     }
 
     //////////////////////////////////////
@@ -120,8 +115,9 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         super.createCoverUIRows(column, data, syncManager, settings);
 
         EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
-                this::getVoidingMode, this::setVoidingMode);
-        IntSyncValue voidingLimit = new IntSyncValue(this::getGlobalVoidingLimit, this::setGlobalVoidingLimit);
+                this::getVoidingMode, this::setVoidingMode).allowC2S();
+        IntSyncValue voidingLimit = new IntSyncValue(this::getGlobalVoidingLimit, this::setGlobalVoidingLimit)
+                .allowC2S();
 
         syncManager.syncValue("voidingMode", voidingMode);
         syncManager.syncValue("voidingLimit", voidingLimit);
@@ -136,13 +132,6 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
         column.child(GTMuiWidgets.createIntInputWithButtons(voidingLimit, () -> 1, () -> getVoidingMode().maxStackSize)
                 .setEnabledIf($ -> shouldShowStackSize()));
-    }
-
-    @Override
-    protected void configureFilter() {
-        if (filterHandler.getFilter() instanceof SimpleItemFilter filter) {
-            filter.setMaxStackSize(this.voidingMode.maxStackSize);
-        }
     }
 
     private boolean shouldShowStackSize() {

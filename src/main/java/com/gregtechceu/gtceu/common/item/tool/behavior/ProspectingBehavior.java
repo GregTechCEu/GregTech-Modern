@@ -111,6 +111,6 @@ public class ProspectingBehavior implements IToolBehavior<ProspectingBehavior> {
 
     @Override
     public ToolBehaviorType<ProspectingBehavior> getType() {
-        return GTToolBehaviors.PROSPECTING;
+        return GTToolBehaviors.PROSPECTING.value();
     }
 }

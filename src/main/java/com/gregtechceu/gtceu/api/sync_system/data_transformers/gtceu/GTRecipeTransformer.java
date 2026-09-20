@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import net.minecraft.nbt.*;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.Nullable;
@@ -18,9 +19,8 @@ public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
         CompoundTag tag = new CompoundTag();
         tag.putString("id", value.id.toString());
         tag.put("recipe",
-                GTRecipeSerializer.CODEC.encode(value, NbtOps.INSTANCE, NbtOps.INSTANCE.mapBuilder())
+                GTRecipeSerializer.CODEC.encode(value, context.nbtOps(), context.nbtOps().mapBuilder())
                         .build(new CompoundTag()).getOrThrow());
-        tag.putInt("parallels", value.parallels);
         tag.putInt("ocLevel", value.ocLevel);
         return tag;
     }
@@ -32,14 +32,23 @@ public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
         if (tag instanceof CompoundTag compoundTag) {
             var recipeTag = compoundTag.get("recipe");
             result = GTRecipeSerializer.CODEC
-                    .decode(NbtOps.INSTANCE, NbtOps.INSTANCE.getMap(Objects.requireNonNull(recipeTag)).getOrThrow())
+                    .decode(context.nbtOps(), context.nbtOps().getMap(Objects.requireNonNull(recipeTag)).getOrThrow())
                     .result().orElse(null);
             if (result != null) {
                 result.id = ResourceLocation.parse(compoundTag.getString("id"));
-                result.parallels = compoundTag.contains("parallels") ? compoundTag.getInt("parallels") : 1;
                 result.ocLevel = compoundTag.getInt("ocLevel");
             }
         }
         return result;
+    }
+
+    @Override
+    public void writeToPacket(RegistryFriendlyByteBuf buf, GTRecipe value, TransformerContext<GTRecipe> context) {
+        GTRecipeSerializer.STREAM_CODEC.encode(buf, value);
+    }
+
+    @Override
+    public @Nullable GTRecipe readFromPacket(RegistryFriendlyByteBuf buf, TransformerContext<GTRecipe> context) {
+        return GTRecipeSerializer.STREAM_CODEC.decode(buf);
     }
 }

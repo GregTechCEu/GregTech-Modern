@@ -9,38 +9,33 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.extensions.IBlockEntityExtension;
 
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, IBlockEntityExtension {
 
-    @UnknownNullability
-    Level getLevel();
-
-    BlockPos getBlockPos();
-
-    BlockState getBlockState();
+    default BlockEntity self() {
+        return (BlockEntity) this;
+    }
 
     long getOffsetTimer();
-
-    boolean isRemoved();
 
     /**
      * Called to notify neighboring blocks that this block has changed.
      */
     default void notifyBlockUpdate() {
         if (isChunkUnloaded()) return;
-        if (getLevel() != null) {
-            getLevel().updateNeighborsAt(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock());
+        var level = self().getLevel();
+        var pos = self().getBlockPos();
+        if (level != null) {
+            level.updateNeighborsAt(pos, self().getBlockState().getBlock());
         }
     }
 
     default void scheduleNeighborShapeUpdate() {
-        Level level = getLevel();
-        BlockPos pos = getBlockPos();
+        Level level = self().getLevel();
+        BlockPos pos = self().getBlockPos();
 
         if (level == null) return;
         if (isChunkUnloaded()) return;
@@ -49,15 +44,16 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
     }
 
     default boolean isRemote() {
-        return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;
+        Level level = self().getLevel();
+        return level == null ? GTCEu.isClientThread() : level.isClientSide;
     }
 
     default void scheduleRenderUpdate() {
         if (isChunkUnloaded()) return;
-        var pos = getBlockPos();
-        var level = getLevel();
+        var pos = self().getBlockPos();
+        var level = self().getLevel();
         if (level != null) {
-            var state = getLevel().getBlockState(pos);
+            var state = level.getBlockState(pos);
             if (level.isClientSide) {
                 level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
                 requestModelDataUpdate();
@@ -68,12 +64,14 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
     }
 
     default @Nullable BlockEntity getNeighbor(Direction direction) {
-        return getLevel().getBlockEntity(getBlockPos().relative(direction));
+        Level level = self().getLevel();
+        if (level == null) return null;
+        return level.getBlockEntity(self().getBlockPos().relative(direction));
     }
 
     private boolean isChunkUnloaded() {
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            BlockPos pos = getBlockPos();
+        if (self().getLevel() instanceof ServerLevel serverLevel) {
+            BlockPos pos = self().getBlockPos();
             return serverLevel.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4) == null;
         }
         return false;

@@ -5,8 +5,10 @@ import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -14,7 +16,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.network.connection.ConnectionType;
 
+import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
@@ -49,7 +53,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @Override
     protected final void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        tag.merge(getSyncDataHolder().serializeNBT(registries, false));
+        tag.merge(getSyncDataHolder().serializeNBT(registries));
     }
 
     /**
@@ -65,38 +69,33 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @MustBeInvokedByOverriders
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        getSyncDataHolder().deserializeNBT(registries, tag, false);
-    }
-
-    /**
-     * Loads BE data from client update packet
-     */
-    @MustBeInvokedByOverriders
-    public void clientLoad(CompoundTag tag, HolderLookup.Provider registries) {
-        getSyncDataHolder().deserializeNBT(registries, tag, true);
+        getSyncDataHolder().deserializeNBT(registries, tag);
     }
 
     @Override
     public final void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        this.clientLoad(tag, lookupProvider);
+        byte[] data = tag.getByteArray("data");
+        var buffer = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(data), (RegistryAccess) lookupProvider,
+                ConnectionType.NEOFORGE);
+        getSyncDataHolder().readClientPacket(lookupProvider, buffer);
     }
 
     @Override
     public final void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt,
                                    HolderLookup.Provider lookupProvider) {
         CompoundTag tag = pkt.getTag();
-        clientLoad(tag, lookupProvider);
+        byte[] data = tag.getByteArray("data");
+        var buffer = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(data), (RegistryAccess) lookupProvider,
+                ConnectionType.NEOFORGE);
+        getSyncDataHolder().readClientPacket(lookupProvider, buffer);
     }
 
     /**
      * Called to gather BE data to be sent when a client loads this BE.
      */
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = new CompoundTag();
-        getSyncDataHolder().resyncAllFields();
-        tag.merge(getSyncDataHolder().serializeNBT(registries, true, true));
-        return tag;
+    public CompoundTag getUpdateTag(HolderLookup.Provider lookup) {
+        return writeClientPacket(lookup, true);
     }
 
     /**
@@ -104,7 +103,18 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this, (b, r) -> getSyncDataHolder().serializeNBT(r, true));
+        return ClientboundBlockEntityDataPacket.create(this, (b, r) -> writeClientPacket(r, false));
+    }
+
+    private CompoundTag writeClientPacket(HolderLookup.Provider lookup, boolean fullSync) {
+        var stream = new RegistryFriendlyByteBuf(Unpooled.buffer(), (RegistryAccess) lookup, ConnectionType.NEOFORGE);
+        if (fullSync) getSyncDataHolder().resyncAllFields();
+        getSyncDataHolder().writeClientPacket(lookup, stream);
+
+        stream.capacity(stream.readableBytes());
+        CompoundTag data = new CompoundTag();
+        data.putByteArray("data", stream.array());
+        return data;
     }
 
     @Override

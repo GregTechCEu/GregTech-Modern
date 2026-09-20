@@ -8,7 +8,8 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +21,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 @Accessors(fluent = true, chain = true)
 public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> implements IMachineBuilderKJS {
 
@@ -30,9 +33,9 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
     @Setter
     public transient SteamDefinitionFunction definition = (isHP, def) -> def.tier(isHP ? 1 : 0);
 
-    private @Nullable MachineBuilder<?, ?, ?> lowPressureBuilder = null, highPressureBuilder = null;
+    private @Nullable MachineBuilder<MachineDefinition, ?, ?> lowPressureBuilder = null, highPressureBuilder = null;
     @Nullable
-    private MachineDefinition lpObject = null, hpObject = null;
+    private MachineEntry<MachineDefinition> lpObject = null, hpObject = null;
 
     public KJSSteamMachineBuilder(ResourceLocation id) {
         super(id);
@@ -40,8 +43,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
     }
 
     @Override
-    public MachineDefinition createObject() {
-        MachineDefinition value = null;
+    public @Nullable MachineDefinition createObject() {
         if (hasLowPressure) {
             this.lowPressureBuilder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace())
                     .machine(String.format("lp_%s", this.id.getPath()),
@@ -54,7 +56,6 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
 
             definition.apply(false, lowPressureBuilder);
             this.lpObject = lowPressureBuilder.register();
-            value = lpObject;
         }
 
         if (hasHighPressure) {
@@ -69,16 +70,15 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
 
             definition.apply(true, highPressureBuilder);
             this.hpObject = highPressureBuilder.register();
-            if (value == null) value = hpObject;
         }
 
-        return value;
+        return null;
     }
 
     @Override
     public void generateMachineModels() {
-        generateMachineModel(lowPressureBuilder, lpObject);
-        generateMachineModel(highPressureBuilder, hpObject);
+        generateMachineModel(lowPressureBuilder, Objects.requireNonNull(lpObject).value());
+        generateMachineModel(highPressureBuilder, Objects.requireNonNull(hpObject).value());
     }
 
     @Override
@@ -100,10 +100,10 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
     @Override
     public void generateLang(LangKubeEvent lang) {
         if (lpObject != null) {
-            lang.add(GTCEu.MOD_ID, lpObject.getDescriptionId(), lpObject.getLangValue());
+            lang.add(GTCEu.MOD_ID, lpObject.value().getDescriptionId(), lpObject.value().getLangValue());
         }
         if (hpObject != null) {
-            lang.add(GTCEu.MOD_ID, hpObject.getDescriptionId(), hpObject.getLangValue());
+            lang.add(GTCEu.MOD_ID, hpObject.value().getDescriptionId(), hpObject.value().getLangValue());
         }
     }
 

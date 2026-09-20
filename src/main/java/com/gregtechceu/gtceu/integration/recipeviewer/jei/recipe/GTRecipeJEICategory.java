@@ -27,7 +27,7 @@ public abstract class GTRecipeJEICategory<T extends Recipe<?>>
                                          extends ModularUIRecipeCategory<T> {
 
     public static final Function<GTRecipeCategory, RecipeType<GTRecipe>> TYPES = Util
-            .memoize(c -> new RecipeType<>(c.registryKey, GTRecipe.class));
+            .memoize(c -> new RecipeType<>(c.id, GTRecipe.class));
 
     protected GTRecipeJEICategory(Function<T, IWidget> wrapperFunction, Function<T, ResourceLocation> recipeIdGetter) {
         super(wrapperFunction, recipeIdGetter);

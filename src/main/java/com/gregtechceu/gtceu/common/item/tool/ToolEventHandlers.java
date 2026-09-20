@@ -120,7 +120,7 @@ public class ToolEventHandlers {
         ToolBehaviors behaviors = ToolHelper.getBehaviorsComponent(tool);
         Block block = state.getBlock();
         if (state.is(BlockTags.ICE) && !EnchantmentHelper.hasTag(tool, EnchantmentTags.PREVENTS_ICE_MELTING) &&
-                behaviors.hasBehavior(GTToolBehaviors.HARVEST_ICE)) {
+                behaviors.hasBehavior(GTToolBehaviors.HARVEST_ICE.value())) {
             Item iceBlock = block.asItem();
             if (drops.stream().noneMatch(drop -> drop.getItem() == iceBlock)) {
                 drops.add(new ItemStack(iceBlock));

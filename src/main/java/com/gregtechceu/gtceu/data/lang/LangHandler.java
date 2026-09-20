@@ -43,10 +43,6 @@ public class LangHandler {
         provider.add("ldlib.gui.editor.register.widget.container.gtm_phantom_fluid_slot", "GTM Phantom Fluid Slot");
 
         provider.add("curios.identifier.gtceu_magnet", "GTCEu Magnet");
-        // capabilities
-        provider.add("recipe.capability.eu.name", "GTCEu Energy");
-        provider.add("recipe.capability.fluid.name", "Fluid");
-        provider.add("recipe.capability.item.name", "Item");
         multiLang(provider, "gtceu.oc.tooltip", "Min: %s", "Left click to increase the OC",
                 "Right click to decrease the OC", "Middle click to reset the OC",
                 "Hold Shift to change by Perfect OC");
@@ -169,24 +165,6 @@ public class LangHandler {
 
         provider.add("tooltip.gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold Shift to show details");
         provider.add("tooltip.gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");
-        provider.add("medical_condition.gtceu.chemical_burns", "§5Chemical burns");
-        provider.add("medical_condition.gtceu.poison", "§2Poisonous");
-        provider.add("medical_condition.gtceu.poison.affected", "§2Poisoning");
-        provider.add("medical_condition.gtceu.weak_poison", "§aWeakly poisonous");
-        provider.add("medical_condition.gtceu.weak_poison.affected", "§aMinor poisoning");
-        provider.add("medical_condition.gtceu.irritant", "§6Irritant");
-        provider.add("medical_condition.gtceu.irritant.affected", "§6Irritation");
-        provider.add("medical_condition.gtceu.nausea", "§3Nauseating");
-        provider.add("medical_condition.gtceu.nausea.affected", "§3Nausea");
-        provider.add("medical_condition.gtceu.carcinogen", "§eCarcinogenic");
-        provider.add("medical_condition.gtceu.carcinogen.affected", "§eCancer");
-        provider.add("medical_condition.gtceu.asbestosis", "§dAsbestosis");
-        provider.add("medical_condition.gtceu.arsenicosis", "§bArsenicosis");
-        provider.add("medical_condition.gtceu.methanol_poisoning", "§6Methanol Poisoning");
-        provider.add("medical_condition.gtceu.carbon_monoxide_poisoning", "§7Carbon Monoxide Poisoning");
-        provider.add("medical_condition.gtceu.none", "§2Not Dangerous");
-        provider.add("medical_condition.gtceu.none.affected", "§2Nothing?");
-
         provider.add("symptom.gtceu.death", "Death");
         provider.add("symptom.gtceu.random_damage", "Occasional damage");
         provider.add("symptom.gtceu.health_debuff", "Lowered maximum health");
@@ -610,7 +588,7 @@ public class LangHandler {
         provider.add("cover.shutter.message.enabled", "Closed shutter");
         provider.add("cover.shutter.message.disabled", "Opened shutter");
 
-        replace(provider, "item.gtceu.bucket", "%s Bucket");
+        provider.add("item.gtceu.bucket", "%s Bucket");
 
         replace(provider, GTBlocks.BATTERY_EMPTY_TIER_I.get().getDescriptionId(), "Empty Tier I Capacitor");
         replace(provider, GTBlocks.BATTERY_LAPOTRONIC_EV.get().getDescriptionId(), "EV Lapotronic Capacitor");
@@ -1225,6 +1203,10 @@ public class LangHandler {
         provider.add("gtceu.multiblock.preview.zoom", "Use mousewheel or right-click + drag to zoom");
         provider.add("gtceu.multiblock.preview.rotate", "Click and drag to rotate");
         provider.add("gtceu.multiblock.preview.select", "Right-click to check candidates");
+        provider.add("gtceu.multiblock.pattern.exact_count", "§cExactly: %d§r");
+        provider.add("gtceu.multiblock.pattern.between_count", "§cBetween %d and %d§r");
+        provider.add("gtceu.multiblock.pattern.min_count", "§cAt least: %d§r");
+        provider.add("gtceu.multiblock.pattern.max_count", "§cAt most: %d§r");
         multilineLang(provider, "gtceu.multiblock.pattern.error", "Expected components at:\n  %s, %s, %s.");
         provider.add("gtceu.multiblock.pattern.error.limited.exact", "§cExactly: %d§r");
         provider.add("gtceu.multiblock.pattern.error.limited.range", "§cBetween %d and %d§r");
@@ -1894,6 +1876,15 @@ public class LangHandler {
                 "Then select the data access hatch as the target, and set the slot index of your data stick in the number field that appeared.");
         provider.add("gtceu.tooltip.player_bind", "Bound to player: %s");
         provider.add("gtceu.gui.item_collector.range", "Range: ");
+        provider.add("gtceu.tooltip.spoil_time_remaining", "Time until spoils: %s");
+        provider.add("gtceu.tooltip.spoil_time_total", "Total spoil time: %s");
+        provider.add("gtceu.tooltip.spoils_into", "Spoils into: %s");
+        provider.add("gtceu.tooltip.creation_tick", "Created on overworld tick %d");
+        provider.add("gtceu.tooltip.location", "Location: %s (%d, %d, %d)");
+        provider.add("gtceu.tooltip.location_entity", "Entity: %s");
+        provider.add("gtceu.tooltip.item_handler_source", "Handler source: %s");
+        provider.add("gtceu.tooltip.item_handler_data", "Handler data: %s");
+        provider.add("gtceu.tooltip.location_slot", "Slot: %s");
     }
 
     /**

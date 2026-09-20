@@ -29,6 +29,17 @@ public class StaticFaceBakery {
     public static final AABB OUTPUT_OVERLAY = BLOCK.inflate(0.018);
     public static final AABB AUTO_OUTPUT_OVERLAY = BLOCK.inflate(0.022);
 
+    public static AABB createFaceCube(Direction face, double thickness) {
+        return switch (face) {
+            case DOWN -> new AABB(0, 0, 0, 1, thickness, 1);
+            case UP -> new AABB(0, 1.0 - thickness, 0, 1, 1, 1);
+            case NORTH -> new AABB(0, 0, 0, 1, 1, thickness);
+            case SOUTH -> new AABB(0, 0, 1.0 - thickness, 1, 1, 1);
+            case WEST -> new AABB(0, 0, 0, thickness, 1, 1);
+            case EAST -> new AABB(1.0 - thickness, 0, 0, 1, 1, 1);
+        };
+    }
+
     private static final int VERTEX_INT_SIZE = 8;
     private static final float RESCALE_22_5 = 1.0F / (float) Math.cos((float) (Math.PI / 8)) - 1.0F;
     private static final float RESCALE_45 = 1.0F / (float) Math.cos((float) (Math.PI / 4)) - 1.0F;
@@ -226,14 +237,8 @@ public class StaticFaceBakery {
         vertexData[i + POSITION_INDEX + 1] = Float.floatToRawIntBits(face.y());
         vertexData[i + POSITION_INDEX + 2] = Float.floatToRawIntBits(face.z());
         vertexData[i + COLOR_INDEX] = 0xffffffff;
-        vertexData[i + UV_INDEX] = Float.floatToRawIntBits(
-                sprite.getU(
-                        (blockFaceUV.getU(vertexIndex) * 0.999f + blockFaceUV.getU((vertexIndex + 2) % 4) * 0.001f) /
-                                16.0F));
-        vertexData[i + UV_INDEX + 1] = Float.floatToRawIntBits(
-                sprite.getV(
-                        (blockFaceUV.getV(vertexIndex) * 0.999f + blockFaceUV.getV((vertexIndex + 2) % 4) * 0.001f) /
-                                16.0F));
+        vertexData[i + UV_INDEX] = Float.floatToRawIntBits(sprite.getU(blockFaceUV.getU(vertexIndex) / 16.0F));
+        vertexData[i + UV_INDEX + 1] = Float.floatToRawIntBits(sprite.getV(blockFaceUV.getV(vertexIndex) / 16.0F));
     }
 
     private static float[] setupShape(Vector3f min, Vector3f max) {

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 
 import net.minecraft.network.chat.Component;
@@ -14,13 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class GTBucketItem extends BucketItem {
 
-    final Material material;
-    final String langKey;
-
-    public GTBucketItem(Fluid fluid, Properties properties, Material material, String langKey) {
+    public GTBucketItem(Fluid fluid, Properties properties) {
         super(fluid, properties);
-        this.material = material;
-        this.langKey = langKey;
     }
 
     public static int color(ItemStack itemStack, int index) {
@@ -39,8 +33,7 @@ public class GTBucketItem extends BucketItem {
 
     @Override
     public Component getDescription() {
-        Component materialName = material.getLocalizedName();
-        return Component.translatable("item.gtceu.bucket", Component.translatable(this.langKey, materialName));
+        return Component.translatable(this.getDescriptionId(), this.content.getFluidType().getDescription());
     }
 
     @Override

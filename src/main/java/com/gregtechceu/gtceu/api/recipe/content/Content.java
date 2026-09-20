@@ -21,9 +21,13 @@ public record Content(Object content, int chance, int maxChance) {
         this.maxChance = maxChance;
     }
 
+    public static <T> Codec<T> ingredientCodec(RecipeCapability<T> capability) {
+        return capability.serializer.codec();
+    }
+
     public static <T> Codec<Content> codec(RecipeCapability<T> capability) {
         return RecordCodecBuilder.create(instance -> instance.group(
-                capability.serializer.codec().fieldOf("content").forGetter(val -> capability.of(val.content)),
+                ingredientCodec(capability).fieldOf("content").forGetter(val -> capability.of(val.content)),
                 ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("chance", ChanceLogic.getMaxChancedValue())
                         .forGetter(val -> val.chance),
                 ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("maxChance", ChanceLogic.getMaxChancedValue())
@@ -87,7 +91,7 @@ public record Content(Object content, int chance, int maxChance) {
             } else {
                 float baseChanceFloat = 100f * content.chance() / content.maxChance();
 
-                if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                if (logic != ChanceLogic.NONE.value() && logic != ChanceLogic.OR.value()) {
                     tooltip.addLine(Component.translatable("gtceu.gui.content.chance_no_boost_logic",
                             FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
                             .withStyle(ChatFormatting.YELLOW));
