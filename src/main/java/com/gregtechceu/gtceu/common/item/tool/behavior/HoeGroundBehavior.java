@@ -116,6 +116,6 @@ public class HoeGroundBehavior implements IToolBehavior<HoeGroundBehavior> {
 
     @Override
     public ToolBehaviorType<HoeGroundBehavior> getType() {
-        return GTToolBehaviors.HOE_GROUND;
+        return GTToolBehaviors.HOE_GROUND.value();
     }
 }

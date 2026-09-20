@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class HullMachine extends TieredPartMachine implements IMonitorComponent {
 
     @SaveField(nbtKey = "grid_node")
-    private final Object gridNodeHost;
+    private final @Nullable Object gridNodeHost;
 
     @SaveField
     protected NotifiableEnergyContainer energyContainer;

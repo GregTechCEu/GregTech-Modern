@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.registry;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.IMaterialRegistry;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.core.mixins.MappedRegistryAccessor;
 
 import net.minecraft.core.Holder;
@@ -19,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.stream.Stream;
 
-public final class MaterialRegistry extends MappedRegistry<Material> implements IMaterialRegistry {
+public final class MaterialRegistry extends MappedRegistry<Material> {
 
     private final Set<String> usedNamespaces = new HashSet<>();
     private final Map<String, Material> fallbackMaterials = new HashMap<>();
@@ -30,7 +28,6 @@ public final class MaterialRegistry extends MappedRegistry<Material> implements 
         super(key, Lifecycle.stable());
     }
 
-    @Override
     public @NotNull Set<String> getUsedNamespaces() {
         return Collections.unmodifiableSet(usedNamespaces);
     }
@@ -54,12 +51,6 @@ public final class MaterialRegistry extends MappedRegistry<Material> implements 
     private Material register(ResourceLocation id, Material material) {
         this.register(ResourceKey.create(this.key(), id), material, RegistrationInfo.BUILT_IN);
         return material;
-    }
-
-    @Override
-    public Material getMaterial(ResourceLocation name) {
-        Material value = get(name);
-        return value != null ? value : GTMaterials.NULL;
     }
 
     @Override
@@ -87,7 +78,6 @@ public final class MaterialRegistry extends MappedRegistry<Material> implements 
      * @param modId    the namespace to set the fallback for
      * @param material the fallback material
      */
-    @Override
     public void setFallbackMaterial(@NotNull String modId, @NotNull Material material) {
         fallbackMaterials.put(modId, material);
     }
@@ -98,7 +88,6 @@ public final class MaterialRegistry extends MappedRegistry<Material> implements 
      * @param modId the namespace to get the fallback for
      * @return the fallback material, used for when another material does not exist
      */
-    @Override
     @NotNull
     public Material getFallbackMaterial(@NotNull String modId) {
         return fallbackMaterials.getOrDefault(modId, getDefaultFallback());
@@ -109,7 +98,6 @@ public final class MaterialRegistry extends MappedRegistry<Material> implements 
         return fallbackMaterials.get(GTCEu.MOD_ID);
     }
 
-    @Override
     public boolean isFrozen() {
         return ((MappedRegistryAccessor) (Object) this).gtceu$isFrozen();
     }

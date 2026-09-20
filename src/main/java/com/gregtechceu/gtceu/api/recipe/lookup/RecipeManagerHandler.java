@@ -59,6 +59,7 @@ public final class RecipeManagerHandler {
                 // do not add recipes of incompatible type
                 continue;
             }
+            recipe.setId(r.id());
             lookup.addStaging(recipe);
         }
     }

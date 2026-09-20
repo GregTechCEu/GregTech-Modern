@@ -66,7 +66,7 @@ public final class DynamicTagHandler {
         ItemMaterialData.MATERIAL_ENTRY_ITEM_MAP.forEach((entry, itemLikes) -> {
             if (itemLikes.isEmpty()) return;
             Material material = entry.material();
-            if (material.isNull()) return;
+
             var entries = itemLikes.stream()
                     .map(Supplier::get)
                     .map(DynamicTagHandler::makeItemEntry)
@@ -81,9 +81,9 @@ public final class DynamicTagHandler {
             }
 
             if (entry.tagPrefix() == TagPrefix.crushed && material.hasProperty(PropertyKey.ORE)) {
-                OreProperty ore = material.getProperty(PropertyKey.ORE);
+                OreProperty ore = material.getPropertyOrThrow(PropertyKey.ORE);
                 Material washedIn = ore.getWashedIn().first();
-                if (washedIn.isNull()) return;
+                if (washedIn == null) return;
                 ResourceLocation generalTag = CustomTags.CHEM_BATH_WASHABLE.location();
                 ResourceLocation specificTag = generalTag.withSuffix("/" + washedIn.getName());
 
@@ -148,7 +148,7 @@ public final class DynamicTagHandler {
         ItemMaterialData.MATERIAL_ENTRY_BLOCK_MAP.forEach((entry, blocks) -> {
             if (blocks.isEmpty()) return;
             Material material = entry.material();
-            if (material.isNull()) return;
+
             var entries = blocks.stream()
                     .map(DynamicTagHandler::makeBlockEntry)
                     .collect(toArrayList());

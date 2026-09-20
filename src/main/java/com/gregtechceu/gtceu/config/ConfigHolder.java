@@ -407,13 +407,11 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({
                 "Whether to increase number of rolls for dungeon chests. Increases dungeon loot drastically.",
-                "Default: true", "WARNING: Currently unimplemented." })
-        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
+                "Default: true" })
         public boolean increaseDungeonLoot = true;
         @Configurable
         @Configurable.Comment({ "Allow GregTech to add additional GregTech Items as loot in various structures.",
                 "Default: true" })
-        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean addLoot = true;
 
         @Configurable
@@ -900,13 +898,13 @@ public class ConfigHolder {
 
             @Configurable
             @Configurable.Comment({ "Bloom Algorithm",
-                    "Requires reloading all chunks ",
+                    "Requires reloading all chunks",
                     "UNITY - Unity-like Bloom (rescale)",
                     "UNREAL - Unreal-like Bloom (gaussian blur)",
                     "DISABLED - No bloom",
                     "Default: UNREAL" })
             // @Configurable.Validator(BloomEventListeners.BloomTypeUpdateCallback.class) // for Configuration 4.x
-            public BloomType type = BloomType.DISABLED;
+            public BloomType type = BloomType.UNREAL;
 
             @Configurable
             @Configurable.Comment({ "Whether or not to add bloom to emissive textures", "Default: true" })
@@ -946,9 +944,9 @@ public class ConfigHolder {
             public float strength = 1.5f;
 
             @Configurable
-            @Configurable.Comment({ "Blur Step (bloom range)", "Default: 1" })
+            @Configurable.Comment({ "Blur Sample Step (bloom range)", "Default: 1.0" })
             @Configurable.DecimalRange(min = 0)
-            public float step = 1.0f;
+            public float blurSampleStep = 1.0f;
         }
 
         public static class RendererOptions {
@@ -983,6 +981,10 @@ public class ConfigHolder {
             @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
             @Configurable.Gui.ColorValue
             public String assemblyLineLaser = "#1FA1FC";
+
+            public int getAssemblyLineLaserColor() {
+                return Long.decode(assemblyLineLaser).intValue() | 0xff000000;
+            }
         }
 
         public static class TankItemFluidPreview {

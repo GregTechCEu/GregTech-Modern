@@ -90,7 +90,7 @@ public abstract class MultiPredicate {
         ctx.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
         if (testGlobalMin(ctx)) return true;
         for (Component content : getDescriptiveContents()) {
-            ctx.appendError(PatternStringError.component(content));
+            ctx.appendError(PatternStringError.of(content));
         }
         return false;
     }
@@ -103,7 +103,7 @@ public abstract class MultiPredicate {
         ctx.setStage(PredicateContext.PredicateStage.SLICE_MIN);
         if (testSliceMin(ctx)) return true;
         for (Component content : getDescriptiveContents()) {
-            ctx.appendError(PatternStringError.component(content));
+            ctx.appendError(PatternStringError.of(content));
         }
         return false;
     }

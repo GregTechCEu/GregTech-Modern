@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client;
 
+import com.gregtechceu.gtceu.core.util.extensions.BlockElementFaceExt;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockElementFace;
 import net.minecraft.client.renderer.block.model.FaceBakery;
@@ -14,6 +16,7 @@ public class FaceBakeryMixin {
 
     @ModifyReturnValue(method = "bakeQuad", at = @At(value = "RETURN"))
     private BakedQuad gtceu$addQuadTextureKey(BakedQuad quad, Vector3f posFrom, Vector3f posTo, BlockElementFace face) {
-        return quad.gtceu$setTextureKey(face.texture());
+        return quad.gtceu$setTextureKey(face.texture())
+                .gtceu$setFaceLayer(((BlockElementFaceExt) (Object) face).gtceu$getFaceLayer());
     }
 }

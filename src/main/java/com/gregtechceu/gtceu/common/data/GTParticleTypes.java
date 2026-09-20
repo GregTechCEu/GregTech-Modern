@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class GTParticleTypes {
 
-    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister
+    private static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister
             .create(Registries.PARTICLE_TYPE, GTCEu.MOD_ID);
 
     public static final DeferredHolder<ParticleType<?>, ParticleType<HazardParticleOptions>> HAZARD_PARTICLE = PARTICLE_TYPES

@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.ConsumedInputsData;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.TypeDeclaration;
@@ -173,11 +173,10 @@ public final class ValueTransformers {
         registerTransformer(CoverBehavior.class, new CoverBehaviorTransformer());
         registerTransformer(GTRecipe.class, new GTRecipeTransformer());
 
-        registerCodecTransformer(MachineRenderState.class, MachineRenderState.CODEC, ByteBufCodecs.fromCodecWithRegistries(MachineRenderState.CODEC));
+        registerCodecTransformer(MachineRenderState.class, MachineRenderState.CODEC, ByteBufCodecs.idMapper(MachineDefinition.RENDER_STATE_REGISTRY));
         registerCodecTransformer(MonitorGroup.class, MonitorGroup.CODEC, MonitorGroup.STREAM_CODEC);
         registerCodecTransformer(ConsumedInputsData.class, ConsumedInputsData.CODEC, ByteBufCodecs.fromCodecWithRegistries(ConsumedInputsData.CODEC));
 
-        registerTransformer(GTRecipeType.class, new RegistryReferenceTransformer<>(GTRegistries.Keys.RECIPE_TYPE, GTRecipeType::getRegistryName));
         registerTransformer(Material.class, new RegistryReferenceTransformer<>(GTRegistries.Keys.MATERIAL, Material::getResourceLocation));
 
         // spotless:on

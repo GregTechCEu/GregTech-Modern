@@ -26,8 +26,6 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.ChanceCache
 import com.gregtechceu.gtceu.common.cover.MachineControllerCover;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -117,15 +115,12 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     @Getter
     @SaveField
-    @SyncToClient
     protected int consecutiveRecipes = 0; // Consecutive recipes that have been run
 
     @SaveField
     @Getter
-    @SyncToClient
     protected int progress;
     @Getter
-    @SyncToClient
     @SaveField
     protected int duration;
     @Getter(onMethod_ = @VisibleForTesting)
@@ -239,7 +234,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     public void setProgress(int progress) {
         this.progress = progress;
-        syncDataHolder.markClientSyncFieldDirty("progress");
     }
 
     public void setProgressDelta(int delta) {
@@ -338,7 +332,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                 }
                 progress++;
                 totalContinuousRunningTime++;
-                syncDataHolder.markClientSyncFieldDirty("progress");
             } else {
                 setWaiting(handleTick.reason());
 
@@ -380,7 +373,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     protected void regressRecipe() {
         if (progress > 0 && regressWhenWaiting) {
             this.progress = 1;
-            syncDataHolder.markClientSyncFieldDirty("progress");
         }
     }
 
@@ -658,8 +650,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             setStatus(Status.IDLE);
             progress = 0;
             duration = 0;
-            syncDataHolder.markClientSyncFieldDirty("progress");
-            syncDataHolder.markClientSyncFieldDirty("duration");
         }
     }
 
@@ -678,7 +668,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                 workingSound = null;
             }
             if (sound != null) {
-                workingSound = sound.playAutoReleasedSound(
+                workingSound = sound.value().playAutoReleasedSound(
                         () -> getRLMachine().shouldWorkingPlaySound() && isWorking() && !getMachine().isRemoved() &&
                                 getMachine().getLevel().isLoaded(getMachine().getBlockPos()) &&
                                 MetaMachine.getMachine(getMachine().getLevel(), getMachine().getBlockPos()) ==
@@ -693,8 +683,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     protected IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> makeChanceCaches() {
         IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> map = new IdentityHashMap<>();
-        for (RecipeCapability<?> cap : RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)
-                .registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY)) {
+        for (RecipeCapability<?> cap : GTRegistries.RECIPE_CAPABILITIES) {
             map.put(cap, cap.makeChanceCache());
         }
         return map;

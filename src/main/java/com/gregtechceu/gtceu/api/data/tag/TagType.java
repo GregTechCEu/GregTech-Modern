@@ -9,7 +9,6 @@ import net.minecraft.world.item.Item;
 
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
@@ -21,7 +20,7 @@ public final class TagType {
     @Getter
     private boolean isParentTag = false;
     // this is now memoized because creating tag keys interns them and that's slow
-    private final @NotNull BiFunction<TagPrefix, Material, TagKey<Item>> formatter;
+    private final BiFunction<TagPrefix, Material, TagKey<Item>> formatter;
     @Nullable
     /* package-private */ Predicate<Material> filter;
 
@@ -68,8 +67,8 @@ public final class TagType {
     }
     // spotless:on
 
-    public @Nullable TagKey<Item> getTag(TagPrefix prefix, @NotNull Material material) {
-        if (this.filter != null && !material.isNull() && !this.filter.test(material)) return null;
-        return this.formatter.apply(prefix, material);
+    public @Nullable TagKey<Item> getTag(TagPrefix prefix, @Nullable Material material) {
+        if (filter != null && material != null && !filter.test(material)) return null;
+        return formatter.apply(prefix, material);
     }
 }

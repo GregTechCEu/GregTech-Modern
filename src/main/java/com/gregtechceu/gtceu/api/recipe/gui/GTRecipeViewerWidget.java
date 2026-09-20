@@ -229,7 +229,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         if (data.shift()) oc = OverclockingLogic.PERFECT_OVERCLOCK;
 
         // TODO more contextual oc values based on recipe type or machine
-        if (modifiedRecipe.recipeType == GTRecipeTypes.FUSION_RECIPES) {
+        if (modifiedRecipe.recipeType == GTRecipeTypes.FUSION_RECIPES.value()) {
             oc = FusionReactorMachine.FUSION_OC;
         }
 
