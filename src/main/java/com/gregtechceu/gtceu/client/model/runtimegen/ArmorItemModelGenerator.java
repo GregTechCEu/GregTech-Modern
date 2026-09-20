@@ -8,6 +8,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.Item;
 
 import com.google.gson.JsonObject;
@@ -38,14 +39,14 @@ public class ArmorItemModelGenerator {
     }
 
     private final Item item;
-    private final ArmorItem.Type armorType;
+    private final ArmorType armorType;
 
-    protected ArmorItemModelGenerator(Item item, ArmorItem.Type armorType) {
+    protected ArmorItemModelGenerator(Item item, ArmorType armorType) {
         this.item = item;
         this.armorType = armorType;
     }
 
-    public static void add(Item item, ArmorItem.Type armorType) {
+    public static void add(Item item, ArmorType armorType) {
         MODELS.add(new ArmorItemModelGenerator(item, armorType));
     }
 }

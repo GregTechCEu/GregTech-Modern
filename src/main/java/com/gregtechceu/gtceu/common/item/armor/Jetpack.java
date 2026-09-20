@@ -17,6 +17,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -33,7 +34,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     protected ArmorUtils.ModularHUD HUD;
 
     public Jetpack(int energyPerUse, long capacity, int tier) {
-        super(energyPerUse, capacity, tier, ArmorItem.Type.CHESTPLATE);
+        super(energyPerUse, capacity, tier, ArmorType.CHESTPLATE);
         if (GTCEu.isClientSide() && this.shouldDrawHUD()) {
             // noinspection NewExpressionSideOnly
             HUD = new ArmorUtils.ModularHUD();

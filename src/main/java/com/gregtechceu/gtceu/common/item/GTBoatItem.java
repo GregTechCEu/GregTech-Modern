@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.common.item.behavior.GTBoatItemDispenseBehaviour;
 
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.boat.Boat;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -37,11 +37,11 @@ public class GTBoatItem extends Item {
         DispenserBlock.registerBehavior(this, new GTBoatItemDispenseBehaviour(type, hasChest));
     }
 
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         HitResult hitresult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY);
         if (hitresult.getType() == HitResult.Type.MISS) {
-            return InteractionResultHolder.pass(itemstack);
+            return InteractionResult.PASS;
         } else {
             Vec3 vec3 = player.getViewVector(1.0F);
             double d0 = 5.0;
@@ -52,7 +52,7 @@ public class GTBoatItem extends Item {
                 for (Entity e : list) {
                     AABB aabb = e.getBoundingBox().inflate((double) e.getPickRadius());
                     if (aabb.contains(vec31)) {
-                        return InteractionResultHolder.pass(itemstack);
+                        return InteractionResult.PASS;
                     }
                 }
             }
@@ -71,7 +71,7 @@ public class GTBoatItem extends Item {
 
                 boat.setYRot(player.getYRot());
                 if (!level.noCollision(boat, boat.getBoundingBox())) {
-                    return InteractionResultHolder.fail(itemstack);
+                    return InteractionResult.FAIL;
                 } else {
                     if (!level.isClientSide()) {
                         level.addFreshEntity(boat);
@@ -82,10 +82,10 @@ public class GTBoatItem extends Item {
                     }
 
                     player.awardStat(Stats.ITEM_USED.get(this));
-                    return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
+                    return ((level.isClientSide()) ? InteractionResult.SUCCESS : InteractionResult.CONSUME).heldItemTransformedTo(itemstack);
                 }
             } else {
-                return InteractionResultHolder.pass(itemstack);
+                return InteractionResult.PASS;
             }
         }
     }

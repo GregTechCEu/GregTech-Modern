@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
@@ -15,16 +16,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class HazmatSuit implements IArmorLogic {
 
-    private final ArmorItem.Type type;
+    private final ArmorType type;
     private final String armorTexture;
 
-    public HazmatSuit(ArmorItem.Type type, String armorTexture) {
+    public HazmatSuit(ArmorType type, String armorTexture) {
         this.type = type;
         this.armorTexture = armorTexture;
     }
 
     @Override
-    public ArmorItem.Type getArmorType() {
+    public ArmorType getArmorType() {
         return this.type;
     }
 

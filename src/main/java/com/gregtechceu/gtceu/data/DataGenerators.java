@@ -18,7 +18,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.Set;
 
@@ -43,7 +43,7 @@ public class DataGenerators {
                             .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
                             .add(Registries.PLACED_FEATURE, GTPlacedFeatures::bootstrap)
                             .add(Registries.DENSITY_FUNCTION, GTDensityFunctions::bootstrap)
-                            .add(ForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap),
+                            .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap),
                     set));
             generator.addProvider(true,
                     new DamageTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));

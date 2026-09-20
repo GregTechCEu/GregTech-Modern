@@ -353,7 +353,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
             if (toolType.contains(GTToolType.CROWBAR)) {
                 getCoverContainer().removeCover(context.getGridSide(), player);
-                return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
+                return Pair.of(GTToolType.CROWBAR, (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME));
             }
         }
 
@@ -365,14 +365,14 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                 boolean isOpen = this.isConnected(gridSide);
                 this.setConnection(gridSide, !isOpen, false);
             }
-            return Pair.of(getPipeTuneTool(), InteractionResult.sidedSuccess(isRemote()));
+            return Pair.of(getPipeTuneTool(), (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME));
         } else if (toolType.contains(GTToolType.CROWBAR)) {
             if (frameMaterial != null) {
                 Block.popResource(context.getLevel(), this.getBlockPos(),
                         Objects.requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial))
                                 .asStack());
                 frameMaterial = null;
-                return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
+                return Pair.of(GTToolType.CROWBAR, (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME));
             }
         }
 

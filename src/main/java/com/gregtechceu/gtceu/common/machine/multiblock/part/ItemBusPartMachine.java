@@ -211,7 +211,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         if (io == IO.BOTH) return InteractionResult.PASS;
         if (context.getPlayer().isShiftKeyDown()) {
             if (swapIO()) {
-                return InteractionResult.sidedSuccess(isRemote());
+                return (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
             }
         }
         return InteractionResult.PASS;

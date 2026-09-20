@@ -18,9 +18,9 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -79,7 +79,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Item item, Level level, Player player, InteractionHand usedHand) {
         var itemStack = player.getItemInHand(usedHand);
         var electricItem = GTCapabilityHelper.getElectricItem(itemStack);
         if (electricItem != null && electricItem.canProvideChargeExternally() && player.isShiftKeyDown()) {
@@ -89,7 +89,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
                 player.sendOverlayMessage(Component.translatable(locale));
                 setInDischargeMode(itemStack, !isInDischargeMode);
             }
-            return InteractionResultHolder.success(itemStack);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(itemStack);
         }
         return IInteractionItem.super.use(item, level, player, usedHand);
     }

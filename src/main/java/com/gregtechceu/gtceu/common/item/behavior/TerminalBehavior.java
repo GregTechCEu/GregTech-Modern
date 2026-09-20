@@ -13,7 +13,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -82,7 +81,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                 controller.checkAndFormStructure();
             }
         }
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
     }
 
     @Override
@@ -110,7 +109,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         if (level.isClientSide()) {
             player.sendSystemMessage(Component.literal("Loaded controller information"));
         }
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
     }
 
     @Override
@@ -119,7 +118,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Item item, Level level, Player player, InteractionHand usedHand) {
         if (!shouldOpenUI()) return IItemUIHolder.super.use(item, level, player, usedHand);
 
         if (level.isClientSide()) {
@@ -128,7 +127,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
             ModularPanel<?> clientPanel = clientPanel();
             ClientGUI.open(createScreen(guiData, clientPanel));
         }
-        return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide());
+        return ((level.isClientSide()) ? InteractionResult.SUCCESS : InteractionResult.CONSUME).heldItemTransformedTo(player.getItemInHand(usedHand));
     }
 
     private ModularPanel<?> clientPanel() {

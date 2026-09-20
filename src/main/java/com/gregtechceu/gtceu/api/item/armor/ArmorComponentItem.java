@@ -9,7 +9,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,6 +17,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
@@ -39,7 +39,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     @Getter
     protected List<IItemComponent> components;
 
-    public ArmorComponentItem(ArmorMaterial material, ArmorItem.Type type, Properties properties) {
+    public ArmorComponentItem(ArmorMaterial material, ArmorType type, Properties properties) {
         super(material, type, properties.durability(0));
         components = new ArrayList<>();
     }
@@ -68,7 +68,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public ArmorItem.Type getType() {
+    public ArmorType getType() {
         return armorLogic.getArmorType();
     }
 
@@ -215,11 +215,11 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         for (IItemComponent component : components) {
             if (component instanceof IInteractionItem interactionItem) {
                 var result = interactionItem.use(this, level, player, usedHand);
-                if (result.getResult() != InteractionResult.PASS) {
+                if (result != InteractionResult.PASS) {
                     return result;
                 }
             }

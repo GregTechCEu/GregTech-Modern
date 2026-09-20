@@ -12,7 +12,7 @@ import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 
@@ -22,18 +22,18 @@ public class GTCommandArguments {
     private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister
             .create(Registries.COMMAND_ARGUMENT_TYPE, GTCEu.MOD_ID);
 
-    private static final RegistryObject<SingletonArgumentInfo<MaterialArgument>> MATERIAL_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES
+    private static final DeferredHolder<ArgumentTypeInfo<?, ?>, SingletonArgumentInfo<MaterialArgument>> MATERIAL_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES
             .register(
                     "material", () -> ArgumentTypeInfos.registerByClass(MaterialArgument.class,
                             SingletonArgumentInfo.contextFree(MaterialArgument::material)));
 
-    private static final RegistryObject<SingletonArgumentInfo<MedicalConditionArgument>> MEDICAL_CONDITION_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES
+    private static final DeferredHolder<ArgumentTypeInfo<?, ?>, SingletonArgumentInfo<MedicalConditionArgument>> MEDICAL_CONDITION_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES
             .register("medical_condition",
                     () -> ArgumentTypeInfos.registerByClass(MedicalConditionArgument.class,
                             SingletonArgumentInfo.contextFree(MedicalConditionArgument::medicalCondition)));
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static final RegistryObject<GTRegistryArgument.Info<?, ? extends GTRegistry<?, ?>>> GT_REGISTRY_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES
+    private static final DeferredHolder<ArgumentTypeInfo<?, ?>, GTRegistryArgument.Info<?, ? extends GTRegistry<?, ?>>> GT_REGISTRY_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES
             .register("gt_registry",
                     () -> ArgumentTypeInfos.<GTRegistryArgument, GTRegistryArgument.Info.Template, GTRegistryArgument.Info>registerByClass(
                             fixClassType(GTRegistryArgument.class),

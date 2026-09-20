@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import org.jspecify.annotations.NullMarked;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -15,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
@@ -59,7 +59,7 @@ public class GTAEPlaceholders {
     }
 
     private static long countItems(String id, IGrid grid) {
-        Item item = ForgeRegistries.ITEMS.getValue(Identifier.parse(id));
+        Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(id));
         if (item == null) return 0;
         GenericStack stack = GenericStack.fromItemStack(new ItemStack(item, 1));
         if (stack == null) return 0;
@@ -86,7 +86,7 @@ public class GTAEPlaceholders {
             }
             return count;
         }
-        Fluid fluid = ForgeRegistries.FLUIDS.getValue(Identifier.parse(id));
+        Fluid fluid = BuiltInRegistries.FLUID.getValue(Identifier.parse(id));
         if (fluid == null) return 0;
         GenericStack stack = GenericStack.fromFluidStack(new FluidStack(fluid, 1));
         if (stack == null) return 0;

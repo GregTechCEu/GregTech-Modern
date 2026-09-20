@@ -8,7 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class GTPlacementModifiers {
     // spotless:off
@@ -16,8 +16,8 @@ public class GTPlacementModifiers {
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIERS = DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, GTCEu.MOD_ID);
 
 
-    public static final RegistryObject<PlacementModifierType<BiomeDependentPlacement>> BIOME_DEPENDENT = PLACEMENT_MODIFIERS.register("biome_dependent", () -> () -> BiomeDependentPlacement.CODEC);
-    public static final RegistryObject<PlacementModifierType<RubberTreeChancePlacement>> RUBBER_TREE_CHANCE = PLACEMENT_MODIFIERS.register("rubber_tree_chance", () -> () -> RubberTreeChancePlacement.CODEC);
+    public static final DeferredHolder<PlacementModifierType<?>, PlacementModifierType<BiomeDependentPlacement>> BIOME_DEPENDENT = PLACEMENT_MODIFIERS.register("biome_dependent", () -> () -> BiomeDependentPlacement.CODEC);
+    public static final DeferredHolder<PlacementModifierType<?>, PlacementModifierType<RubberTreeChancePlacement>> RUBBER_TREE_CHANCE = PLACEMENT_MODIFIERS.register("rubber_tree_chance", () -> () -> RubberTreeChancePlacement.CODEC);
 
     // spotless:on
 

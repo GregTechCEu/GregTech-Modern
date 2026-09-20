@@ -14,8 +14,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -78,7 +78,7 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Item item, Level level, Player player, InteractionHand usedHand) {
         ItemStack heldItem = player.getItemInHand(usedHand);
         if (player.isShiftKeyDown() && this.modes.length > 1) {
             if (!level.isClientSide()) {
@@ -86,11 +86,11 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
                 ProspectorMode<?> mode = getMode(heldItem);
                 player.sendSystemMessage(Component.translatable(mode.unlocalizedName));
             }
-            return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide());
+            return ((level.isClientSide()) ? InteractionResult.SUCCESS : InteractionResult.CONSUME).heldItemTransformedTo(heldItem);
         }
         if (!player.isCreative() && !drainEnergy(heldItem, true)) {
             player.sendSystemMessage(Component.translatable("behavior.prospector.not_enough_energy"));
-            return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide());
+            return ((level.isClientSide()) ? InteractionResult.SUCCESS : InteractionResult.CONSUME).heldItemTransformedTo(heldItem);
         }
         return IItemUIHolder.super.use(item, level, player, usedHand);
     }

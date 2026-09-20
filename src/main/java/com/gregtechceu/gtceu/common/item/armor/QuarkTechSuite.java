@@ -15,7 +15,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -25,6 +24,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -52,7 +52,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     @OnlyIn(Dist.CLIENT)
     protected ArmorUtils.ModularHUD HUD;
 
-    public QuarkTechSuite(ArmorItem.Type slot, int energyPerUse, long capacity, int tier) {
+    public QuarkTechSuite(ArmorType slot, int energyPerUse, long capacity, int tier) {
         super(energyPerUse, capacity, tier, slot);
         potionRemovalCost.put(MobEffects.POISON, 10000);
         potionRemovalCost.put(MobEffects.WITHER, 25000);
@@ -85,7 +85,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         }
 
         boolean ret = false;
-        if (type == ArmorItem.Type.HELMET) {
+        if (type == ArmorType.HELMET) {
 
             if (!world.isClientSide()) {
                 ret = supplyAir(item, player) || supplyFood(item, player);
@@ -124,10 +124,10 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
             data.putInt("nightVisionTimer", nightVisionTimer);
             data.putByte("toggleTimer", toggleTimer);
-        } else if (type == ArmorItem.Type.CHESTPLATE && !player.fireImmune()) {
+        } else if (type == ArmorType.CHESTPLATE && !player.fireImmune()) {
             ((IFireImmuneEntity) player).gtceu$setFireImmune(true);
             if (player.isOnFire()) player.extinguishFire();
-        } else if (type == ArmorItem.Type.LEGGINGS) {
+        } else if (type == ArmorType.LEGGINGS) {
             boolean canUseEnergy = item.canUse(energyPerUse / 100);
             boolean sprinting = SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isSprinting();
             boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
@@ -160,7 +160,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
             if (runningTimer > 0) runningTimer--;
             data.putByte("runningTimer", runningTimer);
-        } else if (type == ArmorItem.Type.BOOTS) {
+        } else if (type == ArmorType.BOOTS) {
             boolean canUseEnergy = item.canUse(energyPerUse / 100);
             boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
             boolean boostedJump = data.contains("boostedJump") && data.getBooleanOr("boostedJump", false);
@@ -246,12 +246,15 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
                 if (slotId > -1) {
                     ItemStack stack = items.getStackInSlot(slotId);
-                    InteractionResultHolder<ItemStack> result = ArmorUtils.eat(player, stack);
-                    stack = result.getObject();
+                    InteractionResult result = ArmorUtils.eat(player, stack);
+                    if (result instanceof InteractionResult.Success success &&
+                            success.heldItemTransformedTo() != null) {
+                        stack = success.heldItemTransformedTo();
+                    }
                     if (stack.isEmpty())
                         items.setStackInSlot(slotId, ItemStack.EMPTY);
 
-                    if (result.getResult() == InteractionResult.SUCCESS)
+                    if (result instanceof InteractionResult.Success)
                         item.discharge(energyPerUse / 10, item.getTier(), true, false, false);
 
                     return true;
@@ -331,7 +334,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
     @Override
     public double getDamageAbsorption() {
-        return type == ArmorItem.Type.CHESTPLATE ? 1.2D : 1.0D;
+        return type == ArmorType.CHESTPLATE ? 1.2D : 1.0D;
     }
 
     @Override
@@ -350,7 +353,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     @Override
     public void addInfo(ItemStack itemStack, List<Component> lines) {
         super.addInfo(itemStack, lines);
-        if (type == ArmorItem.Type.HELMET) {
+        if (type == ArmorType.HELMET) {
             CompoundTag nbtData = itemStack.getOrCreateTag();
             boolean nv = nbtData.getBooleanOr("nightVision", false);
             if (nv) {
@@ -361,12 +364,12 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             lines.add(Component.translatable("metaarmor.tooltip.potions"));
             lines.add(Component.translatable("metaarmor.tooltip.breath"));
             lines.add(Component.translatable("metaarmor.tooltip.autoeat"));
-        } else if (type == ArmorItem.Type.CHESTPLATE) {
+        } else if (type == ArmorType.CHESTPLATE) {
             lines.add(Component.translatable("metaarmor.tooltip.burning"));
             lines.add(Component.translatable("metaarmor.tooltip.freezing"));
-        } else if (type == ArmorItem.Type.LEGGINGS) {
+        } else if (type == ArmorType.LEGGINGS) {
             lines.add(Component.translatable("metaarmor.tooltip.speed"));
-        } else if (type == ArmorItem.Type.BOOTS) {
+        } else if (type == ArmorType.BOOTS) {
             CompoundTag nbtData = itemStack.getOrCreateTag();
             if (nbtData.getBooleanOr("stepAssist", false))
                 lines.add(Component.translatable("metaarmor.message.step_assist.enabled"));

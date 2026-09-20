@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.block.Blocks;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -143,16 +144,16 @@ public final class ToolRecipeHandler {
                     "PhP", " P ", " P ",
                     'P', plate);
 
-            addArmorRecipe(provider, material, ArmorItem.Type.HELMET,
+            addArmorRecipe(provider, material, ArmorType.HELMET,
                     "PPP", "PhP",
                     'P', plate);
-            addArmorRecipe(provider, material, ArmorItem.Type.CHESTPLATE,
+            addArmorRecipe(provider, material, ArmorType.CHESTPLATE,
                     "PhP", "PPP", "PPP",
                     'P', plate);
-            addArmorRecipe(provider, material, ArmorItem.Type.LEGGINGS,
+            addArmorRecipe(provider, material, ArmorType.LEGGINGS,
                     "PPP", "PhP", "P P",
                     'P', plate);
-            addArmorRecipe(provider, material, ArmorItem.Type.BOOTS,
+            addArmorRecipe(provider, material, ArmorType.BOOTS,
                     "P P", "PhP",
                     'P', plate);
         } else {
@@ -367,7 +368,7 @@ public final class ToolRecipeHandler {
     }
 
     public static void addArmorRecipe(Consumer<FinishedRecipe> provider, @NotNull Material material,
-                                      @NotNull ArmorItem.Type armor, Object... recipe) {
+                                      @NotNull ArmorType armor, Object... recipe) {
         ItemStack armorStack = ToolHelper.getArmor(armor, material);
         if (armorStack.isEmpty()) return;
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s", armor.getName(), material.getName()),

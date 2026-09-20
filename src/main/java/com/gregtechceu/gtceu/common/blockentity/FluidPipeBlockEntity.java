@@ -491,7 +491,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
             }
             if (didEmpty) {
                 ToolHelper.onActionDone(player, stack, level, context.getClickLocation());
-                return Pair.of(GTToolType.PLUNGER, InteractionResult.sidedSuccess(isRemote()));
+                return Pair.of(GTToolType.PLUNGER, (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME));
             }
         }
         return Pair.of(null, InteractionResult.PASS);

@@ -103,7 +103,7 @@ public class CrateMachine extends MetaMachine implements IMuiMachine {
                 inventory.shouldDropInventoryInWorld(false);
                 setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
                 syncDataHolder.markClientSyncFieldDirty("isTaped");
-                return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
+                return (context.getLevel().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
             }
         }
         return super.onUseWithItem(context);

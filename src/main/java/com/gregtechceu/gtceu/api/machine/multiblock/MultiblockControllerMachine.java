@@ -532,7 +532,7 @@ public class MultiblockControllerMachine extends MetaMachine {
                             ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
                 }
             }
-            return InteractionResult.sidedSuccess(isRemote());
+            return (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
         return super.onUse(context);
     }

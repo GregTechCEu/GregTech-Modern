@@ -193,7 +193,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
         if (io == IO.BOTH) return InteractionResult.PASS;
         if (context.getPlayer().isShiftKeyDown()) {
             if (swapIO()) {
-                return InteractionResult.sidedSuccess(getLevel().isClientSide());
+                return (getLevel().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
             }
         }
         return InteractionResult.PASS;

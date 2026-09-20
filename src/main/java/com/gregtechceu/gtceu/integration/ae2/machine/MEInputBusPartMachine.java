@@ -226,7 +226,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
             this.updateInventorySubscription();
             player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_paste_settings"));
         }
-        return InteractionResult.sidedSuccess(isRemote());
+        return (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
     }
 
     ////////////////////////////////

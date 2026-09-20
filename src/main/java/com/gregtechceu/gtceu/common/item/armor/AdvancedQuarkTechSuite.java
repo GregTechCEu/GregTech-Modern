@@ -15,11 +15,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -38,7 +39,7 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
     private List<Pair<NonNullList<ItemStack>, IntList>> inventoryIndexMap;
 
     public AdvancedQuarkTechSuite(int energyPerUse, long capacity, int tier) {
-        super(ArmorItem.Type.CHESTPLATE, energyPerUse, capacity, tier);
+        super(ArmorType.CHESTPLATE, energyPerUse, capacity, tier);
     }
 
     @Override
@@ -94,7 +95,7 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
 
         performFlying(player, jetpackEnabled, hoverMode, item);
 
-        if (type == ArmorItem.Type.CHESTPLATE && !player.fireImmune()) {
+        if (type == ArmorType.CHESTPLATE && !player.fireImmune()) {
             ((IFireImmuneEntity) player).gtceu$setFireImmune(true);
             if (player.isOnFire()) player.extinguishFire();
         }
@@ -170,14 +171,14 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> onRightClick(Level world, Player player, InteractionHand hand) {
+    public InteractionResult onRightClick(Level world, Player player, InteractionHand hand) {
         ItemStack armor = player.getItemInHand(hand);
         if (armor.getItem() instanceof ArmorComponentItem && player.isShiftKeyDown()) {
             CompoundTag data = armor.getOrCreateTag();
             boolean canShare = data.contains("canShare") && data.getBooleanOr("canShare", false);
             IElectricItem cont = GTCapabilityHelper.getElectricItem(armor);
             if (cont == null) {
-                return InteractionResultHolder.fail(armor);
+                return InteractionResult.FAIL;
             }
 
             canShare = !canShare;
@@ -193,7 +194,7 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
 
             canShare = canShare && (cont.getCharge() != 0);
             data.putBoolean("canShare", canShare);
-            return InteractionResultHolder.success(armor);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(armor);
         } else {
             return super.onRightClick(world, player, hand);
         }

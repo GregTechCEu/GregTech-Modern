@@ -38,6 +38,7 @@ import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -58,7 +59,6 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.DistExecutor;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -88,7 +88,7 @@ public class GTPlaceholders {
         int cnt = 0;
         for (int i = 0; i < fluidHandler.getTanks(); i++) {
             FluidStack fluidStack = fluidHandler.getFluidInTank(i);
-            String fluidId = Objects.requireNonNull(ForgeRegistries.FLUIDS.getKey(fluidStack.getFluid())).toString();
+            String fluidId = Objects.requireNonNull(BuiltInRegistries.FLUID.getKey(fluidStack.getFluid())).toString();
             if (id == null || fluidId.equals(id)) cnt += fluidStack.getAmount();
         }
         return cnt;

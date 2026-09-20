@@ -19,7 +19,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

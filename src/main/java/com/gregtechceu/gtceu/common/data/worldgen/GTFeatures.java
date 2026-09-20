@@ -8,15 +8,15 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class GTFeatures {
     // spotless:off
 
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(Registries.FEATURE, GTCEu.MOD_ID);
 
-    public static final RegistryObject<StoneBlobFeature> STONE_BLOB = FEATURES.register("stone_blob", StoneBlobFeature::new);
-    public static final RegistryObject<FluidSproutFeature> FLUID_SPROUT = FEATURES.register("fluid_sprout", FluidSproutFeature::new);
+    public static final DeferredHolder<Feature<?>, StoneBlobFeature> STONE_BLOB = FEATURES.register("stone_blob", StoneBlobFeature::new);
+    public static final DeferredHolder<Feature<?>, FluidSproutFeature> FLUID_SPROUT = FEATURES.register("fluid_sprout", FluidSproutFeature::new);
 
     // spotless:on
 

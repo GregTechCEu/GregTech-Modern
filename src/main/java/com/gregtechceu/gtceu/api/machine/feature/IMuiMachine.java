@@ -51,7 +51,7 @@ public interface IMuiMachine extends IUIHolder<PosGuiData>, IMachineFeature {
             if (player instanceof ServerPlayer serverPlayer) {
                 MachineUIFactory.INSTANCE.open(serverPlayer, this);
             }
-            return InteractionResult.sidedSuccess(player.level().isClientSide());
+            return (player.level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         } else {
             return InteractionResult.PASS;
         }

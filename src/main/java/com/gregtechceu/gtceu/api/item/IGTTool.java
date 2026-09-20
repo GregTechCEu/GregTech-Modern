@@ -46,7 +46,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -633,15 +632,19 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
         return InteractionResult.PASS;
     }
 
-    default InteractionResultHolder<ItemStack> definition$use(Level world, Player player, InteractionHand hand) {
+    default InteractionResult definition$use(Level world, Player player, InteractionHand hand) {
         var heldItem = player.getItemInHand(hand);
         // TODO: relocate to keybind action when keybind PR happens
         for (var behavior : getToolStats().getBehaviors()) {
-            if (behavior.onItemRightClick(world, player, hand).getResult() == InteractionResult.SUCCESS) {
-                return InteractionResultHolder.success(heldItem);
+            InteractionResult behaviorResult = behavior.onItemRightClick(world, player, hand);
+            // InteractionResult.SUCCESS used to be returned by sidedSuccess on the client, which is
+            // the SwingSource.CLIENT case of the modern result record.
+            if (behaviorResult instanceof InteractionResult.Success success &&
+                    success.swingSource() == InteractionResult.SwingSource.CLIENT) {
+                return InteractionResult.SUCCESS.heldItemTransformedTo(heldItem);
             }
         }
-        return InteractionResultHolder.pass(heldItem);
+        return InteractionResult.PASS;
     }
 
     default InteractionResult definition$interactLivingEntity(ItemStack stack, Player player,

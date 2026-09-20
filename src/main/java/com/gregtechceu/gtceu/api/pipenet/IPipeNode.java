@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.client.model.GTModelProperties;
 
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;

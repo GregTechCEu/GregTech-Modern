@@ -7,9 +7,9 @@ import net.minecraft.util.Util;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -30,7 +30,7 @@ public class DynamiteBehaviour implements IInteractionItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Item item, Level level, Player player, InteractionHand usedHand) {
         ItemStack itemstack = player.getItemInHand(usedHand);
 
         if (!player.isCreative()) {
@@ -38,7 +38,7 @@ public class DynamiteBehaviour implements IInteractionItem {
         }
 
         if (level.isClientSide()) {
-            return InteractionResultHolder.success(itemstack);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(itemstack);
         }
 
         DynamiteEntity entity = new DynamiteEntity(player, level);
@@ -46,6 +46,6 @@ public class DynamiteBehaviour implements IInteractionItem {
 
         level.addFreshEntity(entity);
 
-        return InteractionResultHolder.success(itemstack);
+        return InteractionResult.SUCCESS.heldItemTransformedTo(itemstack);
     }
 }

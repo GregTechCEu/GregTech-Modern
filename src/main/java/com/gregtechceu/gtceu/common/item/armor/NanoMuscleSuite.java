@@ -22,6 +22,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -36,7 +37,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     @OnlyIn(Dist.CLIENT)
     protected ArmorUtils.ModularHUD HUD;
 
-    public NanoMuscleSuite(ArmorItem.Type slot, int energyPerUse, long maxCapacity, int tier) {
+    public NanoMuscleSuite(ArmorType slot, int energyPerUse, long maxCapacity, int tier) {
         super(energyPerUse, maxCapacity, tier, slot);
         if (GTCEu.isClientSide() && this.shouldDrawHUD()) {
             // noinspection NewExpressionSideOnly
@@ -53,7 +54,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         CompoundTag data = itemStack.getOrCreateTag();
 
         byte toggleStepTimer = data.getByteOr("toggleStepTimer", (byte) 0);
-        if (type == ArmorItem.Type.BOOTS) {
+        if (type == ArmorType.BOOTS) {
             boolean stepAssist = data.contains("stepAssist") && data.getBooleanOr("stepAssist", false);
             if (toggleStepTimer == 0 && SyncedKeyMappings.STEP_ASSIST_ENABLE.isKeyDown(player)) {
                 stepAssist = !stepAssist;
@@ -67,7 +68,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
             data.putInt("toggleStepTimer", toggleStepTimer);
         }
 
-        if (type == ArmorItem.Type.HELMET) {
+        if (type == ArmorType.HELMET) {
             byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
             int nightVisionTimer = data.contains("nightVisionTimer") ? data.getInt("nightVisionTimer") :
                     ArmorUtils.NIGHTVISION_DURATION;
@@ -114,7 +115,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     }
 
     public boolean handleUnblockableDamage(LivingEntity entity, @NotNull ItemStack armor, DamageSource source,
-                                           double damage, ArmorItem.Type equipmentSlot) {
+                                           double damage, ArmorType equipmentSlot) {
         return source.is(DamageTypes.FALL);
     }
 
@@ -147,7 +148,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     @Override
     public Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         ItemStack currentChest = Minecraft.getInstance().player.getInventory()
-                .getArmor(ArmorItem.Type.CHESTPLATE.getSlot().getIndex());
+                .getArmor(ArmorType.CHESTPLATE.getSlot().getIndex());
         ItemStack advancedChest = GTItems.NANO_CHESTPLATE_ADVANCED.asStack();
         String armorTexture = "nano_muscule_suite";
         if (advancedChest.is(currentChest.getItem())) armorTexture = "advanced_nano_muscle_suite";
@@ -178,7 +179,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     public void addInfo(ItemStack itemStack, List<Component> lines) {
         super.addInfo(itemStack, lines);
         CompoundTag nbtData = itemStack.getOrCreateTag();
-        if (type == ArmorItem.Type.HELMET) {
+        if (type == ArmorType.HELMET) {
 
             boolean nv = nbtData.getBooleanOr("nightVision", false);
             if (nv) {
@@ -186,7 +187,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
             } else {
                 lines.add(Component.translatable("metaarmor.message.nightvision.disabled"));
             }
-        } else if (type == ArmorItem.Type.BOOTS) {
+        } else if (type == ArmorType.BOOTS) {
             if (nbtData.getBooleanOr("stepAssist", false))
                 lines.add(Component.translatable("metaarmor.message.step_assist.enabled"));
             else lines.add(Component.translatable("metaarmor.message.step_assist.disabled"));

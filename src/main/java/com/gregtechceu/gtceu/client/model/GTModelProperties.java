@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.client.model;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelProperty;
 
 import java.util.Map;
 import java.util.Objects;

@@ -14,9 +14,9 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -153,18 +153,18 @@ public class ArmorUtils {
      *
      * @return result of eating food
      */
-    public static InteractionResultHolder<ItemStack> eat(Player player, ItemStack food) {
+    public static InteractionResult eat(Player player, ItemStack food) {
         if (!food.isEdible()) {
-            return InteractionResultHolder.fail(food);
+            return InteractionResult.FAIL;
         }
 
         FoodProperties foodItem = food.getFoodProperties(player);
         if (foodItem != null && player.getFoodData().needsFood()) {
             ItemStack result = ForgeEventFactory.onItemUseFinish(player, food.copy(), player.getUseItemRemainingTicks(),
                     food.finishUsingItem(player.level(), player));
-            return InteractionResultHolder.success(result);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(result);
         } else {
-            return InteractionResultHolder.fail(food);
+            return InteractionResult.FAIL;
         }
     }
 

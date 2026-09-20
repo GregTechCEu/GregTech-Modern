@@ -19,80 +19,80 @@ public class ItemTagLoader {
 
     @SuppressWarnings("DataFlowIssue")
     public static void init(RegistrateItemTagsProvider provider) {
-        provider.addTag(CustomTags.DOUGHS).addTag(CustomTags.WHEAT_DOUGHS);
-        provider.addTag(CustomTags.WHEAT_GRAINS).add(GTMaterialItems.MATERIAL_ITEMS.get(dust, Wheat).get());
-        provider.addTag(CustomTags.GRAINS).addTag(CustomTags.WHEAT_GRAINS);
+        provider.tag(CustomTags.DOUGHS).addTag(CustomTags.WHEAT_DOUGHS);
+        provider.tag(CustomTags.WHEAT_GRAINS).add(GTMaterialItems.MATERIAL_ITEMS.get(dust, Wheat).get().builtInRegistryHolder().key());
+        provider.tag(CustomTags.GRAINS).addTag(CustomTags.WHEAT_GRAINS);
 
         provider.copy(CustomTags.CONCRETE_BLOCK, CustomTags.CONCRETE_ITEM);
         provider.copy(CustomTags.CONCRETE_POWDER_BLOCK, CustomTags.CONCRETE_POWDER_ITEM);
 
         // spotless:off
         // the coral blocks: alive, dead, both
-        provider.addTag(CustomTags.ALIVE_CORAL_BLOCK_ITEMS)
-                .add(Items.BRAIN_CORAL_BLOCK, Items.BUBBLE_CORAL_BLOCK, Items.FIRE_CORAL_BLOCK, Items.TUBE_CORAL_BLOCK, Items.HORN_CORAL_BLOCK);
-        provider.addTag(CustomTags.DEAD_CORAL_BLOCK_ITEMS)
-                .add(Items.DEAD_BRAIN_CORAL_BLOCK, Items.DEAD_BUBBLE_CORAL_BLOCK, Items.DEAD_FIRE_CORAL_BLOCK, Items.DEAD_TUBE_CORAL_BLOCK, Items.DEAD_HORN_CORAL_BLOCK);
-        provider.addTag(CustomTags.CORAL_BLOCK_ITEMS)
+        provider.tag(CustomTags.ALIVE_CORAL_BLOCK_ITEMS)
+                .add(Items.BRAIN_CORAL_BLOCK.builtInRegistryHolder().key(), Items.BUBBLE_CORAL_BLOCK.builtInRegistryHolder().key(), Items.FIRE_CORAL_BLOCK.builtInRegistryHolder().key(), Items.TUBE_CORAL_BLOCK.builtInRegistryHolder().key(), Items.HORN_CORAL_BLOCK.builtInRegistryHolder().key());
+        provider.tag(CustomTags.DEAD_CORAL_BLOCK_ITEMS)
+                .add(Items.DEAD_BRAIN_CORAL_BLOCK.builtInRegistryHolder().key(), Items.DEAD_BUBBLE_CORAL_BLOCK.builtInRegistryHolder().key(), Items.DEAD_FIRE_CORAL_BLOCK.builtInRegistryHolder().key(), Items.DEAD_TUBE_CORAL_BLOCK.builtInRegistryHolder().key(), Items.DEAD_HORN_CORAL_BLOCK.builtInRegistryHolder().key());
+        provider.tag(CustomTags.CORAL_BLOCK_ITEMS)
                 .addTag(CustomTags.ALIVE_CORAL_BLOCK_ITEMS)
                 .addTag(CustomTags.DEAD_CORAL_BLOCK_ITEMS);
 
         // the coral plants (the V-shaped pointy ones)
-        provider.addTag(CustomTags.ALIVE_CORAL_PLANT_ITEMS)
-                        .add(Items.BRAIN_CORAL, Items.BUBBLE_CORAL, Items.FIRE_CORAL, Items.TUBE_CORAL, Items.HORN_CORAL);
-        provider.addTag(CustomTags.DEAD_CORAL_PLANT_ITEMS)
-                .add(Items.DEAD_BRAIN_CORAL, Items.DEAD_BUBBLE_CORAL, Items.DEAD_FIRE_CORAL, Items.DEAD_TUBE_CORAL, Items.DEAD_HORN_CORAL);
-        provider.addTag(CustomTags.CORAL_PLANT_ITEMS)
+        provider.tag(CustomTags.ALIVE_CORAL_PLANT_ITEMS)
+                        .add(Items.BRAIN_CORAL.builtInRegistryHolder().key(), Items.BUBBLE_CORAL.builtInRegistryHolder().key(), Items.FIRE_CORAL.builtInRegistryHolder().key(), Items.TUBE_CORAL.builtInRegistryHolder().key(), Items.HORN_CORAL.builtInRegistryHolder().key());
+        provider.tag(CustomTags.DEAD_CORAL_PLANT_ITEMS)
+                .add(Items.DEAD_BRAIN_CORAL.builtInRegistryHolder().key(), Items.DEAD_BUBBLE_CORAL.builtInRegistryHolder().key(), Items.DEAD_FIRE_CORAL.builtInRegistryHolder().key(), Items.DEAD_TUBE_CORAL.builtInRegistryHolder().key(), Items.DEAD_HORN_CORAL.builtInRegistryHolder().key());
+        provider.tag(CustomTags.CORAL_PLANT_ITEMS)
                 .addTag(CustomTags.ALIVE_CORAL_PLANT_ITEMS)
                 .addTag(CustomTags.DEAD_CORAL_PLANT_ITEMS);
 
         // the coral fans (the flat circular ones)
-        provider.addTag(CustomTags.ALIVE_CORAL_FAN_ITEMS)
-                .add(Items.BRAIN_CORAL_FAN, Items.BUBBLE_CORAL_FAN, Items.FIRE_CORAL_FAN, Items.TUBE_CORAL_FAN, Items.HORN_CORAL_FAN);
-        provider.addTag(CustomTags.DEAD_CORAL_FAN_ITEMS)
-                .add(Items.DEAD_BRAIN_CORAL_FAN, Items.DEAD_BUBBLE_CORAL_FAN, Items.DEAD_FIRE_CORAL_FAN, Items.DEAD_TUBE_CORAL_FAN, Items.DEAD_HORN_CORAL_FAN);
-        provider.addTag(CustomTags.CORAL_FAN_ITEMS)
+        provider.tag(CustomTags.ALIVE_CORAL_FAN_ITEMS)
+                .add(Items.BRAIN_CORAL_FAN.builtInRegistryHolder().key(), Items.BUBBLE_CORAL_FAN.builtInRegistryHolder().key(), Items.FIRE_CORAL_FAN.builtInRegistryHolder().key(), Items.TUBE_CORAL_FAN.builtInRegistryHolder().key(), Items.HORN_CORAL_FAN.builtInRegistryHolder().key());
+        provider.tag(CustomTags.DEAD_CORAL_FAN_ITEMS)
+                .add(Items.DEAD_BRAIN_CORAL_FAN.builtInRegistryHolder().key(), Items.DEAD_BUBBLE_CORAL_FAN.builtInRegistryHolder().key(), Items.DEAD_FIRE_CORAL_FAN.builtInRegistryHolder().key(), Items.DEAD_TUBE_CORAL_FAN.builtInRegistryHolder().key(), Items.DEAD_HORN_CORAL_FAN.builtInRegistryHolder().key());
+        provider.tag(CustomTags.CORAL_FAN_ITEMS)
                 .addTag(CustomTags.ALIVE_CORAL_FAN_ITEMS)
                 .addTag(CustomTags.DEAD_CORAL_FAN_ITEMS);
 
         // all the coral items (except the blocks)
-        provider.addTag(CustomTags.ALIVE_CORAL_ITEMS)
+        provider.tag(CustomTags.ALIVE_CORAL_ITEMS)
                 .addTag(CustomTags.ALIVE_CORAL_PLANT_ITEMS)
                 .addTag(CustomTags.ALIVE_CORAL_FAN_ITEMS);
-        provider.addTag(CustomTags.DEAD_CORAL_ITEMS)
+        provider.tag(CustomTags.DEAD_CORAL_ITEMS)
                 .addTag(CustomTags.DEAD_CORAL_PLANT_ITEMS)
                 .addTag(CustomTags.DEAD_CORAL_FAN_ITEMS);
-        provider.addTag(CustomTags.CORAL_ITEMS)
+        provider.tag(CustomTags.CORAL_ITEMS)
                 .addTag(CustomTags.ALIVE_CORAL_ITEMS)
                 .addTag(CustomTags.DEAD_CORAL_ITEMS);
         // spotless:on
 
-        provider.addTag(CustomTags.WHITE_LENS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Glass).get())
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
-        provider.addTag(CustomTags.LIGHT_BLUE_LENS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Diamond).get());
-        provider.addTag(CustomTags.RED_LENS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Ruby).get());
-        provider.addTag(CustomTags.GREEN_LENS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Emerald).get());
-        provider.addTag(CustomTags.BLUE_LENS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Sapphire).get());
-        provider.addTag(CustomTags.PURPLE_LENS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Amethyst).get());
+        provider.tag(CustomTags.WHITE_LENS)
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Glass).get().builtInRegistryHolder().key())
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, NetherStar).get().builtInRegistryHolder().key());
+        provider.tag(CustomTags.LIGHT_BLUE_LENS)
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Diamond).get().builtInRegistryHolder().key());
+        provider.tag(CustomTags.RED_LENS)
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Ruby).get().builtInRegistryHolder().key());
+        provider.tag(CustomTags.GREEN_LENS)
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Emerald).get().builtInRegistryHolder().key());
+        provider.tag(CustomTags.BLUE_LENS)
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Sapphire).get().builtInRegistryHolder().key());
+        provider.tag(CustomTags.PURPLE_LENS)
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Amethyst).get().builtInRegistryHolder().key());
 
-        provider.addTag(CustomTags.PISTONS).add(Items.PISTON, Items.STICKY_PISTON);
+        provider.tag(CustomTags.PISTONS).add(Items.PISTON.builtInRegistryHolder().key(), Items.STICKY_PISTON.builtInRegistryHolder().key());
 
         // add treated wood stick to vanilla sticks tag
         // noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod
-        provider.addTag(Tags.Items.RODS_WOODEN)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood).get());
+        provider.tag(Tags.Items.RODS_WOODEN)
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood).get().builtInRegistryHolder().key());
 
         // add treated and untreated wood plates to vanilla planks tag
-        provider.addTag(ItemTags.PLANKS)
+        provider.tag(ItemTags.PLANKS)
                 .add(TagEntry.element(GTMaterialItems.MATERIAL_ITEMS.get(plate, TreatedWood).getId()))
                 .add(TagEntry.element(GTMaterialItems.MATERIAL_ITEMS.get(plate, Wood).getId()));
 
-        provider.addTag(CustomTags.CIRCUITS)
+        provider.tag(CustomTags.CIRCUITS)
                 .addTag(CustomTags.ULV_CIRCUITS)
                 .addTag(CustomTags.LV_CIRCUITS)
                 .addTag(CustomTags.MV_CIRCUITS)
@@ -103,13 +103,13 @@ public class ItemTagLoader {
                 .addTag(CustomTags.ZPM_CIRCUITS)
                 .addTag(CustomTags.UV_CIRCUITS)
                 .addTag(CustomTags.UHV_CIRCUITS)
-                .addOptionalTag(CustomTags.UEV_CIRCUITS.location())
-                .addOptionalTag(CustomTags.UIV_CIRCUITS.location())
-                .addOptionalTag(CustomTags.UXV_CIRCUITS.location())
-                .addOptionalTag(CustomTags.OpV_CIRCUITS.location())
-                .addOptionalTag(CustomTags.MAX_CIRCUITS.location());
+                .addOptionalTag(CustomTags.UEV_CIRCUITS)
+                .addOptionalTag(CustomTags.UIV_CIRCUITS)
+                .addOptionalTag(CustomTags.UXV_CIRCUITS)
+                .addOptionalTag(CustomTags.OpV_CIRCUITS)
+                .addOptionalTag(CustomTags.MAX_CIRCUITS);
 
-        provider.addTag(CustomTags.BATTERIES)
+        provider.tag(CustomTags.BATTERIES)
                 .addTag(CustomTags.ULV_BATTERIES)
                 .addTag(CustomTags.LV_BATTERIES)
                 .addTag(CustomTags.MV_BATTERIES)
@@ -122,75 +122,75 @@ public class ItemTagLoader {
                 .addTag(CustomTags.UHV_BATTERIES);
 
         // Add highTierContent items as optional entries so it doesn't error
-        provider.addTag(CustomTags.ELECTRIC_MOTORS)
-                .addOptional(GTItems.ELECTRIC_MOTOR_UHV.getId())
-                .addOptional(GTItems.ELECTRIC_MOTOR_UEV.getId())
-                .addOptional(GTItems.ELECTRIC_MOTOR_UIV.getId())
-                .addOptional(GTItems.ELECTRIC_MOTOR_UXV.getId())
-                .addOptional(GTItems.ELECTRIC_MOTOR_OpV.getId());
+        provider.tag(CustomTags.ELECTRIC_MOTORS)
+                .addOptional(GTItems.ELECTRIC_MOTOR_UHV.getKey())
+                .addOptional(GTItems.ELECTRIC_MOTOR_UEV.getKey())
+                .addOptional(GTItems.ELECTRIC_MOTOR_UIV.getKey())
+                .addOptional(GTItems.ELECTRIC_MOTOR_UXV.getKey())
+                .addOptional(GTItems.ELECTRIC_MOTOR_OpV.getKey());
 
-        provider.addTag(CustomTags.ELECTRIC_PUMPS)
-                .addOptional(GTItems.ELECTRIC_PUMP_UHV.getId())
-                .addOptional(GTItems.ELECTRIC_PUMP_UEV.getId())
-                .addOptional(GTItems.ELECTRIC_PUMP_UIV.getId())
-                .addOptional(GTItems.ELECTRIC_PUMP_UXV.getId())
-                .addOptional(GTItems.ELECTRIC_PUMP_OpV.getId());
+        provider.tag(CustomTags.ELECTRIC_PUMPS)
+                .addOptional(GTItems.ELECTRIC_PUMP_UHV.getKey())
+                .addOptional(GTItems.ELECTRIC_PUMP_UEV.getKey())
+                .addOptional(GTItems.ELECTRIC_PUMP_UIV.getKey())
+                .addOptional(GTItems.ELECTRIC_PUMP_UXV.getKey())
+                .addOptional(GTItems.ELECTRIC_PUMP_OpV.getKey());
 
-        provider.addTag(CustomTags.FLUID_REGULATORS)
-                .addOptional(GTItems.FLUID_REGULATOR_UHV.getId())
-                .addOptional(GTItems.FLUID_REGULATOR_UEV.getId())
-                .addOptional(GTItems.FLUID_REGULATOR_UIV.getId())
-                .addOptional(GTItems.FLUID_REGULATOR_UXV.getId())
-                .addOptional(GTItems.FLUID_REGULATOR_OpV.getId());
+        provider.tag(CustomTags.FLUID_REGULATORS)
+                .addOptional(GTItems.FLUID_REGULATOR_UHV.getKey())
+                .addOptional(GTItems.FLUID_REGULATOR_UEV.getKey())
+                .addOptional(GTItems.FLUID_REGULATOR_UIV.getKey())
+                .addOptional(GTItems.FLUID_REGULATOR_UXV.getKey())
+                .addOptional(GTItems.FLUID_REGULATOR_OpV.getKey());
 
-        provider.addTag(CustomTags.CONVEYOR_MODULES)
-                .addOptional(GTItems.CONVEYOR_MODULE_UHV.getId())
-                .addOptional(GTItems.CONVEYOR_MODULE_UEV.getId())
-                .addOptional(GTItems.CONVEYOR_MODULE_UIV.getId())
-                .addOptional(GTItems.CONVEYOR_MODULE_UXV.getId())
-                .addOptional(GTItems.CONVEYOR_MODULE_OpV.getId());
+        provider.tag(CustomTags.CONVEYOR_MODULES)
+                .addOptional(GTItems.CONVEYOR_MODULE_UHV.getKey())
+                .addOptional(GTItems.CONVEYOR_MODULE_UEV.getKey())
+                .addOptional(GTItems.CONVEYOR_MODULE_UIV.getKey())
+                .addOptional(GTItems.CONVEYOR_MODULE_UXV.getKey())
+                .addOptional(GTItems.CONVEYOR_MODULE_OpV.getKey());
 
-        provider.addTag(CustomTags.ELECTRIC_PISTONS)
-                .addOptional(GTItems.ELECTRIC_PISTON_UHV.getId())
-                .addOptional(GTItems.ELECTRIC_PISTON_UEV.getId())
-                .addOptional(GTItems.ELECTRIC_PISTON_UIV.getId())
-                .addOptional(GTItems.ELECTRIC_PISTON_UXV.getId())
-                .addOptional(GTItems.ELECTRIC_PISTON_OpV.getId());
+        provider.tag(CustomTags.ELECTRIC_PISTONS)
+                .addOptional(GTItems.ELECTRIC_PISTON_UHV.getKey())
+                .addOptional(GTItems.ELECTRIC_PISTON_UEV.getKey())
+                .addOptional(GTItems.ELECTRIC_PISTON_UIV.getKey())
+                .addOptional(GTItems.ELECTRIC_PISTON_UXV.getKey())
+                .addOptional(GTItems.ELECTRIC_PISTON_OpV.getKey());
 
-        provider.addTag(CustomTags.ROBOT_ARMS)
-                .addOptional(GTItems.ROBOT_ARM_UHV.getId())
-                .addOptional(GTItems.ROBOT_ARM_UEV.getId())
-                .addOptional(GTItems.ROBOT_ARM_UIV.getId())
-                .addOptional(GTItems.ROBOT_ARM_UXV.getId())
-                .addOptional(GTItems.ROBOT_ARM_OpV.getId());
+        provider.tag(CustomTags.ROBOT_ARMS)
+                .addOptional(GTItems.ROBOT_ARM_UHV.getKey())
+                .addOptional(GTItems.ROBOT_ARM_UEV.getKey())
+                .addOptional(GTItems.ROBOT_ARM_UIV.getKey())
+                .addOptional(GTItems.ROBOT_ARM_UXV.getKey())
+                .addOptional(GTItems.ROBOT_ARM_OpV.getKey());
 
-        provider.addTag(CustomTags.FIELD_GENERATORS)
-                .addOptional(GTItems.FIELD_GENERATOR_UHV.getId())
-                .addOptional(GTItems.FIELD_GENERATOR_UEV.getId())
-                .addOptional(GTItems.FIELD_GENERATOR_UIV.getId())
-                .addOptional(GTItems.FIELD_GENERATOR_UXV.getId())
-                .addOptional(GTItems.FIELD_GENERATOR_OpV.getId());
+        provider.tag(CustomTags.FIELD_GENERATORS)
+                .addOptional(GTItems.FIELD_GENERATOR_UHV.getKey())
+                .addOptional(GTItems.FIELD_GENERATOR_UEV.getKey())
+                .addOptional(GTItems.FIELD_GENERATOR_UIV.getKey())
+                .addOptional(GTItems.FIELD_GENERATOR_UXV.getKey())
+                .addOptional(GTItems.FIELD_GENERATOR_OpV.getKey());
 
-        provider.addTag(CustomTags.EMITTERS)
-                .addOptional(GTItems.EMITTER_UHV.getId())
-                .addOptional(GTItems.EMITTER_UEV.getId())
-                .addOptional(GTItems.EMITTER_UIV.getId())
-                .addOptional(GTItems.EMITTER_UXV.getId())
-                .addOptional(GTItems.EMITTER_OpV.getId());
+        provider.tag(CustomTags.EMITTERS)
+                .addOptional(GTItems.EMITTER_UHV.getKey())
+                .addOptional(GTItems.EMITTER_UEV.getKey())
+                .addOptional(GTItems.EMITTER_UIV.getKey())
+                .addOptional(GTItems.EMITTER_UXV.getKey())
+                .addOptional(GTItems.EMITTER_OpV.getKey());
 
-        provider.addTag(CustomTags.SENSORS)
-                .addOptional(GTItems.SENSOR_UHV.getId())
-                .addOptional(GTItems.SENSOR_UEV.getId())
-                .addOptional(GTItems.SENSOR_UIV.getId())
-                .addOptional(GTItems.SENSOR_UXV.getId())
-                .addOptional(GTItems.SENSOR_OpV.getId());
+        provider.tag(CustomTags.SENSORS)
+                .addOptional(GTItems.SENSOR_UHV.getKey())
+                .addOptional(GTItems.SENSOR_UEV.getKey())
+                .addOptional(GTItems.SENSOR_UIV.getKey())
+                .addOptional(GTItems.SENSOR_UXV.getKey())
+                .addOptional(GTItems.SENSOR_OpV.getKey());
 
-        provider.addTag(CustomTags.TOOLS_IGNITER)
+        provider.tag(CustomTags.TOOLS_IGNITER)
                 .addTag(ItemTags.CREEPER_IGNITERS);
 
         // Add sodalite and lazurite as enchanting fuels
-        provider.addTag(Tags.Items.ENCHANTING_FUELS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(gem, Lazurite).get())
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(gem, Sodalite).get());
+        provider.tag(Tags.Items.ENCHANTING_FUELS)
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(gem, Lazurite).get().builtInRegistryHolder().key())
+                .add(GTMaterialItems.MATERIAL_ITEMS.get(gem, Sodalite).get().builtInRegistryHolder().key());
     }
 }

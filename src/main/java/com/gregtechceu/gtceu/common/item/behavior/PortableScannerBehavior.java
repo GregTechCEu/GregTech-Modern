@@ -34,7 +34,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -119,7 +118,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Item item, Level level, Player player, InteractionHand usedHand) {
         ItemStack heldItem = player.getItemInHand(usedHand);
         if (player.isCrouching()) {
             if (!level.isClientSide()) {
@@ -128,7 +127,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 player.sendSystemMessage(Component.translatable("behavior.portable_scanner.mode.caption",
                         Component.translatable(mode.getLangKey())));
             }
-            return InteractionResultHolder.success(heldItem);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(heldItem);
         }
         return IInteractionItem.super.use(item, level, player, usedHand);
     }

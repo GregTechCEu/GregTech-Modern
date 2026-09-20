@@ -14,11 +14,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -38,7 +39,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
     private List<Pair<NonNullList<ItemStack>, IntList>> inventoryIndexMap;
 
     public AdvancedNanoMuscleSuite(int energyPerUse, long capacity, int tier) {
-        super(ArmorItem.Type.CHESTPLATE, energyPerUse, capacity, tier);
+        super(ArmorType.CHESTPLATE, energyPerUse, capacity, tier);
     }
 
     @Override
@@ -164,7 +165,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> onRightClick(Level world, @NotNull Player player, InteractionHand hand) {
+    public InteractionResult onRightClick(Level world, @NotNull Player player, InteractionHand hand) {
         ItemStack armor = player.getItemInHand(hand);
 
         if (armor.getItem() instanceof ArmorComponentItem && player.isShiftKeyDown()) {
@@ -172,7 +173,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
             boolean canShare = data.contains("canShare") && data.getBooleanOr("canShare", false);
             IElectricItem cont = GTCapabilityHelper.getElectricItem(armor);
             if (cont == null) {
-                return InteractionResultHolder.fail(armor);
+                return InteractionResult.FAIL;
             }
 
             canShare = !canShare;
@@ -188,7 +189,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
 
             canShare = canShare && (cont.getCharge() != 0);
             data.putBoolean("canShare", canShare);
-            return InteractionResultHolder.success(armor);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(armor);
         }
 
         return super.onRightClick(world, player, hand);

@@ -100,7 +100,7 @@ public class FluidVoidingCover extends PumpCover {
             context.getPlayer().sendSystemMessage(Component.translatable(isWorkingEnabled() ?
                     "cover.voiding.message.enabled" : "cover.voiding.message.disabled"));
         }
-        return InteractionResult.sidedSuccess(isRemote());
+        return (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
     }
 
     @Override

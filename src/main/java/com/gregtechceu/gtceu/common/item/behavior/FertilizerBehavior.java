@@ -27,7 +27,7 @@ public class FertilizerBehavior implements IInteractionItem {
             if (!level.isClientSide()) {
                 level.levelEvent(1505, blockPos, 0);
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         } else {
             BlockState blockState = level.getBlockState(blockPos);
             boolean bl = blockState.isFaceSturdy(level, blockPos, context.getClickedFace());
@@ -37,7 +37,7 @@ public class FertilizerBehavior implements IInteractionItem {
                     level.levelEvent(1505, blockPos2, 0);
                 }
 
-                return InteractionResult.sidedSuccess(level.isClientSide());
+                return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
             } else {
                 return InteractionResult.PASS;
             }

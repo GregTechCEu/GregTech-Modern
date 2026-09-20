@@ -254,7 +254,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
                         Component.translatable("gtceu.machine.me.stocking_auto_pull_disabled"));
             }
         }
-        return InteractionResult.sidedSuccess(isRemote());
+        return (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
     }
 
     ////////////////////////////////

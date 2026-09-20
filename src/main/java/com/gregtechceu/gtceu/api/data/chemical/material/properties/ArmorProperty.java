@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -33,7 +34,7 @@ public class ArmorProperty implements IMaterialProperty {
     @Range(from = 0, to = Integer.MAX_VALUE)
     private int durabilityMultiplier;
     @Setter
-    private Map<ArmorItem.Type, Integer> protectionValues;
+    private Map<ArmorType, Integer> protectionValues;
     @Setter
     private int enchantability;
     private Supplier<SoundEvent> sound;
@@ -63,9 +64,9 @@ public class ArmorProperty implements IMaterialProperty {
 
     public ArmorProperty(int durabilityMultiplier, int[] protectionValues) {
         this.durabilityMultiplier = durabilityMultiplier;
-        this.protectionValues = Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
-            for (int i = 0; i < ArmorItem.Type.values().length; i++) {
-                map.put(ArmorItem.Type.values()[i], protectionValues[i]);
+        this.protectionValues = Util.make(new EnumMap<>(ArmorType.class), map -> {
+            for (int i = 0; i < ArmorType.values().length; i++) {
+                map.put(ArmorType.values()[i], protectionValues[i]);
             }
         });
         this.sound = GTMemoizer.memoize(() -> SoundEvents.ARMOR_EQUIP_IRON);
@@ -133,7 +134,7 @@ public class ArmorProperty implements IMaterialProperty {
         /**
          * Set the protection value for a specific piece of armor made from this Material.
          */
-        public ArmorProperty.Builder protectionValue(ArmorItem.Type type, int value) {
+        public ArmorProperty.Builder protectionValue(ArmorType type, int value) {
             armorProperty.protectionValues.put(type, value);
             return this;
         }
@@ -143,7 +144,7 @@ public class ArmorProperty implements IMaterialProperty {
          *
          * @throws IllegalArgumentException If the provided map does not have a value for all 4 armor pieces.
          */
-        public ArmorProperty.Builder protectionValues(Map<ArmorItem.Type, Integer> protectionValues) {
+        public ArmorProperty.Builder protectionValues(Map<ArmorType, Integer> protectionValues) {
             Preconditions.checkArgument(protectionValues != null && protectionValues.size() == 4,
                     "protectionValues must have 4 entries!");
             armorProperty.protectionValues = protectionValues;
@@ -215,21 +216,21 @@ public class ArmorProperty implements IMaterialProperty {
 
     public class ArmorMaterial implements net.minecraft.world.item.equipment.ArmorMaterial {
 
-        private static final EnumMap<ArmorItem.Type, Integer> HEALTH_FUNCTION_FOR_TYPE = Util
-                .make(new EnumMap<>(ArmorItem.Type.class), (map) -> {
-                    map.put(ArmorItem.Type.BOOTS, 13);
-                    map.put(ArmorItem.Type.LEGGINGS, 15);
-                    map.put(ArmorItem.Type.CHESTPLATE, 16);
-                    map.put(ArmorItem.Type.HELMET, 11);
+        private static final EnumMap<ArmorType, Integer> HEALTH_FUNCTION_FOR_TYPE = Util
+                .make(new EnumMap<>(ArmorType.class), (map) -> {
+                    map.put(ArmorType.BOOTS, 13);
+                    map.put(ArmorType.LEGGINGS, 15);
+                    map.put(ArmorType.CHESTPLATE, 16);
+                    map.put(ArmorType.HELMET, 11);
                 });
 
         @Override
-        public int getDurabilityForType(ArmorItem.@NotNull Type type) {
+        public int getDurabilityForType(@NotNull ArmorType type) {
             return HEALTH_FUNCTION_FOR_TYPE.get(type) * ArmorProperty.this.durabilityMultiplier;
         }
 
         @Override
-        public int getDefenseForType(ArmorItem.@NotNull Type type) {
+        public int getDefenseForType(@NotNull ArmorType type) {
             return ArmorProperty.this.protectionValues.get(type);
         }
 

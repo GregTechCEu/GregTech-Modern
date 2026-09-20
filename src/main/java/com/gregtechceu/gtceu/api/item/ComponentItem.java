@@ -14,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -186,11 +185,11 @@ public class ComponentItem extends Item implements IComponentItem, IItemUIHolder
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         for (IItemComponent component : components) {
             if (component instanceof IInteractionItem interactionItem) {
                 var result = interactionItem.use(this, level, player, usedHand);
-                if (result.getResult() != InteractionResult.PASS) {
+                if (result != InteractionResult.PASS) {
                     return result;
                 }
             }

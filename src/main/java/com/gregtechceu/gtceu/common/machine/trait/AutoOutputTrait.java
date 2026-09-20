@@ -365,7 +365,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                 hasChanged = true;
             }
         }
-        return hasChanged ? InteractionResult.sidedSuccess(isRemote()) : InteractionResult.PASS;
+        return hasChanged ? (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME) : InteractionResult.PASS;
     }
 
     private InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
@@ -402,6 +402,6 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                 hasChanged = true;
             }
         }
-        return hasChanged ? InteractionResult.sidedSuccess(player.level().isClientSide()) : InteractionResult.PASS;
+        return hasChanged ? (player.level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME) : InteractionResult.PASS;
     }
 }

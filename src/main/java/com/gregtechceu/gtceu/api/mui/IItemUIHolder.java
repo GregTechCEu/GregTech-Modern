@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,13 +25,13 @@ public interface IItemUIHolder extends IUIHolder<PlayerInventoryGuiData<?>>, IIn
     }
 
     @Override
-    default InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    default InteractionResult use(Item item, Level level, Player player, InteractionHand usedHand) {
         if (!shouldOpenUI()) return IInteractionItem.super.use(item, level, player, usedHand);
 
         if (!level.isClientSide()) {
             PlayerInventoryUIFactory.INSTANCE.openFromHand(player, usedHand);
         }
-        return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide());
+        return ((level.isClientSide()) ? InteractionResult.SUCCESS : InteractionResult.CONSUME).heldItemTransformedTo(player.getItemInHand(usedHand));
     }
 
     @Override
@@ -42,7 +41,7 @@ public interface IItemUIHolder extends IUIHolder<PlayerInventoryGuiData<?>>, IIn
         if (!context.getLevel().isClientSide()) {
             PlayerInventoryUIFactory.INSTANCE.openFromHand(context.getPlayer(), context.getHand());
         }
-        return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
+        return (context.getLevel().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
     }
 
     @Override

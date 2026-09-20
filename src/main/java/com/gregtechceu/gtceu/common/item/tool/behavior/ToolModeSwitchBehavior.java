@@ -15,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -90,7 +89,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> onItemRightClick(@NotNull Level world, @NotNull Player player,
+    public @NotNull InteractionResult onItemRightClick(@NotNull Level world, @NotNull Player player,
                                                                         @NotNull InteractionHand hand) {
         var itemStack = player.getItemInHand(hand);
         var tagCompound = getBehaviorsTag(itemStack);
@@ -102,7 +101,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
                 player.sendOverlayMessage(Component.translatable("metaitem.machine_configuration.mode",
                         WrenchModeType.values()[tagCompound.getByteOr("Mode", (byte) 0)].getName()));
             }
-            return InteractionResultHolder.success(itemStack);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(itemStack);
         }
 
         return IToolBehavior.super.onItemRightClick(world, player, hand);

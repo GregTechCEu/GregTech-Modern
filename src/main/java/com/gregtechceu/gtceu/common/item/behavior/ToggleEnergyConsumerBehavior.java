@@ -9,9 +9,9 @@ import com.gregtechceu.gtceu.api.item.component.IItemLifeCycle;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -30,7 +30,7 @@ public class ToggleEnergyConsumerBehavior implements IInteractionItem, IItemLife
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level world, Player player, InteractionHand hand) {
+    public InteractionResult use(Item item, Level world, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             IElectricItem electricItem = GTCapabilityHelper.getElectricItem(itemStack);
@@ -41,7 +41,7 @@ public class ToggleEnergyConsumerBehavior implements IInteractionItem, IItemLife
                 setItemActive(itemStack, true);
             }
         }
-        return InteractionResultHolder.pass(itemStack);
+        return InteractionResult.PASS;
     }
 
     private boolean drainActivationEnergy(IElectricItem electricItem, boolean simulate) {

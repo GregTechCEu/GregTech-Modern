@@ -91,6 +91,7 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.WrappingRecipeSchemaType;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -101,7 +102,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
@@ -512,7 +512,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 GTRecipeSerializer.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
 
         // clone vanilla recipes for stuff like electric furnaces, etc
-        for (RecipeType<?> recipeType : ForgeRegistries.RECIPE_TYPES) {
+        for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (!(recipeType instanceof GTRecipeType gtRecipeType)) {
                 continue;
             }
@@ -528,7 +528,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     private static void handleGTRecipe(Map<Identifier, Recipe<?>> recipesByName,
                                        GTRecipeSchema.GTRecipeJS gtRecipe) {
-        GTRecipeType gtRecipeType = (GTRecipeType) ForgeRegistries.RECIPE_TYPES.getValue(gtRecipe.getType());
+        GTRecipeType gtRecipeType = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.getValue(gtRecipe.getType());
         if (gtRecipeType == null) {
             GTCEu.LOGGER.error("Failed to get GTRecipeType from GTRecipe: '{}' with type '{}'", gtRecipe.getId(),
                     gtRecipe.getType());

@@ -11,8 +11,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -53,17 +53,17 @@ public class TreeFellingBehavior implements IToolBehavior {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> onItemRightClick(Level level, Player player,
+    public @NotNull InteractionResult onItemRightClick(Level level, Player player,
                                                                         InteractionHand hand) {
         var held = player.getItemInHand(hand);
         if (!(level instanceof ServerLevel) || !player.isShiftKeyDown()) {
-            return InteractionResultHolder.pass(held);
+            return InteractionResult.PASS;
         }
         var tag = ToolHelper.getBehaviorsTag(held);
         var disable = tag.getBooleanOr(ToolHelper.DISABLE_TREE_FELLING_KEY, false);
         tag.putBoolean(ToolHelper.DISABLE_TREE_FELLING_KEY, !disable);
         player.sendSystemMessage(Component.translatable("item.gtceu.tool.behavior.tree_felling").append(" - ")
                 .append(Component.translatable("cover.voiding.label." + (disable ? "enabled" : "disabled"))));
-        return InteractionResultHolder.success(held);
+        return InteractionResult.SUCCESS.heldItemTransformedTo(held);
     }
 }

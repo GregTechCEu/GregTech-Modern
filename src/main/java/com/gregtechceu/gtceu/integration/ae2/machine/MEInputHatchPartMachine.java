@@ -212,7 +212,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
             this.updateTankSubscription();
             player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_paste_settings"));
         }
-        return InteractionResult.sidedSuccess(isRemote());
+        return (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
     }
 
     ////////////////////////////////

@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.sync_system.managed;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
-import net.minecraftforge.common.util.INBTSerializable;
-
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -14,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * <ul>
  * <li>{@code T} is primitive
  * <li>{@code T} has an {@link ValueTransformer} registered
- * <li>{@code T} implements {@link INBTSerializable}
+ * <li>{@code T} is serializable through {@code ValueInput} / {@code ValueOutput}
  * <li>{@code T} is an {@link ISyncManaged} class
  * </ul>
  *

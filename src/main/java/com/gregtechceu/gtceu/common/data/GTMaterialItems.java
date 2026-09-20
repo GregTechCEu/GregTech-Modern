@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.common.item.armor.GTArmorItem;
 import com.gregtechceu.gtceu.common.item.armor.GTDyeableArmorItem;
 
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -59,11 +60,11 @@ public class GTMaterialItems {
                     .filter(mat -> mat.hasProperty(PropertyKey.TOOL))
                     .toList(),
             GTToolType.getTypes().values().stream().toList());
-    public static final Table<Material, ArmorItem.Type, ItemEntry<? extends ArmorItem>> ARMOR_ITEMS = ArrayTable.create(
+    public static final Table<Material, ArmorType, ItemEntry<? extends ArmorItem>> ARMOR_ITEMS = ArrayTable.create(
             GTRegistries.MATERIALS.values().stream()
                     .filter(mat -> mat.hasProperty(PropertyKey.ARMOR))
                     .toList(),
-            Arrays.asList(ArmorItem.Type.values()));
+            Arrays.asList(ArmorType.values()));
 
     // Material Items
     public static void generateMaterialItems() {
@@ -129,7 +130,7 @@ public class GTMaterialItems {
     // Material Armors
     public static void generateArmors() {
         REGISTRATE.creativeModeTab(() -> TOOL);
-        for (ArmorItem.Type type : ArmorItem.Type.values()) {
+        for (ArmorType type : ArmorType.values()) {
             for (Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.ARMOR)) {
                     generateArmor(material, type, GTRegistrate.createIgnoringListenerErrors(material.getModid()));
@@ -138,7 +139,7 @@ public class GTMaterialItems {
         }
     }
 
-    private static void generateArmor(final Material material, final ArmorItem.Type type, GTRegistrate registrate) {
+    private static void generateArmor(final Material material, final ArmorType type, GTRegistrate registrate) {
         var property = material.getProperty(PropertyKey.ARMOR);
         if (property.isDyeable()) {
             ARMOR_ITEMS.put(material, type, registrate

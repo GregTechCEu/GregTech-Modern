@@ -161,7 +161,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
             if (context.getPlayer() instanceof ServerPlayer serverPlayer) {
                 CoverUIFactory.INSTANCE.open(serverPlayer, muiCover);
             }
-            return InteractionResult.sidedSuccess(coverHolder.isRemote());
+            return (coverHolder.isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
         return InteractionResult.PASS;
     }

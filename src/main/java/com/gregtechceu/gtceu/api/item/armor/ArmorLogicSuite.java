@@ -8,14 +8,15 @@ import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -36,9 +37,9 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     protected final int energyPerUse;
     protected final int tier;
     protected final long maxCapacity;
-    protected final ArmorItem.Type type;
+    protected final ArmorType type;
 
-    protected ArmorLogicSuite(int energyPerUse, long maxCapacity, int tier, ArmorItem.Type type) {
+    protected ArmorLogicSuite(int energyPerUse, long maxCapacity, int tier, ArmorType type) {
         this.energyPerUse = energyPerUse;
         this.maxCapacity = maxCapacity;
         this.tier = tier;
@@ -79,7 +80,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
         mvi.attachComponents(new ElectricStats(maxCapacity, tier, true, false) {
 
             @Override
-            public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player,
+            public InteractionResult use(Item item, Level level, Player player,
                                                           InteractionHand usedHand) {
                 return onRightClick(level, player, usedHand);
             }
@@ -99,12 +100,12 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
         }
     }
 
-    public InteractionResultHolder<ItemStack> onRightClick(Level Level, Player player, InteractionHand hand) {
-        return InteractionResultHolder.pass(player.getItemInHand(hand));
+    public InteractionResult onRightClick(Level Level, Player player, InteractionHand hand) {
+        return InteractionResult.PASS;
     }
 
     @Override
-    public ArmorItem.Type getArmorType() {
+    public ArmorType getArmorType() {
         return type;
     }
 
@@ -130,7 +131,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     @OnlyIn(Dist.CLIENT)
     @Override
     public boolean shouldDrawHUD() {
-        return this.type == ArmorItem.Type.CHESTPLATE;
+        return this.type == ArmorType.CHESTPLATE;
     }
 
     public int getEnergyPerUse() {

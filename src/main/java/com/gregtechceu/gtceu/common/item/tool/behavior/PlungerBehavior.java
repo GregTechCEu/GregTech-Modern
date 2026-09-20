@@ -65,7 +65,7 @@ public class PlungerBehavior implements IToolBehavior, IComponentCapability {
         if (!drained.isEmpty()) {
             fluidHandler.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.EXECUTE);
             ToolHelper.onActionDone(player, stack, level, context.getClickLocation());
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
         return InteractionResult.PASS;
     }

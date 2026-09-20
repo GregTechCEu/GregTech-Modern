@@ -5,6 +5,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
@@ -12,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 public class DummyArmorLogic implements IArmorLogic {
 
     @Override
-    public ArmorItem.Type getArmorType() {
-        return ArmorItem.Type.HELMET;
+    public ArmorType getArmorType() {
+        return ArmorType.HELMET;
     }
 
     @Override

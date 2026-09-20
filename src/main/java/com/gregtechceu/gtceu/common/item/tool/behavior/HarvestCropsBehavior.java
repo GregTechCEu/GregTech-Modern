@@ -61,7 +61,7 @@ public class HarvestCropsBehavior implements IToolBehavior {
         if (harvested) {
             BlockState state = level.getBlockState(pos);
             level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
         return InteractionResult.PASS;
     }

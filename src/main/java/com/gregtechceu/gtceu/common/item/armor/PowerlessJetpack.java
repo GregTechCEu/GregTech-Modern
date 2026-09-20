@@ -20,6 +20,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -107,8 +108,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     }
 
     @Override
-    public ArmorItem.Type getArmorType() {
-        return ArmorItem.Type.CHESTPLATE;
+    public ArmorType getArmorType() {
+        return ArmorType.CHESTPLATE;
     }
 
     @Override

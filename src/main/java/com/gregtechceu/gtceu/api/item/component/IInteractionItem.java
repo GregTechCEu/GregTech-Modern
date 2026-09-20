@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.item.component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -23,17 +22,17 @@ public interface IInteractionItem extends IItemComponent {
         return InteractionResult.PASS;
     }
 
-    default InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    default InteractionResult use(Item item, Level level, Player player, InteractionHand usedHand) {
         if (item.isEdible()) {
             ItemStack itemStack = player.getItemInHand(usedHand);
             if (player.canEat(itemStack.getFoodProperties(player).canAlwaysEat())) {
                 player.startUsingItem(usedHand);
-                return InteractionResultHolder.consume(itemStack);
+                return InteractionResult.CONSUME.heldItemTransformedTo(itemStack);
             } else {
-                return InteractionResultHolder.fail(itemStack);
+                return InteractionResult.FAIL;
             }
         } else {
-            return InteractionResultHolder.pass(player.getItemInHand(usedHand));
+            return InteractionResult.PASS;
         }
     }
 

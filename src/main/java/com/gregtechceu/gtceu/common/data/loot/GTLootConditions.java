@@ -8,7 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class GTLootConditions {
     // spotless:off
@@ -16,7 +16,7 @@ public class GTLootConditions {
     public static final DeferredRegister<LootItemConditionType> LOOT_CONDITION_TYPES = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE, GTCEu.MOD_ID);
 
 
-    public static final RegistryObject<LootItemConditionType> CONFIG_VALUE = LOOT_CONDITION_TYPES.register("config_value", () -> new LootItemConditionType(new CodecBasedSerializer<>(GTConfigValueCondition.CODEC)));
+    public static final DeferredHolder<LootItemConditionType, LootItemConditionType> CONFIG_VALUE = LOOT_CONDITION_TYPES.register("config_value", () -> new LootItemConditionType(new CodecBasedSerializer<>(GTConfigValueCondition.CODEC)));
 
     // spotless:on
 

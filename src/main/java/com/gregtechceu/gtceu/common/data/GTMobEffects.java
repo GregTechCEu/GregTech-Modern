@@ -7,15 +7,15 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class GTMobEffects {
 
-    public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS,
+    public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(BuiltInRegistries.MOB_EFFECT,
             GTCEu.MOD_ID);
 
-    public static final RegistryObject<MobEffect> WEAK_POISON = MOB_EFFECTS.register("weak_poison",
+    public static final DeferredHolder<MobEffect, MobEffect> WEAK_POISON = MOB_EFFECTS.register("weak_poison",
             () -> new GTPoisonEffect(MobEffectCategory.HARMFUL, 0x6D7917));
 
     public static void init(IEventBus modBus) {

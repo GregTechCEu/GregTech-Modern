@@ -72,7 +72,7 @@ public class DouseCampfireBehavior implements IToolBehavior {
 
         if (dowsed) {
             level.levelEvent(player, LevelEvent.SOUND_EXTINGUISH_FIRE, pos, 0);
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
         return InteractionResult.PASS;
     }

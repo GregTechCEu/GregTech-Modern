@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.TrueNBTPredicate;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
@@ -13,7 +14,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.AbstractIngredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -67,7 +67,7 @@ public class NBTPredicateIngredient extends AbstractIngredient {
     public JsonElement toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("type", TYPE.toString());
-        json.addProperty("item", ForgeRegistries.ITEMS.getKey(this.stack.getItem()).toString());
+        json.addProperty("item", BuiltInRegistries.ITEM.getKey(this.stack.getItem()).toString());
         json.addProperty("count", this.stack.getCount());
         if (this.stack.hasTag()) {
             json.addProperty("nbt", this.stack.getTag().toString());

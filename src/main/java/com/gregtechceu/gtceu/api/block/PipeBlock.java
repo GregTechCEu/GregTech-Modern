@@ -336,7 +336,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                 level.playSound(player, pos,
                         type.getPlaceSound(), SoundSource.BLOCKS,
                         (type.getVolume() + 1.0F) / 2.0F, type.getPitch() * 0.8F);
-                return InteractionResult.sidedSuccess(player.level().isClientSide());
+                return (player.level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
             }
         }
 

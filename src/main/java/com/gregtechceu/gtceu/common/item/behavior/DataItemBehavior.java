@@ -20,7 +20,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -49,7 +48,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Item item, Level level, Player player, InteractionHand usedHand) {
         if (player.isShiftKeyDown()) {
             ItemStack stack = player.getItemInHand(usedHand);
             stack.getOrCreateTag().putString("boundPlayerName", Component.Serializer.toJson(player.getDisplayName()));
@@ -57,7 +56,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
             while (player.hasPermissions(perm)) perm++;
             stack.getOrCreateTag().putInt("boundPlayerPermLevel", perm - 1);
             stack.getOrCreateTag().putString("boundPlayerUUID", player.getStringUUID());
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
         }
         return IInteractionItem.super.use(item, level, player, usedHand);
     }
@@ -153,7 +152,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                 if (ResearchManager.readResearchId(itemStack) == null) {
                     return interactable.onDataStickShiftUse(context.getPlayer(), itemStack);
                 }
-                return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
+                return (context.getLevel().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
             } else {
                 return interactable.onDataStickUse(context.getPlayer(), itemStack);
             }
@@ -167,7 +166,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                     if (ResearchManager.readResearchId(itemStack) == null) {
                         return interactable.onDataStickShiftUse(context.getPlayer(), itemStack);
                     }
-                    return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
+                    return (context.getLevel().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
                 } else {
                     return interactable.onDataStickUse(context.getPlayer(), itemStack);
                 }

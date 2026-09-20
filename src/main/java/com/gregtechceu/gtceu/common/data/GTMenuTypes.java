@@ -7,7 +7,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import brachy.modularui.screen.ModularContainerMenu;
 
@@ -16,7 +16,7 @@ public class GTMenuTypes {
     private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(Registries.MENU,
             GTCEu.MOD_ID);
 
-    public static final RegistryObject<MenuType<ModularContainerMenu>> MODULAR_CONTAINER = MENU_TYPES.register(
+    public static final DeferredHolder<MenuType<?>, MenuType<ModularContainerMenu>> MODULAR_CONTAINER = MENU_TYPES.register(
             "modular",
             () -> IMenuTypeExtension.create(ModularContainerMenu::new));
 

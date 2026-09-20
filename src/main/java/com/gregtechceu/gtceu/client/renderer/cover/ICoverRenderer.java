@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ChunkRenderTypeSet;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import org.jetbrains.annotations.Nullable;
 

@@ -135,7 +135,7 @@ public class ShearBehavior implements IToolBehavior {
         if (sheared) {
             level.playSound(player, pos, SoundEvents.PUMPKIN_CARVE, SoundSource.BLOCKS, 1.0F, 1.0F);
             level.gameEvent(player, GameEvent.SHEAR, pos);
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
         return InteractionResult.PASS;
     }

@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -216,7 +215,7 @@ public final class RecipeDB {
                         if (ConfigHolder.INSTANCE.dev.debug || GTCEu.isDev()) {
                             GTCEu.LOGGER.warn(
                                     "Recipe duplicate or conflict found in GTRecipeType {} and was not added. See next lines for details",
-                                    ForgeRegistries.RECIPE_TYPES.getKey(recipe.getType()));
+                                    BuiltInRegistries.RECIPE_TYPE.getKey(recipe.getType()));
                             if (v.left().isPresent()) {
                                 GTCEu.LOGGER.warn("Attempted to add GTRecipe: {}, which conflicts with {}",
                                         recipe.getId(), v.left().get().getId());

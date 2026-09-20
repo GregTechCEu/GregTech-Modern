@@ -18,6 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.datafixers.util.Either;
@@ -89,13 +90,13 @@ public class HazardProperty implements IMaterialProperty {
 
     public enum ProtectionType {
 
-        MASK(Set.of("head"), ArmorItem.Type.HELMET),
-        HANDS(Set.of("hands"), ArmorItem.Type.CHESTPLATE),
-        FULL(Set.of(), ArmorItem.Type.BOOTS, ArmorItem.Type.HELMET, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.LEGGINGS),
+        MASK(Set.of("head"), ArmorType.HELMET),
+        HANDS(Set.of("hands"), ArmorType.CHESTPLATE),
+        FULL(Set.of(), ArmorType.BOOTS, ArmorType.HELMET, ArmorType.CHESTPLATE, ArmorType.LEGGINGS),
         NONE(Set.of());
 
         @Getter
-        private final Set<ArmorItem.Type> equipmentTypes;
+        private final Set<ArmorType> equipmentTypes;
         @Getter
         private final Set<String> curioSlots;
 
@@ -106,7 +107,7 @@ public class HazardProperty implements IMaterialProperty {
          * @param curioSlots     curio slot names to test for
          * @param equipmentTypes armor slots to test for
          */
-        ProtectionType(Set<String> curioSlots, ArmorItem.Type... equipmentTypes) {
+        ProtectionType(Set<String> curioSlots, ArmorType... equipmentTypes) {
             this.curioSlots = curioSlots;
             this.equipmentTypes = Set.of(equipmentTypes);
         }
@@ -115,8 +116,8 @@ public class HazardProperty implements IMaterialProperty {
             if (this == NONE) {
                 return true;
             }
-            Set<ArmorItem.Type> correctArmorItems = new HashSet<>();
-            for (ArmorItem.Type equipmentType : equipmentTypes) {
+            Set<ArmorType> correctArmorItems = new HashSet<>();
+            for (ArmorType equipmentType : equipmentTypes) {
                 ItemStack armor = livingEntity.getItemBySlot(equipmentType.getSlot());
                 if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
                         armorItem.getArmorLogic().isPPE()) ||
@@ -149,7 +150,7 @@ public class HazardProperty implements IMaterialProperty {
         public void damageEquipment(Player player, int amount) {
             // entity has proper safety equipment, so damage it per material every 5 seconds.
             if (player.level().getGameTime() % 100 == 0) {
-                for (ArmorItem.Type type : this.getEquipmentTypes()) {
+                for (ArmorType type : this.getEquipmentTypes()) {
                     ItemStack armor = player.getItemBySlot(type.getSlot());
                     if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
                             armorItem.getArmorLogic().isPPE()) ||

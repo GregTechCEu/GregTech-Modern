@@ -5,13 +5,13 @@ import com.gregtechceu.gtceu.api.recipe.lookup.MapIngredientPool;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeManagerHandler;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.gson.JsonElement;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,7 +36,7 @@ public abstract class RecipeManagerMixin {
     private void gtceu$cloneVanillaRecipes(Map<Identifier, JsonElement> map, ResourceManager resourceManager,
                                            ProfilerFiller profiler, CallbackInfo ci) {
         PowerlessJetpack.FUELS.clear();
-        for (RecipeType<?> recipeType : ForgeRegistries.RECIPE_TYPES) {
+        for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (!(recipeType instanceof GTRecipeType gtRecipeType)) {
                 continue;
             }

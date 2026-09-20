@@ -463,7 +463,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
             if (toolType.contains(GTToolType.CROWBAR)) {
                 getCoverContainer().removeCover(context.getGridSide(), player);
-                return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
+                return Pair.of(GTToolType.CROWBAR, (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME));
             }
         }
 
@@ -496,7 +496,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 context.getPlayer().sendSystemMessage(Component.translatable(mufflableMachine.isMuffled() ?
                         "gtceu.machine.muffle.on" : "gtceu.machine.muffle.off"));
             }
-            return InteractionResult.sidedSuccess(isRemote());
+            return (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
         return InteractionResult.PASS;
     }
@@ -512,14 +512,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (gridSide == getFrontFacing() && allowExtendedFacing()) {
             Direction newUpwards = GTUtil.cross(getFrontFacing(), getUpwardsFacing());
             setUpwardsFacing(player.isShiftKeyDown() ? newUpwards : newUpwards.getOpposite());
-            return InteractionResult.sidedSuccess(isRemote());
+            return (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
         if (player.isShiftKeyDown()) {
             if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {
                 return InteractionResult.FAIL;
             }
             setFrontFacing(gridSide);
-            return InteractionResult.sidedSuccess(isRemote());
+            return (isRemote() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
         return InteractionResult.PASS;
     }
@@ -532,7 +532,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             context.getPlayer().sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
                     "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled_cycle"));
         }
-        return InteractionResult.sidedSuccess(getLevel().isClientSide());
+        return (getLevel().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
     }
 
     protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {

@@ -8,7 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class GTLootFunctions {
     // spotless:off
@@ -16,7 +16,7 @@ public class GTLootFunctions {
     public static final DeferredRegister<LootItemFunctionType> LOOT_FUNCTION_TYPES = DeferredRegister.create(Registries.LOOT_FUNCTION_TYPE, GTCEu.MOD_ID);
 
 
-    public static final RegistryObject<LootItemFunctionType> SET_EU_CHARGE = LOOT_FUNCTION_TYPES.register("set_eu_charge", () -> new LootItemFunctionType(new CodecBasedSerializer<>(SetEUChargeFunction.CODEC)));
+    public static final DeferredHolder<LootItemFunctionType, LootItemFunctionType> SET_EU_CHARGE = LOOT_FUNCTION_TYPES.register("set_eu_charge", () -> new LootItemFunctionType(new CodecBasedSerializer<>(SetEUChargeFunction.CODEC)));
 
     // spotless:on
 

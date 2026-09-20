@@ -18,7 +18,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
@@ -74,7 +73,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Item item, Level level, Player player, InteractionHand usedHand) {
         ItemStack itemStack = player.getItemInHand(usedHand);
         CompoundTag tag = itemStack.getOrCreateTag();
         if (canOpen && player.isCrouching()) {
@@ -102,7 +101,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 state.onCaughtFire(level, pos, clickedFace, player);
                 FluidState fluidState = level.getFluidState(pos);
                 level.setBlock(pos, fluidState.createLegacyBlock(), Block.UPDATE_ALL_IMMEDIATE);
-                return InteractionResult.sidedSuccess(level.isClientSide());
+                return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
             }
             if ((CampfireBlock.canLight(state) || CandleBlock.canLight(state) || CandleCakeBlock.canLight(state))) {
                 if (!consumeFuel(player, itemStack)) return InteractionResult.PASS;
@@ -111,7 +110,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 level.playSound(player, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS,
                         1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
                 level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
-                return InteractionResult.sidedSuccess(level.isClientSide());
+                return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
             }
 
             BlockPos offset = pos.relative(clickedFace);
@@ -128,7 +127,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                     CriteriaTriggers.PLACED_BLOCK.trigger(serverPlayer, offset, itemStack);
                     itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(context.getHand()));
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide());
+                return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
             }
         }
         return InteractionResult.PASS;
@@ -148,7 +147,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 if (!level.isClientSide()) {
                     creeper.ignite();
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide());
+                return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
             }
         }
         return InteractionResult.PASS;

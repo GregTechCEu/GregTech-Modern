@@ -44,8 +44,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.QuadTransformers;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelProperty;
 import net.minecraftforge.client.model.geometry.UnbakedGeometryHelper;
 
 import com.mojang.blaze3d.vertex.PoseStack;

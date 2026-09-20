@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -26,7 +27,7 @@ public class GTArmorItem extends ArmorItem {
     public final Material material;
     public final ArmorProperty armorProperty;
 
-    public GTArmorItem(ArmorMaterial armorMaterial, ArmorItem.Type type, Properties properties,
+    public GTArmorItem(ArmorMaterial armorMaterial, ArmorType type, Properties properties,
                        Material material, ArmorProperty armorProperty) {
         super(armorMaterial, type, properties);
         this.material = material;

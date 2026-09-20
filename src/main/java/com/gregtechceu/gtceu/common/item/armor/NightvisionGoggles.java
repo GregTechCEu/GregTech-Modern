@@ -16,6 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -25,7 +26,7 @@ import java.util.List;
 
 public class NightvisionGoggles extends ArmorLogicSuite {
 
-    public NightvisionGoggles(int energyPerUse, long capacity, int voltageTier, ArmorItem.Type slot) {
+    public NightvisionGoggles(int energyPerUse, long capacity, int voltageTier, ArmorType slot) {
         super(energyPerUse, capacity, voltageTier, slot);
     }
 
@@ -39,7 +40,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
         byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
         int nightVisionTimer = data.contains("nightVisionTimer") ? data.getInt("nightVisionTimer") :
                 ArmorUtils.NIGHTVISION_DURATION;
-        if (type == ArmorItem.Type.HELMET) {
+        if (type == ArmorType.HELMET) {
             boolean nightVision = data.contains("nightVision") && data.getBooleanOr("nightVision", false);
             if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
                 nightVision = !nightVision;
@@ -92,7 +93,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
     @Override
     public void addInfo(ItemStack itemStack, List<Component> lines) {
         super.addInfo(itemStack, lines);
-        if (type == ArmorItem.Type.HELMET) {
+        if (type == ArmorType.HELMET) {
             CompoundTag nbtData = itemStack.getOrCreateTag();
             boolean nv = nbtData.getBooleanOr("nightVision", false);
             if (nv) {
