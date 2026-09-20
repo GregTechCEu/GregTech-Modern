@@ -21,10 +21,9 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import com.mojang.datafixers.util.Pair;
-import com.tterrag.registrate.util.entry.RegistryEntry;
 import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -143,12 +142,7 @@ public class ItemMaterialData {
 
     @SuppressWarnings("unchecked")
     public static @Nullable Supplier<? extends Block> convertToBlock(@NotNull Supplier<? extends ItemLike> supplier) {
-        if (supplier instanceof RegistryObject<? extends ItemLike> registryObject) {
-            var key = registryObject.getKey();
-            if (key != null && key.isFor(Registries.BLOCK)) {
-                return (Supplier<? extends Block>) registryObject;
-            }
-        } else if (supplier instanceof RegistryEntry<? extends ItemLike> entry) {
+        if (supplier instanceof DeferredHolder<?, ?> entry) {
             var key = entry.getKey();
             if (key.isFor(Registries.BLOCK)) {
                 return (Supplier<? extends Block>) entry;

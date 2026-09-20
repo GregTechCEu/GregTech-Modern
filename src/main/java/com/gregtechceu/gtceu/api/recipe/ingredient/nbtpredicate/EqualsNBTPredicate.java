@@ -40,7 +40,7 @@ public class EqualsNBTPredicate extends NBTPredicate {
             // Mixed numeric types (e.g., int vs. double)
             if (toCompare instanceof NumericTag toCompareNum &&
                     value instanceof NumericTag valueNum) {
-                return inverted ^ (toCompareNum.getAsDouble() == valueNum.getAsDouble());
+                return inverted ^ (toCompareNum.doubleValue() == valueNum.doubleValue());
             }
             return inverted ^ toCompare.equals(value);
         }

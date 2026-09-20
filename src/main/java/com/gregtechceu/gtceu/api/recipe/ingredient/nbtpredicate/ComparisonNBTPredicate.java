@@ -39,14 +39,14 @@ public class ComparisonNBTPredicate extends NBTPredicate {
         if (toCompare != null) {
             if (toCompare instanceof NumericTag toCompareNum) {
                 if (equals) {
-                    if (toCompareNum.getAsDouble() == value) {
+                    if (toCompareNum.doubleValue() == value) {
                         return true;
                     }
                 }
                 if (lessThan) {
-                    return toCompareNum.getAsDouble() < value;
+                    return toCompareNum.doubleValue() < value;
                 } else {
-                    return toCompareNum.getAsDouble() > value;
+                    return toCompareNum.doubleValue() > value;
                 }
             }
         }

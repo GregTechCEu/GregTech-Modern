@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTFluidBuilder;
-import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
 import org.jspecify.annotations.NullMarked;
 import net.minecraft.core.Registry;
@@ -28,10 +27,9 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.javafmlmod.FMLModContainer;
 import net.neoforged.neoforge.registries.RegisterEvent;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.Builder;
@@ -134,7 +132,12 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                     GTCEu.LOGGER.fatal(hashtags);
                 });
             } else {
-                registrate.registerEventListeners(modEventBus.orElse(FMLJavaModLoadingContext.get().getModEventBus()));
+                registrate.registerEventListeners(modEventBus.orElseGet(() -> ModList.get()
+                        .getModContainerById(GTCEu.MOD_ID)
+                        .filter(FMLModContainer.class::isInstance)
+                        .map(FMLModContainer.class::cast)
+                        .map(FMLModContainer::getEventBus)
+                        .orElseThrow(() -> new IllegalStateException("GregTech's mod event bus is not available"))));
             }
         }
         EXISTING_REGISTRATES.put(modId, registrate);
@@ -144,6 +147,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     @Override
     public GTRegistrate registerEventListeners(IEventBus bus) {
         if (!registered.getAndSet(true)) {
+            // Registrate's one-shot listeners now use the bus stored on the owner.
+            setModEventBus(bus);
             // recreate the super method so we can register the event listener with LOW priority.
             Consumer<RegisterEvent> onRegister = this::onRegister;
             Consumer<RegisterEvent> onRegisterLate = this::onRegisterLate;
@@ -157,8 +162,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 OneTimeEventReceiver.unregister(this, onRegister, RegisterEvent.class);
                 OneTimeEventReceiver.unregister(this, onRegisterLate, RegisterEvent.class);
             });
-            if (((AbstractRegistrateAccessor) this).getDoDatagen().get()) {
-                OneTimeEventReceiver.addModListener(this, GatherDataEvent.class, this::onData);
+            if (doDatagen().get()) {
+                OneTimeEventReceiver.addModListener(this, GatherDataEvent.Client.class, this::onData);
             }
         }
         return this;
@@ -246,34 +251,35 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
     }
 
-    private @Nullable RegistryEntry<CreativeModeTab> currentTab;
-    private static final Map<RegistryEntry<?>, @Nullable RegistryEntry<CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
+    private @Nullable RegistryEntry<CreativeModeTab, CreativeModeTab> currentTab;
+    private static final Map<RegistryEntry<?, ?>, @Nullable RegistryEntry<CreativeModeTab, CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
 
-    public @Nullable RegistryEntry<CreativeModeTab> creativeModeTab() {
+    public @Nullable RegistryEntry<CreativeModeTab, CreativeModeTab> creativeModeTab() {
         return this.currentTab;
     }
 
-    public void creativeModeTab(Supplier<@Nullable RegistryEntry<CreativeModeTab>> currentTab) {
+    public void creativeModeTab(Supplier<@Nullable RegistryEntry<CreativeModeTab, CreativeModeTab>> currentTab) {
         this.currentTab = currentTab.get();
     }
 
-    public void creativeModeTab(RegistryEntry<CreativeModeTab> currentTab) {
+    public void creativeModeTab(RegistryEntry<CreativeModeTab, CreativeModeTab> currentTab) {
         this.currentTab = currentTab;
     }
 
-    public boolean isInCreativeTab(RegistryEntry<?> entry, RegistryEntry<CreativeModeTab> tab) {
+    public boolean isInCreativeTab(RegistryEntry<?, ?> entry, RegistryEntry<CreativeModeTab, CreativeModeTab> tab) {
         return TAB_LOOKUP.get(entry) == tab;
     }
 
-    public void setCreativeTab(RegistryEntry<?> entry, @Nullable RegistryEntry<CreativeModeTab> tab) {
+    public void setCreativeTab(RegistryEntry<?, ?> entry, @Nullable RegistryEntry<CreativeModeTab, CreativeModeTab> tab) {
         TAB_LOOKUP.put(entry, tab);
     }
 
+    @Override
     protected <R,
-            T extends R> RegistryEntry<T> accept(String name, ResourceKey<? extends Registry<R>> type,
+            T extends R> RegistryEntry<R, T> accept(String name, ResourceKey<? extends Registry<R>> type,
                                                  Builder<R, T, ?, ?> builder, NonNullSupplier<? extends T> creator,
-                                                 NonNullFunction<RegistryObject<T>, ? extends RegistryEntry<T>> entryFactory) {
-        RegistryEntry<T> entry = super.accept(name, type, builder, creator, entryFactory);
+                                                 NonNullFunction<DeferredHolder<R, T>, ? extends RegistryEntry<R, T>> entryFactory) {
+        RegistryEntry<R, T> entry = super.accept(name, type, builder, creator, entryFactory);
 
         if (this.currentTab != null) {
             TAB_LOOKUP.put(entry, this.currentTab);
