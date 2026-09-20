@@ -18,9 +18,6 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
 
     private boolean mutable = true;
 
-    @Getter(lazy = true)
-    private final List<BlockInfo> candidates = computeCandidates();
-
     @Getter
     protected PredicateSettings settings = PredicateSettings.create();
 
@@ -56,8 +53,7 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
         return TestType.SLICE_MIN.testWithError(this, ctx);
     }
 
-    /// computes the candidates for this predicate
-    public abstract List<BlockInfo> computeCandidates();
+    public abstract List<BlockInfo> getCandidates();
 
     public List<ItemStack> getCandidateStacks() {
         return getCandidates().stream()
