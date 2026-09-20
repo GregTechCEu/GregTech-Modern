@@ -173,13 +173,13 @@ public final class RecipeDB {
      */
     boolean add(@NotNull GTRecipe recipe, @NotNull List<@Unmodifiable List<AbstractMapIngredient>> ingredients) {
         // Add combustion fuels to the Powerless Jetpack
-        if (recipe.getType() == GTRecipeTypes.COMBUSTION_GENERATOR_FUELS) {
+        if (recipe.getType() == GTRecipeTypes.COMBUSTION_GENERATOR_FUELS.value()) {
             Content content = recipe.getInputContents(FluidRecipeCapability.CAP).getFirst();
             SizedFluidIngredient fluid = FluidRecipeCapability.CAP.of(content.content());
             PowerlessJetpack.FUELS.putIfAbsent(fluid, recipe.duration);
         }
         if (addRecursive(recipe, ingredients, rootBranch, 0)) {
-            recipe.recipeCategory.addRecipe(recipe);
+            recipe.recipeType.addToCategoryMap(recipe.recipeCategory, recipe);
             return true;
         }
         return false;

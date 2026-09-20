@@ -20,9 +20,9 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
         BlockPos blockPos = getBlockPos();
         MachineDefinition newDefinition = null;
         if (io == IO.IN) {
-            newDefinition = GTMachines.STEAM_EXPORT_BUS;
+            newDefinition = GTMachines.STEAM_EXPORT_BUS.value();
         } else if (io == IO.OUT) {
-            newDefinition = GTMachines.STEAM_IMPORT_BUS;
+            newDefinition = GTMachines.STEAM_IMPORT_BUS.value();
         }
 
         if (newDefinition == null) return false;

@@ -73,6 +73,7 @@ public enum ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
 
         var material = mat.getProperty(PropertyKey.INGOT);
         var materialArc = material.getArcSmeltingInto();
+        if (materialArc == null) materialArc = mat;
 
         float outputAmount = (durability * fullAmount);
         int dustAmount = (int) outputAmount;
@@ -123,7 +124,7 @@ public enum ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
 
         assert pickaxeRecipe != null : "Default Tool Decomp recipe couldn't be generated";
         pickaxeRecipe.setId(pickaxeRecipe.getId().withPrefix("/"));
-        ARC_FURNACE_RECYCLING.addRecipe(pickaxeRecipe);
-        ARC_FURNACE_RECYCLING.addRecipe(rotorRecipe);
+        ARC_FURNACE_RECYCLING.value().addRecipe(pickaxeRecipe);
+        ARC_FURNACE_RECYCLING.value().addRecipe(rotorRecipe);
     }
 }

@@ -40,6 +40,7 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -77,6 +78,8 @@ public class GTMaterialItems {
                     .filter(mat -> mat.hasProperty(PropertyKey.ARMOR))
                     .toList(),
             Arrays.asList(ArmorItem.Type.values()));
+
+    public static final Set<Item> ITEMS_WITHOUT_MATERIAL = new ObjectOpenHashSet<>();
 
     // spotless:on
 

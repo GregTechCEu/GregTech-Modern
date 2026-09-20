@@ -51,7 +51,7 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext,
                              PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if (CREATIVE_CHEST_ITEM == null) CREATIVE_CHEST_ITEM = GTMachines.CREATIVE_ITEM.getItem();
+        if (CREATIVE_CHEST_ITEM == null) CREATIVE_CHEST_ITEM = GTMachines.CREATIVE_ITEM.asItem();
 
         LargeItemContent content = stack.get(GTDataComponents.LARGE_ITEM_CONTENT);
         if (content != null) {
