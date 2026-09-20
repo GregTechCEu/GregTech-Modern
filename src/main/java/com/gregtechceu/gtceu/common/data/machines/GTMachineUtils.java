@@ -26,7 +26,6 @@ import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
@@ -605,10 +604,10 @@ public class GTMachineUtils {
                                          fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern((definition) -> {
                     MultiPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
-                            .and(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1)
-                                    .setPreviewCount(1))
-                            .and(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1)
-                                    .setPreviewCount(1))
+                            .and(Predicates.abilities(PartAbility.IMPORT_FLUIDS)
+                                    .setMinGlobalLimited(1, 1))
+                            .and(Predicates.abilities(PartAbility.IMPORT_ITEMS)
+                                    .setMaxGlobalLimited(1, 1))
                             .and(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1));
 
                     if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
@@ -623,8 +622,8 @@ public class GTMachineUtils {
                             .where('P', blocks(pipe.get()))
                             .where('X', fireboxPred)
                             .where('C', blocks(casing.get()).setMinGlobalLimited(20)
-                                    .and(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMinGlobalLimited(1)
-                                            .setPreviewCount(1)))
+                                    .and(Predicates.abilities(PartAbility.EXPORT_FLUIDS)
+                                            .setMinGlobalLimited(1, 1)))
                             .build();
                 })
                 .recoveryItems(
@@ -752,8 +751,7 @@ public class GTMachineUtils {
                     return false;
                 })
                 .errorFunction(ctx -> new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER))
-                .candidates(PartAbility.ROTOR_HOLDER.getAllBlocks()
-                        .stream().map(BlockInfo::fromBlock))
+                .blocks(PartAbility.ROTOR_HOLDER.getAllBlocks())
                 .contents(builder -> builder.append(PartAbility.ROTOR_HOLDER.getName()))
                 .toMultiPredicate()
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
