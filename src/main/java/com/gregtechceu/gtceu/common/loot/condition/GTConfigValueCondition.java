@@ -34,7 +34,7 @@ public class GTConfigValueCondition implements LootItemCondition {
         this.configField = configField;
 
         Optional<IConfigValue<Boolean>> configEntry = ConfigHolder.INTERNAL_INSTANCE
-                .getConfigValue(configField, boolean.class);
+                .getConfigValue(configField, Boolean.class);
         this.configValueGetter = () -> configEntry.map(IConfigValue::get).orElse(false);
     }
 

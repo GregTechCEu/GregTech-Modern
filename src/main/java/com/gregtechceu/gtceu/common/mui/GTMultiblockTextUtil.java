@@ -479,6 +479,10 @@ public class GTMultiblockTextUtil {
                         .copy(GTRecipe::copy)
                         .build());
 
+        BooleanSyncValue hasRunningRecipe = syncManager.getOrCreateSyncHandler("hasRunningRecipe",
+                BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlmachine.getRecipeLogic().getLastRecipe() != null));
+
         DynamicLinkedSyncHandler<GenericSyncValue<GTRecipe>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(
                 recipeSyncValue)
                 .widgetProvider((syncManager1, recipeSyncHandler) -> {
@@ -508,7 +512,7 @@ public class GTMultiblockTextUtil {
                 .widthRel(1)
                 .coverChildrenHeight()
                 .syncHandler(dynamicLinkedSyncHandler)
-                .setEnabledIf(w -> rlmachine.getRecipeLogic().getLastRecipe() != null);
+                .setEnabledIf(w -> hasRunningRecipe.getBoolValue());
     }
 
     public static Optional<Widget<?>> createItemLineForOutput(Content itemOutput, GTRecipe recipe) {

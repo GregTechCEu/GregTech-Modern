@@ -250,7 +250,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         return Optional.of(ModularPanel.defaultPanel("terminal")
                 .coverChildren()
                 .child(previewWidget)
-                .onCloseAction(() -> writeMultiblockInfo(multiblockDefinition, hand, previewWidget, info)));
+                .onCloseAction(w -> writeMultiblockInfo(multiblockDefinition, hand, previewWidget, info)));
     }
 
     private void writeMultiblockInfo(MultiblockMachineDefinition definition, InteractionHand hand,

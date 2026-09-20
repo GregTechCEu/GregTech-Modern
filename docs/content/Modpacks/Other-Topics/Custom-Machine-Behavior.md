@@ -3,7 +3,7 @@ title: Custom Machine Behavior
 ---
 
 !!! Warning
-    Custom Machine Behavior is currently only supported in Java.
+    Custom Machine Behavior is only supported in Java.
 
 Sometimes, you want to do something in a machine that's not possible via Recipe Conditions or Recipe Modifiers. For this, Custom Machine Behavior might be the correct tool.
 
@@ -11,7 +11,7 @@ It works by registering a custom TickableSubscription, which gets called every t
 Here, we want to make a greenhouse that, while running, also turns all the dirt above it into grass.
 ```java
 
-public class Greenhouse extends WorkableElectricMultiblockMachine {
+public class GreenhouseMachine extends WorkableElectricMultiblockMachine {
 
     private TickableSubscription tickSubscription;
 
@@ -58,9 +58,9 @@ To use it, you would do:
             var casing = blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(10);
             var abilities = Predicates.autoAbilities(definition.getRecipeTypes())
                     .and(Predicates.autoAbilities(true, false, false));
-            return FactoryBlockPattern.start()
-                    .aisle("XSX", "XXX", "XXX")
-                    .aisle("XXX", "XXX", "XXX")
+            return MultiblockPatternBuilder.start()
+                    .slice("XSX", "XXX", "XXX")
+                    .slice("XXX", "XXX", "XXX")
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('X', casing.and(abilities))
                     .build();

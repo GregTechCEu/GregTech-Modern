@@ -75,7 +75,7 @@ public abstract class ProspectorMode<T> {
 
                         Either<Material, BlockState> item = BLOCK_CACHE.computeIfAbsent(state, blockState -> {
                             MaterialEntry entry = ChemicalHelper.getMaterialEntry(blockState.getBlock());
-                            if (!entry.isEmpty()) {
+                            if (entry != null) {
                                 return Either.left(entry.material());
                             }
                             return Either.right(blockState);
@@ -106,6 +106,7 @@ public abstract class ProspectorMode<T> {
                     return oreItems;
                 }, state -> {
                     MaterialEntry entry = ChemicalHelper.getMaterialEntry(state.getBlock());
+                    if (entry == null) return new ArrayList<>();
                     List<ItemLike> oreItems = ChemicalHelper.getItems(entry);
                     if (oreItems.isEmpty()) {
                         oreItems = List.of(state.getBlock().asItem());
@@ -297,10 +298,11 @@ public abstract class ProspectorMode<T> {
                 return;
             }
             FluidInfo item = items[0];
-            float filled = item.left / Math.max(Math.min(item.left, 100.0f), 1.0f);
+            // left is a percentage of the vein's operations that are left
+            float filled = Math.min(Math.max(item.left, 0), 100) / 100.0f;
 
             GuiDraw.drawFluidTexture(context.getGraphics(), item.asStack(),
-                    x * width, y + (1.0f - filled) * height, width, height * filled,
+                    x, y + (1.0f - filled) * height, width, height * filled,
                     context.getCurrentDrawingZ());
         }
     };

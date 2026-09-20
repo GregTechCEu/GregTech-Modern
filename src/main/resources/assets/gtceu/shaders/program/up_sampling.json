@@ -1,56 +1,20 @@
 {
-    "attributes": [
-        "Position"
-    ],
     "blend": {
-        "dstalpha": "one",
-        "dstrgb": "1-srcalpha",
         "func": "add",
+        "srcrgb": "srcalpha",
+        "dstrgb": "1-srcalpha",
         "srcalpha": "zero",
-        "srcrgb": "srcalpha"
+        "dstalpha": "one"
     },
+    "vertex": "blit",
     "fragment": "gtceu:up_sampling",
+    "attributes": [ "Position" ],
     "samplers": [
-        {
-            "name": "DiffuseSampler"
-        },
-        {
-            "name": "DownTexture"
-        }
+        { "name": "DiffuseSampler" },
+        { "name": "DownTexture" }
     ],
     "uniforms": [
-        {
-            "count": 16,
-            "name": "ProjMat",
-            "type": "matrix4x4",
-            "values": [
-                1.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                1.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                1.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                1.0
-            ]
-        },
-        {
-            "count": 2,
-            "name": "OutSize",
-            "type": "float",
-            "values": [
-                1.0,
-                1.0
-            ]
-        }
-    ],
-    "vertex": "blit"
+        { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "OutSize", "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] }
+    ]
 }

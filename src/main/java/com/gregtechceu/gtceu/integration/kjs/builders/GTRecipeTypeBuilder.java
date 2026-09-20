@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 @SuppressWarnings("unused")
 public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
 
-    public transient String name, category;
+    public transient String category;
     public transient final Object2IntMap<RecipeCapability<?>> maxInputs;
     public transient final Object2IntMap<RecipeCapability<?>> maxOutputs;
     @Nullable
@@ -41,7 +41,6 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
 
     public GTRecipeTypeBuilder(ResourceLocation i) {
         super(i);
-        name = i.getPath();
         maxInputs = new Object2IntOpenHashMap<>();
         maxOutputs = new Object2IntOpenHashMap<>();
         this.sound = null;
@@ -195,7 +194,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
 
     @Override
     public GTRecipeType register() {
-        var type = GTRecipeTypes.register(name, category);
+        var type = GTRecipeTypes.register(id, category);
         type.maxInputs.putAll(maxInputs);
         type.maxOutputs.putAll(maxOutputs);
         if (this.layout != null) {

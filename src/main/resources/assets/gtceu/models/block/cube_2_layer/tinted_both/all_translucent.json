@@ -1,4 +1,4 @@
 {
-    "parent": "gtceu:block/cube_2_layer/tinted_both/all",
-    "render_type": "translucent"
+  "parent": "gtceu:block/cube_2_layer/tinted_both/all",
+  "render_type": "translucent"
 }

@@ -1,8 +1,8 @@
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "gtceu:item/material_sets/shiny/bolt",
-        "layer1": "gtceu:item/material_sets/shiny/bolt_secondary",
-        "layer2": "gtceu:item/material_sets/shiny/bolt_overlay"
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "gtceu:item/material_sets/shiny/bolt",
+    "layer1": "gtceu:item/material_sets/shiny/bolt_secondary",
+    "layer2": "gtceu:item/material_sets/shiny/bolt_overlay"
+  }
 }

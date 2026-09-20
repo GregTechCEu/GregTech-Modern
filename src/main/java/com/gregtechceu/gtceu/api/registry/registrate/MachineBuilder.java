@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
@@ -28,6 +29,8 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -46,6 +49,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import brachy.modularui.theme.ThemeAPI;
 import com.tterrag.registrate.AbstractRegistrate;
@@ -596,6 +600,15 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
+    public SELF addRecipeModifier(RecipeModifier recipeModifier) {
+        if (this.recipeModifier instanceof RecipeModifierList list) {
+            this.recipeModifier = new RecipeModifierList(ArrayUtils.add(list.getModifiers(), recipeModifier));
+        } else {
+            this.recipeModifier = new RecipeModifierList(this.recipeModifier, recipeModifier);
+        }
+        return getThis();
+    }
+
     public SELF recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
         this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
         return this.recipeModifier(recipeModifier);
@@ -665,6 +678,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     @HideFromJS
     public DEFINITION register() {
+        ModifyMachineEvent event = new ModifyMachineEvent(this);
+        FMLJavaModLoadingContext.get().getModEventBus().post(event);
+        if (GTCEu.Mods.isKubeJSLoaded()) {
+            KJSCallWrapper.fireKJSEvent(event);
+        }
         this.registrate.object(name);
         var definition = createDefinition();
 
@@ -839,6 +857,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
             } else {
                 generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/").toString()));
             }
+        }
+
+        public static void fireKJSEvent(ModifyMachineEvent event) {
+            GTCEuStartupEvents.MACHINE_MODIFICATION.post(new ModifyMachineEventJS(event));
         }
     }
 }

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
 
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -26,7 +27,7 @@ public final class RecyclingRecipeHandler {
 
     public static void run(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
         // registers universal maceration recipes for specified ore prefixes
-        for (TagPrefix prefix : TagPrefix.values()) {
+        for (TagPrefix prefix : GTRegistries.TAG_PREFIXES.values()) {
             if (prefix.generateRecycling()) {
                 processCrushing(provider, prefix, material);
             }
@@ -46,7 +47,7 @@ public final class RecyclingRecipeHandler {
         // if arc smelting gives different material, allow it
         boolean ignoreArcSmelting = IGNORE_ARC_SMELTING.contains(prefix) &&
                 !(material.hasProperty(PropertyKey.INGOT) &&
-                        material.getProperty(PropertyKey.INGOT).getArcSmeltingInto() != material);
+                        material.getPropertyOrThrow(PropertyKey.INGOT).getArcSmeltingInto() != material);
         RecyclingRecipes.registerRecyclingRecipes(provider, ChemicalHelper.get(prefix, material), materialStacks,
                 ignoreArcSmelting, prefix);
     }

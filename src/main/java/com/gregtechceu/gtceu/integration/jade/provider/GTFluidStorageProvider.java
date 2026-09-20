@@ -58,6 +58,7 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
         if (machine instanceof QuantumTankMachine qtm) {
             FluidStack stored = qtm.getStored();
             if (stored.isEmpty() && qtm instanceof CreativeTankMachine) return Collections.emptyList();
+            if (stored.isEmpty() && qtm.isLocked()) stored = qtm.getLockedFluid();
             CompoundTag tag = JadeForgeUtils.fromFluidStack(stored, qtm.getMaxAmount());
             tag.putBoolean("special", true);
             tag.putLong("amount", qtm.getStoredAmount());

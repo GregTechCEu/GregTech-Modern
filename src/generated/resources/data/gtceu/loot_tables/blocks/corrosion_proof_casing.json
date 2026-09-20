@@ -1,21 +1,21 @@
 {
-    "pools": [
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
         {
-            "bonus_rolls": 0.0,
-            "conditions": [
-                {
-                    "condition": "minecraft:survives_explosion"
-                }
-            ],
-            "entries": [
-                {
-                    "name": "gtceu:corrosion_proof_casing",
-                    "type": "minecraft:item"
-                }
-            ],
-            "rolls": 1.0
+          "condition": "minecraft:survives_explosion"
         }
-    ],
-    "random_sequence": "gtceu:blocks/corrosion_proof_casing",
-    "type": "minecraft:block"
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "gtceu:corrosion_proof_casing"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "gtceu:blocks/corrosion_proof_casing"
 }

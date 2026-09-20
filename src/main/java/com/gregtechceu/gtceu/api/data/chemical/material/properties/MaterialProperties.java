@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -32,8 +33,12 @@ public class MaterialProperties {
         return propertyMap.isEmpty();
     }
 
-    public <T extends IMaterialProperty> T getProperty(PropertyKey<T> key) {
+    public <T extends IMaterialProperty> @Nullable T getProperty(PropertyKey<T> key) {
         return key.cast(propertyMap.get(key));
+    }
+
+    public <T extends IMaterialProperty> T getPropertyOrThrow(PropertyKey<T> key) {
+        return Objects.requireNonNull(getProperty(key), "Material missing %s property".formatted(key));
     }
 
     public <T extends IMaterialProperty> boolean hasProperty(PropertyKey<T> key) {
@@ -45,7 +50,7 @@ public class MaterialProperties {
         if (!key.getType().isInstance(value))
             throw new IllegalArgumentException("Material Property must be of the same type as the property key!");
         if (hasProperty(key))
-            throw new IllegalArgumentException("Material Property " + key.toString() + " already registered!");
+            throw new IllegalArgumentException("Material Property " + key + " already registered!");
         propertyMap.put(key, value);
         propertyMap.remove(PropertyKey.EMPTY);
     }
@@ -58,16 +63,17 @@ public class MaterialProperties {
             propertyMap.put(PropertyKey.EMPTY, PropertyKey.EMPTY.constructDefault());
     }
 
-    public <T extends IMaterialProperty> void ensureSet(PropertyKey<T> key, boolean verify) {
+    public <T extends IMaterialProperty> T ensureSet(PropertyKey<T> key, boolean verify) {
         if (!hasProperty(key)) {
             propertyMap.put(key, key.constructDefault());
             propertyMap.remove(PropertyKey.EMPTY);
             if (verify) verify();
         }
+        return Objects.requireNonNull(getProperty(key), "Property null after ensureSet");
     }
 
-    public <T extends IMaterialProperty> void ensureSet(PropertyKey<T> key) {
-        ensureSet(key, false);
+    public <T extends IMaterialProperty> T ensureSet(PropertyKey<T> key) {
+        return ensureSet(key, false);
     }
 
     public void verify() {

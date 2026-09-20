@@ -57,8 +57,9 @@ public interface ICoilType {
     int getTier();
 
     /**
-     * @return the {@link Material} of the Heating Coil if it has one, otherwise {@code GTMaterials.NULL}
+     * @return the {@link Material} of the Heating Coil if it has one, otherwise {@code null}
      */
+    @Nullable
     Material getMaterial();
 
     /**

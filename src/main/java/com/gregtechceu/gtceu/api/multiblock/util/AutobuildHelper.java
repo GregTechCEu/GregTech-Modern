@@ -96,7 +96,7 @@ public class AutobuildHelper {
 
             cxt.updatePos(pos);
             var innerPredicate = predicate.getPredicateAtPos(cxt);
-            if (innerPredicate != null) {
+            if (innerPredicate.hasMatched()) {
                 alreadyValidPlaced.put(pos.asLong(), blockState);
             } else {
                 if (blockState.canBeReplaced()) {

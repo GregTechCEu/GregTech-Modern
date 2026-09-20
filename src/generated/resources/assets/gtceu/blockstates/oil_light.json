@@ -1,7 +1,7 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/oil_light"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/oil_light"
     }
+  }
 }

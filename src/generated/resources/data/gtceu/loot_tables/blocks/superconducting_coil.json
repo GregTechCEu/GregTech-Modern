@@ -1,21 +1,21 @@
 {
-    "pools": [
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
         {
-            "bonus_rolls": 0.0,
-            "conditions": [
-                {
-                    "condition": "minecraft:survives_explosion"
-                }
-            ],
-            "entries": [
-                {
-                    "name": "gtceu:superconducting_coil",
-                    "type": "minecraft:item"
-                }
-            ],
-            "rolls": 1.0
+          "condition": "minecraft:survives_explosion"
         }
-    ],
-    "random_sequence": "gtceu:blocks/superconducting_coil",
-    "type": "minecraft:block"
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "gtceu:superconducting_coil"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "gtceu:blocks/superconducting_coil"
 }

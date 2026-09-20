@@ -15,6 +15,8 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
+import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
+import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.multiblock.error.GTPatternErrors;
@@ -31,6 +33,7 @@ import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.data.worldgen.*;
+import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -49,12 +52,13 @@ import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
-import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -166,9 +170,9 @@ public class CommonProxy {
         IndicatorGenerators.registerAddonGenerators();
 
         CustomBlockRotations.init();
-        KeyBind.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
+        SpoilableBehavior.init(modBus);
 
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
@@ -222,6 +226,49 @@ public class CommonProxy {
         // Freeze Material Registry before processing Items, Blocks, and Fluids
         GTRegistries.MATERIALS.freeze();
         /* End Material Registration */
+    }
+
+    @SubscribeEvent
+    public void addSpoilTransferModifier(ModifyMachineEvent event) {
+        event.getBuilder().addRecipeModifier(GTRecipeModifiers.SPOILAGE_TRANSFER);
+    }
+
+    @SubscribeEvent
+    public void registerSpoilables(RegisterSpoilablesEvent event) {
+        if (GTCEu.isDev()) {
+            event.getBuilder()
+                    .ticks(10)
+                    .result(GTItems.SPOILABLE_2)
+                    .build()
+                    .attachTo(GTItems.SPOILABLE_1);
+            event.getBuilder()
+                    .ticks(40)
+                    .result(GTItems.SPOILABLE_3)
+                    .build()
+                    .attachTo(GTItems.SPOILABLE_2);
+            event.getBuilder()
+                    .ticks(10)
+                    .result(GTItems.SPOILABLE_4)
+                    .build()
+                    .attachTo(GTItems.SPOILABLE_3);
+            event.getBuilder()
+                    .ticks(10)
+                    .result(GTItems.SPOILABLE_5)
+                    .build()
+                    .attachTo(GTItems.SPOILABLE_4);
+            event.getBuilder()
+                    .ticks(10)
+                    .result(Items.DRAGON_EGG)
+                    .result(EntityType.PIG)
+                    .multiplyResult(3)
+                    .build()
+                    .attachTo(GTItems.ENTITY_SPOILABLE);
+        }
+        event.getBuilder()
+                .ticks(20 * 60 * 30)
+                .result(Items.GOLDEN_CARROT)
+                .build()
+                .attachTo(GTItems.MAGNETIC_GOLDEN_CARROT);
     }
 
     @SubscribeEvent

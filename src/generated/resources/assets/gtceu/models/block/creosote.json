@@ -1,5 +1,5 @@
 {
-    "textures": {
-        "particle": "gtceu:block/fluids/fluid.creosote"
-    }
+  "textures": {
+    "particle": "gtceu:block/fluids/fluid.creosote"
+  }
 }

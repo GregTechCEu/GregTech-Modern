@@ -300,10 +300,10 @@ public class BonkMachines {
                 var abilities = Predicates.autoAbilities(definition.getRecipeTypes())
                         .and(Predicates.autoAbilities(true, false, false))
                         .and(Predicates.abilities(BonkPartAbilities.BONK_HATCH));
-                return FactoryBlockPattern.start()
-                        .aisle("XXX", "XCX", "XXX")
-                        .aisle("XCX", "CPC", "XCX")
-                        .aisle("XXX", "XSX", "XXX")
+                return MultiblockPatternBuilder.start()
+                        .slice("XXX", "XSX", "XXX")
+                        .slice("XCX", "CPC", "XCX")
+                        .slice("XXX", "XCX", "XXX")
                         .where('S', Predicates.controller(blocks(definition.getBlock())))
                         .where('X', casing.and(abilities))
                         .where('P', blocks(CASING_POLYTETRAFLUOROETHYLENE_PIPE.get()))
@@ -331,7 +331,7 @@ public class BonkPartAbilities {
 ## Creating the RecipeType
 ```java title="BonkRecipeTypes.java"
 public class BonkRecipeTypes {
-    public static final GTRecipeType LARGE_BONK_RECIPES = register("large_bonk_reactor", MULTIBLOCK)
+    public static final GTRecipeType LARGE_BONK_RECIPES = register(AddonMod.id("large_bonk_reactor"), MULTIBLOCK)
             .setMaxIOSize(3, 3, 5, 4)
             .setMaxSize(IO.IN, BonkRecipeCapability.CAP, 1)
             .setEUIO(IO.IN);

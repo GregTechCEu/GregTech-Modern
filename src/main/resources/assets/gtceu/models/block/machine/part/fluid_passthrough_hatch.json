@@ -1,9 +1,10 @@
 {
-    "parent": "gtceu:block/machine/template/pipeline_endpoint_machine",
-    "textures": {
-        "overlay_hatch_in": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
-        "overlay_hatch_out": "gtceu:block/overlay/machine/overlay_fluid_hatch_output",
-        "overlay_side": "gtceu:block/void",
-        "overlay_side_emissive": "gtceu:block/void"
-    }
+  "parent": "gtceu:block/machine/template/pipeline_endpoint_machine",
+  "textures": {
+    "overlay_side": "gtceu:block/void",
+    "overlay_side_emissive": "gtceu:block/void",
+
+    "overlay_hatch_in": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
+    "overlay_hatch_out": "gtceu:block/overlay/machine/overlay_fluid_hatch_output"
+  }
 }

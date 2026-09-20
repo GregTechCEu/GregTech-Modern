@@ -116,7 +116,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                     char c = this.flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
                     MultiPredicate predicate = blockPattern.getPredicates().get(c);
 
-                    if (predicate.isAir() || predicate.isAny()) {
+                    if (predicate.isAny()) {
                         continue;
                     }
 

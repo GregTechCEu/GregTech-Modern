@@ -865,8 +865,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @return Integer colour, or -1 to not apply a colour tint.
      */
     public int tintColor(int index) {
-        // index < -100 => emission if shimmer is installed.
-        if (index == 1 || index == -111) {
+        if (index == 1) {
             return getRealColor();
         }
         return -1;

@@ -1,67 +1,30 @@
 {
     "credit": "Made with Blockbench",
-    "elements": [
-        {
-            "faces": {
-                "down": {
-                    "cullface": "down",
-                    "texture": "#all"
-                },
-                "east": {
-                    "cullface": "east",
-                    "texture": "#all"
-                },
-                "north": {
-                    "cullface": "north",
-                    "texture": "#all"
-                },
-                "south": {
-                    "cullface": "south",
-                    "texture": "#all"
-                },
-                "up": {
-                    "cullface": "up",
-                    "texture": "#all"
-                },
-                "west": {
-                    "cullface": "west",
-                    "texture": "#all"
-                }
-            },
-            "from": [
-                0,
-                0,
-                0
-            ],
-            "to": [
-                16,
-                16,
-                16
-            ]
-        },
-        {
-            "faces": {
-                "north": {
-                    "cullface": "north",
-                    "texture": "#overlay"
-                }
-            },
-            "from": [
-                0,
-                0,
-                0
-            ],
-            "to": [
-                16,
-                16,
-                0
-            ]
-        }
-    ],
     "parent": "block/block",
     "textures": {
+        "particle": "#all",
         "all": "gtceu:block/casings/solid/machine_coke_bricks",
-        "overlay": "gtceu:block/overlay/machine/overlay_hatch",
-        "particle": "#all"
-    }
+        "overlay": "gtceu:block/overlay/machine/overlay_hatch"
+    },
+    "elements": [
+        {
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
+            "faces": {
+                "north": { "texture": "#all", "cullface": "north" },
+                "east":  { "texture": "#all", "cullface": "east"  },
+                "south": { "texture": "#all", "cullface": "south" },
+                "west":  { "texture": "#all", "cullface": "west"  },
+                "up":    { "texture": "#all", "cullface": "up"    },
+                "down":  { "texture": "#all", "cullface": "down"  }
+            }
+        },
+        {
+            "from": [  0,  0, 0 ],
+            "to":   [ 16, 16, 0 ],
+            "faces": {
+                "north": { "texture": "#overlay", "cullface": "north" }
+            }
+        }
+    ]
 }

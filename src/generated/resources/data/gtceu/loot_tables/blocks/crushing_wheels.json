@@ -1,21 +1,21 @@
 {
-    "pools": [
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
         {
-            "bonus_rolls": 0.0,
-            "conditions": [
-                {
-                    "condition": "minecraft:survives_explosion"
-                }
-            ],
-            "entries": [
-                {
-                    "name": "gtceu:crushing_wheels",
-                    "type": "minecraft:item"
-                }
-            ],
-            "rolls": 1.0
+          "condition": "minecraft:survives_explosion"
         }
-    ],
-    "random_sequence": "gtceu:blocks/crushing_wheels",
-    "type": "minecraft:block"
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "gtceu:crushing_wheels"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "gtceu:blocks/crushing_wheels"
 }

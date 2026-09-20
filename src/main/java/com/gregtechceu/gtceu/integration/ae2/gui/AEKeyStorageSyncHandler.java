@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Syncs AE2 KeyStorage contents as a sorted List of GenericStack.
@@ -139,9 +138,13 @@ public class AEKeyStorageSyncHandler extends ValueSyncHandler<List<GenericStack>
 
     private boolean structurallyDifferent(List<GenericStack> incoming) {
         if (value.size() != incoming.size()) return true;
-        Set<AEKey> oldKeys = value.stream().map(GenericStack::what).collect(Collectors.toSet());
-        Set<AEKey> newKeys = incoming.stream().map(GenericStack::what).collect(Collectors.toSet());
-        return !oldKeys.equals(newKeys);
+        for (var stack : incoming) {
+            if (!value.contains(stack)) return true;
+        }
+        for (var stack : value) {
+            if (!incoming.contains(stack)) return true;
+        }
+        return false;
     }
 
     @Override

@@ -108,7 +108,8 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addSmeltingRecipe(provider, "fireclay_brick", COMPRESSED_FIRECLAY.asStack(),
                 FIRECLAY_BRICK.asStack(), 0.3f);
 
-        VanillaRecipeHelper.addSmeltingRecipe(provider, "wrought_iron_nugget", ChemicalHelper.getTag(nugget, Iron),
+        VanillaRecipeHelper.addSmeltingRecipe(provider, "wrought_iron_nugget",
+                ChemicalHelper.getTagOrThrow(nugget, Iron),
                 ChemicalHelper.get(nugget, WroughtIron));
         VanillaRecipeHelper.addShapelessRecipe(provider, "nugget_disassembling_iron",
                 new ItemStack(Items.IRON_NUGGET, 9), new ItemStack(Items.IRON_INGOT), 's');
