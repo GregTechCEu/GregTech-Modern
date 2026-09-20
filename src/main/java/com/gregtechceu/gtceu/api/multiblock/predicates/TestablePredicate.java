@@ -20,14 +20,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 class TestablePredicate extends BasePredicate {
 
     private final ErrorHandler onError;
-    private final Supplier<List<BlockInfo>> candidates;
+    private final List<BlockInfo> candidates;
     private final @Nullable Consumer<StringBuilder> contents;
     private final String name;
     private final Predicate<PredicateContext> predicate;
@@ -45,7 +45,7 @@ class TestablePredicate extends BasePredicate {
      *                   XEI Preview}
      */
     TestablePredicate(String name, Predicate<PredicateContext> predicate,
-                      Supplier<List<BlockInfo>> candidates,
+                      List<BlockInfo> candidates,
                       @Nullable Consumer<StringBuilder> contents,
                       ErrorHandler onError) {
         this.name = name;
@@ -55,9 +55,13 @@ class TestablePredicate extends BasePredicate {
         this.onError = onError;
     }
 
+    /// @param root the top-most multi predicate for this multi predicate
+    /// @return a list of components to be displayed while hovering over a block in the Multiblock Preview
     @Override
     public List<Component> getRecipeViewerTooltips(MultiPredicate root) {
         List<Component> tooltips = new ArrayList<>(this.getAdditionalTooltips());
+        int minCount = getMinCount();
+        int maxCount = getMaxCount();
         if (minCount == maxCount && maxCount != -1) {
             tooltips.add(Component.translatable("gtceu.multiblock.pattern.exact_count", minCount));
         } else if (minCount != maxCount && minCount != -1 && maxCount != -1) {
@@ -90,6 +94,20 @@ class TestablePredicate extends BasePredicate {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof TestablePredicate that)) return false;
+        if (!super.equals(o)) return false;
+        return Objects.equals(contents, that.contents) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(predicate, that.predicate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(contents, name, predicate);
+    }
+
+    @Override
     public BasePredicate copy() {
         TestablePredicate copy = new TestablePredicate(this.name, this.predicate, this.candidates, this.contents,
                 this.onError);
@@ -98,8 +116,8 @@ class TestablePredicate extends BasePredicate {
     }
 
     @Override
-    public List<BlockInfo> computeCandidates() {
-        return this.candidates.get();
+    public List<BlockInfo> getCandidates() {
+        return this.candidates;
     }
 
     @Override
