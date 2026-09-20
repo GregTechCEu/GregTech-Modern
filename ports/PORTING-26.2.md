@@ -8,6 +8,12 @@ This is an unfinished source port, not a usable release. Code and this checkpoin
 - ModularUI is included from `ports/ModularUI` as a Gradle composite build.
 - Root integrations still include old Forge / Minecraft 1.20.1 dependencies. They are not compatible merely because the build target changed.
 
+## Current checkpoint — 2026-09-20
+
+This section supersedes the historical compiler counts below. ModularUI main compilation and its full Gradle test task now pass: **30 tests, zero failures/errors/skips**. The user-approved unofficial EMI 26.2 alpha is pinned to Curse Maven file 8616659; extraction and mouse mixins were migrated, and optional EMI mixins are guarded. Curios now uses its official NeoForge `16.0.0+26.2` artifact. Root JEI/EMI/Curios coordinates are aligned with these targets.
+
+GregTech still fails compilation: the latest diagnostic pass reported 10,974 errors (many cascading; log capped at 10,000). GT's four custom value providers and their registration now target the 26.2 interfaces/MapCodec registry. Two isolated provider tests pass under NeoForge's test loader; full GT registration/dispatch is not tested. No successful GregTech build or client/server launch has occurred. EMI runtime compatibility and deferred rendering/mixin behavior still need in-game validation. See the root `PORTING-26.2.md` for current reproduction commands and logs; the following sections document earlier checkpoints.
+
 ## Rendering work implemented
 
 - Deferred colored geometry with captured transforms, tint, and scissor bounds; fans and strips become independent quads for GUI batching.

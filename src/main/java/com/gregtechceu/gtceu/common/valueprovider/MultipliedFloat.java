@@ -1,21 +1,18 @@
 package com.gregtechceu.gtceu.common.valueprovider;
 
-import com.gregtechceu.gtceu.common.data.GTValueProviderTypes;
-
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.FloatProvider;
-import net.minecraft.util.valueproviders.FloatProviderType;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.util.valueproviders.FloatProviders;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public class MultipliedFloat extends FloatProvider {
+public class MultipliedFloat implements FloatProvider {
 
-    public static final Codec<MultipliedFloat> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            FloatProvider.CODEC.fieldOf("source").forGetter(provider -> provider.source),
-            FloatProvider.CODEC.fieldOf("multiplier").forGetter(provider -> provider.multiplier))
+    public static final MapCodec<MultipliedFloat> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            FloatProviders.CODEC.fieldOf("source").forGetter(provider -> provider.source),
+            FloatProviders.CODEC.fieldOf("multiplier").forGetter(provider -> provider.multiplier))
             .apply(instance, MultipliedFloat::new));
 
     private final FloatProvider source;
@@ -36,18 +33,18 @@ public class MultipliedFloat extends FloatProvider {
     }
 
     @Override
-    public float getMinValue() {
-        return this.source.getMinValue() * this.multiplier.getMinValue();
+    public float min() {
+        return this.source.min() * this.multiplier.min();
     }
 
     @Override
-    public float getMaxValue() {
-        return this.source.getMaxValue() *
-                (this.multiplier instanceof ConstantFloat c ? c.getValue() : this.multiplier.getMaxValue());
+    public float max() {
+        return this.source.max() *
+                this.multiplier.max();
     }
 
     @Override
-    public @NotNull FloatProviderType<?> getType() {
-        return GTValueProviderTypes.MULTIPLIED.get();
+    public @NotNull MapCodec<MultipliedFloat> codec() {
+        return CODEC;
     }
 }

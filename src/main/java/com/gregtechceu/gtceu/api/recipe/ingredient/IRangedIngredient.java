@@ -39,11 +39,11 @@ public interface IRangedIngredient<T> {
      * @return the average roll of this ranged amount
      */
     default double getMidRoll() {
-        return ((getCountProvider().getMaxValue() + getCountProvider().getMinValue()) / 2.0);
+        return ((getCountProvider().maxInclusive() + getCountProvider().minInclusive()) / 2.0);
     }
 
     default int getMaxRoll() {
-        return ((getCountProvider().getMaxValue()));
+        return ((getCountProvider().maxInclusive()));
     }
 
     default boolean isRolled() {

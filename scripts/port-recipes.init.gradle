@@ -1,0 +1,18 @@
+// Exercise selected GT recipe classes using the working NeoForge test loader.
+gradle.projectsEvaluated {
+    def project = gradle.rootProject
+    def gtRoot = project.projectDir.parentFile.parentFile
+    project.sourceSets.test.java.srcDir(new File(gtRoot, 'src/main/java'))
+    project.sourceSets.test.java.srcDir(new File(gtRoot, 'src/test/java'))
+    project.sourceSets.test.java.setIncludes([
+        'brachy/**',
+        'com/gregtechceu/gtceu/api/recipe/StrictShapedRecipe.java',
+        'com/gregtechceu/gtceu/api/recipe/CraftingGridOrigin.java',
+        'com/gregtechceu/gtceu/api/recipe/StrictShapedRecipePortTest.java',
+        'com/gregtechceu/gtceu/core/mixins/CraftingInputMixin.java'
+    ])
+    project.sourceSets.test.resources.srcDir(new File(gtRoot, 'scripts/port-recipe-test-resources'))
+    project.tasks.named('test') {
+        systemProperty 'mixin.config', 'gtceu-port-recipes.mixins.json'
+    }
+}

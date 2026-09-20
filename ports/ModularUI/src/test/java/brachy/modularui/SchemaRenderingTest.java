@@ -71,9 +71,14 @@ public class SchemaRenderingTest {
         for (int i = 0; i < 4; i++) builder.addVertex(1, 1, 1);
         assertEquals(4, snapshot.size());
         assertEquals(8, builder.build().size());
-        assertEquals(new SchemaGeometry.Vertex(-1, 34, 19, 0x80776655, .25f, .75f, 4, 10, 160, 240, 0, 0, -1), snapshot.getFirst());
+        assertEquals(new SchemaGeometry.Vertex(-1, 34, 19, 0x80776655, .25f, .75f,
+                4 | (10 << 16), 160 | (240 << 16), 0, 0, -1, 1), snapshot.getFirst());
         assertThrows(UnsupportedOperationException.class, snapshot::clear);
-        assertThrows(IllegalStateException.class, () -> new SchemaGeometry.Builder().addVertex(0, 0, 0).build());
+        // The collector is primitive-agnostic: pending vertices must survive a snapshot.
+        var single = new SchemaGeometry.Builder().addVertex(0, 0, 0);
+        assertEquals(1, single.build().size());
+        assertEquals(1, single.build().size(), "Repeated snapshots must not duplicate the last vertex");
+        assertThrows(IllegalStateException.class, () -> new SchemaGeometry.Builder().setColor(-1));
     }
     public static void main(String[] args) {
         var test = new SchemaRenderingTest();

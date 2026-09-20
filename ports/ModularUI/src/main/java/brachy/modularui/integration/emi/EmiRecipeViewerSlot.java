@@ -86,7 +86,7 @@ public class EmiRecipeViewerSlot extends RecipeViewerSlotWidget<EmiRecipeViewerS
         context.getGraphics().pose().pushMatrix();
         try {
             context.getGraphics().pose().translate(-this.x, -this.y);
-            this.slotWidget.render(context.getGraphics(), context.getMouseX(), context.getMouseY(), context.getRenderPartialTicks());
+            this.slotWidget.extractRenderState(context.getGraphics(), context.getMouseX(), context.getMouseY(), context.getRenderPartialTicks());
         } finally {
             context.getGraphics().pose().popMatrix();
         }
@@ -94,7 +94,7 @@ public class EmiRecipeViewerSlot extends RecipeViewerSlotWidget<EmiRecipeViewerS
 
     @Override
     public Result onMousePressed(int button) {
-        this.slotWidget.mouseClicked(getContext().getMouseX(), getContext().getAbsMouseY(), button);
+        this.slotWidget.mouseClicked(getContext().getMouseX(), getContext().getMouseY(), button);
         return Result.SUCCESS;
     }
 

@@ -1,20 +1,18 @@
 package com.gregtechceu.gtceu.common.valueprovider;
 
-import com.gregtechceu.gtceu.common.data.GTValueProviderTypes;
-
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.FloatProvider;
-import net.minecraft.util.valueproviders.FloatProviderType;
 import net.minecraft.util.valueproviders.IntProvider;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.util.valueproviders.IntProviders;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public class CastedFloat extends FloatProvider {
+public class CastedFloat implements FloatProvider {
 
-    public static final Codec<CastedFloat> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            IntProvider.CODEC.fieldOf("source").forGetter(provider -> provider.source))
+    public static final MapCodec<CastedFloat> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            IntProviders.CODEC.fieldOf("source").forGetter(provider -> provider.source))
             .apply(instance, CastedFloat::new));
 
     private final IntProvider source;
@@ -33,17 +31,17 @@ public class CastedFloat extends FloatProvider {
     }
 
     @Override
-    public float getMinValue() {
-        return this.source.getMinValue();
+    public float min() {
+        return this.source.minInclusive();
     }
 
     @Override
-    public float getMaxValue() {
-        return this.source.getMaxValue();
+    public float max() {
+        return this.source.maxInclusive();
     }
 
     @Override
-    public @NotNull FloatProviderType<?> getType() {
-        return GTValueProviderTypes.CASTED.get();
+    public @NotNull MapCodec<CastedFloat> codec() {
+        return CODEC;
     }
 }

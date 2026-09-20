@@ -164,7 +164,7 @@ public abstract class ModularUIEmiRecipe implements EmiRecipe {
         }
 
         @Override
-        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             ModularScreen screen = SCREEN_CACHE.getUnchecked(this.recipe);
             EmbedHandler.drawEmbed(screen, graphics, partialTick, r -> !(r instanceof SizedButtonWidget));
         }

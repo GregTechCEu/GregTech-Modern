@@ -5,6 +5,7 @@ import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
 import dev.emi.emi.api.widget.Widget;
 import dev.emi.emi.screen.RecipeScreen;
 import dev.emi.emi.screen.WidgetGroup;
+import net.minecraft.client.input.MouseButtonEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,11 +33,11 @@ public class RecipeScreenMixin {
     }
 
     @Inject(method = "mouseReleased", at = @At("HEAD"), remap = true, cancellable = true)
-    private void modularui$mouseReleased(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+    private void modularui$mouseReleased(MouseButtonEvent event, CallbackInfoReturnable<Boolean> cir) {
         for (WidgetGroup group : currentPage) {
             for (Widget widget : group.widgets) {
                 if (widget instanceof ModularUIEmiRecipe.UIWrapperWidget wrapperWidget) {
-                    if (wrapperWidget.mouseReleased(button)) {
+                    if (wrapperWidget.mouseReleased(event.button())) {
                         cir.setReturnValue(true);
                     }
                 }
@@ -45,11 +46,11 @@ public class RecipeScreenMixin {
     }
 
     @Inject(method = "mouseDragged", at = @At("HEAD"), remap = true, cancellable = true)
-    private void modularui$mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY, CallbackInfoReturnable<Boolean> cir) {
+    private void modularui$mouseDragged(MouseButtonEvent event, double deltaX, double deltaY, CallbackInfoReturnable<Boolean> cir) {
         for (WidgetGroup group : currentPage) {
             for (Widget widget : group.widgets) {
                 if (widget instanceof ModularUIEmiRecipe.UIWrapperWidget wrapperWidget) {
-                    if (wrapperWidget.mouseDragged(button, deltaX, deltaY)) {
+                    if (wrapperWidget.mouseDragged(event.button(), deltaX, deltaY)) {
                         cir.setReturnValue(true);
                     }
                 }

@@ -8,13 +8,16 @@ Minecraft 26.2, NeoForge 26.2.0.88, Java 25. ModularUI is included from `ports/M
 
 ## Latest verification — 2026-09-20
 
-- Full ModularUI diagnostic compilation reports **4 errors**, down from 39 at the start of the latest pass. All four reference the incompatible EMI 1.21.1 API (removed GuiGraphics/ResourceLocation types and recipe signatures). Diagnostic mode invokes javac directly to avoid Gradle's constant-analysis crash on missing integration types.
+- Full ModularUI diagnostic compilation **passes** with the user-approved unofficial EMI 26.2 alpha. Its Gradle test task also passes: **30 tests, zero failures/errors/skips**. This is not an in-game compatibility test. Diagnostic mode invokes javac directly to avoid Gradle's constant-analysis crash on missing integration types.
 - Fifteen isolated rendering checks pass: six GUI geometry checks, four structure/radial geometry checks, two GUI pose checks, and three projection checks. These compile against the cached Minecraft/NeoForge artifacts, not replacement API stubs.
 - The changed GUI context, widget tree, screen adapters, tooltips, item slots, and input handlers have no errors in the latest compiler output. This does not establish runtime correctness.
-- GregTech's complete compilation, client/server startup, data generation, resource reloads, and gameplay validation have not passed. No release jar is available.
+- GregTech's latest diagnostic compilation fails with 10,974 errors (output capped at 10,000), including cascading errors. This is not a completion percentage. Client/server startup, data generation, resource reloads, and gameplay validation have not passed. No release jar is available.
 
 ## Implemented in this pass
 
+- Migrated GT's four custom random-value providers to the 26.2 interfaces, bounds accessors, and direct MapCodec registration through NeoForge DeferredHolder. Updated ranged item/fluid ingredient callers and recipe quantity modifiers. Two isolated regression tests pass under ModularUI's NeoForge test loader, covering all four providers' sampling/bounds/codec identities and JSON field round trips. The harness deliberately does not load the unfinished GT mod or validate registry dispatch; ingredient serialization and custom Ingredient migration remain unfinished. Existing cast-to-int semantics are preserved.
+- Pinned both builds to the approved unofficial EMI development artifact `curse.maven:emi-unofficial-port-unstable-1544558:8616659` ([author's file page](https://www.curseforge.com/minecraft/mc-mods/emi-unofficial-port-unstable/files/8616659)). Updated EMI extraction and mouse-event mixin signatures, guarded EMI mixins when the optional mod is absent, and corrected slot-local mouse coordinates. In-game alpha compatibility remains unverified.
+- Updated both Curios dependencies to NeoForge `16.0.0+26.2`, resolving the test loader's incompatible Minecraft requirement. Aligned the root JEI dependency with ModularUI's 26.2 build. Corrected the geometry test's packed vertex attributes and primitive-agnostic collector contract, including snapshot idempotence and invalid attribute ordering.
 - Updated JEI to 30.32.0.222 and REI to 26.2.821, with Architectury 21.0.2 and Cloth Config 26.2.155. Migrated JEI clickable-ingredient defaults/crafting-station roles and REI drawing/input/display contracts.
 - Migrated test block/entity registration and item capabilities. The test item's inventory now persists in its container component; the test machine exposes a transactional capability backed by the same lists as its UI.
 - Projection utilities now require an explicit projection/view matrix and depth. Removed unused implicit framebuffer-depth/global-viewport methods; callers outside this repository must migrate. Perspective projection now performs homogeneous division, covered by round-trip and viewport-offset tests.
@@ -34,7 +37,7 @@ The previous rendering pass added deferred primitive/texture states, stencil cli
 
 ## Remaining work
 
-- Resolve EMI compatibility without silently deleting its integration. The official NeoForge Maven metadata checked on 2026-09-20 contains 61 versions and no 26.x version; the newest EMI version listed is 1.1.24+1.21.1. A compatible EMI port is required to finish this build with the integration preserved.
+- Validate the unofficial EMI alpha in game, including recipe rendering, clicks, dragging, scrolling, and mixin application. Development compilation preserves the integration but does not establish release readiness.
 - Audit the remaining optional/runtime dependencies and integration mixins. JEI/REI now compile against 26.2 builds; other ModularUI dependencies still target 1.21.1, and the root catalog retains 1.20.1 dependencies.
 - Compile the full GregTech project, finish its API/data/resource migration, and audit all mixins and access transformers against actual target members.
 - Run tests and data generation, build artifacts, launch client and dedicated server, and validate GUI interactions, machines, recipes, synchronization, and save/reload.
@@ -45,9 +48,11 @@ Use a Java 25 installation for `JAVA_HOME` and run from the repository root:
 
 ```powershell
 ./gradlew.bat :ModularUI:compileJava -PportDiagnostics --no-parallel --max-workers=1 --console=plain
+./gradlew.bat -p ports/ModularUI test -PportDiagnostics --max-workers=1 --console=plain
 ./ports/ModularUI/scripts/check-rendering.ps1 -JavaHome $env:JAVA_HOME
+./scripts/check-port-valueproviders.ps1 -JavaHome $env:JAVA_HOME
 ```
 
 The isolated checks require generated Minecraft artifacts and cached JUnit dependencies. On this machine, parallel initial decompilation exhausted Windows commit memory, so use one worker.
 
-Current local logs: `build/active-port.log` and `build/scene-check.log`. These files are ignored by Git. See `ports/PORTING-26.2.md` for the rendering checkpoint.
+Current local logs: `build/modularui-26.2-compile.log`, `build/modularui-26.2-tests.log`, and `build/gregtech-26.2-compile.log`. These files are ignored by Git. See `ports/PORTING-26.2.md` for historical rendering checkpoints.

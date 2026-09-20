@@ -27,6 +27,7 @@ public class ModularUIMixinPlugin implements IMixinConfigPlugin {
 
     static {
         addModCompatMixin("jei");
+        addModCompatMixin("emi");
     }
 
     @Override

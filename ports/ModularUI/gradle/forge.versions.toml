@@ -1,6 +1,7 @@
 [versions]
 # Recipe viewers
-emi = "1.1.24+1.21.1"
+# Unofficial NeoForge 26.2 alpha, approved for development; runtime validation required.
+emi = "8616659"
 
 jei = "30.32.0.222"
 
@@ -9,7 +10,7 @@ architectury = "21.0.2"
 clothConfig = "26.2.155"
 
 # Curios
-curios = "9.4.2+1.21.1"
+curios = "16.0.0+26.2"
 
 # Rendering & Optimizations
 sodium = "mc1.21.1-0.6.13-neoforge" # modrinth maven
@@ -23,7 +24,7 @@ mousetweaks = "5637846" # cursemaven
 
 [libraries]
 # Recipe viewers
-emi = { module = "dev.emi:emi-neoforge", version.ref = "emi" }
+emi = { module = "curse.maven:emi-unofficial-port-unstable-1544558", version.ref = "emi" }
 
 jei-common-api = { module = "mezz.jei:jei-26.2-common-api", version.ref = "jei" }
 jei-forge-api = { module = "mezz.jei:jei-26.2-neoforge-api", version.ref = "jei" }

@@ -9,6 +9,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
@@ -74,7 +75,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
      * @param countProvider usually as {@link net.minecraft.util.valueproviders.UniformInt#of(int, int)}
      */
     public static IntProviderIngredient of(Ingredient inner, IntProvider countProvider) {
-        Preconditions.checkArgument(countProvider.getMinValue() >= 0,
+        Preconditions.checkArgument(countProvider.minInclusive() >= 0,
                 "IntProviderIngredient must have a min value of at least 0.");
         return new IntProviderIngredient(inner, countProvider);
     }
@@ -110,11 +111,11 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
      * Mainly used for things like Recipe provider simulations to see if there is enough inventory space to handle
      * the recipe output.
      * 
-     * @return a {@link ItemStack} with count {@link IntProvider#getMaxValue()}
+     * @return a {@link ItemStack} with count {@link IntProvider#maxInclusive()}
      */
     public @NotNull ItemStack getMaxSizeStack() {
         if (inner.getItems().length == 0) return ItemStack.EMPTY;
-        else return inner.getItems()[0].copyWithCount(countProvider.getMaxValue());
+        else return inner.getItems()[0].copyWithCount(countProvider.maxInclusive());
     }
 
     /**
@@ -185,7 +186,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
     public @NotNull JsonElement toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("type", TYPE.toString());
-        json.add("count_provider", IntProvider.CODEC.encodeStart(JsonOps.INSTANCE, countProvider)
+        json.add("count_provider", IntProviders.CODEC.encodeStart(JsonOps.INSTANCE, countProvider)
                 .getOrThrow(false, GTCEu.LOGGER::error));
         json.add("ingredient", inner.toJson());
         json.addProperty("sampledCount", sampledCount);
@@ -197,7 +198,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
         @Override
         public @NotNull IntProviderIngredient parse(FriendlyByteBuf buffer) {
             var nbt = buffer.readNbt();
-            IntProvider provider = IntProvider.CODEC.parse(NbtOps.INSTANCE, nbt.get("provider"))
+            IntProvider provider = IntProviders.CODEC.parse(NbtOps.INSTANCE, nbt.get("provider"))
                     .getOrThrow(false, GTCEu.LOGGER::error);
             int sampledCount = nbt.getInt("sampledCount");
             return new IntProviderIngredient(Ingredient.fromNetwork(buffer), provider, sampledCount);
@@ -205,7 +206,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
 
         @Override
         public @NotNull IntProviderIngredient parse(JsonObject json) {
-            IntProvider provider = IntProvider.CODEC.parse(JsonOps.INSTANCE, json.get("count_provider"))
+            IntProvider provider = IntProviders.CODEC.parse(JsonOps.INSTANCE, json.get("count_provider"))
                     .getOrThrow(false, GTCEu.LOGGER::error);
             Ingredient inner = Ingredient.fromJson(json.get("ingredient"));
             int sampledCount = json.getAsJsonPrimitive("sampledCount").getAsInt();
@@ -215,7 +216,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
         @Override
         public void write(FriendlyByteBuf buffer, IntProviderIngredient ingredient) {
             CompoundTag wrapper = new CompoundTag();
-            wrapper.put("provider", IntProvider.CODEC.encodeStart(NbtOps.INSTANCE, ingredient.countProvider)
+            wrapper.put("provider", IntProviders.CODEC.encodeStart(NbtOps.INSTANCE, ingredient.countProvider)
                     .getOrThrow(false, GTCEu.LOGGER::error));
             wrapper.putInt("sampledCount", ingredient.sampledCount);
             buffer.writeNbt(wrapper);

@@ -10,6 +10,7 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -48,13 +49,13 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     private final FluidIngredient inner;
 
     protected IntProviderFluidIngredient(FluidIngredient inner, IntProvider provider) {
-        super(inner.values, provider.getMaxValue(), inner.nbt);
+        super(inner.values, provider.maxInclusive(), inner.nbt);
         this.inner = inner;
         this.countProvider = provider;
     }
 
     protected IntProviderFluidIngredient(FluidIngredient inner, IntProvider provider, int sampledCount) {
-        super(inner.values, provider.getMaxValue(), inner.nbt);
+        super(inner.values, provider.maxInclusive(), inner.nbt);
         this.inner = inner;
         this.countProvider = provider;
         this.sampledCount = sampledCount;
@@ -89,12 +90,12 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
      * Mainly used for things like Recipe provider simulations to see if there is enough tank space to handle
      * the recipe output.
      *
-     * @return a {@link FluidStack} with amount {@link IntProvider#getMaxValue()}
+     * @return a {@link FluidStack} with amount {@link IntProvider#maxInclusive()}
      */
     public @NotNull FluidStack getMaxSizeStack() {
         FluidStack[] in = inner.getStacks();
         if (in.length == 0) return FluidStack.EMPTY;
-        return new FluidStack(in[0], countProvider.getMaxValue());
+        return new FluidStack(in[0], countProvider.maxInclusive());
     }
 
     /**
@@ -116,7 +117,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
      * @return the average roll of this ranged amount
      */
     public double getMidRoll() {
-        return ((countProvider.getMaxValue() + countProvider.getMinValue()) / 2.0);
+        return ((countProvider.maxInclusive() + countProvider.minInclusive()) / 2.0);
     }
 
     /**
@@ -159,7 +160,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     @Override
     public @NotNull JsonElement toJson() {
         JsonObject json = new JsonObject();
-        json.add("count_provider", IntProvider.CODEC.encodeStart(JsonOps.INSTANCE, countProvider)
+        json.add("count_provider", IntProviders.CODEC.encodeStart(JsonOps.INSTANCE, countProvider)
                 .getOrThrow(false, GTCEu.LOGGER::error));
         json.add("inner", inner.toJson());
         json.addProperty("sampledCount", sampledCount);
@@ -178,7 +179,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
             throw new JsonSyntaxException("Fluid ingredient cannot be null");
         }
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
-        IntProvider provider = IntProvider.CODEC.parse(JsonOps.INSTANCE, jsonObject.get("count_provider"))
+        IntProvider provider = IntProviders.CODEC.parse(JsonOps.INSTANCE, jsonObject.get("count_provider"))
                 .getOrThrow(false, GTCEu.LOGGER::error);
         int sampledCount = jsonObject.getAsJsonPrimitive("sampledCount").getAsInt();
         FluidIngredient inner = FluidIngredient.fromJson(jsonObject.get("inner"));
@@ -195,7 +196,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
 
     public void toNetwork(FriendlyByteBuf buffer) {
         inner.toNetwork(buffer);
-        buffer.writeVarIntArray(new int[] { countProvider.getMinValue(), countProvider.getMaxValue() });
+        buffer.writeVarIntArray(new int[] { countProvider.minInclusive(), countProvider.maxInclusive() });
     }
 
     public static IntProviderFluidIngredient fromNetwork(FriendlyByteBuf buffer) {

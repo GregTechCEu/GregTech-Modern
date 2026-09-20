@@ -1,21 +1,18 @@
 package com.gregtechceu.gtceu.common.valueprovider;
 
-import com.gregtechceu.gtceu.common.data.GTValueProviderTypes;
-
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.FloatProvider;
-import net.minecraft.util.valueproviders.FloatProviderType;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.util.valueproviders.FloatProviders;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public class AddedFloat extends FloatProvider {
+public class AddedFloat implements FloatProvider {
 
-    public static final Codec<AddedFloat> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            FloatProvider.CODEC.fieldOf("source").forGetter(provider -> provider.source),
-            FloatProvider.CODEC.fieldOf("modifier").forGetter(provider -> provider.modifier))
+    public static final MapCodec<AddedFloat> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            FloatProviders.CODEC.fieldOf("source").forGetter(provider -> provider.source),
+            FloatProviders.CODEC.fieldOf("modifier").forGetter(provider -> provider.modifier))
             .apply(instance, AddedFloat::new));
 
     private final FloatProvider source;
@@ -36,18 +33,18 @@ public class AddedFloat extends FloatProvider {
     }
 
     @Override
-    public float getMinValue() {
-        return this.source.getMinValue() + this.modifier.getMinValue();
+    public float min() {
+        return this.source.min() + this.modifier.min();
     }
 
     @Override
-    public float getMaxValue() {
-        return this.source.getMaxValue() +
-                (this.modifier instanceof ConstantFloat c ? c.getValue() : this.modifier.getMaxValue());
+    public float max() {
+        return this.source.max() +
+                this.modifier.max();
     }
 
     @Override
-    public @NotNull FloatProviderType<?> getType() {
-        return GTValueProviderTypes.ADDED.get();
+    public @NotNull MapCodec<AddedFloat> codec() {
+        return CODEC;
     }
 }

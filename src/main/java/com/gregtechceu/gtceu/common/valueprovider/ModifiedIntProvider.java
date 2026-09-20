@@ -20,7 +20,7 @@ public class ModifiedIntProvider {
             return ofNormal(uniform, modifier);
         }
         if (source instanceof BiasedToBottomInt biased) {
-            return BiasedToBottomInt.of(modifier.apply(biased.getMinValue()), modifier.apply(biased.getMaxValue()));
+            return BiasedToBottomInt.of(modifier.apply(biased.minInclusive()), modifier.apply(biased.maxInclusive()));
         }
         return new FlooredInt(
                 new AddedFloat(
@@ -32,8 +32,8 @@ public class ModifiedIntProvider {
 
     public static ClampedNormalInt ofNormal(IntProvider source, ContentModifier modifier) {
         int parallel = modifier.apply(1);
-        int min = source.getMinValue();
-        int max = source.getMaxValue();
+        int min = source.minInclusive();
+        int max = source.maxInclusive();
 
         float mean = parallel * ((min + max) / 2.0f);
         int diff = max - min;

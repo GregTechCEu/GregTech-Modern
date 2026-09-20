@@ -1,0 +1,8 @@
+// Reuse the working ModularUI NeoForge test loader, without loading unfinished GT code.
+gradle.projectsEvaluated {
+    def project = gradle.rootProject
+    def gtRoot = project.projectDir.parentFile.parentFile
+    project.sourceSets.test.java.srcDir(new File(gtRoot, 'src/main/java/com/gregtechceu/gtceu/common/valueprovider'))
+    project.sourceSets.test.java.exclude('**/ModifiedIntProvider.java')
+    project.sourceSets.test.java.srcDir(new File(gtRoot, 'src/test/java/com/gregtechceu/gtceu/common/valueprovider'))
+}

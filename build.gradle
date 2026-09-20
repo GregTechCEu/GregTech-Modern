@@ -79,6 +79,12 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
     options.compilerArgs << "-Xlint:-removal"
     options.compilerArgs << "-Aquiet=true" // Suppress mixin notes
+    if (providers.gradleProperty('portDiagnostics').isPresent()) {
+        options.incremental = false
+        options.fork = true
+        options.forkOptions.executable = javaCompiler.get().executablePath.asFile.absolutePath
+        options.compilerArgs.addAll(['-Xmaxerrs', '10000', '-Xmaxwarns', '20'])
+    }
 }
 
 lombok {
