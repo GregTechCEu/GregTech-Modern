@@ -563,7 +563,7 @@ public class ModularPanel<W extends ModularPanel<W>> extends ParentWidget<W> imp
         return false;
     }
 
-    public boolean onCharTyped(char codePoint, int modifiers) {
+    public boolean onCharTyped(int codePoint, int modifiers) {
         return doSafeBool(() -> {
             switch (interactFocused(widget -> widget.onCharTyped(codePoint, modifiers), Interactable.Result.IGNORE)) {
                 case STOP:

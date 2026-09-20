@@ -16,7 +16,7 @@ This is an unfinished source port, not a usable release. Code and this checkpoin
 - Entity previews use a registered picture-in-picture renderer, with captured GUI transforms and entity render states. The live entity's temporary orientation is restored after extraction.
 - GUI atlas registration uses AtlasManager rather than manually owning an atlas reload listener.
 - Block sprite lookup uses block-state model parts; item lookup collects all resolved item model layers.
-- Preview lighting uses the new Lightmap API and environmental attributes; connecting it to the replacement structure renderer is still required.
+- Structure previews use deferred block/fluid geometry, block-entity states, camera-based picking, and a scoped preview lightmap. Selection highlights are extracted quads. In-game verification remains outstanding.
 - GregTech lamp overlay draw calls and the prospector map's texture upload/drawing path have been adapted. These root changes have not passed a full root compilation.
 
 ## Verification
@@ -29,16 +29,16 @@ $env:JAVA_HOME = 'C:/Program Files/Java/jdk-25.0.4'
 ./gradlew.bat -p ports/ModularUI compileJava -PportDiagnostics --offline --console=plain
 ```
 
-The isolated renderer check compiles the new geometry, texture, entity-preview, sprite-lookup, and lightmap classes against the real cached 26.2 libraries. Five geometry regression checks pass. It requires previously generated Minecraft artifacts and cached JUnit dependencies. It is **not** a substitute for the full build or in-game tests.
+The isolated renderer check compiles the new geometry, texture, entity-preview, sprite-lookup, and lightmap classes against the real cached 26.2 libraries. Eleven checks pass: six GUI geometry/transform checks and five structure camera/geometry/highlight checks. It requires previously generated Minecraft artifacts and cached JUnit dependencies. It is **not** a substitute for the full build or in-game tests.
 
-The full ModularUI build still fails. The current first compiler barrier is missing legacy rendering types in `Stencil`, `CircularProgressDrawable`, `BaseSchemaRenderer`, and `BlockHighlight`. Once these type-resolution errors are resolved, further method-level errors may become visible. Do not interpret the current diagnostic count as the total work remaining.
+The full ModularUI build still fails with **133 compiler errors** as of 2026-09-20. Diagnostic mode now invokes javac directly to avoid Gradle's constant-analysis crash. This count is not a completion percentage and excludes the full GregTech migration.
+
+The latest pass migrated shared GUI transforms, tooltip and item extraction, screen lookup and layer ordering, mouse event forwarding/double-clicks, modifier keys and clipboard shortcuts, and full-code-point character input. Corresponding GregTech editor callers were updated. Obsolete container render accessors were replaced with current vanilla carried-item rendering.
 
 ## Next implementation work
 
-1. Replace stencil clipping while retaining rotated masks and circular-progress masks, including text, items and entity previews. Axis-aligned scissors alone are insufficient. The existing stencil initialization in ModularUIClient also needs replacement.
-2. Replace structure rendering, highlights, custom projection/viewport handling, buffer uploads, and block-entity rendering with 26.2 rendering APIs. Preserve fluids, filtering, lighting, ray tracing, and resource disposal.
-3. Finish the graphics-context / widget / screen / input migration, tooltip extraction, reload hooks and mixin targets; then resolve the remaining ModularUI compilation errors.
-4. Compile GregTech and migrate its remaining capabilities, item components, serialization, recipes, networking, rendering, and mixins. Audit integration dependencies individually; do not silently remove functionality to force a build.
-5. Update resource/data formats, run tests and data generation, launch client and dedicated server, and exercise GUIs, recipes, machines, multiplayer synchronization, and save/reload before producing a release jar.
-
+1. Finish schema world/chunk APIs, fluid APIs, projection utilities, crafting, networking, configuration/reload hooks, and test fixtures.
+2. Update recipe-viewer dependencies and integrations; audit all mixin targets and access rules. Do not remove functionality simply to force compilation.
+3. Compile GregTech and finish its capabilities, components, serialization, recipes, networking, rendering, and data/resource migration.
+4. Run tests and data generation, launch client/server, and exercise GUIs, recipes, machines, synchronization, resource reloads, and persistence before release.
 No successful full build or in-game validation has occurred yet.

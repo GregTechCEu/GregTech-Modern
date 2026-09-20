@@ -33,10 +33,10 @@ public class EmbedHandler {
 
     public static void drawEmbed(ModularScreen screen, GuiGraphicsExtractor graphics, float partialTicks, Predicate<Renderable> vanillaElementFilter) {
         screen.getContext().reset();
-        PoseStack pose = graphics.pose();
-        var m = pose.last().pose();
-        pose.pushPose();
-        pose.setIdentity(); // reset all current transformations and only reapply them for the main panel
+        var pose = graphics.pose();
+        var m = brachy.modularui.drawable.GuiTransforms.toWorld(pose);
+        pose.pushMatrix();
+        pose.identity(); // reset all current transformations and only reapply them for the main panel
         screen.getMainPanel().transform((p, stack) -> {
             stack.multiply(m);
         });
@@ -47,23 +47,20 @@ public class EmbedHandler {
         screen.render(graphics, mx, my, partialTicks);
 
         if (vanillaElementFilter != null) {
-            RenderSystem.disableDepthTest();
+            graphics.nextStratum();
             ClientScreenHandler.drawVanillaElements(graphics, screen.getScreenWrapper().wrappedScreen(), mx, my, partialTicks, vanillaElementFilter);
         }
 
+        graphics.nextStratum();
         screen.drawForeground(graphics);
-
-        RenderSystem.enableDepthTest();
-        Lighting.setupFor3DItems();
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        pose.popPose();
+        pose.popMatrix();
     }
 
     public record EmbedWrapper(ModularScreen screen) implements IMuiScreen {
 
         @Override
         public Screen wrappedScreen() {
-            return Minecraft.getInstance().screen;
+            return Minecraft.getInstance().gui.screen();
         }
 
         @Override

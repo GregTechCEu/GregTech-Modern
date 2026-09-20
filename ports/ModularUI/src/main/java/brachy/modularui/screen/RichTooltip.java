@@ -193,23 +193,18 @@ public class RichTooltip implements IRichTextBuilder<RichTooltip> {
 
         Rectangle area = determineTooltipArea(copy, context, renderer, screenWidth, screenHeight, mouseX, mouseY);
 
-        Lighting.setupForFlatItems();
-        RenderSystem.disableDepthTest();
-        RenderSystem.disableBlend();
-
-        context.getGraphics().pose().pushPose();
+        context.getGraphics().nextStratum();
+        context.getGraphics().pose().pushMatrix();
         // Since we applied an offset to the mouse pos earlier, we need to correct it back, but only visually.
-        context.getGraphics().pose().translate(-screen.x, -screen.y, 400);
+        context.getGraphics().pose().translate(-screen.x, -screen.y);
         GuiDraw.drawTooltipBackground(context, stack, components, area.x, area.y, area.width, area.height, copy);
 
         // NeoForge.EVENT_BUS.post(new RenderTooltipEvent.PostBackground(stack, textLines, area.x, area.y,
         // TextRenderer.getFont(), area.width, area.height));
 
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-
         renderer.setPos(area.x, area.y);
         copy.compileAndDraw(renderer, context, false);
-        context.getGraphics().pose().popPose();
+        context.getGraphics().pose().popMatrix();
 
         context.setOverrideFont(null);
     }

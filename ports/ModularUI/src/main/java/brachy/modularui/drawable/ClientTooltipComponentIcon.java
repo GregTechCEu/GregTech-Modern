@@ -34,7 +34,7 @@ public class ClientTooltipComponentIcon implements IIcon {
 
     @Override
     public int getHeight() {
-        return this.clientTooltipComponent.getHeight();
+        return this.clientTooltipComponent.getHeight(this.lastFont != null ? this.lastFont : Minecraft.getInstance().font);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ClientTooltipComponentIcon implements IIcon {
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
         this.lastFont = context.getFont();
-        this.clientTooltipComponent.renderText(this.lastFont, x, y, context.getLastGraphicsPose(), context.getGraphics().bufferSource());
-        this.clientTooltipComponent.renderImage(this.lastFont, x, y, context.getGraphics());
+        this.clientTooltipComponent.extractText(context.getGraphics(), this.lastFont, x, y);
+        this.clientTooltipComponent.extractImage(this.lastFont, x, y, width, height, context.getGraphics());
     }
 }

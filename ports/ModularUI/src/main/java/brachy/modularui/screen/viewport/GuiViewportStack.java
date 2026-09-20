@@ -259,6 +259,10 @@ public class GuiViewportStack implements IViewportStack {
         poseStack.mulPose(this.top.getMatrix());
     }
 
+    public void applyTo(org.joml.Matrix3x2fStack poseStack) {
+        if (this.top != null) poseStack.mul(brachy.modularui.drawable.GuiTransforms.toGui(this.top.getMatrix()));
+    }
+
     @Nullable
     @Override
     public TransformationMatrix peek() {

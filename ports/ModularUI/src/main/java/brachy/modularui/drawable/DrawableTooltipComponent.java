@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public record DrawableTooltipComponent(IDrawable drawable) implements ClientTooltipComponent, TooltipComponent {
 
     @Override
-    public int getHeight() {
+    public int getHeight(@NotNull Font font) {
         if (drawable instanceof IIcon icon) {
             return icon.getHeight();
         } else if (drawable instanceof Text key) {
@@ -38,12 +38,15 @@ public record DrawableTooltipComponent(IDrawable drawable) implements ClientTool
     }
 
     @Override
-    public void renderImage(@NotNull Font font, int x, int y, @NotNull GuiGraphicsExtractor guiGraphics) {
+    public void extractImage(@NotNull Font font, int x, int y, int width, int height, @NotNull GuiGraphicsExtractor guiGraphics) {
         GuiContext context = GuiContext.getDefault();
         GuiGraphicsExtractor lastGraphics = context.getGraphics();
 
         context.setGraphics(guiGraphics);
-        drawable.draw(context, x, y, getWidth(font), getHeight(), WidgetTheme.getDefault().theme());
-        context.setGraphics(lastGraphics);
+        try {
+            drawable.draw(context, x, y, getWidth(font), getHeight(font), WidgetTheme.getDefault().theme());
+        } finally {
+            context.setGraphics(lastGraphics);
+        }
     }
 }

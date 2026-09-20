@@ -27,8 +27,7 @@ public class RecipeScreenRenderingUtil {
                                             int mouseX, int mouseY, float partialTick) {
         screen.getContext().setGraphics(guiGraphics);
         screen.getContext().updateState(mouseX, mouseY, partialTick);
-        screen.getContext().graphicsPose().pushPose();
-        RenderSystem.applyModelViewMatrix();
+        screen.getContext().graphicsPose().pushMatrix();
 
         // copied from ClientScreenHandler#drawScreenInternal to
         // let us draw foreground elements separately after everything else.
@@ -37,17 +36,12 @@ public class RecipeScreenRenderingUtil {
 
         screen.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        RenderSystem.disableDepthTest();
-
+        guiGraphics.nextStratum();
         ClientScreenHandler.drawVanillaElements(guiGraphics, screen.getScreenWrapper().wrappedScreen(),
                 mouseX, mouseY, partialTick);
 
-        RenderSystem.enableDepthTest();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
         //screen.getContext().getStencil().pop();
-        screen.getContext().graphicsPose().popPose();
-        RenderSystem.applyModelViewMatrix();
+        screen.getContext().graphicsPose().popMatrix();
     }
 
     @ApiStatus.Internal
@@ -55,21 +49,16 @@ public class RecipeScreenRenderingUtil {
                                             int mouseX, int mouseY, float partialTick) {
         screen.getContext().setGraphics(guiGraphics);
         screen.getContext().updateState(mouseX, mouseY, partialTick);
-        //screen.getContext().graphicsPose().pushPose();
+        //screen.getContext().graphicsPose().pushMatrix();
 
         // copied from ClientScreenHandler#drawScreenInternal to
         // let us draw foreground elements separately after everything else.
         //screen.getContext().getStencil().push(screen.getScreenArea());
-        RenderSystem.disableDepthTest();
-        Lighting.setupForFlatItems();
 
+        guiGraphics.nextStratum();
         screen.drawForeground(guiGraphics);
 
-        RenderSystem.enableDepthTest();
-        Lighting.setupFor3DItems();
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-
         //screen.getContext().getStencil().pop();
-        //screen.getContext().graphicsPose().popPose();
+        //screen.getContext().graphicsPose().popMatrix();
     }
 }

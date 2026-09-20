@@ -16,7 +16,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.profiling.InactiveProfiler;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.TickRateManager;
 import net.minecraft.world.entity.Entity;
@@ -24,7 +23,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.alchemy.PotionBrewing;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeAccess;
+import net.minecraft.world.attribute.EnvironmentAttributeSystem;
+import net.minecraft.world.clock.ClockManager;
+import net.minecraft.world.level.block.entity.FuelValues;
+import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
@@ -89,6 +92,8 @@ public class SchemaLevel extends Level implements ISchema {
     private final DummyChunkSource chunkSource = new DummyChunkSource(this);
     private final Holder<Biome> biome;
     private final DataLayer defaultDataLayer;
+    private final EnvironmentAttributeSystem environmentAttributes;
+    private final ClockManager clocks = definition -> 6000L;
 
     public static final SchemaLevel INSTANCE = new SchemaLevel();
 
@@ -101,14 +106,14 @@ public class SchemaLevel extends Level implements ISchema {
                 createLevelData(),
                 LEVEL_ID,
                 registryAccess,
-                registryAccess.registryOrThrow(Registries.DIMENSION_TYPE)
-                        .getHolderOrThrow(BuiltinDimensionTypes.OVERWORLD),
-                () -> InactiveProfiler.INSTANCE,
+                registryAccess.lookupOrThrow(Registries.DIMENSION_TYPE)
+                        .getOrThrow(BuiltinDimensionTypes.OVERWORLD),
                 true,
                 false,
                 0,
                 1000000);
-        this.biome = registryAccess.registryOrThrow(Registries.BIOME).getHolderOrThrow(Biomes.PLAINS);
+        this.biome = registryAccess.lookupOrThrow(Registries.BIOME).getOrThrow(Biomes.PLAINS);
+        this.environmentAttributes = EnvironmentAttributeSystem.builder().addDefaultLayers(this).build();
 
         // the argument named "size" is actually the default value.
         // We want all blocks to have max light, so we create a pre-filled light data layer
@@ -117,8 +122,7 @@ public class SchemaLevel extends Level implements ISchema {
 
     private static ClientLevel.ClientLevelData createLevelData() {
         var levelData = new ClientLevel.ClientLevelData(Difficulty.NORMAL, false, false);
-        // set time of day to noon (from TimeCommand noon)
-        levelData.setDayTime(6000);
+        // The preview's clockManager keeps its environment at noon.
         return levelData;
     }
 
@@ -127,10 +131,10 @@ public class SchemaLevel extends Level implements ISchema {
      * changed in that chunk.
      */
     protected void prepareLighting(BlockPos pos) {
-        ChunkPos minChunk = new ChunkPos(pos.offset(-1, -1, -1));
-        ChunkPos maxChunk = new ChunkPos(pos.offset(1, 1, 1));
+        ChunkPos minChunk = ChunkPos.containing(pos.offset(-1, -1, -1));
+        ChunkPos maxChunk = ChunkPos.containing(pos.offset(1, 1, 1));
         ChunkPos.rangeClosed(minChunk, maxChunk).forEach(chunkPos -> {
-            if (litSections.add(chunkPos.toLong())) {
+            if (litSections.add(chunkPos.pack())) {
                 LevelLightEngine lightEngine = getLightEngine();
                 for (int i = 0; i < getSectionsCount(); ++i) {
                     int y = getSectionYFromSectionIndex(i);
@@ -255,11 +259,11 @@ public class SchemaLevel extends Level implements ISchema {
     }
 
     @Override
-    public void playSeededSound(@Nullable Player player, double x, double y, double z, Holder<SoundEvent> sound,
+    public void playSeededSound(@Nullable Entity player, double x, double y, double z, Holder<SoundEvent> sound,
                                 SoundSource source, float volume, float pitch, long seed) {}
 
     @Override
-    public void playSeededSound(@Nullable Player player, Entity entity, Holder<SoundEvent> sound, SoundSource category,
+    public void playSeededSound(@Nullable Entity player, Entity entity, Holder<SoundEvent> sound, SoundSource category,
                                 float volume, float pitch, long seed) {}
 
     @Override
@@ -286,20 +290,39 @@ public class SchemaLevel extends Level implements ISchema {
     }
 
     @Override
-    public void setMapData(MapId mapId, MapItemSavedData mapData) {}
-
-    @Override
-    public MapId getFreeMapId() {
-        return new MapId(0);
-    }
-
-    @Override
     public void destroyBlockProgress(int breakerId, BlockPos pos, int progress) {}
 
     @Override
-    public RecipeManager getRecipeManager() {
-        return SidedAccessHelper.getRecipeManager();
+    public RecipeAccess recipeAccess() {
+        return SidedAccessHelper.getRecipeAccess();
     }
+
+    @Override public FuelValues fuelValues() { return SidedAccessHelper.getFuelValues(); }
+    @Override public ClockManager clockManager() { return clocks; }
+    @Override public EnvironmentAttributeSystem environmentAttributes() { return environmentAttributes; }
+    @Override public LevelData.RespawnData getRespawnData() { return levelData.getRespawnData(); }
+    @Override public void setRespawnData(LevelData.RespawnData data) { levelData.setSpawn(data); }
+
+    @Override
+    public java.util.Collection<net.minecraft.world.entity.boss.enderdragon.EnderDragonPart> dragonParts() {
+        var parts = new java.util.ArrayList<net.minecraft.world.entity.boss.enderdragon.EnderDragonPart>();
+        for (Entity entity : getAllEntities()) {
+            if (entity instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon dragon) {
+                java.util.Collections.addAll(parts, dragon.getSubEntities());
+            }
+        }
+        return parts;
+    }
+
+    /** Like ClientLevel, this display-only level does not simulate explosions. */
+    @Override
+    public void explode(@Nullable Entity source, @Nullable net.minecraft.world.damagesource.DamageSource damage,
+                        @Nullable net.minecraft.world.level.ExplosionDamageCalculator calculator,
+                        double x, double y, double z, float radius, boolean fire, ExplosionInteraction interaction,
+                        net.minecraft.core.particles.ParticleOptions smallParticles,
+                        net.minecraft.core.particles.ParticleOptions largeParticles,
+                        net.minecraft.util.random.WeightedList<net.minecraft.core.particles.ExplosionParticleInfo> particles,
+                        Holder<SoundEvent> sound) {}
 
     @Override
     public LevelTickAccess<Block> getBlockTicks() {
@@ -312,12 +335,11 @@ public class SchemaLevel extends Level implements ISchema {
     }
 
     @Override
-    public void levelEvent(@Nullable Player player, int type, BlockPos pos, int data) {}
+    public void levelEvent(@Nullable Entity player, int type, BlockPos pos, int data) {}
 
     @Override
     public void gameEvent(Holder<GameEvent> gameEvent, Vec3 pos, GameEvent.Context context) {}
 
-    @Override
     public float getShade(Direction direction, boolean shade) {
         if (!shade) {
             return 1.0f;

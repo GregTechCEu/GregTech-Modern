@@ -35,6 +35,7 @@ foreach ($artifact in @('org.junit.jupiter/junit-jupiter-api/5.9.2',
 
 $sourceFiles = @(
     'src/main/java/brachy/modularui/drawable/GuiTint.java',
+    'src/main/java/brachy/modularui/drawable/GuiTransforms.java',
     'src/main/java/brachy/modularui/drawable/GuiStencil.java',
     'src/main/java/brachy/modularui/drawable/GuiShapeRenderState.java',
     'src/main/java/brachy/modularui/drawable/GuiShapeBuilder.java',

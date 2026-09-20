@@ -16,7 +16,7 @@ public record RecipeViewerScreenWrapper(ModularScreen screen) implements IMuiScr
 
     @Override
     public Screen wrappedScreen() {
-        return Minecraft.getInstance().screen;
+        return Minecraft.getInstance().gui.screen();
     }
 
     @Override

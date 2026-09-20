@@ -6,7 +6,8 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.alchemy.PotionBrewing;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeAccess;
+import net.minecraft.world.level.block.entity.FuelValues;
 import net.neoforged.neoforge.network.connection.ConnectionType;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
@@ -25,12 +26,16 @@ public final class SidedAccessHelper {
         }
     }
 
-    public static RecipeManager getRecipeManager() {
+    public static RecipeAccess getRecipeAccess() {
         if (ModularUI.isClientThread()) {
-            return ClientCallWrapper.getClientRecipeManager();
+            return ClientCallWrapper.getClientRecipeAccess();
         } else {
             return getServer().getRecipeManager();
         }
+    }
+
+    public static FuelValues getFuelValues() {
+        return ModularUI.isClientThread() ? ClientCallWrapper.getClientFuelValues() : getServer().fuelValues();
     }
 
     public static PotionBrewing getPotionBrewing() {

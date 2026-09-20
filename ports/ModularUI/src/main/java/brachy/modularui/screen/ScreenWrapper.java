@@ -26,8 +26,8 @@ public class ScreenWrapper extends Screen implements IMuiScreen {
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        handleDrawBackground(guiGraphics, mouseX, mouseY, partialTick, super::renderBackground);
+    public void extractBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        handleDrawBackground(guiGraphics, mouseX, mouseY, partialTick, super::extractBackground);
     }
 
     @Override

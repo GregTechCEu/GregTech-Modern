@@ -69,12 +69,12 @@ public class InternalWidgetTree {
         boolean canBeSeen = parent.canBeSeen(context);
 
         // apply transformations to opengl
-        graphics.pose().pushPose();
+        graphics.pose().pushMatrix();
         context.applyTo(graphics.pose());
 
         if (canBeSeen) {
             // draw widget
-            graphics.setColor(1f, 1f, 1f, alpha);
+            brachy.modularui.drawable.GuiTint.set(net.minecraft.util.ARGB.colorFromFloat(alpha, 1, 1, 1));
             WidgetThemeEntry<?> widgetTheme = parent.getWidgetTheme(parent.getPanel().getTheme());
             if (shouldDrawBackground) parent.drawBackground(context, widgetTheme);
             parent.draw(context, widgetTheme);
@@ -84,14 +84,14 @@ public class InternalWidgetTree {
         if (viewport != null) {
             if (canBeSeen) {
                 // draw viewport without children transformation
-                graphics.setColor(1f, 1f, 1f, alpha);
+                brachy.modularui.drawable.GuiTint.set(net.minecraft.util.ARGB.colorFromFloat(alpha, 1, 1, 1));
                 viewport.preDraw(context, false);
-                graphics.pose().popPose();
+                graphics.pose().popMatrix();
                 // apply children transformation of the viewport
                 context.pushViewport(viewport, parent.getArea());
                 viewport.transformChildren(context);
                 // apply to opengl and draw with transformation
-                graphics.pose().pushPose();
+                graphics.pose().pushMatrix();
                 context.applyTo(graphics.pose());
                 viewport.preDraw(context, true);
             } else {
@@ -101,7 +101,7 @@ public class InternalWidgetTree {
             }
         }
         // remove all opengl transformations
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
 
         // render all children if there are any
         List<IWidget> children = parent.getChildren();
@@ -121,18 +121,18 @@ public class InternalWidgetTree {
         if (viewport != null) {
             if (canBeSeen) {
                 // apply opengl transformations again and draw
-                graphics.setColor(1f, 1f, 1f, alpha);
-                graphics.pose().pushPose();
+                brachy.modularui.drawable.GuiTint.set(net.minecraft.util.ARGB.colorFromFloat(alpha, 1, 1, 1));
+                graphics.pose().pushMatrix();
                 context.applyTo(graphics.pose());
                 viewport.postDraw(context, true);
                 // remove children transformation of this viewport
                 context.popViewport(viewport);
-                graphics.pose().popPose();
+                graphics.pose().popMatrix();
                 // apply transformation again to opengl and draw
-                graphics.pose().pushPose();
+                graphics.pose().pushMatrix();
                 context.applyTo(graphics.pose());
                 viewport.postDraw(context, false);
-                graphics.pose().popPose();
+                graphics.pose().popMatrix();
             } else {
                 // only remove transformation
                 context.popViewport(viewport);
@@ -159,15 +159,15 @@ public class InternalWidgetTree {
         }
 
         // apply transformations to opengl
-        graphics.pose().pushPose();
+        graphics.pose().pushMatrix();
         context.applyTo(graphics.pose());
 
         // draw widget
-        graphics.setColor(1f, 1f, 1f, alpha);
+        brachy.modularui.drawable.GuiTint.set(net.minecraft.util.ARGB.colorFromFloat(alpha, 1, 1, 1));
         WidgetThemeEntry<?> widgetTheme = parent.getWidgetTheme(parent.getPanel().getTheme());
         parent.drawBackground(context, widgetTheme);
 
-        graphics.pose().popPose();
+        graphics.pose().popMatrix();
         context.popMatrix();
     }
 
@@ -176,8 +176,8 @@ public class InternalWidgetTree {
         context.pushMatrix();
         parent.transform(context);
 
-        context.getGraphics().setColor(1, 1, 1, 1);
-        RenderSystem.enableBlend();
+        brachy.modularui.drawable.GuiTint.set(-1);
+
         parent.drawForeground(context);
 
         List<IWidget> children = parent.getChildren();

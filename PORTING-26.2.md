@@ -1,62 +1,44 @@
 # Minecraft 26.2 port status
 
-This checkout is an incomplete port. It does not yet produce a working mod.
+This is an unfinished source port, not a playable release. Changes are AI-assisted with OpenAI Codex; review them before contribution (see AI_POLICY.md).
 
-## Target and build
+## Target
 
-- Minecraft 26.2, NeoForge 26.2.0.88, Java 25.
-- The root build provisions Java 25 through the same Foojay resolver used by ModularUI.
-- The vendored UI library is in `ports/ModularUI`.
-- On this machine, the first parallel build exhausted Windows commit memory. Retrying with
-  `--no-parallel --max-workers=1` completed Minecraft decompilation and recompilation for both projects.
+Minecraft 26.2, NeoForge 26.2.0.88, Java 25. ModularUI is included from `ports/ModularUI`.
 
-```text
-gradlew compileJava -PportDiagnostics --no-parallel --max-workers=1 --console=plain
-gradlew :ModularUI:compileJava -PportDiagnostics --no-parallel --max-workers=1 --console=plain
+## Latest verification — 2026-09-20
+
+- Full ModularUI diagnostic compilation reports **133 errors**. Earlier declaration-only counts understated the remaining work; diagnostic mode now invokes javac directly to avoid Gradle's constant-analysis crash on missing integration types.
+- Eleven isolated rendering checks pass: six GUI geometry/transform checks and five structure geometry/camera/highlight checks. These compile against the cached Minecraft/NeoForge artifacts, not replacement API stubs.
+- The changed GUI context, widget tree, screen adapters, tooltips, item slots, and input handlers have no errors in the latest compiler output. This does not establish runtime correctness.
+- GregTech's complete compilation, client/server startup, data generation, resource reloads, and gameplay validation have not passed. No release jar is available.
+
+## Implemented in this pass
+
+- Updated GUI transforms to the two-dimensional extraction pose stack, with an explicit conversion for widget coordinates and a rotation/scale/picking regression check.
+- Migrated tooltip text/images, panel layers, embedded screens, overlays, and item decoration extraction.
+- Updated screen lookup/open/close, modifier keys, clipboard shortcuts, mouse event forwarding, and double-click state.
+- Preserved full Unicode code points through character input, including the GregTech text/code editor callers.
+- Replaced obsolete container drawing fields with vanilla's current carried-item renderer; updated the hovered-slot mixin target and mutable container-size accessors.
+
+The previous rendering pass added deferred primitive/texture states, stencil clipping, entity and structure picture-in-picture rendering, fluid/block geometry extraction, preview lighting, and selection overlays. These still need in-game validation.
+
+## Remaining work
+
+- Finish the schema world/chunk APIs, obsolete projection utilities, fluid rendering and transfer APIs, crafting and networking, configuration/reload changes, and test fixtures.
+- Migrate recipe-viewer integrations and dependencies. The catalogs still contain older Minecraft versions, including ModularUI 1.21.1 and root 1.20.1 dependencies.
+- Compile the full GregTech project, finish its API/data/resource migration, and audit all mixins and access transformers against actual target members.
+- Run tests and data generation, build artifacts, launch client and dedicated server, and validate GUI interactions, machines, recipes, synchronization, and save/reload.
+
+## Reproduce
+
+Use a Java 25 installation for `JAVA_HOME` and run from the repository root:
+
+```powershell
+./gradlew.bat :ModularUI:compileJava -PportDiagnostics --no-parallel --max-workers=1 --console=plain
+./ports/ModularUI/scripts/check-rendering.ps1 -JavaHome $env:JAVA_HOME
 ```
 
-## Changes checked on 2026-09-19
+The isolated checks require generated Minecraft artifacts and cached JUnit dependencies. On this machine, parallel initial decompilation exhausted Windows commit memory, so use one worker.
 
-- Updated moved RenderType, ModelData, and OpenGL helper imports in both projects.
-- Replaced ModularUI's ClickType references with ContainerInput, whose enum values and
-  container click signature were checked against the generated Minecraft sources.
-- Replaced FastColor.ARGB32 with ARGB in GradientUtil.
-- Migrated ModularUI reload events to AddServerReloadListenersEvent and
-  AddClientReloadListenersEvent, including identifiers for client listeners.
-- Updated the server-resource constructor mixin to read NeoForge's registryAccess field
-  at constructor return, without binding to the obsolete constructor arguments or TagManager field.
-- Replaced TextureAtlasHolder with a TextureAtlas owned by TextureManager and an asynchronous
-  reload listener. Stitching and mip preparation complete before the reload barrier; upload runs
-  on the reload executor. The custom atlas definition remains in use.
-- Updated 14 access-transformer rules against actual 26.2 source signatures, including the
-  LootItem constructor's Holder and List parameters. These rules no longer appear in the
-  source transformer's missing-target report.
-
-## Validation limits and remaining work
-
-The initial ModularUI compiler pass reported 73 errors. The latest pass reports 35
-declaration errors. This is not the total remaining port workload: javac may expose more
-errors after the missing types are resolved. GregTech compilation remains blocked by ModularUI.
-The changed classes have not passed a complete compilation or runtime test.
-
-The next major task is ModularUI rendering: Stencil, GuiDraw, CircularProgressDrawable,
-BaseSchemaRenderer, BlockHighlight, DummyLightTexture, RenderLevel, MUIRenderTypes,
-SpriteHelper, ClientScreenHandler, and RichTooltipEvent still reference removed APIs.
-ShaderInstance, BufferUploader, Tesselator, MultiBufferSource, VertexBuffer, BakedModel,
-LevelTimeAccess, RenderStateShard, and the old tooltip/screen events need behavioral ports.
-
-Eight access rules still target removed members: the old no-silk-touch field, block-model
-generator helpers, item-model generator field, attribute UUID fields, boat type field, and
-chunk beginLayer method. Their consumers need updates before those rules can be replaced or removed.
-Interface injection and all mixin targets also need a full audit.
-
-The main dependency catalog still includes 1.20.1 integrations, and ModularUI's catalog
-includes 1.21.1 integrations. They need compatible dependency versions and API migrations.
-After both projects compile, run the tests, build the jars, and validate client startup,
-dedicated-server startup, resource reloads, GUI interactions, recipes, and world persistence.
-None of those end-to-end checks has passed yet.
-
-Local diagnostic logs are under `build/port-compile.log`, `build/modularui-compile.log`,
-and `build/access-rules-check.log`; Gradle ignores this directory.
-
-AI disclosure: OpenAI Codex generated the changes described above and ran the diagnostic builds.
+Current local logs: `build/active-port.log` and `build/scene-check.log`. These files are ignored by Git. See `ports/PORTING-26.2.md` for the rendering checkpoint.

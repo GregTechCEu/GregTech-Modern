@@ -19,10 +19,11 @@ public class DummyChunk extends LevelChunk {
         return (SchemaLevel) getLevel();
     }
 
-    public @Nullable BlockState setBlockState(@NotNull BlockPos pos, @NotNull BlockState state, boolean isMoving) {
+    @Override
+    public @Nullable BlockState setBlockState(@NotNull BlockPos pos, @NotNull BlockState state, int flags) {
         getSchemaLevel().prepareLighting(pos);
 
-        var result = super.setBlockState(pos, state, isMoving);
+        var result = super.setBlockState(pos, state, flags);
         if (!state.isAir()) {
             getSchemaLevel().addFilledBlock(pos);
         } else {

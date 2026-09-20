@@ -108,7 +108,7 @@ public interface Interactable {
      * {@link Result#SUCCESS}
      */
     @NotNull
-    default Result onCharTyped(char codePoint, int modifiers) {
+    default Result onCharTyped(int codePoint, int modifiers) {
         return Result.IGNORE;
     }
 
@@ -141,7 +141,7 @@ public interface Interactable {
      */
     @OnlyIn(Dist.CLIENT)
     static boolean hasControlDown() {
-        return Screen.hasControlDown();
+        return net.minecraft.client.Minecraft.getInstance().hasControlDown();
     }
 
     /**
@@ -149,7 +149,7 @@ public interface Interactable {
      */
     @OnlyIn(Dist.CLIENT)
     static boolean hasShiftDown() {
-        return Screen.hasShiftDown();
+        return net.minecraft.client.Minecraft.getInstance().hasShiftDown();
     }
 
     /**
@@ -157,7 +157,7 @@ public interface Interactable {
      */
     @OnlyIn(Dist.CLIENT)
     static boolean hasAltDown() {
-        return Screen.hasAltDown();
+        return net.minecraft.client.Minecraft.getInstance().hasAltDown();
     }
 
     static boolean isModifierActive(int mod, int key) {
@@ -182,7 +182,7 @@ public interface Interactable {
      */
     @OnlyIn(Dist.CLIENT)
     static boolean isKeyPressed(int key) {
-        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), key);
+        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), key);
     }
 
     /**

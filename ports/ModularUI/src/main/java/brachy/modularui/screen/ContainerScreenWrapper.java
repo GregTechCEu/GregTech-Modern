@@ -45,12 +45,9 @@ public class ContainerScreenWrapper extends AbstractContainerScreen<ModularConta
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        handleDrawBackground(guiGraphics, mouseX, mouseY, partialTick, super::renderBackground);
+    public void extractBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        handleDrawBackground(guiGraphics, mouseX, mouseY, partialTick, super::extractBackground);
     }
-
-    @Override
-    protected void renderBg(@NotNull GuiGraphicsExtractor guiGraphics, float partialTick, int mouseX, int mouseY) {}
 
     @Override
     public @NotNull ModularScreen screen() {
@@ -61,8 +58,8 @@ public class ContainerScreenWrapper extends AbstractContainerScreen<ModularConta
     public void updateGuiArea(Rectangle area) {
         this.leftPos = area.x;
         this.topPos = area.y;
-        this.imageWidth = area.width;
-        this.imageHeight = area.height;
+        ((brachy.modularui.core.mixins.client.AbstractContainerScreenAccessor) this).setImageWidth(area.width);
+        ((brachy.modularui.core.mixins.client.AbstractContainerScreenAccessor) this).setImageHeight(area.height);
     }
 
     @Override

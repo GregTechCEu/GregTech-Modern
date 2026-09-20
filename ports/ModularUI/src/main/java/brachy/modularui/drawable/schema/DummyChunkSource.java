@@ -40,9 +40,9 @@ public class DummyChunkSource extends ChunkSource {
         // remove all 'filled' blocks from the schema level
         this.chunks.values().forEach(chunk -> {
             ChunkPos chunkPos = chunk.getPos();
-            for (BlockPos pos : BlockPos.betweenClosed(chunkPos.getMinBlockX(), chunk.getMinBuildHeight(),
+            for (BlockPos pos : BlockPos.betweenClosed(chunkPos.getMinBlockX(), chunk.getMinY(),
                     chunkPos.getMinBlockZ(),
-                    chunkPos.getMaxBlockX(), chunk.getMaxBuildHeight(), chunkPos.getMaxBlockZ())) {
+                    chunkPos.getMaxBlockX(), chunk.getMaxY(), chunkPos.getMaxBlockZ())) {
                 this.level.removeFilledBlock(pos);
             }
         });
@@ -53,7 +53,7 @@ public class DummyChunkSource extends ChunkSource {
     @Override
     public @Nullable ChunkAccess getChunk(int chunkX, int chunkZ, @NotNull ChunkStatus requiredStatus, boolean load) {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
-        return chunks.computeIfAbsent(pos.toLong(), posLong1 -> {
+        return chunks.computeIfAbsent(pos.pack(), posLong1 -> {
             DummyChunk newChunk = new DummyChunk(level, pos);
             newChunk.setLoaded(true);
             return newChunk;

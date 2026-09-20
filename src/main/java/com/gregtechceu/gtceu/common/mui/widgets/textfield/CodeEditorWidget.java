@@ -74,7 +74,7 @@ public class CodeEditorWidget<T> extends TextEditorWidget<CodeEditorWidget<T>> {
     }
 
     @Override
-    public @NotNull Result onCharTyped(char codePoint, int modifiers) {
+    public @NotNull Result onCharTyped(int codePoint, int modifiers) {
         lastEdited = Util.getEpochMillis();
         return super.onCharTyped(codePoint, modifiers);
     }
@@ -102,10 +102,10 @@ public class CodeEditorWidget<T> extends TextEditorWidget<CodeEditorWidget<T>> {
 
     @Override
     protected void drawText(ModularGuiContext context, TextFieldTheme widgetTheme) {
-        context.graphicsPose().pushPose();
-        context.graphicsPose().translate(-1, 3, 0);
+        context.graphicsPose().pushMatrix();
+        context.graphicsPose().translate(-1, 3);
         this.renderer.draw(context.getGraphics(), getTextAsComponents());
-        context.graphicsPose().popPose();
+        context.graphicsPose().popMatrix();
         getScrollArea().getScrollX().setScrollSize(Math.max(0, (int) (this.renderer.getLastWidth() + 0.5f)));
     }
 

@@ -2,6 +2,7 @@ package brachy.modularui;
 
 import brachy.modularui.drawable.GuiShapeRenderState;
 import brachy.modularui.drawable.GuiShapeRenderState.Vertex;
+import brachy.modularui.drawable.GuiTransforms;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import org.joml.Matrix3x2f;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,21 @@ import static brachy.modularui.drawable.GuiShapeRenderState.Topology.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GuiShapeRenderStateTest {
+    @Test
+    void widgetTransformMatchesGuiDrawingAndPicking() {
+        var widget = new org.joml.Matrix4f().translate(35, -18, 400).rotateZ(.7f).scale(2, .5f, 1);
+        var gui = GuiTransforms.toGui(widget);
+        var expected = widget.transformPosition(4, -6, 0, new org.joml.Vector3f());
+        var actual = gui.transformPosition(4, -6, new org.joml.Vector2f());
+        assertEquals(expected.x, actual.x, .00001f);
+        assertEquals(expected.y, actual.y, .00001f);
+        var roundTrip = GuiTransforms.toWorld(gui).transformPosition(4, -6, 0, new org.joml.Vector3f());
+        assertEquals(expected.x, roundTrip.x, .00001f);
+        assertEquals(expected.y, roundTrip.y, .00001f);
+        var local = gui.invert(new Matrix3x2f()).transformPosition(actual);
+        assertEquals(4f, local.x, .00001f);
+        assertEquals(-6f, local.y, .00001f);
+    }
     private static final List<Vertex> QUAD = List.of(new Vertex(0, 0, 1), new Vertex(0, 2, 2),
             new Vertex(4, 2, 3), new Vertex(4, 0, 4));
 
@@ -71,6 +87,7 @@ public class GuiShapeRenderStateTest {
         test.fanTrianglesRemainIndependentQuads();
         test.stripPreservesAlternatingWinding();
         test.validatesPrimitiveCounts();
-        System.out.println("GUI geometry: 5 checks passed");
+        test.widgetTransformMatchesGuiDrawingAndPicking();
+        System.out.println("GUI geometry: 6 checks passed");
     }
 }

@@ -64,17 +64,15 @@ public class OverlayStack {
             screen.getContext().setGraphics(graphics);
             screen.getContext().updateState(mouseX, mouseY, partialTicks);
             screen.getContext().reset();
-            RenderSystem.enableBlend();
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            graphics.nextStratum();
+            brachy.modularui.drawable.GuiTint.set(-1);
             screen.render(graphics, mouseX, mouseY, partialTicks);
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            brachy.modularui.drawable.GuiTint.set(-1);
             screen.drawForeground(graphics);
             if (screen.getContext().isHovered()) hovered = screen;
             fallback = screen;
         }
         ClientScreenHandler.drawDebugScreen(graphics, hovered, fallback);
-        RenderSystem.enableDepthTest();
-        Lighting.setupFor3DItems();
     }
 
     public static void open(ModularScreen screen) {

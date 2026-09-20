@@ -14,9 +14,11 @@ import java.util.Set;
 @Mixin(AbstractContainerScreen.class)
 public interface AbstractContainerScreenAccessor {
 
+    @org.spongepowered.asm.mixin.Mutable
     @Accessor
     void setImageWidth(int v);
 
+    @org.spongepowered.asm.mixin.Mutable
     @Accessor
     void setImageHeight(int v);
 
@@ -33,15 +35,6 @@ public interface AbstractContainerScreenAccessor {
     Slot getHoveredSlot();
 
     @Accessor
-    Slot getClickedSlot();
-
-    @Accessor
-    ItemStack getDraggingItem();
-
-    @Accessor
-    boolean getIsSplittingStack();
-
-    @Accessor
     boolean getIsQuickCrafting();
 
     @Accessor
@@ -55,28 +48,4 @@ public interface AbstractContainerScreenAccessor {
 
     @Accessor
     int getQuickCraftingRemainder();
-
-    @Accessor
-    ItemStack getSnapbackItem();
-
-    @Accessor
-    void setSnapbackItem(ItemStack stack);
-
-    @Accessor
-    Slot getSnapbackEnd();
-
-    @Accessor
-    int getSnapbackStartX();
-
-    @Accessor
-    int getSnapbackStartY();
-
-    @Accessor
-    long getSnapbackTime();
-
-    @Invoker
-    void invokeRenderLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY);
-
-    @Invoker
-    void invokeRenderBg(GuiGraphicsExtractor guiGraphics, float partialTicks, int mouseX, int mouseY);
 }

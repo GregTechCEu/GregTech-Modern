@@ -75,7 +75,7 @@ public class ModularScreen implements Renderable {
     }
 
     public static boolean isActive(String owner, String name) {
-        return isScreen(Minecraft.getInstance().screen, owner, name);
+        return isScreen(Minecraft.getInstance().gui.screen(), owner, name);
     }
 
     @Nullable
@@ -270,7 +270,7 @@ public class ModularScreen implements Renderable {
     public void close(boolean force) {
         if (isActive()) {
             if (force) {
-                Minecraft.getInstance().popGuiLayer();
+                Minecraft.getInstance().gui.popScreenLayer();
                 return;
             }
             getMainPanel().closeIfOpen();
@@ -348,13 +348,16 @@ public class ModularScreen implements Renderable {
      * Do not call, only override!
      */
     @Override
+    public void extractRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        render(graphics, mouseX, mouseY, partialTick);
+    }
+
     public void render(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (!this.context.getUItype().isScreen) {
             checkManualUpdate(); // embeds can't trigger frame updates the proper way
         }
         this.context.setGraphics(graphics);
         this.context.updateState(mouseX, mouseY, partialTick);
-        Lighting.setupForFlatItems();
 
         this.context.pushViewport(null, this.context.getScreenArea());
         for (ModularPanel<?> panel : this.panelManager.getReverseOpenPanels()) {
@@ -364,9 +367,9 @@ public class ModularScreen implements Renderable {
                         Color.argb(16, 16, 16, (int) (125 * panel.getAlpha())));
             }
             WidgetTree.drawTree(panel, this.context);
-            // clear depth, so that anything drawn next will be guaranteed to be on top
-            RenderSystem.clearDepth(1);
-            RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+            // Each subsequent panel occupies a new deferred GUI layer.
+            graphics.nextStratum();
+
         }
         this.context.updateZ(0);
         this.context.popViewport(null);
@@ -381,8 +384,6 @@ public class ModularScreen implements Renderable {
      */
     public void drawForeground(GuiGraphicsExtractor graphics) {
         this.context.setGraphics(graphics);
-        Lighting.setupForFlatItems();
-        RenderSystem.disableDepthTest();
 
         this.context.pushViewport(null, this.context.getScreenArea());
         for (ModularPanel<?> panel : this.panelManager.getReverseOpenPanels()) {
@@ -533,15 +534,15 @@ public class ModularScreen implements Renderable {
 
     /**
      * Called when a keyboard key is released. Tries to invoke
-     * {@link Interactable#onCharTyped(char, int)
-     * Interactable#onCharTyped(char, int)} on every
+     * {@link Interactable#onCharTyped(int, int)
+     * Interactable#onCharTyped(int, int)} on every
      * widget under the mouse after gui action listeners have been called.
      *
      * @param codePoint the code point of the typed character
      * @param modifiers the key modifiers of the typed character (see modifiers at {@link InputConstants})
      * @return true if the action was consumed and further processing should be canceled
      */
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean charTyped(int codePoint, int modifiers) {
         this.context.updateTypedChar(codePoint, modifiers);
         for (IGuiAction.CharTyped action : getGuiActionListeners(IGuiAction.CharTyped.class)) {
             action.type(getContext(), codePoint, modifiers);

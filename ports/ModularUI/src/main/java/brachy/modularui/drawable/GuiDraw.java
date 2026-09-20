@@ -728,11 +728,16 @@ public class GuiDraw {
     @OnlyIn(Dist.CLIENT)
     public static void drawText(GuiGraphicsExtractor graphics, FormattedCharSequence text, float x, float y, float scale,
                                 int color, boolean shadow) {
+        drawText(graphics, Minecraft.getInstance().font, text, x, y, scale, color, shadow);
+    }
+
+    public static void drawText(GuiGraphicsExtractor graphics, net.minecraft.client.gui.Font font,
+                                FormattedCharSequence text, float x, float y, float scale, int color, boolean shadow) {
         graphics.pose().pushMatrix();
         try {
             graphics.pose().translate(x, y);
             graphics.pose().scale(scale, scale);
-            graphics.text(Minecraft.getInstance().font, text, 0, 0, color, shadow);
+            graphics.text(font, text, 0, 0, net.minecraft.util.ARGB.multiply(color, GuiTint.get()), shadow);
         } finally {
             graphics.pose().popMatrix();
         }

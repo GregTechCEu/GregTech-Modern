@@ -30,7 +30,7 @@ public class MCHelper {
     }
 
     public static void closeScreen() {
-        getMc().popGuiLayer();
+        getMc().gui.popScreenLayer();
     }
 
     public static void popScreen(boolean openParentOnClose, Screen parent) {
@@ -40,14 +40,14 @@ public class MCHelper {
             // instead they are kept in a stack until all screens are closed
             // prepareCloseContainer(player);
             if (openParentOnClose) {
-                Minecraft.getInstance().setScreen(parent);
+                Minecraft.getInstance().gui.setScreen(parent);
                 ModularNetwork.CLIENT.reopenSyncerOf(parent);
             } else {
-                Minecraft.getInstance().setScreen(null);
+                Minecraft.getInstance().gui.setScreen(null);
             }
         } else {
             // we are currently not in a world and want to display the previous screen
-            Minecraft.getInstance().setScreen(parent);
+            Minecraft.getInstance().gui.setScreen(parent);
         }
     }
 
@@ -55,12 +55,12 @@ public class MCHelper {
         if (screen == null) {
             closeScreen();
         } else {
-            getMc().setScreen(screen);
+            getMc().gui.setScreen(screen);
         }
     }
 
     public static Screen getCurrentScreen() {
-        return getMc() == null ? null : getMc().screen;
+        return getMc() == null ? null : getMc().gui.screen();
     }
 
     public static Font getFont() {

@@ -92,7 +92,7 @@ public class ScrollArea extends Area {
     public boolean mouseScroll(GuiContext context) {
         return this.mouseScroll(context.getMouseX(), context.getMouseY(),
                 context.getLastMouseScrollDeltaX(), context.getLastMouseScrollDeltaY(),
-                Screen.hasShiftDown());
+                net.minecraft.client.Minecraft.getInstance().hasShiftDown());
     }
 
     /**
