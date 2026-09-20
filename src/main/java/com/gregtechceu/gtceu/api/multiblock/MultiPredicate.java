@@ -8,11 +8,11 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.SettingsHolder;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Blocks;
 
 import dev.latvian.mods.rhino.util.RemapForJS;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Nullable;

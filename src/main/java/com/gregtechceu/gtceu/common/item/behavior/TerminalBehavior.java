@@ -63,7 +63,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
-import static com.gregtechceu.gtceu.api.multiblock.util.AutobuildHelper.readBlockPreferences;
 
 public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddInformation {
 
@@ -136,7 +135,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             if (structureHelper != null) {
                 MultiblockSchemaInfo schemaInfo = createSchemaInfoFromTag(stack);
 
-                structureHelper.populate(schemaInfo, resultStructure, pattern, readBlockPreferences(tag), frontFacing,
+                structureHelper.populate(schemaInfo, resultStructure, pattern,
+                        schemaInfo.getUserGlobalBlockPreferences(), frontFacing,
                         upFacing,
                         flipped);
             }
@@ -451,14 +451,16 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         CompoundTag tag = stack.getOrCreateTag();
 
         if (tag.contains("pos")) {
             long blockPos = tag.getLong("pos");
             BlockPos pos = BlockPos.of(blockPos);
-            tooltipComponents.add(Component.translatable("gtceu.top.buffer_bound_pos", pos.getX(), pos.getY(), pos.getZ())
-                    .withStyle(ChatFormatting.GOLD));
+            tooltipComponents
+                    .add(Component.translatable("gtceu.top.buffer_bound_pos", pos.getX(), pos.getY(), pos.getZ())
+                            .withStyle(ChatFormatting.GOLD));
         }
         if (tag.contains("controller")) {
             ResourceLocation controllerLocation = ResourceLocation.parse(tag.getString("controller"));

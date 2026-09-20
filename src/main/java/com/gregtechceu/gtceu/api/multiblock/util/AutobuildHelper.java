@@ -3,13 +3,10 @@ package com.gregtechceu.gtceu.api.multiblock.util;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-
 import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
@@ -28,24 +25,6 @@ import java.util.Map;
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
 public class AutobuildHelper {
-
-    // todo remove
-    public static Long2ObjectMap<BlockInfo> readBlockPreferences(CompoundTag tag) {
-        Long2ObjectMap<BlockInfo> blockPreferences = new Long2ObjectOpenHashMap<>();
-        if (!tag.contains("blockPreferences", CompoundTag.TAG_LIST)) {
-            return blockPreferences;
-        }
-
-        var preferences = tag.getList("blockPreferences", CompoundTag.TAG_COMPOUND);
-        for (int i = 0; i < preferences.size(); i++) {
-            CompoundTag preference = preferences.getCompound(i);
-            BlockState state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(),
-                    preference.getCompound("state"));
-            if (state.isAir()) continue;
-            blockPreferences.put(preference.getLong("pos"), BlockInfo.fromBlockState(state));
-        }
-        return blockPreferences;
-    }
 
     /*
      * iterate over every position in the structure
@@ -143,11 +122,13 @@ public class AutobuildHelper {
         }
 
         if (!whatWeWant.isEmpty()) {
-            player.displayClientMessage(Component.translatable("gtceu.autobuild.missing_blocks").withStyle(ChatFormatting.RED), false);
+            player.displayClientMessage(
+                    Component.translatable("gtceu.autobuild.missing_blocks").withStyle(ChatFormatting.RED), false);
         }
         for (var entry : whatWeWant.entrySet()) {
             if (entry.getValue() > 0) {
-                player.displayClientMessage(Component.literal(entry.getKey().toString() + " " + entry.getValue()), false);
+                player.displayClientMessage(Component.literal(entry.getKey().toString() + " " + entry.getValue()),
+                        false);
             }
         }
 

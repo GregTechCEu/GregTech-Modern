@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -48,10 +47,7 @@ import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.mojang.blaze3d.platform.InputConstants;
-import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
@@ -61,8 +57,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-
-import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
 @Accessors(chain = true)
 public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidget> {
@@ -129,16 +123,20 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 .wrap()
                 .coverChildrenWidth(20)
                 .height(height)
-                .children(this.multiblockSchemaInfo.getBlockCounts().reference2IntEntrySet(), e -> {
-                    ItemStack stack = new ItemStack(e.getKey(), e.getIntValue());
-                    return RecipeViewerSlotWidget.create(ItemStack.class)
-                            .recipeSlotRole(RecipeSlotRole.OUTPUT)
-                            .value(stack)
-                            .background(IDrawable.EMPTY)
-                            .size(16)
-                            .margin(1)
-                            .tooltip(r -> r.addFromItem(stack));
-                }));
+                .children(this.multiblockSchemaInfo.getBlockCounts()
+                        .reference2IntEntrySet()
+                        .stream()
+                        .filter(x -> !x.getKey().defaultBlockState().isAir())
+                        .toList(), e -> {
+                            ItemStack stack = new ItemStack(e.getKey(), e.getIntValue());
+                            return RecipeViewerSlotWidget.create(ItemStack.class)
+                                    .recipeSlotRole(RecipeSlotRole.OUTPUT)
+                                    .value(stack)
+                                    .background(IDrawable.EMPTY)
+                                    .size(16)
+                                    .margin(1)
+                                    .tooltip(r -> r.addFromItem(stack));
+                        }));
 
         this.selectedBlockHandler.widgetProvider(() -> {
             ItemStack selected = this.selectionInfo.stack();
@@ -316,7 +314,6 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .coverChildrenWidth()
                         .collapseDisabledChildren()
                         .childSeparator(Icon.EMPTY_2PX)
-                        // todo handle children
                         .children(predicate.expand(), basePredicate -> {
                             List<BlockInfo> candidates = basePredicate.getCandidates();
                             if (candidates.isEmpty())
