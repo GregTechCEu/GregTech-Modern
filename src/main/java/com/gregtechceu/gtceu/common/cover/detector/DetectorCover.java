@@ -84,7 +84,7 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
             context.getPlayer().sendSystemMessage(Component.translatable(translationKey));
         }
 
-        return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+        return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
     }
 
     @Override
@@ -104,7 +104,7 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        setInverted(tag.getBoolean("inverted"));
+        setInverted(tag.getBooleanOr("inverted", false));
         super.pasteConfig(player, tag);
     }
 }

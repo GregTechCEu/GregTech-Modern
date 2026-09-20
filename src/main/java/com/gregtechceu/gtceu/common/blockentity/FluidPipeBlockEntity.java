@@ -152,7 +152,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
     public void update() {
         timer++;
-        if (!level.isClientSide && getOffsetTimer() % FREQUENCY == 0) {
+        if (!level.isClientSide() && getOffsetTimer() % FREQUENCY == 0) {
             lastReceivedFrom &= 63;
             if (lastReceivedFrom == 63) {
                 lastReceivedFrom = 0;

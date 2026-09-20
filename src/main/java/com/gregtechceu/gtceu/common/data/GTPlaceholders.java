@@ -772,10 +772,10 @@ public class GTPlaceholders {
                 }
                 CompoundTag data = getData(ctx).getCompound(String.valueOf(ctx.index()));
                 int num = 0;
-                if (!data.getBoolean("completed")) {
-                    p = data.getInt("pointer");
-                    start = data.getInt("index");
-                    num = data.getInt("num");
+                if (!data.getBooleanOr("completed", false)) {
+                    p = data.getIntOr("pointer", 0);
+                    start = data.getIntOr("index", 0);
+                    num = data.getIntOr("num", 0);
                 }
                 data.putBoolean("completed", true);
                 for (int i = start; i < code.length(); i++) {
@@ -792,9 +792,9 @@ public class GTPlaceholders {
                     if (tag.getString(p).isEmpty()) tag.set(i, StringTag.valueOf("0"));
                     switch (code.charAt(i)) {
                         case '+' -> tag.set(p,
-                                StringTag.valueOf(String.valueOf((Integer.parseInt(tag.getString(p)) + num) % 256)));
+                                StringTag.valueOf(String.valueOf((Integer.parseInt(tag.getStringOr(p, "")) + num) % 256)));
                         case '-' -> {
-                            int tmp = Integer.parseInt(tag.getString(p)) - num;
+                            int tmp = Integer.parseInt(tag.getStringOr(p, "")) - num;
                             if (tmp < 0) tmp = (256 - ((-tmp) % 256)) % 256;
                             tag.set(p, StringTag.valueOf(String.valueOf(tmp)));
                         }
@@ -802,7 +802,7 @@ public class GTPlaceholders {
                         case '<' -> p -= num;
                         case '[' -> loops.push(i);
                         case ']' -> {
-                            if (Integer.parseInt(tag.getString(p)) == 0) loops.pop();
+                            if (Integer.parseInt(tag.getStringOr(p, "")) == 0) loops.pop();
                             else i = loops.peek() + 1;
                         }
                     }
@@ -1145,7 +1145,7 @@ public class GTPlaceholders {
                 if (blockEntity == null) return MultiLineComponent.empty();
                 Tag tag = blockEntity.saveWithFullMetadata();
                 if (tag instanceof CompoundTag compoundTag && compoundTag.contains("cover")) {
-                    CompoundTag coverTag = compoundTag.getCompound("cover");
+                    CompoundTag coverTag = compoundTag.getCompoundOrEmpty("cover");
                     if (coverTag.contains(ctx.side().getName())) {
                         CompoundTag cover = coverTag.getCompound(ctx.side().getName()).getCompound("payload")
                                 .getCompound("d");
@@ -1200,7 +1200,7 @@ public class GTPlaceholders {
             GTCreateIntegration.initPlaceholders();
         }
 
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.PLACEHOLDERS, Placeholder.class));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.PLACEHOLDERS, Placeholder.class));
         GTRegistries.PLACEHOLDERS.freeze();
     }
 

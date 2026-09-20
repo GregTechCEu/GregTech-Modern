@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
@@ -245,10 +246,10 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     public void deserializeNBT(Tag nbt) {
         if (nbt instanceof CompoundTag tag && !tag.isEmpty()) {
             initialized = true;
-            spoilContext = SpoilContext.deserializeNBT(tag.getCompound(SPOIL_CONTEXT_KEY));
-            creationTick = tag.getLong(CREATION_TICK_KEY);
-            if (tag.contains(FROZEN_TICKS_KEY, Tag.TAG_LONG)) {
-                frozenTicks = tag.getLong(FROZEN_TICKS_KEY);
+            spoilContext = SpoilContext.deserializeNBT(tag.getCompoundOrEmpty(SPOIL_CONTEXT_KEY));
+            creationTick = tag.getLongOr(CREATION_TICK_KEY, 0);
+            if ((tag.get(FROZEN_TICKS_KEY) instanceof LongTag)) {
+                frozenTicks = tag.getLongOr(FROZEN_TICKS_KEY, 0);
                 frozen = true;
             } else frozen = false;
         } else initialized = false;

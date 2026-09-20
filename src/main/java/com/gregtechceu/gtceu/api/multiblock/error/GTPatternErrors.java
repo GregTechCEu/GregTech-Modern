@@ -23,7 +23,7 @@ public class GTPatternErrors {
         register(SinglePredicateError.TYPE);
         register(SimplePatternError.TYPE);
 
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(PATTERN_ERRORS, PatternError.PatternErrorType.class));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(PATTERN_ERRORS, PatternError.PatternErrorType.class));
 
         PATTERN_ERRORS.freeze();
     }

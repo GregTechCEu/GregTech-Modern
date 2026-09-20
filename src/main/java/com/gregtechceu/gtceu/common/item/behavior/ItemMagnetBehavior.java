@@ -82,7 +82,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         ItemStack held = data.getUsedItemStack();
         CompoundTag heldTag = held.getOrCreateTag();
 
-        FilterMode selectedFilterMode = FilterMode.get(heldTag.getInt(FILTER_ORDINAL_TAG));
+        FilterMode selectedFilterMode = FilterMode.get(heldTag.getIntOr(FILTER_ORDINAL_TAG, 0));
         Map<FilterMode, ItemStack> stacks = new EnumMap<>(FilterMode.class);
         CompoundTag startFilterTag = heldTag.getCompound(FILTER_TAG).copy();
         for (FilterMode filterMode : FilterMode.values()) {
@@ -115,7 +115,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         syncManager.addCloseListener(player -> {
             ItemStack stack = data.getUsedItemStack();
             CompoundTag tag = stack.getOrCreateTag();
-            FilterMode selected = FilterMode.get(tag.getInt(FILTER_ORDINAL_TAG));
+            FilterMode selected = FilterMode.get(tag.getIntOr(FILTER_ORDINAL_TAG, 0));
             tag.put(FILTER_TAG, stacks.get(selected).getOrCreateTag().copy());
         });
 
@@ -191,10 +191,10 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level world, @NotNull Player player,
                                                   InteractionHand hand) {
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             if (player.isShiftKeyDown()) {
-                player.displayClientMessage(Component.translatable(toggleActive(player.getItemInHand(hand)) ?
-                        "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"), true);
+                player.sendOverlayMessage(Component.translatable(toggleActive(player.getItemInHand(hand)) ?
+                        "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"));
             } else {
                 UIFactories.playerInventory().openFromHand(player, hand);
             }
@@ -211,7 +211,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
             return false;
         }
         if (tag.contains("IsActive")) {
-            return tag.getBoolean("IsActive");
+            return tag.getBooleanOr("IsActive", false);
         }
         return false;
     }
@@ -260,7 +260,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                     continue;
                 }
 
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     if (filter == null) {
                         filter = FilterMode.get(stack.getOrCreateTag().getInt(FILTER_ORDINAL_TAG)).loadFilter(stack);
                     }
@@ -273,15 +273,15 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                         itemEntity.setNoPickUpDelay();
                     }
                     itemEntity.setDeltaMovement(0, 0, 0);
-                    itemEntity.setPos(entity.getX() - 0.2 + (world.random.nextDouble() * 0.4), entity.getY() - 0.6,
-                            entity.getZ() - 0.2 + (world.random.nextDouble() * 0.4));
+                    itemEntity.setPos(entity.getX() - 0.2 + (world.getRandom().nextDouble() * 0.4), entity.getY() - 0.6,
+                            entity.getZ() - 0.2 + (world.getRandom().nextDouble() * 0.4));
                     didMoveEntity = true;
                 }
             }
 
             if (didMoveEntity) {
                 world.playSound(null, entity, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS,
-                        0.1F, 0.5F * ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 2F));
+                        0.1F, 0.5F * ((world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.7F + 2F));
             }
 
             List<ExperienceOrb> xp = world.getEntitiesOfClass(ExperienceOrb.class,
@@ -289,13 +289,13 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                             .inflate(4, 4, 4));
 
             for (ExperienceOrb orb : xp) {
-                if (!world.isClientSide && !orb.isRemoved()) {
+                if (!world.isClientSide() && !orb.isRemoved()) {
                     if (player.takeXpDelay == 0) {
                         if (NeoForge.EVENT_BUS.post(new PlayerXpEvent.PickupXp(player, orb))) {
                             continue;
                         }
                         world.playSound(null, entity, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS,
-                                0.1F, 0.5F * ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.8F));
+                                0.1F, 0.5F * ((world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.7F + 1.8F));
                         player.take(orb, 1);
                         player.giveExperiencePoints(orb.value);
                         orb.discard();

@@ -396,10 +396,10 @@ public class LongDistanceNetwork {
             ListTag list = nbtTagCompound.getList("nets", Tag.TAG_COMPOUND);
             for (Tag nbt : list) {
                 CompoundTag tag = (CompoundTag) nbt;
-                LongDistancePipeType pipeType = LongDistancePipeType.getPipeType(tag.getString("class"));
+                LongDistancePipeType pipeType = LongDistancePipeType.getPipeType(tag.getStringOr("class", ""));
                 LongDistanceNetwork ld = pipeType.createNetwork(data);
-                ld.activeInputIndex = tag.getInt("in");
-                ld.activeOutputIndex = tag.getInt("out");
+                ld.activeInputIndex = tag.getIntOr("in", 0);
+                ld.activeOutputIndex = tag.getIntOr("out", 0);
                 data.networkList.add(ld);
                 ListTag posList = tag.getList("pipes", Tag.TAG_LONG);
                 for (Tag nbtPos : posList) {

@@ -105,17 +105,17 @@ public class WorldGeneratorUtils {
         var chunkSource = level.getChunkSource();
 
         for (ChunkPos chunkPos : chunks) {
-            var chunk = chunkSource.getChunk(chunkPos.x, chunkPos.z, false);
+            var chunk = chunkSource.getChunk(chunkPos.x(), chunkPos.z(), false);
 
             if (chunk == null) {
                 previouslyUnloadedChunks.add(chunkPos);
             }
 
-            chunkSource.getChunk(chunkPos.x, chunkPos.z, requiredStatus, true);
+            chunkSource.getChunk(chunkPos.x(), chunkPos.z(), requiredStatus, true);
         }
 
         if (level instanceof ServerLevel serverLevel) {
-            previouslyUnloadedChunks.forEach(chunk -> serverLevel.unload(serverLevel.getChunk(chunk.x, chunk.z)));
+            previouslyUnloadedChunks.forEach(chunk -> serverLevel.unload(serverLevel.getChunk(chunk.x(), chunk.z())));
         }
     }
 

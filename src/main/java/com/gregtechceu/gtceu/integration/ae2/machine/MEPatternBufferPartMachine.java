@@ -1166,7 +1166,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             for (Tag t : items) {
                 if (!(t instanceof CompoundTag ct)) continue;
                 var stack = ItemStack.of(ct);
-                var count = ct.getLong("real");
+            var count = ct.getLongOr("real", 0);
                 if (!stack.isEmpty() && count > 0) {
                     itemInventory.put(stack, count);
                 }
@@ -1176,7 +1176,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             for (Tag t : fluids) {
                 if (!(t instanceof CompoundTag ct)) continue;
                 var stack = FluidStack.loadFluidStackFromNBT(ct);
-                var amount = ct.getLong("real");
+            var amount = ct.getLongOr("real", 0);
                 if (!stack.isEmpty() && amount > 0) {
                     fluidInventory.put(stack, amount);
                 }

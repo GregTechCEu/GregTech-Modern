@@ -54,7 +54,7 @@ public class BedrockOreVeinSavedData extends SavedData {
         for (Tag tag : list) {
             if (tag instanceof CompoundTag compoundTag) {
                 var chunkPos = new ChunkPos(compoundTag.getLong("pos"));
-                veinOres.put(chunkPos, OreVeinWorldEntry.readFromNBT(compoundTag.getCompound("data")));
+                veinOres.put(chunkPos, OreVeinWorldEntry.readFromNBT(compoundTag.getCompoundOrEmpty("data")));
             }
         }
     }
@@ -130,10 +130,10 @@ public class BedrockOreVeinSavedData extends SavedData {
     public void createVein(ChunkPos pos, @Nullable BedrockOreDefinition definition) {
         if (definition != null) {
             int radius = definition.size() / 2;
-            for (int x = pos.x - radius; x <= pos.x + radius; ++x) {
-                for (int z = pos.z - radius; z <= pos.z + radius; ++z) {
+            for (int x = pos.x() - radius; x <= pos.x() + radius; ++x) {
+                for (int z = pos.z() - radius; z <= pos.z() + radius; ++z) {
                     ChunkPos pos2 = new ChunkPos(x, z);
-                    float distanceFromOriginal = Math.abs(pos.x - x) + Math.abs(pos.z - z);
+                    float distanceFromOriginal = Math.abs(pos.x() - x) + Math.abs(pos.z() - z);
                     distanceFromOriginal = distanceFromOriginal == 0 ? 1 : distanceFromOriginal;
                     distanceFromOriginal = (float) Math.pow(distanceFromOriginal, 2);
 

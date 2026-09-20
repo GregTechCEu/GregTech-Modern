@@ -56,7 +56,7 @@ public class VirtualTank extends VirtualEntry {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         super.deserializeNBT(nbt);
-        this.capacity = nbt.getInt(CAPACITY_KEY);
+        this.capacity = nbt.getIntOr(CAPACITY_KEY, 0);
 
         if (nbt.contains(FLUID_KEY))
             setFluid(FluidStack.loadFluidStackFromNBT(nbt.getCompound(FLUID_KEY)));

@@ -82,7 +82,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                 controller.checkAndFormStructure();
             }
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
@@ -107,10 +107,10 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         if (player == null || player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         }
-        if (level.isClientSide) {
-            player.displayClientMessage(Component.literal("Loaded controller information"), false);
+        if (level.isClientSide()) {
+            player.sendSystemMessage(Component.literal("Loaded controller information"));
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
@@ -122,13 +122,13 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         if (!shouldOpenUI()) return IItemUIHolder.super.use(item, level, player, usedHand);
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             PlayerInventoryGuiData<?> guiData = PlayerInventoryGuiData.of(player, InventoryTypes.PLAYER, null,
-                    usedHand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND : player.getInventory().selected);
+                    usedHand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND : player.getInventory().getSelectedSlot());
             ModularPanel<?> clientPanel = clientPanel();
             ClientGUI.open(createScreen(guiData, clientPanel));
         }
-        return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide);
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide());
     }
 
     private ModularPanel<?> clientPanel() {

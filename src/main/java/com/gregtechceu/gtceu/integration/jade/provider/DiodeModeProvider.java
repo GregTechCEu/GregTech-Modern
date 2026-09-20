@@ -33,14 +33,14 @@ public class DiodeModeProvider extends MachineInfoProvider<DiodePartMachine, Com
     protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
         if (block.getHitResult().getDirection() ==
-                Direction.from3DDataValue(data.getInt("side"))) {
+                Direction.from3DDataValue(data.getIntOr("side", 0))) {
             tooltip.add(Component.translatable(
                     "gtceu.top.transform_output",
-                    (GTValues.VNF[data.getInt("voltage")] + " §r(" + data.getInt("amps") + "A)")));
+                    (GTValues.VNF[data.getIntOr("voltage", 0)] + " §r(" + data.getInt("amps") + "A)")));
         } else {
             tooltip.add(Component.translatable(
                     "gtceu.top.transform_input",
-                    (GTValues.VNF[data.getInt("voltage")] + " §r(16A)")));
+                    (GTValues.VNF[data.getIntOr("voltage", 0)] + " §r(16A)")));
         }
     }
 }

@@ -32,7 +32,7 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
     @Override
     public void serverTick() {
         amps = 0;
-        if (getMachine().getLevel().isClientSide)
+        if (getMachine().getLevel().isClientSide())
             return;
         if (getEnergyStored() < getOutputVoltage() || getOutputVoltage() <= 0 || getOutputAmperage() <= 0)
             return;

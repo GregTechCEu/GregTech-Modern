@@ -69,7 +69,7 @@ public class SurfaceRockBlock extends Block {
     @Override
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest,
                                        FluidState fluid) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             ServerCache.instance.prospectSurfaceRockMaterial(
                     level.dimension(),
                     this.material,
@@ -83,7 +83,7 @@ public class SurfaceRockBlock extends Block {
     @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                  BlockHitResult hit) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             ServerCache.instance.prospectSurfaceRockMaterial(
                     level.dimension(),
                     this.material,

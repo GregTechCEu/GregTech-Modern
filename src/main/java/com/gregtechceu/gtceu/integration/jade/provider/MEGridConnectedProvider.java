@@ -33,7 +33,7 @@ public class MEGridConnectedProvider extends MachineInfoProvider<MetaMachine, Co
                               BlockEntity blockEntity, IPluginConfig config) {
         if (!data.contains("online")) return;
 
-        var online = data.getBoolean("online");
+        var online = data.getBooleanOr("online", false);
         var component = online ? Component.translatable("gtceu.gui.me_network.online") :
                 Component.translatable("gtceu.gui.me_network.offline");
         tooltip.add(component);

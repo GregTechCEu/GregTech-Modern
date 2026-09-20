@@ -181,7 +181,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     protected void transferEnergyTick() {
-        if (!getLevel().isClientSide) {
+        if (!getLevel().isClientSide()) {
             if (getOffsetTimer() % 20 == 0) {
                 // active here is just used for rendering
                 getRecipeLogic()
@@ -463,15 +463,15 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         }
 
         public void deserializeNBT(CompoundTag storageTag) {
-            int size = storageTag.getInt(NBT_SIZE);
+            int size = storageTag.getIntOr(NBT_SIZE, 0);
             storage = new long[size];
             maximums = new long[size];
             for (int i = 0; i < size; i++) {
-                CompoundTag subtag = storageTag.getCompound(String.valueOf(i));
+                CompoundTag subtag = storageTag.getCompoundOrEmpty(String.valueOf(i));
                 if (subtag.contains(NBT_STORED)) {
-                    storage[i] = subtag.getLong(NBT_STORED);
+                    storage[i] = subtag.getLongOr(NBT_STORED, 0);
                 }
-                maximums[i] = subtag.getLong(NBT_MAX);
+                maximums[i] = subtag.getLongOr(NBT_MAX, 0);
             }
             capacity = summarize(maximums);
             index = 0;

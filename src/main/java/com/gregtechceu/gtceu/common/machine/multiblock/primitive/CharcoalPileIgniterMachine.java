@@ -239,7 +239,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             return InteractionResult.PASS;
         }
 
-        if (getLevel().isClientSide && !isActive()) {
+        if (getLevel().isClientSide() && !isActive()) {
             return InteractionResult.SUCCESS;
         } else if (!isActive()) {
             boolean shouldActivate = false;

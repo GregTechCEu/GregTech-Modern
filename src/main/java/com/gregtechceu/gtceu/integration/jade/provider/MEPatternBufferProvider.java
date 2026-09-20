@@ -44,7 +44,7 @@ public class MEPatternBufferProvider extends MachineInfoProvider<MEPatternBuffer
     @Override
     protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        if (!data.getBoolean("formed")) return;
+        if (!data.getBooleanOr("formed", false)) return;
 
         tooltip.add(Component.translatable("gtceu.top.proxies_bound", data.getInt("proxies"))
                 .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
@@ -80,7 +80,7 @@ public class MEPatternBufferProvider extends MachineInfoProvider<MEPatternBuffer
         for (Tag t : itemsTag) {
             if (!(t instanceof CompoundTag ct)) continue;
             var stack = ItemStack.of(ct);
-            var count = ct.getLong("real");
+            var count = ct.getLongOr("real", 0);
             if (!stack.isEmpty() && count > 0) {
                 iTooltip.add(helper.smallItem(stack));
                 Component text = Component.literal(" ")
@@ -95,7 +95,7 @@ public class MEPatternBufferProvider extends MachineInfoProvider<MEPatternBuffer
         for (Tag t : fluidsTag) {
             if (!(t instanceof CompoundTag ct)) continue;
             var stack = FluidStack.loadFluidStackFromNBT(ct);
-            var amount = ct.getLong("real");
+            var amount = ct.getLongOr("real", 0);
             if (!stack.isEmpty() && amount > 0) {
                 iTooltip.add(GTElementHelper.smallFluid(JadeFluidObject.of(stack.getFluid())));
                 Component text = Component.literal(" ")

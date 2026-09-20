@@ -70,7 +70,7 @@ public class BloomEventListeners {
         ChunkPos chunkPos = chunk.getPos();
         int minSection = level.getMinSection(), maxSection = level.getMaxSection();
         for (int y = minSection; y < maxSection; y++) {
-            BloomRenderer.SafeMode.invalidateSectionData(SectionPos.of(chunkPos.x, y, chunkPos.z));
+            BloomRenderer.SafeMode.invalidateSectionData(SectionPos.of(chunkPos.x(), y, chunkPos.z()));
         }
     }
 

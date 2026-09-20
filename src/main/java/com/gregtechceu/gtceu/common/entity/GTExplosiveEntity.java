@@ -23,7 +23,7 @@ public abstract class GTExplosiveEntity extends PrimedTnt {
                              @Nullable LivingEntity owner) {
         this(type, level);
         this.setPos(x, y, z);
-        double d = level.random.nextDouble() * (float) (Math.PI * 2);
+        double d = level.getRandom().nextDouble() * (float) (Math.PI * 2);
         this.setDeltaMovement(-Math.sin(d) * 0.02, 0.2F, -Math.cos(d) * 0.02);
         this.setFuse(80);
         this.xo = x;

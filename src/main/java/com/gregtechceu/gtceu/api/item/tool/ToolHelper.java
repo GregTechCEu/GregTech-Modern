@@ -722,7 +722,7 @@ public class ToolHelper {
                         return -1;
                     }
                     boolean relocateMinedBlocks = hasBehaviorsTag(tool) &&
-                            getBehaviorsTag(tool).getBoolean(RELOCATE_MINED_BLOCKS_KEY);
+                            getBehaviorsTag(tool).getBooleanOr(RELOCATE_MINED_BLOCKS_KEY, false);
                     Iterator<ItemStack> iter = shearedDrops.iterator();
                     while (iter.hasNext()) {
                         ItemStack stack = iter.next();
@@ -730,9 +730,9 @@ public class ToolHelper {
                             iter.remove();
                         } else {
                             float f = 0.7F;
-                            double xo = world.random.nextFloat() * f + 0.15D;
-                            double yo = world.random.nextFloat() * f + 0.15D;
-                            double zo = world.random.nextFloat() * f + 0.15D;
+                            double xo = world.getRandom().nextFloat() * f + 0.15D;
+                            double yo = world.getRandom().nextFloat() * f + 0.15D;
+                            double zo = world.getRandom().nextFloat() * f + 0.15D;
                             ItemEntity entityItem = new ItemEntity(world, pos.getX() + xo, pos.getY() + yo,
                                     pos.getZ() + zo, stack);
                             entityItem.setDefaultPickUpDelay();

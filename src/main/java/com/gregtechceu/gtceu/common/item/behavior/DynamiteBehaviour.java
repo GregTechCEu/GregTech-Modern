@@ -37,7 +37,7 @@ public class DynamiteBehaviour implements IInteractionItem {
             itemstack.shrink(1);
         }
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResultHolder.success(itemstack);
         }
 

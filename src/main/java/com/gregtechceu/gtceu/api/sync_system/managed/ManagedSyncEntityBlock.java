@@ -18,7 +18,7 @@ public interface ManagedSyncEntityBlock extends EntityBlock {
     @Nullable
     default <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
                                                                    BlockEntityType<T> blockEntityType) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             return (pLevel, pPos, pState, pTile) -> {
                 if (pTile instanceof ManagedSyncBlockEntity be) {
                     be.serverTick();

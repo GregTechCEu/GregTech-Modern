@@ -128,9 +128,9 @@ public class VeinedVeinGenerator extends VeinGenerator {
         }
 
         final Blender finalizedBlender = blender;
-        DensityFunction veinToggle = mapToNoise(densityFunctions.get(GTDensityFunctions.NEW_ORE_VEIN_TOGGLE),
+        DensityFunction veinToggle = mapToNoise(densityFunctions.getValue(GTDensityFunctions.NEW_ORE_VEIN_TOGGLE),
                 randomState);
-        DensityFunction veinRidged = mapToNoise(densityFunctions.get(GTDensityFunctions.NEW_ORE_VEIN_RIDGED),
+        DensityFunction veinRidged = mapToNoise(densityFunctions.getValue(GTDensityFunctions.NEW_ORE_VEIN_RIDGED),
                 randomState);
 
         int size = entry.clusterSize().sample(random);

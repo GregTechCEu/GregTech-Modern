@@ -149,7 +149,7 @@ public interface CapabilityContentBuilder {
                 if (existingCompTickWidget != null) ((TextWidget<?>) existingCompTickWidget).value(text);
                 else flow.child(text.asWidget().name("comp_tick"));
             }
-            if (recipe.data.getBoolean("duration_is_total_cwu")) {
+            if (recipe.data.getBooleanOr("duration_is_total_cwu", false)) {
                 var text = Text.lang("gtceu.recipe.total_computation", FormattingUtil.formatNumbers(recipe.duration));
 
                 if (existingCompTotal != null) ((TextWidget<?>) existingCompTotal).value(text);
@@ -174,7 +174,7 @@ public interface CapabilityContentBuilder {
             ModularComponent maxEu;
 
             // sadly we still need a custom override here, since computation uses duration and EU/t very differently
-            if (recipe.data.getBoolean("duration_is_total_cwu") &&
+            if (recipe.data.getBooleanOr("duration_is_total_cwu", false) &&
                     recipe.tickInputs.containsKey(CWURecipeCapability.CAP)) {
                 int minimumCWUt = Math.max(recipe.tickInputs.get(CWURecipeCapability.CAP).stream()
                         .map(Content::content).mapToInt(CWURecipeCapability.CAP::of).sum(), 1);

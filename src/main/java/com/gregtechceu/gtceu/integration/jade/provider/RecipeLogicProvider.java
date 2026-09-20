@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -75,7 +76,7 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        if (capData.getBoolean("Working")) {
+        if (capData.getBooleanOr("Working", false)) {
             var recipeInfo = capData.getCompound("Recipe");
             if (!recipeInfo.isEmpty()) {
                 var EUt = recipeInfo.getLong("EUt");
@@ -136,10 +137,10 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                     }
                 }
             }
-        } else if (capData.contains("FailureReason", Tag.TAG_STRING)) {
+        } else if ((capData.get("FailureReason") instanceof StringTag)) {
             Component reason = Component.Serializer.fromJson(capData.getString("FailureReason"));
             if (reason != null) {
-                tooltip.add(capData.getBoolean("Waiting") ?
+                tooltip.add(capData.getBooleanOr("Waiting", false) ?
                         Component.translatable("gtceu.recipe_logic.recipe_waiting").withStyle(ChatFormatting.YELLOW) :
                         Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
                 tooltip.add(reason);

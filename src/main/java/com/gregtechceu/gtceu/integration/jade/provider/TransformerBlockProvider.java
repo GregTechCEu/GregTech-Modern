@@ -33,9 +33,9 @@ public class TransformerBlockProvider extends MachineInfoProvider<TransformerMac
     @Override
     protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        boolean transformUp = data.getBoolean("transformUp");
-        int voltage = data.getInt("baseVoltage");
-        int amp = data.getInt("baseAmp");
+        boolean transformUp = data.getBooleanOr("transformUp", false);
+        int voltage = data.getIntOr("baseVoltage", 0);
+        int amp = data.getIntOr("baseAmp", 0);
         if (transformUp) {
             tooltip.add(Component.translatable("gtceu.top.transform_up",
                     (GTValues.VNF[voltage] + " §r(" + amp * 4 + "A) -> " + GTValues.VNF[voltage + 1] + " §r(" +
@@ -49,7 +49,7 @@ public class TransformerBlockProvider extends MachineInfoProvider<TransformerMac
         }
 
         if (block.getHitResult().getDirection() ==
-                Direction.from3DDataValue(data.getInt("side"))) {
+                Direction.from3DDataValue(data.getIntOr("side", 0))) {
             tooltip.add(
                     Component.translatable(
                             (transformUp ? "gtceu.top.transform_output" : "gtceu.top.transform_input"),

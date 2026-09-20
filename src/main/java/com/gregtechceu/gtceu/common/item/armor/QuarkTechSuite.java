@@ -81,27 +81,27 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
         if (!player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE.get()) &&
                 !player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE_ADVANCED.get())) {
-            if (!world.isClientSide) ((IFireImmuneEntity) player).gtceu$setFireImmune(false);
+            if (!world.isClientSide()) ((IFireImmuneEntity) player).gtceu$setFireImmune(false);
         }
 
         boolean ret = false;
         if (type == ArmorItem.Type.HELMET) {
 
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 ret = supplyAir(item, player) || supplyFood(item, player);
                 removeNegativeEffects(item, player);
             }
 
-            boolean nightVision = data.contains("nightVision") && data.getBoolean("nightVision");
+            boolean nightVision = data.contains("nightVision") && data.getBooleanOr("nightVision", false);
             if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
                 nightVision = !nightVision;
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
-                    player.displayClientMessage(Component.translatable("metaarmor.qts.nightvision.error"), true);
+                    player.sendOverlayMessage(Component.translatable("metaarmor.qts.nightvision.error"));
                 } else {
-                    player.displayClientMessage(Component
-                            .translatable("metaarmor.qts.nightvision." + (nightVision ? "enabled" : "disabled")), true);
+                    player.sendOverlayMessage(Component
+                            .translatable("metaarmor.qts.nightvision." + (nightVision ? "enabled" : "disabled")));
                 }
             }
 
@@ -163,16 +163,16 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         } else if (type == ArmorItem.Type.BOOTS) {
             boolean canUseEnergy = item.canUse(energyPerUse / 100);
             boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
-            boolean boostedJump = data.contains("boostedJump") && data.getBoolean("boostedJump");
+            boolean boostedJump = data.contains("boostedJump") && data.getBooleanOr("boostedJump", false);
             if (toggleBootsTimer == 0 && SyncedKeyMappings.BOOTS_ENABLE.isKeyDown(player)) {
                 boostedJump = !boostedJump;
                 toggleBootsTimer = JUMPING_TIMER;
-                player.displayClientMessage(Component
-                        .translatable("metaarmor.qts.boosted_jump." + (boostedJump ? "enabled" : "disabled")), true);
+                player.sendOverlayMessage(Component
+                        .translatable("metaarmor.qts.boosted_jump." + (boostedJump ? "enabled" : "disabled")));
             }
             if (boostedJump) {
-                if (!world.isClientSide) {
-                    boolean onGround = !data.contains("onGround") || data.getBoolean("onGround");
+                if (!world.isClientSide()) {
+                    boolean onGround = !data.contains("onGround") || data.getBooleanOr("onGround", false);
                     if (onGround && !player.onGround() && jumping) {
                         item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
                         ret = true;
@@ -202,12 +202,12 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 }
             }
 
-            boolean stepAssist = data.contains("stepAssist") && data.getBoolean("stepAssist");
+            boolean stepAssist = data.contains("stepAssist") && data.getBooleanOr("stepAssist", false);
             if (toggleBootsTimer == 0 && SyncedKeyMappings.STEP_ASSIST_ENABLE.isKeyDown(player)) {
                 stepAssist = !stepAssist;
                 toggleBootsTimer = 5;
-                if (world.isClientSide()) player.displayClientMessage(Component
-                        .translatable("metaarmor.qts.step_assist." + (stepAssist ? "enabled" : "disabled")), true);
+                if (world.isClientSide()) player.sendOverlayMessage(Component
+                        .translatable("metaarmor.qts.step_assist." + (stepAssist ? "enabled" : "disabled")));
                 data.putBoolean("stepAssist", stepAssist);
             }
 
@@ -352,7 +352,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         super.addInfo(itemStack, lines);
         if (type == ArmorItem.Type.HELMET) {
             CompoundTag nbtData = itemStack.getOrCreateTag();
-            boolean nv = nbtData.getBoolean("nightVision");
+            boolean nv = nbtData.getBooleanOr("nightVision", false);
             if (nv) {
                 lines.add(Component.translatable("metaarmor.message.nightvision.enabled"));
             } else {
@@ -368,7 +368,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             lines.add(Component.translatable("metaarmor.tooltip.speed"));
         } else if (type == ArmorItem.Type.BOOTS) {
             CompoundTag nbtData = itemStack.getOrCreateTag();
-            if (nbtData.getBoolean("stepAssist"))
+            if (nbtData.getBooleanOr("stepAssist", false))
                 lines.add(Component.translatable("metaarmor.message.step_assist.enabled"));
             else lines.add(Component.translatable("metaarmor.message.step_assist.disabled"));
             lines.add(Component.translatable("metaarmor.tooltip.falldamage"));

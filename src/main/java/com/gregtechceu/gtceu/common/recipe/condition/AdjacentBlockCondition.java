@@ -161,11 +161,11 @@ public class AdjacentBlockCondition extends RecipeCondition<AdjacentBlockConditi
         if (recipe != null && recipe.data.contains("blockA") && recipe.data.contains("blockB")) {
             this.resolvedBlocks.clear();
 
-            Block blockA = BuiltInRegistries.BLOCK.get(Identifier.parse(recipe.data.getString("blockA")));
+            Block blockA = BuiltInRegistries.BLOCK.getValue(Identifier.parse(recipe.data.getStringOr("blockA", "")));
             if (!blockA.defaultBlockState().isAir()) {
                 this.resolvedBlocks.add(HolderSet.direct(blockA.builtInRegistryHolder()));
             }
-            Block blockB = BuiltInRegistries.BLOCK.get(Identifier.parse(recipe.data.getString("blockB")));
+            Block blockB = BuiltInRegistries.BLOCK.getValue(Identifier.parse(recipe.data.getStringOr("blockB", "")));
             if (!blockB.defaultBlockState().isAir()) {
                 this.resolvedBlocks.add(HolderSet.direct(blockB.builtInRegistryHolder()));
             }

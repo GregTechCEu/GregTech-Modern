@@ -35,7 +35,7 @@ public class RotateRailBehavior implements IToolBehavior {
         if (state.getBlock() instanceof BaseRailBlock) {
             if (level.setBlock(pos, state.rotate(level, pos, Rotation.CLOCKWISE_90), Block.UPDATE_ALL)) {
                 ToolHelper.onActionDone(context.getPlayer(), stack, level, context.getClickLocation());
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
         }
         return InteractionResult.PASS;

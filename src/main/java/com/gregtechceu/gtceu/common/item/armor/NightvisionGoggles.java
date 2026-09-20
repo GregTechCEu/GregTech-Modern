@@ -40,16 +40,16 @@ public class NightvisionGoggles extends ArmorLogicSuite {
         int nightVisionTimer = data.contains("nightVisionTimer") ? data.getInt("nightVisionTimer") :
                 ArmorUtils.NIGHTVISION_DURATION;
         if (type == ArmorItem.Type.HELMET) {
-            boolean nightVision = data.contains("nightVision") && data.getBoolean("nightVision");
+            boolean nightVision = data.contains("nightVision") && data.getBooleanOr("nightVision", false);
             if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
                 nightVision = !nightVision;
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
-                    player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
+                    player.sendOverlayMessage(Component.translatable("metaarmor.nms.nightvision.error"));
                 } else {
-                    player.displayClientMessage(Component
-                            .translatable("metaarmor.nms.nightvision." + (nightVision ? "enabled" : "disabled")), true);
+                    player.sendOverlayMessage(Component
+                            .translatable("metaarmor.nms.nightvision." + (nightVision ? "enabled" : "disabled")));
                 }
             }
 
@@ -77,10 +77,10 @@ public class NightvisionGoggles extends ArmorLogicSuite {
     }
 
     public static void disableNightVision(@NotNull Level world, Player player, boolean sendMsg) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             player.removeEffect(MobEffects.NIGHT_VISION);
             if (sendMsg)
-                player.displayClientMessage(Component.translatable("metaarmor.message.nightvision.disabled"), true);
+                player.sendOverlayMessage(Component.translatable("metaarmor.message.nightvision.disabled"));
         }
     }
 
@@ -94,7 +94,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
         super.addInfo(itemStack, lines);
         if (type == ArmorItem.Type.HELMET) {
             CompoundTag nbtData = itemStack.getOrCreateTag();
-            boolean nv = nbtData.getBoolean("nightVision");
+            boolean nv = nbtData.getBooleanOr("nightVision", false);
             if (nv) {
                 lines.add(Component.translatable("metaarmor.message.nightvision.enabled"));
             } else {

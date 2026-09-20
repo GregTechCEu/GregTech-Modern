@@ -598,10 +598,10 @@ public class GTUtil {
 
     public static ItemStack loadItemStack(CompoundTag compoundTag) {
         try {
-            Item item = BuiltInRegistries.ITEM.get(Identifier.parse(compoundTag.getString("id")));
-            int count = compoundTag.getInt("Count");
+            Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(compoundTag.getStringOr("id", "")));
+            int count = compoundTag.getIntOr("Count", 0);
             ItemStack stack = new ItemStack(item, count);
-            if (compoundTag.contains("tag", Tag.TAG_COMPOUND)) {
+            if ((compoundTag.get("tag") instanceof CompoundTag)) {
                 stack.setTag(compoundTag.getCompound("tag"));
                 if (stack.getTag() != null) {
                     stack.getItem().verifyTagAfterLoad(stack.getTag());

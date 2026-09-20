@@ -200,9 +200,9 @@ public abstract class ProspectorMode<T> {
         }
 
         public static FluidInfo fromNbt(CompoundTag tag) {
-            Fluid fluid = BuiltInRegistries.FLUID.get(Identifier.parse(tag.getString("fluid")));
-            int left = tag.getInt("left");
-            int yield = tag.getInt("yield");
+            Fluid fluid = BuiltInRegistries.FLUID.getValue(Identifier.parse(tag.getStringOr("fluid", "")));
+            int left = tag.getIntOr("left", 0);
+            int yield = tag.getIntOr("yield", 0);
             return new FluidInfo(fluid, yield, left);
         }
 
@@ -230,7 +230,7 @@ public abstract class ProspectorMode<T> {
         public void scan(FluidInfo[][][] storage, LevelChunk chunk) {
             if (chunk.getLevel() instanceof ServerLevel serverLevel) {
                 var fluidVein = BedrockFluidVeinSavedData.getOrCreate(serverLevel)
-                        .getFluidVeinWorldEntry(chunk.getPos().x, chunk.getPos().z);
+                        .getFluidVeinWorldEntry(chunk.getPos().x(), chunk.getPos().z());
                 if (fluidVein.getDefinition() != null) {
                     storage[0][0] = new FluidInfo[] {
                             FluidInfo.fromVeinWorldEntry(fluidVein)
@@ -272,7 +272,7 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public FluidInfo deserialize(FriendlyByteBuf buf) {
-            return new FluidInfo(BuiltInRegistries.FLUID.get(buf.readResourceLocation()), buf.readVarInt(),
+            return new FluidInfo(BuiltInRegistries.FLUID.getValue(buf.readResourceLocation()), buf.readVarInt(),
                     buf.readVarInt());
         }
 
@@ -316,8 +316,8 @@ public abstract class ProspectorMode<T> {
         @Override
         public void scan(BedrockOreInfo[][][] storage, LevelChunk chunk) {
             if (chunk.getLevel() instanceof ServerLevel serverLevel) {
-                var oreVein = BedrockOreVeinSavedData.getOrCreate(serverLevel).getOreVeinWorldEntry(chunk.getPos().x,
-                        chunk.getPos().z);
+                var oreVein = BedrockOreVeinSavedData.getOrCreate(serverLevel).getOreVeinWorldEntry(chunk.getPos().x(),
+                        chunk.getPos().z());
                 if (oreVein.getDefinition() != null) {
                     var left = 100 * oreVein.getOperationsRemaining() / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
                     for (var entry : oreVein.getDefinition().materials()) {

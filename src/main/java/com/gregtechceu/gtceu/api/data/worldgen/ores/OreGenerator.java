@@ -53,8 +53,8 @@ public class OreGenerator {
                 .map(OreGenerator::logVeinGeneration)
                 .map(entry -> entry.data)
                 .peek(data -> {
-                    int gridX = Math.floorDiv(chunkPos.x, ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize);
-                    int gridZ = Math.floorDiv(chunkPos.z, ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize);
+                    int gridX = Math.floorDiv(chunkPos.x(), ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize);
+                    int gridZ = Math.floorDiv(chunkPos.z(), ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize);
                     ServerCache.instance.addVein(level.getLevel().dimension(), gridX, gridZ, data);
                 })
                 .toList();

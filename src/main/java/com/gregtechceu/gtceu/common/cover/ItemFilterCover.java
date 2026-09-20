@@ -152,8 +152,8 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        setAllowFlow(ManualIOMode.values()[tag.getInt("manualIO")]);
-        setFilterMode(FilterMode.values()[tag.getInt("filterMode")]);
+        setAllowFlow(ManualIOMode.values()[tag.getIntOr("manualIO", 0)]);
+        setFilterMode(FilterMode.values()[tag.getIntOr("filterMode", 0)]);
         itemFilter = Filters.loadItemFilter(ItemStack.of(tag.getCompound("filter")));
         super.pasteConfig(player, tag);
     }

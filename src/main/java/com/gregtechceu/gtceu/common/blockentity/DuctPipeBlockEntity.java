@@ -92,7 +92,7 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
     }
 
     public DuctPipeNet getDuctPipeNet() {
-        if (level == null || level.isClientSide) {
+        if (level == null || level.isClientSide()) {
             return null;
         }
         DuctPipeNet currentPipeNet = this.currentPipeNet.get();

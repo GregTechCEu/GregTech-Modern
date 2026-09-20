@@ -73,7 +73,7 @@ public class GTBoatItem extends Item {
                 if (!level.noCollision(boat, boat.getBoundingBox())) {
                     return InteractionResultHolder.fail(itemstack);
                 } else {
-                    if (!level.isClientSide) {
+                    if (!level.isClientSide()) {
                         level.addFreshEntity(boat);
                         level.gameEvent(player, GameEvent.ENTITY_PLACE, hitresult.getLocation());
                         if (!player.getAbilities().instabuild) {

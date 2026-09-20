@@ -74,7 +74,7 @@ public final class ResearchManager {
         CompoundTag compound = stack.getTag();
         if (!hasResearchTag(compound)) return null;
 
-        CompoundTag researchCompound = compound.getCompound(RESEARCH_NBT_TAG);
+        CompoundTag researchCompound = compound.getCompoundOrEmpty(RESEARCH_NBT_TAG);
         return ResearchItem.CODEC.parse(NbtOps.INSTANCE, researchCompound).result().orElse(null);
     }
 
@@ -108,7 +108,7 @@ public final class ResearchManager {
      */
     private static boolean hasResearchTag(@Nullable CompoundTag compound) {
         if (compound == null || compound.isEmpty()) return false;
-        return compound.contains(RESEARCH_NBT_TAG, Tag.TAG_COMPOUND);
+        return (compound.get(RESEARCH_NBT_TAG) instanceof CompoundTag);
     }
 
     /**

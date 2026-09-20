@@ -122,7 +122,7 @@ public class GTBucketItem extends BucketItem {
             int j = pos.getY();
             int k = pos.getZ();
             level.playSound(player, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
-                    2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F);
+                    2.6F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.8F);
 
             for (int l = 0; l < 8; ++l) {
                 double xi = i + GTValues.RNG.nextDouble();
@@ -140,7 +140,7 @@ public class GTBucketItem extends BucketItem {
             this.playEmptySound(player, level, pos);
             return true;
         } else {
-            if (!level.isClientSide && canReplace && !blockstate.liquid()) {
+            if (!level.isClientSide() && canReplace && !blockstate.liquid()) {
                 level.destroyBlock(pos, true);
             }
 

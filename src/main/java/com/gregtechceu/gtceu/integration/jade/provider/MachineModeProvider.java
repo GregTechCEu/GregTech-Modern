@@ -51,12 +51,12 @@ public class MachineModeProvider extends MachineInfoProvider<MetaMachine, Compou
     protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
         if (data.contains("RecipeTypes") && data.contains("CurrentRecipeType")) {
-            int currentRecipeTypeIndex = data.getInt("CurrentRecipeType");
+            int currentRecipeTypeIndex = data.getIntOr("CurrentRecipeType", 0);
             ListTag recipeTypesTagList = data.getList("RecipeTypes", StringTag.TAG_STRING);
             if (block.showDetails()) {
                 tooltip.add(Component.translatable("gtceu.top.machine_mode"));
                 for (int i = 0; i < recipeTypesTagList.size(); i++) {
-                    Identifier recipeType = Identifier.parse(recipeTypesTagList.getString(i));
+                    Identifier recipeType = Identifier.parse(recipeTypesTagList.getStringOr(i, ""));
                     MutableComponent text;
                     if (currentRecipeTypeIndex == i) {
                         text = Component.literal(" > ").withStyle(ChatFormatting.BLUE);
@@ -69,7 +69,7 @@ public class MachineModeProvider extends MachineInfoProvider<MetaMachine, Compou
                 }
             } else {
                 Identifier recipeType = Identifier.parse(
-                        recipeTypesTagList.getString(currentRecipeTypeIndex));
+                        recipeTypesTagList.getStringOr(currentRecipeTypeIndex, ""));
                 tooltip.add(Component.translatable("gtceu.top.machine_mode").append(
                         Component.translatable("%s.%s".formatted(recipeType.getNamespace(), recipeType.getPath()))));
             }

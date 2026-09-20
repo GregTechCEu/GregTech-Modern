@@ -65,7 +65,7 @@ public abstract class CapabilityBlockProvider<C>
     @Override
     public void appendServerData(CompoundTag data, BlockAccessor blockAccessor) {
         // use uid as key for capability data
-        var capData = data.getCompound(uid.toString());
+        var capData = data.getCompoundOrEmpty(uid.toString());
 
         C capability = getCapability(blockAccessor.getLevel(), blockAccessor.getPosition(), null);
         if (capability != null && allowDisplaying(capability)) {

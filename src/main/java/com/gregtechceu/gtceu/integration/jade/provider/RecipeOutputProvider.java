@@ -131,9 +131,9 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        if (capData.getBoolean("Working")) {
+        if (capData.getBooleanOr("Working", false)) {
             List<Ingredient> outputItems = new ArrayList<>();
-            if (capData.contains("OutputItems", Tag.TAG_LIST)) {
+            if ((capData.get("OutputItems") instanceof ListTag)) {
                 ListTag itemTags = capData.getList("OutputItems", Tag.TAG_COMPOUND);
                 if (!itemTags.isEmpty()) {
                     for (Tag tag : itemTags) {
@@ -153,7 +153,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
                 }
             }
             List<FluidIngredient> outputFluids = new ArrayList<>();
-            if (capData.contains("OutputFluids", Tag.TAG_LIST)) {
+            if ((capData.get("OutputFluids") instanceof ListTag)) {
                 ListTag fluidTags = capData.getList("OutputFluids", Tag.TAG_COMPOUND);
                 for (Tag tag : fluidTags) {
                     if (tag instanceof CompoundTag tCompoundTag) {

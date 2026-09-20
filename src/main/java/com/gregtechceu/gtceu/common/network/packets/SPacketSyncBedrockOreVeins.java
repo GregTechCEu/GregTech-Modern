@@ -36,8 +36,7 @@ public class SPacketSyncBedrockOreVeins implements GTNetwork.INetPacket {
         Stream.generate(() -> {
             Identifier id = buf.readResourceLocation();
             CompoundTag tag = buf.readAnySizeNbt();
-            BedrockOreDefinition def = BedrockOreDefinition.FULL_CODEC.parse(ops, tag).getOrThrow(false,
-                    GTCEu.LOGGER::error);
+            BedrockOreDefinition def = BedrockOreDefinition.FULL_CODEC.parse(ops, tag).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
             return Map.entry(id, def);
         }).limit(buf.readVarInt()).forEach(entry -> veins.put(entry.getKey(), entry.getValue()));
     }
@@ -50,7 +49,7 @@ public class SPacketSyncBedrockOreVeins implements GTNetwork.INetPacket {
         for (var entry : veins.entrySet()) {
             buf.writeResourceLocation(entry.getKey());
             CompoundTag tag = (CompoundTag) BedrockOreDefinition.FULL_CODEC.encodeStart(ops, entry.getValue())
-                    .getOrThrow(false, GTCEu.LOGGER::error);
+                    .getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
             buf.writeNbt(tag);
         }
     }

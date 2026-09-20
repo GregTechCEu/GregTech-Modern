@@ -29,7 +29,7 @@ public record FilterBehaviour<T>(Class<T> filterableObjectType, Function<ItemSta
 
     @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (player.isCrouching()) {
                 UIFactories.playerInventory().openFromHand(player, usedHand);
                 return InteractionResultHolder.success(player.getItemInHand(usedHand));

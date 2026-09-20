@@ -83,7 +83,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                 .dynamic(() -> Component.translatable("gtceu.recipe.duration",
                         FormattingUtil.formatNumbers((double) modifiedRecipe.duration / 20)))
                 .asWidget()
-                .setEnabledIf(v -> !modifiedRecipe.data.getBoolean("hide_duration")));
+                .setEnabledIf(v -> !modifiedRecipe.data.getBooleanOr("hide_duration", false)));
 
         recipeContentRow = uiLayout.getCustomUIBuilder() == null ? buildDefaultLayout() :
                 uiLayout.getCustomUIBuilder().apply(recipe);

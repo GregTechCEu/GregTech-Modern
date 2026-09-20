@@ -51,10 +51,10 @@ public record GraphicsComponent(float x, float y, float x2, float y2, String ren
     }
 
     public Tag toTag() {
-        return CODEC.encodeStart(NbtOps.INSTANCE, this).getOrThrow(false, GTCEu.LOGGER::error);
+        return CODEC.encodeStart(NbtOps.INSTANCE, this).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
     }
 
     public static GraphicsComponent fromTag(Tag tag) {
-        return CODEC.decode(NbtOps.INSTANCE, tag).getOrThrow(false, GTCEu.LOGGER::error).getFirst();
+        return CODEC.decode(NbtOps.INSTANCE, tag).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); }).getFirst();
     }
 }

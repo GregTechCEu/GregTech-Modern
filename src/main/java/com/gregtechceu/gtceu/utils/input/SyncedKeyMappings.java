@@ -46,7 +46,7 @@ public final class SyncedKeyMappings {
         if (GTCEu.isClientSide()) {
             NeoForge.EVENT_BUS.register(SyncedKeyMapping.class);
         }
-        ModLoader.get().postEvent(new SyncedKeyMappingEvent());
+        ModLoader.postEvent(new SyncedKeyMappingEvent());
     }
 
     private SyncedKeyMappings() {}

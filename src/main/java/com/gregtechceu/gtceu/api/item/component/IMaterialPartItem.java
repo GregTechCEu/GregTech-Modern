@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +38,7 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
     default Material getPartMaterial(ItemStack itemStack) {
         var compound = getPartStatsTag(itemStack);
         var defaultMaterial = GTMaterials.Neutronium;
-        if (compound == null || !compound.contains("Material", Tag.TAG_STRING)) {
+        if (compound == null || !(compound.get("Material") instanceof StringTag)) {
             return defaultMaterial;
         }
         var materialName = compound.getString("Material");
@@ -60,7 +61,7 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
         if (compound == null || !compound.contains("Damage", Tag.TAG_ANY_NUMERIC)) {
             return 0;
         }
-        return compound.getInt("Damage");
+        return compound.getIntOr("Damage", 0);
     }
 
     default void setPartDamage(ItemStack itemStack, int damage) {

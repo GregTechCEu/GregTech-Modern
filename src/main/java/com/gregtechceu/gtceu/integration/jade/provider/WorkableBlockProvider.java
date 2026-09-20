@@ -47,14 +47,14 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        if (!capData.getBoolean("Active")) return;
+        if (!capData.getBooleanOr("Active", false)) return;
 
-        int currentProgress = capData.getInt("Progress");
-        int maxProgress = capData.getInt("MaxProgress");
+        int currentProgress = capData.getIntOr("Progress", 0);
+        int maxProgress = capData.getIntOr("MaxProgress", 0);
         Component text;
 
         // show as total computation instead
-        if (capData.getBoolean("Research")) {
+        if (capData.getBooleanOr("Research", false)) {
             String current = FormattingUtil.formatNumberReadable(currentProgress);
             String max = FormattingUtil.formatNumberReadable(maxProgress);
             text = Component.translatable("gtceu.jade.progress_computation", current, max);
@@ -77,7 +77,7 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
         }
 
         if (maxProgress > 0) {
-            int color = capData.getBoolean("WorkingEnabled") ? 0xFF4CBB17 : 0xFFBB1C28;
+            int color = capData.getBooleanOr("WorkingEnabled", false) ? 0xFF4CBB17 : 0xFFBB1C28;
             tooltip.add(
                     tooltip.getElementHelper().progress(
                             getProgress(currentProgress, maxProgress),

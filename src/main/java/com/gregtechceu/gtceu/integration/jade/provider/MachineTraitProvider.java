@@ -41,9 +41,9 @@ public abstract class MachineTraitProvider<T extends MachineTrait, TagType exten
     @SuppressWarnings("unchecked")
     public void appendTooltip(ITooltip iTooltip, BlockAccessor block, IPluginConfig iPluginConfig) {
         var be = block.getBlockEntity();
-        if (be == null || !block.getServerData().contains(uid.toString(), CompoundTag.TAG_COMPOUND)) return;
+        if (be == null || !(block.getServerData().get(uid.toString()) instanceof CompoundTag)) return;
 
-        var serverData = block.getServerData().getCompound(uid.toString());
+        var serverData = block.getServerData().getCompoundOrEmpty(uid.toString());
         addTooltip((TagType) serverData, iTooltip, block.getPlayer(), block, be, iPluginConfig);
     }
 

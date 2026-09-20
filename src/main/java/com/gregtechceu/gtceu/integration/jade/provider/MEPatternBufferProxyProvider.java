@@ -44,13 +44,13 @@ public class MEPatternBufferProxyProvider extends MachineInfoProvider<MEPatternB
     @Override
     protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        if (!data.getBoolean("formed")) return;
-        if (!data.getBoolean("bound")) {
+        if (!data.getBooleanOr("formed", false)) return;
+        if (!data.getBooleanOr("bound", false)) {
             tooltip.add(Component.translatable("gtceu.top.buffer_not_bound").withStyle(ChatFormatting.RED));
             return;
         }
 
-        int[] pos = data.getIntArray("pos");
+        int[] pos = data.getIntArray("pos").orElse(new int[0]);
         tooltip.add(Component.translatable("gtceu.top.buffer_bound_pos", pos[0], pos[1], pos[2])
                 .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
 

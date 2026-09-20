@@ -536,10 +536,10 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        setTransferRate(tag.getInt("transferRate"));
-        setIo(IO.values()[tag.getInt("io")]);
-        setDistributionMode(DistributionMode.values()[tag.getInt("distributionMode")]);
-        setManualIOMode(ManualIOMode.values()[tag.getInt("manualIO")]);
+        setTransferRate(tag.getIntOr("transferRate", 0));
+        setIo(IO.values()[tag.getIntOr("io", 0)]);
+        setDistributionMode(DistributionMode.values()[tag.getIntOr("distributionMode", 0)]);
+        setManualIOMode(ManualIOMode.values()[tag.getIntOr("manualIO", 0)]);
         filterHandler.setFilterItem(ItemStack.of(tag.getCompound("filter")));
         super.pasteConfig(player, tag);
     }

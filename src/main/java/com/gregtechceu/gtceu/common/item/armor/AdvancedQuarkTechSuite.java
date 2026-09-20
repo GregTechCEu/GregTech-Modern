@@ -57,10 +57,10 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
             data.putBoolean("canShare", false);
         }
 
-        boolean jetpackEnabled = data.getBoolean("enabled");
-        boolean hoverMode = data.getBoolean("hover");
-        byte toggleTimer = data.getByte("toggleTimer");
-        boolean canShare = data.getBoolean("canShare");
+        boolean jetpackEnabled = data.getBooleanOr("enabled", false);
+        boolean hoverMode = data.getBooleanOr("hover", false);
+        byte toggleTimer = data.getByteOr("toggleTimer", (byte) 0);
+        boolean canShare = data.getBooleanOr("canShare", false);
 
         String messageKey = null;
         if (toggleTimer == 0) {
@@ -85,7 +85,7 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
 
             if (messageKey != null) {
                 toggleTimer = 5;
-                if (!world.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
+                if (!world.isClientSide()) player.sendOverlayMessage(Component.translatable(messageKey));
             }
         }
 
@@ -100,7 +100,7 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
         }
 
         // Charging mechanics
-        if (canShare && !world.isClientSide) {
+        if (canShare && !world.isClientSide()) {
             // Check for new things to charge every 5 seconds
             if (timer % 100 == 0)
                 inventoryIndexMap = ArmorUtils.getChargeableItem(player, cont.getTier());
@@ -152,18 +152,18 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
         super.addInfo(itemStack, lines);
         CompoundTag data = itemStack.getOrCreateTag();
         Component state;
-        boolean enabled = !data.contains("enabled") || data.getBoolean("enabled");
+        boolean enabled = !data.contains("enabled") || data.getBooleanOr("enabled", false);
         state = enabled ? Component.translatable("metaarmor.hud.status.enabled") :
                 Component.translatable("metaarmor.hud.status.disabled");
         lines.add(Component.translatable("metaarmor.hud.engine_enabled", state));
 
-        boolean canShare = data.contains("canShare") && data.getBoolean("canShare");
+        boolean canShare = data.contains("canShare") && data.getBooleanOr("canShare", false);
         state = canShare ? Component.translatable("metaarmor.hud.status.enabled") :
                 Component.translatable("metaarmor.hud.status.disabled");
         lines.add(Component.translatable("metaarmor.energy_share.tooltip", state));
         lines.add(Component.translatable("metaarmor.energy_share.tooltip.guide"));
 
-        boolean hover = data.contains("hover") && data.getBoolean("hover");
+        boolean hover = data.contains("hover") && data.getBooleanOr("hover", false);
         state = hover ? Component.translatable("metaarmor.hud.status.enabled") :
                 Component.translatable("metaarmor.hud.status.disabled");
         lines.add(Component.translatable("metaarmor.hud.hover_mode", state));
@@ -174,14 +174,14 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
         ItemStack armor = player.getItemInHand(hand);
         if (armor.getItem() instanceof ArmorComponentItem && player.isShiftKeyDown()) {
             CompoundTag data = armor.getOrCreateTag();
-            boolean canShare = data.contains("canShare") && data.getBoolean("canShare");
+            boolean canShare = data.contains("canShare") && data.getBooleanOr("canShare", false);
             IElectricItem cont = GTCapabilityHelper.getElectricItem(armor);
             if (cont == null) {
                 return InteractionResultHolder.fail(armor);
             }
 
             canShare = !canShare;
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 if (canShare && cont.getCharge() == 0) {
                     player.sendSystemMessage(Component.translatable("metaarmor.energy_share.error"));
                 } else if (canShare) {
@@ -209,20 +209,20 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
         CompoundTag data = item.getTag();
         if (data != null) {
             if (data.contains("enabled")) {
-                Component status = (data.getBoolean("enabled") ?
+                Component status = (data.getBooleanOr("enabled", false) ?
                         Component.translatable("metaarmor.hud.status.enabled") :
                         Component.translatable("metaarmor.hud.status.disabled"));
                 Component result = Component.translatable("metaarmor.hud.engine_enabled", status);
                 this.HUD.newString(result);
             }
             if (data.contains("canShare")) {
-                String status = data.getBoolean("canShare") ? "metaarmor.hud.status.enabled" :
+                String status = data.getBooleanOr("canShare", false) ? "metaarmor.hud.status.enabled" :
                         "metaarmor.hud.status.disabled";
                 this.HUD.newString(Component.translatable("mataarmor.hud.supply_mode", Component.translatable(status)));
             }
 
             if (data.contains("hover")) {
-                String status = data.getBoolean("hover") ? "metaarmor.hud.status.enabled" :
+                String status = data.getBooleanOr("hover", false) ? "metaarmor.hud.status.enabled" :
                         "metaarmor.hud.status.disabled";
                 this.HUD.newString(Component.translatable("metaarmor.hud.hover_mode", Component.translatable(status)));
             }

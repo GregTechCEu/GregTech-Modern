@@ -50,7 +50,7 @@ public class BedrockFluidLoader extends SimpleJsonResourceReloadListener {
 
         GTBedrockFluids.init();
         AddonFinder.getAddons().forEach(IGTAddon::registerFluidVeins);
-        ModLoader.get().postEvent(
+        ModLoader.postEvent(
                 new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_FLUID_DEFINITIONS, BedrockFluidDefinition.class));
         if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSCallWrapper.fireKJSEvent();
@@ -77,7 +77,7 @@ public class BedrockFluidLoader extends SimpleJsonResourceReloadListener {
     }
 
     public static BedrockFluidDefinition fromJson(Identifier id, JsonObject json, RegistryOps<JsonElement> ops) {
-        return BedrockFluidDefinition.FULL_CODEC.parse(ops, json).getOrThrow(false, LOGGER::error);
+        return BedrockFluidDefinition.FULL_CODEC.parse(ops, json).getOrThrow(message -> { LOGGER.error(message); return new RuntimeException(message); });
     }
 
     public static final class KJSCallWrapper {

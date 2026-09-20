@@ -41,7 +41,7 @@ public class ProgrammableCircuitProvider extends MachineTraitProvider<Programmab
         if (data.contains("Configuration")) {
             IElementHelper helper = tooltip.getElementHelper();
 
-            int configuration = data.getInt("Configuration");
+            int configuration = data.getIntOr("Configuration", 0);
             ItemStack circuit = IntCircuitBehaviour.stack(configuration);
 
             MutableComponent text = Component.translatable("behaviour.setting.tooltip.circuit_config")

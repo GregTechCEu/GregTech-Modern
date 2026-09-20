@@ -35,7 +35,7 @@ public class HazardParticle extends TextureSheetParticle {
         this.gCol = this.randomizeColor(ARGB.green(options.color()) / 255f, colorMultiplier);
         this.bCol = this.randomizeColor(ARGB.blue(options.color()) / 255f, colorMultiplier);
         this.quadSize *= 0.75F * options.scale();
-        this.lifetime = (int) (lifetime / (level.random.nextFloat() * 0.8 + 0.2) * 2);
+        this.lifetime = (int) (lifetime / (level.getRandom().nextFloat() * 0.8 + 0.2) * 2);
         this.setSpriteFromAge(sprites);
         this.hasPhysics = false;
     }
@@ -71,7 +71,7 @@ public class HazardParticle extends TextureSheetParticle {
 
         public Particle createParticle(HazardParticleOptions options, ClientLevel level, double x, double y, double z,
                                        double xSpeed, double ySpeed, double zSpeed) {
-            RandomSource randomSource = level.random;
+            RandomSource randomSource = level.getRandom();
             xSpeed += (double) randomSource.nextFloat() * -1.9 * (double) randomSource.nextFloat() * 0.1;
             ySpeed += (double) randomSource.nextFloat() * -0.5 * (double) randomSource.nextFloat() * 0.1 * 5.0;
             zSpeed += (double) randomSource.nextFloat() * -1.9 * (double) randomSource.nextFloat() * 0.1;

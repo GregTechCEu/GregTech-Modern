@@ -43,7 +43,7 @@ public class QuantumFluidHandlerItemStack implements IFluidHandlerItem, ICapabil
         }
         FluidStack stack = FluidStack.loadFluidStackFromNBT(tagCompound.getCompound("stored"));
         if (!stack.isEmpty()) {
-            stack.setAmount(GTMath.saturatedCast(tagCompound.getLong("storedAmount")));
+            stack.setAmount(GTMath.saturatedCast(tagCompound.getLongOr("storedAmount", 0)));
         }
         return stack;
     }
@@ -51,7 +51,7 @@ public class QuantumFluidHandlerItemStack implements IFluidHandlerItem, ICapabil
     public long getFluidAmount() {
         CompoundTag tagCompound = this.container.getTag();
         if (tagCompound == null || !tagCompound.contains("storedAmount")) return 0;
-        return tagCompound.getLong("storedAmount");
+        return tagCompound.getLongOr("storedAmount", 0);
     }
 
     private void setFluid(FluidStack fluid, long amount) {

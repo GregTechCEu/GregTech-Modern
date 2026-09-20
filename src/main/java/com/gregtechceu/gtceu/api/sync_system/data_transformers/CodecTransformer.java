@@ -22,12 +22,12 @@ public record CodecTransformer<T>(Codec<T> codec, @Nullable BiConsumer<FriendlyB
 
     @Override
     public Tag serializeNBT(T value, TransformerContext<T> context) {
-        return codec.encodeStart(context.nbtOps(), value).getOrThrow(false, GTCEu.LOGGER::error);
+        return codec.encodeStart(context.nbtOps(), value).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
     }
 
     @Override
     public T deserializeNBT(Tag tag, TransformerContext<T> context) {
-        return codec.parse(context.nbtOps(), tag).getOrThrow(false, GTCEu.LOGGER::error);
+        return codec.parse(context.nbtOps(), tag).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
     }
 
     private static final String WRAPPED_TAG_KEY = "$$field$$";
@@ -39,7 +39,7 @@ public record CodecTransformer<T>(Codec<T> codec, @Nullable BiConsumer<FriendlyB
             return;
         }
 
-        Tag data = codec.encodeStart(context.nbtOps(), value).getOrThrow(false, GTCEu.LOGGER::error);
+        Tag data = codec.encodeStart(context.nbtOps(), value).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
         if (data instanceof CompoundTag compoundTag) {
             buf.writeNbt(compoundTag);
         } else {
@@ -60,6 +60,6 @@ public record CodecTransformer<T>(Codec<T> codec, @Nullable BiConsumer<FriendlyB
             read = compound.get(WRAPPED_TAG_KEY);
         }
         if (read == null) return null;
-        return codec.parse(context.nbtOps(), read).getOrThrow(false, GTCEu.LOGGER::error);
+        return codec.parse(context.nbtOps(), read).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
     }
 }

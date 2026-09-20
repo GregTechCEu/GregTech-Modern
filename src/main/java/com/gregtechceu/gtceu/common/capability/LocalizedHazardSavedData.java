@@ -64,9 +64,9 @@ public class LocalizedHazardSavedData extends SavedData {
 
         ListTag allHazardZones = tag.getList("zones", Tag.TAG_COMPOUND);
         for (int i = 0; i < allHazardZones.size(); ++i) {
-            CompoundTag zoneTag = allHazardZones.getCompound(i);
+            CompoundTag zoneTag = allHazardZones.getCompoundOrEmpty(i);
 
-            BlockPos source = BlockPos.of(zoneTag.getLong("pos"));
+            BlockPos source = BlockPos.of(zoneTag.getLongOr("pos", 0));
             HazardZone zone = HazardZone.deserializeNBT(zoneTag);
 
             this.hazardZones.put(source, zone);
@@ -80,7 +80,7 @@ public class LocalizedHazardSavedData extends SavedData {
 
         Object2IntMap<BlockPos> zonesToSpread = new Object2IntOpenHashMap<>();
 
-        RandomSource random = serverLevel.random;
+        RandomSource random = serverLevel.getRandom();
         for (final var entry : hazardZones.entrySet()) {
             HazardZone zone = entry.getValue();
             if (zone.strength() < MIN_STRENGTH_FOR_SPREAD / 5) {
@@ -330,11 +330,11 @@ public class LocalizedHazardSavedData extends SavedData {
                     .map(CompoundTag.class::cast)
                     .map(NbtUtils::readBlockPos)
                     .collect(Collectors.toSet());
-            boolean canSpread = zoneTag.getBoolean("can_spread");
+            boolean canSpread = zoneTag.getBooleanOr("can_spread", false);
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
 
-            Identifier id = GTCEu.id(zoneTag.getString("condition"));
+            Identifier id = GTCEu.id(zoneTag.getStringOr("condition", ""));
             if (!GTRegistries.MEDICAL_CONDITIONS.containsKey(id)) {
                 return null;
             }

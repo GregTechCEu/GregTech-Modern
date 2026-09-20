@@ -160,10 +160,10 @@ public class MonitorGroup {
             if (tag == null) {
                 return null;
             }
-            int x = tag.getInt("targetX");
-            int y = tag.getInt("targetY");
-            int z = tag.getInt("targetZ");
-            Direction face = Direction.byName(tag.getString("face"));
+            int x = tag.getIntOr("targetX", 0);
+            int y = tag.getIntOr("targetY", 0);
+            int z = tag.getIntOr("targetZ", 0);
+            Direction face = Direction.byName(tag.getStringOr("face", ""));
             if (face == null) {
                 return null;
             }
@@ -185,7 +185,7 @@ public class MonitorGroup {
             }
             if (level.getServer() == null) return level;
             return level.getServer()
-                    .getLevel(ResourceKey.create(Registries.DIMENSION, Identifier.parse(tag.getString("dim"))));
+                    .getLevel(ResourceKey.create(Registries.DIMENSION, Identifier.parse(tag.getStringOr("dim", ""))));
         }
         return level;
     }

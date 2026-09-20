@@ -90,7 +90,7 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
     }
 
     public LaserPipeNet getLaserPipeNet() {
-        if (level == null || level.isClientSide) {
+        if (level == null || level.isClientSide()) {
             return null;
         }
         LaserPipeNet currentPipeNet = this.currentPipeNet.get();
@@ -130,7 +130,7 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
 
     @Override
     public void setConnection(Direction side, boolean connected, boolean fromNeighbor) {
-        if (!getLevel().isClientSide && connected) {
+        if (!getLevel().isClientSide() && connected) {
             int connections = getConnections();
             // block connection if any side other than the requested side and its opposite side are already connected.
             connections &= ~(1 << side.ordinal());

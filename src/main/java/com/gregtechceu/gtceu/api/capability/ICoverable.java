@@ -203,7 +203,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
     }
 
     default boolean isRemote() {
-        return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;
+        return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide();
     }
 
     default VoxelShape[] addCoverCollisionBoundingBox() {
@@ -314,7 +314,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
 
     private void applyCoverConfigTag(ServerPlayer player, Direction dir, CompoundTag tag) {
         if (tag.isEmpty()) return;
-        var def = GTRegistries.COVERS.get(Identifier.parse(tag.getString("id")));
+        var def = GTRegistries.COVERS.get(Identifier.parse(tag.getStringOr("id", "")));
         ItemStack stack = ItemStack.of(tag.getCompound("item"));
         if (def == null) return;
 
@@ -322,7 +322,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
 
         CoverBehavior placedCover = getCoverAtSide(dir);
         if (placedCover != null && tag.contains("data") && !tag.getCompound("data").isEmpty())
-            placedCover.pasteConfig(player, tag.getCompound("data"));
+            placedCover.pasteConfig(player, tag.getCompoundOrEmpty("data"));
     }
 
     @Override
@@ -339,7 +339,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
         }
 
         for (Direction dir : GTUtil.DIRECTIONS) {
-            applyCoverConfigTag(player, dir, tag.getCompound(dir.getName()));
+            applyCoverConfigTag(player, dir, tag.getCompoundOrEmpty(dir.getName()));
         }
     }
 

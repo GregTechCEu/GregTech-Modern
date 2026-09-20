@@ -52,14 +52,14 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         }
         CompoundTag data = itemStack.getOrCreateTag();
 
-        byte toggleStepTimer = data.getByte("toggleStepTimer");
+        byte toggleStepTimer = data.getByteOr("toggleStepTimer", (byte) 0);
         if (type == ArmorItem.Type.BOOTS) {
-            boolean stepAssist = data.contains("stepAssist") && data.getBoolean("stepAssist");
+            boolean stepAssist = data.contains("stepAssist") && data.getBooleanOr("stepAssist", false);
             if (toggleStepTimer == 0 && SyncedKeyMappings.STEP_ASSIST_ENABLE.isKeyDown(player)) {
                 stepAssist = !stepAssist;
                 toggleStepTimer = 5;
-                if (world.isClientSide()) player.displayClientMessage(Component
-                        .translatable("metaarmor.nms.step_assist." + (stepAssist ? "enabled" : "disabled")), true);
+                if (world.isClientSide()) player.sendOverlayMessage(Component
+                        .translatable("metaarmor.nms.step_assist." + (stepAssist ? "enabled" : "disabled")));
                 data.putBoolean("stepAssist", stepAssist);
             }
 
@@ -71,17 +71,17 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
             byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
             int nightVisionTimer = data.contains("nightVisionTimer") ? data.getInt("nightVisionTimer") :
                     ArmorUtils.NIGHTVISION_DURATION;
-            boolean nightVision = data.contains("nightVision") && data.getBoolean("nightVision");
+            boolean nightVision = data.contains("nightVision") && data.getBooleanOr("nightVision", false);
             if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
                 nightVision = !nightVision;
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
                     if (world.isClientSide())
-                        player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
+                        player.sendOverlayMessage(Component.translatable("metaarmor.nms.nightvision.error"));
                 } else {
-                    if (world.isClientSide()) player.displayClientMessage(Component
-                            .translatable("metaarmor.nms.nightvision." + (nightVision ? "enabled" : "disabled")), true);
+                    if (world.isClientSide()) player.sendOverlayMessage(Component
+                            .translatable("metaarmor.nms.nightvision." + (nightVision ? "enabled" : "disabled")));
                 }
             }
 
@@ -106,10 +106,10 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     }
 
     public static void disableNightVision(@NotNull Level world, Player player, boolean sendMsg) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             player.removeEffect(MobEffects.NIGHT_VISION);
             if (sendMsg)
-                player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.disabled"), true);
+                player.sendOverlayMessage(Component.translatable("metaarmor.nms.nightvision.disabled"));
         }
     }
 
@@ -180,14 +180,14 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         CompoundTag nbtData = itemStack.getOrCreateTag();
         if (type == ArmorItem.Type.HELMET) {
 
-            boolean nv = nbtData.getBoolean("nightVision");
+            boolean nv = nbtData.getBooleanOr("nightVision", false);
             if (nv) {
                 lines.add(Component.translatable("metaarmor.message.nightvision.enabled"));
             } else {
                 lines.add(Component.translatable("metaarmor.message.nightvision.disabled"));
             }
         } else if (type == ArmorItem.Type.BOOTS) {
-            if (nbtData.getBoolean("stepAssist"))
+            if (nbtData.getBooleanOr("stepAssist", false))
                 lines.add(Component.translatable("metaarmor.message.step_assist.enabled"));
             else lines.add(Component.translatable("metaarmor.message.step_assist.disabled"));
             lines.add(Component.translatable("metaarmor.tooltip.falldamage"));

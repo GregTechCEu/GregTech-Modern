@@ -130,7 +130,7 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
             frameState.getBlock().entityInside(frameState, level, pos, entity);
             return;
         }
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         if (level.getBlockEntity(pos) == null) return;
         FluidPipeBlockEntity pipe = (FluidPipeBlockEntity) level.getBlockEntity(pos);
 

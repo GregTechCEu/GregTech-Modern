@@ -36,8 +36,7 @@ public class SPacketSyncFluidVeins implements GTNetwork.INetPacket {
         Stream.generate(() -> {
             Identifier id = buf.readResourceLocation();
             CompoundTag tag = buf.readAnySizeNbt();
-            BedrockFluidDefinition def = BedrockFluidDefinition.FULL_CODEC.parse(ops, tag).getOrThrow(false,
-                    GTCEu.LOGGER::error);
+            BedrockFluidDefinition def = BedrockFluidDefinition.FULL_CODEC.parse(ops, tag).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
             return Map.entry(id, def);
         }).limit(buf.readVarInt()).forEach(entry -> veins.put(entry.getKey(), entry.getValue()));
     }
@@ -50,7 +49,7 @@ public class SPacketSyncFluidVeins implements GTNetwork.INetPacket {
         for (var entry : veins.entrySet()) {
             buf.writeResourceLocation(entry.getKey());
             CompoundTag tag = (CompoundTag) BedrockFluidDefinition.FULL_CODEC.encodeStart(ops, entry.getValue())
-                    .getOrThrow(false, GTCEu.LOGGER::error);
+                    .getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
             buf.writeNbt(tag);
         }
     }

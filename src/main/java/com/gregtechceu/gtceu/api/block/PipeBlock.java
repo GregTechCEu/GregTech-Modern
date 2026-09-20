@@ -145,7 +145,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
 
     public void updateActiveNodeStatus(@NotNull Level worldIn, BlockPos pos,
                                        IPipeNode<PipeType, NodeDataType> pipeTile) {
-        if (worldIn.isClientSide) return;
+        if (worldIn.isClientSide()) return;
 
         PipeNet<NodeDataType> pipeNet = getWorldPipeNet((ServerLevel) worldIn).getNetFromPos(pos);
         if (pipeNet != null) {
@@ -260,7 +260,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos,
                                 boolean isMoving) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         IPipeNode<PipeType, NodeDataType> pipeTile = getPipeTile(level, pos);
         if (pipeTile != null) {
             Direction facing = GTUtil.getFacingToNeighbor(pos, fromPos);
@@ -336,7 +336,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                 level.playSound(player, pos,
                         type.getPlaceSound(), SoundSource.BLOCKS,
                         (type.getVolume() + 1.0F) / 2.0F, type.getPitch() * 0.8F);
-                return InteractionResult.sidedSuccess(player.level().isClientSide);
+                return InteractionResult.sidedSuccess(player.level().isClientSide());
             }
         }
 

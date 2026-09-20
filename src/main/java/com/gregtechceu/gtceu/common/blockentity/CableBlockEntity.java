@@ -161,7 +161,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     @Override
     public void onLoad() {
         super.onLoad();
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             setTemperature(temperature);
             if (temperature > getDefaultTemp()) {
                 subscribeHeat();
@@ -256,7 +256,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     public void applyHeat(int amount) {
         heatQueue += amount;
-        if (!level.isClientSide && heatSubs == null && temperature + heatQueue > getDefaultTemp()) {
+        if (!level.isClientSide() && heatSubs == null && temperature + heatQueue > getDefaultTemp()) {
             subscribeHeat();
         }
     }
@@ -339,15 +339,15 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
             float yPos = Direction.UP.getStepY() * 0.76f + getBlockPos().getY() + 0.25f;
             float zPos = Direction.UP.getStepZ() * 0.76f + getBlockPos().getZ() + 0.25f;
 
-            float horizontalDirection = getLevel().random.nextFloat() * 2 * Mth.PI;
+            float horizontalDirection = getLevel().getRandom().nextFloat() * 2 * Mth.PI;
             float xSpd = Mth.sin(horizontalDirection) * 0.1f;
-            float ySpd = Direction.UP.getStepY() * 0.1f + 0.2f + 0.1f * level.random.nextFloat();
+            float ySpd = Direction.UP.getStepY() * 0.1f + 0.2f + 0.1f * level.getRandom().nextFloat();
             float zSpd = Mth.cos(horizontalDirection) * 0.1f;
 
             level.addParticle(ParticleTypes.SMOKE,
-                    xPos + level.random.nextFloat() * 0.5f,
-                    yPos + level.random.nextFloat() * 0.5f,
-                    zPos + level.random.nextFloat() * 0.5f,
+                    xPos + level.getRandom().nextFloat() * 0.5f,
+                    yPos + level.getRandom().nextFloat() * 0.5f,
+                    zPos + level.getRandom().nextFloat() * 0.5f,
                     xSpd, ySpd, zSpd);
         }
     }

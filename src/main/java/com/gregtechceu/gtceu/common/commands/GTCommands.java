@@ -304,7 +304,7 @@ public class GTCommands {
         int dumpedCount = 0;
         for (Identifier id : registry.keys()) {
             T entry = registry.get(id);
-            JsonElement json = codec.encodeStart(ops, entry).getOrThrow(false, GTCEu.LOGGER::error);
+            JsonElement json = codec.encodeStart(ops, entry).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
             GTDynamicDataPack.writeJson(id, folder, parent, json.toString().getBytes(StandardCharsets.UTF_8));
             dumpedCount++;
         }
@@ -324,7 +324,7 @@ public class GTCommands {
         ServerLevel level = context.getSource().getLevel();
 
         GeneratedVeinMetadata metadata = new GeneratedVeinMetadata(id, chunkPos, sourcePos, vein);
-        RandomSource random = level.random;
+        RandomSource random = level.getRandom();
 
         OrePlacer placer = new OrePlacer();
         OreGenerator generator = placer.getOreGenCache().getOreGenerator();
@@ -338,7 +338,7 @@ public class GTCommands {
             }
             for (ChunkPos pos : generated.get().getGeneratedChunks()) {
                 placer.placeVein(pos, random, access, generated.get(), AlwaysTrueTest.INSTANCE);
-                level.getChunk(pos.x, pos.z).setUnsaved(true);
+                level.getChunk(pos.x(), pos.z()).setUnsaved(true);
             }
             context.getSource().sendSuccess(() -> Component.translatable("command.gtceu.place_vein.success",
                     id.toString(), sourcePos.toString()), true);

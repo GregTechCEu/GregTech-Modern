@@ -122,7 +122,7 @@ public class ToolEventHandlers {
 
         CompoundTag behaviorTag = ToolHelper.getBehaviorsTag(tool);
         Block block = state.getBlock();
-        if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.getBoolean(ToolHelper.HARVEST_ICE_KEY)) {
+        if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.getBooleanOr(ToolHelper.HARVEST_ICE_KEY, false)) {
             Item iceBlock = block.asItem();
             if (drops.stream().noneMatch(drop -> drop.is(iceBlock))) {
                 drops.add(iceBlock.getDefaultInstance());
@@ -140,7 +140,7 @@ public class ToolEventHandlers {
                 toolItem.playSound(player);
             }
         }
-        if (behaviorTag.getBoolean(ToolHelper.RELOCATE_MINED_BLOCKS_KEY)) {
+        if (behaviorTag.getBooleanOr(ToolHelper.RELOCATE_MINED_BLOCKS_KEY, false)) {
             drops = new ArrayList<>(drops);
 
             Iterator<ItemStack> dropItr = drops.iterator();
@@ -186,7 +186,7 @@ public class ToolEventHandlers {
         }
 
         CompoundTag behaviorTag = ToolHelper.getBehaviorsTag(tool);
-        if (behaviorTag.getBoolean(ToolHelper.RELOCATE_MOB_DROPS_KEY)) {
+        if (behaviorTag.getBooleanOr(ToolHelper.RELOCATE_MOB_DROPS_KEY, false)) {
             Iterator<ItemEntity> dropItr = event.getDrops().iterator();
 
             while (dropItr.hasNext()) {

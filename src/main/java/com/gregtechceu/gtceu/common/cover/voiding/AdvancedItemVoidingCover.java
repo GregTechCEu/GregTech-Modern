@@ -153,8 +153,8 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        setVoidingMode(VoidingMode.values()[tag.getInt("voidingMode")]);
-        globalVoidingLimit = tag.getInt("voidSize");
+        setVoidingMode(VoidingMode.values()[tag.getIntOr("voidingMode", 0)]);
+        globalVoidingLimit = tag.getIntOr("voidSize", 0);
         super.pasteConfig(player, tag);
     }
 }

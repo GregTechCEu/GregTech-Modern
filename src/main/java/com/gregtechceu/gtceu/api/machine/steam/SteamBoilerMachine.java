@@ -290,7 +290,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         if (!isRemote()) {
             context.getPlayer().sendSystemMessage(Component.translatable("behaviour.soft_hammer.ignored"));
         }
-        return InteractionResult.sidedSuccess(getLevel().isClientSide);
+        return InteractionResult.sidedSuccess(getLevel().isClientSide());
     }
 
     @Override

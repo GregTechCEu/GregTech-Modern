@@ -479,7 +479,7 @@ public class MultiblockControllerMachine extends MetaMachine {
                 blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
             getLevel().setBlockAndUpdate(getBlockPos(),
                     blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
-            if (getLevel() != null && !getLevel().isClientSide) {
+            if (getLevel() != null && !getLevel().isClientSide()) {
                 notifyBlockUpdate();
                 invalidateStructureCaches();
                 checkAndFormStructure();
@@ -491,7 +491,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     public void setFrontFacing(Direction facing) {
         super.setFrontFacing(facing);
 
-        if (getLevel() != null && !getLevel().isClientSide) {
+        if (getLevel() != null && !getLevel().isClientSide()) {
             invalidateStructureCaches();
             checkAndFormStructure();
         }

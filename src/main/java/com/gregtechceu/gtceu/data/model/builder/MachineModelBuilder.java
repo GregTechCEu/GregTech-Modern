@@ -97,7 +97,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             JsonArray dynamicRenders = new JsonArray();
             for (DynamicRender<?, ?> render : this.dynamicRenders) {
                 JsonElement serialized = DynamicRender.CODEC.encodeStart(JsonOps.INSTANCE, render)
-                        .getOrThrow(false, GTCEu.LOGGER::error);
+                        .getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
                 dynamicRenders.add(serialized);
             }
             json.add("dynamic_renders", dynamicRenders);

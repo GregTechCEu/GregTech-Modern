@@ -48,15 +48,15 @@ public class ParallelProvider extends MachineInfoProvider<MetaMachine, CompoundT
     protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
         if (data.contains("parallel")) {
-            int parallel = data.getInt("parallel");
-            if (!data.getBoolean("exact") && parallel > 1) {
+            int parallel = data.getIntOr("parallel", 0);
+            if (!data.getBooleanOr("exact", false) && parallel > 1) {
                 Component parallels = Component.literal(FormattingUtil.formatNumbers(parallel))
                         .withStyle(ChatFormatting.DARK_PURPLE);
                 String key = "gtceu.multiblock.parallel";
                 tooltip.add(Component.translatable(key, parallels));
             } else {
-                int batch = data.getInt("batch");
-                int subtickParallel = data.getInt("subtickParallel");
+                int batch = data.getIntOr("batch", 0);
+                int subtickParallel = data.getIntOr("subtickParallel", 0);
                 int totalRuns = parallel * batch * subtickParallel;
                 if (totalRuns == 1) return;
                 Component runs = Component.literal(FormattingUtil.formatNumbers(totalRuns))

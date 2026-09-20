@@ -34,7 +34,7 @@ public class MufflerParticle extends TextureSheetParticle {
         this.gCol = this.randomizeColor(ARGB.green(COLOR) / 255f, colorMultiplier);
         this.bCol = this.randomizeColor(ARGB.blue(COLOR) / 255f, colorMultiplier + 1);
         this.quadSize *= 1.5F;
-        this.lifetime = (int) (lifetime / (level.random.nextFloat() * 0.8 + 0.2) * 2);
+        this.lifetime = (int) (lifetime / (level.getRandom().nextFloat() * 0.8 + 0.2) * 2);
         this.setSpriteFromAge(sprites);
         this.hasPhysics = true;
     }
@@ -81,7 +81,7 @@ public class MufflerParticle extends TextureSheetParticle {
 
         public Particle createParticle(SimpleParticleType options, ClientLevel level, double x, double y, double z,
                                        double xSpeed, double ySpeed, double zSpeed) {
-            RandomSource randomSource = level.random;
+            RandomSource randomSource = level.getRandom();
             ySpeed += (double) randomSource.nextFloat() * -1.9 * (double) randomSource.nextFloat() * 0.1 * 5.0;
             return new MufflerParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, options, this.sprites);
         }

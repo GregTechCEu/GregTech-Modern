@@ -122,7 +122,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         ItemStack heldItem = player.getItemInHand(usedHand);
         if (player.isCrouching()) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 setNextMode(heldItem);
                 var mode = getMode(heldItem);
                 player.sendSystemMessage(Component.translatable("behavior.portable_scanner.mode.caption",

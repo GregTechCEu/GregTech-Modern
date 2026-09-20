@@ -18,7 +18,7 @@ public class MonitorGroupTransformer implements ValueTransformer<MonitorGroup> {
 
     @Override
     public Tag serializeNBT(MonitorGroup value, ValueTransformer.TransformerContext<MonitorGroup> context) {
-        return MonitorGroup.CODEC.encodeStart(context.nbtOps(), value).getOrThrow(false, GTCEu.LOGGER::error);
+        return MonitorGroup.CODEC.encodeStart(context.nbtOps(), value).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
     }
 
     @Override
@@ -27,13 +27,13 @@ public class MonitorGroupTransformer implements ValueTransformer<MonitorGroup> {
 
         // Backwards compat
 
-        var positions = compoundTag.contains("positions", Tag.TAG_LIST) ?
+        var positions = (compoundTag.get("positions") instanceof ListTag) ?
                 compoundTag.getList("positions", Tag.TAG_COMPOUND) : null;
-        var placeholderItems = compoundTag.contains("placeholderSlots", Tag.TAG_COMPOUND) ?
+        var placeholderItems = (compoundTag.get("placeholderSlots") instanceof CompoundTag) ?
                 compoundTag.getCompound("placeholderSlots") : null;
-        var targetPos = compoundTag.contains("targetPos", Tag.TAG_COMPOUND) ? compoundTag.getCompound("targetPos") :
+        var targetPos = (compoundTag.get("targetPos") instanceof CompoundTag) ? compoundTag.getCompound("targetPos") :
                 null;
-        var items = compoundTag.contains("items", Tag.TAG_COMPOUND) ? compoundTag.getCompound("items") : null;
+        var items = (compoundTag.get("items") instanceof CompoundTag) ? compoundTag.getCompound("items") : null;
 
         if (positions != null && !compoundTag.contains("monitorPositions")) {
             List<BlockPos> posList = new ArrayList<>();
@@ -44,7 +44,7 @@ public class MonitorGroupTransformer implements ValueTransformer<MonitorGroup> {
             }
 
             compoundTag.put("monitorPositions", BlockPos.CODEC.listOf().encodeStart(context.nbtOps(), posList)
-                    .getOrThrow(false, GTCEu.LOGGER::error));
+                    .getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); }));
         }
 
         if (placeholderItems != null && !compoundTag.contains("placeholderItems")) {
@@ -55,14 +55,14 @@ public class MonitorGroupTransformer implements ValueTransformer<MonitorGroup> {
         if (targetPos != null) {
             BlockPos pos = NbtUtils.readBlockPos(targetPos);
             compoundTag.put("targetPos",
-                    BlockPos.CODEC.encodeStart(context.nbtOps(), pos).getOrThrow(false, GTCEu.LOGGER::error));
+                    BlockPos.CODEC.encodeStart(context.nbtOps(), pos).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); }));
         }
 
         if (items != null) {
             compoundTag.put("items", Objects.requireNonNull(items.get("Items")));
         }
 
-        return MonitorGroup.CODEC.parse(context.nbtOps(), tag).getOrThrow(false, GTCEu.LOGGER::error);
+        return MonitorGroup.CODEC.parse(context.nbtOps(), tag).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
     }
 
     @Override

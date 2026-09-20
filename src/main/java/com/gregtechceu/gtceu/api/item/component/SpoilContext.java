@@ -162,7 +162,7 @@ public record SpoilContext(@Nullable Level level,
                 if (!tag.contains("side"))
                     return blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().orElse(null);
                 return blockEntity
-                        .getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.byName(tag.getString("side")))
+                        .getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.byName(tag.getStringOr("side", "")))
                         .resolve().orElse(null);
             }
         };
@@ -176,7 +176,7 @@ public record SpoilContext(@Nullable Level level,
             @Override
             protected @Nullable IItemHandler getHandler(SpoilContext ctx) {
                 if (ctx.entity instanceof Player player) {
-                    return new CustomItemStackHandler(player.getInventory().items);
+                    return new CustomItemStackHandler(player.getInventory().getNonEquipmentItems());
                 } else return null;
             }
         };

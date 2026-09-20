@@ -81,8 +81,8 @@ public class CreativeTankMachine extends QuantumTankMachine {
 
     @Override
     public void loadFromItem(CompoundTag tag) {
-        mBPerCycle = tag.getInt("mBPerCycle");
-        ticksPerCycle = tag.getInt("ticksPerCycle");
+        mBPerCycle = tag.getIntOr("mBPerCycle", 0);
+        ticksPerCycle = tag.getIntOr("ticksPerCycle", 0);
     }
 
     @Override

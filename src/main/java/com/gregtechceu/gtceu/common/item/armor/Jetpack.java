@@ -55,9 +55,9 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
             data.putByte("toggleTimer", (byte) 0);
         }
 
-        boolean jetpackEnabled = data.getBoolean("enabled");
-        boolean hoverMode = data.getBoolean("hover");
-        byte toggleTimer = data.getByte("toggleTimer");
+        boolean jetpackEnabled = data.getBooleanOr("enabled", false);
+        boolean hoverMode = data.getBooleanOr("hover", false);
+        byte toggleTimer = data.getByteOr("toggleTimer", (byte) 0);
 
         String messageKey = null;
         if (toggleTimer == 0) {
@@ -73,7 +73,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
             if (messageKey != null) {
                 toggleTimer = 5;
-                if (!world.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
+                if (!world.isClientSide()) player.sendOverlayMessage(Component.translatable(messageKey));
             }
         }
 
@@ -132,14 +132,14 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         CompoundTag data = item.getTag();
         if (data != null) {
             if (data.contains("enabled")) {
-                Component status = (data.getBoolean("enabled") ?
+                Component status = (data.getBooleanOr("enabled", false) ?
                         Component.translatable("metaarmor.hud.status.enabled") :
                         Component.translatable("metaarmor.hud.status.disabled"));
                 Component result = Component.translatable("metaarmor.hud.engine_enabled", status);
                 this.HUD.newString(result);
             }
             if (data.contains("hover")) {
-                Component status = (data.getBoolean("hover") ? Component.translatable("metaarmor.hud.status.enabled") :
+                Component status = (data.getBooleanOr("hover", false) ? Component.translatable("metaarmor.hud.status.enabled") :
                         Component.translatable("metaarmor.hud.status.disabled"));
                 Component result = Component.translatable("metaarmor.hud.hover_mode", status);
                 this.HUD.newString(result);
@@ -155,12 +155,12 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         CompoundTag data = itemStack.getOrCreateTag();
 
         Component state;
-        boolean enabled = !data.contains("enabled") || data.getBoolean("enabled");
+        boolean enabled = !data.contains("enabled") || data.getBooleanOr("enabled", false);
         state = enabled ? Component.translatable("metaarmor.hud.status.enabled") :
                 Component.translatable("metaarmor.hud.status.disabled");
         lines.add(Component.translatable("metaarmor.hud.engine_enabled", state));
 
-        boolean hover = data.contains("hover") && data.getBoolean("hover");
+        boolean hover = data.contains("hover") && data.getBooleanOr("hover", false);
         state = hover ? Component.translatable("metaarmor.hud.status.enabled") :
                 Component.translatable("metaarmor.hud.status.disabled");
         lines.add(Component.translatable("metaarmor.hud.hover_mode", state));

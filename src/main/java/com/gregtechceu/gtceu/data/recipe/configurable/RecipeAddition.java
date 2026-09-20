@@ -1319,10 +1319,10 @@ public class RecipeAddition {
     private static void addBedRecipe(Consumer<FinishedRecipe> provider, DyeColor color) {
         String colorName = color.getName();
         VanillaRecipeHelper.addShapedRecipe(provider, colorName + "_bed",
-                new ItemStack(BuiltInRegistries.ITEM.get(Identifier.withDefaultNamespace(colorName + "_bed"))),
+                new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(colorName + "_bed"))),
                 "WWW", "PPP",
                 "FrF",
-                'W', BuiltInRegistries.ITEM.get(Identifier.withDefaultNamespace(colorName + "_carpet")),
+                'W', BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(colorName + "_carpet")),
                 'P', ItemTags.PLANKS,
                 'F', ItemTags.WOODEN_FENCES);
     }
@@ -1330,9 +1330,9 @@ public class RecipeAddition {
     private static void addCarpetRecipe(Consumer<FinishedRecipe> provider, DyeColor color) {
         String colorName = color.getName();
         VanillaRecipeHelper.addShapedRecipe(provider, colorName + "_carpet",
-                new ItemStack(BuiltInRegistries.ITEM.get(Identifier.withDefaultNamespace(colorName + "_carpet"))),
+                new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(colorName + "_carpet"))),
                 "WW",
-                'W', BuiltInRegistries.ITEM.get(Identifier.withDefaultNamespace(colorName + "_wool")));
+                'W', BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(colorName + "_wool")));
     }
 
     private static void hardGlassRecipes(Consumer<FinishedRecipe> provider) {
@@ -1343,9 +1343,9 @@ public class RecipeAddition {
             String dyeName = color.getName();
             VanillaRecipeHelper.addShapedRecipe(provider, dyeName + "_glass_pane",
                     new ItemStack(BuiltInRegistries.ITEM
-                            .get(Identifier.withDefaultNamespace(dyeName + "_stained_glass_pane")), 2),
+                            .getValue(Identifier.withDefaultNamespace(dyeName + "_stained_glass_pane")), 2),
                     "sG",
-                    'G', BuiltInRegistries.ITEM.get(Identifier.withDefaultNamespace(dyeName + "_stained_glass")));
+                    'G', BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(dyeName + "_stained_glass")));
         }
 
         ALLOY_SMELTER_RECIPES.recipeBuilder("tinted_glass")

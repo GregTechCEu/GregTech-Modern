@@ -80,7 +80,7 @@ public class OreVeinUtil {
         int gridSize = ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize;
         int randomOffset = ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinRandomOffset;
 
-        if (chunkPos.x % gridSize != 0 || chunkPos.z % gridSize != 0)
+        if (chunkPos.x() % gridSize != 0 || chunkPos.z() % gridSize != 0)
             return Optional.empty();
 
         var chunkCenter = chunkPos.getMiddleBlockPosition(0);
@@ -122,7 +122,7 @@ public class OreVeinUtil {
         JsonElement codecInput = resolveBiomeCodecInput(biomes);
         return Suppliers.memoize(() -> RegistryCodecs.homogeneousList(Registries.BIOME)
                 .parse(registryOps, codecInput)
-                .getOrThrow(false, GTCEu.LOGGER::error));
+                .getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); }));
     }
 
     private static JsonElement resolveBiomeCodecInput(List<String> biomes) {

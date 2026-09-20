@@ -32,9 +32,9 @@ public class LDPEndpointProvider extends MachineInfoProvider<LongDistanceEndpoin
     @Override
     protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        boolean isFormed = data.getBoolean("isFormed");
-        String ioType = data.getString("ioType");
-        String outputDirection = data.getString("outputDirection");
+        boolean isFormed = data.getBooleanOr("isFormed", false);
+        String ioType = data.getStringOr("ioType", "");
+        String outputDirection = data.getStringOr("outputDirection", "");
 
         tooltip.add(Component.translatable(
                 isFormed ? "gtceu.top.ldp_endpoint.is_formed" : "gtceu.top.ldp_endpoint.not_formed"));

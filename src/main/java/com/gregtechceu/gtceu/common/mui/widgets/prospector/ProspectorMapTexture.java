@@ -175,8 +175,8 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
         int chunkRadius = this.mapHandler.getChunkRadius();
 
         float playerRotationDeg = ((player.getVisualRotationYInDegrees() % 360.0f) + 180f) - 90.0f;
-        int playerXGui = player.getBlockX() - (mapChunkPos.x - chunkRadius + 1) * 16;
-        int playerYGui = player.getBlockZ() - (mapChunkPos.z - chunkRadius + 1) * 16;
+        int playerXGui = player.getBlockX() - (mapChunkPos.x() - chunkRadius + 1) * 16;
+        int playerYGui = player.getBlockZ() - (mapChunkPos.z() - chunkRadius + 1) * 16;
         if (playerXGui < 0 || playerXGui >= diameter * 16 || playerYGui < 0 || playerYGui >= diameter * 16) {
             return;
         }

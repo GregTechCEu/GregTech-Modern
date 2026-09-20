@@ -37,7 +37,7 @@ public class SPacketSyncOreVeins implements GTNetwork.INetPacket {
         Stream.generate(() -> {
             Identifier id = buf.readResourceLocation();
             CompoundTag tag = buf.readAnySizeNbt();
-            GTOreDefinition def = GTOreDefinition.FULL_CODEC.parse(ops, tag).getOrThrow(false, GTCEu.LOGGER::error);
+            GTOreDefinition def = GTOreDefinition.FULL_CODEC.parse(ops, tag).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
             return Map.entry(id, def);
         }).limit(buf.readVarInt()).forEach(entry -> veins.put(entry.getKey(), entry.getValue()));
     }
@@ -50,7 +50,7 @@ public class SPacketSyncOreVeins implements GTNetwork.INetPacket {
         for (var entry : veins.entrySet()) {
             buf.writeResourceLocation(entry.getKey());
             CompoundTag tag = (CompoundTag) GTOreDefinition.FULL_CODEC.encodeStart(ops, entry.getValue())
-                    .getOrThrow(false, GTCEu.LOGGER::error);
+                    .getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
             buf.writeNbt(tag);
         }
     }

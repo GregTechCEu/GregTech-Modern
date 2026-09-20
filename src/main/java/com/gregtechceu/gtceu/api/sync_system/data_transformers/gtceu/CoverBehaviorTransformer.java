@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
@@ -38,7 +39,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
     public @Nullable CoverBehavior deserializeNBT(Tag t,
                                                   CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
         CompoundTag tag = ValueTransformer.assertTagType(CompoundTag.class, t, context);
-        if (tag.getBoolean("null")) {
+        if (tag.getBooleanOr("null", false)) {
             return null;
         }
 
@@ -58,11 +59,11 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         }
 
         Direction side;
-        if (tag.contains("side", Tag.TAG_STRING)) {
-            side = Direction.CODEC.byName(tag.getString("side"));
+        if ((tag.get("side") instanceof StringTag)) {
+            side = Direction.CODEC.byName(tag.getStringOr("side", ""));
         } else if (tag.contains("side", Tag.TAG_ANY_NUMERIC)) {
             // backwards compat
-            side = Direction.values()[tag.getInt("side")];
+            side = Direction.values()[tag.getIntOr("side", 0)];
         } else {
             GTCEu.LOGGER.error("Error during NBT load: invalid side {}", tag.get("side"));
             return null;
@@ -72,7 +73,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             holder.setCoverAtSide(null, side);
             return null;
         }
-        Identifier coverType = Identifier.tryParse(tag.getString("coverType"));
+        Identifier coverType = Identifier.tryParse(tag.getStringOr("coverType", ""));
         if (cover == null || !cover.coverDefinition.getId().equals(coverType)) {
             var coverReg = GTRegistries.COVERS.get(coverType);
             if (coverReg == null) {
@@ -86,7 +87,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         CoverBehavior newCover = holder.getCoverAtSide(side);
         if (newCover == null) return null;
 
-        newCover.getSyncDataHolder().deserializeNBT(context.lookup(), tag.getCompound("data"));
+        newCover.getSyncDataHolder().deserializeNBT(context.lookup(), tag.getCompoundOrEmpty("data"));
 
         if (newCover.getAttachItem() == ItemStack.EMPTY) {
             GTCEu.LOGGER.error("Invalid cover save state, this should never happen unless loading corrupted data.");

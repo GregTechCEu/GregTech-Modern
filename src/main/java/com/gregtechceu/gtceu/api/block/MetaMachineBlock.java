@@ -113,7 +113,7 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
     @Override
     public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity player,
                             ItemStack pStack) {
-        if (!pLevel.isClientSide) {
+        if (!pLevel.isClientSide()) {
             var machine = MetaMachine.getMachine(pLevel, pPos);
             if (machine != null) {
                 if (player instanceof ServerPlayer sPlayer) {

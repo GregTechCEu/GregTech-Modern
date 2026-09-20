@@ -209,7 +209,7 @@ public class CommonEventListener {
 
     @SubscribeEvent
     public static void onItemUseFinished(LivingEntityUseItemEvent.Finish event) {
-        if (!(event.getEntity() instanceof Player player) || player.level().isClientSide) {
+        if (!(event.getEntity() instanceof Player player) || player.level().isClientSide()) {
             return;
         }
 
@@ -386,7 +386,7 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void playerTickEvent(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
-        if (event.phase == TickEvent.Phase.START && !player.level().isClientSide) {
+        if (event.phase == TickEvent.Phase.START && !player.level().isClientSide()) {
             var speedAttrib = player.getAttribute(Attributes.MOVEMENT_SPEED);
             if (speedAttrib == null) return;
             var speedMod = speedAttrib.getModifier(BlockAttributes.BLOCK_SPEED_BOOST);
@@ -427,7 +427,7 @@ public class CommonEventListener {
         if (event.getEntity() == null || !(event.getEntity() instanceof Player player)) return;
         CompoundTag tag = player.getItemBySlot(EquipmentSlot.FEET).getOrCreateTag();
         if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS) &&
-                (!tag.contains("stepAssist") || tag.getBoolean("stepAssist"))) {
+                (!tag.contains("stepAssist") || tag.getBooleanOr("stepAssist", false))) {
             if (player.getStepHeight() < MAGIC_STEP_HEIGHT) {
                 player.setMaxUpStep(MAGIC_STEP_HEIGHT);
             }

@@ -43,7 +43,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
 
     @Override
     public boolean canPerformAction(ItemStack stack, ItemAbility action) {
-        var mode = WrenchModeType.values()[getBehaviorsTag(stack).getByte("Mode")];
+        var mode = WrenchModeType.values()[getBehaviorsTag(stack).getByteOr("Mode", (byte) 0)];
         boolean canWrenchConfigureAll = action == GTToolActions.WRENCH_CONFIGURE_ALL;
         return action == GTToolActions.WRENCH_CONFIGURE || switch (mode) {
             case ITEM -> canWrenchConfigureAll || action == GTToolActions.WRENCH_CONFIGURE_ITEMS;
@@ -98,9 +98,9 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
             var toolTypes = ToolHelper.getToolTypes(itemStack);
             if (toolTypes.contains(GTToolType.WRENCH)) {
                 tagCompound.putByte("Mode",
-                        (byte) ((tagCompound.getByte("Mode") + 1) % WrenchModeType.values().length));
-                player.displayClientMessage(Component.translatable("metaitem.machine_configuration.mode",
-                        WrenchModeType.values()[tagCompound.getByte("Mode")].getName()), true);
+                        (byte) ((tagCompound.getByteOr("Mode", (byte) 0) + 1) % WrenchModeType.values().length));
+                player.sendOverlayMessage(Component.translatable("metaitem.machine_configuration.mode",
+                        WrenchModeType.values()[tagCompound.getByteOr("Mode", (byte) 0)].getName()));
             }
             return InteractionResultHolder.success(itemStack);
         }
@@ -116,7 +116,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
         var toolTypes = ToolHelper.getToolTypes(stack);
         if (toolTypes.contains(GTToolType.WRENCH)) {
             tooltip.add(Component.translatable("metaitem.machine_configuration.mode",
-                    WrenchModeType.values()[tagCompound.getByte("Mode")].getName()));
+                    WrenchModeType.values()[tagCompound.getByteOr("Mode", (byte) 0)].getName()));
         }
     }
 

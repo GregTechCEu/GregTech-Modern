@@ -78,7 +78,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
         ItemStack itemStack = player.getItemInHand(usedHand);
         CompoundTag tag = itemStack.getOrCreateTag();
         if (canOpen && player.isCrouching()) {
-            tag.putBoolean(LIGHTER_OPEN, !tag.getBoolean(LIGHTER_OPEN));
+            tag.putBoolean(LIGHTER_OPEN, !tag.getBooleanOr(LIGHTER_OPEN, false));
             itemStack.setTag(tag);
         }
         return IInteractionItem.super.use(item, level, player, usedHand);
@@ -94,7 +94,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
         BlockState state = level.getBlockState(pos);
         Block block = state.getBlock();
 
-        if ((!canOpen || tag.getBoolean(LIGHTER_OPEN)) && (player == null || !player.isShiftKeyDown())) {
+        if ((!canOpen || tag.getBooleanOr(LIGHTER_OPEN, false)) && (player == null || !player.isShiftKeyDown())) {
             // check if it's "tnt-like" in that it implements the same method for igniting it
             if (classImplementsOnCaughtFire(block.getClass())) {
                 if (!consumeFuel(player, itemStack)) return InteractionResult.PASS;
@@ -102,7 +102,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 state.onCaughtFire(level, pos, clickedFace, player);
                 FluidState fluidState = level.getFluidState(pos);
                 level.setBlock(pos, fluidState.createLegacyBlock(), Block.UPDATE_ALL_IMMEDIATE);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
             if ((CampfireBlock.canLight(state) || CandleBlock.canLight(state) || CandleCakeBlock.canLight(state))) {
                 if (!consumeFuel(player, itemStack)) return InteractionResult.PASS;
@@ -111,7 +111,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                 level.playSound(player, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS,
                         1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
                 level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
 
             BlockPos offset = pos.relative(clickedFace);
@@ -128,7 +128,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
                     CriteriaTriggers.PLACED_BLOCK.trigger(serverPlayer, offset, itemStack);
                     itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(context.getHand()));
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
         }
         return InteractionResult.PASS;
@@ -140,15 +140,15 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
         CompoundTag tag = stack.getOrCreateTag();
         Level level = player.level();
 
-        if ((!canOpen || tag.getBoolean(LIGHTER_OPEN)) && !player.isShiftKeyDown()) {
+        if ((!canOpen || tag.getBooleanOr(LIGHTER_OPEN, false)) && !player.isShiftKeyDown()) {
             if (interactionTarget instanceof Creeper creeper) {
                 if (!consumeFuel(player, stack)) return InteractionResult.PASS;
                 level.playSound(player, creeper, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS,
                         1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     creeper.ignite();
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
         }
         return InteractionResult.PASS;
@@ -177,7 +177,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
         } else if (hasMultipleUses) {
             CompoundTag compound = stack.getOrCreateTag();
             if (compound.contains(USES_LEFT)) {
-                return compound.getInt(USES_LEFT);
+                return compound.getIntOr(USES_LEFT, 0);
             }
             compound.putInt(USES_LEFT, maxUses);
             // no need to get the value from the tag here when we set it just above

@@ -251,20 +251,20 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
 
         ListTag medicalConditionsTag = arg.getList("medical_conditions", Tag.TAG_COMPOUND);
         for (int i = 0; i < medicalConditionsTag.size(); ++i) {
-            CompoundTag compoundTag = medicalConditionsTag.getCompound(i);
-            Identifier id = GTCEu.id(compoundTag.getString("condition"));
+            CompoundTag compoundTag = medicalConditionsTag.getCompoundOrEmpty(i);
+            Identifier id = GTCEu.id(compoundTag.getStringOr("condition", ""));
             if (!GTRegistries.MEDICAL_CONDITIONS.containsKey(id)) {
                 continue;
             }
             MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(id);
-            float progression = compoundTag.getFloat("progression");
+            float progression = compoundTag.getFloatOr("progression", 0.0F);
 
             medicalConditions.put(condition, progression);
         }
 
         ListTag permanentConditionsTag = arg.getList("permanent_conditions", Tag.TAG_STRING);
         for (int i = 0; i < permanentConditionsTag.size(); ++i) {
-            Identifier id = GTCEu.id(permanentConditionsTag.getString(i));
+            Identifier id = GTCEu.id(permanentConditionsTag.getStringOr(i, ""));
             if (!GTRegistries.MEDICAL_CONDITIONS.containsKey(id)) {
                 continue;
             }

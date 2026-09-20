@@ -14,7 +14,7 @@ public class BlockPosTransformer implements ValueTransformer<BlockPos> {
 
     @Override
     public Tag serializeNBT(BlockPos value, TransformerContext<BlockPos> context) {
-        return BlockPos.CODEC.encodeStart(context.nbtOps(), value).getOrThrow(false, GTCEu.LOGGER::error);
+        return BlockPos.CODEC.encodeStart(context.nbtOps(), value).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
     }
 
     @Override
@@ -22,7 +22,7 @@ public class BlockPosTransformer implements ValueTransformer<BlockPos> {
         if (tag instanceof CompoundTag compoundTag) {
             return NbtUtils.readBlockPos(compoundTag);
         }
-        return BlockPos.CODEC.parse(context.nbtOps(), tag).getOrThrow(false, GTCEu.LOGGER::error);
+        return BlockPos.CODEC.parse(context.nbtOps(), tag).getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
     }
 
     @Override

@@ -113,8 +113,8 @@ public class ShearBehavior implements IToolBehavior {
                     double z0 = 0.5F + direction.getStepZ() * 0.65;
                     ItemEntity itementity = new ItemEntity(level, blockPos.getX() + x0, blockPos.getY() + 0.1,
                             blockPos.getZ() + z0, new ItemStack(Items.PUMPKIN_SEEDS, 4));
-                    double vx = 0.05 * direction.getStepX() + level.random.nextDouble() * 0.02;
-                    double vz = 0.05 * direction.getStepZ() + level.random.nextDouble() * 0.02;
+                    double vx = 0.05 * direction.getStepX() + level.getRandom().nextDouble() * 0.02;
+                    double vz = 0.05 * direction.getStepZ() + level.getRandom().nextDouble() * 0.02;
                     itementity.setDeltaMovement(vx, 0.05, vz);
                     level.addFreshEntity(itementity);
                     sheared = true;
@@ -135,7 +135,7 @@ public class ShearBehavior implements IToolBehavior {
         if (sheared) {
             level.playSound(player, pos, SoundEvents.PUMPKIN_CARVE, SoundSource.BLOCKS, 1.0F, 1.0F);
             level.gameEvent(player, GameEvent.SHEAR, pos);
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
     }
@@ -154,7 +154,7 @@ public class ShearBehavior implements IToolBehavior {
                 return InteractionResult.PASS;
             }
             boolean relocateMinedBlocks = ToolHelper.hasBehaviorsTag(stack) &&
-                    ToolHelper.getBehaviorsTag(stack).getBoolean(ToolHelper.RELOCATE_MINED_BLOCKS_KEY);
+                    ToolHelper.getBehaviorsTag(stack).getBooleanOr(ToolHelper.RELOCATE_MINED_BLOCKS_KEY, false);
             Iterator<ItemStack> iter = drops.iterator();
             while (iter.hasNext()) {
                 ItemStack drop = iter.next();
@@ -162,9 +162,9 @@ public class ShearBehavior implements IToolBehavior {
                     iter.remove();
                 } else {
                     float f = 0.7F;
-                    double xo = level.random.nextFloat() * f + 0.15D;
-                    double yo = level.random.nextFloat() * f + 0.15D;
-                    double zo = level.random.nextFloat() * f + 0.15D;
+                    double xo = level.getRandom().nextFloat() * f + 0.15D;
+                    double yo = level.getRandom().nextFloat() * f + 0.15D;
+                    double zo = level.getRandom().nextFloat() * f + 0.15D;
                     ItemEntity entityItem = new ItemEntity(level, pos.getX() + xo, pos.getY() + yo,
                             pos.getZ() + zo, drop);
                     entityItem.setDefaultPickUpDelay();

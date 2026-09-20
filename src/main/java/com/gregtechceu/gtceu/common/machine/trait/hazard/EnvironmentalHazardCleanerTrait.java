@@ -103,7 +103,7 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait implements IRe
             } else {
                 for (int x = -cleaningRadius; x <= cleaningRadius; ++x) {
                     for (int z = -cleaningRadius; z <= cleaningRadius; ++z) {
-                        relativePositions.put(new ChunkPos(pos.x + x, pos.z + z), Mth.sqrt(Mth.abs(x * z)) + 1);
+                        relativePositions.put(new ChunkPos(pos.x() + x, pos.z() + z), Mth.sqrt(Mth.abs(x * z)) + 1);
                     }
                 }
             }

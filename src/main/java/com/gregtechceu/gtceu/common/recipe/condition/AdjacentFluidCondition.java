@@ -173,11 +173,11 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
         if (recipe != null && recipe.data.contains("fluidA") && recipe.data.contains("fluidB")) {
             this.resolvedFluids.clear();
 
-            Fluid fluidA = BuiltInRegistries.FLUID.get(Identifier.parse(recipe.data.getString("fluidA")));
+            Fluid fluidA = BuiltInRegistries.FLUID.getValue(Identifier.parse(recipe.data.getStringOr("fluidA", "")));
             if (!fluidA.defaultFluidState().isEmpty()) {
                 this.resolvedFluids.add(HolderSet.direct(fluidA.builtInRegistryHolder()));
             }
-            Fluid fluidB = BuiltInRegistries.FLUID.get(Identifier.parse(recipe.data.getString("fluidB")));
+            Fluid fluidB = BuiltInRegistries.FLUID.getValue(Identifier.parse(recipe.data.getStringOr("fluidB", "")));
             if (!fluidB.defaultFluidState().isEmpty()) {
                 this.resolvedFluids.add(HolderSet.direct(fluidB.builtInRegistryHolder()));
             }

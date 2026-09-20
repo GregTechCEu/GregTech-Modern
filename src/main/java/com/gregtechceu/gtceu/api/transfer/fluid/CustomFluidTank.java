@@ -55,7 +55,7 @@ public class CustomFluidTank extends FluidTank implements IFluidHandlerModifiabl
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        if (nbt.getBoolean("isNull")) return;
+        if (nbt.getBooleanOr("isNull", false)) return;
         readFromNBT(nbt);
     }
 }

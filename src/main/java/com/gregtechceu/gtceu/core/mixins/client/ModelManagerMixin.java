@@ -30,7 +30,7 @@ public abstract class ModelManagerMixin {
 
         long startTime = System.currentTimeMillis();
         // turns out these do have to be init in here after all, as they check for asset existence. whoops.
-        ModLoader.get().postEventWrapContainerInModOrder(new RegisterDynamicResourcesEvent());
+        ModLoader.postEventWrapContainerInModOrder(new RegisterDynamicResourcesEvent());
 
         if (GTCEu.Mods.isModernFixLoaded()) {
             GTModernFixIntegration.setAsLast();

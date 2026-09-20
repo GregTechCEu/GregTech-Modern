@@ -66,8 +66,8 @@ public class ArmorUtils {
         List<Pair<NonNullList<ItemStack>, IntList>> inventorySlotMap = new ArrayList<>();
 
         IntList openMainSlots = new IntArrayList();
-        for (int i = 0; i < player.getInventory().items.size(); i++) {
-            ItemStack current = player.getInventory().items.get(i);
+        for (int i = 0; i < player.getInventory().getNonEquipmentItems().size(); i++) {
+            ItemStack current = player.getInventory().getNonEquipmentItems().get(i);
             IElectricItem item = GTCapabilityHelper.getElectricItem(current);
             if (item == null) continue;
 
@@ -77,7 +77,7 @@ public class ArmorUtils {
         }
 
         if (!openMainSlots.isEmpty()) {
-            inventorySlotMap.add(Pair.of(player.getInventory().items, openMainSlots));
+            inventorySlotMap.add(Pair.of(player.getInventory().getNonEquipmentItems(), openMainSlots));
         }
 
         IntList openArmorSlots = new IntArrayList();

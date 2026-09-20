@@ -49,9 +49,9 @@ public class BatteryStorageInfoProvider extends MachineInfoProvider<BatteryBuffe
     @Override
     protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        CompoundTag container = data.getCompound("energy");
-        long changed = container.getLong("changed"), stored = container.getLong("stored"),
-                capacity = container.getLong("capacity");
+        CompoundTag container = data.getCompoundOrEmpty("energy");
+        long changed = container.getLongOr("changed", 0), stored = container.getLongOr("stored", 0),
+                capacity = container.getLongOr("capacity", 0);
         tooltip.add(Component.translatable("gtceu.jade.changes_eu_tick",
                 FormattingUtil.formatNumbers(((double) changed) / 20.0)));
         if (changed > 0L) {
@@ -64,7 +64,7 @@ public class BatteryStorageInfoProvider extends MachineInfoProvider<BatteryBuffe
         }
         if (GTUtil.isShiftDown()) {
             CustomItemStackHandler handler = new CustomItemStackHandler();
-            handler.deserializeNBT(data.getCompound("storage"));
+            handler.deserializeNBT(data.getCompoundOrEmpty("storage"));
             IElementHelper helper = tooltip.getElementHelper();
             for (int i = 0; i < handler.getSlots(); i++) {
                 if (handler.getStackInSlot(i).getCount() != 0) {

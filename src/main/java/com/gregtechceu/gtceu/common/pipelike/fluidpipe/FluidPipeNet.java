@@ -29,13 +29,13 @@ public class FluidPipeNet extends PipeNet<FluidPipeProperties> {
 
     @Override
     protected FluidPipeProperties readNodeData(CompoundTag tagCompound) {
-        int maxTemperature = tagCompound.getInt("max_temperature");
-        int throughput = tagCompound.getInt("throughput");
-        boolean gasProof = tagCompound.getBoolean("gas_proof");
-        boolean acidProof = tagCompound.getBoolean("acid_proof");
-        boolean cryoProof = tagCompound.getBoolean("cryo_proof");
-        boolean plasmaProof = tagCompound.getBoolean("plasma_proof");
-        int channels = tagCompound.getInt("channels");
+        int maxTemperature = tagCompound.getIntOr("max_temperature", 0);
+        int throughput = tagCompound.getIntOr("throughput", 0);
+        boolean gasProof = tagCompound.getBooleanOr("gas_proof", false);
+        boolean acidProof = tagCompound.getBooleanOr("acid_proof", false);
+        boolean cryoProof = tagCompound.getBooleanOr("cryo_proof", false);
+        boolean plasmaProof = tagCompound.getBooleanOr("plasma_proof", false);
+        int channels = tagCompound.getIntOr("channels", 0);
         return new FluidPipeProperties(maxTemperature, throughput, gasProof, acidProof, cryoProof, plasmaProof,
                 channels);
     }

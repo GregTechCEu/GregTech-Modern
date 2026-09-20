@@ -187,15 +187,15 @@ public class ComputerMonitorCover extends CoverBehavior
         if (tag == null) return InteractionResult.FAIL;
         List<String> stringLines = new ArrayList<>();
         ListTag stringLinesTag = tag.getList("lines", Tag.TAG_STRING);
-        for (int i = 0; i < stringLinesTag.size(); i++) stringLines.add(stringLinesTag.getString(i));
+        for (int i = 0; i < stringLinesTag.size(); i++) stringLines.add(stringLinesTag.getStringOr(i, ""));
         formatStringLines.clear();
         formatStringLines.addAll(stringLines);
         List<String> stringArgs = new ArrayList<>();
         ListTag stringArgsTag = tag.getList("args", Tag.TAG_STRING);
-        for (int i = 0; i < stringArgsTag.size(); i++) stringArgs.add(stringArgsTag.getString(i));
+        for (int i = 0; i < stringArgsTag.size(); i++) stringArgs.add(stringArgsTag.getStringOr(i, ""));
         formatStringArgs.clear();
         formatStringArgs.addAll(stringArgs);
-        updateInterval = tag.getInt("updateInterval");
+        updateInterval = tag.getIntOr("updateInterval", 0);
         return InteractionResult.SUCCESS;
     }
 

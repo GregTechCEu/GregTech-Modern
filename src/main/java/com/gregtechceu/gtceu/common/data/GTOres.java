@@ -724,7 +724,7 @@ public class GTOres {
             } else {
                 oreKey = Identifier.tryParse("%s_%s_ore".formatted(oreTag.name, material.getName()));
             }
-            return BuiltInRegistries.BLOCK.containsKey(oreKey) ? () -> BuiltInRegistries.BLOCK.get(oreKey) :
+            return BuiltInRegistries.BLOCK.containsKey(oreKey) ? () -> BuiltInRegistries.BLOCK.getValue(oreKey) :
                     () -> Blocks.AIR;
         }
         return block;

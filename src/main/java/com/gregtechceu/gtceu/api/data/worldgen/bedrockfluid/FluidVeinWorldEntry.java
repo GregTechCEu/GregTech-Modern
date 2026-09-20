@@ -75,7 +75,7 @@ public class FluidVeinWorldEntry {
         MemoizedSupplier<BedrockFluidDefinition> vein;
 
         if (tag.contains("vein")) {
-            veinId = tag.getString("vein");
+            veinId = tag.getStringOr("vein", "");
             vein = GTMemoizer.memoize(() -> {
                 Identifier key = Identifier.parse(veinId);
                 return GTRegistries.BEDROCK_FLUID_DEFINITIONS.get(key);
@@ -87,8 +87,8 @@ public class FluidVeinWorldEntry {
 
         FluidVeinWorldEntry info = new FluidVeinWorldEntry(vein);
         info.veinId = veinId;
-        info.fluidYield = tag.getInt("fluidYield");
-        info.operationsRemaining = tag.getInt("operationsRemaining");
+        info.fluidYield = tag.getIntOr("fluidYield", 0);
+        info.operationsRemaining = tag.getIntOr("operationsRemaining", 0);
         return info;
     }
 }

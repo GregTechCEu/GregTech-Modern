@@ -190,7 +190,7 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
     @Override
     public void loadFromItem(CompoundTag tag) {
         stored = FluidStack.loadFluidStackFromNBT(tag.getCompound("stored"));
-        storedAmount = tag.getLong("storedAmount");
+        storedAmount = tag.getLongOr("storedAmount", 0);
     }
 
     //////////////////////////////////////

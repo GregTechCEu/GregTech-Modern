@@ -83,7 +83,7 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
             // backwards compat
             if (virtualEntries instanceof CompoundTag compoundTag) {
                 for (String name : compoundTag.getAllKeys()) {
-                    CompoundTag entryTag = compoundTag.getCompound(name);
+                    CompoundTag entryTag = compoundTag.getCompoundOrEmpty(name);
                     VirtualEntry entry = type.createInstance(entryTag);
                     if (entry.canRemove()) continue;
                     addEntry(entry.getColorStr(), type.createInstance(entryTag));
@@ -91,7 +91,7 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
             } else {
                 ListTag listTag = (ListTag) virtualEntries;
                 for (int i = 0; i < Objects.requireNonNull(listTag).size(); i++) {
-                    var entry = type.createInstance(listTag.getCompound(i));
+                    var entry = type.createInstance(listTag.getCompoundOrEmpty(i));
                     if (entry.canRemove()) continue;
                     addEntry(entry.getColorStr(), entry);
                 }

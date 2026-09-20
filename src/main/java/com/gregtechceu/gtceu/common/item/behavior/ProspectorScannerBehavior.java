@@ -60,12 +60,12 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
         if (tag == null) {
             return this.modes[0];
         }
-        return this.modes[tag.getInt("Mode") % this.modes.length];
+        return this.modes[tag.getIntOr("Mode", 0) % this.modes.length];
     }
 
     public void setNextMode(ItemStack stack) {
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putInt("Mode", (tag.getInt("Mode") + 1) % this.modes.length);
+        tag.putInt("Mode", (tag.getIntOr("Mode", 0) + 1) % this.modes.length);
     }
 
     public boolean drainEnergy(@NotNull ItemStack stack, boolean simulate) {
@@ -81,16 +81,16 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         ItemStack heldItem = player.getItemInHand(usedHand);
         if (player.isShiftKeyDown() && this.modes.length > 1) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 setNextMode(heldItem);
                 ProspectorMode<?> mode = getMode(heldItem);
                 player.sendSystemMessage(Component.translatable(mode.unlocalizedName));
             }
-            return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide);
+            return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide());
         }
         if (!player.isCreative() && !drainEnergy(heldItem, true)) {
             player.sendSystemMessage(Component.translatable("behavior.prospector.not_enough_energy"));
-            return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide);
+            return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide());
         }
         return IItemUIHolder.super.use(item, level, player, usedHand);
     }

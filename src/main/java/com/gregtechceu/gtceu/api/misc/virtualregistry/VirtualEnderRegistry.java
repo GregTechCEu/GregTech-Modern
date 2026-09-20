@@ -86,13 +86,13 @@ public class VirtualEnderRegistry extends SavedData {
 
     public final void readFromNBT(CompoundTag nbt) {
         if (nbt.contains(PUBLIC_KEY)) {
-            PUBLIC_REGISTRY = new VirtualRegistryMap(nbt.getCompound(PUBLIC_KEY));
+            PUBLIC_REGISTRY = new VirtualRegistryMap(nbt.getCompoundOrEmpty(PUBLIC_KEY));
         }
 
         if (nbt.contains(PRIVATE_KEY)) {
-            CompoundTag privateEntries = nbt.getCompound(PRIVATE_KEY);
+            CompoundTag privateEntries = nbt.getCompoundOrEmpty(PRIVATE_KEY);
             for (String owner : privateEntries.getAllKeys()) {
-                var privateMap = privateEntries.getCompound(owner);
+                var privateMap = privateEntries.getCompoundOrEmpty(owner);
                 VIRTUAL_REGISTRIES.put(UUID.fromString(owner), new VirtualRegistryMap(privateMap));
             }
         }

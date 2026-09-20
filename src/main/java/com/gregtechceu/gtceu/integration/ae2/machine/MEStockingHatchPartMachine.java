@@ -278,10 +278,10 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
 
     @Override
     protected void readConfigFromTag(CompoundTag tag) {
-        if (tag.getBoolean("AutoPull")) {
+        if (tag.getBooleanOr("AutoPull", false)) {
             // if being set to auto-pull, no need to read the configured slots
             this.setAutoPull(true);
-            circuitSlot.setCurrentCircuit(tag.getByte("GhostCircuit"));
+            circuitSlot.setCurrentCircuit(tag.getByteOr("GhostCircuit", (byte) 0));
             return;
         }
         // set auto pull first to avoid issues with clearing the config after reading from the data stick

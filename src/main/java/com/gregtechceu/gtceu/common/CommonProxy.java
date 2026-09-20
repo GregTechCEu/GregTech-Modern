@@ -191,7 +191,7 @@ public class CommonProxy {
         // Then, register addon Materials
         GTCEu.LOGGER.info("Registering addon Materials");
         MaterialEvent materialEvent = new MaterialEvent();
-        ModLoader.get().postEvent(materialEvent);
+        ModLoader.postEvent(materialEvent);
         if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSEventWrapper.materialRegistry();
         }
@@ -199,7 +199,7 @@ public class CommonProxy {
         // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
         // Block entirely new Materials from being added in the Post event
         GTRegistries.MATERIALS.closeRegistry();
-        ModLoader.get().postEvent(new PostMaterialEvent());
+        ModLoader.postEvent(new PostMaterialEvent());
         if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSEventWrapper.materialModification();
         }

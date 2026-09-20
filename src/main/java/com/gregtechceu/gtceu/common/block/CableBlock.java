@@ -132,7 +132,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
             frameState.getBlock().entityInside(frameState, level, pos, entity);
             return;
         }
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         Insulation insulation = getPipeTile(level, pos).getPipeType();
         if (!insulation.isCable() && entity instanceof LivingEntity entityLiving) {

@@ -37,7 +37,7 @@ public class WorldGenLayers {
 
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerWorldgenLayers);
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.WORLD_GEN_LAYERS, IWorldGenLayer.class));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.WORLD_GEN_LAYERS, IWorldGenLayer.class));
         if (GTCEu.Mods.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.WORLD_GEN_LAYERS.getRegistryName());
         }

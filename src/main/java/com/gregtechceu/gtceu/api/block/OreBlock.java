@@ -28,7 +28,7 @@ public class OreBlock extends MaterialBlock {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                  BlockHitResult hit) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             ServerCache.instance.prospectByOreMaterial(
                     level.dimension(),
                     this.material,

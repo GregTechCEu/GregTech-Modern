@@ -91,7 +91,8 @@ public class TreeFellingHelper {
                 if (event.level == helper.player.level()) {
                     if (helper.player.isRemoved() || helper.orderedBlocks.isEmpty() || helper.tool.isEmpty() ||
                             !(hasBehaviorsTag(helper.player.getMainHandItem()) &&
-                                    getBehaviorsTag(helper.player.getMainHandItem()).getBoolean(TREE_FELLING_KEY))) {
+                                    getBehaviorsTag(helper.player.getMainHandItem())
+                                            .getBooleanOr(TREE_FELLING_KEY, false))) {
                         iterator.remove();
                         continue;
                     }

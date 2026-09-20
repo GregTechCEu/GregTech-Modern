@@ -163,9 +163,9 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IM
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        setMinValue(tag.getInt("min"));
-        setMaxValue(tag.getInt("max"));
-        setLatched(tag.getBoolean("latched"));
+        setMinValue(tag.getIntOr("min", 0));
+        setMaxValue(tag.getIntOr("max", 0));
+        setLatched(tag.getBooleanOr("latched", false));
         filterHandler.setFilterItem(ItemStack.of(tag.getCompound("filter")));
         super.pasteConfig(player, tag);
     }

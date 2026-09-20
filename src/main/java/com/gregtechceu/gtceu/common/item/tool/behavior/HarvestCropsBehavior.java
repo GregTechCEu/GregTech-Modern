@@ -61,7 +61,7 @@ public class HarvestCropsBehavior implements IToolBehavior {
         if (harvested) {
             BlockState state = level.getBlockState(pos);
             level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
     }
@@ -86,7 +86,7 @@ public class HarvestCropsBehavior implements IToolBehavior {
 
         ItemStack seed = blockState.getCloneItemStack(context.getHitResult().withPosition(pos), level, pos, player);
         if (cropBlock.isMaxAge(blockState)) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 var drops = Block.getDrops(blockState, (ServerLevel) level, pos, null);
                 boolean removedSeed = false;
                 for (ItemStack drop : drops) {

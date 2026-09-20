@@ -20,7 +20,7 @@ public record CodecBasedSerializer<T>(MapCodec<T> codec) implements Serializer<T
     public void serialize(JsonObject json, T value, JsonSerializationContext serializationContext) {
         JsonElement newJson = codec.codec().encodeStart(JsonOps.INSTANCE, value)
                 .promotePartial(CodecBasedSerializer::logErrors)
-                .getOrThrow(false, LOGGER::error);
+                .getOrThrow(message -> { LOGGER.error(message); return new RuntimeException(message); });
         JsonObject asObject = GsonHelper.convertToJsonObject(newJson, "serialized value");
         json.asMap().putAll(asObject.asMap());
     }
@@ -29,7 +29,7 @@ public record CodecBasedSerializer<T>(MapCodec<T> codec) implements Serializer<T
     public T deserialize(JsonObject json, JsonDeserializationContext serializationContext) {
         return codec.codec().parse(JsonOps.INSTANCE, json)
                 .promotePartial(CodecBasedSerializer::logErrors)
-                .getOrThrow(false, LOGGER::error);
+                .getOrThrow(message -> { LOGGER.error(message); return new RuntimeException(message); });
     }
 
     private static void logErrors(String errorMessage) {

@@ -52,7 +52,7 @@ public final class ToolChargeBarRenderer {
                                       int yPosition) {
         boolean renderedDurability = false;
         CompoundTag tag = stack.getOrCreateTag();
-        if (!tag.getBoolean(ToolHelper.UNBREAKABLE_KEY)) {
+        if (!tag.getBooleanOr(ToolHelper.UNBREAKABLE_KEY, false)) {
             renderedDurability = renderDurabilityBar(graphics, stack.getBarWidth(), xPosition, yPosition);
         }
         if (tool.isElectric()) {

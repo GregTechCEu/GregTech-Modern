@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.item.tool.aoe;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 
 import com.google.common.base.Preconditions;
@@ -39,32 +40,32 @@ public class AoESymmetrical {
 
     public static AoESymmetrical readMax(CompoundTag tag) {
         int column = 0, row = 0, layer = 0;
-        if (tag.contains(ToolHelper.MAX_AOE_COLUMN_KEY, Tag.TAG_INT)) {
-            column = tag.getInt(ToolHelper.MAX_AOE_COLUMN_KEY);
+        if ((tag.get(ToolHelper.MAX_AOE_COLUMN_KEY) instanceof IntTag)) {
+            column = tag.getIntOr(ToolHelper.MAX_AOE_COLUMN_KEY, 0);
         }
-        if (tag.contains(ToolHelper.MAX_AOE_ROW_KEY, Tag.TAG_INT)) {
-            row = tag.getInt(ToolHelper.MAX_AOE_ROW_KEY);
+        if ((tag.get(ToolHelper.MAX_AOE_ROW_KEY) instanceof IntTag)) {
+            row = tag.getIntOr(ToolHelper.MAX_AOE_ROW_KEY, 0);
         }
-        if (tag.contains(ToolHelper.MAX_AOE_LAYER_KEY, Tag.TAG_INT)) {
-            layer = tag.getInt(ToolHelper.MAX_AOE_LAYER_KEY);
+        if ((tag.get(ToolHelper.MAX_AOE_LAYER_KEY) instanceof IntTag)) {
+            layer = tag.getIntOr(ToolHelper.MAX_AOE_LAYER_KEY, 0);
         }
         return column == 0 && row == 0 && layer == 0 ? ZERO : AoESymmetrical.of(column, row, layer);
     }
 
     public static AoESymmetrical read(CompoundTag tag, @Nullable AoESymmetrical defaultDefinition) {
         int column, row, layer;
-        if (tag.contains(ToolHelper.AOE_COLUMN_KEY, Tag.TAG_INT)) {
-            column = tag.getInt(ToolHelper.AOE_COLUMN_KEY);
+        if ((tag.get(ToolHelper.AOE_COLUMN_KEY) instanceof IntTag)) {
+            column = tag.getIntOr(ToolHelper.AOE_COLUMN_KEY, 0);
         } else {
             column = defaultDefinition == null ? 0 : defaultDefinition.column;
         }
-        if (tag.contains(ToolHelper.AOE_ROW_KEY, Tag.TAG_INT)) {
-            row = tag.getInt(ToolHelper.AOE_ROW_KEY);
+        if ((tag.get(ToolHelper.AOE_ROW_KEY) instanceof IntTag)) {
+            row = tag.getIntOr(ToolHelper.AOE_ROW_KEY, 0);
         } else {
             row = defaultDefinition == null ? 0 : defaultDefinition.row;
         }
-        if (tag.contains(ToolHelper.AOE_LAYER_KEY, Tag.TAG_INT)) {
-            layer = tag.getInt(ToolHelper.AOE_LAYER_KEY);
+        if ((tag.get(ToolHelper.AOE_LAYER_KEY) instanceof IntTag)) {
+            layer = tag.getIntOr(ToolHelper.AOE_LAYER_KEY, 0);
         } else {
             layer = defaultDefinition == null ? 0 : defaultDefinition.layer;
         }
@@ -78,31 +79,31 @@ public class AoESymmetrical {
     }
 
     public static int getColumn(CompoundTag tag, AoESymmetrical defaultDefinition) {
-        if (tag.contains(ToolHelper.AOE_COLUMN_KEY, Tag.TAG_INT)) {
-            return tag.getInt(ToolHelper.AOE_COLUMN_KEY);
+        if ((tag.get(ToolHelper.AOE_COLUMN_KEY) instanceof IntTag)) {
+            return tag.getIntOr(ToolHelper.AOE_COLUMN_KEY, 0);
         }
         return defaultDefinition.column;
     }
 
     public static int getRow(CompoundTag tag, AoESymmetrical defaultDefinition) {
-        if (tag.contains(ToolHelper.AOE_ROW_KEY, Tag.TAG_INT)) {
-            return tag.getInt(ToolHelper.AOE_ROW_KEY);
+        if ((tag.get(ToolHelper.AOE_ROW_KEY) instanceof IntTag)) {
+            return tag.getIntOr(ToolHelper.AOE_ROW_KEY, 0);
         }
         return defaultDefinition.row;
     }
 
     public static int getLayer(CompoundTag tag, AoESymmetrical defaultDefinition) {
-        if (tag.contains(ToolHelper.AOE_LAYER_KEY, Tag.TAG_INT)) {
-            return tag.getInt(ToolHelper.AOE_LAYER_KEY);
+        if ((tag.get(ToolHelper.AOE_LAYER_KEY) instanceof IntTag)) {
+            return tag.getIntOr(ToolHelper.AOE_LAYER_KEY, 0);
         }
         return defaultDefinition.layer;
     }
 
     public static void increaseColumn(CompoundTag tag, AoESymmetrical defaultDefinition) {
-        if (!tag.contains(ToolHelper.AOE_COLUMN_KEY, Tag.TAG_INT)) {
+        if (!(tag.get(ToolHelper.AOE_COLUMN_KEY) instanceof IntTag)) {
             tag.putInt(ToolHelper.AOE_COLUMN_KEY, defaultDefinition.column);
         } else {
-            int currentColumn = tag.getInt(ToolHelper.AOE_COLUMN_KEY);
+            int currentColumn = tag.getIntOr(ToolHelper.AOE_COLUMN_KEY, 0);
             if (currentColumn < defaultDefinition.column) {
                 tag.putInt(ToolHelper.AOE_COLUMN_KEY, currentColumn + 1);
             }
@@ -110,10 +111,10 @@ public class AoESymmetrical {
     }
 
     public static void increaseRow(CompoundTag tag, AoESymmetrical defaultDefinition) {
-        if (!tag.contains(ToolHelper.AOE_ROW_KEY, Tag.TAG_INT)) {
+        if (!(tag.get(ToolHelper.AOE_ROW_KEY) instanceof IntTag)) {
             tag.putInt(ToolHelper.AOE_ROW_KEY, defaultDefinition.row);
         } else {
-            int currentRow = tag.getInt(ToolHelper.AOE_ROW_KEY);
+            int currentRow = tag.getIntOr(ToolHelper.AOE_ROW_KEY, 0);
             if (currentRow < defaultDefinition.row) {
                 tag.putInt(ToolHelper.AOE_ROW_KEY, currentRow + 1);
             }
@@ -121,10 +122,10 @@ public class AoESymmetrical {
     }
 
     public static void increaseLayer(CompoundTag tag, AoESymmetrical defaultDefinition) {
-        if (!tag.contains(ToolHelper.AOE_LAYER_KEY, Tag.TAG_INT)) {
+        if (!(tag.get(ToolHelper.AOE_LAYER_KEY) instanceof IntTag)) {
             tag.putInt(ToolHelper.AOE_LAYER_KEY, defaultDefinition.layer);
         } else {
-            int currentLayer = tag.getInt(ToolHelper.AOE_LAYER_KEY);
+            int currentLayer = tag.getIntOr(ToolHelper.AOE_LAYER_KEY, 0);
             if (currentLayer < defaultDefinition.layer) {
                 tag.putInt(ToolHelper.AOE_LAYER_KEY, currentLayer + 1);
             }
@@ -132,10 +133,10 @@ public class AoESymmetrical {
     }
 
     public static void decreaseColumn(CompoundTag tag, AoESymmetrical defaultDefinition) {
-        if (!tag.contains(ToolHelper.AOE_COLUMN_KEY, Tag.TAG_INT)) {
+        if (!(tag.get(ToolHelper.AOE_COLUMN_KEY) instanceof IntTag)) {
             tag.putInt(ToolHelper.AOE_COLUMN_KEY, defaultDefinition.column);
         } else {
-            int currentColumn = tag.getInt(ToolHelper.AOE_COLUMN_KEY);
+            int currentColumn = tag.getIntOr(ToolHelper.AOE_COLUMN_KEY, 0);
             if (currentColumn > 0) {
                 tag.putInt(ToolHelper.AOE_COLUMN_KEY, currentColumn - 1);
             }
@@ -143,10 +144,10 @@ public class AoESymmetrical {
     }
 
     public static void decreaseRow(CompoundTag tag, AoESymmetrical defaultDefinition) {
-        if (!tag.contains(ToolHelper.AOE_ROW_KEY, Tag.TAG_INT)) {
+        if (!(tag.get(ToolHelper.AOE_ROW_KEY) instanceof IntTag)) {
             tag.putInt(ToolHelper.AOE_ROW_KEY, defaultDefinition.row);
         } else {
-            int currentRow = tag.getInt(ToolHelper.AOE_ROW_KEY);
+            int currentRow = tag.getIntOr(ToolHelper.AOE_ROW_KEY, 0);
             if (currentRow > 0) {
                 tag.putInt(ToolHelper.AOE_ROW_KEY, currentRow - 1);
             }
@@ -154,10 +155,10 @@ public class AoESymmetrical {
     }
 
     public static void decreaseLayer(CompoundTag tag, AoESymmetrical defaultDefinition) {
-        if (!tag.contains(ToolHelper.AOE_LAYER_KEY, Tag.TAG_INT)) {
+        if (!(tag.get(ToolHelper.AOE_LAYER_KEY) instanceof IntTag)) {
             tag.putInt(ToolHelper.AOE_LAYER_KEY, defaultDefinition.layer);
         } else {
-            int currentLayer = tag.getInt(ToolHelper.AOE_LAYER_KEY);
+            int currentLayer = tag.getIntOr(ToolHelper.AOE_LAYER_KEY, 0);
             if (currentLayer > 0) {
                 tag.putInt(ToolHelper.AOE_LAYER_KEY, currentLayer - 1);
             }

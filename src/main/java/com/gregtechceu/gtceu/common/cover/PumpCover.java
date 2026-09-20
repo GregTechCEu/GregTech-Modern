@@ -354,11 +354,11 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        setTransferRate(tag.getInt("transferRate"));
-        setIo(IO.values()[tag.getInt("io")]);
-        setManualIOMode(ManualIOMode.values()[tag.getInt("manualIO")]);
+        setTransferRate(tag.getIntOr("transferRate", 0));
+        setIo(IO.values()[tag.getIntOr("io", 0)]);
+        setManualIOMode(ManualIOMode.values()[tag.getIntOr("manualIO", 0)]);
         filterHandler.setFilterItem(ItemStack.of(tag.getCompound("filter")));
-        setBucketMode(BucketMode.values()[tag.getInt("bucketMode")]);
+        setBucketMode(BucketMode.values()[tag.getIntOr("bucketMode", 0)]);
         super.pasteConfig(player, tag);
     }
 }

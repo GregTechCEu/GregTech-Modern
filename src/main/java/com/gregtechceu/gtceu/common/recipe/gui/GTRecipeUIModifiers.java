@@ -23,7 +23,7 @@ public class GTRecipeUIModifiers {
 
     public static final RecipeUIModifier TEMP_COIL_INFO = (recipe, widget) -> {
         if (recipe.data.contains("ebf_temp")) {
-            int temp = recipe.data.getInt("ebf_temp");
+            int temp = recipe.data.getIntOr("ebf_temp", 0);
 
             widget.textComponents.child(new TextWidget<>(
                     Text.lang("gtceu.recipe.temperature", FormattingUtil.formatTemperature(temp))));

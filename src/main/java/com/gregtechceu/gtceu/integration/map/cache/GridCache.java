@@ -30,7 +30,7 @@ public class GridCache {
         for (GeneratedVeinMetadata pos : veins) {
             result.add((isClient ? GeneratedVeinMetadata.CLIENT_CODEC : GeneratedVeinMetadata.CODEC)
                     .encodeStart(NbtOps.INSTANCE, pos)
-                    .getOrThrow(false, GTCEu.LOGGER::error));
+                    .getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); }));
         }
         return result;
     }
@@ -39,7 +39,7 @@ public class GridCache {
         for (Tag veinTag : tag) {
             GeneratedVeinMetadata vein = (isClient ? GeneratedVeinMetadata.CLIENT_CODEC : GeneratedVeinMetadata.CODEC)
                     .parse(NbtOps.INSTANCE, veinTag)
-                    .getOrThrow(false, GTCEu.LOGGER::error);
+                    .getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
             if (!veins.contains(vein)) {
                 veins.add(vein);
             }

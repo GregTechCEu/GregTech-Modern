@@ -41,7 +41,7 @@ public class GTChestBoat extends ChestBoat {
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         if (compound.contains("Type")) {
-            entityData.set(DATA_ID_TYPE, GTBoat.BoatType.byName(compound.getString("Type")).ordinal());
+            entityData.set(DATA_ID_TYPE, GTBoat.BoatType.byName(compound.getStringOr("Type", "")).ordinal());
         }
     }
 

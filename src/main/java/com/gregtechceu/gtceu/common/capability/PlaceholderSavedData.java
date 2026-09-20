@@ -28,7 +28,7 @@ public class PlaceholderSavedData extends SavedData {
 
     public PlaceholderSavedData(ServerLevel level, CompoundTag tag) {
         this.level = level;
-        this.tag = tag.getCompound("data");
+        this.tag = tag.getCompoundOrEmpty("data");
     }
 
     public CompoundTag getPlaceholderData(Placeholder placeholder) {

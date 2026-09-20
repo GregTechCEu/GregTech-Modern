@@ -73,7 +73,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.neoforged.neoforge.common.extensions.IBlockExtension;
@@ -532,7 +532,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             context.getPlayer().sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
                     "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled_cycle"));
         }
-        return InteractionResult.sidedSuccess(getLevel().isClientSide);
+        return InteractionResult.sidedSuccess(getLevel().isClientSide());
     }
 
     protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
@@ -628,7 +628,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @Override
     public boolean triggerEvent(int id, int para) {
         if (id == 1) { // chunk re render
-            if (level != null && level.isClientSide) {
+            if (level != null && level.isClientSide()) {
                 scheduleRenderUpdate();
             }
             return true;
@@ -638,7 +638,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     public void setRenderState(MachineRenderState renderState) {
         this.renderState = renderState;
-        if (level != null && !level.isClientSide) {
+        if (level != null && !level.isClientSide()) {
             syncDataHolder.markClientSyncFieldDirty("renderState");
         }
         scheduleRenderUpdate();
@@ -805,7 +805,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             getLevel().setBlockAndUpdate(getBlockPos(), blockState.setValue(getRotationState().property, facing));
         }
 
-        if (getLevel() != null && !getLevel().isClientSide) {
+        if (getLevel() != null && !getLevel().isClientSide()) {
             notifyBlockUpdate();
         }
     }
@@ -835,7 +835,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
             getLevel().setBlockAndUpdate(getBlockPos(),
                     blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
-            if (getLevel() != null && !getLevel().isClientSide) {
+            if (getLevel() != null && !getLevel().isClientSide()) {
                 notifyBlockUpdate();
             }
         }
@@ -1357,29 +1357,29 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (outputTrait != null) {
             if (tag.contains(ITEM_OUTPUT_SIDE))
                 outputTrait.setItemOutputDirection(
-                        MachineConfigCopyBehaviour.stringToDirection(tag.getString(ITEM_OUTPUT_SIDE)));
-            if (tag.contains(ITEM_AUTO_OUTPUT)) outputTrait.setAllowAutoOutputItems(tag.getBoolean(ITEM_AUTO_OUTPUT));
+                        MachineConfigCopyBehaviour.stringToDirection(tag.getStringOr(ITEM_OUTPUT_SIDE, "")));
+            if (tag.contains(ITEM_AUTO_OUTPUT)) outputTrait.setAllowAutoOutputItems(tag.getBooleanOr(ITEM_AUTO_OUTPUT, false));
             if (tag.contains(ALLOW_ITEM_IN_FROM_OUT))
                 outputTrait.setAllowItemInputFromOutputSide(tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT));
             if (tag.contains(FLUID_OUTPUT_SIDE))
                 outputTrait.setFluidOutputDirection(
-                        MachineConfigCopyBehaviour.stringToDirection(tag.getString(FLUID_OUTPUT_SIDE)));
+                        MachineConfigCopyBehaviour.stringToDirection(tag.getStringOr(FLUID_OUTPUT_SIDE, "")));
             if (tag.contains(FLUID_AUTO_OUTPUT))
-                outputTrait.setAllowAutoOutputFluids(tag.getBoolean(FLUID_AUTO_OUTPUT));
+                outputTrait.setAllowAutoOutputFluids(tag.getBooleanOr(FLUID_AUTO_OUTPUT, false));
             if (tag.contains(ALLOW_FLUID_IN_FROM_OUT))
                 outputTrait.setAllowFluidInputFromOutputSide(tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT));
         }
 
-        Direction facingDir = Direction.byName(tag.getString(FACING_DIR));
+        Direction facingDir = Direction.byName(tag.getStringOr(FACING_DIR, ""));
         if (facingDir != null) setFrontFacing(facingDir);
 
         if (this instanceof IMufflableMachine mufflableMachine) {
-            if (tag.contains(MUFFLED)) mufflableMachine.setMuffled(tag.getBoolean(MUFFLED));
+            if (tag.contains(MUFFLED)) mufflableMachine.setMuffled(tag.getBooleanOr(MUFFLED, false));
         }
 
         if (tag.contains(CIRCUIT)) {
             getTraitOptional(ProgrammableCircuitSlotTrait.class)
-                    .ifPresent(t -> t.setCurrentCircuit(tag.getInt(CIRCUIT)));
+                    .ifPresent(t -> t.setCurrentCircuit(tag.getIntOr(CIRCUIT, 0)));
         }
 
         getCoverContainer().pasteConfig(player, tag.getCompound(COVER));

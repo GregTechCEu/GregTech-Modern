@@ -43,18 +43,18 @@ public class TorchPlaceBehavior implements IToolBehavior {
             return InteractionResult.PASS;
         }
 
-        if (!behaviourTag.getBoolean(TORCH_PLACING_KEY)) {
+        if (!behaviourTag.getBooleanOr(TORCH_PLACING_KEY, false)) {
             return InteractionResult.PASS;
         }
 
         int cachedTorchSlot;
         ItemStack slotStack;
-        if (behaviourTag.getBoolean(ToolHelper.TORCH_PLACING_CACHE_SLOT_KEY)) {
-            cachedTorchSlot = behaviourTag.getInt(ToolHelper.TORCH_PLACING_CACHE_SLOT_KEY);
+        if (behaviourTag.getBooleanOr(ToolHelper.TORCH_PLACING_CACHE_SLOT_KEY, false)) {
+            cachedTorchSlot = behaviourTag.getIntOr(ToolHelper.TORCH_PLACING_CACHE_SLOT_KEY, 0);
             if (cachedTorchSlot < 0) {
                 slotStack = player.getInventory().offhand.get(0);
             } else {
-                slotStack = player.getInventory().items.get(cachedTorchSlot);
+                slotStack = player.getInventory().getNonEquipmentItems().get(cachedTorchSlot);
             }
             if (checkAndPlaceTorch(context, slotStack)) {
                 return InteractionResult.SUCCESS;
@@ -67,8 +67,8 @@ public class TorchPlaceBehavior implements IToolBehavior {
                 return InteractionResult.SUCCESS;
             }
         }
-        for (int i = 0; i < player.getInventory().items.size(); i++) {
-            slotStack = player.getInventory().items.get(i);
+        for (int i = 0; i < player.getInventory().getNonEquipmentItems().size(); i++) {
+            slotStack = player.getInventory().getNonEquipmentItems().get(i);
             if (checkAndPlaceTorch(context, slotStack)) {
                 behaviourTag.putInt(ToolHelper.TORCH_PLACING_CACHE_SLOT_KEY, i);
                 return InteractionResult.SUCCESS;

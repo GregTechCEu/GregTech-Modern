@@ -250,7 +250,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
                 .setFillOpacity(.4f)
                 .setImageLocation(texture);
 
-        MapPolygon polygon = PolygonHelper.createChunkPolygon(pos.x, 0, pos.z);
+        MapPolygon polygon = PolygonHelper.createChunkPolygon(pos.x(), 0, pos.z());
         var overlay = new PolygonOverlay(GTCEu.MOD_ID, id, dim, shapeProps, polygon);
 
         overlay.setDimension(dim);

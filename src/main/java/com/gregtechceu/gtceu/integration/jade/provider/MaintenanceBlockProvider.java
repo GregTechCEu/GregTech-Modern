@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -54,10 +55,10 @@ public class MaintenanceBlockProvider extends CapabilityBlockProvider<Maintenanc
     @Override
     protected void addTooltip(CompoundTag compoundTag, ITooltip iTooltip, Player player, BlockAccessor blockAccessor,
                               BlockEntity blockEntity, IPluginConfig iPluginConfig) {
-        if (compoundTag.contains("hasProblems", Tag.TAG_BYTE)) {
-            if (compoundTag.getBoolean("hasProblems")) {
+        if ((compoundTag.get("hasProblems") instanceof ByteTag)) {
+            if (compoundTag.getBooleanOr("hasProblems", false)) {
                 if (blockAccessor.showDetails()) {
-                    int problems = compoundTag.getInt("maintenanceProblems");
+                    int problems = compoundTag.getIntOr("maintenanceProblems", 0);
                     for (byte i = 0; i < 6; i++) {
                         if (((problems >> i) & 1) == 0) {
                             var tuple = GTUtil.getMaintenanceText(i);

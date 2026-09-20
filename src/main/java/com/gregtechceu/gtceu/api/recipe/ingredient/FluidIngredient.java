@@ -295,7 +295,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
                 TagKey<Fluid> tagKey = TagKey.create(Registries.FLUID, resourceLocation);
                 return FluidIngredient.fromValue(new TagValue(tagKey), amount, nbt);
             } else {
-                Fluid fluid = BuiltInRegistries.FLUID.get(Identifier.parse(value));
+                Fluid fluid = BuiltInRegistries.FLUID.getValue(Identifier.parse(value));
                 return FluidIngredient.fromValue(new FluidValue(fluid), amount, nbt);
             }
         } else {
@@ -308,7 +308,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
             throw new JsonParseException("A fluid ingredient entry is either a tag or a fluid, not both");
         }
         if (json.has("fluid")) {
-            Fluid fluid = BuiltInRegistries.FLUID.get(Identifier.parse(GsonHelper.getAsString(json, "fluid")));
+            Fluid fluid = BuiltInRegistries.FLUID.getValue(Identifier.parse(GsonHelper.getAsString(json, "fluid")));
             return new FluidValue(fluid);
         }
         if (json.has("tag")) {

@@ -71,7 +71,7 @@ public class PipeBlockItem extends BlockItem {
         }
 
         boolean superVal = super.placeBlock(context, state);
-        if (superVal && !level.isClientSide) {
+        if (superVal && !level.isClientSide()) {
             IPipeNode selfTile = getBlock().getPipeTile(level, pos);
             if (selfTile == null) return true;
             if (selfTile.getPipeBlock().canConnect(selfTile, side.getOpposite())) {

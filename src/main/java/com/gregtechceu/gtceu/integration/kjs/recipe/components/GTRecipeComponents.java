@@ -193,7 +193,7 @@ public class GTRecipeComponents {
         @Override
         public JsonElement write(RecipeJS recipe, RecipeCondition<?> condition) {
             var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-            return RecipeCondition.CODEC.encodeStart(ops, condition).getOrThrow(false, error -> {
+            return RecipeCondition.CODEC.encodeStart(ops, condition).getOrThrow(error -> {
                 throw new RecipeExceptionJS("Failed to encode: " + error + " " + condition);
             });
         }
@@ -381,7 +381,7 @@ public class GTRecipeComponents {
 
         KJSRecipeKeyEvent event = new KJSRecipeKeyEvent();
         AddonFinder.getAddons().forEach(addon -> addon.registerRecipeKeys(event));
-        ModLoader.get().postEvent(event);
+        ModLoader.postEvent(event);
         VALID_CAPS.putAll(event.getRegisteredKeys());
     }
 
@@ -464,7 +464,7 @@ public class GTRecipeComponents {
                 if (isTag) {
                     return new FluidIngredientJS(TagKey.create(Registries.FLUID, id), amount, nbt);
                 } else {
-                    return new FluidIngredientJS(BuiltInRegistries.FLUID.get(id), amount, nbt);
+                    return new FluidIngredientJS(BuiltInRegistries.FLUID.getValue(id), amount, nbt);
                 }
             }
 

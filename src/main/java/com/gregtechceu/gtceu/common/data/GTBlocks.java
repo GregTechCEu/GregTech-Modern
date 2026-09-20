@@ -272,7 +272,7 @@ public class GTBlocks {
 
         MaterialCasingCollectionEvent event = new MaterialCasingCollectionEvent(builder);
         AddonFinder.getAddons().forEach(addon -> addon.collectMaterialCasings(event));
-        ModLoader.get().postEvent(event);
+        ModLoader.postEvent(event);
         MATERIALS_TO_CASINGS = builder.build();
     }
 

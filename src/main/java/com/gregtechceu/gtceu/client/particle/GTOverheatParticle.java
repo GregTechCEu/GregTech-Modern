@@ -193,7 +193,7 @@ public class GTOverheatParticle extends GTBloomParticle {
                 CollisionContext.empty());
         pipeBounds = pipeShape.bounds().inflate(0.001).move(posX, posY, posZ);
 
-        if (temperature > 400 && blockEntity.getLevel().random.nextFloat() < 0.04f) {
+        if (temperature > 400 && blockEntity.getLevel().getRandom().nextFloat() < 0.04f) {
             spawnSmoke();
         }
     }
@@ -204,7 +204,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         float yPos = pos.getY() + 0.9F;
         float zPos = pos.getZ() + 0.5F;
 
-        float ySpd = 0.3F + 0.1F * blockEntity.getLevel().random.nextFloat();
+        float ySpd = 0.3F + 0.1F * blockEntity.getLevel().getRandom().nextFloat();
         blockEntity.getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xPos, yPos, zPos, 0, ySpd, 0);
     }
 

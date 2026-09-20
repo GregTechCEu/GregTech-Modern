@@ -16,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -71,7 +72,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     @SuppressWarnings("deprecation")
     private static Block getBlock(DyeColor color, String postfix) {
         Identifier id = Identifier.withDefaultNamespace(color.getSerializedName() + "_" + postfix);
-        return BuiltInRegistries.BLOCK.get(id);
+        return BuiltInRegistries.BLOCK.getValue(id);
     }
 
     static {
@@ -457,9 +458,9 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
 
     public final int getUsesLeft(ItemStack stack) {
         CompoundTag tagCompound = stack.getTag();
-        if (tagCompound == null || !tagCompound.contains("UsesLeft", Tag.TAG_INT))
+        if (tagCompound == null || !(tagCompound.get("UsesLeft") instanceof IntTag))
             return totalUses;
-        return tagCompound.getInt("UsesLeft");
+        return tagCompound.getIntOr("UsesLeft", 0);
     }
 
     public static void setUsesLeft(ItemStack itemStack, int usesLeft) {

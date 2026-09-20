@@ -146,8 +146,7 @@ public class GTMedicalConditions {
     }
 
     public static void init() {
-        ModLoader.get()
-                .postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MEDICAL_CONDITIONS, MedicalCondition.class));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MEDICAL_CONDITIONS, MedicalCondition.class));
         GTRegistries.MEDICAL_CONDITIONS.freeze();
     }
 }

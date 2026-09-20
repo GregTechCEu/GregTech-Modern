@@ -75,8 +75,8 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
     @Override
     public void loadFromItem(CompoundTag tag) {
-        itemsPerCycle = tag.getInt("itemsPerCycle");
-        ticksPerCycle = tag.getInt("ticksPerCycle");
+        itemsPerCycle = tag.getIntOr("itemsPerCycle", 0);
+        ticksPerCycle = tag.getIntOr("ticksPerCycle", 0);
     }
 
     @Override

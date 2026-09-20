@@ -69,14 +69,14 @@ public class BlockRotatingBehavior implements IToolBehavior {
             if (behavior != null) {
                 if (behavior.customRotate(state, level, pos, retraceBlock(level, player, pos))) {
                     ToolHelper.onActionDone(player, stack, level, context.getClickLocation());
-                    return InteractionResult.sidedSuccess(level.isClientSide);
+                    return InteractionResult.sidedSuccess(level.isClientSide());
                 }
             } else {
                 Rotation rot = player == null || player.getDirection().getClockWise() == context.getClickedFace() ?
                         Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90;
                 if (state.rotate(level, pos, rot) != state) {
                     ToolHelper.onActionDone(player, stack, level, context.getClickLocation());
-                    return InteractionResult.sidedSuccess(level.isClientSide);
+                    return InteractionResult.sidedSuccess(level.isClientSide());
                 }
             }
         }

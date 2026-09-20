@@ -45,7 +45,7 @@ public interface PanelFactory extends IUIHolder<PosGuiData> {
             if (player instanceof ServerPlayer serverPlayer) {
                 MachineUIFactory.INSTANCE.open(serverPlayer, hit.getBlockPos());
             }
-            return InteractionResult.sidedSuccess(player.level().isClientSide);
+            return InteractionResult.sidedSuccess(player.level().isClientSide());
         } else {
             return InteractionResult.PASS;
         }

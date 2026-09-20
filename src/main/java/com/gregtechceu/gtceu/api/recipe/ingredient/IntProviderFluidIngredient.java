@@ -161,7 +161,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     public @NotNull JsonElement toJson() {
         JsonObject json = new JsonObject();
         json.add("count_provider", IntProviders.CODEC.encodeStart(JsonOps.INSTANCE, countProvider)
-                .getOrThrow(false, GTCEu.LOGGER::error));
+                .getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); }));
         json.add("inner", inner.toJson());
         json.addProperty("sampledCount", sampledCount);
         return json;
@@ -180,7 +180,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
         }
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
         IntProvider provider = IntProviders.CODEC.parse(JsonOps.INSTANCE, jsonObject.get("count_provider"))
-                .getOrThrow(false, GTCEu.LOGGER::error);
+                .getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
         int sampledCount = jsonObject.getAsJsonPrimitive("sampledCount").getAsInt();
         FluidIngredient inner = FluidIngredient.fromJson(jsonObject.get("inner"));
         return new IntProviderFluidIngredient(inner, provider, sampledCount);

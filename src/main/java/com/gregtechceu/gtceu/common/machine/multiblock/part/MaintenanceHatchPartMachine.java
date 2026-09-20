@@ -264,7 +264,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                 return;
             }
             // Then for every slot in the player's main inventory, try to duct tape fix
-            for (int i = 0; i < entityPlayer.getInventory().items.size(); i++) {
+            for (int i = 0; i < entityPlayer.getInventory().getNonEquipmentItems().size(); i++) {
                 if (consumeDuctTape(new InvWrapper(entityPlayer.getInventory()), i)) {
                     fixAllMaintenanceProblems();
                     setTaped(true);
@@ -344,7 +344,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                 }
 
                 // Then try all the remaining inventory slots
-                for (ItemStack itemStack : entityPlayer.getInventory().items) {
+                for (ItemStack itemStack : entityPlayer.getInventory().getNonEquipmentItems()) {
                     if (ToolHelper.is(itemStack, toolToMatch)) {
                         fixProblemWithTool(i, itemStack, entityPlayer);
 
@@ -355,7 +355,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                 }
 
                 if (entityPlayer instanceof ServerPlayer player) {
-                    for (ItemStack stack : entityPlayer.getInventory().items) {
+                    for (ItemStack stack : entityPlayer.getInventory().getNonEquipmentItems()) {
                         if (ToolHelper.is(stack, toolToMatch)) {
                             setMaintenanceFixed(i);
                             ToolHelper.damageItem(stack, player, 1);

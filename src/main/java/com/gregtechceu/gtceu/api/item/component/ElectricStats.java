@@ -83,10 +83,10 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         var itemStack = player.getItemInHand(usedHand);
         var electricItem = GTCapabilityHelper.getElectricItem(itemStack);
         if (electricItem != null && electricItem.canProvideChargeExternally() && player.isShiftKeyDown()) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 boolean isInDischargeMode = isInDischargeMode(itemStack);
                 String locale = "metaitem.electric.discharge_mode." + (isInDischargeMode ? "disabled" : "enabled");
-                player.displayClientMessage(Component.translatable(locale), true);
+                player.sendOverlayMessage(Component.translatable(locale));
                 setInDischargeMode(itemStack, !isInDischargeMode);
             }
             return InteractionResultHolder.success(itemStack);
@@ -97,7 +97,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         var electricItem = GTCapabilityHelper.getElectricItem(stack);
-        if (!level.isClientSide && entity instanceof Player player && electricItem != null &&
+        if (!level.isClientSide() && entity instanceof Player player && electricItem != null &&
                 electricItem.canProvideChargeExternally() &&
                 isInDischargeMode(stack) && electricItem.getCharge() > 0L) {
             long transferLimit = electricItem.getTransferLimit();

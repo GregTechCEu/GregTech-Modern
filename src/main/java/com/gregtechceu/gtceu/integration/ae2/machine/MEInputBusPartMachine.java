@@ -222,7 +222,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
         }
 
         if (!isRemote()) {
-            readConfigFromTag(tag.getCompound("MEInputBus"));
+            readConfigFromTag(tag.getCompoundOrEmpty("MEInputBus"));
             this.updateInventorySubscription();
             player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_paste_settings"));
         }
@@ -254,11 +254,11 @@ public class MEInputBusPartMachine extends MEBusPartMachine
 
     protected void readConfigFromTag(CompoundTag tag) {
         if (tag.contains("ConfigStacks")) {
-            CompoundTag configStacks = tag.getCompound("ConfigStacks");
+            CompoundTag configStacks = tag.getCompoundOrEmpty("ConfigStacks");
             for (int i = 0; i < CONFIG_SIZE; i++) {
                 String key = Integer.toString(i);
                 if (configStacks.contains(key)) {
-                    CompoundTag configTag = configStacks.getCompound(key);
+                    CompoundTag configTag = configStacks.getCompoundOrEmpty(key);
                     this.aeItemHandler.getInventory()[i].setConfig(GenericStack.readTag(configTag));
                 } else {
                     this.aeItemHandler.getInventory()[i].setConfig(null);
@@ -266,10 +266,10 @@ public class MEInputBusPartMachine extends MEBusPartMachine
             }
         }
         if (tag.contains("GhostCircuit")) {
-            circuitSlot.setCurrentCircuit(tag.getByte("GhostCircuit"));
+            circuitSlot.setCurrentCircuit(tag.getByteOr("GhostCircuit", (byte) 0));
         }
         if (tag.contains("DistinctBuses")) {
-            setDistinct(tag.getBoolean("DistinctBuses"));
+            setDistinct(tag.getBooleanOr("DistinctBuses", false));
         }
     }
 }

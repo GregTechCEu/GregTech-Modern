@@ -53,7 +53,7 @@ public class GTBoat extends Boat {
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         if (compound.contains("Type")) {
-            entityData.set(DATA_ID_TYPE, BoatType.byName(compound.getString("Type")).ordinal());
+            entityData.set(DATA_ID_TYPE, BoatType.byName(compound.getStringOr("Type", "")).ordinal());
         }
     }
 

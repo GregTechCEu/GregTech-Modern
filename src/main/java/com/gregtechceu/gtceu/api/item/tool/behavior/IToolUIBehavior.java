@@ -23,7 +23,7 @@ public interface IToolUIBehavior extends IToolBehavior, IUIHolder<PlayerInventor
     default @NotNull InteractionResultHolder<ItemStack> onItemRightClick(@NotNull Level level, @NotNull Player player,
                                                                          @NotNull InteractionHand hand) {
         ItemStack heldItem = player.getItemInHand(hand);
-        if (level.isClientSide && shouldOpenUI(player, hand)) {
+        if (level.isClientSide() && shouldOpenUI(player, hand)) {
             PlayerInventoryUIFactory.INSTANCE.openFromHandClient(hand);
         }
         return InteractionResultHolder.pass(heldItem);

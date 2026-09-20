@@ -208,7 +208,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
         }
 
         if (!isRemote()) {
-            readConfigFromTag(tag.getCompound("MEInputHatch"));
+            readConfigFromTag(tag.getCompoundOrEmpty("MEInputHatch"));
             this.updateTankSubscription();
             player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_paste_settings"));
         }
@@ -238,11 +238,11 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
 
     protected void readConfigFromTag(CompoundTag tag) {
         if (tag.contains("ConfigStacks")) {
-            CompoundTag configStacks = tag.getCompound("ConfigStacks");
+            CompoundTag configStacks = tag.getCompoundOrEmpty("ConfigStacks");
             for (int i = 0; i < CONFIG_SIZE; i++) {
                 String key = Integer.toString(i);
                 if (configStacks.contains(key)) {
-                    CompoundTag configTag = configStacks.getCompound(key);
+                    CompoundTag configTag = configStacks.getCompoundOrEmpty(key);
                     this.aeFluidHandler.getInventory()[i].setConfig(GenericStack.readTag(configTag));
                 } else {
                     this.aeFluidHandler.getInventory()[i].setConfig(null);
@@ -250,7 +250,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
             }
         }
         if (tag.contains("GhostCircuit")) {
-            circuitSlot.setCurrentCircuit(tag.getByte("GhostCircuit"));
+            circuitSlot.setCurrentCircuit(tag.getByteOr("GhostCircuit", (byte) 0));
         }
     }
 }

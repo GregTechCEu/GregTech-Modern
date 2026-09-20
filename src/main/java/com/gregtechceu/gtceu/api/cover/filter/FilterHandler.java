@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import org.jspecify.annotations.NullMarked;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
@@ -63,7 +65,7 @@ public class FilterHandler<T> implements ISyncManaged {
 
             @Override
             public void deserializeNBT(CompoundTag nbt) {
-                if (!nbt.contains("Items", Tag.TAG_LIST) && nbt.contains("id", Tag.TAG_STRING)) {
+                if (!(nbt.get("Items") instanceof ListTag) && (nbt.get("id") instanceof StringTag)) {
                     setStackInSlot(0, ItemStack.of(nbt));
                     return;
                 }

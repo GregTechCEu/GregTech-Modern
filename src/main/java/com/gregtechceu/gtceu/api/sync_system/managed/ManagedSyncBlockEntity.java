@@ -73,7 +73,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
 
     @Override
     public final void handleUpdateTag(CompoundTag tag) {
-        byte[] data = tag.getByteArray("data");
+        byte[] data = tag.getByteArray("data").orElse(new byte[0]);
         getSyncDataHolder().readClientPacket(getHolderLookup(), new FriendlyByteBuf(Unpooled.wrappedBuffer(data)));
     }
 
@@ -81,7 +81,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     public final void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         CompoundTag tag = pkt.getTag();
         if (tag != null) {
-            byte[] data = tag.getByteArray("data");
+        byte[] data = tag.getByteArray("data").orElse(new byte[0]);
             getSyncDataHolder().readClientPacket(getHolderLookup(), new FriendlyByteBuf(Unpooled.wrappedBuffer(data)));
         }
     }

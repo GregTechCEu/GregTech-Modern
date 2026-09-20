@@ -54,9 +54,9 @@ public class ChanceCacheTransformer implements
 
             ListTag chanceTag = chanceCache.getList(key, Tag.TAG_COMPOUND);
             for (int i = 0; i < chanceTag.size(); ++i) {
-                CompoundTag chanceKey = chanceTag.getCompound(i);
+                CompoundTag chanceKey = chanceTag.getCompoundOrEmpty(i);
                 var entry = cap.serializer.fromNbt(chanceKey.get("entry"));
-                int value = chanceKey.getInt("cached_chance");
+                int value = chanceKey.getIntOr("cached_chance", 0);
                 // noinspection unchecked
                 map.put(entry, value);
             }

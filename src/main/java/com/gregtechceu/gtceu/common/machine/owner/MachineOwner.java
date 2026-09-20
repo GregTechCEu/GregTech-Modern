@@ -49,7 +49,7 @@ public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner, Argonau
         } else {
             event.register(0, PlayerOwner::new);
         }
-        ModLoader.get().postEvent(event);
+        ModLoader.postEvent(event);
         machineOwnerGenerator = event.ownershipProvider;
     }
 

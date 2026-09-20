@@ -68,7 +68,7 @@ public class ToggleEnergyConsumerBehavior implements IInteractionItem, IItemLife
 
     public static boolean isItemActive(ItemStack itemStack) {
         CompoundTag tagCompound = itemStack.getTag();
-        return tagCompound != null && tagCompound.getBoolean("Active");
+        return tagCompound != null && tagCompound.getBooleanOr("Active", false);
     }
 
     public static void setItemActive(ItemStack itemStack, boolean isActive) {

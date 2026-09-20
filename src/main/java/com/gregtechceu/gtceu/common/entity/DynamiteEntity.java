@@ -34,7 +34,7 @@ public class DynamiteEntity extends ThrowableItemProjectile {
     @Override
     public void onAddedToWorld() {
         super.onAddedToWorld();
-        ticksUntilExplosion = 80 + level().random.nextInt(60);
+        ticksUntilExplosion = 80 + level().getRandom().nextInt(60);
     }
 
     @Override
@@ -56,13 +56,13 @@ public class DynamiteEntity extends ThrowableItemProjectile {
     public void tick() {
         ticksUntilExplosion--;
 
-        if (level().random.nextInt(3) == 2) {
+        if (level().getRandom().nextInt(3) == 2) {
             level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(),
                     -this.getDeltaMovement().x * 0.05f,
                     this.onGround() ? 0.05f : -this.getDeltaMovement().y * 0.05f, -this.getDeltaMovement().z * 0.05f);
         }
 
-        if (ticksUntilExplosion < 0 && !level().isClientSide) {
+        if (ticksUntilExplosion < 0 && !level().isClientSide()) {
             Entity thrower = getOwner();
             level().explode(thrower == null ? this : thrower, this.getX(), this.getY(), this.getZ(), 1.5f,
                     Level.ExplosionInteraction.TNT);

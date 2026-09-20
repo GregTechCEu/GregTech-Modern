@@ -53,7 +53,7 @@ public final class TagCompatibilityFixer {
 
     public static void fixProgrammedCircutTag(MetaMachine machine, CompoundTag tag) {
         if (tag.contains("circuitInventory")) {
-            var oldData = tag.getCompound("circuitInventory");
+            var oldData = tag.getCompoundOrEmpty("circuitInventory");
 
             putTraitTag(machine, tag, ProgrammableCircuitSlotTrait.class, "circuitSlot", oldData);
         }
@@ -152,9 +152,9 @@ public final class TagCompatibilityFixer {
     public static Tag stripLDLibPayloadWrapper(Tag t) {
         if (!(t instanceof CompoundTag tag)) return t;
         if (tag.contains("p") && tag.contains("t")) {
-            return tag.getCompound("p");
+            return tag.getCompoundOrEmpty("p");
         }
-        if (tag.contains("t", Tag.TAG_COMPOUND)) {
+        if ((tag.get("t") instanceof CompoundTag)) {
             return tag.getCompound("t").getCompound("p");
         }
         return tag;

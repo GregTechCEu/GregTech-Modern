@@ -47,7 +47,7 @@ public class CompositeFilter<T> extends Filter<T> {
         this.itemStacks.setFilter(s -> Filters.isValidFilter(filterableType, s.getItem()));
 
         if (tag.isEmpty()) return;
-        itemStacks.deserializeNBT(tag.getCompound("filters"));
+        itemStacks.deserializeNBT(tag.getCompoundOrEmpty("filters"));
 
         for (int i = 0; i < 9; i++) {
             ItemStack item = itemStacks.getStackInSlot(i);

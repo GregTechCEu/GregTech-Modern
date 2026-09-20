@@ -69,7 +69,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
 
         ListTag allHazardZones = tag.getList("zones", Tag.TAG_COMPOUND);
         for (int i = 0; i < allHazardZones.size(); ++i) {
-            CompoundTag zoneTag = allHazardZones.getCompound(i);
+            CompoundTag zoneTag = allHazardZones.getCompoundOrEmpty(i);
 
             ChunkPos source = new ChunkPos(zoneTag.getLong("pos"));
             HazardZone zone = HazardZone.deserializeNBT(zoneTag);
@@ -107,8 +107,8 @@ public class EnvironmentalHazardSavedData extends SavedData {
         // remove empty zones
         for (ChunkPos pos : zonesToRemove) {
             hazardZones.remove(pos);
-            if (this.serverLevel.hasChunk(pos.x, pos.z)) {
-                LevelChunk chunk = this.serverLevel.getChunk(pos.x, pos.z);
+            if (this.serverLevel.hasChunk(pos.x(), pos.z())) {
+                LevelChunk chunk = this.serverLevel.getChunk(pos.x(), pos.z());
                 GTNetwork.sendToAllPlayersTrackingChunk(chunk, new SPacketRemoveHazardZone(pos));
             }
         }
@@ -116,10 +116,10 @@ public class EnvironmentalHazardSavedData extends SavedData {
         for (ChunkPos pos : zonesToSpread) {
             final HazardZone zone = hazardZones.get(pos);
             ChunkPos[] relativePositions = new ChunkPos[] {
-                    new ChunkPos(pos.x, pos.z - 1),
-                    new ChunkPos(pos.x, pos.z + 1),
-                    new ChunkPos(pos.x - 1, pos.z),
-                    new ChunkPos(pos.x + 1, pos.z)
+                    new ChunkPos(pos.x(), pos.z() - 1),
+                    new ChunkPos(pos.x(), pos.z() + 1),
+                    new ChunkPos(pos.x() - 1, pos.z()),
+                    new ChunkPos(pos.x() + 1, pos.z())
             };
             float removedStrength = 0;
             for (ChunkPos relativePos : relativePositions) {
@@ -140,8 +140,8 @@ public class EnvironmentalHazardSavedData extends SavedData {
             HazardZone newZone = zone.removeStrength(removedStrength);
             if (newZone == null) {
                 hazardZones.remove(pos);
-                if (this.serverLevel.hasChunk(pos.x, pos.z)) {
-                    LevelChunk chunk = this.serverLevel.getChunk(pos.x, pos.z);
+                if (this.serverLevel.hasChunk(pos.x(), pos.z())) {
+                    LevelChunk chunk = this.serverLevel.getChunk(pos.x(), pos.z());
                     GTNetwork.sendToAllPlayersTrackingChunk(chunk, new SPacketRemoveHazardZone(pos));
                 }
             }
@@ -213,8 +213,8 @@ public class EnvironmentalHazardSavedData extends SavedData {
 
     public void removeZone(ChunkPos chunkPos) {
         this.hazardZones.remove(chunkPos);
-        if (this.serverLevel.hasChunk(chunkPos.x, chunkPos.z)) {
-            LevelChunk chunk = this.serverLevel.getChunk(chunkPos.x, chunkPos.z);
+        if (this.serverLevel.hasChunk(chunkPos.x(), chunkPos.z())) {
+            LevelChunk chunk = this.serverLevel.getChunk(chunkPos.x(), chunkPos.z());
             GTNetwork.sendToAllPlayersTrackingChunk(chunk, new SPacketRemoveHazardZone(chunkPos));
         }
     }
@@ -297,11 +297,11 @@ public class EnvironmentalHazardSavedData extends SavedData {
 
         public static @Nullable HazardZone deserializeNBT(CompoundTag zoneTag) {
             BlockPos source = NbtUtils.readBlockPos(zoneTag.getCompound("source"));
-            float strength = zoneTag.getFloat("strength");
-            boolean canSpread = zoneTag.getBoolean("can_spread");
+            float strength = zoneTag.getFloatOr("strength", 0.0F);
+            boolean canSpread = zoneTag.getBooleanOr("can_spread", false);
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
-            Identifier id = GTCEu.id(zoneTag.getString("condition"));
+            Identifier id = GTCEu.id(zoneTag.getStringOr("condition", ""));
             if (!GTRegistries.MEDICAL_CONDITIONS.containsKey(id)) {
                 return null;
             }
@@ -329,15 +329,15 @@ public class EnvironmentalHazardSavedData extends SavedData {
     }
 
     public void sendAddZonePacket(ChunkPos pos, HazardZone zone) {
-        if (this.serverLevel.hasChunk(pos.x, pos.z)) {
-            LevelChunk chunk = this.serverLevel.getChunk(pos.x, pos.z);
+        if (this.serverLevel.hasChunk(pos.x(), pos.z())) {
+            LevelChunk chunk = this.serverLevel.getChunk(pos.x(), pos.z());
             GTNetwork.sendToAllPlayersTrackingChunk(chunk, new SPacketAddHazardZone(pos, zone));
         }
     }
 
     public void sendSyncZonePacket(ChunkPos pos, HazardZone zone) {
-        if (this.serverLevel.hasChunk(pos.x, pos.z)) {
-            LevelChunk chunk = this.serverLevel.getChunk(pos.x, pos.z);
+        if (this.serverLevel.hasChunk(pos.x(), pos.z())) {
+            LevelChunk chunk = this.serverLevel.getChunk(pos.x(), pos.z());
             GTNetwork.sendToAllPlayersTrackingChunk(chunk, new SPacketSyncHazardZoneStrength(pos, zone.strength()));
         }
     }

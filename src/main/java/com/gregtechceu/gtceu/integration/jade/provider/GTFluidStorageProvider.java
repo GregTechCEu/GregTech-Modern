@@ -85,12 +85,12 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
     // FluidView#readDefault can't handle amount > INT_MAX
     private static FluidView readFluid(CompoundTag tag) {
         if (!tag.contains("special")) return FluidView.readDefault(tag);
-        long capacity = tag.getLong("capacity");
+        long capacity = tag.getLongOr("capacity", 0);
         if (capacity <= 0) return null;
 
-        Fluid fluid = BuiltInRegistries.FLUID.get(Identifier.parse(tag.getString("fluid")));
+        Fluid fluid = BuiltInRegistries.FLUID.getValue(Identifier.parse(tag.getStringOr("fluid", "")));
         CompoundTag nbt = tag.contains("tag") ? tag.getCompound("tag") : null;
-        long amount = tag.getLong("amount");
+        long amount = tag.getLongOr("amount", 0);
         JadeFluidObject fluidObject = JadeFluidObject.of(fluid, 1000, nbt);
         FluidView fluidView = new FluidView(IElementHelper.get().fluid(fluidObject));
         fluidView.fluidName = fluid.getFluidType().getDescription();

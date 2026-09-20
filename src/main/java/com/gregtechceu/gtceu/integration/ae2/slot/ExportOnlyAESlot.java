@@ -93,10 +93,10 @@ public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSeriali
     @Override
     public void deserializeNBT(CompoundTag tag) {
         if (tag.contains(CONFIG_TAG)) {
-            this.config = GenericStack.readTag(tag.getCompound(CONFIG_TAG));
+            this.config = GenericStack.readTag(tag.getCompoundOrEmpty(CONFIG_TAG));
         }
         if (tag.contains(STOCK_TAG)) {
-            this.stock = GenericStack.readTag(tag.getCompound(STOCK_TAG));
+            this.stock = GenericStack.readTag(tag.getCompoundOrEmpty(STOCK_TAG));
         }
     }
 

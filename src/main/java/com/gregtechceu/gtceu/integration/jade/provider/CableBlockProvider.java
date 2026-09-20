@@ -26,8 +26,8 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         BlockEntity be = blockAccessor.getBlockEntity();
         if (be != null) {
-            CompoundTag data = blockAccessor.getServerData().getCompound(getUid().toString());
-            if (data.contains("cableData", Tag.TAG_COMPOUND)) {
+            CompoundTag data = blockAccessor.getServerData().getCompoundOrEmpty(getUid().toString());
+            if ((data.get("cableData") instanceof CompoundTag)) {
                 var tag = data.getCompound("cableData");
                 long voltage = tag.getLong("currentVoltage");
                 double amperage = tag.getDouble("currentAmperage");
@@ -56,7 +56,7 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        CompoundTag data = compoundTag.getCompound(getUid().toString());
+        CompoundTag data = compoundTag.getCompoundOrEmpty(getUid().toString());
         if (blockAccessor.getBlock() instanceof CableBlock cableBlock) {
             CableBlockEntity cable = (CableBlockEntity) cableBlock.getPipeTile(blockAccessor.getLevel(),
                     blockAccessor.getPosition());

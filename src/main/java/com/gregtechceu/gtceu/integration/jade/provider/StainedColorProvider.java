@@ -18,7 +18,7 @@ public class StainedColorProvider implements IBlockComponentProvider, IServerDat
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getServerData().contains("StainedColor")) {
-            int paintingColor = blockAccessor.getServerData().getInt("StainedColor");
+            int paintingColor = blockAccessor.getServerData().getIntOr("StainedColor", 0);
             if (paintingColor != IPaintable.UNPAINTED_COLOR) {
                 iTooltip.add(Component.translatable("gtceu.top.stained", String.format("#%06X", paintingColor))
                         .withStyle(style -> style.withColor(paintingColor)));

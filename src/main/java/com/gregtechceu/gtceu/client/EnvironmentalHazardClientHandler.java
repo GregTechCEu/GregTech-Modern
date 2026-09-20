@@ -56,13 +56,13 @@ public class EnvironmentalHazardClientHandler {
         if (level == null) {
             return;
         }
-        RandomSource random = level.random;
+        RandomSource random = level.getRandom();
         Vec3 playerPosition = Minecraft.getInstance().player.getEyePosition();
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
         for (var entry : hazardZones.entrySet()) {
             ChunkPos chunkPos = entry.getKey();
-            if (!level.hasChunk(chunkPos.x, chunkPos.z)) {
+            if (!level.hasChunk(chunkPos.x(), chunkPos.z())) {
                 continue;
             }
             var zone = entry.getValue();
@@ -105,11 +105,11 @@ public class EnvironmentalHazardClientHandler {
                 ChunkPos pos = entry.getKey();
                 for (int y = Minecraft.getInstance().level.getMinSection(); y <
                         Minecraft.getInstance().level.getMaxSection(); ++y) {
-                    Minecraft.getInstance().levelRenderer.setSectionDirtyWithNeighbors(pos.x, y, pos.z);
+                    Minecraft.getInstance().levelRenderer.setSectionDirtyWithNeighbors(pos.x(), y, pos.z());
                 }
 
                 ((ClientLevelAccessor) Minecraft.getInstance().level).getTintCaches()
-                        .forEach((colorResolver, blockTintCache) -> blockTintCache.invalidateForChunk(pos.x, pos.z));
+                        .forEach((colorResolver, blockTintCache) -> blockTintCache.invalidateForChunk(pos.x(), pos.z()));
             }
         }
     }
@@ -149,11 +149,11 @@ public class EnvironmentalHazardClientHandler {
     private void updateChunks(ChunkPos pos) {
         for (int y = Minecraft.getInstance().level.getMinSection(); y <
                 Minecraft.getInstance().level.getMaxSection(); ++y) {
-            Minecraft.getInstance().levelRenderer.setSectionDirtyWithNeighbors(pos.x, y, pos.z);
+            Minecraft.getInstance().levelRenderer.setSectionDirtyWithNeighbors(pos.x(), y, pos.z());
         }
 
         ((ClientLevelAccessor) Minecraft.getInstance().level).getTintCaches()
-                .forEach((colorResolver, blockTintCache) -> blockTintCache.invalidateForChunk(pos.x, pos.z));
+                .forEach((colorResolver, blockTintCache) -> blockTintCache.invalidateForChunk(pos.x(), pos.z()));
     }
 
     public int colorZone(int color, ChunkPos pos) {

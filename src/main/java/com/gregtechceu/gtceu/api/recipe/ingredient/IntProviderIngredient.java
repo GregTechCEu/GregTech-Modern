@@ -187,7 +187,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
         JsonObject json = new JsonObject();
         json.addProperty("type", TYPE.toString());
         json.add("count_provider", IntProviders.CODEC.encodeStart(JsonOps.INSTANCE, countProvider)
-                .getOrThrow(false, GTCEu.LOGGER::error));
+                .getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); }));
         json.add("ingredient", inner.toJson());
         json.addProperty("sampledCount", sampledCount);
         return json;
@@ -199,15 +199,15 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
         public @NotNull IntProviderIngredient parse(FriendlyByteBuf buffer) {
             var nbt = buffer.readNbt();
             IntProvider provider = IntProviders.CODEC.parse(NbtOps.INSTANCE, nbt.get("provider"))
-                    .getOrThrow(false, GTCEu.LOGGER::error);
-            int sampledCount = nbt.getInt("sampledCount");
+                    .getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
+            int sampledCount = nbt.getIntOr("sampledCount", 0);
             return new IntProviderIngredient(Ingredient.fromNetwork(buffer), provider, sampledCount);
         }
 
         @Override
         public @NotNull IntProviderIngredient parse(JsonObject json) {
             IntProvider provider = IntProviders.CODEC.parse(JsonOps.INSTANCE, json.get("count_provider"))
-                    .getOrThrow(false, GTCEu.LOGGER::error);
+                    .getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); });
             Ingredient inner = Ingredient.fromJson(json.get("ingredient"));
             int sampledCount = json.getAsJsonPrimitive("sampledCount").getAsInt();
             return new IntProviderIngredient(inner, provider, sampledCount);
@@ -217,7 +217,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
         public void write(FriendlyByteBuf buffer, IntProviderIngredient ingredient) {
             CompoundTag wrapper = new CompoundTag();
             wrapper.put("provider", IntProviders.CODEC.encodeStart(NbtOps.INSTANCE, ingredient.countProvider)
-                    .getOrThrow(false, GTCEu.LOGGER::error));
+                    .getOrThrow(message -> { GTCEu.LOGGER.error(message); return new RuntimeException(message); }));
             wrapper.putInt("sampledCount", ingredient.sampledCount);
             buffer.writeNbt(wrapper);
             ingredient.inner.toNetwork(buffer);

@@ -65,15 +65,15 @@ public class LampBlock extends Block {
     }
 
     public static boolean isInverted(CompoundTag tag) {
-        return tag.getBoolean(TAG_INVERTED);
+        return tag.getBooleanOr(TAG_INVERTED, false);
     }
 
     public static boolean isLightEnabled(CompoundTag tag) {
-        return tag.getBoolean(TAG_LIGHT);
+        return tag.getBooleanOr(TAG_LIGHT, false);
     }
 
     public static boolean isBloomEnabled(CompoundTag tag) {
-        return tag.getBoolean(TAG_BLOOM);
+        return tag.getBooleanOr(TAG_BLOOM, false);
     }
 
     public CompoundTag getTagFromState(BlockState state) {
@@ -127,7 +127,7 @@ public class LampBlock extends Block {
     @SuppressWarnings("deprecation")
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
                                 boolean movedByPiston) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             update(state, level, pos);
         }
     }

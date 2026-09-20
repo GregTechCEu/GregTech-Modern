@@ -154,7 +154,7 @@ public class GTDynamicResourcePack implements PackResources {
     public static void addAtlasSpriteSourceList(Identifier loc, List<SpriteSource> sources) {
         loc = ATLAS_ID_CONVERTER.idToFile(loc);
         JsonElement sourceJson = SpriteSources.FILE_CODEC.encodeStart(JsonOps.INSTANCE, sources)
-                .getOrThrow(false, error -> GTCEu.LOGGER.error("Failed to encode atlas sprite source. {}", error));
+                .getOrThrow(error -> { GTCEu.LOGGER.error("Failed to encode atlas sprite source. {}", error); return new RuntimeException(error); });
         addResource(loc, sourceJson);
     }
 

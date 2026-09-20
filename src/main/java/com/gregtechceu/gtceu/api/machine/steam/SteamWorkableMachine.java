@@ -159,7 +159,7 @@ public abstract class SteamWorkableMachine extends SteamMachine
         if (!player.isShiftKeyDown()) {
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
             setOutputFacing(gridSide);
-            return InteractionResult.sidedSuccess(player.level().isClientSide);
+            return InteractionResult.sidedSuccess(player.level().isClientSide());
         }
         return super.onWrenchClick(context);
     }

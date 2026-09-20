@@ -28,7 +28,7 @@ public abstract class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>
         this.pipeNets = new ArrayList<>();
         ListTag allEnergyNets = tag.getList("PipeNets", Tag.TAG_COMPOUND);
         for (int i = 0; i < allEnergyNets.size(); i++) {
-            CompoundTag pNetTag = allEnergyNets.getCompound(i);
+            CompoundTag pNetTag = allEnergyNets.getCompoundOrEmpty(i);
             T pipeNet = createNetInstance();
             pipeNet.deserializeNBT(pNetTag);
             addPipeNetSilently(pipeNet);

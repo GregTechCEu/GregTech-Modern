@@ -33,7 +33,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.FloatTag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -233,8 +236,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
     default long getMaxCharge(ItemStack stack) {
         if (isElectric()) {
             CompoundTag tag = stack.getTag();
-            if (tag != null && tag.contains(MAX_CHARGE_KEY, Tag.TAG_LONG)) {
-                return tag.getLong(MAX_CHARGE_KEY);
+            if (tag != null && (tag.get(MAX_CHARGE_KEY) instanceof LongTag)) {
+                return tag.getLongOr(MAX_CHARGE_KEY, 0);
             }
         }
         return -1L;
@@ -243,8 +246,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
     default long getCharge(ItemStack stack) {
         if (isElectric()) {
             CompoundTag tag = stack.getTag();
-            if (tag != null && tag.contains(CHARGE_KEY, Tag.TAG_LONG)) {
-                return tag.getLong(CHARGE_KEY);
+            if (tag != null && (tag.get(CHARGE_KEY) instanceof LongTag)) {
+                return tag.getLongOr(CHARGE_KEY, 0);
             }
         }
         return -1L;
@@ -252,8 +255,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
     default float getTotalToolSpeed(ItemStack stack) {
         CompoundTag toolTag = getToolTag(stack);
-        if (toolTag.contains(TOOL_SPEED_KEY, Tag.TAG_FLOAT)) {
-            return toolTag.getFloat(TOOL_SPEED_KEY);
+        if ((toolTag.get(TOOL_SPEED_KEY) instanceof FloatTag)) {
+            return toolTag.getFloatOr(TOOL_SPEED_KEY, 0.0F);
         }
         float toolSpeed = getToolStats().getEfficiencyMultiplier(stack) * getMaterialToolSpeed() +
                 getToolStats().getBaseEfficiency(stack);
@@ -263,8 +266,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
     default float getTotalAttackDamage(ItemStack stack) {
         CompoundTag toolTag = getToolTag(stack);
-        if (toolTag.contains(ATTACK_DAMAGE_KEY, Tag.TAG_FLOAT)) {
-            return toolTag.getFloat(ATTACK_DAMAGE_KEY);
+        if ((toolTag.get(ATTACK_DAMAGE_KEY) instanceof FloatTag)) {
+            return toolTag.getFloatOr(ATTACK_DAMAGE_KEY, 0.0F);
         }
         float baseDamage = getToolStats().getBaseDamage(stack);
         float attackDamage = 0;
@@ -278,8 +281,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
     default float getTotalAttackSpeed(ItemStack stack) {
         CompoundTag toolTag = getToolTag(stack);
-        if (toolTag.contains(ATTACK_SPEED_KEY, Tag.TAG_FLOAT)) {
-            return toolTag.getFloat(ATTACK_SPEED_KEY);
+        if ((toolTag.get(ATTACK_SPEED_KEY) instanceof FloatTag)) {
+            return toolTag.getFloatOr(ATTACK_SPEED_KEY, 0.0F);
         }
         float attackSpeed = getMaterialAttackSpeed() + getToolStats().getAttackSpeed(stack);
         toolTag.putFloat(ATTACK_SPEED_KEY, attackSpeed);
@@ -288,8 +291,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
     default int getTotalMaxDurability(ItemStack stack) {
         CompoundTag toolTag = getToolTag(stack);
-        if (toolTag.contains(MAX_DURABILITY_KEY, Tag.TAG_INT)) {
-            return toolTag.getInt(MAX_DURABILITY_KEY);
+        if ((toolTag.get(MAX_DURABILITY_KEY) instanceof IntTag)) {
+            return toolTag.getIntOr(MAX_DURABILITY_KEY, 0);
         }
 
         IGTToolDefinition toolStats = getToolStats();
@@ -307,8 +310,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
     default int getTotalEnchantability(ItemStack stack) {
         CompoundTag toolTag = getToolTag(stack);
-        if (toolTag.contains(ENCHANTABILITY_KEY, Tag.TAG_INT)) {
-            return toolTag.getInt(ENCHANTABILITY_KEY);
+        if ((toolTag.get(ENCHANTABILITY_KEY) instanceof IntTag)) {
+            return toolTag.getIntOr(ENCHANTABILITY_KEY, 0);
         }
         int enchantability = getMaterialEnchantability();
         toolTag.putInt(ENCHANTABILITY_KEY, enchantability);
@@ -317,8 +320,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
     default int getTotalHarvestLevel(ItemStack stack) {
         CompoundTag toolTag = getToolTag(stack);
-        if (toolTag.contains(HARVEST_LEVEL_KEY, Tag.TAG_INT)) {
-            return toolTag.getInt(HARVEST_LEVEL_KEY);
+        if ((toolTag.get(HARVEST_LEVEL_KEY) instanceof IntTag)) {
+            return toolTag.getIntOr(HARVEST_LEVEL_KEY, 0);
         }
         int harvestLevel = getMaterialHarvestLevel() + getToolStats().getBaseQuality(stack);
         toolTag.putInt(HARVEST_LEVEL_KEY, harvestLevel);
@@ -345,7 +348,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
     }
 
     default boolean definition$onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
-        if (player.level().isClientSide) return false;
+        if (player.level().isClientSide()) return false;
         getToolStats().getBehaviors().forEach(behavior -> behavior.onBlockStartBreak(stack, pos, player));
 
         if (!player.isShiftKeyDown()) {
@@ -367,8 +370,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
                     if (playSoundOnBlockDestroy()) playSound(player);
                 } else {
                     var tag = getBehaviorsTag(stack);
-                    if (tag.getBoolean(TREE_FELLING_KEY) &&
-                            !tag.getBoolean(DISABLE_TREE_FELLING_KEY) &&
+                    if (tag.getBooleanOr(TREE_FELLING_KEY, false) &&
+                            !tag.getBooleanOr(DISABLE_TREE_FELLING_KEY, false) &&
                             state.is(BlockTags.LOGS)) {
                         TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
                     }
@@ -381,7 +384,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
     default boolean definition$mineBlock(ItemStack stack, Level worldIn, BlockState state, BlockPos pos,
                                          LivingEntity entityLiving) {
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             getToolStats().getBehaviors()
                     .forEach(behavior -> behavior.onBlockDestroyed(stack, worldIn, state, pos, entityLiving));
 
@@ -441,7 +444,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
     default Map<Enchantment, Integer> getDefaultEnchantments(ItemStack stack) {
         CompoundTag toolTag = getToolTag(stack);
 
-        if (toolTag.contains(DEFAULT_ENCHANTMENTS_KEY, Tag.TAG_LIST)) {
+        if ((toolTag.get(DEFAULT_ENCHANTMENTS_KEY) instanceof ListTag)) {
             ListTag defaultsTag = toolTag.getList(DEFAULT_ENCHANTMENTS_KEY, Tag.TAG_COMPOUND);
             return EnchantmentHelper.deserializeEnchantments(defaultsTag);
         }
@@ -572,8 +575,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
     default int definition$getDamage(ItemStack stack) {
         CompoundTag toolTag = getToolTag(stack);
         // this only exists to support old tools now.
-        if (toolTag.contains(DURABILITY_KEY, Tag.TAG_INT)) {
-            int damage = toolTag.getInt(DURABILITY_KEY);
+        if ((toolTag.get(DURABILITY_KEY) instanceof IntTag)) {
+            int damage = toolTag.getIntOr(DURABILITY_KEY, 0);
             // remove the old durability nbt tag
             toolTag.remove(DURABILITY_KEY);
             return damage;
@@ -699,7 +702,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
         }
 
         // durability info
-        if (!tagCompound.getBoolean(UNBREAKABLE_KEY)) {
+        if (!tagCompound.getBooleanOr(UNBREAKABLE_KEY, false)) {
             // Plus 1 to match vanilla behavior where tools can still be used once at zero durability. We want to not
             // show this
             int damageRemaining = tool.getTotalMaxDurability(stack) - stack.getDamageValue() + 1;
@@ -748,7 +751,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
         }
 
         CompoundTag behaviorsTag = getBehaviorsTag(stack);
-        if (behaviorsTag.getBoolean(RELOCATE_MINED_BLOCKS_KEY)) {
+        if (behaviorsTag.getBooleanOr(RELOCATE_MINED_BLOCKS_KEY, false)) {
             if (!addedBehaviorNewLine) {
                 addedBehaviorNewLine = true;
                 tooltip.add(CommonComponents.EMPTY);
@@ -792,7 +795,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
                                 FormattingUtil::combineComponents)));
 
         // repair info
-        if (!tagCompound.getBoolean(UNBREAKABLE_KEY)) {
+        if (!tagCompound.getBooleanOr(UNBREAKABLE_KEY, false)) {
             if (GTUtil.isShiftDown()) {
                 Material material = getMaterial();
 
@@ -888,7 +891,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
     }
 
     default boolean canPlaySound(ItemStack stack) {
-        return Math.abs((int) System.currentTimeMillis() - getToolTag(stack).getInt(LAST_CRAFTING_USE_KEY)) > 1000;
+        return Math.abs((int) System.currentTimeMillis() - getToolTag(stack).getIntOr(LAST_CRAFTING_USE_KEY, 0)) > 1000;
     }
 
     default void playSound(Player player) {
