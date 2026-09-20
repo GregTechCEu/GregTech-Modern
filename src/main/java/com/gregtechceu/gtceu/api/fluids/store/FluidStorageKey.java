@@ -36,10 +36,10 @@ public final class FluidStorageKey {
     @Getter
     private final int registrationPriority;
 
-    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @Nullable TagKey<Fluid> extraTag,
-                           @NotNull MaterialIconType iconType,
-                           @NotNull Function<@NotNull Material, @NotNull String> registryNameFunction,
-                           @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction,
+    public FluidStorageKey(ResourceLocation resourceLocation, @Nullable TagKey<Fluid> extraTag,
+                           MaterialIconType iconType,
+                           Function<@NotNull Material, @NotNull String> registryNameFunction,
+                           Function<@NotNull Material, @NotNull String> translationKeyFunction,
                            @Nullable FluidState defaultFluidState, int registrationPriority) {
         this.resourceLocation = resourceLocation;
         this.extraTag = extraTag;
@@ -55,26 +55,26 @@ public final class FluidStorageKey {
         keys.put(resourceLocation, this);
     }
 
-    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @NotNull String tagKey,
-                           @NotNull MaterialIconType iconType,
-                           @NotNull Function<@NotNull Material, @NotNull String> registryNameFunction,
-                           @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction,
+    public FluidStorageKey(ResourceLocation resourceLocation, String tagKey,
+                           MaterialIconType iconType,
+                           Function<@NotNull Material, @NotNull String> registryNameFunction,
+                           Function<@NotNull Material, @NotNull String> translationKeyFunction,
                            @Nullable FluidState defaultFluidState, int registrationPriority) {
         this(resourceLocation, TagUtil.createFluidTag(tagKey), iconType,
                 registryNameFunction, translationKeyFunction,
                 defaultFluidState, registrationPriority);
     }
 
-    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @NotNull MaterialIconType iconType,
-                           @NotNull Function<@NotNull Material, @NotNull String> registryNameFunction,
-                           @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction,
+    public FluidStorageKey(ResourceLocation resourceLocation, MaterialIconType iconType,
+                           Function<@NotNull Material, @NotNull String> registryNameFunction,
+                           Function<@NotNull Material, @NotNull String> translationKeyFunction,
                            @Nullable FluidState defaultFluidState, int registrationPriority) {
         this(resourceLocation, (TagKey<Fluid>) null, iconType,
                 registryNameFunction, translationKeyFunction,
                 defaultFluidState, registrationPriority);
     }
 
-    public static @Nullable FluidStorageKey getByName(@NotNull ResourceLocation location) {
+    public static @Nullable FluidStorageKey getByName(ResourceLocation location) {
         return keys.get(location);
     }
 
@@ -86,14 +86,14 @@ public final class FluidStorageKey {
      * @param baseName the base name of the fluid
      * @return the registry name to use
      */
-    public @NotNull String getRegistryNameFor(@NotNull Material baseName) {
+    public String getRegistryNameFor(Material baseName) {
         return registryNameFunction.apply(baseName);
     }
 
     /**
      * @return the translation key for fluids with this key
      */
-    public @NotNull String getTranslationKeyFor(@NotNull Material material) {
+    public String getTranslationKeyFor(Material material) {
         return this.translationKeyFunction.apply(material);
     }
 
@@ -113,7 +113,7 @@ public final class FluidStorageKey {
     }
 
     @Override
-    public @NotNull String toString() {
+    public String toString() {
         return "FluidStorageKey{" + resourceLocation + '}';
     }
 }

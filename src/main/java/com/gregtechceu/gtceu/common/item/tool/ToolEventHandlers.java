@@ -108,10 +108,11 @@ public class ToolEventHandlers {
      */
     public static List<ItemStack> onHarvestDrops(Player player, ItemStack tool, ServerLevel level,
                                                  BlockPos pos, BlockState state, List<ItemStack> drops) {
-        if (state.is(BlockTags.ICE) &&
-                !EnchantmentHelper.hasTag(tool, EnchantmentTags.PREVENTS_ICE_MELTING) &&
-                ToolHelper.getBehaviorsComponent(tool).hasBehavior(GTToolBehaviors.HARVEST_ICE)) {
-            Item iceBlock = state.getBlock().asItem();
+        ToolBehaviors behaviors = ToolHelper.getBehaviorsComponent(tool);
+        Block block = state.getBlock();
+        if (state.is(BlockTags.ICE) && !EnchantmentHelper.hasTag(tool, EnchantmentTags.PREVENTS_ICE_MELTING) &&
+                behaviors.hasBehavior(GTToolBehaviors.HARVEST_ICE.value())) {
+            Item iceBlock = block.asItem();
             if (drops.stream().noneMatch(drop -> drop.is(iceBlock))) {
                 drops.add(iceBlock.getDefaultInstance());
                 level.getServer().execute(() -> {

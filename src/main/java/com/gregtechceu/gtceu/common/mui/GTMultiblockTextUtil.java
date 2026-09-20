@@ -456,7 +456,7 @@ public class GTMultiblockTextUtil {
     public static TextWidget<?> addRecipeTypeField(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         StringSyncValue recipeTypeName = syncManager.getOrCreateSyncHandler("recipeTypeName", StringSyncValue.class,
                 () -> new StringSyncValue(
-                        () -> FormattingUtil.toEnglishName(rlMachine.getRecipeType().registryName.getPath())));
+                        () -> FormattingUtil.toEnglishName(rlMachine.getRecipeType().id.getPath())));
 
         // No need to sync the rlMachine.getRecipeTypes().length > 1 condition because the recipe type array is the same
         // on client side.
@@ -484,6 +484,10 @@ public class GTMultiblockTextUtil {
                                 .nullable()
                                 .copy(GTRecipe::copy)
                                 .build());
+
+        BooleanSyncValue hasRunningRecipe = syncManager.getOrCreateSyncHandler("hasRunningRecipe",
+                BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlmachine.getRecipeLogic().getLastRecipe() != null));
 
         DynamicLinkedSyncHandler<RegistryFriendlyByteBuf, GenericSyncValue<RegistryFriendlyByteBuf, GTRecipe>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(
                 recipeSyncValue)
@@ -514,7 +518,7 @@ public class GTMultiblockTextUtil {
                 .widthRel(1)
                 .coverChildrenHeight()
                 .syncHandler(dynamicLinkedSyncHandler)
-                .setEnabledIf(w -> rlmachine.getRecipeLogic().getLastRecipe() != null);
+                .setEnabledIf(w -> hasRunningRecipe.getBoolValue());
     }
 
     public static Optional<Widget<?>> createItemLineForOutput(Content itemOutput, GTRecipe recipe) {

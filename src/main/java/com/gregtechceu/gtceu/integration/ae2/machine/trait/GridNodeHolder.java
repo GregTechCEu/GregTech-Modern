@@ -36,7 +36,7 @@ public class GridNodeHolder extends MachineTrait {
         return (SerializableManagedGridNode) new SerializableManagedGridNode(machine,
                 BlockEntityNodeListener.INSTANCE)
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
-                .setVisualRepresentation(machine.self().getDefinition().getItem())
+                .setVisualRepresentation(machine.self().getDefinition())
                 .setIdlePowerUsage(ConfigHolder.INSTANCE.compat.ae2.meHatchEnergyUsage)
                 .setInWorldNode(true)
                 .setExposedOnSides(

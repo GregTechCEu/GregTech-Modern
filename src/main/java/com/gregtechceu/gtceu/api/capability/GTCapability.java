@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 
 import net.minecraft.core.Direction;
@@ -33,4 +34,6 @@ public class GTCapability {
             .createSided(GTCEu.id("hazard_particle_container"), IHazardParticleContainer.class);
     public static final BlockCapability<IMonitorComponent, Direction> CAPABILITY_MONITOR_COMPONENT = BlockCapability
             .createSided(GTCEu.id("monitor_component"), IMonitorComponent.class);
+    public static final ItemCapability<ISpoilableItem, Void> CAPABILITY_SPOILABLE_ITEM = ItemCapability
+            .createVoid(GTCEu.id("spoilable_item"), ISpoilableItem.class);
 }

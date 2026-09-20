@@ -18,9 +18,9 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 
 you'd get the error:
 ```
-Error in 'GTCEuStartupEvents.registry': The choice of Java method com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder.tooltips matching JavaScript argument types (net.minecraft.network.chat.MutableComponent) is ambiguous; candidate methods are: 
-    class com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder tooltips(java.util.List)
-    class com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder tooltips(net.minecraft.network.chat.Component[])
+Error in 'GTCEuStartupEvents.registry': The choice of Java method com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder.tooltips matching JavaScript argument types (net.minecraft.network.chat.MutableComponent) is ambiguous; candidate methods are: 
+    class com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder tooltips(java.util.List)
+    class com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder tooltips(net.minecraft.network.chat.Component[])
 ```
 
 In this case, there's ambiguity between the following 2 java functions:
@@ -90,7 +90,7 @@ or
 GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
   event.create("unboxinator")
     .setProgressBar(
-      ResourceTexture["(net.minecraft.resources.ResourceLocation)"](new ResourceLocation("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png")),
+      ResourceTexture["(net.minecraft.resources.ResourceLocation)"]("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
       FillDirection.LEFT_TO_RIGHT
     )
     // Rest of the recipe type

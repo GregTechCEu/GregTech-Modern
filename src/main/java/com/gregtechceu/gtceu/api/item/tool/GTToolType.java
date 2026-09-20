@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.common.item.tool.behavior.*;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -200,7 +201,7 @@ public class GTToolType {
             .definition(b -> b.blockBreaking().crafting()
                     .attackDamage(2.0F).attackSpeed(-2.4F)
                     .sneakBypassUse().behaviors(RotateRailBehavior.INSTANCE))
-            .sound(new ExistingSoundEntry(SoundEvents.ITEM_BREAK, SoundSource.BLOCKS), true)
+            .sound(Holder.direct(new ExistingSoundEntry(SoundEvents.ITEM_BREAK, SoundSource.BLOCKS)), true)
             .symbol('c')
             .defaultAbilities(GTItemAbilities.CROWBAR_DIG, GTItemAbilities.CROWBAR_REMOVE_COVER)
             .materialAmount(3 * GTValues.M / 2)
@@ -573,7 +574,7 @@ public class GTToolType {
     public final Set<String> toolClassNames;
     public final Set<GTToolType> toolClasses;
     @Nullable
-    public final SoundEntry soundEntry;
+    public final Holder<SoundEntry> soundEntry;
     public final boolean playSoundOnBlockDestroy;
     public final char symbol;
     public final long materialAmount;
@@ -587,7 +588,7 @@ public class GTToolType {
                       List<TagKey<Item>> itemTags, List<TagKey<Item>> matchTags, List<TagKey<Item>> craftingTags,
                       List<TagKey<Block>> harvestTags, Set<ItemAbility> defaultAbilities,
                       Set<String> toolClassNames, ResourceLocation modelLocation,
-                      @Nullable SoundEntry soundEntry, boolean playSoundOnBlockDestroy,
+                      @Nullable Holder<SoundEntry> soundEntry, boolean playSoundOnBlockDestroy,
                       int electricTier, long materialAmount) {
         this.name = name;
         this.idFormat = idFormat;
@@ -663,7 +664,7 @@ public class GTToolType {
         private ToolConstructor constructor = GTToolItem::new;
         @Setter
         private ResourceLocation modelLocation;
-        private SoundEntry sound;
+        private Holder<SoundEntry> sound;
         private boolean playSoundOnBlockDestroy;
 
         public Builder(String name) {
@@ -729,11 +730,11 @@ public class GTToolType {
             return this;
         }
 
-        public Builder sound(SoundEntry sound) {
+        public Builder sound(Holder<SoundEntry> sound) {
             return this.sound(sound, false);
         }
 
-        public Builder sound(SoundEntry sound, boolean playSoundOnBlockDestroy) {
+        public Builder sound(Holder<SoundEntry> sound, boolean playSoundOnBlockDestroy) {
             this.sound = sound;
             this.playSoundOnBlockDestroy = playSoundOnBlockDestroy;
             return this;

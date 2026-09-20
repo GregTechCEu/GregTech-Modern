@@ -2,10 +2,7 @@ package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
-import net.minecraft.core.registries.BuiltInRegistries;
 
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
@@ -22,23 +19,6 @@ public class ItemLang {
     }
 
     private static void initGeneratedNames(RegistrateLangProvider provider) {
-        // RecipeTypes
-        for (var recipeType : BuiltInRegistries.RECIPE_TYPE) {
-            if (recipeType instanceof GTRecipeType gtRecipeType) {
-                provider.add(gtRecipeType.getTranslationKey(), toEnglishName(gtRecipeType.registryName.getPath()));
-            }
-        }
-
-        // Recipe Categories
-        provider.add("recipe_category.gtceu.arc_furnace_recycling", "Arc Scrapping");
-        provider.add("recipe_category.gtceu.macerator_recycling", "Part Grinding");
-        provider.add("recipe_category.gtceu.extractor_recycling", "Scrap Remelting");
-        provider.add("recipe_category.gtceu.ore_crushing", "Ore Grinding");
-        provider.add("recipe_category.gtceu.ore_forging", "Ore Crushing");
-        provider.add("recipe_category.gtceu.ore_bathing", "Ore Treating");
-        provider.add("recipe_category.gtceu.chem_dyes", "Chemical Dyeing");
-        provider.add("recipe_category.gtceu.ingot_molding", "Metal Molding");
-
         // TagPrefix
         for (TagPrefix tagPrefix : GTRegistries.TAG_PREFIXES) {
             provider.add(tagPrefix.getUnlocalizedName(), tagPrefix.langValue);
@@ -357,6 +337,6 @@ public class ItemLang {
         provider.add("item.gtceu.terminal.tooltip",
                 "Shift + R-Click on a controller to automatically build the multiblock");
 
-        provider.add("item.gtceu.sus_record.desc", "§7sussy!");
+        provider.add("item.gtceu.sus_record.desc", "sussy!");
     }
 }

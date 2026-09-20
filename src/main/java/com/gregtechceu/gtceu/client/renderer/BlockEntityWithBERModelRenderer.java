@@ -4,24 +4,17 @@ import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -49,24 +42,6 @@ public class BlockEntityWithBERModelRenderer<T extends BlockEntity> implements B
 
             ((IBlockEntityRendererBakedModel<T>) berModel).render(blockEntity, partialTick,
                     poseStack, buffer, packedLight, packedOverlay);
-        } else {
-            Level level = blockEntity.getLevel();
-            BlockPos pos = blockEntity.getBlockPos();
-
-            @SuppressWarnings("DataFlowIssue")
-            ModelData modelData = level.getModelData(pos);
-
-            long randomSeed = blockState.getSeed(pos);
-            RandomSource random = RandomSource.create();
-            random.setSeed(randomSeed);
-
-            for (RenderType renderType : model.getRenderTypes(blockState, random, modelData)) {
-                VertexConsumer consumer = buffer.getBuffer(renderType);
-                blockRenderDispatcher.getModelRenderer()
-                        .tesselateBlock(level, model, blockState, pos,
-                                poseStack, consumer, true, random, randomSeed,
-                                OverlayTexture.NO_OVERLAY, modelData, renderType);
-            }
         }
     }
 

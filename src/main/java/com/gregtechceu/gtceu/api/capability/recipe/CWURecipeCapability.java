@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableComputationC
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerInteger;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 public class CWURecipeCapability extends RecipeCapability<Integer> {
@@ -19,7 +17,7 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     }
 
     @Override
-    public Integer copyInner(@NotNull Integer content) {
+    public Integer copyInner(Integer content) {
         return content;
     }
 

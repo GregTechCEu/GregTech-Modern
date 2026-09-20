@@ -167,9 +167,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         }
 
         this.inputItemHandler = new ItemRecipeHandler(IO.IN,
-                getRLMachine().getRecipeType().getMaxInputs(ItemRecipeCapability.CAP));
+                getRLMachine().getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), getMachine());
         this.outputItemHandler = new ItemRecipeHandler(IO.OUT,
-                getRLMachine().getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP));
+                getRLMachine().getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), getMachine());
 
         RecipeHandlerList inHandlers = RecipeHandlerList.of(IO.IN, inputItemHandler, new IgnoreEnergyRecipeHandler());
         RecipeHandlerList outHandlers = RecipeHandlerList.of(IO.OUT, outputItemHandler);
@@ -196,7 +196,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         if (ConfigHolder.INSTANCE.machines.replaceWithCobbleVersion) {
             BlockState oreState = level.getBlockState(pos);
             TagPrefix prefix = ChemicalHelper.getPrefix(oreState.getBlock());
-            if (prefix.isEmpty() || !GTBlocks.COBBLE_BLOCKS.containsKey(prefix))
+            if (prefix == null || !GTBlocks.COBBLE_BLOCKS.containsKey(prefix))
                 return Blocks.COBBLESTONE.defaultBlockState();
             return GTBlocks.COBBLE_BLOCKS.get(prefix).get();
         }

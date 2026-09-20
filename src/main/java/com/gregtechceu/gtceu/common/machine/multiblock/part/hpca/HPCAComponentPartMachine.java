@@ -74,7 +74,7 @@ public class HPCAComponentPartMachine extends MultiblockPartMachine {
     public void modifyDrops(List<ItemStack> drops) {
         for (int i = 0; i < drops.size(); ++i) {
             ItemStack drop = drops.get(i);
-            if (drop.getItem() == this.getDefinition().getItem()) {
+            if (drop.getItem() == this.getDefinition().asItem()) {
                 if (hpcaComponentTrait.isDamaged()) {
                     if (isAdvanced()) {
                         drops.set(i, GTBlocks.ADVANCED_COMPUTER_CASING.asStack());

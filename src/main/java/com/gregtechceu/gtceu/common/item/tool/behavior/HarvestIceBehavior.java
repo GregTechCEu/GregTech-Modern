@@ -32,7 +32,7 @@ public class HarvestIceBehavior implements IToolBehavior<HarvestIceBehavior> {
 
     @Override
     public ToolBehaviorType<HarvestIceBehavior> getType() {
-        return GTToolBehaviors.HARVEST_ICE;
+        return GTToolBehaviors.HARVEST_ICE.value();
     }
 
     @Override

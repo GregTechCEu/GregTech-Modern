@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.customlogic.SteamBoilerLogic;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.core.MixinHelpers;
-import com.gregtechceu.gtceu.data.loot.DungeonLootLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 
@@ -67,8 +66,6 @@ public abstract class ReloadableServerResourcesMixin {
             }
         });
         MixinHelpers.generateGTDynamicLoot(GTDynamicDataPack::addLootTable, frozen);
-        // Initialize dungeon loot additions
-        DungeonLootLoader.init();
 
         GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
     }

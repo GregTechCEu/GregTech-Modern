@@ -15,6 +15,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.drawable.GuiTextures;
@@ -27,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class HullMachine extends TieredPartMachine implements IMonitorComponent {
 
     @SaveField(nbtKey = "grid_node")
-    private final Object gridNodeHost;
+    private final @Nullable Object gridNodeHost;
 
     @SaveField
     protected NotifiableEnergyContainer energyContainer;
@@ -101,6 +102,16 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
                 connectedBlockEntity.getMainNode().loadFromNBT(c);
                 return context.currentValue();
             }
+            return null;
+        }
+
+        // No-op as this isn't synced to client
+        @Override
+        public void writeToPacket(RegistryFriendlyByteBuf buf, Object value, TransformerContext<Object> context) {}
+
+        // No-op as this isn't synced to client
+        @Override
+        public @Nullable Object readFromPacket(RegistryFriendlyByteBuf buf, TransformerContext<Object> context) {
             return null;
         }
     }

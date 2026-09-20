@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -27,10 +26,12 @@ import com.mojang.serialization.DataResult;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * Used to detect whether a machine has a certain capability.
@@ -41,9 +42,13 @@ public abstract class RecipeCapability<T> {
     public static final Codec<Map<RecipeCapability<?>, List<Content>>> CODEC = new DispatchedMapCodec<>(
             GTRegistries.RECIPE_CAPABILITIES.byNameCodec(),
             RecipeCapability::contentCodec);
+    public static final Codec<Map<RecipeCapability<?>, List<?>>> INGREDIENT_CODEC = new DispatchedMapCodec<>(
+            GTRegistries.RECIPE_CAPABILITIES.byNameCodec(),
+            RecipeCapability::ingredientCodec);
     public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
     // spotless:on
 
+    @Getter
     public final ResourceLocation id;
     public final int color;
     public final boolean doRenderSlot;
@@ -59,17 +64,12 @@ public abstract class RecipeCapability<T> {
         this.serializer = serializer;
     }
 
-    /**
-     * @deprecated Use {@link #RecipeCapability(ResourceLocation, int, boolean, int, IContentSerializer)}
-     */
-    @Deprecated(forRemoval = true, since = "8.0.0")
-    protected RecipeCapability(String name, int color, boolean doRenderSlot, int sortIndex,
-                               IContentSerializer<T> serializer) {
-        this(GTCEu.id(name), color, doRenderSlot, sortIndex, serializer);
+    public static Codec<List<Content>> contentCodec(RecipeCapability<?> capability) {
+        return Content.codec(capability).listOf().xmap(ArrayList::new, Function.identity());
     }
 
-    public static Codec<List<Content>> contentCodec(RecipeCapability<?> capability) {
-        return Content.codec(capability).listOf().xmap(ArrayList::new, list -> list);
+    public static <T> Codec<List<T>> ingredientCodec(RecipeCapability<T> capability) {
+        return Content.ingredientCodec(capability).listOf().xmap(ArrayList::new, Function.identity());
     }
 
     /**
@@ -123,7 +123,7 @@ public abstract class RecipeCapability<T> {
     }
 
     public MutableComponent getName() {
-        return Component.translatable("recipe.capability.%s.name".formatted(id.getPath()));
+        return Component.translatable(id.toLanguageKey("recipe_capability"));
     }
 
     public MutableComponent getColoredName() {

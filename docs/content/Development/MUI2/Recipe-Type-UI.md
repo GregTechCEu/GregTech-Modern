@@ -15,7 +15,7 @@ The same layout drives two different UIs:
 In machine UIs, the layout is declared with `GTRecipeType::UI`, which takes a `Consumer<GTRecipeTypeUILayout.Builder>`:
 
 ```java
-public final static GTRecipeType CANNER_RECIPES = register("canner", ELECTRIC)
+public final static GTRecipeType CANNER_RECIPES = register(GTCEu.id("canner"), ELECTRIC)
         .setMaxIOSize(2, 2, 1, 1)
         .setEUIO(IO.IN)
         .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_CANNER)

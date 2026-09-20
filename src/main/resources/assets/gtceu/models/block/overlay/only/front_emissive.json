@@ -2,12 +2,12 @@
     "parent": "block/block",
     "elements": [
         {
-            "from": [  0,  0, -0.096 ],
-            "to":   [ 16, 16, -0.096 ],
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16,  0 ],
             "neoforge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {
-                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "cullface": "north", "tintindex": -101 }
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "cullface": "north", "tintindex": -101, "gtceu:face_layer": "emissive" }
             }
         }
     ]

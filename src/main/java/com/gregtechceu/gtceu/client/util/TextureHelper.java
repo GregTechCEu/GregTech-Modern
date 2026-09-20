@@ -19,9 +19,11 @@ import com.gregtechceu.gtceu.client.model.quad.MutableQuadView;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import static com.gregtechceu.gtceu.client.model.quad.MutableQuadView.*;
 
@@ -31,9 +33,6 @@ import static com.gregtechceu.gtceu.client.model.quad.MutableQuadView.*;
  */
 @UtilityClass
 public class TextureHelper {
-
-    public static final float NORMALIZER = 1f / 16f;
-    public static final float DENORMALIZER = 16f;
 
     private static final int BAKE_ROTATE_ANY = BAKE_ROTATE_270 | BAKE_ROTATE_180 | BAKE_ROTATE_90;
 
@@ -52,12 +51,6 @@ public class TextureHelper {
         if (quad.nominalFace() != null && (BAKE_LOCK_UV & bakeFlags) != 0) {
             // Assigns normalized UV coordinates based on vertex positions
             applyModifier(quad, UV_LOCKERS[quad.nominalFace().get3DDataValue()]);
-        } else if ((BAKE_NORMALIZED & bakeFlags) == 0) {
-            // flag is NOT set, UVs are assumed to not be normalized yet as is the default.
-            // normalize through dividing by 16
-
-            // Scales from 0-16 to 0-1
-            applyModifier(quad, (q, i) -> q.uv(i, q.u(i) * NORMALIZER, q.v(i) * NORMALIZER));
         }
 
         final int rotation = bakeFlags & BAKE_ROTATE_ANY;
@@ -103,9 +96,7 @@ public class TextureHelper {
      * Textures must be already baked.
      *
      * <p>
-     * Note this the function's order of operations is reversed in relation to {@link #bakeSprite}.<br>
-     * The {@link MutableQuadView#BAKE_NORMALIZED BAKE_NORMALIZED} flag also works inversely
-     * to the one in {@link #bakeSprite}.
+     * Note this the function's order of operations is reversed in relation to {@link #bakeSprite}.
      *
      * <p>
      * If {@code sprite == null}, only the UV modifiers will be applied,
@@ -137,16 +128,13 @@ public class TextureHelper {
             applyModifier(quad, ROTATIONS[rotation]);
         }
 
-        if ((BAKE_NORMALIZED & bakeFlags) == 0) {
-            // flag is NOT set, UVs are assumed to be normalized as is the default.
-            // denormalize through multiplying by 16
-
-            // Scales from 0-1 to 0-16
-            applyModifier(quad, (q, i) -> q.uv(i, q.u(i) * DENORMALIZER, q.v(i) * DENORMALIZER));
-        }
-        if ((BAKE_DEROTATE_UV & bakeFlags) != 0) {
+        if ((UNBAKE_DEROTATE_UV & bakeFlags) != 0) {
             // Cycles texture coordinates so that vertex 0's UVs are the smallest
             derotateUV(quad);
+        }
+        if ((UNBAKE_CANONICALIZE_WINDING & bakeFlags) != 0) {
+            // Cycles texture coordinates so that vertex 0's UVs are the smallest
+            canonicalizeWinding(quad);
         }
     }
 
@@ -165,6 +153,10 @@ public class TextureHelper {
         }
     }
 
+    private static final ThreadLocal<Vector3f[]> positions = ThreadLocal.withInitial(() -> new Vector3f[4]);
+    private static final ThreadLocal<int[]> color = ThreadLocal.withInitial(() -> new int[4]);
+    private static final ThreadLocal<int[]> light = ThreadLocal.withInitial(() -> new int[4]);
+
     private static void derotateUV(MutableQuadView quad) {
         int minIndex = 0;
         float minU = Float.MAX_VALUE, minV = Float.MAX_VALUE;
@@ -177,6 +169,45 @@ public class TextureHelper {
             }
         }
         applyModifier(quad, ROTATIONS[minIndex]);
+    }
+
+    private static void canonicalizeWinding(MutableQuadView quad) {
+        Direction face = quad.nominalFace();
+        if (face == null) return;
+
+        int target = anchorIndex(quad, face);
+        // no need to do anything if target is 0 as that means the winding is already correct
+        if (target <= 0) return;
+
+        Vector3f[] pos = TextureHelper.positions.get();
+        int[] color = TextureHelper.color.get();
+        int[] light = TextureHelper.light.get();
+        for (int i = 0; i < 4; i++) {
+            pos[i] = quad.copyPos(i, pos[i]);
+            color[i] = quad.color(i);
+            light[i] = quad.lightmap(i);
+        }
+        for (int i = 0; i < 4; i++) {
+            int idx = (i + target) & 3;
+            quad.pos(i, pos[idx]);
+            quad.color(i, color[idx]);
+            quad.lightmap(i, light[idx]);
+        }
+    }
+
+    private static int anchorIndex(MutableQuadView quad, Direction face) {
+        for (int i = 0; i < 4; i++) {
+            boolean hit = switch (face) {
+                case UP -> Mth.equal(quad.x(i), 0.0F) && Mth.equal(quad.z(i), 0.0F);
+                case DOWN -> Mth.equal(quad.x(i), 0.0F) && Mth.equal(quad.z(i), 1.0F);
+                case NORTH -> Mth.equal(quad.x(i), 1.0F) && Mth.equal(quad.y(i), 1.0F);
+                case SOUTH -> Mth.equal(quad.x(i), 0.0F) && Mth.equal(quad.y(i), 1.0F);
+                case EAST -> Mth.equal(quad.y(i), 1.0F) && Mth.equal(quad.z(i), 1.0F);
+                case WEST -> Mth.equal(quad.y(i), 1.0F) && Mth.equal(quad.z(i), 0.0F);
+            };
+            if (hit) return i;
+        }
+        return -1;
     }
 
     @FunctionalInterface
