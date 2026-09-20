@@ -153,14 +153,11 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                     return BlockInfo.EMPTY;
                 });
             }
-            // TODO: is this needed? doesn't this just do what we're already doing?
-            if (isValidCandidate(info, resultStructure, predicate, pos, toInsert, dir)) {
-                resultStructure.put(pos, toInsert);
-                if (this.controllerBlock == null && predicate.isController()) {
-                    this.controllerBlock = toInsert.getBlockState().getBlock();
-                }
-                return true;
+            resultStructure.put(pos, toInsert);
+            if (this.controllerBlock == null && predicate.isController()) {
+                this.controllerBlock = toInsert.getBlockState().getBlock();
             }
+            return true;
         }
         for (MultiPredicate child : predicate.children()) {
             if (tryMinCount(info, resultStructure, child, pos, dir, offset)) return true;
@@ -187,14 +184,11 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                     return BlockInfo.EMPTY;
                 });
             }
-            // TODO: is this needed? doesn't this just do what we're already doing?
-            if (isValidCandidate(info, resultStructure, predicate, pos, toInsert, dir)) {
-                resultStructure.put(pos, toInsert);
-                if (this.controllerBlock == null && predicate.isController()) {
-                    this.controllerBlock = toInsert.getBlockState().getBlock();
-                }
-                return true;
+            resultStructure.put(pos, toInsert);
+            if (this.controllerBlock == null && predicate.isController()) {
+                this.controllerBlock = toInsert.getBlockState().getBlock();
             }
+            return true;
         }
         for (MultiPredicate child : predicate.children()) {
             if (tryMaxCount(info, resultStructure, child, pos, dir, offset)) return true;

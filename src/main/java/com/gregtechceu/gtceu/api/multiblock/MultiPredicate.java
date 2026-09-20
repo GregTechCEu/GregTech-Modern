@@ -97,7 +97,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         ctx.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
         if (testGlobalMin(ctx)) return true;
         for (Component content : getDescriptiveContents()) {
-            ctx.appendError(PatternStringError.of(content));
+            ctx.appendError(PatternStringError.of(content, ctx.getCurrentBlockInfo().getPos()));
         }
         return false;
     }
@@ -110,7 +110,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         ctx.setStage(PredicateContext.PredicateStage.SLICE_MIN);
         if (testSliceMin(ctx)) return true;
         for (Component content : getDescriptiveContents()) {
-            ctx.appendError(PatternStringError.of(content));
+            ctx.appendError(PatternStringError.of(content, ctx.getCurrentBlockInfo().getPos()));
         }
         return false;
     }

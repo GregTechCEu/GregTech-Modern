@@ -2,8 +2,11 @@ package com.gregtechceu.gtceu.api.multiblock.error;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import net.minecraft.core.BlockPos;
+
 import brachy.modularui.api.drawable.Text;
 import com.mojang.serialization.Codec;
+import org.jetbrains.annotations.NotNull;
 
 public class PlaceholderError extends PatternError {
 
@@ -18,6 +21,11 @@ public class PlaceholderError extends PatternError {
     }
 
     private PlaceholderError() {}
+
+    @Override
+    public @NotNull PatternError pos(BlockPos pos) {
+        return this;
+    }
 
     @Override
     public PatternErrorUI getPatternErrorUIModifier() {

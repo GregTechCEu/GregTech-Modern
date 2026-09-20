@@ -125,13 +125,16 @@ public class MultiblockSchemaInfo {
 
     public int getMinCount(MultiPredicate predicate, BasePredicate basePredicate) {
         if (!minMaxPreferences.contains(predicate, basePredicate))
-            return basePredicate.getMinCount();
+            return Math.max(predicate.getMinCount(), basePredicate.getMinCount());
         return minMaxPreferences.get(predicate, basePredicate).leftInt();
     }
 
     public int getMaxCount(MultiPredicate predicate, BasePredicate basePredicate) {
-        if (!minMaxPreferences.contains(predicate, basePredicate))
-            return basePredicate.getMaxCount();
+        if (!minMaxPreferences.contains(predicate, basePredicate)) {
+            if (predicate.getMaxCount() == -1) return basePredicate.getMaxCount();
+            if (basePredicate.getMaxCount() == -1) return predicate.getMaxCount();
+            return Math.min(predicate.getMaxCount(), basePredicate.getMaxCount());
+        }
         return minMaxPreferences.get(predicate, basePredicate).rightInt();
     }
 
