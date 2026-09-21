@@ -45,7 +45,7 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
 
     @Override
     public @Nullable IElectricItem createCapabilityForStack(ModuleContext context, ItemStack stack) {
-        var batteryItem = context.getModuleItem().getItem();
+        var batteryItem = context.getData().getModuleItem().getItem();
         if (!(batteryItem instanceof IComponentItem componentItem)) return null;
         for (var component : componentItem.getComponents()) {
             if (component instanceof ElectricStats stats) {
@@ -91,8 +91,6 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem != null)
             electricItem.appendHoverText(moduleContext.getAppliedTo(), context, tooltips, isAdvanced);
-        moduleContext.getModuleItem().getItem().appendHoverText(moduleContext.getModuleItem(), context, tooltips,
-                isAdvanced);
     }
 
     @Override
@@ -100,7 +98,7 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return;
         Equipable equipable = Equipable.get(moduleContext.getAppliedTo());
-        Component displayName = moduleContext.getModuleItem().getHoverName();
+        Component displayName = moduleContext.getData().getModuleItem().getHoverName();
         int x = 10, y;
         switch (equipable.getEquipmentSlot()) {
             case HEAD -> {
@@ -150,7 +148,7 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
 
     @Override
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getModuleItem());
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return super.getSettings(moduleContext, psm, id);
         return super.getSettings(moduleContext, psm, id)
                 .progress(Text.lang("gtceu.module.gui.charge"),

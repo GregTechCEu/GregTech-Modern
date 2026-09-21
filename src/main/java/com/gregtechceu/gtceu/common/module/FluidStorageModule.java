@@ -7,11 +7,14 @@ import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -19,6 +22,21 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
 
     public FluidStorageModule(ResourceLocation id) {
         super(id);
+    }
+
+    @Override
+    public ItemCapability<IFluidHandlerItem, @Nullable Void> getCapability() {
+        return null;
+    }
+
+    @Override
+    public @Nullable IFluidHandlerItem createCapabilityForStack(ModuleContext context, ItemStack stack) {
+        return null;
+    }
+
+    @Override
+    public void clearCapabilityFromStack(ModuleContext context, ItemStack stack) {
+
     }
 
     @Override
