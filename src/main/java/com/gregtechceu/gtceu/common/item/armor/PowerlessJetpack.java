@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.lang.LangUtils;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
@@ -79,11 +80,11 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         if (toggleTimer == 0) {
             if (SyncedKeyMappings.JETPACK_ENABLE.isKeyDown(player)) {
                 jetpackEnabled = !jetpackEnabled;
-                messageKey = "armor.gtceu.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
+                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.flight", jetpackEnabled);
                 data.putBoolean("enabled", jetpackEnabled);
             } else if (SyncedKeyMappings.ARMOR_HOVER.isKeyDown(player)) {
                 hoverMode = !hoverMode;
-                messageKey = "armor.gtceu.jetpack.hover." + (hoverMode ? "enable" : "disable");
+                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.hover", jetpackEnabled);
                 data.putBoolean("hover", hoverMode);
             }
 
