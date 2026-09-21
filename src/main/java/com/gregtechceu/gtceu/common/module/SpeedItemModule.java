@@ -25,7 +25,7 @@ public class SpeedItemModule extends TieredItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.speed.description", getTier() * 25);
+        return Component.translatable(getDescriptionLanguageKey(), getTier() * 25);
     }
 
     @Override

@@ -331,13 +331,6 @@ public class LangHandler {
         provider.add("item.gtceu.opv_voltage_coil.tooltip", "Legendary Coil");
         provider.add("item.gtceu.max_voltage_coil.tooltip", "Maximum Coil");
         provider.add("emi.category.gtceu.equipment_foundry", "Equipment Foundry");
-        provider.add("gtceu.equipment_foundry.gui.applied_to", "Applied to:");
-        provider.add("gtceu.equipment_foundry.gui.module_item", "Module item:");
-        provider.add("gtceu.equipment_foundry.gui.supports_tiers", "Module tiers: %s-%s");
-        provider.add("gtceu.equipment_foundry.gui.tier", "Viewing stats for tier: %s");
-        provider.add("gtceu.equipment_foundry.gui.tier_too_high", "No module item exists for this tier");
-        provider.add("gtceu.equipment_foundry.gui.tooltip.tier_switch",
-                "Left-click to increase tier by 1\nRight-click to decrease tier by 1");
         provider.add("metaitem.record.sus.tooltip", "§7Leonz - Among Us Drip");
         provider.add("item.gtceu.nan_certificate.tooltip", "Challenge Accepted!");
         provider.add("item.gtceu.blacklight.tooltip", "Long-Wave §dUltraviolet§7 light source");

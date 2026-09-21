@@ -105,35 +105,35 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
                 y = 20;
                 graphics.drawString(
                         Minecraft.getInstance().font,
-                        Component.translatable("metaarmor.tooltip.modifier.battery.hud.helmet", displayName),
+                        Component.translatable("module.gtceu.battery.hud.helmet", displayName),
                         x, y, 0xFFFFFF);
             }
             case CHEST -> {
                 y = 40;
                 graphics.drawString(
                         Minecraft.getInstance().font,
-                        Component.translatable("metaarmor.tooltip.modifier.battery.hud.chestplate", displayName),
+                        Component.translatable("module.gtceu.battery.hud.chestplate", displayName),
                         x, y, 0xFFFFFF);
             }
             case LEGS -> {
                 y = 60;
                 graphics.drawString(
                         Minecraft.getInstance().font,
-                        Component.translatable("metaarmor.tooltip.modifier.battery.hud.leggings", displayName),
+                        Component.translatable("module.gtceu.battery.hud.leggings", displayName),
                         x, y, 0xFFFFFF);
             }
             case FEET -> {
                 y = 80;
                 graphics.drawString(
                         Minecraft.getInstance().font,
-                        Component.translatable("metaarmor.tooltip.modifier.battery.hud.boots", displayName),
+                        Component.translatable("module.gtceu.battery.hud.boots", displayName),
                         x, y, 0xFFFFFF);
             }
             default -> y = 100;
         }
         graphics.drawString(
                 Minecraft.getInstance().font,
-                Component.translatable("metaarmor.tooltip.modifier.battery.hud.info", electricItem.getCharge(),
+                Component.translatable("module.gtceu.battery.hud.info", electricItem.getCharge(),
                         electricItem.getMaxCharge()),
                 x, y + 10, 0xFFFFFF);
     }
@@ -151,7 +151,7 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return super.getSettings(moduleContext, psm, id);
         return super.getSettings(moduleContext, psm, id)
-                .progress(Text.lang("module.gtceu.gui.charge"),
+                .progress(Text.lang("gui.gtceu.item_module.charge"),
                         () -> (double) electricItem.getCharge() / electricItem.getMaxCharge(),
                         x -> GTStringUtils.formatInt((long) (x * electricItem.getMaxCharge())) + " EU");
     }

@@ -94,23 +94,15 @@ public class EnergyShieldItemModule extends TieredItemModule {
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
-                                TooltipFlag isAdvanced) {
-        super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
-        tooltips.add(Component.translatable("module.gtceu.damage_block",
-                GTValues.VNF[getTier()]));
-    }
-
-    @Override
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
         return super.getSettings(moduleContext, psm, id)
-                .num(Text.lang("module.gtceu.gui.energy_limit"),
+                .num(Text.lang("gui.gtceu.item_module.energy_limit"),
                         () -> moduleContext.getData(EnergyShieldModuleData.class).getEnergyPercent(),
                         d -> moduleContext
                                 .setData(moduleContext.getData(EnergyShieldModuleData.class).withEnergyPercent(d)),
                         0, 1,
                         d -> "%.0f%%".formatted(d * 100))
-                .progress(Text.lang("module.gtceu.gui.hp"),
+                .progress(Text.lang("gui.gtceu.item_module.hp"),
                         () -> getDamageReduction(moduleContext) * 1d / getMaxDamageReduction(moduleContext),
                         d -> "%d/%d HP".formatted((int) (d * getMaxDamageReduction(moduleContext)),
                                 getMaxDamageReduction(moduleContext)));

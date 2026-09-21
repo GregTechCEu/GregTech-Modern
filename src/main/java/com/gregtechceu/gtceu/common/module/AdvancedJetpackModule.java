@@ -35,7 +35,7 @@ public class AdvancedJetpackModule extends ArmorLogicItemModule implements ITier
 
     @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.advanced_jetpack");
+        return Component.translatable(getDescriptionLanguageKey());
     }
 
     @Override
@@ -49,18 +49,9 @@ public class AdvancedJetpackModule extends ArmorLogicItemModule implements ITier
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
-                                TooltipFlag isAdvanced) {
-        super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
-        tooltips.add(
-                Component.translatable("metaarmor.tooltip.modifier.jetpack",
-                        moduleContext.getData().getModuleItem().getHoverName()));
-    }
-
-    @Override
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
         return super.getSettings(moduleContext, psm, id)
-                .bool(Text.lang("metaarmor.hud.hover_mode"),
+                .bool(Text.lang("hud.gtceu.armor.hover_mode"),
                         () -> moduleContext.getAppliedTo().getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY)
                                 .hover(),
                         b -> moduleContext.getAppliedTo().update(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY,

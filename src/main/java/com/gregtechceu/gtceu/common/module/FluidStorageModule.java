@@ -41,7 +41,7 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
 
     @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.fluid_storage");
+        return Component.translatable(getDescriptionLanguageKey());
     }
 
     @Override
@@ -60,13 +60,13 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
     public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
-        tooltips.add(Component.translatable("metaarmor.tooltip.modifier.fluid_storage",
+        tooltips.add(Component.translatable(getLanguageKey(),
                 moduleContext.getModuleItem().getHoverName()));
         IFluidHandlerItem fluidHandler = moduleContext.getModuleItem().getCapability(Capabilities.FluidHandler.ITEM);
         if (fluidHandler != null) {
             FluidStack fluid = fluidHandler.getFluidInTank(0);
             int capacity = fluidHandler.getTankCapacity(0);
-            tooltips.add(Component.translatable("metaarmor.tooltip.modifier.fluid_storage.tooltip", fluid.getAmount(),
+            tooltips.add(Component.translatable("module.gtceu.fluid_storage.current_stored", fluid.getAmount(),
                     capacity, fluid.getHoverName()));
         }
     }

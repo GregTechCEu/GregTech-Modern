@@ -120,7 +120,7 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
     @Override
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
         return super.getSettings(moduleContext, psm, id)
-                .num(Text.lang("module.gtceu.gui.power"),
+                .num(Text.lang("gui.gtceu.item_module.power"),
                         () -> getModifier(moduleContext),
                         x -> setModifier(moduleContext, x),
                         getMinModifier(moduleContext), getMaxModifier(moduleContext),

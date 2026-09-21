@@ -60,6 +60,14 @@ public abstract class ItemModule {
         return new ModuleData.BaseData(slot, module, moduleStack, true);
     }
 
+    public String getLanguageKey() {
+        return id.toLanguageKey("module");
+    }
+
+    public String getDescriptionLanguageKey() {
+        return id.toLanguageKey("module", "description");
+    }
+
     public boolean isEnabled(ModuleContext moduleContext) {
         return moduleContext.getData().isEnabled();
     }
@@ -112,7 +120,9 @@ public abstract class ItemModule {
     }
 
     public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
-                                TooltipFlag isAdvanced) {}
+                                TooltipFlag isAdvanced) {
+        tooltips.add(Component.translatable(getLanguageKey()));
+    }
 
     public boolean useEnergyInInventory(ModuleContext moduleContext, LivingEntity entity) {
         return true;
@@ -173,7 +183,7 @@ public abstract class ItemModule {
                 SyncHandlers.intNumber(() -> isEnabled(moduleContext) ? 0 : 1, x -> setEnabled(moduleContext, x == 0)));
         ItemModuleSettingsBuilder settings = new ItemModuleSettingsBuilder(psm, id);
         return settings
-                .bool(Text.lang("module.gtceu.gui.enabled"), () -> isEnabled(moduleContext),
+                .bool(Text.lang("gui.gtceu.item_module.enabled"), () -> isEnabled(moduleContext),
                         b -> setEnabled(moduleContext, b));
     }
 

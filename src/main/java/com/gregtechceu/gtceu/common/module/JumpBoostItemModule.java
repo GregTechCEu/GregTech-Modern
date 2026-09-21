@@ -58,7 +58,7 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
     @Override
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
         return super.getSettings(moduleContext, psm, id)
-                .num(Text.lang("module.gtceu.gui.jump_boost"),
+                .num(Text.lang("gui.gtceu.item_module.jump_boost"),
                         () -> getJumpBoost(moduleContext),
                         x -> setJumpBoost(moduleContext, (float) x),
                         0, getMaxJumpBoost());

@@ -24,7 +24,7 @@ public class AirSupplierModule extends ItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("metaarmor.tooltip.breath");
+        return Component.translatable(getDescriptionLanguageKey());
     }
 
     @Override
@@ -39,16 +39,14 @@ public class AirSupplierModule extends ItemModule {
     public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
-        tooltips.add(Component.translatable("metaarmor.tooltip.breath"));
+        tooltips.add(Component.translatable(getLanguageKey()));
     }
 
-    public static boolean supplyAir(@NotNull IElectricItem item, Player player, long energyPerUse) {
+    public static void supplyAir(@NotNull IElectricItem item, Player player, long energyPerUse) {
         int air = player.getAirSupply();
         if (item.canUse(energyPerUse / 100) && air < 100) {
             player.setAirSupply(air + 200);
             item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
-            return true;
         }
-        return false;
     }
 }

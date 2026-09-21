@@ -30,7 +30,7 @@ public class AutoEatModule extends ItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("metaarmor.tooltip.autoeat");
+        return Component.translatable(getDescriptionLanguageKey());
     }
 
     @Override
@@ -41,7 +41,7 @@ public class AutoEatModule extends ItemModule {
         supplyFood(electricItem, (Player) entity, 512);
     }
 
-    public static boolean supplyFood(@NotNull IElectricItem item, Player player, long energyPerUse) {
+    public static void supplyFood(@NotNull IElectricItem item, Player player, long energyPerUse) {
         if (item.canUse(energyPerUse / 10) && player.getFoodData().needsFood()) {
             int slotId = -1;
             IItemHandler playerInv = player.getCapability(Capabilities.ItemHandler.ENTITY);
@@ -64,17 +64,8 @@ public class AutoEatModule extends ItemModule {
                     if (result.getResult() == InteractionResult.SUCCESS)
                         item.discharge(energyPerUse / 10, item.getTier(), true, false, false);
 
-                    return true;
                 }
             }
         }
-        return false;
-    }
-
-    @Override
-    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
-                                TooltipFlag isAdvanced) {
-        super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
-        tooltips.add(Component.translatable("metaarmor.tooltip.autoeat"));
     }
 }

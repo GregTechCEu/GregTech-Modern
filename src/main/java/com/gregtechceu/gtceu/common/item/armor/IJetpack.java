@@ -173,7 +173,7 @@ public interface IJetpack {
         stack.update(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY, armor -> armor
                 .setEnabled(true)
                 .setHover(true));
-        player.displayClientMessage(Component.translatable("metaarmor.jetpack.emergency_hover_mode"), true);
+        player.displayClientMessage(Component.translatable("armor.gtceu.jetpack.emergency_hover"), true);
         player.fallDistance = 0;
 
         if (!player.level().isClientSide) {

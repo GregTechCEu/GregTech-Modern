@@ -70,7 +70,7 @@ It has 2 abstract methods for your subclasses to implement:
     
         @Override
         public Component getDisplayName() {
-            return Component.translatable("metaarmor.tooltip.modifier_slot.tiered", GTValues.VNF[getTier()]);
+            return Component.translatable("gui.gtceu.module_slot.tiered", GTValues.VNF[getTier()]);
         }
     }
     ```
