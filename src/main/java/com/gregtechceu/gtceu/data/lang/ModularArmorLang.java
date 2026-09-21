@@ -24,7 +24,7 @@ public class ModularArmorLang {
         provider.add("armor.gtceu.night_vision.enabled", "§bNightVision: §aOn");
         provider.add("armor.gtceu.night_vision.disabled", "§bNightVision: §cOff");
         provider.add("armor.gtceu.night_vision.error", "NightVision: §cNot enough power!");
-        
+
         provider.add("hud.gtceu.armor.status.enabled", "§aON");
         provider.add("hud.gtceu.armor.status.disabled", "§cOFF");
         provider.add("hud.gtceu.armor.energy_lvl", "Energy Level: %s");
@@ -60,7 +60,7 @@ public class ModularArmorLang {
         provider.add("module.gtceu.step_height.description", "Increases step height by %s blocks");
         provider.add("module.gtceu.swim_speed", "Swim Speed Module (%s)");
         provider.add("module.gtceu.swim_speed.description", "Increases swim speed by %s%%");
-        
+
         provider.add("module.gtceu.battery", "Battery Module (%s)");
         provider.add("module.gtceu.battery.description",
                 "Allows the item to store energy or increases its capacity (capacity is equal to the battery's)");
@@ -75,25 +75,27 @@ public class ModularArmorLang {
         provider.add("module.gtceu.auto_eat", "Auto Eat Module");
         provider.add("module.gtceu.auto_eat.description", "Replenishes Food Bar by Using Food from Inventory");
 
-        
         provider.add("module.gtceu.liquid_fuel_jetpack", "Liquid Fuel Jetpack");
         provider.add("module.gtceu.liquid_fuel_jetpack.description",
                 "Makes the chestplate work like a liquid fueled jetpack (requires any fluid storage module)");
         provider.add("module.gtceu.jetpack", "Basic Jetpack");
-        provider.add("module.gtceu.jetpack.description", "Makes the chestplate work like a jetpack (requires any battery module)");
+        provider.add("module.gtceu.jetpack.description",
+                "Makes the chestplate work like a jetpack (requires any battery module)");
         provider.add("module.gtceu.advanced_jetpack", "Advanced Jetpack");
         provider.add("module.gtceu.advanced_jetpack.description",
                 "Makes the chestplate work like an advanced jetpack (requires any battery module)");
         provider.add("module.gtceu.sensor", "Explosion Reporting Module (%s)");
         provider.add("module.gtceu.sensor.message", "%s exploded at (%d, %d, %d)");
-        provider.add("module.gtceu.sensor.description", "Reports machine explosions (for machines placed by the player)");
+        provider.add("module.gtceu.sensor.description",
+                "Reports machine explosions (for machines placed by the player)");
         provider.add("module.gtceu.wireless_charging", "Wireless Charging Module (%s)");
         provider.add("module.gtceu.wireless_charging.description",
                 "Allows wireless charging in the range of %s blocks (1A %s max), bind to a charger by right-clicking on it");
         provider.add("module.gtceu.wireless_charging.description.interdimensional",
                 "%s blocks, 1A %s max, interdimensional if an at least %s field generator is present");
         provider.add("module.gtceu.creative_flight", "Creative Flight Module");
-        provider.add("module.gtceu.creative_flight.description", "Allows creative flight (consumes %s EU/t while flying)");
+        provider.add("module.gtceu.creative_flight.description",
+                "Allows creative flight (consumes %s EU/t while flying)");
 
         provider.add("module.gtceu.fluid_storage", "Fluid Storage (%s)");
         provider.add("module.gtceu.fluid_storage.description",
@@ -107,11 +109,9 @@ public class ModularArmorLang {
         provider.add("module.gtceu.ppe.description",
                 "Provides protection from environmental hazards if applied to all armor pieces");
 
-        ///
         provider.add("metaarmor.tooltip.potions", "Nullifies Harmful Effects");
         provider.add("metaarmor.tooltip.burning", "Nullifies Burning");
         provider.add("metaarmor.tooltip.freezing", "Prevents Freezing");
-
 
         provider.add("module.gtceu.damage_block.short", "%s EU per HP");
         provider.add("module.gtceu.short_percentage", "... by %s%%");

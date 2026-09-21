@@ -8,20 +8,15 @@ import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.armor.Jetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TooltipFlag;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class JetpackModule extends ArmorLogicItemModule implements ITieredItemModule {
 

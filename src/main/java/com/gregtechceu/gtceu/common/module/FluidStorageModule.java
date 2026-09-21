@@ -14,6 +14,7 @@ import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -35,9 +36,7 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
     }
 
     @Override
-    public void clearCapabilityFromStack(ModuleContext context, ItemStack stack) {
-
-    }
+    public void clearCapabilityFromStack(ModuleContext context, ItemStack stack) {}
 
     @Override
     public Component getInfo() {

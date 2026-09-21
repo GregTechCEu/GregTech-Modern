@@ -8,11 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.common.NeoForgeMod;
-
-import java.util.List;
 
 public class SwimSpeedModule extends TieredAttributeItemModule {
 

@@ -9,10 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TooltipFlag;
-
-import java.util.List;
 
 public class MovementSpeedItemModule extends TieredAttributeItemModule {
 

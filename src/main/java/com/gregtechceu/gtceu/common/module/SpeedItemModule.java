@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
@@ -9,11 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.List;
 
 public class SpeedItemModule extends TieredItemModule {
 

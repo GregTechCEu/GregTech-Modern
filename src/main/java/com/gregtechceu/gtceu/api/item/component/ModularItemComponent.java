@@ -132,7 +132,8 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                     tooltipComponents.add(Component.literal(" - ")
                             .append(slot.getDisplayName())
                             .append(Component.literal(": "))
-                            .append(Component.translatable("gui.gtceu.item_module.empty_module_slot").withStyle(ChatFormatting.GRAY)));
+                            .append(Component.translatable("gui.gtceu.item_module.empty_module_slot")
+                                    .withStyle(ChatFormatting.GRAY)));
                 }
             }
         }

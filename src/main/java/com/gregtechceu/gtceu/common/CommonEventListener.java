@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.common;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -69,11 +67,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
@@ -173,35 +169,36 @@ public class CommonEventListener {
     }
 
     /*
-
-    public static final Reference2IntMap<Holder<MobEffect>> potionRemovalCost = new Reference2IntOpenHashMap<>();
-        potionRemovalCost.put(MobEffects.POISON, 10000);
-        potionRemovalCost.put(MobEffects.WITHER, 25000);
-        potionRemovalCost.put(MobEffects.CONFUSION, 8000);
-        potionRemovalCost.put(MobEffects.DIG_SLOWDOWN, 12500);
-        // potionRemovalCost.put(MobEffects.BAD_OMEN, 30000);
-        potionRemovalCost.put(MobEffects.MOVEMENT_SLOWDOWN, 9000);
-        potionRemovalCost.put(MobEffects.UNLUCK, 5000);
-    }
-
-    @SubscribeEvent
-    public static void onMobEffectEvent(MobEffectEvent.Applicable event) {
-        if (event.getEntity() instanceof Player player) {
-            ItemStack item = player.getItemBySlot(EquipmentSlot.HEAD);
-            IElectricItem helmet = GTCapabilityHelper.getElectricItem(item);
-            if (item.is(GTItems.QUANTUM_HELMET.asItem()) && helmet != null) {
-                MobEffectInstance effect = event.getEffectInstance();
-                int cost = QuarkTechSuite.potionRemovalCost.getOrDefault(effect.getEffect(), -1);
-                if (cost != -1) {
-                    cost = cost * (effect.getAmplifier() + 1);
-                    if (helmet.canUse(cost)) {
-                        helmet.discharge(cost, helmet.getTier(), true, false, false);
-                        event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
-                    }
-                }
-            }
-        }
-    }*/
+     * 
+     * public static final Reference2IntMap<Holder<MobEffect>> potionRemovalCost = new Reference2IntOpenHashMap<>();
+     * potionRemovalCost.put(MobEffects.POISON, 10000);
+     * potionRemovalCost.put(MobEffects.WITHER, 25000);
+     * potionRemovalCost.put(MobEffects.CONFUSION, 8000);
+     * potionRemovalCost.put(MobEffects.DIG_SLOWDOWN, 12500);
+     * // potionRemovalCost.put(MobEffects.BAD_OMEN, 30000);
+     * potionRemovalCost.put(MobEffects.MOVEMENT_SLOWDOWN, 9000);
+     * potionRemovalCost.put(MobEffects.UNLUCK, 5000);
+     * }
+     * 
+     * @SubscribeEvent
+     * public static void onMobEffectEvent(MobEffectEvent.Applicable event) {
+     * if (event.getEntity() instanceof Player player) {
+     * ItemStack item = player.getItemBySlot(EquipmentSlot.HEAD);
+     * IElectricItem helmet = GTCapabilityHelper.getElectricItem(item);
+     * if (item.is(GTItems.QUANTUM_HELMET.asItem()) && helmet != null) {
+     * MobEffectInstance effect = event.getEffectInstance();
+     * int cost = QuarkTechSuite.potionRemovalCost.getOrDefault(effect.getEffect(), -1);
+     * if (cost != -1) {
+     * cost = cost * (effect.getAmplifier() + 1);
+     * if (helmet.canUse(cost)) {
+     * helmet.discharge(cost, helmet.getTier(), true, false, false);
+     * event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
+     * }
+     * }
+     * }
+     * }
+     * }
+     */
 
     @SubscribeEvent
     public static void onBlockStartBreak(BlockEvent.BreakEvent event) {
