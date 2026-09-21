@@ -5,12 +5,13 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.api.item.data.ArmorMovementItemData;
+import com.gregtechceu.gtceu.api.item.data.NightVisionItemData;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
@@ -51,28 +52,26 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         if (item == null) {
             return;
         }
-        CompoundTag data = itemStack.getOrCreateTag();
-
-        byte toggleStepTimer = data.getByteOr("toggleStepTimer", (byte) 0);
+        byte toggleStepTimer = ArmorMovementItemData.getStepToggleTimer(itemStack);
         if (type == ArmorType.BOOTS) {
-            boolean stepAssist = data.contains("stepAssist") && data.getBooleanOr("stepAssist", false);
+            boolean stepAssist = ArmorMovementItemData.isStepAssistEnabled(itemStack);
             if (toggleStepTimer == 0 && SyncedKeyMappings.STEP_ASSIST_ENABLE.isKeyDown(player)) {
                 stepAssist = !stepAssist;
                 toggleStepTimer = 5;
                 if (world.isClientSide()) player.sendOverlayMessage(Component
                         .translatable("metaarmor.nms.step_assist." + (stepAssist ? "enabled" : "disabled")));
-                data.putBoolean("stepAssist", stepAssist);
+                ArmorMovementItemData.setStepAssist(itemStack, stepAssist);
             }
 
             if (toggleStepTimer > 0) toggleStepTimer--;
-            data.putInt("toggleStepTimer", toggleStepTimer);
+            ArmorMovementItemData.setStepToggleTimer(itemStack, toggleStepTimer);
         }
 
         if (type == ArmorType.HELMET) {
-            byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
-            int nightVisionTimer = data.contains("nightVisionTimer") ? data.getInt("nightVisionTimer") :
-                    ArmorUtils.NIGHTVISION_DURATION;
-            boolean nightVision = data.contains("nightVision") && data.getBooleanOr("nightVision", false);
+            var nightVisionData = NightVisionItemData.read(itemStack, ArmorUtils.NIGHTVISION_DURATION);
+            byte toggleTimer = nightVisionData.toggleTimer();
+            int nightVisionTimer = nightVisionData.effectTimer();
+            boolean nightVision = nightVisionData.enabled();
             if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
                 nightVision = !nightVision;
                 toggleTimer = 5;
@@ -98,11 +97,9 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
             } else {
                 player.removeEffect(MobEffects.NIGHT_VISION);
             }
-            data.putBoolean("nightVision", nightVision);
             if (nightVisionTimer > 0) nightVisionTimer--;
             if (toggleTimer > 0) toggleTimer--;
-            data.putInt("nightVisionTimer", nightVisionTimer);
-            data.putByte("toggleTimer", toggleTimer);
+            new NightVisionItemData(nightVision, toggleTimer, nightVisionTimer).save(itemStack);
         }
     }
 
@@ -178,17 +175,16 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     @Override
     public void addInfo(ItemStack itemStack, List<Component> lines) {
         super.addInfo(itemStack, lines);
-        CompoundTag nbtData = itemStack.getOrCreateTag();
         if (type == ArmorType.HELMET) {
 
-            boolean nv = nbtData.getBooleanOr("nightVision", false);
+            boolean nv = NightVisionItemData.read(itemStack, ArmorUtils.NIGHTVISION_DURATION).enabled();
             if (nv) {
                 lines.add(Component.translatable("metaarmor.message.nightvision.enabled"));
             } else {
                 lines.add(Component.translatable("metaarmor.message.nightvision.disabled"));
             }
         } else if (type == ArmorType.BOOTS) {
-            if (nbtData.getBooleanOr("stepAssist", false))
+            if (ArmorMovementItemData.isStepAssistEnabled(itemStack))
                 lines.add(Component.translatable("metaarmor.message.step_assist.enabled"));
             else lines.add(Component.translatable("metaarmor.message.step_assist.disabled"));
             lines.add(Component.translatable("metaarmor.tooltip.falldamage"));
