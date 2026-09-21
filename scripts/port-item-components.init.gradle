@@ -1,0 +1,16 @@
+// Compile the actual GT data layer using the existing NeoForge test loader, without loading the unfinished GT mod.
+gradle.projectsEvaluated {
+    def project = gradle.rootProject
+    def gtRoot = project.projectDir.parentFile.parentFile
+    project.sourceSets.test.java.srcDir(new File(gtRoot, 'src/main/java'))
+    project.sourceSets.test.java.srcDir(new File(gtRoot, 'src/test/java'))
+    project.sourceSets.test.java.setIncludes([
+        'brachy/**',
+        'com/gregtechceu/gtceu/api/item/data/**'
+    ])
+    if (project.hasProperty('itemComponentTestAssetProperties')) {
+        project.tasks.named('prepareNeoForgeTestFiles') {
+            assetProperties.set(project.file(project.property('itemComponentTestAssetProperties')))
+        }
+    }
+}
