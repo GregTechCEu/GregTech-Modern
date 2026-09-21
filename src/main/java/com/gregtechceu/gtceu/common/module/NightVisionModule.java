@@ -48,11 +48,12 @@ public class NightVisionModule extends ItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.nightvision", 2);
+        return Component.translatable("module.gtceu.nightvision", 2);
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
         tooltips.add(Component.translatable("metaarmor.message.nightvision.enabled"));
     }

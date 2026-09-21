@@ -33,7 +33,7 @@ public class AdvancedJetpackModule extends ArmorLogicItemModule implements ITier
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.advanced_jetpack");
+        return Component.translatable("module.gtceu.advanced_jetpack");
     }
 
     @Override
@@ -47,7 +47,8 @@ public class AdvancedJetpackModule extends ArmorLogicItemModule implements ITier
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
         tooltips.add(
                 Component.translatable("metaarmor.tooltip.modifier.jetpack",

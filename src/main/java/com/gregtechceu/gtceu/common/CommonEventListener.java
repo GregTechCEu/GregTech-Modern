@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.BlockAttributes;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
@@ -34,7 +33,6 @@ import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
-import com.gregtechceu.gtceu.common.item.armor.QuarkTechSuite;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
@@ -62,7 +60,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -91,7 +88,6 @@ import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -189,25 +185,6 @@ public class CommonEventListener {
             }
             hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, stack.getCount()));
             hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, stack.getCount()));
-        }
-    }
-
-    @SubscribeEvent
-    public static void onMobEffectEvent(MobEffectEvent.Applicable event) {
-        if (event.getEntity() instanceof Player player) {
-            ItemStack item = player.getItemBySlot(EquipmentSlot.HEAD);
-            if (item.is(GTItems.QUANTUM_HELMET.asItem()) && GTCapabilityHelper.getElectricItem(item) != null) {
-                IElectricItem helmet = GTCapabilityHelper.getElectricItem(item);
-                MobEffectInstance effect = event.getEffectInstance();
-                int cost = QuarkTechSuite.potionRemovalCost.getOrDefault(effect.getEffect(), -1);
-                if (cost != -1) {
-                    cost = cost * (effect.getAmplifier() + 1);
-                    if (helmet.canUse(cost)) {
-                        helmet.discharge(cost, helmet.getTier(), true, false, false);
-                        event.setResult(Event.Result.DENY);
-                    }
-                }
-            }
         }
     }
 

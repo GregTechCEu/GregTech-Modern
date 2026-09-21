@@ -33,7 +33,7 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.jetpack");
+        return Component.translatable("module.gtceu.jetpack");
     }
 
     @Override
@@ -47,7 +47,8 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
         tooltips.add(
                 Component.translatable("metaarmor.tooltip.modifier.jetpack",

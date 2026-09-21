@@ -41,13 +41,13 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
     public Component getDisplayName(ModuleContext moduleContext) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getModuleItem());
         if (electricItem != null)
-            return Component.translatable("metaarmor.tooltip.modifier.battery", GTValues.VNF[electricItem.getTier()]);
+            return Component.translatable("module.gtceu.battery", GTValues.VNF[electricItem.getTier()]);
         else return super.getDisplayName(moduleContext);
     }
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.battery");
+        return Component.translatable("module.gtceu.battery.description");
     }
 
     @Override
@@ -68,10 +68,11 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
         tooltips.add(
-                Component.translatable("metaarmor.tooltip.modifier.battery",
+                Component.translatable("module.gtceu.battery",
                         moduleContext.getModuleItem().getHoverName()));
         moduleContext.getModuleItem().getItem().appendHoverText(moduleContext.getModuleItem(), level, tooltips,
                 isAdvanced);
@@ -140,7 +141,7 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getModuleItem());
         if (electricItem == null) return super.getSettings(moduleContext, psm, id);
         return super.getSettings(moduleContext, psm, id)
-                .progress(Text.lang("gtceu.module.gui.charge"),
+                .progress(Text.lang("module.gtceu.gui.charge"),
                         () -> (double) electricItem.getCharge() / electricItem.getMaxCharge(),
                         x -> GTStringUtils.formatInt((long) (x * electricItem.getMaxCharge())) + " EU");
     }

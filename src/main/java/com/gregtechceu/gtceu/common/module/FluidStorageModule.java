@@ -26,7 +26,7 @@ public class FluidStorageModule extends ItemModule implements ICapabilityModule 
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.fluid_storage");
+        return Component.translatable("module.gtceu.fluid_storage");
     }
 
     @Override
@@ -37,7 +37,8 @@ public class FluidStorageModule extends ItemModule implements ICapabilityModule 
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.fluid_storage",
                 moduleContext.getModuleItem().getHoverName()));

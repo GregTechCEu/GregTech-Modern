@@ -55,8 +55,8 @@ public class AutoChargeItemModule extends TieredItemModule {
     @Override
     public Component getInfo() {
         if (getTier() < GTValues.IV)
-            return Component.translatable("gtceu.module.wireless_charging", getRange(), GTValues.VNF[getTier()]);
-        else return Component.translatable("gtceu.module.wireless_charging.interdimensional", getRange(),
+            return Component.translatable("module.gtceu.wireless_charging", getRange(), GTValues.VNF[getTier()]);
+        else return Component.translatable("module.gtceu.wireless_charging.interdimensional", getRange(),
                 GTValues.VNF[getTier()], GTValues.VNF[GTValues.IV]);
     }
 
@@ -127,7 +127,8 @@ public class AutoChargeItemModule extends TieredItemModule {
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.wireless_charging", GTValues.VNF[getTier()]));
     }

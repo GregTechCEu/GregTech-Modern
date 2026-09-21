@@ -25,7 +25,7 @@ public class SpeedItemModule extends TieredItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.speed", getTier() * 25);
+        return Component.translatable("module.gtceu.speed.description", getTier() * 25);
     }
 
     @Override
@@ -56,9 +56,10 @@ public class SpeedItemModule extends TieredItemModule {
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
-        tooltips.add(Component.translatable("metaarmor.tooltip.modifier.speed", GTValues.VNF[getTier()]));
+        tooltips.add(Component.translatable("module.gtceu.speed", GTValues.VNF[getTier()]));
     }
 
     @Override

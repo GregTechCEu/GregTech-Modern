@@ -19,11 +19,12 @@ public class SensorItemModule extends TieredItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.sensor");
+        return Component.translatable("module.gtceu.sensor");
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.sensor", GTValues.VNF[getTier()]));
     }

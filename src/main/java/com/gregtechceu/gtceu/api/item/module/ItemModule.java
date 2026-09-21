@@ -110,7 +110,8 @@ public abstract class ItemModule {
         return list.isEmpty() ? Component.empty() : list.get(0);
     }
 
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips, TooltipFlag isAdvanced) {}
+    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {}
 
     public boolean useEnergyInInventory(ModuleContext moduleContext, LivingEntity entity) {
         return true;
@@ -171,7 +172,7 @@ public abstract class ItemModule {
                 SyncHandlers.intNumber(() -> isEnabled(moduleContext) ? 0 : 1, x -> setEnabled(moduleContext, x == 0)));
         ItemModuleSettingsBuilder settings = new ItemModuleSettingsBuilder(psm, id);
         return settings
-                .bool(Text.lang("gtceu.module.gui.enabled"), () -> isEnabled(moduleContext),
+                .bool(Text.lang("module.gtceu.gui.enabled"), () -> isEnabled(moduleContext),
                         b -> setEnabled(moduleContext, b));
     }
 }

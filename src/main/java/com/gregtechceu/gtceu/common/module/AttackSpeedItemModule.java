@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredAttributeItemModule;
 
@@ -9,10 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
-import java.util.List;
 import java.util.UUID;
 
 public class AttackSpeedItemModule extends TieredAttributeItemModule {
@@ -25,7 +21,7 @@ public class AttackSpeedItemModule extends TieredAttributeItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.attack_speed", getTier() * 100 / 16d);
+        return Component.translatable("module.gtceu.attack_speed", getTier() * 100 / 16d);
     }
 
     @Override
@@ -42,12 +38,5 @@ public class AttackSpeedItemModule extends TieredAttributeItemModule {
     public AttributeModifier getAttributeModifier(ModuleContext moduleContext) {
         return new AttributeModifier(MUL_ATTACK_SPEED_UUID, "Attack Speed Modifier", getMaxAttributeAmount(),
                 AttributeModifier.Operation.MULTIPLY_TOTAL);
-    }
-
-    @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
-        super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
-        tooltips.add(Component.translatable("metaarmor.tooltip.modifier.attack_speed",
-                GTValues.VNF[getTier()]));
     }
 }
