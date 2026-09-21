@@ -185,4 +185,11 @@ public abstract class ItemModule {
                 .bool(Text.lang("gui.gtceu.item_module.enabled"), () -> isEnabled(moduleContext),
                         b -> setEnabled(moduleContext, b));
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ItemModule module)
+            return getId().equals(module.getId()) && getClass().equals(module.getClass());
+        return false;
+    }
 }

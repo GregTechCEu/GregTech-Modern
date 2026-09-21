@@ -1,5 +1,32 @@
 package com.gregtechceu.gtceu.api.capability;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
+
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+
 public interface IElectricItem {
 
     /**
@@ -79,4 +106,145 @@ public interface IElectricItem {
      * @return The tier of the item.
      */
     int getTier();
+
+    // Helper methods for interacting with electric items.
+
+    default InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
+                                                   InteractionHand usedHand) {
+        if (canProvideChargeExternally() && player.isShiftKeyDown()) {
+            if (!level.isClientSide) {
+                boolean isInDischargeMode = isDischargeMode();
+                String locale = "metaitem.electric.discharge_mode." + (isInDischargeMode ? "disabled" : "enabled");
+                player.displayClientMessage(Component.translatable(locale), true);
+                setDischargeMode(!isInDischargeMode);
+            }
+            return InteractionResultHolder.success(item);
+        }
+        return InteractionResultHolder.pass(item);
+    }
+
+    default void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        if (!level.isClientSide && entity instanceof Player player &&
+                canProvideChargeExternally() &&
+                isDischargeMode() && getCharge() > 0L) {
+            long transferLimit = getTransferLimit();
+
+            if (GTCEu.Mods.isCuriosLoaded()) {
+                IItemHandler curios = CuriosApi.getCuriosInventory(player)
+                        .<IItemHandler>map(ICuriosItemHandler::getEquippedCurios)
+                        .orElse(EmptyItemHandler.INSTANCE);
+                for (int i = 0; i < curios.getSlots(); i++) {
+                    var itemInSlot = curios.getStackInSlot(i);
+                    long chargedAmount = chargeItemStack(transferLimit, this, itemInSlot);
+                    if (chargedAmount > 0L) {
+                        transferLimit -= chargedAmount;
+                    }
+                    if (transferLimit == 0L) break;
+                }
+            }
+
+            var inventoryPlayer = player.getInventory();
+            for (int i = 0; i < inventoryPlayer.getContainerSize(); i++) {
+                var itemInSlot = inventoryPlayer.getItem(i);
+                long chargedAmount = chargeItemStack(transferLimit, this, itemInSlot);
+                if (chargedAmount > 0L) {
+                    transferLimit -= chargedAmount;
+                }
+                if (transferLimit == 0L) break;
+            }
+        }
+    }
+
+    default void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
+                                 TooltipFlag isAdvanced) {
+        IElectricItem.addCurrentChargeTooltip(tooltipComponents, getCharge(), getMaxCharge(),
+                getTier(), canProvideChargeExternally());
+        if (canProvideChargeExternally()) {
+            tooltipComponents.add(Component.translatable("metaitem.electric.discharge_mode.tooltip"));
+        }
+    }
+
+    static long chargeElectricItem(ItemStack stack, long maxDischargeAmount, IElectricItem source,
+                                   IElectricItem target) {
+        long maxDischarged = source.discharge(maxDischargeAmount, source.getTier(), false, false, true);
+        long maxReceived = target.charge(maxDischarged, source.getTier(), false, true);
+        if (maxReceived > 0L) {
+            long resultDischarged = source.discharge(maxReceived, source.getTier(), false, true, false);
+            target.charge(resultDischarged, source.getTier(), false, false);
+            return resultDischarged;
+        }
+        return 0L;
+    }
+
+    static long chargeItemStack(long maxDischargeAmount, IElectricItem source, ItemStack target) {
+        var slotElectricItem = GTCapabilityHelper.getElectricItem(target);
+        if (slotElectricItem != null && !slotElectricItem.canProvideChargeExternally()) {
+            return chargeElectricItem(target, maxDischargeAmount, source, slotElectricItem);
+        } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
+            var feEnergyItem = GTCapabilityHelper.getForgeEnergyItem(target);
+            if (feEnergyItem != null && feEnergyItem.canReceive() &&
+                    feEnergyItem.getEnergyStored() < feEnergyItem.getMaxEnergyStored()) {
+                return chargeForgeEnergyItem(maxDischargeAmount, source, feEnergyItem);
+            }
+        }
+        return 0;
+    }
+
+    static long chargeForgeEnergyItem(long maxDischargeAmount, IElectricItem source, IEnergyStorage target) {
+        long maxDischarged = source.discharge(maxDischargeAmount, source.getTier(), false, true, true);
+        long received = FeCompat.insertEu(target, maxDischarged, false);
+        if (received > 0L) {
+            source.discharge(received, source.getTier(), false, true, false);
+            return received;
+        }
+        return 0L;
+    }
+
+    static void addCurrentChargeTooltip(List<Component> tooltip, long currentCharge, long maxCharge, int tier,
+                                        boolean showTimeRemaining) {
+        double percentage = (double) currentCharge / (double) maxCharge;
+
+        Instant start = Instant.now();
+        Instant current = Instant.now().plusSeconds(Math.clamp((long) ((currentCharge * 1.0) / GTValues.V[tier] / 20),
+                0L, Instant.MAX.getEpochSecond() - start.getEpochSecond()));
+        Instant max = Instant.now().plusSeconds((long) ((maxCharge * 1.0) / GTValues.V[tier] / 20));
+        Duration durationCurrent = Duration.between(start, current);
+        Duration durationMax = Duration.between(start, max);
+        long currentChargeTime;
+        long maxChargeTime;
+        Component unit;
+
+        ChatFormatting color = ChatFormatting.RED;
+        if (percentage > 0.5) {
+            color = ChatFormatting.GREEN;
+        } else if (percentage > 0.3) {
+            color = ChatFormatting.YELLOW;
+        }
+
+        if (showTimeRemaining) {
+            if (durationCurrent.getSeconds() <= 60) {
+                maxChargeTime = durationMax.getSeconds();
+                currentChargeTime = durationCurrent.toSeconds();
+                unit = Component.translatable("item.gtceu.battery.charge_unit.second");
+            } else if (durationCurrent.toMinutes() <= 60) {
+                maxChargeTime = durationMax.toMinutes();
+                currentChargeTime = durationCurrent.toMinutes();
+                unit = Component.translatable("item.gtceu.battery.charge_unit.minute");
+            } else {
+                maxChargeTime = durationMax.toHours();
+                currentChargeTime = durationCurrent.toHours();
+                unit = Component.translatable("item.gtceu.battery.charge_unit.hour");
+            }
+            tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed",
+                    FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
+                    GTValues.VNF[tier],
+                    FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime),
+                    unit)
+                    .withStyle(color));
+        } else {
+            tooltip.add(Component.translatable("metaitem.generic.electric_item.tooltip",
+                    FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
+                    GTValues.VNF[tier]).withStyle(color));
+        }
+    }
 }
