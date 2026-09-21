@@ -11,12 +11,12 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -46,6 +46,7 @@ import brachy.modularui.widgets.dynamic.DynamicHandler;
 import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
@@ -483,20 +484,45 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             IntIntPair value = constraints.get(i);
             if (value.leftInt() != value.rightInt()) {
                 final int index = i;
-                parent.child(new SliderWidget()
-                        .background(GTGuiTextures.FLUID_SLOT)
-                        .bounds(value.leftInt(), value.rightInt())
-                        .height(16)
-                        .width(value.rightInt() * 12)
-                        .stopper(1.0f)
-                        .value(new IntValue.Dynamic(
-                                () -> this.getMultiblockSchemaInfo().getUserDimensions().getInt(index), v -> {
-                                    int oldValue = this.getMultiblockSchemaInfo().getUserDimensions().getInt(index);
-                                    if (oldValue == v) return;
-                                    this.getMultiblockSchemaInfo().getUserDimensions().set(index, v);
-                                    refreshSchema();
-                                    refreshViewWidget();
-                                })));
+                IntValue.Dynamic syncValue = new IntValue.Dynamic(
+                        () -> this.getMultiblockSchemaInfo().getUserDimensions().getInt(index), v -> {
+                            int oldValue = this.getMultiblockSchemaInfo().getUserDimensions().getInt(index);
+                            if (oldValue == v) return;
+                            this.getMultiblockSchemaInfo().getUserDimensions().set(index, v);
+                            refreshSchema();
+                            refreshViewWidget();
+                        });
+
+                var textField = new TextFieldWidget() {
+
+                    @Override
+                    public boolean onMouseScrolled(double delta) {
+                        int inc = (int) delta;
+                        int val = Mth.clamp(syncValue.getIntValue() + inc, value.leftInt(),
+                                value.rightInt());
+                        syncValue.setIntValue(val);
+                        return true;
+                    }
+                };
+
+                parent.child(textField);
+
+                /*
+                 * parent.child(new SliderWidget()
+                 * .background(GTGuiTextures.FLUID_SLOT)
+                 * .bounds(value.leftInt(), value.rightInt())
+                 * .height(16)
+                 * .width(value.rightInt() * 12)
+                 * .stopper(1.0f)
+                 * .value(new IntValue.Dynamic(
+                 * () -> this.getMultiblockSchemaInfo().getUserDimensions().getInt(index), v -> {
+                 * int oldValue = this.getMultiblockSchemaInfo().getUserDimensions().getInt(index);
+                 * if (oldValue == v) return;
+                 * this.getMultiblockSchemaInfo().getUserDimensions().set(index, v);
+                 * refreshSchema();
+                 * refreshViewWidget();
+                 * })));
+                 */
             }
         }
     }
@@ -513,22 +539,39 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             }
             if (patternSlice.getMinRepeats() != patternSlice.getMaxRepeats()) {
                 final int index = repeatSliceIndex;
-                col.child(new SliderWidget()
-                        .background(GTGuiTextures.FLUID_SLOT)
-                        .height(16)
-                        .width(patternSlice.getMaxRepeats() * 12)
-                        .stopper(1.0f)
-                        .bounds(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats())
-                        .value(new IntValue.Dynamic(() -> {
-                            if (!this.multiblockSchemaInfo.getUserSliceRepeats().containsKey(index)) return 0;
-                            return this.multiblockSchemaInfo.getUserSliceRepeats().get(index);
-                        }, v -> {
-                            int oldValue = this.multiblockSchemaInfo.getUserSliceRepeats().getOrDefault(index, 0);
-                            if (oldValue == v) return;
-                            this.multiblockSchemaInfo.getUserSliceRepeats().put(index, v);
-                            refreshSchema();
-                            refreshViewWidget();
-                        })));
+                IntValue.Dynamic syncValue = new IntValue.Dynamic(() -> {
+                    if (!this.multiblockSchemaInfo.getUserSliceRepeats().containsKey(index)) return 0;
+                    return this.multiblockSchemaInfo.getUserSliceRepeats().get(index);
+                }, v -> {
+                    int oldValue = this.multiblockSchemaInfo.getUserSliceRepeats().getOrDefault(index, 0);
+                    if (oldValue == v) return;
+                    this.multiblockSchemaInfo.getUserSliceRepeats().put(index, v);
+                    refreshSchema();
+                    refreshViewWidget();
+                });
+
+                var textField = new TextFieldWidget() {
+
+                    @Override
+                    public boolean onMouseScrolled(double delta) {
+                        int inc = (int) delta;
+                        int val = Mth.clamp(syncValue.getIntValue() + inc, patternSlice.getMinRepeats(),
+                                patternSlice.getMaxRepeats());
+                        syncValue.setIntValue(val);
+                        return true;
+                    }
+                };
+
+                col.child(textField.width(30).setNumbers(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats()));
+                /*
+                 * col.child(new SliderWidget()
+                 * .background(GTGuiTextures.FLUID_SLOT)
+                 * .height(16)
+                 * .width(patternSlice.getMaxRepeats() * 12)
+                 * .stopper(1.0f)
+                 * .bounds(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats())
+                 * );
+                 */
             }
             repeatSliceIndex++;
         }

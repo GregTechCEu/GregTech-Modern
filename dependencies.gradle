@@ -105,10 +105,10 @@ dependencies {
     modExtraLocalRuntime(forge.heracles)
     modExtraLocalRuntime(forge.resourcefullib)
 
-    modExtraLocalRuntime(forge.xaeroslib)
-    modExtraLocalRuntime(forge.xaerosworldmap)
-    modExtraLocalRuntime(forge.xaerosminimap)
-    modExtraLocalRuntime(forge.journeymap.forge)
+//    modExtraLocalRuntime(forge.xaeroslib)
+//    modExtraLocalRuntime(forge.xaerosworldmap)
+//    modExtraLocalRuntime(forge.xaerosminimap)
+//    modExtraLocalRuntime(forge.journeymap.forge)
 //    modExtraLocalRuntime(forge.ftbchunks)
 
     modExtraLocalRuntime(forge.gamestages)

@@ -430,7 +430,7 @@ public class GTMultiMachines {
                                     .addTooltips(Component.translatable("gtceu.multiblock.pattern.location_end")))
                     .where('Y',
                             blocks(CASING_STEEL_SOLID.get()).and(Predicates.abilities(PartAbility.INPUT_ENERGY)
-                                    .setMinGlobalLimited(1).setMaxGlobalLimited(2)))
+                                    .setGlobalMinMax(1, 2)))
                     .where('I', blocks(ITEM_IMPORT_BUS[0].getBlock()))
                     .where('G', blocks(CASING_GRATE.get()))
                     .where('A', blocks(CASING_ASSEMBLY_CONTROL.get()))
