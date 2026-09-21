@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemLifeCycle;
+import com.gregtechceu.gtceu.api.item.data.ElectricItemData;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -67,12 +67,10 @@ public class ToggleEnergyConsumerBehavior implements IInteractionItem, IItemLife
     }
 
     public static boolean isItemActive(ItemStack itemStack) {
-        CompoundTag tagCompound = itemStack.getTag();
-        return tagCompound != null && tagCompound.getBooleanOr("Active", false);
+        return ElectricItemData.isActive(itemStack);
     }
 
     public static void setItemActive(ItemStack itemStack, boolean isActive) {
-        CompoundTag tagCompound = itemStack.getOrCreateTag();
-        tagCompound.putBoolean("Active", isActive);
+        ElectricItemData.setActive(itemStack, isActive);
     }
 }

@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
+import com.gregtechceu.gtceu.api.item.data.ItemStackData;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -234,8 +235,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
     default long getMaxCharge(ItemStack stack) {
         if (isElectric()) {
-            CompoundTag tag = stack.getTag();
-            if (tag != null && (tag.get(MAX_CHARGE_KEY) instanceof LongTag)) {
+            CompoundTag tag = ItemStackData.read(stack);
+            if (tag.get(MAX_CHARGE_KEY) instanceof LongTag) {
                 return tag.getLongOr(MAX_CHARGE_KEY, 0);
             }
         }
@@ -244,8 +245,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
     default long getCharge(ItemStack stack) {
         if (isElectric()) {
-            CompoundTag tag = stack.getTag();
-            if (tag != null && (tag.get(CHARGE_KEY) instanceof LongTag)) {
+            CompoundTag tag = ItemStackData.read(stack);
+            if (tag.get(CHARGE_KEY) instanceof LongTag) {
                 return tag.getLongOr(CHARGE_KEY, 0);
             }
         }

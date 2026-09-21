@@ -3,13 +3,13 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.data.ItemStackData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddInformation, ICustomDescriptionId {
 
@@ -28,11 +29,12 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
 
     @Nullable
     default CompoundTag getPartStatsTag(ItemStack itemStack) {
-        return itemStack.getTagElement("GT.PartStats");
+        return ItemStackData.read(itemStack).getCompound("GT.PartStats").orElse(null);
     }
 
-    default CompoundTag getOrCreatePartStatsTag(ItemStack itemStack) {
-        return itemStack.getOrCreateTagElement("GT.PartStats");
+    /** Commit a part-data mutation explicitly; returned tag snapshots are never live stack state. */
+    default void updatePartStats(ItemStack itemStack, Consumer<CompoundTag> mutation) {
+        ItemStackData.updateCompound(itemStack, "GT.PartStats", mutation);
     }
 
     default Material getPartMaterial(ItemStack itemStack) {
@@ -41,7 +43,7 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
         if (compound == null || !(compound.get("Material") instanceof StringTag)) {
             return defaultMaterial;
         }
-        var materialName = compound.getString("Material");
+        var materialName = compound.getStringOr("Material", "");
         Material material = GTRegistries.MATERIALS.get(materialName);
         if (material == null || !material.hasProperty(PropertyKey.INGOT)) {
             return defaultMaterial;
@@ -52,21 +54,20 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
     default void setPartMaterial(ItemStack itemStack, @NotNull Material material) {
         if (!material.hasProperty(PropertyKey.INGOT))
             throw new IllegalArgumentException("Part material must have an Ingot!");
-        var compound = getOrCreatePartStatsTag(itemStack);
-        compound.putString("Material", material.getResourceLocation().toString());
+        updatePartStats(itemStack, compound -> compound.putString("Material", material.getResourceLocation().toString()));
     }
 
     default int getPartDamage(ItemStack itemStack) {
         var compound = getPartStatsTag(itemStack);
-        if (compound == null || !compound.contains("Damage", Tag.TAG_ANY_NUMERIC)) {
+        if (compound == null) {
             return 0;
         }
         return compound.getIntOr("Damage", 0);
     }
 
     default void setPartDamage(ItemStack itemStack, int damage) {
-        var compound = getOrCreatePartStatsTag(itemStack);
-        compound.putInt("Damage", Math.min(getPartMaxDurability(itemStack), damage));
+        int clampedDamage = Math.min(getPartMaxDurability(itemStack), damage);
+        updatePartStats(itemStack, compound -> compound.putInt("Damage", clampedDamage));
     }
 
     @Override

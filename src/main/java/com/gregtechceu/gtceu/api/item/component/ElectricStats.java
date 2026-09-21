@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
+import com.gregtechceu.gtceu.api.item.data.ElectricItemData;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.client.renderer.item.ToolChargeBarRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -164,15 +165,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     private static void setInDischargeMode(ItemStack itemStack, boolean isDischargeMode) {
-        var tagCompound = itemStack.getOrCreateTag();
-        if (isDischargeMode) {
-            tagCompound.putBoolean("DischargeMode", true);
-        } else {
-            tagCompound.remove("DischargeMode");
-            if (tagCompound.isEmpty()) {
-                itemStack.setTag(null);
-            }
-        }
+        ElectricItemData.setDischargeMode(itemStack, isDischargeMode);
     }
 
     @Override
@@ -235,8 +228,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     private static boolean isInDischargeMode(ItemStack itemStack) {
-        var tagCompound = itemStack.getTag();
-        return tagCompound != null && tagCompound.getBoolean("DischargeMode");
+        return ElectricItemData.isDischargeMode(itemStack);
     }
 
     @Override

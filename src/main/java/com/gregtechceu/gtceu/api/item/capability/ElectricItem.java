@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.item.capability;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.item.data.ElectricItemData;
 
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
 public class ElectricItem implements IElectricItem {
@@ -26,11 +26,11 @@ public class ElectricItem implements IElectricItem {
     }
 
     public void setCharge(long change) {
-        itemStack.getOrCreateTag().putLong("Charge", change);
+        ElectricItemData.setCharge(itemStack, change);
     }
 
     public void setMaxChargeOverride(long maxCharge) {
-        itemStack.getOrCreateTag().putLong("MaxCharge", maxCharge);
+        ElectricItemData.setMaxCharge(itemStack, maxCharge);
     }
 
     @Override
@@ -40,25 +40,15 @@ public class ElectricItem implements IElectricItem {
 
     @Override
     public long getMaxCharge() {
-        var tagCompound = itemStack.getTag();
-        if (tagCompound == null)
-            return maxCharge;
-        if (tagCompound.contains("MaxCharge", Tag.TAG_LONG))
-            return tagCompound.getLong("MaxCharge");
-        return maxCharge;
+        return ElectricItemData.getMaxCharge(itemStack, maxCharge);
     }
 
     public long getCharge() {
-        var tagCompound = itemStack.getTag();
-        if (tagCompound == null)
-            return 0;
-        if (tagCompound.getBoolean("Infinite"))
-            return getMaxCharge();
-        return Math.min(tagCompound.getLong("Charge"), getMaxCharge());
+        return ElectricItemData.getCharge(itemStack, getMaxCharge());
     }
 
     public void setInfiniteCharge(boolean infiniteCharge) {
-        itemStack.getOrCreateTag().putBoolean("Infinite", infiniteCharge);
+        ElectricItemData.setInfinite(itemStack, infiniteCharge);
     }
 
     @Override
