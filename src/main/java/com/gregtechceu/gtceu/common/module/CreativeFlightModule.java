@@ -46,7 +46,8 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
 
     private void attachAttribute(ModuleContext moduleContext) {
         AttributeModifier attributeModifier = new AttributeModifier(getId(), 1d, AttributeModifier.Operation.ADD_VALUE);
-        var modifiers = moduleContext.getAppliedTo().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+        var modifiers = moduleContext.getAppliedTo().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS,
+                ItemAttributeModifiers.EMPTY);
 
         if (modifiers.modifiers().stream().anyMatch(v -> v.modifier().id().equals(getId()))) return;
 
@@ -63,7 +64,8 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
     }
 
     private void detachAttribute(ModuleContext moduleContext) {
-        var modifiers = moduleContext.getAppliedTo().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+        var modifiers = moduleContext.getAppliedTo().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS,
+                ItemAttributeModifiers.EMPTY);
 
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
         modifiers.modifiers().forEach(v -> {

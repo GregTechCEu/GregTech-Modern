@@ -51,16 +51,6 @@ public class BatteryItemModule extends ItemModule implements IHUDProviderItemMod
     @Override
     public void onInventoryTick(ModuleContext moduleContext, Player player) {
         super.onInventoryTick(moduleContext, player);
-        IElectricItem item = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
-        IElectricItem battery = GTCapabilityHelper.getElectricItem(moduleContext.getModuleItem());
-        if (item == null || battery == null || item == battery) return;
-        if (item.getCharge() > item.getMaxCharge() * PERCENTAGE / 100) {
-            long amount = (long) (item.getCharge() - item.getMaxCharge() * PERCENTAGE / 100);
-            item.charge(battery.discharge(amount, battery.getTier(), true, false, false), item.getTier(), true, false);
-        } else if (item.getCharge() < item.getMaxCharge() * PERCENTAGE / 100) {
-            long amount = (long) (item.getMaxCharge() * PERCENTAGE / 100 - item.getCharge());
-            battery.charge(item.discharge(amount, item.getTier(), true, false, false), battery.getTier(), true, false);
-        }
         // the battery's inventoryTick method does not use inventorySlot or isCurrentItem
         moduleContext.getModuleItem().inventoryTick(player.level(), player, 0, false);
     }

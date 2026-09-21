@@ -86,7 +86,8 @@ public class AutoChargeItemModule extends TieredItemModule {
         MetaMachine machine = getLinkedMachine(player.getServer(), moduleContext);
         if (machine == null) return 0;
         int interdimensionalTier = -1;
-        @Nullable Holder<ItemModule>[] damageBlock = GTItemModules.DAMAGE_BLOCK;
+        @Nullable
+        Holder<ItemModule>[] damageBlock = GTItemModules.DAMAGE_BLOCK;
         for (int i = 0; i < damageBlock.length; i++) {
             var module = damageBlock[i];
             if (module == null) continue;

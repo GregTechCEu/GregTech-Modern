@@ -15,9 +15,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -123,7 +121,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
                             if (modular == null) {
                                 moduleSlots.forEach(Widget::background);
                                 return;
-                            };
+                            } ;
                             List<ItemModuleSlot> slots = modular.getSlots();
                             for (int i = 0; i < slots.size() && i < moduleSlots.size(); i++) {
                                 ItemSlot slotWidget = moduleSlots.get(i);

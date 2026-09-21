@@ -5,9 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -184,7 +182,8 @@ public abstract class ItemModule {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof ItemModule module) return getId().equals(module.getId()) && getClass().equals(module.getClass());
+        if (obj instanceof ItemModule module)
+            return getId().equals(module.getId()) && getClass().equals(module.getClass());
         return false;
     }
 }

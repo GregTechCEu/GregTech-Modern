@@ -69,7 +69,8 @@ public abstract class ModuleData {
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof ModuleData other)) return false;
-        return slot == other.slot && module.equals(other.module) && moduleItem.equals(other.moduleItem) && enabled == other.enabled;
+        return slot == other.slot && module.equals(other.module) && moduleItem.equals(other.moduleItem) &&
+                enabled == other.enabled;
     }
 
     @Override

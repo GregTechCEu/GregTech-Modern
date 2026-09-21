@@ -45,7 +45,8 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
 
     private void attachAttribute(ModuleContext moduleContext) {
         AttributeModifier attributeModifier = getAttributeModifier(moduleContext);
-        var modifiers = moduleContext.getAppliedTo().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+        var modifiers = moduleContext.getAppliedTo().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS,
+                ItemAttributeModifiers.EMPTY);
 
         if (modifiers.modifiers().stream().anyMatch(v -> v.modifier().id().equals(getId()))) return;
 
@@ -62,7 +63,8 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
     }
 
     private void detachAttribute(ModuleContext moduleContext) {
-        var modifiers = moduleContext.getAppliedTo().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+        var modifiers = moduleContext.getAppliedTo().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS,
+                ItemAttributeModifiers.EMPTY);
 
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
         modifiers.modifiers().forEach(v -> {
@@ -162,8 +164,8 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
         @Getter
         private final double modifierAmount;
 
-
-        public TieredAttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled, double modifierAmount) {
+        public TieredAttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
+                                         double modifierAmount) {
             super(slot, module, moduleItem, enabled);
             this.modifierAmount = modifierAmount;
         }

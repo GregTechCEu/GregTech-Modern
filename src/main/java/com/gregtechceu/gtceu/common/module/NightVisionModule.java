@@ -140,7 +140,8 @@ public class NightVisionModule extends ItemModule {
 
         @Override
         public ModuleData withModuleItem(ItemStack moduleItem) {
-            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer, nightVisionTimer);
+            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
+                    nightVisionTimer);
         }
 
         @Override
@@ -158,13 +159,13 @@ public class NightVisionModule extends ItemModule {
         @Override
         public boolean equals(Object obj) {
             if (!(obj instanceof NightVisionModuleData other)) return false;
-            return super.equals(obj) && nightVision == other.nightVision && toggleTimer == other.toggleTimer && nightVisionTimer == other.nightVisionTimer;
+            return super.equals(obj) && nightVision == other.nightVision && toggleTimer == other.toggleTimer &&
+                    nightVisionTimer == other.nightVisionTimer;
         }
 
         @Override
         public int hashCode() {
             return Objects.hash(slot, module, moduleItem, enabled, nightVision, toggleTimer, nightVisionTimer);
         }
-
     }
 }
