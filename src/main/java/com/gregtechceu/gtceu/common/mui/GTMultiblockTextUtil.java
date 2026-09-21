@@ -496,13 +496,13 @@ public class GTMultiblockTextUtil {
                     for (var output : recipe.getOutputContents(ItemRecipeCapability.CAP)) {
                         var widget = createItemLineForOutput(output, recipe);
                         if (widget.isEmpty()) continue;
-                        list.child(widget.get().width(187 - 3 - 3 - 2 - 2));
+                        list.child(widget.get());
                     }
 
                     for (var output : recipe.getOutputContents(FluidRecipeCapability.CAP)) {
                         var widget = createFluidLineForOutput(output, recipe);
                         if (widget.isEmpty()) continue;
-                        list.child(widget.get().width(187 - 3 - 3 - 2 - 2));
+                        list.child(widget.get());
                     }
 
                     return list;
@@ -555,7 +555,8 @@ public class GTMultiblockTextUtil {
             String key = "gtceu.multiblock.output_line." + (rounded ? "2" : "0");
             return Optional.of(
                     Flow.row()
-                            .coverChildren()
+                            .coverChildrenHeight()
+                            .width(164)
                             .childPadding(2)
                             .child(new ItemDrawable(stack).asWidget()
                                     .size(16)
@@ -564,12 +565,13 @@ public class GTMultiblockTextUtil {
                                     Text.lang(
                                             key, stack.getHoverName(), displaycount,
                                             FormattingUtil.formatNumber2Places(maxDurationSec / countD))
-                                            .asWidget()));
+                                            .asWidget().width(164 - 2 - 16)));
         } else {
             String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
             return Optional.of(
                     Flow.row()
-                            .coverChildren()
+                            .coverChildrenHeight()
+                            .width(164)
                             .childPadding(2)
                             .child(new ItemDrawable(stack).asWidget()
                                     .size(16)
@@ -578,7 +580,7 @@ public class GTMultiblockTextUtil {
                                     Text.lang(
                                             key, stack.getHoverName(), displaycount,
                                             FormattingUtil.formatNumber2Places(countD / maxDurationSec))
-                                            .asWidget()));
+                                            .asWidget().width(164 - 2 - 16)));
         }
     }
 
@@ -623,7 +625,8 @@ public class GTMultiblockTextUtil {
             String key = "gtceu.multiblock.output_line." + (rounded ? "2" : "0");
             return Optional.of(
                     Flow.row()
-                            .coverChildren()
+                            .coverChildrenHeight()
+                            .width(164)
                             .childPadding(2)
                             .child(new FluidDrawable(stack).asWidget()
                                     .size(16)
@@ -632,12 +635,13 @@ public class GTMultiblockTextUtil {
                                     Text.lang(
                                             key, stack.getDisplayName(), displaycount,
                                             FormattingUtil.formatNumber2Places(maxDurationSec / amountD))
-                                            .asWidget()));
+                                            .asWidget().width(164 - 2 - 16)));
         } else {
             String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
             return Optional.of(
                     Flow.row()
-                            .coverChildren()
+                            .coverChildrenHeight()
+                            .width(164)
                             .childPadding(2)
                             .child(new FluidDrawable(stack).asWidget()
                                     .size(16)
@@ -645,7 +649,7 @@ public class GTMultiblockTextUtil {
                             .child(
                                     Text.lang(key, stack.getDisplayName(), displaycount,
                                             FormattingUtil.formatNumber2Places(amountD / maxDurationSec))
-                                            .asWidget()));
+                                            .asWidget().width(164 - 2 - 16)));
         }
     }
 }
