@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
@@ -13,8 +12,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.List;
-
 public class SneakSpeedItemModule extends TieredItemModule {
 
     public SneakSpeedItemModule(ResourceLocation id, int tier) {
@@ -23,7 +20,7 @@ public class SneakSpeedItemModule extends TieredItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.sneak_speed", getTier() * 100 / 8f);
+        return Component.translatable("module.gtceu.sneak_speed.description", getTier() * 100 / 8f);
     }
 
     @Override
@@ -58,13 +55,5 @@ public class SneakSpeedItemModule extends TieredItemModule {
             return SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isShiftKeyDown() ? 819 : 0;
         }
         return 0;
-    }
-
-    @Override
-    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
-                                TooltipFlag isAdvanced) {
-        super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
-        tooltips.add(Component.translatable("metaarmor.tooltip.modifier.sneak_speed",
-                GTValues.VNF[getTier()]));
     }
 }

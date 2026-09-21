@@ -33,7 +33,7 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.creative_flight", 2048);
+        return Component.translatable("module.gtceu.creative_flight", 2048);
     }
 
     private boolean isFlying(LivingEntity entity) {

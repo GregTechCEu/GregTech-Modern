@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredAttributeItemModule;
 
@@ -23,7 +22,7 @@ public class StepHeightModule extends TieredAttributeItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.step_height", getTier() / 8d);
+        return Component.translatable("module.gtceu.step_height.description", getTier() / 8d);
     }
 
     @Override
@@ -39,13 +38,5 @@ public class StepHeightModule extends TieredAttributeItemModule {
     @Override
     public AttributeModifier.Operation getModifierOperation() {
         return AttributeModifier.Operation.ADD_VALUE;
-    }
-
-    @Override
-    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
-                                TooltipFlag isAdvanced) {
-        super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
-        tooltips.add(Component.translatable("metaarmor.tooltip.modifier.step_height",
-                GTValues.VN[getTier()]));
     }
 }

@@ -52,7 +52,7 @@ public class EnergyShieldItemModule extends TieredItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.damage_block", getEnergyPerHP());
+        return Component.translatable("module.gtceu.damage_block.description", getEnergyPerHP());
     }
 
     private long getEnergyPerHP() {
@@ -97,20 +97,20 @@ public class EnergyShieldItemModule extends TieredItemModule {
     public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
-        tooltips.add(Component.translatable("metaarmor.tooltip.modifier.damage_block",
+        tooltips.add(Component.translatable("module.gtceu.damage_block",
                 GTValues.VNF[getTier()]));
     }
 
     @Override
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
         return super.getSettings(moduleContext, psm, id)
-                .num(Text.lang("gtceu.module.gui.energy_limit"),
+                .num(Text.lang("module.gtceu.gui.energy_limit"),
                         () -> moduleContext.getData(EnergyShieldModuleData.class).getEnergyPercent(),
                         d -> moduleContext
                                 .setData(moduleContext.getData(EnergyShieldModuleData.class).withEnergyPercent(d)),
                         0, 1,
                         d -> "%.0f%%".formatted(d * 100))
-                .progress(Text.lang("gtceu.module.gui.hp"),
+                .progress(Text.lang("module.gtceu.gui.hp"),
                         () -> getDamageReduction(moduleContext) * 1d / getMaxDamageReduction(moduleContext),
                         d -> "%d/%d HP".formatted((int) (d * getMaxDamageReduction(moduleContext)),
                                 getMaxDamageReduction(moduleContext)));

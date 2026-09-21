@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredAttributeItemModule;
 
@@ -23,7 +22,7 @@ public class AttackDamageItemModule extends TieredAttributeItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.attack_damage", getTier() * 100 / 16d);
+        return Component.translatable("module.gtceu.attack_damage.description", getTier() * 100 / 16d);
     }
 
     @Override
@@ -39,13 +38,5 @@ public class AttackDamageItemModule extends TieredAttributeItemModule {
     @Override
     public AttributeModifier.Operation getModifierOperation() {
         return AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL;
-    }
-
-    @Override
-    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
-                                TooltipFlag isAdvanced) {
-        super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
-        tooltips.add(Component.translatable("metaarmor.tooltip.modifier.attack_damage",
-                GTValues.VNF[getTier()]));
     }
 }

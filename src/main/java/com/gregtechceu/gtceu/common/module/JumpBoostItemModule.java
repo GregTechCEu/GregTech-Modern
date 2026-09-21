@@ -1,14 +1,11 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -17,7 +14,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
-import java.util.List;
 import java.util.Objects;
 
 public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostItemModule {
@@ -43,14 +39,7 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.jump", getTier() / 4f);
-    }
-
-    @Override
-    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
-                                TooltipFlag isAdvanced) {
-        super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
-        tooltips.add(Component.translatable("metaarmor.tooltip.modifier.jump", GTValues.VNF[getTier()]));
+        return Component.translatable("module.gtceu.jump.description", getTier() / 4f);
     }
 
     public float getMaxJumpBoost() {
@@ -69,7 +58,7 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
     @Override
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
         return super.getSettings(moduleContext, psm, id)
-                .num(Text.lang("gtceu.module.gui.jump_boost"),
+                .num(Text.lang("module.gtceu.gui.jump_boost"),
                         () -> getJumpBoost(moduleContext),
                         x -> setJumpBoost(moduleContext, (float) x),
                         0, getMaxJumpBoost());

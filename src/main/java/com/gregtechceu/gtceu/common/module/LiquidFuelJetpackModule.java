@@ -26,7 +26,7 @@ public class LiquidFuelJetpackModule extends ArmorLogicItemModule implements ITi
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.liquid_fuel_jetpack");
+        return Component.translatable("module.gtceu.liquid_fuel_jetpack");
     }
 
     @Override

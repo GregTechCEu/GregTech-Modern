@@ -64,13 +64,13 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
     public Component getDisplayName(ModuleContext moduleContext) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem != null)
-            return Component.translatable("metaarmor.tooltip.modifier.battery", GTValues.VNF[electricItem.getTier()]);
+            return Component.translatable("module.gtceu.battery", GTValues.VNF[electricItem.getTier()]);
         else return super.getDisplayName(moduleContext);
     }
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.battery");
+        return Component.translatable("module.gtceu.battery.description");
     }
 
     @Override
@@ -151,7 +151,7 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return super.getSettings(moduleContext, psm, id);
         return super.getSettings(moduleContext, psm, id)
-                .progress(Text.lang("gtceu.module.gui.charge"),
+                .progress(Text.lang("module.gtceu.gui.charge"),
                         () -> (double) electricItem.getCharge() / electricItem.getMaxCharge(),
                         x -> GTStringUtils.formatInt((long) (x * electricItem.getMaxCharge())) + " EU");
     }

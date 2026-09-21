@@ -41,7 +41,7 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.fluid_storage");
+        return Component.translatable("module.gtceu.fluid_storage");
     }
 
     @Override

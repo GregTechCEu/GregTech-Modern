@@ -57,8 +57,8 @@ public class AutoChargeItemModule extends TieredItemModule {
     @Override
     public Component getInfo() {
         if (getTier() < GTValues.IV)
-            return Component.translatable("gtceu.module.wireless_charging", getRange(), GTValues.VNF[getTier()]);
-        else return Component.translatable("gtceu.module.wireless_charging.interdimensional", getRange(),
+            return Component.translatable("module.gtceu.wireless_charging", getRange(), GTValues.VNF[getTier()]);
+        else return Component.translatable("module.gtceu.wireless_charging.interdimensional", getRange(),
                 GTValues.VNF[getTier()], GTValues.VNF[GTValues.IV]);
     }
 

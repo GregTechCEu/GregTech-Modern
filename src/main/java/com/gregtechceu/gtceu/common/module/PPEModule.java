@@ -19,7 +19,7 @@ public class PPEModule extends ItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.ppe");
+        return Component.translatable("module.gtceu.ppe");
     }
 
     @Override

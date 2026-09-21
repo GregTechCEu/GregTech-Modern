@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -43,8 +44,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
-import com.gregtechceu.gtceu.common.item.armor.IStepAssist;
-import com.gregtechceu.gtceu.common.item.armor.QuarkTechSuite;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.item.datacomponents.FormatStringList;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -173,6 +172,18 @@ public class CommonEventListener {
         }
     }
 
+    /*
+
+    public static final Reference2IntMap<Holder<MobEffect>> potionRemovalCost = new Reference2IntOpenHashMap<>();
+        potionRemovalCost.put(MobEffects.POISON, 10000);
+        potionRemovalCost.put(MobEffects.WITHER, 25000);
+        potionRemovalCost.put(MobEffects.CONFUSION, 8000);
+        potionRemovalCost.put(MobEffects.DIG_SLOWDOWN, 12500);
+        // potionRemovalCost.put(MobEffects.BAD_OMEN, 30000);
+        potionRemovalCost.put(MobEffects.MOVEMENT_SLOWDOWN, 9000);
+        potionRemovalCost.put(MobEffects.UNLUCK, 5000);
+    }
+
     @SubscribeEvent
     public static void onMobEffectEvent(MobEffectEvent.Applicable event) {
         if (event.getEntity() instanceof Player player) {
@@ -190,7 +201,7 @@ public class CommonEventListener {
                 }
             }
         }
-    }
+    }*/
 
     @SubscribeEvent
     public static void onBlockStartBreak(BlockEvent.BreakEvent event) {
@@ -377,16 +388,6 @@ public class CommonEventListener {
                     m.onTickRaw(a, player, player.level(), player.getOnPos());
                 });
             }
-        }
-
-        AttributeInstance stepHeightAttribute = entity.getAttribute(Attributes.STEP_HEIGHT);
-        if (stepHeightAttribute == null) {
-            return;
-        }
-        if (!entity.isShiftKeyDown() && entity.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS)) {
-            stepHeightAttribute.addOrUpdateTransientModifier(IStepAssist.STEP_ASSIST_MODIFIER);
-        } else {
-            stepHeightAttribute.removeModifier(IStepAssist.STEP_ASSIST_MODIFIER);
         }
     }
 

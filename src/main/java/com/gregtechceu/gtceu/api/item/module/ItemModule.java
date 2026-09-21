@@ -173,7 +173,7 @@ public abstract class ItemModule {
                 SyncHandlers.intNumber(() -> isEnabled(moduleContext) ? 0 : 1, x -> setEnabled(moduleContext, x == 0)));
         ItemModuleSettingsBuilder settings = new ItemModuleSettingsBuilder(psm, id);
         return settings
-                .bool(Text.lang("gtceu.module.gui.enabled"), () -> isEnabled(moduleContext),
+                .bool(Text.lang("module.gtceu.gui.enabled"), () -> isEnabled(moduleContext),
                         b -> setEnabled(moduleContext, b));
     }
 

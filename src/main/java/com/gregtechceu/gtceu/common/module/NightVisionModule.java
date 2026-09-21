@@ -49,7 +49,7 @@ public class NightVisionModule extends ItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("gtceu.module.nightvision", 2);
+        return Component.translatable("module.gtceu.nightvision", 2);
     }
 
     @Override
