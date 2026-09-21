@@ -15,7 +15,7 @@ public class UniversalItemModuleSlot extends ItemModuleSlot {
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("metaarmor.tooltip.modifier_slot.universal");
+        return Component.translatable("gui.gtceu.module_slot.universal");
     }
 
     @Override

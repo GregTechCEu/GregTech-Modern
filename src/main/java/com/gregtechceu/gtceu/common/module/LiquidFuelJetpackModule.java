@@ -26,7 +26,7 @@ public class LiquidFuelJetpackModule extends ArmorLogicItemModule implements ITi
 
     @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.liquid_fuel_jetpack");
+        return Component.translatable(getDescriptionLanguageKey());
     }
 
     @Override
@@ -44,7 +44,7 @@ public class LiquidFuelJetpackModule extends ArmorLogicItemModule implements ITi
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
         tooltips.add(
-                Component.translatable("metaarmor.tooltip.modifier.jetpack",
+                Component.translatable(getLanguageKey(),
                         moduleContext.getModuleItem().getHoverName()));
     }
 }

@@ -123,7 +123,7 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                             SyncedKeyMappings.MODULAR_ITEM_GUI.getKeyMapping().getKey().getDisplayName())
                     .withStyle(ChatFormatting.GRAY));
             List<ItemModuleSlot> slots = modularItem.getSlots();
-            if (!slots.isEmpty()) tooltipComponents.add(Component.translatable("metaarmor.tooltip.modifiers"));
+            if (!slots.isEmpty()) tooltipComponents.add(Component.translatable("gui.gtceu.module_slots"));
             for (int slotI = 0; slotI < slots.size(); slotI++) {
                 ItemModuleSlot slot = slots.get(slotI);
                 if (slot == null) continue;
@@ -132,19 +132,19 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                     int prevIndex = tooltipComponents.size();
                     moduleData.getModule().appendHoverText(moduleData, level, tooltipComponents, isAdvanced);
                     if (tooltipComponents.size() > prevIndex) {
-                        tooltipComponents.set(prevIndex, Component.translatable(
-                                "metaarmor.tooltip.modifier",
-                                slot.getDisplayName(),
-                                tooltipComponents.get(prevIndex)));
+                        tooltipComponents.set(prevIndex, Component.literal(" - ")
+                                .append(slot.getDisplayName())
+                                .append(Component.literal(": "))
+                                .append(tooltipComponents.get(prevIndex)));
                         for (int i = prevIndex + 1; i < tooltipComponents.size(); i++) {
                             tooltipComponents.set(i, Component.literal("    ").append(tooltipComponents.get(i)));
                         }
                     }
                 } else {
-                    tooltipComponents.add(Component.translatable(
-                            "metaarmor.tooltip.modifier",
-                            slot.getDisplayName(),
-                            Component.translatable("metaarmor.tooltip.modifier.empty").withStyle(ChatFormatting.GRAY)));
+                    tooltipComponents.add(Component.literal(" - ")
+                            .append(slot.getDisplayName())
+                            .append(Component.literal(": "))
+                            .append(Component.translatable("gui.gtceu.item_module.empty_module_slot").withStyle(ChatFormatting.GRAY)));
                 }
             }
         }

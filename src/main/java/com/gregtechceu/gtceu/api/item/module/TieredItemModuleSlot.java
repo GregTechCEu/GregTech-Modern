@@ -26,7 +26,7 @@ public class TieredItemModuleSlot extends ItemModuleSlot {
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("metaarmor.tooltip.modifier_slot.tiered", GTValues.VNF[getTier()]);
+        return Component.translatable("gui.gtceu.module_slot.tiered", GTValues.VNF[getTier()]);
     }
 
     public static TieredItemModuleSlot[] create(int minTier, int maxTier,

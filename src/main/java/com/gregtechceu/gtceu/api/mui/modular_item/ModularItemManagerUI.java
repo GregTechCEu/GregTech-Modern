@@ -46,7 +46,7 @@ public class ModularItemManagerUI implements IUIHolder<PlayerInventoryGuiData<?>
                                 ButtonWidget<?> button = new ButtonWidget<>()
                                         .height(20)
                                         .width(150)
-                                        .overlay(Text.lang("metaarmor.tooltip.modifier.empty"));
+                                        .overlay(Text.lang("gui.gtceu.item_module.empty_module_slot"));
                                 if (index < slots.size()) {
                                     button.backgroundOverlay(slots.get(index).getSlotTexture());
                                 }

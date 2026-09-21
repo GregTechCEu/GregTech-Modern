@@ -25,7 +25,7 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
 
     @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.creative_flight", 2048);
+        return Component.translatable(getDescriptionLanguageKey(), 2048);
     }
 
     private void setMayFly(LivingEntity entity, boolean mayFly) {
@@ -69,8 +69,7 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
     public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
-        tooltips.add(Component.translatable("metaarmor.tooltip.modifier.creative_flight")
-                .withStyle(ChatFormatting.LIGHT_PURPLE));
+        tooltips.add(Component.translatable(getLanguageKey()).withStyle(ChatFormatting.LIGHT_PURPLE));
     }
 
     @Override

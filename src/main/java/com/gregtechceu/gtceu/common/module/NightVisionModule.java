@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.ModuleData;
+import com.gregtechceu.gtceu.data.lang.LangUtils;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.network.chat.Component;
@@ -48,14 +49,7 @@ public class NightVisionModule extends ItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.nightvision", 2);
-    }
-
-    @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
-                                TooltipFlag isAdvanced) {
-        super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
-        tooltips.add(Component.translatable("metaarmor.message.nightvision.enabled"));
+        return Component.translatable(getDescriptionLanguageKey(), 2);
     }
 
     @Override
@@ -77,10 +71,10 @@ public class NightVisionModule extends ItemModule {
             toggleTimer = 5;
             if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                 nightVision = false;
-                player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
+                player.displayClientMessage(Component.translatable("armor.gtceu.night_vision.error"), true);
             } else {
                 player.displayClientMessage(Component
-                        .translatable("metaarmor.nms.nightvision." + (nightVision ? "enabled" : "disabled")), true);
+                        .translatable(LangUtils.enabledBoolean("armor.gtceu.night_vision", nightVision)), true);
             }
         }
 

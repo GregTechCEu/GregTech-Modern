@@ -25,7 +25,7 @@ public class SpeedItemModule extends TieredItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.speed.description", getTier() * 25);
+        return Component.translatable(getDescriptionLanguageKey(), getTier() * 25);
     }
 
     @Override
@@ -53,13 +53,6 @@ public class SpeedItemModule extends TieredItemModule {
                     player.push(0.0, SPEED_ACCEL * mul, 0.0);
             }
         }
-    }
-
-    @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
-                                TooltipFlag isAdvanced) {
-        super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
-        tooltips.add(Component.translatable("module.gtceu.speed", GTValues.VNF[getTier()]));
     }
 
     @Override

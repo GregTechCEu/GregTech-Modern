@@ -7,84 +7,42 @@ public class ModularArmorLang {
     public static void init(RegistrateLangProvider provider) {
         provider.add("tooltip.gtceu.configure_modular_armor", "Press [%s] when holding to configure modular item");
 
-        provider.add("metaitem.liquid_fuel_jetpack.tooltip", "Uses Combustion Generator Fuels for Thrust");
-        provider.add("metaarmor.nms.nightvision.enabled", "NanoMuscle™ Suite: NightVision Enabled");
-        provider.add("metaarmor.nms.nightvision.disabled", "NanoMuscle™ Suite: NightVision Disabled");
-        provider.add("metaarmor.nms.nightvision.error", "NanoMuscle™ Suite: §cNot enough power!");
-        provider.add("metaarmor.qts.nightvision.enabled", "QuarkTech™ Suite: NightVision Enabled");
-        provider.add("metaarmor.qts.nightvision.disabled", "QuarkTech™ Suite: NightVision Disabled");
-        provider.add("metaarmor.qts.nightvision.error", "QuarkTech™ Suite: §cNot enough power!");
-        provider.add("metaarmor.nms.step_assist.disabled", "NanoMuscle™ Suite: StepAssist Disabled");
-        provider.add("metaarmor.nms.step_assist.enabled", "NanoMuscle™ Suite: StepAssist Enabled");
-        provider.add("metaarmor.qts.step_assist.disabled", "QuarkTech™ Suite: StepAssist Disabled");
-        provider.add("metaarmor.qts.step_assist.enabled", "QuarkTech™ Suite: StepAssist Enabled");
-        provider.add("metaarmor.qts.boosted_jump.enabled", "QuarkTech™ Suite: Jump Boost Enabled");
-        provider.add("metaarmor.qts.boosted_jump.disabled", "QuarkTech™ Suite: Jump Boost Disabled");
-        provider.add("metaarmor.jetpack.flight.enable", "Jetpack: Flight Enabled");
-        provider.add("metaarmor.jetpack.flight.disable", "Jetpack: Flight Disabled");
-        provider.add("metaarmor.jetpack.hover.enable", "Jetpack: Hover Mode Enabled");
-        provider.add("metaarmor.jetpack.hover.disable", "Jetpack: Hover Mode Disabled");
-        provider.add("metaarmor.jetpack.emergency_hover_mode", "Emergency Hover Mode Enabled!");
-        provider.add("metaarmor.nms.share.enable", "NanoMuscle™ Suite: Charging Enabled");
-        provider.add("metaarmor.nms.share.disable", "NanoMuscle™ Suite: Charging Disabled");
-        provider.add("metaarmor.nms.share.error", "NanoMuscle™ Suite: §cNot enough power for charging!");
-        provider.add("metaarmor.qts.share.enable", "QuarkTech™ Suite: Charging Enabled");
-        provider.add("metaarmor.qts.share.disable", "QuarkTech™ Suite: Charging Disabled");
-        provider.add("metaarmor.qts.share.error", "QuarkTech™ Suite: §cNot enough power for charging!");
-        provider.add("metaarmor.message.nightvision.enabled", "§bNightVision: §aOn");
-        provider.add("metaarmor.message.nightvision.disabled", "§bNightVision: §cOff");
-        provider.add("metaarmor.message.nightvision.error", "§cNot enough power!");
-        provider.add("metaarmor.message.step_assist.enabled", "§bStep-Assist: §aOn");
-        provider.add("metaarmor.message.step_assist.disabled", "§bStep-Assist: §cOff");
-        provider.add("metaarmor.tooltip.stepassist", "Provides Step-Assist");
-        provider.add("metaarmor.tooltip.speed", "Increases Running Speed");
-        provider.add("metaarmor.tooltip.jump", "Increases Jump Height and Distance");
-        provider.add("metaarmor.tooltip.falldamage", "Nullifies Fall Damage");
-        provider.add("metaarmor.tooltip.potions", "Nullifies Harmful Effects");
-        provider.add("metaarmor.tooltip.burning", "Nullifies Burning");
-        provider.add("metaarmor.tooltip.freezing", "Prevents Freezing");
-        provider.add("metaarmor.tooltip.breath", "Replenishes Underwater Breath Bar");
-        provider.add("metaarmor.tooltip.autoeat", "Replenishes Food Bar by Using Food from Inventory");
-        provider.add("metaarmor.tooltip.modifier.fluid_storage.tooltip", "Storing %s/%s mB of %s");
-        provider.add("metaarmor.tooltip.modifier", " - %s: %s");
-        provider.add("metaarmor.tooltip.modifier.empty", "Empty");
-        provider.add("metaarmor.tooltip.modifier_slot.universal", "Universal");
-        provider.add("metaarmor.tooltip.modifier_slot.tiered", "Tiered (%s)");
-        provider.add("metaarmor.tooltip.modifiers", "Module slots:");
-        provider.add("gtceu.modules", "Modules:");
-        provider.add("gtceu.machine.exploded", "%s exploded at (%d, %d, %d)");
-        provider.add("metaarmor.hud.status.enabled", "§aON");
-        provider.add("metaarmor.hud.status.disabled", "§cOFF");
-        provider.add("metaarmor.hud.energy_lvl", "Energy Level: %s");
-        provider.add("metaarmor.hud.engine_enabled", "Engine Enabled: %s");
-        provider.add("metaarmor.hud.fuel_lvl", "Fuel Level: %s");
-        provider.add("metaarmor.hud.hover_mode", "Hover Mode: %s");
-        provider.add("mataarmor.hud.supply_mode", "Supply Mode: %s");
-        provider.add("metaarmor.hud.gravi_engine", "GraviEngine: %s");
-        provider.add("metaarmor.energy_share.error", "Energy Supply: §cNot enough power for gadgets charging!");
-        provider.add("metaarmor.energy_share.enable", "Energy Supply: Gadgets charging enabled");
-        provider.add("metaarmor.energy_share.disable", "Energy Supply: Gadgets charging disabled");
-        provider.add("metaarmor.energy_share.tooltip", "Supply mode: %s");
-        provider.add("metaarmor.energy_share.tooltip.guide",
-                "To change mode shift-right click when holding item");
+        provider.add("gui.gtceu.equipment_foundry.applied_to", "Applied to:");
+        provider.add("gui.gtceu.equipment_foundry.module_item", "Module item:");
+        provider.add("gui.gtceu.equipment_foundry.supports_tiers", "Module tiers: %s-%s");
+        provider.add("gui.gtceu.equipment_foundry.tier", "Viewing stats for tier: %s");
+        provider.add("gui.gtceu.equipment_foundry.tier_too_high", "No module item exists for this tier");
+        provider.add("gui.gtceu.equipment_foundry.tooltip.tier_switch",
+                "Left-click to increase tier by 1\nRight-click to decrease tier by 1");
 
-        provider.add("metaarmor.tooltip.modifier.jetpack", "Jetpack Module (%s)");
-        provider.add("metaarmor.tooltip.modifier.sensor", "Explosion Reporting Module (%s)");
-        provider.add("metaarmor.tooltip.modifier.wireless_charging", "Wireless Charging Module (%s)");
-        provider.add("metaarmor.tooltip.modifier.creative_flight", "Creative Flight Module");
-        provider.add("metaarmor.tooltip.modifier.battery.hud.info", "Storing %s/%s EU");
-        provider.add("metaarmor.tooltip.modifier.battery.hud.helmet", "Helmet battery: %s");
-        provider.add("metaarmor.tooltip.modifier.battery.hud.chestplate", "Chestplate battery: %s");
-        provider.add("metaarmor.tooltip.modifier.battery.hud.leggings", "Leggings battery: %s");
-        provider.add("metaarmor.tooltip.modifier.battery.hud.boots", "Boots battery: %s");
-        provider.add("metaarmor.tooltip.modifier.fluid_storage", "Additional fluid storage (%s)");
+        provider.add("armor.gtceu.jetpack.flight.enabled", "Jetpack: Flight Enabled");
+        provider.add("armor.gtceu.jetpack.flight.disabled", "Jetpack: Flight Disabled");
+        provider.add("armor.gtceu.jetpack.hover.enabled", "Jetpack: Hover Mode Enabled");
+        provider.add("armor.gtceu.jetpack.hover.disabled", "Jetpack: Hover Mode Disabled");
+        provider.add("armor.gtceu.jetpack.emergency_hover", "Emergency Hover Mode Enabled!");
+
+        provider.add("armor.gtceu.night_vision.enabled", "§bNightVision: §aOn");
+        provider.add("armor.gtceu.night_vision.disabled", "§bNightVision: §cOff");
+        provider.add("armor.gtceu.night_vision.error", "NightVision: §cNot enough power!");
+        
+        provider.add("hud.gtceu.armor.status.enabled", "§aON");
+        provider.add("hud.gtceu.armor.status.disabled", "§cOFF");
+        provider.add("hud.gtceu.armor.energy_lvl", "Energy Level: %s");
+        provider.add("hud.gtceu.armor.engine_enabled", "Engine Enabled: %s");
+        provider.add("hud.gtceu.armor.fuel_lvl", "Fuel Level: %s");
+        provider.add("hud.gtceu.armor.hover_mode", "Hover Mode: %s");
+
+        provider.add("gui.gtceu.item_module.empty_module_slot", "Empty");
+        provider.add("gui.gtceu.module_slot.universal", "Universal");
+        provider.add("gui.gtceu.module_slot.tiered", "Tiered (%s)");
+        provider.add("gui.gtceu.module_slots", "Module slots:");
 
         // Module names/descriptions
 
         provider.add("module.gtceu.speed", "Running Speed Module (%s)");
         provider.add("module.gtceu.speed.description", "Increases sprint speed by %s%%");
-        provider.add("module.gtceu.jump", "Jump Module (%s)");
-        provider.add("module.gtceu.jump.description", "Increases jump height by %s blocks");
+        provider.add("module.gtceu.jump_boost", "Jump Module (%s)");
+        provider.add("module.gtceu.jump_boost.description", "Increases jump height by %s blocks");
         provider.add("module.gtceu.damage_block", "Energy Shield Module (%s)");
         provider.add("module.gtceu.damage_block.description",
                 "Blocks any amount of damage with EU (%s EU per HP, requires any battery module)");
@@ -102,37 +60,68 @@ public class ModularArmorLang {
         provider.add("module.gtceu.step_height.description", "Increases step height by %s blocks");
         provider.add("module.gtceu.swim_speed", "Swim Speed Module (%s)");
         provider.add("module.gtceu.swim_speed.description", "Increases swim speed by %s%%");
+        
         provider.add("module.gtceu.battery", "Battery Module (%s)");
         provider.add("module.gtceu.battery.description",
                 "Allows the item to store energy or increases its capacity (capacity is equal to the battery's)");
+        provider.add("module.gtceu.battery.hud.info", "Storing %s/%s EU");
+        provider.add("module.gtceu.battery.hud.helmet", "Helmet battery: %s");
+        provider.add("module.gtceu.battery.hud.chestplate", "Chestplate battery: %s");
+        provider.add("module.gtceu.battery.hud.leggings", "Leggings battery: %s");
+        provider.add("module.gtceu.battery.hud.boots", "Boots battery: %s");
 
-        provider.add("module.gtceu.liquid_fuel_jetpack",
+        provider.add("module.gtceu.air_supplier", "Air Supplier Module");
+        provider.add("module.gtceu.air_supplier.description", "Replenishes Breath Bar");
+        provider.add("module.gtceu.auto_eat", "Auto Eat Module");
+        provider.add("module.gtceu.auto_eat.description", "Replenishes Food Bar by Using Food from Inventory");
+
+        
+        provider.add("module.gtceu.liquid_fuel_jetpack", "Liquid Fuel Jetpack");
+        provider.add("module.gtceu.liquid_fuel_jetpack.description",
                 "Makes the chestplate work like a liquid fueled jetpack (requires any fluid storage module)");
-        provider.add("module.gtceu.jetpack", "Makes the chestplate work like a jetpack (requires any battery module)");
-        provider.add("module.gtceu.advanced_jetpack",
+        provider.add("module.gtceu.jetpack", "Basic Jetpack");
+        provider.add("module.gtceu.jetpack.description", "Makes the chestplate work like a jetpack (requires any battery module)");
+        provider.add("module.gtceu.advanced_jetpack", "Advanced Jetpack");
+        provider.add("module.gtceu.advanced_jetpack.description",
                 "Makes the chestplate work like an advanced jetpack (requires any battery module)");
-        provider.add("module.gtceu.sensor", "Reports machine explosions (for machines placed by the player)");
-        provider.add("module.gtceu.wireless_charging",
+        provider.add("module.gtceu.sensor", "Explosion Reporting Module (%s)");
+        provider.add("module.gtceu.sensor.message", "%s exploded at (%d, %d, %d)");
+        provider.add("module.gtceu.sensor.description", "Reports machine explosions (for machines placed by the player)");
+        provider.add("module.gtceu.wireless_charging", "Wireless Charging Module (%s)");
+        provider.add("module.gtceu.wireless_charging.description",
                 "Allows wireless charging in the range of %s blocks (1A %s max), bind to a charger by right-clicking on it");
-        provider.add("module.gtceu.wireless_charging.interdimensional",
+        provider.add("module.gtceu.wireless_charging.description.interdimensional",
                 "%s blocks, 1A %s max, interdimensional if an at least %s field generator is present");
-        provider.add("module.gtceu.creative_flight", "Allows creative flight (consumes %s EU/t while flying)");
-        provider.add("module.gtceu.fluid_storage",
+        provider.add("module.gtceu.creative_flight", "Creative Flight Module");
+        provider.add("module.gtceu.creative_flight.description", "Allows creative flight (consumes %s EU/t while flying)");
+
+        provider.add("module.gtceu.fluid_storage", "Fluid Storage (%s)");
+        provider.add("module.gtceu.fluid_storage.description",
                 "Allows the item to store liquids or increases its capacity (capacity is equal to the tank's)");
-        provider.add("module.gtceu.nightvision", "Provides night vision (consumes %s EU/t while active)");
-        provider.add("module.gtceu.ppe",
+        provider.add("module.gtceu.fluid_storage.current_stored", "Storing %s/%s mB of %s");
+
+        provider.add("module.gtceu.night_vision", "Night Vision Module");
+        provider.add("module.gtceu.night_vision.description", "Provides night vision (consumes %s EU/t while active)");
+
+        provider.add("module.gtceu.ppe", "PPE Module");
+        provider.add("module.gtceu.ppe.description",
                 "Provides protection from environmental hazards if applied to all armor pieces");
+
+        ///
+        provider.add("metaarmor.tooltip.potions", "Nullifies Harmful Effects");
+        provider.add("metaarmor.tooltip.burning", "Nullifies Burning");
+        provider.add("metaarmor.tooltip.freezing", "Prevents Freezing");
+
 
         provider.add("module.gtceu.damage_block.short", "%s EU per HP");
         provider.add("module.gtceu.short_percentage", "... by %s%%");
         provider.add("module.gtceu.wireless_charging.short", "%s blocks, 1A %s max");
         provider.add("module.gtceu.block_reach.short", "... by %s blocks");
-        provider.add("module.gtceu.gui.enabled", "Enabled:");
-        provider.add("module.gtceu.gui.jump_boost", "Boost:");
-        provider.add("module.gtceu.gui.power", "Power:");
-        provider.add("module.gtceu.gui.charge", "Charge:");
-        provider.add("module.gtceu.gui.energy_limit", "Energy limit:");
-        provider.add("module.gtceu.gui.hp", "HP:");
-        provider.add("module.gtceu.gui.select_an_item", "Select an item");
+        provider.add("gui.gtceu.item_module.enabled", "Enabled:");
+        provider.add("gui.gtceu.item_module.jump_boost", "Boost:");
+        provider.add("gui.gtceu.item_module.power", "Power:");
+        provider.add("gui.gtceu.item_module.charge", "Charge:");
+        provider.add("gui.gtceu.item_module.energy_limit", "Energy limit:");
+        provider.add("gui.gtceu.item_module.hp", "HP:");
     }
 }
