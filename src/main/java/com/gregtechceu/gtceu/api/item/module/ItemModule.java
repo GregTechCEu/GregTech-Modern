@@ -106,12 +106,11 @@ public abstract class ItemModule {
      */
     public Component getDisplayName(ModuleContext moduleContext) {
         List<Component> list = new ArrayList<>();
-        appendHoverText(moduleContext, null, TooltipFlag.NORMAL, list);
+        appendHoverText(moduleContext, null, list, TooltipFlag.NORMAL);
         return list.isEmpty() ? Component.empty() : list.get(0);
     }
 
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
-                                List<Component> tooltips) {}
+    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips, TooltipFlag isAdvanced) {}
 
     public boolean useEnergyInInventory(ModuleContext moduleContext, LivingEntity entity) {
         return true;

@@ -28,9 +28,8 @@ public class PPEModule extends ItemModule {
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
-                                List<Component> tooltips) {
-        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
+    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
+        super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
         if (moduleContext.getAppliedTo().is(Tags.Items.ARMORS_BOOTS))
             tooltips.add(Component.translatable("item.gtceu.hazmat_boots"));
         if (moduleContext.getAppliedTo().is(Tags.Items.ARMORS_LEGGINGS))

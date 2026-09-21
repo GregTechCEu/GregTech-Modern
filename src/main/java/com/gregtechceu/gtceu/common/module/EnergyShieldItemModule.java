@@ -93,9 +93,8 @@ public class EnergyShieldItemModule extends TieredItemModule {
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
-                                List<Component> tooltips) {
-        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
+    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips, TooltipFlag isAdvanced) {
+        super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.damage_block",
                 GTValues.VNF[getTier()]));
     }
