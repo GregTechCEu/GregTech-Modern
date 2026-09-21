@@ -25,8 +25,6 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
 
-import static net.irisshaders.iris.shaderpack.loading.ProgramId.Item;
-
 public class CreativeFlightModule extends ItemModule implements ITieredItemModule {
 
     public CreativeFlightModule(ResourceLocation id) {
@@ -101,9 +99,9 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
-                                List<Component> tooltips) {
-        super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {
+        super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.creative_flight")
                 .withStyle(ChatFormatting.LIGHT_PURPLE));
     }

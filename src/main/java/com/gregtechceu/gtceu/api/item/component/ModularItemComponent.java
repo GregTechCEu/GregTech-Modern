@@ -45,7 +45,8 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
         event.registerItem(GTCapability.CAPABILITY_MODULAR_ITEM, (s, $) -> new ModularItemStack(s, defaultSlotGetter),
                 item);
         for (var module : GTRegistries.ITEM_MODULES) {
-            module.attachCapabilities(event, item);
+            if (module instanceof CapabilityProviderItemModule<?> capProvider)
+                capProvider.attachCapabilities(event, item);
         }
     }
 
@@ -118,7 +119,7 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
             ModuleContext moduleData = modularItem.getModuleContextForSlot(slotI);
             if (moduleData != null) {
                 int prevIndex = tooltipComponents.size();
-                moduleData.getModule().appendHoverText(moduleData, context, isAdvanced, tooltipComponents);
+                moduleData.getModule().appendHoverText(moduleData, context, tooltipComponents, isAdvanced);
                 if (tooltipComponents.size() > prevIndex) {
                     tooltipComponents.set(prevIndex, Component.translatable(
                             "metaarmor.tooltip.modifier",

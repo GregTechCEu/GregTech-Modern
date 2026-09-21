@@ -134,9 +134,9 @@ public class AutoChargeItemModule extends TieredItemModule {
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
-                                List<Component> tooltips) {
-        super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {
+        super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.wireless_charging", GTValues.VNF[getTier()]));
     }
 

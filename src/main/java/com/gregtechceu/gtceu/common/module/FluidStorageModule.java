@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.CapabilityProviderItemModule;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 
 import net.minecraft.network.chat.Component;
@@ -15,7 +15,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
 import java.util.List;
 
-public class FluidStorageModule extends ItemModule {
+public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandlerItem> {
 
     public FluidStorageModule(ResourceLocation id) {
         super(id);
@@ -39,9 +39,9 @@ public class FluidStorageModule extends ItemModule {
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
-                                List<Component> tooltips) {
-        super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {
+        super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.fluid_storage",
                 moduleContext.getModuleItem().getHoverName()));
         IFluidHandlerItem fluidHandler = moduleContext.getModuleItem().getCapability(Capabilities.FluidHandler.ITEM);

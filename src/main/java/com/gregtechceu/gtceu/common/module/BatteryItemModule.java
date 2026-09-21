@@ -4,8 +4,12 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
+import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.minecraft.client.Minecraft;
@@ -20,24 +24,45 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
-public class BatteryItemModule extends ItemModule implements IHUDProviderItemModule {
-
-    private static final double PERCENTAGE = 80.0d;
+public class BatteryItemModule extends CapabilityProviderItemModule<IElectricItem> implements IHUDProviderItemModule {
 
     public BatteryItemModule(ResourceLocation id) {
         super(id);
     }
 
     @Override
+    public ItemCapability<IElectricItem, Void> getCapability() {
+        return GTCapability.CAPABILITY_ELECTRIC_ITEM;
+    }
+
+    @Override
+    public @Nullable IElectricItem createCapabilityForStack(ModuleContext context, ItemStack stack) {
+        var batteryItem = context.getModuleItem().getItem();
+        if (!(batteryItem instanceof IComponentItem componentItem)) return null;
+        for (var component : componentItem.getComponents()) {
+            if (component instanceof ElectricStats stats) {
+                return new ElectricItem(stack, stats.maxCharge, stats.tier, stats.chargeable, stats.dischargeable);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void clearCapabilityFromStack(ModuleContext context, ItemStack stack) {
+        stack.remove(GTDataComponents.ENERGY_CONTENT);
+    }
+
+    @Override
     public Component getDisplayName(ModuleContext moduleContext) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getModuleItem());
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem != null)
             return Component.translatable("metaarmor.tooltip.modifier.battery", GTValues.VNF[electricItem.getTier()]);
         else return super.getDisplayName(moduleContext);
@@ -51,36 +76,28 @@ public class BatteryItemModule extends ItemModule implements IHUDProviderItemMod
     @Override
     public void onInventoryTick(ModuleContext moduleContext, Player player) {
         super.onInventoryTick(moduleContext, player);
-        // the battery's inventoryTick method does not use inventorySlot or isCurrentItem
-        moduleContext.getModuleItem().inventoryTick(player.level(), player, 0, false);
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
+        if (electricItem != null)
+            electricItem.inventoryTick(moduleContext.getAppliedTo(), player.level(), player, 0, false);
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
-                                List<Component> tooltips) {
-        super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {
+        super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
         tooltips.add(
                 Component.translatable("metaarmor.tooltip.modifier.battery",
                         moduleContext.getData().getModuleItem().getHoverName()));
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
+        if (electricItem != null)
+            electricItem.appendHoverText(moduleContext.getAppliedTo(), context, tooltips, isAdvanced);
         moduleContext.getModuleItem().getItem().appendHoverText(moduleContext.getModuleItem(), context, tooltips,
                 isAdvanced);
     }
 
     @Override
-    public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {
-        event.registerItem(GTCapability.CAPABILITY_ELECTRIC_ITEM, (s, v) -> {
-            var modular = GTCapabilityHelper.getModularItem(s);
-            if (modular == null) return null;
-            var cap = modular.getAllModuleInstances().stream()
-                    .filter(ctx -> ctx.getModule() instanceof BatteryItemModule).findFirst().orElse(null);
-            if (cap == null) return null;
-            else return cap.getModuleItem().getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM);
-        }, item);
-    }
-
-    @Override
     public void drawHUD(ModuleContext moduleContext, GuiGraphics graphics) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getModuleItem());
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return;
         Equipable equipable = Equipable.get(moduleContext.getAppliedTo());
         Component displayName = moduleContext.getModuleItem().getHoverName();
@@ -126,7 +143,9 @@ public class BatteryItemModule extends ItemModule implements IHUDProviderItemMod
     @Override
     public InteractionResultHolder<ItemStack> use(ModuleContext moduleContext, Level level, Player player,
                                                   InteractionHand hand) {
-        return moduleContext.getModuleItem().use(level, player, hand);
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
+        if (electricItem != null) return electricItem.use(moduleContext.getAppliedTo(), level, player, hand);
+        return InteractionResultHolder.pass(moduleContext.getAppliedTo());
     }
 
     @Override

@@ -19,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -108,12 +107,12 @@ public abstract class ItemModule {
      */
     public Component getDisplayName(ModuleContext moduleContext) {
         List<Component> list = new ArrayList<>();
-        appendHoverText(moduleContext, null, TooltipFlag.NORMAL, list);
+        appendHoverText(moduleContext, null, list, TooltipFlag.NORMAL);
         return list.isEmpty() ? Component.empty() : list.getFirst();
     }
 
-    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
-                                List<Component> tooltips) {}
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {}
 
     public boolean useEnergyInInventory(ModuleContext moduleContext, LivingEntity entity) {
         return true;
@@ -168,8 +167,6 @@ public abstract class ItemModule {
                                                   LivingEntity interactionTarget, InteractionHand usedHand) {
         return InteractionResult.PASS;
     }
-
-    public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {}
 
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
         psm.syncValue("module_enabled", id,
