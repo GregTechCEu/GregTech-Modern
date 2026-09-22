@@ -133,18 +133,18 @@ public class GTCommands {
                                         .executes(ctx -> {
                                             ServerPlayer player = ctx.getSource().getPlayerOrException();
                                             return setActiveCape(ctx.getSource(), player, null);
-                                        })))
-                        .then(literal("share_prospection_data")
-                                .then(argument("player", EntityArgument.player())
-                                        .executes(ctx -> {
-                                            // resolve both players server-side (uses the server player list),
-                                            // then ask the sender's client to read its cache and send the data
-                                            ServerPlayer sender = ctx.getSource().getPlayerOrException();
-                                            ServerPlayer receiver = EntityArgument.getPlayer(ctx, "player");
-                                            PacketDistributor.sendToPlayer(sender,
-                                                    new SPacketStartProspectionShare(receiver.getUUID()));
-                                            return 1;
-                                        })))));
+                                        }))))
+                .then(literal("share_prospection_data")
+                        .then(argument("player", EntityArgument.player())
+                                .executes(ctx -> {
+                                    // resolve both players server-side (uses the server player list),
+                                    // then ask the sender's client to read its cache and send the data
+                                    ServerPlayer sender = ctx.getSource().getPlayerOrException();
+                                    ServerPlayer receiver = EntityArgument.getPlayer(ctx, "player");
+                                    PacketDistributor.sendToPlayer(sender,
+                                            new SPacketStartProspectionShare(receiver.getUUID()));
+                                    return 1;
+                                }))));
     }
     // spotless:on
 
