@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
@@ -44,6 +45,10 @@ public record GTResourceLocation(ResourceLocation wrapped) {
         };
         if (inner == null) return null;
         return new GTResourceLocation(inner);
+    }
+
+    public <T> ResourceKey<T> asResourceKey(ResourceKey<? extends Registry<T>> registryKey) {
+        return ResourceKey.create(registryKey, wrapped);
     }
 
     @Override
