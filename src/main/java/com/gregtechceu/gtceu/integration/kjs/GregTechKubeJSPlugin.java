@@ -376,12 +376,12 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
         registry.register(VeinGenerator.class, (RegistryAccessContainer registries, Object o) -> {
             o = Wrapper.unwrapped(o);
+            if (o instanceof VeinGenerator veinGenerator) return veinGenerator;
             GTResourceLocation wrapper = GTResourceLocation.wrap(o);
             if (wrapper != null) {
                 return registries.access().holderOrThrow(wrapper.asResourceKey(GTRegistries.Keys.VEIN_GENERATOR))
                         .value().defaultInstance().get();
             }
-            if (o instanceof VeinGenerator veinGenerator) return veinGenerator;
             return null;
         });
         registry.registerCodec(IndicatorGenerator.class, IndicatorGenerator.DIRECT_CODEC);
