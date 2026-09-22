@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.misc.forge;
 
 import com.gregtechceu.gtceu.api.capability.IThermalFluidHandlerItemStack;
+import com.gregtechceu.gtceu.api.item.component.ThermalFluidStats;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import net.minecraft.world.item.ItemStack;
@@ -9,6 +10,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ThermalFluidHandlerItemStack extends FluidHandlerItemStack implements IThermalFluidHandlerItemStack {
 
@@ -35,6 +37,15 @@ public class ThermalFluidHandlerItemStack extends FluidHandlerItemStack implemen
         this.acidProof = acidProof;
         this.cryoProof = cryoProof;
         this.plasmaProof = plasmaProof;
+    }
+
+    public ThermalFluidHandlerItemStack(@NotNull ItemStack container, ThermalFluidStats stats) {
+        super(GTDataComponents.FLUID_CONTENT, container, stats.capacity);
+        this.maxFluidTemperature = stats.maxFluidTemperature;
+        this.gasProof = stats.gasProof;
+        this.acidProof = stats.acidProof;
+        this.cryoProof = stats.cryoProof;
+        this.plasmaProof = stats.plasmaProof;
     }
 
     @Override

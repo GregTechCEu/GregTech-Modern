@@ -1,9 +1,15 @@
 package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.component.ThermalFluidStats;
 import com.gregtechceu.gtceu.api.item.module.CapabilityProviderItemModule;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 
+import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
+import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -27,41 +33,42 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
 
     @Override
     public ItemCapability<IFluidHandlerItem, @Nullable Void> getCapability() {
-        return null;
+        return Capabilities.FluidHandler.ITEM;
     }
 
     @Override
     public @Nullable IFluidHandlerItem createCapabilityForStack(ModuleContext context, ItemStack stack) {
-        return null;
+        if (!(stack.getItem() instanceof IComponentItem componentItem)) return null;
+        ThermalFluidStats thermalStats = null;
+        for (var component: componentItem.getComponents()) {
+            if (component instanceof ThermalFluidStats stats) {
+                thermalStats = stats;
+                break;
+            }
+        }
+        if (thermalStats == null) return null;
+        if (thermalStats.allowPartialFill) {
+            return new ThermalFluidHandlerItemStack(stack, thermalStats);
+        }
+        return new SimpleThermalFluidHandlerItemStack(stack, thermalStats);
     }
 
     @Override
-    public void clearCapabilityFromStack(ModuleContext context, ItemStack stack) {}
+    public void clearCapabilityFromStack(ModuleContext context, ItemStack stack) {
+        stack.remove(GTDataComponents.FLUID_CONTENT);
+    }
 
     @Override
     public Component getInfo() {
         return Component.translatable(getDescriptionLanguageKey());
     }
-
-    @Override
-    public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {
-        event.registerItem(Capabilities.FluidHandler.ITEM, (s, v) -> {
-            var modular = GTCapabilityHelper.getModularItem(s);
-            if (modular == null) return null;
-            var cap = modular.getAllModuleInstances().stream()
-                    .filter(ctx -> ctx.getModule() instanceof FluidStorageModule).findFirst().orElse(null);
-            if (cap == null) return null;
-            else return cap.getModuleItem().getCapability(Capabilities.FluidHandler.ITEM);
-        }, item);
-    }
-
     @Override
     public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
         tooltips.add(Component.translatable(getLanguageKey(),
                 moduleContext.getModuleItem().getHoverName()));
-        IFluidHandlerItem fluidHandler = moduleContext.getModuleItem().getCapability(Capabilities.FluidHandler.ITEM);
+        IFluidHandlerItem fluidHandler = moduleContext.getAppliedTo().getCapability(Capabilities.FluidHandler.ITEM);
         if (fluidHandler != null) {
             FluidStack fluid = fluidHandler.getFluidInTank(0);
             int capacity = fluidHandler.getTankCapacity(0);

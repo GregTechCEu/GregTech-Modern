@@ -86,7 +86,7 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
         tooltips.add(
-                Component.translatable("metaarmor.tooltip.modifier.battery",
+                Component.translatable("module.gtceu.battery",
                         moduleContext.getData().getModuleItem().getHoverName()));
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem != null)

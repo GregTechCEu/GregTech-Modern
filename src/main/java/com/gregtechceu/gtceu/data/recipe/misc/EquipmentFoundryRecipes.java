@@ -124,6 +124,6 @@ public class EquipmentFoundryRecipes {
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("fluid_storage"),
                 Ingredient.of(ItemTags.CHEST_ARMOR),
-                Ingredient.of(CustomTags.FLUID_CONTAINERS), GTItemModules.FLUID_STORAGE);
+                Ingredient.of(CustomTags.FLUID_CELLS), GTItemModules.FLUID_STORAGE);
     }
 }
