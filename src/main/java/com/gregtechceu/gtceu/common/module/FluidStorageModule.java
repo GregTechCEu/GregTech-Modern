@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -20,6 +19,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -54,7 +54,7 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
 
     @Override
     public void clearCapabilityFromStack(ModuleContext context, ItemStack stack) {
-        stack.remove(GTDataComponents.FLUID_CONTENT);
+        stack.removeTagKey(FluidHandlerItemStack.FLUID_NBT_KEY);
     }
 
     @Override
