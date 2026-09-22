@@ -130,7 +130,7 @@ public class ArmorUtils {
                 cons -= 0.4F;
             }
 
-            player.playSound(GTSoundEntries.JET_ENGINE.getMainEvent(), 0.3F, cons);
+            player.playSound(GTSoundEntries.JET_ENGINE.value().getMainEvent(), 0.3F, cons);
         }
     }
 

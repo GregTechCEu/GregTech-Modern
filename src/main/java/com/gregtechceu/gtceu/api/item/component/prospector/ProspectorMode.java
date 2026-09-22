@@ -297,10 +297,11 @@ public abstract class ProspectorMode<T> {
                 return;
             }
             FluidInfo item = items[0];
-            float filled = item.left / Math.max(Math.min(item.left, 100.0f), 1.0f);
+            // left is a percentage of the vein's operations that are left
+            float filled = Math.min(Math.max(item.left, 0), 100) / 100.0f;
 
             GuiDraw.drawFluidTexture(context.getGraphics(), item.asStack(),
-                    x * width, y + (1.0f - filled) * height, width, height * filled,
+                    x, y + (1.0f - filled) * height, width, height * filled,
                     context.getCurrentDrawingZ());
         }
     };

@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -16,7 +17,7 @@ import java.util.List;
 
 public class GTArmorMaterials {
 
-    public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS = DeferredRegister
+    private static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS = DeferredRegister
             .create(BuiltInRegistries.ARMOR_MATERIAL, GTCEu.MOD_ID);
 
     public static final List<ArmorMaterial.Layer> BLANK_LAYERS = List.of(new ArmorMaterial.Layer(GTCEu.id("armor")));
@@ -58,4 +59,8 @@ public class GTArmorMaterials {
                         map.put(ArmorItem.Type.CHESTPLATE, 6);
                         map.put(ArmorItem.Type.HELMET, 2);
                     }), 10, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, BLANK_LAYERS, 0.0F, 0.0F));
+
+    public static void init(IEventBus modBus) {
+        ARMOR_MATERIALS.register(modBus);
+    }
 }

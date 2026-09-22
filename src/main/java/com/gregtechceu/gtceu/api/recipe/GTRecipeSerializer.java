@@ -185,7 +185,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     public static GTRecipe datapackSyncFromNetwork(@NotNull RegistryFriendlyByteBuf buf) {
         GTRecipe recipe = fromNetwork(buf);
 
-        recipe.recipeCategory.addRecipe(recipe);
+        recipe.recipeType.addToCategoryMap(recipe.recipeCategory, recipe);
 
         // a little special piece of code for loading all the research entries into the recipe type's list on the
         // client.
@@ -201,7 +201,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     public static void toNetwork(RegistryFriendlyByteBuf buf, @Nullable GTRecipe recipe) {
-        buf.writeResourceLocation(recipe.recipeType.registryName);
+        buf.writeResourceLocation(recipe.recipeType.id);
         buf.writeResourceLocation(recipe.id);
         writeCollection(recipe.inputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
         writeCollection(recipe.tickInputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
@@ -227,7 +227,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         buf.writeVarInt(recipe.subtickParallels);
         buf.writeVarInt(recipe.batchParallels);
         buf.writeInt(recipe.groupColor);
-        buf.writeResourceLocation(recipe.recipeCategory.registryKey);
+        buf.writeResourceLocation(recipe.recipeCategory.id);
         buf.writeBoolean(recipe.keepSpoilingProgress);
     }
 
@@ -276,7 +276,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
                             quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT, "duration", false).forGetter(val -> val.duration),
                             RecipeParallels.CODEC.optionalFieldOf("all_parallels", new RecipeParallels(1, 1, 1)).forGetter(val -> new RecipeParallels(val.parallels, val.subtickParallels, val.batchParallels)),
-                            GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
+                            Codec.optionalField("category", GTRegistries.RECIPE_CATEGORIES.byNameCodec(), false).forGetter(val -> Optional.of(val.recipeCategory)),
                             Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor),
                             Codec.BOOL.optionalFieldOf("keepSpoilingProgress", true).forGetter(val -> val.keepSpoilingProgress))
                     .apply(instance, (type,
@@ -293,7 +293,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                     CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
                     quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT, "duration", true).forGetter(val -> val.duration),
                     RecipeParallels.CODEC.optionalFieldOf("all_parallels", new RecipeParallels(1, 1, 1)).forGetter(val -> new RecipeParallels(val.parallels, val.subtickParallels, val.batchParallels)),
-                    GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
+                            Codec.optionalField("category", GTRegistries.RECIPE_CATEGORIES.byNameCodec(), false).forGetter(val -> Optional.of(val.recipeCategory)),
                     Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor),
             Codec.BOOL.optionalFieldOf("keepSpoilingProgress", true).forGetter(val -> val.keepSpoilingProgress))
                     .apply(instance, GTRecipe::new));

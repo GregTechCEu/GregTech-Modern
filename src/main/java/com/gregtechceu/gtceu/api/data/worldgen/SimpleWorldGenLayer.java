@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -25,8 +23,6 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
         this.id = id;
         this.target = target;
         this.levels = levels;
-
-        GTRegistries.register(GTRegistries.WORLD_GEN_LAYERS, id, this);
     }
 
     @Override

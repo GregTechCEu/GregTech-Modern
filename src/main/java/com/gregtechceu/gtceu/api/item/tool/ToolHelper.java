@@ -212,7 +212,7 @@ public class ToolHelper {
 
     public static void playToolSound(@Nullable GTToolType toolType, ServerPlayer player) {
         if (toolType != null && toolType.soundEntry != null) {
-            toolType.soundEntry.playOnServer(player.level(), player.blockPosition());
+            toolType.soundEntry.value().playOnServer(player.level(), player.blockPosition());
         }
     }
 
@@ -386,7 +386,7 @@ public class ToolHelper {
             DummyRecipeUtils.DummyRecipeCapabilityHolder capHolder = new DummyRecipeUtils.DummyRecipeCapabilityHolder(
                     dummyInputs, dummyOutputs);
 
-            Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(capHolder,
+            Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.value().searchRecipe(capHolder,
                     r -> RecipeHelper.matchContents(capHolder, r).isSuccess());
             GTRecipe hammerRecipe = null;
             // find the first valid recipe
@@ -563,7 +563,7 @@ public class ToolHelper {
         IGTTool tool = (IGTTool) stack.getItem();
         ToolHelper.damageItem(stack, player);
         if (tool.getSound() != null) {
-            level.playSound(player, pos.x, pos.y, pos.z, tool.getSound().getMainEvent(),
+            level.playSound(player, pos.x, pos.y, pos.z, tool.getSound().value().getMainEvent(),
                     SoundSource.PLAYERS, 1.0F, 1.0F);
         }
     }
