@@ -1,8 +1,15 @@
 package com.gregtechceu.gtceu.common.module;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.component.ThermalFluidStats;
 import com.gregtechceu.gtceu.api.item.module.CapabilityProviderItemModule;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 
+import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
+import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -24,25 +31,36 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
     }
 
     @Override
-    public Component getInfo() {
-        return Component.translatable(getDescriptionLanguageKey());
-    }
-
-    @Override
     public Capability<IFluidHandlerItem> getCapability() {
         return ForgeCapabilities.FLUID_HANDLER_ITEM;
     }
 
     @Override
     public @Nullable IFluidHandlerItem createCapabilityForStack(ModuleContext context, ItemStack stack) {
-        return null;
+        if (!(stack.getItem() instanceof IComponentItem componentItem)) return null;
+        ThermalFluidStats thermalStats = null;
+        for (var component: componentItem.getComponents()) {
+            if (component instanceof ThermalFluidStats stats) {
+                thermalStats = stats;
+                break;
+            }
+        }
+        if (thermalStats == null) return null;
+        if (thermalStats.allowPartialFill) {
+            return new ThermalFluidHandlerItemStack(stack, thermalStats);
+        }
+        return new SimpleThermalFluidHandlerItemStack(stack, thermalStats);
     }
 
     @Override
     public void clearCapabilityFromStack(ModuleContext context, ItemStack stack) {
-
+        stack.remove(GTDataComponents.FLUID_CONTENT);
     }
 
+    @Override
+    public Component getInfo() {
+        return Component.translatable(getDescriptionLanguageKey());
+    }
     @Override
     public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
                                 TooltipFlag isAdvanced) {

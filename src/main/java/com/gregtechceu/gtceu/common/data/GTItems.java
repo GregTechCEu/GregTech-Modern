@@ -418,7 +418,7 @@ public class GTItems {
                 .onRegister(attach(cellName(),
                         ThermalFluidStats.create(FluidType.BUCKET_VOLUME * capacity, prop, true),
                         new ItemFluidContainer()))
-                .tag(CustomTags.FLUID_CONTAINERS)
+                .tag(CustomTags.FLUID_CELLS)
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(mat, GTValues.M * matSize))))
                 .register();
     }
