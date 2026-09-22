@@ -10,13 +10,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-public class MaterialIconSetBuilder extends BuilderBase<MaterialIconSet> {
+public class MaterialIconSetBuilderJS extends BuilderBase<MaterialIconSet> {
 
     @Getter
     @Setter
     public @Nullable MaterialIconSet parentIconset;
 
-    public MaterialIconSetBuilder(ResourceLocation id) {
+    public MaterialIconSetBuilderJS(ResourceLocation id) {
         super(id);
         parentIconset = MaterialIconSet.DULL.value();
     }
