@@ -562,7 +562,6 @@ public class GTMultiblockTextUtil {
             return Optional.of(
                     Flow.row()
                             .coverChildrenHeight()
-                            .width(164)
                             .childPadding(2)
                             .child(new ItemDrawable(stack).asWidget()
                                     .size(16)
@@ -571,13 +570,12 @@ public class GTMultiblockTextUtil {
                                     Text.lang(
                                             key, stack.getHoverName(), displaycount,
                                             FormattingUtil.formatNumber2Places(maxDurationSec / countD))
-                                            .asWidget().width(164 - 2 - 16)));
+                                            .asWidget()));
         } else {
             String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
             return Optional.of(
                     Flow.row()
                             .coverChildrenHeight()
-                            .width(164)
                             .childPadding(2)
                             .child(new ItemDrawable(stack).asWidget()
                                     .size(16)
@@ -586,7 +584,7 @@ public class GTMultiblockTextUtil {
                                     Text.lang(
                                             key, stack.getHoverName(), displaycount,
                                             FormattingUtil.formatNumber2Places(countD / maxDurationSec))
-                                            .asWidget().width(164 - 2 - 16)));
+                                            .asWidget()));
         }
     }
 
@@ -632,7 +630,6 @@ public class GTMultiblockTextUtil {
             return Optional.of(
                     Flow.row()
                             .coverChildrenHeight()
-                            .width(164)
                             .childPadding(2)
                             .child(new FluidDrawable(stack).asWidget()
                                     .size(16)
@@ -641,13 +638,12 @@ public class GTMultiblockTextUtil {
                                     Text.lang(
                                             key, stack.getHoverName(), displaycount,
                                             FormattingUtil.formatNumber2Places(maxDurationSec / amountD))
-                                            .asWidget().width(164 - 2 - 16)));
+                                            .asWidget()));
         } else {
             String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
             return Optional.of(
                     Flow.row()
                             .coverChildrenHeight()
-                            .width(164)
                             .childPadding(2)
                             .child(new FluidDrawable(stack).asWidget()
                                     .size(16)
@@ -655,7 +651,7 @@ public class GTMultiblockTextUtil {
                             .child(
                                     Text.lang(key, stack.getHoverName(), displaycount,
                                             FormattingUtil.formatNumber2Places(amountD / maxDurationSec))
-                                            .asWidget().width(164 - 2 - 16)));
+                                            .asWidget()));
         }
     }
 }
