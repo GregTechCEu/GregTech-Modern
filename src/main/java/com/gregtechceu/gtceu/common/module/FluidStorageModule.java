@@ -1,24 +1,23 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.api.item.module.ICapabilityModule;
-import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.CapabilityProviderItemModule;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class FluidStorageModule extends ItemModule implements ICapabilityModule {
+public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandlerItem> {
 
     public FluidStorageModule(ResourceLocation id) {
         super(id);
@@ -30,10 +29,18 @@ public class FluidStorageModule extends ItemModule implements ICapabilityModule 
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(ModuleContext moduleContext, @NotNull Capability<T> cap) {
-        if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM)
-            return moduleContext.getModuleItem().getCapability(cap);
-        return LazyOptional.empty();
+    public Capability<IFluidHandlerItem> getCapability() {
+        return ForgeCapabilities.FLUID_HANDLER_ITEM;
+    }
+
+    @Override
+    public @Nullable IFluidHandlerItem createCapabilityForStack(ModuleContext context, ItemStack stack) {
+        return null;
+    }
+
+    @Override
+    public void clearCapabilityFromStack(ModuleContext context, ItemStack stack) {
+
     }
 
     @Override
@@ -41,9 +48,8 @@ public class FluidStorageModule extends ItemModule implements ICapabilityModule 
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
         tooltips.add(Component.translatable(getLanguageKey(),
-                moduleContext.getModuleItem().getHoverName()));
-        IFluidHandlerItem fluidHandler = getCapability(moduleContext, ForgeCapabilities.FLUID_HANDLER_ITEM).resolve()
-                .orElse(null);
+                moduleContext.getData().getModuleItem().getHoverName()));
+        IFluidHandlerItem fluidHandler = moduleContext.getAppliedTo().getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
         if (fluidHandler != null) {
             FluidStack fluid = fluidHandler.getFluidInTank(0);
             int capacity = fluidHandler.getTankCapacity(0);

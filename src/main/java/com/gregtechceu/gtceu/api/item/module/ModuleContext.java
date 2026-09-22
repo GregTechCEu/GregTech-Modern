@@ -35,10 +35,6 @@ public class ModuleContext {
         return getData().getModule();
     }
 
-    public ItemStack getModuleItem() {
-        return getData().getModuleItem();
-    }
-
     public ModuleData getData() {
         return data;
     }
@@ -49,7 +45,7 @@ public class ModuleContext {
 
     public void setData(ModuleData data) {
         if (!data.getClass().equals(getModule().moduleDataClass())) {
-            throw new IllegalArgumentException("Cannot set module data: expected data class %s, got %s"
+            throw new ClassCastException("Cannot set module data: expected data class %s, got %s"
                     .formatted(getModule().moduleDataClass(), data.getClass()));
         }
         this.data = data;

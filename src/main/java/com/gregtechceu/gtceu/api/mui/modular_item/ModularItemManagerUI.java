@@ -80,7 +80,7 @@ public class ModularItemManagerUI implements IUIHolder<PlayerInventoryGuiData<?>
     private ModularPanel<?> createPanelForModule(PanelSyncManager psm, IModularItem modularItem, int index) {
         ModuleContext appliedModule = Objects.requireNonNull(modularItem.getModuleContextForSlot(index));
         ItemModule module = appliedModule.getModule();
-        ItemStack moduleItem = appliedModule.getModuleItem();
+        ItemStack moduleItem = appliedModule.getData().getModuleItem();
 
         return new ModularPanel<>("module" + index)
                 .coverChildren()
@@ -88,13 +88,12 @@ public class ModularItemManagerUI implements IUIHolder<PlayerInventoryGuiData<?>
                         .margin(4)
                         .coverChildren()
                         .crossAxisAlignment(Alignment.CrossAxis.START)
-                        .childIf(moduleItem == null || moduleItem.isEmpty(),
+                        .childIf(moduleItem.isEmpty(),
                                 () -> new TextWidget<>(Text.dynamic(() -> module.getDisplayName(appliedModule)))
                                         .scale(0.75f)
                                         .horizontalCenter()
                                         .paddingBottom(2))
-                        .childIf(moduleItem != null && !moduleItem.isEmpty(), () -> {
-                            assert moduleItem != null;
+                        .childIf(!moduleItem.isEmpty(), () -> {
                             return Flow.row()
                                     .coverChildren()
                                     .padding(4)

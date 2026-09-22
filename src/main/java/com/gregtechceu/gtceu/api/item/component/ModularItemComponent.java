@@ -53,7 +53,7 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem != null) {
                 for (ModuleContext module : modularItem.getAllModuleInstances()) {
-                    if (module.getModule() instanceof ICapabilityModule capabilityModule) {
+                    if (module.getModule() instanceof CapabilityProviderItemModule<?> capabilityModule) {
                         LazyOptional<T> optional = capabilityModule.getCapability(module, cap);
                         if (optional.isPresent()) return optional;
                     }
