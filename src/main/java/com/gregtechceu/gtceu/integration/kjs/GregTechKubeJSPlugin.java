@@ -80,7 +80,7 @@ import com.gregtechceu.gtceu.integration.kjs.builders.block.ActiveBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.*;
-import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilderJS;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilderJS;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.*;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
@@ -119,9 +119,9 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerBuilderTypes(BuilderTypeRegistry registry) {
-        registry.addDefault(GTRegistries.Keys.ELEMENT, ElementBuilder.class, ElementBuilder::new);
-        registry.addDefault(GTRegistries.Keys.DIMENSION_MARKER, DimensionMarkerBuilder.class,
-                DimensionMarkerBuilder::new);
+        registry.addDefault(GTRegistries.Keys.ELEMENT, ElementBuilderJS.class, ElementBuilderJS::new);
+        registry.addDefault(GTRegistries.Keys.DIMENSION_MARKER, DimensionMarkerBuilderJS.class,
+                DimensionMarkerBuilderJS::new);
         registry.addDefault(GTRegistries.Keys.MATERIAL, MaterialBuilderJS.class, MaterialBuilderJS::new);
         registry.of(GTRegistries.Keys.TAG_PREFIX, reg -> {
             reg.addDefault(TagPrefixBuilderJS.class, TagPrefixBuilderJS::new);
@@ -132,8 +132,8 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             reg.add(GTCEu.id("machine"), GTRecipeTypeBuilderJS.class, GTRecipeTypeBuilderJS::new);
         });
         registry.addDefault(GTRegistries.Keys.RECIPE_TYPE, GTRecipeTypeBuilderJS.class, GTRecipeTypeBuilderJS::new);
-        registry.addDefault(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategoryBuilder.class,
-                GTRecipeCategoryBuilder::new);
+        registry.addDefault(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategoryBuilderJS.class,
+                GTRecipeCategoryBuilderJS::new);
 
         registry.of(GTRegistries.Keys.MACHINE, reg -> {
             reg.addDefault(KJSWrappingMachineBuilder.class,
@@ -147,12 +147,12 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
                     (id) -> new KJSWrappingMachineBuilder(id,
                             new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)));
 
-            reg.add(GTCEu.id("multiblock"), MultiblockMachineBuilderWrapper.class,
-                    MultiblockMachineBuilderWrapper::createKJSMulti);
+            reg.add(GTCEu.id("multiblock"), MultiblockMachineBuilderJS.class,
+                    MultiblockMachineBuilderJS::createKJSMulti);
             reg.add(GTCEu.id("tiered_multiblock"), KJSWrappingMultiblockBuilder.class,
                     KJSWrappingMultiblockBuilder::new);
-            reg.add(GTCEu.id("primitive"), MultiblockMachineBuilderWrapper.class,
-                    (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveWorkableMachine::new));
+            reg.add(GTCEu.id("primitive"), MultiblockMachineBuilderJS.class,
+                    (id) -> MultiblockMachineBuilderJS.createKJSMulti(id, PrimitiveWorkableMachine::new));
         });
 
         registry.of(Registries.BLOCK, reg -> {
@@ -162,8 +162,8 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
         registry.addDefault(GTRegistries.Keys.WORLD_GEN_LAYER, WorldGenLayerBuilderJS.class,
                 WorldGenLayerBuilderJS::new);
-        registry.addDefault(GTRegistries.Keys.MATERIAL_ICON_SET, MaterialIconSetBuilder.class,
-                MaterialIconSetBuilder::new);
+        registry.addDefault(GTRegistries.Keys.MATERIAL_ICON_SET, MaterialIconSetBuilderJS.class,
+                MaterialIconSetBuilderJS::new);
 
         registry.addDefault(GTRegistries.Keys.ORE_VEIN, OreVeinDefinitionBuilderJS.class,
                 OreVeinDefinitionBuilderJS::new);
