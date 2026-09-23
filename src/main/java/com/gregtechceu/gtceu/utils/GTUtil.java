@@ -577,13 +577,14 @@ public class GTUtil {
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD)) return;
 
         if (GTUtil.isShiftDown()) {
-            tooltipComponents.add(Component.translatable("medical_condition.gtceu.tooltip.description_shift"));
+            tooltipComponents.add(Component.translatable("medical_condition.gtceu.tooltip.description").append(":").withStyle(ChatFormatting.BOLD, ChatFormatting.RED));
             tooltipComponents.add(material.getProperty(HAZARD).condition.getTranslatableName());
             tooltipComponents.add(Component.translatable("hazard_trigger.gtceu"));
             tooltipComponents.add(material.getProperty(HAZARD).hazardTrigger.getTranslatableName());
             return;
         }
-        tooltipComponents.add(Component.translatable("medical_condition.gtceu.tooltip.description"));
+        tooltipComponents.add(Component.translatable("medical_condition.gtceu.tooltip.description").append(" ").withStyle(ChatFormatting.BOLD, ChatFormatting.RED)
+                .append(Component.translatable("common.gtceu.tooltip.hold_shift")));
     }
 
     public static CompoundTag saveItemStack(ItemStack itemStack, CompoundTag compoundTag) {

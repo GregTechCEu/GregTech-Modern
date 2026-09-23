@@ -8,19 +8,6 @@ import java.util.stream.Collectors;
 
 public class MaterialLang {
 
-    public static void generateMaterialLang(GTLangProvider provider, String namespace) {
-        for (Material material : GTRegistries.MATERIALS.values().stream().filter(v -> v.getModid().equals(namespace))
-                .collect(Collectors.toSet())) {
-            provider.add(material.getUnlocalizedName(), material.getDefaultTranslation());
-
-            for (var entry : material.getLangOverrides().entrySet()) {
-                var key = String.format("item.%s.%s", material.getResourceLocation().getNamespace(),
-                        entry.getKey().idPattern().formatted(material.getResourceLocation().getPath()));
-                provider.add(key, entry.getValue());
-            }
-        }
-    }
-
     public static void init(GTLangProvider provider) {
         generateCustomMaterialNames(provider);
         generateFluidKeys(provider);
