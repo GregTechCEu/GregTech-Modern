@@ -36,7 +36,7 @@ import java.util.function.Function;
 public class GTRecipeJEICategory extends ModularUIJeiCategory<GTRecipe> {
 
     public static final Function<GTRecipeCategory, RecipeType<GTRecipe>> TYPES = Util
-            .memoize(c -> new RecipeType<>(c.registryKey, GTRecipe.class));
+            .memoize(c -> new RecipeType<>(c.id, GTRecipe.class));
 
     private final GTRecipeCategory category;
 

@@ -91,7 +91,7 @@ public record Content(Object content, int chance, int maxChance) {
             } else {
                 float baseChanceFloat = 100f * content.chance() / content.maxChance();
 
-                if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                if (logic != ChanceLogic.NONE.value() && logic != ChanceLogic.OR.value()) {
                     tooltip.addLine(Component.translatable("gtceu.gui.content.chance_no_boost_logic",
                             FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
                             .withStyle(ChatFormatting.YELLOW));

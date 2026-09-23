@@ -177,6 +177,10 @@ public class GTOreDefinition {
         return this;
     }
 
+    public GTOreDefinition layer(Holder<IWorldGenLayer> layer) {
+        return layer(layer.value());
+    }
+
     public GTOreDefinition dimensions(Set<ResourceKey<Level>> dimensions) {
         this.dimensionFilter = dimensions;
         return this;
@@ -288,9 +292,8 @@ public class GTOreDefinition {
     @Nullable
     public VeinGenerator veinGenerator(ResourceLocation id) {
         if (veinGenerator == null) {
-            // noinspection DataFlowIssue
-            veinGenerator = WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ?
-                    WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id).get() : null;
+            VeinGenerator.VeinGeneratorType<?> type = GTRegistries.VEIN_GENERATORS.get(id);
+            veinGenerator = type == null ? null : type.defaultInstance().get();
         }
         return veinGenerator;
     }

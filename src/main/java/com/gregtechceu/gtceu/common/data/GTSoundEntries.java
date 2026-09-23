@@ -1,71 +1,55 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class GTSoundEntries {
 
     // Machine Sounds
-    public static final SoundEntry FORGE_HAMMER = REGISTRATE.sound("forge_hammer").build();
-    public static final SoundEntry MACERATOR = REGISTRATE.sound("macerator").build();
-    public static final SoundEntry CHEMICAL = REGISTRATE.sound("chemical").build();
-    public static final SoundEntry ASSEMBLER = REGISTRATE.sound("assembler").build();
-    public static final SoundEntry CENTRIFUGE = REGISTRATE.sound("centrifuge").build();
-    public static final SoundEntry COMPRESSOR = REGISTRATE.sound("compressor").build();
-    public static final SoundEntry ELECTROLYZER = REGISTRATE.sound("electrolyzer").build();
-    public static final SoundEntry MIXER = REGISTRATE.sound("mixer").build();
-    public static final SoundEntry REPLICATOR = REGISTRATE.sound("replicator").build();
-    public static final SoundEntry ARC = REGISTRATE.sound("arc").build();
-    public static final SoundEntry BOILER = REGISTRATE.sound("boiler").build();
-    public static final SoundEntry FURNACE = REGISTRATE.sound("furnace").build();
-    public static final SoundEntry COOLING = REGISTRATE.sound("cooling").build();
-    public static final SoundEntry FIRE = REGISTRATE.sound("fire").build();
-    public static final SoundEntry BATH = REGISTRATE.sound("bath").build();
-    public static final SoundEntry MOTOR = REGISTRATE.sound("motor").build();
-    public static final SoundEntry CUT = REGISTRATE.sound("cut").build();
-    public static final SoundEntry TURBINE = REGISTRATE.sound("turbine").build();
-    public static final SoundEntry COMBUSTION = REGISTRATE.sound("combustion").build();
-    public static final SoundEntry COMPUTATION = REGISTRATE.sound("computation").build();
-    public static final SoundEntry MINER = REGISTRATE.sound("miner").build();
-    public static final SoundEntry SCIENCE = REGISTRATE.sound("science").build();
-    public static final SoundEntry JET_ENGINE = REGISTRATE.sound("jet_engine").build();
-    public static final SoundEntry WRENCH_TOOL = REGISTRATE.sound("wrench").build();
-    public static final SoundEntry SOFT_MALLET_TOOL = REGISTRATE.sound("soft_hammer").build();
-    public static final SoundEntry DRILL_TOOL = REGISTRATE.sound("drill").build();
-    public static final SoundEntry PLUNGER_TOOL = REGISTRATE.sound("plunger").build();
-    public static final SoundEntry FILE_TOOL = REGISTRATE.sound("file").build();
-    public static final SoundEntry SAW_TOOL = REGISTRATE.sound("saw").build();
-    public static final SoundEntry SCREWDRIVER_TOOL = REGISTRATE.sound("screwdriver").build();
-    public static final SoundEntry CHAINSAW_TOOL = REGISTRATE.sound("chainsaw").build();
-    public static final SoundEntry WIRECUTTER_TOOL = REGISTRATE.sound("wirecutter").build();
-    public static final SoundEntry SPRAY_CAN_TOOL = REGISTRATE.sound("spray_can").build();
-    public static final SoundEntry PORTABLE_SCANNER = REGISTRATE.sound("portable_scanner").build();
-    public static final SoundEntry MORTAR_TOOL = REGISTRATE.sound("mortar").build();
-    public static final SoundEntry SUS_RECORD = REGISTRATE.sound("sus").build();
-    public static final SoundEntry PORTAL_OPENING = REGISTRATE.sound("portal_opening").build();
-    public static final SoundEntry PORTAL_CLOSING = REGISTRATE.sound("portal_closing").build();
-    public static final SoundEntry METAL_PIPE = REGISTRATE.sound("metal_pipe").build();
+    // spotless:off
+    public static final DeferredHolder<SoundEntry, SoundEntry> FORGE_HAMMER = REGISTRATE.sound("forge_hammer").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> MACERATOR = REGISTRATE.sound("macerator").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> CHEMICAL = REGISTRATE.sound("chemical").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> ASSEMBLER = REGISTRATE.sound("assembler").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> CENTRIFUGE = REGISTRATE.sound("centrifuge").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> COMPRESSOR = REGISTRATE.sound("compressor").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> ELECTROLYZER = REGISTRATE.sound("electrolyzer").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> MIXER = REGISTRATE.sound("mixer").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> REPLICATOR = REGISTRATE.sound("replicator").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> ARC = REGISTRATE.sound("arc").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> BOILER = REGISTRATE.sound("boiler").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> FURNACE = REGISTRATE.sound("furnace").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> COOLING = REGISTRATE.sound("cooling").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> FIRE = REGISTRATE.sound("fire").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> BATH = REGISTRATE.sound("bath").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> MOTOR = REGISTRATE.sound("motor").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> CUT = REGISTRATE.sound("cut").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> TURBINE = REGISTRATE.sound("turbine").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> COMBUSTION = REGISTRATE.sound("combustion").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> COMPUTATION = REGISTRATE.sound("computation").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> MINER = REGISTRATE.sound("miner").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> SCIENCE = REGISTRATE.sound("science").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> JET_ENGINE = REGISTRATE.sound("jet_engine").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> WRENCH_TOOL = REGISTRATE.sound("wrench").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> SOFT_MALLET_TOOL = REGISTRATE.sound("soft_hammer").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> DRILL_TOOL = REGISTRATE.sound("drill").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> PLUNGER_TOOL = REGISTRATE.sound("plunger").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> FILE_TOOL = REGISTRATE.sound("file").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> SAW_TOOL = REGISTRATE.sound("saw").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> SCREWDRIVER_TOOL = REGISTRATE.sound("screwdriver").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> CHAINSAW_TOOL = REGISTRATE.sound("chainsaw").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> WIRECUTTER_TOOL = REGISTRATE.sound("wirecutter").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> SPRAY_CAN_TOOL = REGISTRATE.sound("spray_can").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> PORTABLE_SCANNER = REGISTRATE.sound("portable_scanner").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> MORTAR_TOOL = REGISTRATE.sound("mortar").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> SUS_RECORD = REGISTRATE.sound("sus").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> PORTAL_OPENING = REGISTRATE.sound("portal_opening").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> PORTAL_CLOSING = REGISTRATE.sound("portal_closing").register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> METAL_PIPE = REGISTRATE.sound("metal_pipe").register();
+    //spotless:on
 
-    public static void init(IEventBus modBus) {
-        modBus.register(GTSoundEntries.class);
-    }
-
-    @SubscribeEvent
-    private static void registerSounds(RegisterEvent event) {
-        if (event.getRegistryKey() != Registries.SOUND_EVENT) return;
-
-        for (SoundEntry entry : GTRegistries.SOUNDS) {
-            entry.prepare();
-            entry.register(soundEvent -> GTRegistries.register(BuiltInRegistries.SOUND_EVENT, soundEvent.getLocation(),
-                    soundEvent));
-        }
-    }
+    public static void init() {}
 }
