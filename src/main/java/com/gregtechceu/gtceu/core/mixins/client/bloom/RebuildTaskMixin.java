@@ -50,8 +50,9 @@ public abstract class RebuildTaskMixin {
                 return BloomRenderer.SafeMode.getOrStartBloomBuffer(SectionPos.of(sectionOrigin));
             }
         };
-        // intentionally no try-with-resource statement; closed in 'gtceu$clearBloomContextData'
-        BloomRenderer.bloomChunkContext().get().with(provider);
+        // intentionally no 'try'-with-resources statement; closed in 'gtceu$clearBloomContextData'
+        // noinspection resource
+        BloomRenderer.bloomChunkContext().with(provider);
     }
 
     @Inject(method = "compile",
@@ -65,6 +66,6 @@ public abstract class RebuildTaskMixin {
             BloomRenderer.SafeMode.bakeBloomChunkBuffers(SectionPos.of(sectionOrigin), camX, camY, camZ);
         }
 
-        BloomRenderer.bloomChunkContext().get().close();
+        BloomRenderer.bloomChunkContext().close();
     }
 }

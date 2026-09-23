@@ -81,8 +81,8 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
     @Override
     public void afterWorking() {
         super.afterWorking();
-        if (recipeLogic.getLastRecipe() != null) {
-            var inputs = recipeLogic.getLastRecipe().inputs.getOrDefault(ItemRecipeCapability.CAP,
+        if (recipeLogic.getLastUnrolledRecipe() != null) {
+            var inputs = recipeLogic.getLastUnrolledRecipe().inputs.getOrDefault(ItemRecipeCapability.CAP,
                     Collections.emptyList());
             if (!inputs.isEmpty()) {
                 var input = ItemRecipeCapability.CAP.of(inputs.get(0).content()).getItems();
@@ -126,10 +126,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
                 GTGuiTextures.PROGRESS_BAR_BOILER_FUEL_BRONZE;
 
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
-                () -> new DoubleSyncValue(() -> {
-                    if (recipeLogic == null) return -1f;
-                    return recipeLogic.getProgressPercent();
-                }));
+                () -> new DoubleSyncValue(recipeLogic::getProgressPercent));
 
         mainWidget.child(Flow.col()
                 .coverChildren()
@@ -137,12 +134,13 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
                 .childPadding(4)
                 .reverseLayout(true)
                 .child(new ItemSlot()
-                        .slot(new ModularSlot(this.fuelHandler, 0)))
+                        .slot(new ModularSlot(this.fuelHandler.storage, 0).accessibility(true, true)
+                                .singletonSlotGroup()))
                 .child(new ProgressWidget()
                         .size(18)
                         .texture(progressTexture, ProgressDrawable.Direction.UP)
                         .value(progressPercent))
                 .child(new ItemSlot()
-                        .slot(new ModularSlot(this.ashHandler, 0))));
+                        .slot(new ModularSlot(this.ashHandler.storage, 0).accessibility(false, true))));
     }
 }

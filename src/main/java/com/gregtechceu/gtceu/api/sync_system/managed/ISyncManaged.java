@@ -44,6 +44,9 @@ public interface ISyncManaged {
      * Function called to notify the server that this object has been updated and must be synced to clients
      */
     default void markAsChanged() {
-        if (getParentSyncObject() != null) getParentSyncObject().markAsChanged();
+        if (getParentSyncObject() != null) {
+            getParentSyncObject().markAsChanged();
+            getParentSyncObject().getSyncDataHolder().setHasDirtyChildSyncObject(true);
+        }
     }
 }

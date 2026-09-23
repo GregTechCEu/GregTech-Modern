@@ -101,6 +101,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             map.put(proxyRecipe, new ArrayList<>());
         }
         this.proxyRecipes = map;
+        this.uiLayout = new GTRecipeTypeUILayout.Builder(this).build();
     }
 
     public GTRecipeType setMaxIOSize(int maxItemInputs, int maxItemOutputs, int maxFluidInputs, int maxFluidOutputs) {
@@ -141,11 +142,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public GTRecipeType setXEIVisible(boolean XEIVisible) {
         this.category.setXEIVisible(XEIVisible);
-        return this;
-    }
-
-    public GTRecipeType addDataInfo(Function<CompoundTag, Component> dataInfo) {
-        this.dataInfos.add(dataInfo);
         return this;
     }
 
@@ -238,10 +234,12 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return recipeBuilder(id);
     }
 
+    @ApiStatus.Internal
     public GTRecipeBuilder recipeBuilder(String id) {
         return recipeBuilder(GTCEu.id(id));
     }
 
+    @ApiStatus.Internal
     public GTRecipeBuilder recipeBuilder(String id, Object... append) {
         return recipeBuilder(GTCEu.id(id), append);
     }

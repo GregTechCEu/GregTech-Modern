@@ -3,9 +3,8 @@ package com.gregtechceu.gtceu.common.cover.detector;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
-import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -51,7 +50,7 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IMui
     @SaveField
     @SyncToClient
     @Getter
-    protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
+    protected final FilterHandler<ItemStack> filterHandler;
 
     public AdvancedItemDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -59,7 +58,7 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IMui
         this.minValue = DEFAULT_MIN;
         this.maxValue = DEFAULT_MAX;
 
-        filterHandler = FilterHandlers.item(this);
+        filterHandler = new FilterHandler<>(this, ItemStack.class);
     }
 
     @Override
@@ -76,7 +75,7 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IMui
         if (this.coverHolder.getOffsetTimer() % 20 != 0)
             return;
 
-        ItemFilter filter = filterHandler.getFilter();
+        Filter<ItemStack> filter = filterHandler.getFilter();
         IItemHandler handler = getItemHandler();
         if (handler == null)
             return;

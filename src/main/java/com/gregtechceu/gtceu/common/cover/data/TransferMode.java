@@ -26,4 +26,6 @@ public enum TransferMode {
     public String getTooltip() {
         return "cover.gtceu.robot_arm_transfer_mode." + localeName;
     }
+
+    public static final int MAX_SIZE_STACK = 1024;
 }

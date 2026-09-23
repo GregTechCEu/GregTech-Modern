@@ -55,8 +55,7 @@ public class BloomRenderer {
     @Accessors(fluent = true)
     @Getter
     @ApiStatus.Internal
-    static final ThreadLocal<ScopedValue.Object<Supplier<VertexConsumer>>> bloomChunkContext = ThreadLocal
-            .withInitial(ScopedValue.Object::new);
+    static final ScopedValue.Object<Supplier<VertexConsumer>> bloomChunkContext = new ScopedValue.Object<>();
 
     @ApiStatus.Internal
     static void renderBloom(Camera camera, PoseStack poseStack, Frustum frustum, Matrix4f projectionMatrix,
@@ -193,7 +192,8 @@ public class BloomRenderer {
         }
 
         if (TextureMetadataHelper.hasBloom(quad, packedLights)) {
-            Supplier<VertexConsumer> currentVertexConsumer = bloomChunkContext().get().getValue();
+            @SuppressWarnings("resource")
+            Supplier<VertexConsumer> currentVertexConsumer = bloomChunkContext().getValue();
             if (currentVertexConsumer == null) return;
 
             drawConsumer.accept(currentVertexConsumer.get());
@@ -277,7 +277,7 @@ public class BloomRenderer {
 
             BLOOM_RENDER_LOCK.writeLock().lock();
             try {
-                BLOOM_BUFFER_BUILDERS.remove(sectionPos, builder);
+                BLOOM_BUFFER_BUILDERS.remove(sectionPos);
                 BLOOM_BUFFER_SORT_STATES.put(sectionPos, builder.getSortState());
 
                 RenderCall upload = () -> {
@@ -304,12 +304,17 @@ public class BloomRenderer {
         }
 
         public static BufferBuilder getOrStartBloomBuffer(SectionPos sectionPos) {
-            BufferBuilder builder = BLOOM_BUFFER_BUILDERS.computeIfAbsent(sectionPos,
-                    $ -> new BufferBuilder(GTRenderTypes.bloom().bufferSize()));
-            if (!builder.building()) {
-                builder.begin(GTRenderTypes.bloom().mode(), GTRenderTypes.bloom().format());
+            BLOOM_RENDER_LOCK.writeLock().lock();
+            try {
+                BufferBuilder builder = BLOOM_BUFFER_BUILDERS.computeIfAbsent(sectionPos,
+                        $ -> new BufferBuilder(GTRenderTypes.bloom().bufferSize()));
+                if (!builder.building()) {
+                    builder.begin(GTRenderTypes.bloom().mode(), GTRenderTypes.bloom().format());
+                }
+                return builder;
+            } finally {
+                BLOOM_RENDER_LOCK.writeLock().unlock();
             }
-            return builder;
         }
 
         public static void bakeBloomChunkBuffers(SectionPos sectionPos, float camX, float camY, float camZ) {

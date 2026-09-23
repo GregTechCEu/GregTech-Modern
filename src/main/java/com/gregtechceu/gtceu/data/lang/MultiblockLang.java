@@ -24,6 +24,10 @@ public class MultiblockLang {
         provider.add("multiblock.gtceu.pattern.replaceable_air", "Replaceable by Air");
         provider.add("multiblock.gtceu.predicate.single", "§6Only this block can be used§r");
 
+        provider.add("multiblock.gtceu.pattern.coils_must_match", "All heating coils must be the same");
+        provider.add("multiblock.gtceu.pattern.filters_must_match", "§cAll filters must be the same§r");
+        provider.add("multiblock.gtceu.pattern.batteries_must_match", "§cAll batteries must be the same§r");
+
         // Pattern Errors
 
         provider.add("multiblock.gtceu.pattern_error.block_match_error", "Error at X: %d, Y: %d, Z: %d");

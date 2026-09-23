@@ -2,6 +2,9 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
+
+import org.jetbrains.annotations.Nullable;
 
 public class EnumTransformer<E extends Enum<E>> implements ValueTransformer<E> {
 
@@ -33,5 +36,15 @@ public class EnumTransformer<E extends Enum<E>> implements ValueTransformer<E> {
                     "Unknown enum constant: %s[%s]".formatted(enumClass.getName(), enumString));
         }
         return value;
+    }
+
+    @Override
+    public void writeToPacket(FriendlyByteBuf buf, E value, TransformerContext<E> context) {
+        buf.writeEnum(value);
+    }
+
+    @Override
+    public @Nullable E readFromPacket(FriendlyByteBuf buf, TransformerContext<E> context) {
+        return buf.readEnum(enumClass);
     }
 }

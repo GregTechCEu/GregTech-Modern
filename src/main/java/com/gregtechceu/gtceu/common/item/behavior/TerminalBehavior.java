@@ -140,7 +140,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
 
         return ModularPanel.defaultPanel("terminal")
                 .coverChildren()
-                .onCloseAction(() -> {
+                .onCloseAction(w -> {
                     this.multiblockSchemaInfo = previewWidget.getMultiblockSchemaInfo();
                 })
                 .child(previewWidget);

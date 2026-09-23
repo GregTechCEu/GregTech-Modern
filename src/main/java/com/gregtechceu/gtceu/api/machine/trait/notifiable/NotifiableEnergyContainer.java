@@ -9,12 +9,10 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.machine.trait.EnvironmentalExplosionTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -38,19 +36,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<EnergyStack> implements IEnergyContainer {
 
-    public static final MachineTraitType<NotifiableEnergyContainer> TYPE = new MachineTraitType<>(
-            NotifiableEnergyContainer.class);
-
-    @Override
-    public MachineTraitType<? extends NotifiableEnergyContainer> getTraitType() {
-        return TYPE;
-    }
-
     @Getter
     protected IO handlerIO;
     @Getter
     @SaveField
-    @SyncToClient
     protected long energyStored;
     @Getter
     private long energyCapacity, inputVoltage, inputAmperage, outputVoltage, outputAmperage;
@@ -150,7 +139,6 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
             energyOutputPerSec += this.energyStored - energyStored;
         }
         this.energyStored = energyStored;
-        syncDataHolder.markClientSyncFieldDirty("energyStored");
         checkOutputSubscription();
         notifyListeners();
     }
@@ -271,7 +259,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
         long canAccept = getEnergyCapacity() - getEnergyStored();
         if (voltage > 0L && inputsEnergy(side)) {
             if (voltage > getInputVoltage()) {
-                var explodable = getMachine().getTrait(EnvironmentalExplosionTrait.TYPE);
+                var explodable = getMachine().getTrait(EnvironmentalExplosionTrait.class);
                 if (explodable != null)
                     GTUtil.doExplosion(getLevel(), getBlockPos(), GTUtil.getExplosionPower(voltage));
                 return Math.min(amperage, getInputAmperage() - amps);

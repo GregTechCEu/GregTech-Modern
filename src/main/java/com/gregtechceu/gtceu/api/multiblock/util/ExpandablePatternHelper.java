@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
@@ -89,7 +89,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         // this basically means the x val of the iter is aisle count, y is str count, and z is char count.
         for (BlockPos pos : betweenClosed(corners.bounds())) {
             BlockPos.MutableBlockPos mutablePos = pos.mutable();
-            PatternPredicate predicate = predicateProvider.apply(mutablePos, userRepeats);
+            MultiPredicate predicate = predicateProvider.apply(mutablePos, userRepeats);
 
             // this basically reshuffles the coordinates into absolute form from relative form
             setFromDirection(mutablePos, absolutes[0], pos.getX());
@@ -108,14 +108,14 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         }
     }
 
-    private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
+    private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos) {
-        for (BasePredicate basePredicate : predicate.subPredicates) {
+        for (BasePredicate basePredicate : predicate.predicates()) {
             int minCount = getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            if (minCount <= 0 || totalAlreadyPopulated >= minCount) continue;
+            if (minCount == -1 || totalAlreadyPopulated >= minCount) continue;
 
             BlockInfo toInsert = null;
             if (blockPreferences.contains(predicate, basePredicate)) {
@@ -126,12 +126,15 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             if (toInsert != null) resultStructure.put(pos, toInsert);
             return true;
         }
+        for (MultiPredicate child : predicate.children()) {
+            if (tryMinCount(resultStructure, child, pos)) return true;
+        }
         return false;
     }
 
-    private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
+    private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos) {
-        for (BasePredicate basePredicate : predicate.subPredicates) {
+        for (BasePredicate basePredicate : predicate.predicates()) {
             int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
@@ -147,12 +150,15 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             if (toInsert != null) resultStructure.put(pos, toInsert);
             return true;
         }
+        for (MultiPredicate child : predicate.children()) {
+            if (tryMaxCount(resultStructure, child, pos)) return true;
+        }
         return false;
     }
 
     @Override
-    public PatternPredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
-                                                Direction frontFacing, Direction upFacing, boolean isFlipped) {
+    public MultiPredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
+                                              Direction frontFacing, Direction upFacing, boolean isFlipped) {
         ExpandablePattern expandablePattern = (ExpandablePattern) pattern;
         Direction[] absolutes = getCorners(userRepeats, expandablePattern, frontFacing, upFacing, isFlipped)
                 .absolutes();

@@ -261,6 +261,10 @@ public abstract class ChanceLogic {
         this(GTCEu.id(id));
     }
 
+    public String getLanguageKey() {
+        return id.toLanguageKey("chance_logic");
+    }
+
     /**
      * @param entry the entry to get the complete chance for
      * @return the total chance for the entry

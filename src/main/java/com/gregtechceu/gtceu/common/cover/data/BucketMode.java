@@ -9,7 +9,7 @@ import lombok.Getter;
 
 public enum BucketMode {
 
-    BUCKET("common.gtceu.bucket", new ResourceLocation("minecraft", "textures/item/water_bucket"), 1000),
+    BUCKET("common.gtceu.bucket", ResourceLocation.withDefaultNamespace("textures/item/water_bucket"), 1000),
     MILLI_BUCKET("common.gtceu.millibucket", GTCEu.id("textures/gui/icon/bucket_mode/water_drop"), 1);
 
     @Getter

@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRecipeLogicModifierTrait;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -19,9 +18,6 @@ import lombok.Setter;
  * trait for environmental hazard (e.g. pollution) emitters like mufflers.
  */
 public class EnvironmentalHazardEmitterTrait extends MachineTrait implements IRecipeLogicModifierTrait {
-
-    public static final MachineTraitType<EnvironmentalHazardEmitterTrait> TYPE = new MachineTraitType<>(
-            EnvironmentalHazardEmitterTrait.class);
 
     @Getter
     @Setter
@@ -38,11 +34,6 @@ public class EnvironmentalHazardEmitterTrait extends MachineTrait implements IRe
         super();
         this.conditionToEmit = conditionToEmit;
         this.emissionStrength = emissionStrength;
-    }
-
-    @Override
-    public MachineTraitType<EnvironmentalHazardEmitterTrait> getTraitType() {
-        return TYPE;
     }
 
     @Override

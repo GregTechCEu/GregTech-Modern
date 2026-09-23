@@ -157,7 +157,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         mainWidget.child(listWidget.left(3).top(3));
 
         /*
-         * 
+         *
          * else if (pState.hasError()) {
          * textList.addAll(pState.getError().getErrorInfo());
          * }

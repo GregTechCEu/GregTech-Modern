@@ -81,7 +81,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
      * @param chunkZ Z coordinate of desired chunk
      * @return The FluidVeinWorldInfo corresponding with the given chunk
      */
-    public FluidVeinWorldEntry getFluidVeinWorldEntry(int chunkX, int chunkZ) {
+    public @Nullable FluidVeinWorldEntry getFluidVeinWorldEntry(int chunkX, int chunkZ) {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         if (!veinFluids.containsKey(pos)) {
             BedrockFluidDefinition definition = null;

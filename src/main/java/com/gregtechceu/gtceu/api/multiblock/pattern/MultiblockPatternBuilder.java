@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import com.google.common.base.Joiner;
@@ -51,7 +52,7 @@ public class MultiblockPatternBuilder {
 
     private final List<PatternSlice> slices = new ArrayList<>();
 
-    private final Char2ObjectMap<@Nullable PatternPredicate> symbolMap = new Char2ObjectOpenHashMap<>();
+    private final Char2ObjectMap<@Nullable MultiPredicate> symbolMap = new Char2ObjectOpenHashMap<>();
 
     private final RelativeDirection[] directions = new RelativeDirection[3];
 
@@ -62,7 +63,7 @@ public class MultiblockPatternBuilder {
         directions[2] = charDir;
         RelativeDirection.validateFacingsArray(directions);
         // todo is this wanted?
-        this.symbolMap.put(' ', PatternPredicate.ANY);
+        this.symbolMap.put(' ', Predicates.any());
     }
 
     public MultiblockPatternBuilder sliceRepeatable(int minRepeats, int maxRepeats, String... slice) {
@@ -124,7 +125,7 @@ public class MultiblockPatternBuilder {
         return new MultiblockPatternBuilder(sliceDir, stringDir, charDir);
     }
 
-    public MultiblockPatternBuilder where(char symbol, PatternPredicate predicate) {
+    public MultiblockPatternBuilder where(char symbol, MultiPredicate predicate) {
         this.symbolMap.put(symbol, predicate);
         if (predicate.isController()) centerChar = symbol;
         return this;
@@ -172,20 +173,19 @@ public class MultiblockPatternBuilder {
 
         for (var entry : symbolMap.char2ObjectEntrySet()) {
             char symbol = entry.getCharKey();
-            PatternPredicate predicate = entry.getValue();
+            MultiPredicate predicate = entry.getValue();
             if (predicate == null) throw new IllegalArgumentException("Predicate for symbol " + symbol + " was null.");
-
             int maxCount = -1;
-            for (var basePredicate : predicate.subPredicates) {
-                if (basePredicate.maxCount == -1) {
+            for (var basePredicate : predicate.expand()) {
+                if (basePredicate.getMaxCount() == -1) {
                     maxCount = -1;
                     break;
                 }
-                if (basePredicate.minCount == basePredicate.maxCount) {
+                if (basePredicate.getMinCount() == basePredicate.getMaxCount()) {
                     if (maxCount == -1) {
-                        maxCount = basePredicate.minCount;
+                        maxCount = basePredicate.getMinCount();
                     } else {
-                        maxCount += basePredicate.minCount;
+                        maxCount += basePredicate.getMinCount();
                     }
                 }
             }

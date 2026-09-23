@@ -16,7 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 import lombok.Getter;
 
@@ -61,7 +60,6 @@ public class DiodePartMachine extends TieredIOPartMachine {
         }
     }
 
-    public static final EnumProperty<DiodePartMachine.AmpMode> AMP_MODE_PROPERTY = GTMachineModelProperties.DIODE_AMP_MODE;
     // spotless:on
 
     public static int MAX_AMPS = 16;

@@ -56,9 +56,9 @@ public class GTDynamicResourcePack implements PackResources {
     protected static final GTDynamicPackContents CONTENTS = new GTDynamicPackContents();
 
     private static final FileToIdConverter ATLAS_ID_CONVERTER = FileToIdConverter.json("atlases");
-    public static final FileToIdConverter TEXTURE_ID_CONVERTER = SpriteSource.TEXTURE_ID_CONVERTER;
     public static final FileToIdConverter BLOCKSTATE_ID_CONVERTER = FileToIdConverter.json("blockstates");
     public static final FileToIdConverter MODEL_ID_CONVERTER = FileToIdConverter.json("models");
+    public static final FileToIdConverter TEXTURE_ID_CONVERTER = new FileToIdConverter("textures", ".png");
 
     private final String name;
 

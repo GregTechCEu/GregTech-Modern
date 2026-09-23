@@ -89,8 +89,8 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, L
         return tile != null &&
                 (tile.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, side.getOpposite()).isPresent() ||
                         tile instanceof MetaMachine metaMachine &&
-                                (metaMachine.getTrait(EnvironmentalHazardCleanerTrait.TYPE) != null ||
-                                        metaMachine.getTrait(EnvironmentalHazardEmitterTrait.TYPE) !=
+                                (metaMachine.getTrait(EnvironmentalHazardCleanerTrait.class) != null ||
+                                        metaMachine.getTrait(EnvironmentalHazardEmitterTrait.class) !=
                                                 null));
     }
 

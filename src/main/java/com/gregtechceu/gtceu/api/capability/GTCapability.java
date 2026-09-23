@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
+import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 
 import net.minecraftforge.common.capabilities.Capability;
@@ -29,6 +30,8 @@ public class GTCapability {
             .get(new CapabilityToken<>() {});
     public static final Capability<IMonitorComponent> CAPABILITY_MONITOR_COMPONENT = CapabilityManager
             .get(new CapabilityToken<>() {});
+    public static final Capability<ISpoilableItem> CAPABILITY_SPOILABLE_ITEM = CapabilityManager
+            .get(new CapabilityToken<>() {});
 
     public static final Capability<MedicalConditionTracker> CAPABILITY_MEDICAL_CONDITION_TRACKER = CapabilityManager
             .get(new CapabilityToken<>() {});
@@ -46,5 +49,6 @@ public class GTCapability {
         event.register(MedicalConditionTracker.class);
         event.register(IHazardParticleContainer.class);
         event.register(IMonitorComponent.class);
+        event.register(ISpoilableItem.class);
     }
 }

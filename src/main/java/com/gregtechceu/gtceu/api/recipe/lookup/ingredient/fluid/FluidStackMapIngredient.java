@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
 import net.minecraftforge.fluids.FluidStack;
@@ -31,11 +30,7 @@ public class FluidStackMapIngredient extends AbstractMapIngredient {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
         for (FluidIngredient.Value value : ingredient.values) {
             if (value instanceof FluidIngredient.FluidValue fluidValue) {
-                FluidStack stack = new FluidStack(fluidValue.fluid(),
-                        (ingredient instanceof IRangedIngredient provider ?
-                                provider.getMaxRoll() :
-                                ingredient.getAmount()),
-                        ingredient.getNbt());
+                FluidStack stack = new FluidStack(fluidValue.fluid(), ingredient.getAmount(), ingredient.getNbt());
                 ingredients.add(new FluidStackMapIngredient(stack, ingredient));
             }
         }

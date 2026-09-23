@@ -63,6 +63,7 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
             }
             if (facing != null && !isConnected(facing)) return LazyOptional.empty();
             if (handlers.isEmpty()) initHandlers();
+            if (handlers.isEmpty()) return LazyOptional.empty();
 
             checkNetwork();
             return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(capability,
@@ -76,6 +77,7 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
             }
             if (facing != null && !isConnected(facing)) return LazyOptional.empty();
             if (handlers.isEmpty()) initHandlers();
+            if (handlers.isEmpty()) return LazyOptional.empty();
 
             checkNetwork();
             return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(capability,

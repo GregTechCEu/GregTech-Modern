@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import net.minecraft.core.BlockPos;
@@ -21,7 +21,7 @@ public class ExpandableMultiblockPatternBuilder {
     @Setter
     protected @Nullable ExpandablePattern.BoundsConstraintProvider constraintProvider;
     @Setter
-    protected @Nullable BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateProvider;
+    protected @Nullable BiFunction<BlockPos.MutableBlockPos, List<Integer>, MultiPredicate> predicateProvider;
     protected final RelativeDirection[] directions = new RelativeDirection[3];
 
     private ExpandableMultiblockPatternBuilder(RelativeDirection aisleDir, RelativeDirection stringDir,

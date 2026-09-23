@@ -1,0 +1,14 @@
+{
+  "entries": [
+    "gtceu:chests/extra/stronghold_corridor",
+    "gtceu:chests/extra/stronghold_crossing",
+    "gtceu:chests/extra/spawn_bonus_chest",
+    "gtceu:chests/extra/simple_dungeon",
+    "gtceu:chests/extra/village_weaponsmith",
+    "gtceu:chests/extra/desert_pyramid",
+    "gtceu:chests/extra/jungle_temple",
+    "gtceu:chests/extra/abandoned_mineshaft",
+    "gtceu:chests/extra/jungle_temple_dispenser"
+  ],
+  "replace": false
+}

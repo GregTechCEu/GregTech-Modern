@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -21,6 +22,11 @@ public class TieredWorkableElectricMultiblockMachine extends WorkableElectricMul
     @SaveField
     @Getter
     protected int overclockTier;
+
+    public TieredWorkableElectricMultiblockMachine(BlockEntityCreationInfo info, RecipeLogic recipeLogic, int tier) {
+        super(info, recipeLogic);
+        this.tier = tier;
+    }
 
     public TieredWorkableElectricMultiblockMachine(BlockEntityCreationInfo info, int tier) {
         super(info);

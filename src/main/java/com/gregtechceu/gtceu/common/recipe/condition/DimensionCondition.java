@@ -77,7 +77,7 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
 
             dimConditionRow.child(Text.lang("recipe_condition.gtceu.dimension", "").asWidget());
 
-            RecipeViewerSlotWidget<?> displayWidget = RecipeViewerSlotWidget.create()
+            RecipeViewerSlotWidget<ItemStack, ?> displayWidget = RecipeViewerSlotWidget.create(ItemStack.class)
                     .value(icon)
                     .marginLeft(2)
                     .recipeSlotRole(RecipeSlotRole.CATALYST)

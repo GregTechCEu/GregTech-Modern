@@ -238,8 +238,11 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                         .center()
                         .coverChildren()
                         .margin(2, 3)
-                        .child(GTMuiMachineUtil.createSlotGroupFromInventory(cache,
-                                "output_item_inv", cache.getSize(), 'i',
+                        .child(GTMuiMachineUtil.createSlotGroupFromInventory(cache.storage,
+                                "output_item_inv", cache.getSize(), 'i', slot -> {
+                                    slot.getSlot().accessibility(false, true);
+                                    return slot;
+                                },
                                 syncManager, outputItemGrid))
                         .padding(4, 0));
     }

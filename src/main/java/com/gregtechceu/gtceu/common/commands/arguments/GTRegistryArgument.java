@@ -52,7 +52,7 @@ public class GTRegistryArgument<K, V> implements ArgumentType<V> {
     public V parse(StringReader reader) throws CommandSyntaxException {
         String id = readId(reader);
         if (ResourceLocation.class.isAssignableFrom(keyClass)) {
-            K loc = (K) new ResourceLocation(id);
+            K loc = (K) ResourceLocation.parse(id);
             if (!registry.containsKey(loc)) {
                 throw new SimpleCommandExceptionType(new LiteralMessage("Failed to find object" + id + " in registry"))
                         .createWithContext(reader);

@@ -6,28 +6,34 @@
       "model": "gtceu:block/pipe/huge_duct_pipe/center"
     },
     "down": {
-      "model": "gtceu:block/pipe/huge_duct_pipe/connection"
+      "model": "gtceu:block/pipe/huge_duct_pipe/connection",
+      "uvlock": true
     },
     "east": {
       "model": "gtceu:block/pipe/huge_duct_pipe/connection",
+      "uvlock": true,
       "x": 90,
       "y": 270
     },
     "north": {
       "model": "gtceu:block/pipe/huge_duct_pipe/connection",
+      "uvlock": true,
       "x": 90,
       "y": 180
     },
     "south": {
       "model": "gtceu:block/pipe/huge_duct_pipe/connection",
+      "uvlock": true,
       "x": 90
     },
     "up": {
       "model": "gtceu:block/pipe/huge_duct_pipe/connection",
+      "uvlock": true,
       "x": 180
     },
     "west": {
       "model": "gtceu:block/pipe/huge_duct_pipe/connection",
+      "uvlock": true,
       "x": 90,
       "y": 90
     }

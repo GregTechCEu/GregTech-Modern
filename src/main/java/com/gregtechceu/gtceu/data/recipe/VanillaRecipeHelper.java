@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.data.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
@@ -25,7 +24,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
-import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
 import it.unimi.dsi.fastutil.chars.CharArraySet;
 import it.unimi.dsi.fastutil.chars.CharSet;
@@ -36,34 +34,37 @@ import java.util.function.Consumer;
 
 public class VanillaRecipeHelper {
 
-    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, TagKey<Item> input,
-                                         ItemStack output) {
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
+                                         @NotNull TagKey<Item> input,
+                                         @NotNull ItemStack output) {
         addSmeltingRecipe(provider, GTCEu.id(regName), input, output);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
-                                         TagKey<Item> input, ItemStack output) {
+                                         @NotNull TagKey<Item> input, @NotNull ItemStack output) {
         addSmeltingRecipe(provider, regName, input, output, 0.0f);
     }
 
-    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, TagKey<Item> input,
-                                         ItemStack output, float experience) {
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
+                                         @NotNull TagKey<Item> input,
+                                         @NotNull ItemStack output, float experience) {
         addSmeltingRecipe(provider, GTCEu.id(regName), input, output, experience);
     }
 
-    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, Ingredient input,
-                                         ItemStack output, float experience) {
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
+                                         @NotNull Ingredient input,
+                                         @NotNull ItemStack output, float experience) {
         addSmeltingRecipe(provider, GTCEu.id(regName), input, output, experience);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
-                                         ItemStack input,
-                                         ItemStack output) {
+                                         @NotNull ItemStack input,
+                                         @NotNull ItemStack output) {
         addSmeltingRecipe(provider, regName, input, output, 0);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
-                                         Ingredient input, ItemStack output, float experience) {
+                                         @NotNull Ingredient input, @NotNull ItemStack output, float experience) {
         SimpleCookingRecipeBuilder.smelting(regName).input(input).output(output).cookingTime(200).experience(experience)
                 .save(provider);
     }
@@ -325,6 +326,7 @@ public class VanillaRecipeHelper {
      * @param result              the output for the recipe
      * @param recipe              the contents of the recipe
      */
+    @SuppressWarnings("unchecked")
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData, boolean isStrict,
                                        boolean matchSize, @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                        @NotNull Object... recipe) {
@@ -374,8 +376,6 @@ public class VanillaRecipeHelper {
                     if (tag != null) {
                         builder.define(sign, tag);
                     } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix(), entry.material()));
-                } else if (content instanceof ItemProviderEntry<?> entry) {
-                    builder.define(sign, entry.asStack());
                 }
             }
         }
@@ -430,6 +430,7 @@ public class VanillaRecipeHelper {
         addShapelessRecipe(provider, GTCEu.id(regName), result, recipe);
     }
 
+    @SuppressWarnings("unchecked")
     public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                                      boolean overrideCharge, boolean transferMaxCharge,
                                                      @NotNull ResourceLocation regName,
@@ -475,8 +476,6 @@ public class VanillaRecipeHelper {
                     if (tag != null) {
                         builder.define(sign, tag);
                     } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix(), entry.material()));
-                } else if (content instanceof ItemProviderEntry<?> entry) {
-                    builder.define(sign, entry.asStack());
                 }
             }
         }
@@ -499,6 +498,7 @@ public class VanillaRecipeHelper {
                 GTCEu.id(regName), chargeIngredient, result, recipe);
     }
 
+    @SuppressWarnings("unchecked")
     public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                                      boolean isStrict,
                                                      @NotNull ResourceLocation regName, @NotNull ItemStack result,
@@ -548,8 +548,6 @@ public class VanillaRecipeHelper {
                     if (tag != null) {
                         builder.define(sign, tag);
                     } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix(), entry.material()));
-                } else if (content instanceof ItemProviderEntry<?> entry) {
-                    builder.define(sign, entry.asStack());
                 }
             }
         }
@@ -602,6 +600,7 @@ public class VanillaRecipeHelper {
         addShapelessRecipe(provider, regName, result, recipe);
     }
 
+    @SuppressWarnings("unchecked")
     public static void addShapelessRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                           @NotNull ItemStack result, @NotNull Object... recipe) {
         var builder = new ShapelessRecipeBuilder(regName).output(result);
@@ -619,8 +618,6 @@ public class VanillaRecipeHelper {
                 if (tag != null) {
                     builder.requires(tag);
                 } else builder.requires(ChemicalHelper.get(entry.tagPrefix(), entry.material()));
-            } else if (content instanceof ItemProviderEntry<?> entry) {
-                builder.requires(entry.asStack());
             } else if (content instanceof Character c) {
                 builder.requires(ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
             }
@@ -665,7 +662,7 @@ public class VanillaRecipeHelper {
      * @return if the material is a wood
      */
     public static boolean isMaterialWood(@NotNull Material material) {
-        return !material.isNull() && material.hasProperty(PropertyKey.WOOD);
+        return material.hasProperty(PropertyKey.WOOD);
     }
 
     public static ItemMaterialInfo getRecyclingIngredients(int outputCount, @NotNull Object... recipe) {
@@ -713,30 +710,26 @@ public class VanillaRecipeHelper {
                 ItemStack stack = ChemicalHelper.get(entry.tagPrefix(), entry.material());
                 if (stack == ItemStack.EMPTY) continue;
                 itemLike = stack.getItem();
-            } else if (ingredient instanceof ItemProviderEntry<?> entry) {
-                itemLike = entry.asItem();
             } else continue; // throw out bad entries
 
             // First try to get ItemMaterialInfo
             ItemMaterialInfo info = ItemMaterialData.getMaterialInfo(itemLike);
             if (info != null) {
                 for (MaterialStack ms : info.getMaterials()) {
-                    if (!(ms.material() instanceof MarkerMaterial)) {
-                        addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, ms);
-                    }
+                    addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, ms);
                 }
                 continue;
             }
 
             // Then try to get a single Material (UnificationEntry needs this, for example)
             MaterialStack materialStack = ChemicalHelper.getMaterialStack(itemLike);
-            if (!materialStack.isEmpty() && !(materialStack.material() instanceof MarkerMaterial)) {
+            if (!materialStack.isEmpty()) {
                 addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, materialStack);
             }
 
             // Gather any secondary materials if this item has an OrePrefix
             TagPrefix prefix = ChemicalHelper.getPrefix(itemLike);
-            if (!prefix.isEmpty() && !prefix.secondaryMaterials().isEmpty()) {
+            if (prefix != null && !prefix.secondaryMaterials().isEmpty()) {
                 for (MaterialStack ms : prefix.secondaryMaterials()) {
                     addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, ms);
                 }

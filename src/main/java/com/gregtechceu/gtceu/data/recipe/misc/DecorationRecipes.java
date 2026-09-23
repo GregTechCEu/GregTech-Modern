@@ -56,28 +56,26 @@ public class DecorationRecipes {
     }
 
     private static void dyeRecipes(Consumer<FinishedRecipe> provider) {
-        for (int i = 0; i < CHEMICAL_DYES.length; i++) {
-            var color = DyeColor.values()[i];
-            var colorName = color.getName();
-            CHEMICAL_BATH_RECIPES.recipeBuilder("metal_sheet_%s".formatted(colorName))
+        for (DyeColor color : DyeColor.values()) {
+            CHEMICAL_BATH_RECIPES.recipeBuilder("metal_sheet_%s".formatted(color.getName()))
                     .inputItems(METAL_SHEETS.get(DyeColor.WHITE).asStack())
-                    .inputFluids(CHEMICAL_DYES[i].getFluid(9))
+                    .inputFluids(DYE_MATERIALS.get(color).getFluid(9))
                     .outputItems(METAL_SHEETS.get(color))
                     .EUt(2).duration(10)
                     .category(GTRecipeCategories.CHEM_DYES)
                     .save(provider);
 
-            CHEMICAL_BATH_RECIPES.recipeBuilder("large_metal_sheet_%s".formatted(colorName))
+            CHEMICAL_BATH_RECIPES.recipeBuilder("large_metal_sheet_%s".formatted(color.getName()))
                     .inputItems(LARGE_METAL_SHEETS.get(DyeColor.WHITE).asStack())
-                    .inputFluids(CHEMICAL_DYES[i].getFluid(9))
+                    .inputFluids(DYE_MATERIALS.get(color).getFluid(9))
                     .outputItems(LARGE_METAL_SHEETS.get(color))
                     .EUt(2).duration(10)
                     .category(GTRecipeCategories.CHEM_DYES)
                     .save(provider);
 
-            CHEMICAL_BATH_RECIPES.recipeBuilder("studs_%s".formatted(colorName))
+            CHEMICAL_BATH_RECIPES.recipeBuilder("studs_%s".formatted(color.getName()))
                     .inputItems(STUDS.get(DyeColor.BLACK).asStack())
-                    .inputFluids(CHEMICAL_DYES[i].getFluid(9))
+                    .inputFluids(DYE_MATERIALS.get(color).getFluid(9))
                     .outputItems(STUDS.get(color))
                     .EUt(2).duration(10)
                     .category(GTRecipeCategories.CHEM_DYES)

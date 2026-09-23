@@ -20,7 +20,9 @@ public class ElementBuilder extends BuilderBase<Element> {
     @Setter
     public transient Component translatableName;
     @Setter
-    public transient long protons, neutrons, halfLifeSeconds = -1;
+    public transient long protons, neutrons;
+    @Setter
+    public transient double halfLifeSeconds = -1D;
     @Setter
     public transient String decayTo, symbol;
     @Setter

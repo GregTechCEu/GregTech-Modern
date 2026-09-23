@@ -88,14 +88,6 @@ public abstract class MachineTrait implements ISyncManaged {
         this.machine = machine;
     }
 
-    /**
-     * Gets the trait type of this the machine.
-     * Overriders should return {@code MachineTraitType<MachineTraitSubclass>} instead of {@code MachineTrait<?>}.
-     * 
-     * @return The trait type.
-     */
-    public abstract MachineTraitType<? extends MachineTrait> getTraitType();
-
     public @Nullable TickableSubscription subscribeServerTick(@Nullable TickableSubscription last, Runnable runnable) {
         return getMachine().subscribeServerTick(last, runnable);
     }

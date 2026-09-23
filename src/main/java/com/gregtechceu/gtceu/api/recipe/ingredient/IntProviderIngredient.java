@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * and an {@link IntProvider}.
  * Functions similarly to {@link IntProviderFluidIngredient}.
  */
-public class IntProviderIngredient extends Ingredient implements IRangedIngredient {
+public class IntProviderIngredient extends Ingredient implements IRangedIngredient<SizedIngredient> {
 
     public static final ResourceLocation TYPE = GTCEu.id("int_provider");
     public static final ItemStack[] EMPTY_STACK_ARRAY = new ItemStack[0];
@@ -43,16 +43,14 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
     /**
      * The last result of {@link IntProviderIngredient#rollSampledCount(RandomSource)}. -1 if not rolled.
      */
-    @Getter
     @Setter
+    @Getter
     protected int sampledCount = -1;
     /**
      * The {@link Ingredient} to have a ranged amount.
      */
     @Getter
     protected final Ingredient inner;
-    @Setter
-    protected ItemStack[] itemStacks = null;
 
     protected IntProviderIngredient(Ingredient inner, IntProvider countProvider) {
         super(Stream.empty());
@@ -65,6 +63,10 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
         this.inner = inner;
         this.countProvider = countProvider;
         this.sampledCount = sampledCount;
+    }
+
+    public IntProviderIngredient copy() {
+        return new IntProviderIngredient(this.inner, this.countProvider, this.sampledCount);
     }
 
     /**
@@ -99,18 +101,8 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
      */
     @Override
     public ItemStack @NotNull [] getItems() {
-        if (itemStacks == null) {
-            int cachedCount = rollSampledCount();
-            if (cachedCount == 0) {
-                return EMPTY_STACK_ARRAY;
-            }
-            var innerStacks = inner.getItems();
-            this.itemStacks = new ItemStack[innerStacks.length];
-            for (int i = 0; i < itemStacks.length; i++) {
-                itemStacks[i] = innerStacks[i].copyWithCount(cachedCount);
-            }
-        }
-        return itemStacks;
+        GTCEu.LOGGER.warn("Cannot get items of a Ranged Ingredient!");
+        return EMPTY_STACK_ARRAY;
     }
 
     /**
@@ -134,10 +126,16 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
      * @return the count rolled
      */
     public int rollSampledCount(@NotNull RandomSource random) {
-        if (sampledCount == -1) {
+        if (!isRolled()) {
             sampledCount = countProvider.sample(random);
         }
         return sampledCount;
+    }
+
+    @Override
+    public SizedIngredient collapse() {
+        IRangedIngredient.super.collapse();
+        return SizedIngredient.create(inner, rollSampledCount());
     }
 
     /**
@@ -145,7 +143,6 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
      */
     public void reset() {
         sampledCount = -1;
-        itemStacks = null;
     }
 
     @Override

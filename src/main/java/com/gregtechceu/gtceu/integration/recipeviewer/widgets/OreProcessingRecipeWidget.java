@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.drawable.GuiTextures;
@@ -114,7 +115,7 @@ public class OreProcessingRecipeWidget extends ParentWidget<OreProcessingRecipeW
         List<ItemEntryList> itemInputs = recipeWrapper.itemInputs;
         ParentWidget<?> itemStackGroup = new ParentWidget<>().sizeRel(1f);
         for (int i = 0; i < ITEM_INPUT_LOCATIONS.size(); i += 2) {
-            itemStackGroup.child(RecipeViewerSlotWidget.create()
+            itemStackGroup.child(RecipeViewerSlotWidget.create(ItemStack.class)
                     .recipeSlotRole(RecipeSlotRole.INPUT)
                     .pos(ITEM_INPUT_LOCATIONS.getInt(i), ITEM_INPUT_LOCATIONS.getInt(i + 1))
                     .tooltipBuilder(recipeWrapper.getTooltip(i / 2))
@@ -134,7 +135,7 @@ public class OreProcessingRecipeWidget extends ParentWidget<OreProcessingRecipeW
                 continue;
             }
 
-            itemStackGroup.child(RecipeViewerSlotWidget.create()
+            itemStackGroup.child(RecipeViewerSlotWidget.create(ItemStack.class)
                     .pos(ITEM_OUTPUT_LOCATIONS.getInt(i), ITEM_OUTPUT_LOCATIONS.getInt(i + 1))
                     .recipeSlotRole(RecipeSlotRole.OUTPUT)
                     .tooltip(recipeWrapper.getTooltip(slotIndex + itemInputs.size()))
@@ -147,7 +148,7 @@ public class OreProcessingRecipeWidget extends ParentWidget<OreProcessingRecipeW
         for (int i = 0; i < FLUID_LOCATIONS.size(); i += 2) {
             int slotIndex = i / 2;
             if (!fluidInputs.get(slotIndex).isEmpty()) {
-                fluidStackGroup.child(RecipeViewerSlotWidget.create()
+                fluidStackGroup.child(RecipeViewerSlotWidget.create(FluidStack.class)
                         .recipeSlotRole(RecipeSlotRole.INPUT)
                         .pos(FLUID_LOCATIONS.getInt(i), FLUID_LOCATIONS.getInt(i + 1))
                         .value(fluidInputs.get(slotIndex)));

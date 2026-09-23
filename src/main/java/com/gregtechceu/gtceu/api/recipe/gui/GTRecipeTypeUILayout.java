@@ -191,6 +191,23 @@ public class GTRecipeTypeUILayout {
         }
 
         /**
+         * Adds a slot overlay for multiple slots.
+         *
+         * @param ioMode         The IO of the slot
+         * @param slotIndexStart The first slot to add the overlay to.
+         * @param slotIndexEnd   The last slot to add the overlay to.
+         * @param cap            The slot capability
+         * @param overlay        The slot overlay.
+         */
+        public Builder setSlotsOverlay(IO ioMode, int slotIndexStart, int slotIndexEnd, RecipeCapability<?> cap,
+                                       IDrawable overlay) {
+            for (int i = slotIndexStart; i <= slotIndexEnd; i++) {
+                setSlotOverlay(ioMode, i, cap, overlay);
+            }
+            return this;
+        }
+
+        /**
          * Adds a slot overlay for multiple item slots.
          *
          * @param ioMode         The IO of the slot
@@ -199,10 +216,7 @@ public class GTRecipeTypeUILayout {
          * @param overlay        The slot overlay.
          */
         public Builder setItemSlotsOverlay(IO ioMode, int slotIndexStart, int slotIndexEnd, IDrawable overlay) {
-            for (int i = slotIndexStart; i <= slotIndexEnd; i++) {
-                setSlotOverlay(ioMode, i, ItemRecipeCapability.CAP, overlay);
-            }
-            return this;
+            return setSlotsOverlay(ioMode, slotIndexStart, slotIndexEnd, ItemRecipeCapability.CAP, overlay);
         }
 
         /**
@@ -214,10 +228,7 @@ public class GTRecipeTypeUILayout {
          * @param overlay        The slot overlay.
          */
         public Builder setFluidSlotsOverlay(IO ioMode, int slotIndexStart, int slotIndexEnd, IDrawable overlay) {
-            for (int i = slotIndexStart; i <= slotIndexEnd; i++) {
-                setSlotOverlay(ioMode, i, FluidRecipeCapability.CAP, overlay);
-            }
-            return this;
+            return setSlotsOverlay(ioMode, slotIndexStart, slotIndexEnd, FluidRecipeCapability.CAP, overlay);
         }
 
         /**

@@ -51,11 +51,6 @@ public class CurrentBlockInfo {
         updateStateAndEntity();
     }
 
-    public void setCurrentPos(BlockPos.MutableBlockPos pos) {
-        this.pos.set(pos);
-        updateStateAndEntity();
-    }
-
     public BlockPos getBlockPos() {
         return pos;
     }

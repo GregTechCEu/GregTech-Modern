@@ -15,7 +15,7 @@ Below is an example of making new and modifying existing dimension icons in a Ja
 ```java
 private void registerDimensionMarkers(GTCEuAPI.RegisterEvent<ResourceLocation, DimensionMarker> event) {
     // Making a new icon.
-    ResourceLocation sceneDimKey = new ResourceLocation(Phantasia.MOD_ID, "scene");
+    ResourceLocation sceneDimKey = ResourceLocation.fromNamespaceAndPath(Phantasia.MOD_ID, "scene");
     DimensionMarker sceneMarker = new DimensionMarker(
             3, // Tier
             () -> Items.DIAMOND_BLOCK, // Supplier for the actual Icon ItemStack.
@@ -24,7 +24,7 @@ private void registerDimensionMarkers(GTCEuAPI.RegisterEvent<ResourceLocation, D
     event.register(sceneDimKey, sceneMarker);
     
     // Editing an existing icon.
-    ResourceLocation netherKey = new ResourceLocation("minecraft", "the_nether");
+    ResourceLocation netherKey = ResourceLocation.withDefaultNamespace("the_nether");
     DimensionMarker upgradedNetherMarker = new DimensionMarker(
             5, 
             () -> Items.NETHERITE_BLOCK,
@@ -41,7 +41,7 @@ GTCEuStartupEvents.registry("gtceu:dimension_marker", event => {
     // Edit existing dimension icon,
     const DimensionMarker = Java.loadClass('com.gregtechceu.gtceu.api.data.DimensionMarker')
     
-    let netherKey = new ResourceLocation("minecraft", "the_nether")
+    let netherKey = ResourceLocation.withDefaultNamespace("the_nether")
 
     let upgradedNetherMarker = new DimensionMarker(
         5, 

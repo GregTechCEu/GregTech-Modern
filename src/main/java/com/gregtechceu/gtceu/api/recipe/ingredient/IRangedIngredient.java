@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 
 import net.minecraft.util.RandomSource;
@@ -7,13 +8,19 @@ import net.minecraft.util.valueproviders.IntProvider;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface IRangedIngredient {
+public interface IRangedIngredient<T> {
 
     IntProvider getCountProvider();
 
     int getSampledCount();
 
     void setSampledCount(int count);
+
+    default T collapse() {
+        if (!isRolled())
+            GTCEu.LOGGER.warn("Ranged ingredient was collapsed without being rolled!");
+        return null;
+    }
 
     /**
      * If this ingredient has not yet had its count rolled, rolls it and returns the roll.

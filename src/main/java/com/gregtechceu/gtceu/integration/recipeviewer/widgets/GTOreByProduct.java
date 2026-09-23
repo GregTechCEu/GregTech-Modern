@@ -33,7 +33,6 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class GTOreByProduct {
@@ -102,9 +101,9 @@ public class GTOreByProduct {
         ItemTagList oreStacks = new ItemTagList();
         for (TagPrefix prefix : ORES) {
             // get all ores with the relevant oredicts instead of just the first unified ore
-            oreStacks.add(Objects.requireNonNull(ChemicalHelper.getTag(prefix, material)), 1, null);
+            oreStacks.add(ChemicalHelper.getTagOrThrow(prefix, material), 1, null);
         }
-        oreStacks.add(Objects.requireNonNull(ChemicalHelper.getTag(TagPrefix.rawOre, material)), 1, null);
+        oreStacks.add(ChemicalHelper.getTagOrThrow(TagPrefix.rawOre, material), 1, null);
         itemInputs.add(oreStacks);
 
         // set up machines as inputs
@@ -127,7 +126,7 @@ public class GTOreByProduct {
         itemInputs.add(ItemStackList.of(simpleWashers));
         itemInputs.add(ItemStackList.of(simpleWashers));
 
-        if (!washedIn.first().isNull()) {
+        if (property.hasWashedInFluid()) {
             hasChemBath = true;
             addToInputs(GTMachines.CHEMICAL_BATH[GTValues.LV].asStack());
         } else {
@@ -148,7 +147,7 @@ public class GTOreByProduct {
 
         // add prefixes that should count as inputs to input lists (they will not be displayed in actual page)
         for (TagPrefix prefix : IN_PROCESSING_STEPS) {
-            itemInputs.add(ItemTagList.of(Objects.requireNonNull(ChemicalHelper.getTag(prefix, material)), 1, null));
+            itemInputs.add(ItemTagList.of(ChemicalHelper.getTagOrThrow(prefix, material), 1, null));
         }
 
         // total number of inputs added
@@ -160,7 +159,7 @@ public class GTOreByProduct {
         // direct smelt
         if (hasDirectSmelt) {
             ItemStack smeltingResult;
-            Material smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
+            Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
                     property.getDirectSmeltResult();
             if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
                 smeltingResult = ChemicalHelper.get(TagPrefix.ingot, smeltingMaterial);
