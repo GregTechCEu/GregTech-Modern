@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.lang.LangGenerationHandler;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
@@ -759,10 +760,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         }
 
         if (!langTooltips.isEmpty()) {
-            registrate.addDataGenerator(ProviderType.LANG, p -> {
-                GTLangProvider provider = (GTLangProvider) p;
-                if (langTooltips.size() == 1) provider.add(id.toLanguageKey("machine", "tooltip"), langTooltips.get(0));
-                else provider.addMultiLang(id.toLanguageKey("machine", "tooltip"), langTooltips.toArray(String[]::new));
+            LangGenerationHandler.forNamespace(id.getNamespace()).add(p -> {
+                if (langTooltips.size() == 1) p.add(id.toLanguageKey("machine", "tooltip"), langTooltips.get(0));
+                else p.addMultiLang(id.toLanguageKey("machine", "tooltip"), langTooltips.toArray(String[]::new));
             });
         }
 
