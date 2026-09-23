@@ -9,7 +9,7 @@ public class HazardLang {
     }
 
     private static void generateHazardKeys(GTLangProvider provider) {
-
+        provider.add("medical_condition.gtceu.tooltip.description", "HAZARDOUS");
         // Symptoms
         provider.add("symptom.gtceu.death", "Death");
         provider.add("symptom.gtceu.random_damage", "Occasional damage");

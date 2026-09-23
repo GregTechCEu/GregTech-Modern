@@ -14,22 +14,25 @@ import org.jetbrains.annotations.NotNull;
 
 public class GTRecipeCategories {
 
-    public static final GTRecipeCategory ORE_CRUSHING = register("ore_crushing", GTRecipeTypes.MACERATOR_RECIPES);
-    public static final GTRecipeCategory ORE_FORGING = register("ore_forging", GTRecipeTypes.FORGE_HAMMER_RECIPES);
-    public static final GTRecipeCategory ORE_BATHING = register("ore_bathing", GTRecipeTypes.CHEMICAL_BATH_RECIPES);
-    public static final GTRecipeCategory CHEM_DYES = register("chem_dyes", GTRecipeTypes.CHEMICAL_BATH_RECIPES);
-    public static final GTRecipeCategory INGOT_MOLDING = register("ingot_molding", GTRecipeTypes.ALLOY_SMELTER_RECIPES);
+    public static final GTRecipeCategory ORE_CRUSHING = register("ore_crushing", GTRecipeTypes.MACERATOR_RECIPES).langValue("Ore Grinding");
+    public static final GTRecipeCategory ORE_FORGING = register("ore_forging", GTRecipeTypes.FORGE_HAMMER_RECIPES).langValue("Ore Crushing");
+    public static final GTRecipeCategory ORE_BATHING = register("ore_bathing", GTRecipeTypes.CHEMICAL_BATH_RECIPES).langValue("Ore Treating");
+    public static final GTRecipeCategory CHEM_DYES = register("chem_dyes", GTRecipeTypes.CHEMICAL_BATH_RECIPES).langValue("Chemical Dyeing");
+    public static final GTRecipeCategory INGOT_MOLDING = register("ingot_molding", GTRecipeTypes.ALLOY_SMELTER_RECIPES).langValue("Metal Molding");
 
     public static final GTRecipeCategory ARC_FURNACE_RECYCLING = register("arc_furnace_recycling",
             GTRecipeTypes.ARC_FURNACE_RECIPES)
+            .langValue("Plasma Scrapping")
             .setIcon(new CategoryIcon(GTCEu.id("textures/gui/icon/category/arc_furnace_recycling.png")));
 
     public static final GTRecipeCategory MACERATOR_RECYCLING = register("macerator_recycling",
             GTRecipeTypes.MACERATOR_RECIPES)
+            .langValue("Part Grinding")
             .setIcon(new CategoryIcon(GTCEu.id("textures/gui/icon/category/macerator_recycling.png")));
 
     public static final GTRecipeCategory EXTRACTOR_RECYCLING = register("extractor_recycling",
             GTRecipeTypes.EXTRACTOR_RECIPES)
+            .langValue("Scrap Remelting")
             .setIcon(new CategoryIcon(GTCEu.id("textures/gui/icon/category/extractor_recycling.png")));
 
     public static GTRecipeCategory register(String categoryName, @NotNull GTRecipeType recipeType) {
