@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidge
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
-import brachy.modularui.integration.jei.recipe.ModularUIRecipeCategory;
+import brachy.modularui.integration.jei.recipe.ModularUIJeiCategory;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -22,7 +22,6 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -30,7 +29,7 @@ import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreDefinition> {
+public class GTOreVeinInfoCategory extends ModularUIJeiCategory<GTOreDefinition> {
 
     public final static RecipeType<GTOreDefinition> RECIPE_TYPE = new RecipeType<>(GTCEu.id("ore_vein_diagram"),
             GTOreDefinition.class);
@@ -38,8 +37,8 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreDefiniti
 
     public GTOreVeinInfoCategory(IJeiHelpers helpers) {
         super(OreVeinRecipeWidget::new,
-                v -> Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()
-                        .registryOrThrow(GTRegistries.Keys.ORE_VEIN).getKey(v));
+                v -> Objects.requireNonNull(Minecraft.getInstance().level.registryAccess()
+                        .registryOrThrow(GTRegistries.Keys.ORE_VEIN).getKey(v)));
 
         this.icon = helpers.getGuiHelper()
                 .createDrawableItemStack(ChemicalHelper.get(TagPrefix.rawOre, GTMaterials.Iron));
@@ -51,16 +50,18 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreDefiniti
                 .toList());
     }
 
+    @Override
     public int getMaxWidth() {
         return 180;
     }
 
+    @Override
     public int getMaxHeight() {
         return 300;
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, GTOreDefinition ore, IFocusGroup focuses) {
+    public void setupRecipeIngredients(IRecipeLayoutBuilder builder, GTOreDefinition ore, IFocusGroup focuses) {
         Arrays.stream(OreVeinRecipeWidget.getDimensionMarkers(ore.dimensionFilter()))
                 .forEach(v -> builder.addInvisibleIngredients(RecipeIngredientRole.INPUT).addIngredient(
                         VanillaTypes.ITEM_STACK,

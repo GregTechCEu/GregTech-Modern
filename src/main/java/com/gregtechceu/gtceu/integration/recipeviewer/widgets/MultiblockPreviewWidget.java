@@ -129,7 +129,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 .height(height)
                 .children(this.multiblockSchemaInfo.getBlockCounts().reference2IntEntrySet(), e -> {
                     ItemStack stack = new ItemStack(e.getKey(), e.getIntValue());
-                    return RecipeViewerSlotWidget.create()
+                    return RecipeViewerSlotWidget.create(ItemStack.class)
                             .recipeSlotRole(RecipeSlotRole.OUTPUT)
                             .value(stack)
                             .background(IDrawable.EMPTY)

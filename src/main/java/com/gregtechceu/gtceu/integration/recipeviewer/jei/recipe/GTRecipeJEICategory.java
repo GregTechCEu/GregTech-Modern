@@ -15,7 +15,7 @@ import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 
 import brachy.modularui.integration.jei.JeiIngredientHandler;
-import brachy.modularui.integration.jei.recipe.ModularUIRecipeCategory;
+import brachy.modularui.integration.jei.recipe.ModularUIJeiCategory;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipe> {
+public class GTRecipeJEICategory extends ModularUIJeiCategory<GTRecipe> {
 
     public static final Function<GTRecipeCategory, RecipeType<GTRecipe>> TYPES = Util
             .memoize(c -> new RecipeType<>(c.registryKey, GTRecipe.class));
@@ -60,15 +60,18 @@ public class GTRecipeJEICategory extends ModularUIRecipeCategory<GTRecipe> {
         return (IDrawable) category.getIcon().get();
     }
 
+    @Override
     public int getMaxWidth() {
         return 250;
     }
 
+    @Override
     public int getMaxHeight() {
         return 250;
     }
 
-    public void setRecipe(IRecipeLayoutBuilder builder, GTRecipe recipe, IFocusGroup focuses) {
+    @Override
+    public void setupRecipeIngredients(IRecipeLayoutBuilder builder, GTRecipe recipe, IFocusGroup focuses) {
         var itemIn = recipe.getInputContents(ItemRecipeCapability.CAP);
         var fluidIn = recipe.getInputContents(FluidRecipeCapability.CAP);
         var itemOut = recipe.getOutputContents(ItemRecipeCapability.CAP);

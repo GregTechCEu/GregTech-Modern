@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import brachy.modularui.integration.jei.recipe.ModularUIRecipeCategory;
+import brachy.modularui.integration.jei.recipe.ModularUIJeiCategory;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -31,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class MultiblockInfoJeiCategory extends
-                                       ModularUIRecipeCategory<MultiblockMachineDefinition> {
+                                       ModularUIJeiCategory<MultiblockMachineDefinition> {
 
     public final static RecipeType<MultiblockMachineDefinition> RECIPE_TYPE = new RecipeType<>(
             GTCEu.id("multiblock_info"),
@@ -52,17 +52,19 @@ public class MultiblockInfoJeiCategory extends
                 .toList());
     }
 
+    @Override
     public int getMaxWidth() {
         return 200;
     }
 
+    @Override
     public int getMaxHeight() {
         return 180;
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, MultiblockMachineDefinition definition,
-                          IFocusGroup focuses) {
+    public void setupRecipeIngredients(IRecipeLayoutBuilder builder, MultiblockMachineDefinition definition,
+                                       IFocusGroup focuses) {
         List<ItemStack> containedBlocks = MultiblockPreviewWidget.initializeContainedBlocks(definition);
 
         builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT).addIngredient(VanillaTypes.ITEM_STACK,

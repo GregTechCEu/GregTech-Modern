@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 
-import brachy.modularui.integration.jei.recipe.ModularUIRecipeCategory;
+import brachy.modularui.integration.jei.recipe.ModularUIJeiCategory;
 import lombok.Getter;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class GTBedrockOreInfoCategory extends
-                                      ModularUIRecipeCategory<BedrockOreDefinition> {
+                                      ModularUIJeiCategory<BedrockOreDefinition> {
 
     public final static RecipeType<BedrockOreDefinition> RECIPE_TYPE = new RecipeType<>(
             GTCEu.id("bedrock_ore_diagram"), BedrockOreDefinition.class);
@@ -53,16 +53,18 @@ public class GTBedrockOreInfoCategory extends
         registration.addRecipeCatalyst(GTItems.PROSPECTOR_LuV.asStack(), RECIPE_TYPE);
     }
 
+    @Override
     public int getMaxWidth() {
         return 180;
     }
 
+    @Override
     public int getMaxHeight() {
         return 300;
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, BedrockOreDefinition ore, IFocusGroup focuses) {
+    public void setupRecipeIngredients(IRecipeLayoutBuilder builder, BedrockOreDefinition ore, IFocusGroup focuses) {
         Arrays.stream(OreVeinRecipeWidget.getDimensionMarkers(ore.dimensionFilter))
                 .forEach(v -> builder.addSlot(RecipeIngredientRole.INPUT).addIngredient(VanillaTypes.ITEM_STACK,
                         v.getIcon()));

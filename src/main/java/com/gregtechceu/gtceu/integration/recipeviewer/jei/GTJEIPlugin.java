@@ -101,7 +101,7 @@ public class GTJEIPlugin implements IModPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreInfoCategory.registerRecipes(registration);
         registration.addRecipes(ProgrammedCircuitJeiCategory.RECIPE_TYPE,
-                List.of(new ProgrammedCircuitJeiCategory.GTProgrammedCircuitWrapper()));
+                List.of(new Object()));
     }
 
     @Override

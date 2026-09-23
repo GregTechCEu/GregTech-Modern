@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.integration.recipeviewer.widgets.ProgrammedCircuitR
 
 import net.minecraft.network.chat.Component;
 
-import brachy.modularui.integration.jei.recipe.ModularUIRecipeCategory;
+import brachy.modularui.integration.jei.recipe.ModularUIJeiCategory;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -15,16 +15,15 @@ import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.IntStream;
 
 public class ProgrammedCircuitJeiCategory extends
-                                          ModularUIRecipeCategory<ProgrammedCircuitJeiCategory.GTProgrammedCircuitWrapper> {
+                                          ModularUIJeiCategory<Object> {
 
-    public final static RecipeType<GTProgrammedCircuitWrapper> RECIPE_TYPE = new RecipeType<>(
-            GTCEu.id("programmed_circuit"), GTProgrammedCircuitWrapper.class);
+    public final static RecipeType<Object> RECIPE_TYPE = new RecipeType<>(
+            GTCEu.id("programmed_circuit"), Object.class);
 
     private final IDrawable icon;
 
@@ -34,12 +33,12 @@ public class ProgrammedCircuitJeiCategory extends
     }
 
     @Override
-    public @NotNull RecipeType<GTProgrammedCircuitWrapper> getRecipeType() {
+    public RecipeType<Object> getRecipeType() {
         return RECIPE_TYPE;
     }
 
     @Override
-    public @NotNull Component getTitle() {
+    public Component getTitle() {
         return Component.translatable("gtceu.jei.programmed_circuit");
     }
 
@@ -48,22 +47,22 @@ public class ProgrammedCircuitJeiCategory extends
         return icon;
     }
 
+    @Override
     public int getMaxWidth() {
         return 250;
     }
 
+    @Override
     public int getMaxHeight() {
         return 250;
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, GTProgrammedCircuitWrapper recipe,
-                          IFocusGroup focuses) {
+    public void setupRecipeIngredients(IRecipeLayoutBuilder builder, Object recipe,
+                                       IFocusGroup focuses) {
         IntStream.range(0, 33)
                 .mapToObj(IntCircuitBehaviour::stack)
                 .forEach(i -> builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT)
                         .addIngredient(VanillaTypes.ITEM_STACK, i));
     }
-
-    public static class GTProgrammedCircuitWrapper {}
 }

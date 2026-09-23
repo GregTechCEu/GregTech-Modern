@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreProcessingRecip
 
 import net.minecraft.network.chat.Component;
 
-import brachy.modularui.integration.jei.recipe.ModularUIRecipeCategory;
+import brachy.modularui.integration.jei.recipe.ModularUIJeiCategory;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -30,7 +30,7 @@ import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Iron;
 
 public class GTOreProcessingJeiCategory extends
-                                        ModularUIRecipeCategory<Material> {
+                                        ModularUIJeiCategory<Material> {
 
     public final static RecipeType<Material> RECIPE_TYPE = new RecipeType<>(
             GTCEu.id("ore_processing_diagram"), Material.class);
@@ -58,16 +58,18 @@ public class GTOreProcessingJeiCategory extends
         registration.addRecipeCatalyst(SIFTER[GTValues.LV].asStack(), RECIPE_TYPE);
     }
 
+    @Override
     public int getMaxWidth() {
         return 180;
     }
 
+    @Override
     public int getMaxHeight() {
         return 180;
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, Material material, IFocusGroup focuses) {
+    public void setupRecipeIngredients(IRecipeLayoutBuilder builder, Material material, IFocusGroup focuses) {
         GTOreByProduct byproducts = new GTOreByProduct(material);
 
         byproducts.getItemOutputs().forEach(
