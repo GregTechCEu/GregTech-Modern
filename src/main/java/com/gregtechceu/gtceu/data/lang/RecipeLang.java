@@ -7,7 +7,6 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 public class RecipeLang {
 
     public static void init(GTLangProvider provider) {
-        generateRecipeTypes(provider);
         generateChanceLang(provider);
         generateRecipeConditions(provider);
         generateRecipeDataKeys(provider);
@@ -74,18 +73,6 @@ public class RecipeLang {
         provider.add("recipe_modifier.gtceu.insufficient_eu_to_start_fusion",
                 "Insufficient Energy to Initiate Fusion Reaction");
         provider.add("recipe_modifier.gtceu.coil_temperature_too_low", "Coil Temperature Too Low");
-    }
-
-    private static void generateRecipeTypes(GTLangProvider provider) {
-        // Recipe Categories
-        provider.add("recipe_type.gtceu.category.arc_furnace_recycling", "Plasma Scrapping");
-        provider.add("recipe_type.gtceu.category.macerator_recycling", "Part Grinding");
-        provider.add("recipe_type.gtceu.category.extractor_recycling", "Scrap Remelting");
-        provider.add("recipe_type.gtceu.category.ore_crushing", "Ore Grinding");
-        provider.add("recipe_type.gtceu.category.ore_forging", "Ore Crushing");
-        provider.add("recipe_type.gtceu.category.ore_bathing", "Ore Treating");
-        provider.add("recipe_type.gtceu.category.chem_dyes", "Chemical Dyeing");
-        provider.add("recipe_type.gtceu.category.ingot_molding", "Metal Molding");
     }
 
     private static void generateRecipeConditions(GTLangProvider provider) {

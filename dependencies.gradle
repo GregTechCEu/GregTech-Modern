@@ -20,6 +20,8 @@ dependencies {
         require("[${forge.versions.mixinExtras.get()},)")
     }
 
+    compileOnly(libs.mcdevAnnotations)
+
     // Recipe Viewers
     modCompileOnly(forge.bundles.jei)
     modCompileOnly(forge.emi)
