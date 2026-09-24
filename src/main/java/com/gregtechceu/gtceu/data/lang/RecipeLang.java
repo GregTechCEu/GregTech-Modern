@@ -15,56 +15,45 @@ public class RecipeLang {
     }
 
     private static void generateCapabilityLang(GTLangProvider provider) {
-        provider.add("recipe_capability.gtceu.eu", "GTCEu Energy");
-        provider.add("recipe_capability.gtceu.fluid", "Fluid");
-        provider.add("recipe_capability.gtceu.item", "Item");
+        provider.add("gui.gtceu.recipe.show_recipes", "Show Recipes");
+        provider.add("gui.gtceu.recipe.condition_fails", "Condition Fails");
+        provider.add("gui.gtceu.recipe.no_contents", "Recipe has no Contents");
+        provider.add("gui.gtceu.recipe.no_capabilities", "Machine has no Capabilities");
 
-        provider.add("recipe_type.gtceu.show_recipes", "Show Recipes");
+        provider.add("gui.gtceu.recipe.setup_fail", "Fail to setup recipe: ");
+        provider.add("gui.gtceu.recipe.recipe_waiting", "Recipe Waiting: ");
 
-        provider.add("recipe_logic.gtceu.condition_fails", "Condition Fails");
-        provider.add("recipe_logic.gtceu.no_contents", "Recipe has no Contents");
-        provider.add("recipe_logic.gtceu.no_capabilities", "Machine has no Capabilities");
+        provider.add("gui.gtceu.recipe.insufficient_fuel", "Insufficient Fuel");
+        provider.add("gui.gtceu.recipe.insufficient_in", "Insufficient Inputs");
+        provider.add("gui.gtceu.recipe.insufficient_out", "Insufficient Outputs");
+        provider.add("gui.gtceu.recipe.condition_fails", "Condition Fails");
+        provider.add("gui.gtceu.recipe.no_contents", "Recipe has no Contents");
+        provider.add("gui.gtceu.recipe.no_capabilities", "Machine has no Capabilities");
 
-        provider.add("recipe_logic.gtceu.setup_fail", "Fail to setup recipe: ");
-        provider.add("recipe_logic.gtceu.recipe_waiting", "Recipe Waiting: ");
-
-        provider.add("recipe_logic.gtceu.insufficient_fuel", "Insufficient Fuel");
-        provider.add("recipe_logic.gtceu.insufficient_in", "Insufficient Inputs");
-        provider.add("recipe_logic.gtceu.insufficient_out", "Insufficient Outputs");
-        provider.add("recipe_logic.gtceu.condition_fails", "Condition Fails");
-        provider.add("recipe_logic.gtceu.no_contents", "Recipe has no Contents");
-        provider.add("recipe_logic.gtceu.no_capabilities", "Machine has no Capabilities");
-
-        provider.addMultiLang("recipe_modifier.gtceu.oc", "Min: %s", "Left click to increase the OC",
+        provider.addMultiLang("gui.gtceu.recipe.oc", "Min: %s", "Left click to increase the OC",
                 "Right click to decrease the OC", "Middle click to reset the OC",
                 "Hold Shift to change by Perfect OC");
     }
 
     public static void generateChanceLang(RegistrateLangProvider provider) {
-        provider.add("recipe_content.gtceu.chance_nc", "Not Consumed");
-        provider.add("recipe_content.gtceu.chance_nc_short", "NC");
-        provider.add("recipe_content.gtceu.chance_base", "Base Chance: %s%%");
-        provider.add("recipe_content.gtceu.chance_base_logic", "Base Chance: %s%% (%s)");
-        provider.add("recipe_content.gtceu.chance_no_boost", "Chance: %s%%");
-        provider.add("recipe_content.gtceu.chance_no_boost_logic", "Chance: %s%% (%s)");
-        provider.add("recipe_content.gtceu.chance_tier_boost_plus", "Bonus Chance: +%s%%/tier");
-        provider.add("recipe_content.gtceu.chance_tier_boost_minus", "Bonus Chance: -%s%%/tier");
-        provider.add("recipe_content.gtceu.chance_boosted", "Chance at Tier: %s%%");
-        provider.add("recipe_content.gtceu.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
-        provider.add("recipe_content.gtceu.count_range", "%s-%sx");
-        provider.add("recipe_content.gtceu.fluid_range", "%s-%smB");
-        provider.add("recipe_content.gtceu.range", "%s-%s");
-        provider.add("recipe_content.gtceu.times_item", "x %s");
+        provider.add("gui.gtceu.recipe_content.chance_nc", "Not Consumed");
+        provider.add("gui.gtceu.recipe_content.chance_nc_short", "NC");
+        provider.add("gui.gtceu.recipe_content.chance_base", "Base Chance: %s%%");
+        provider.add("gui.gtceu.recipe_content.chance_base_logic", "Base Chance: %s%% (%s)");
+        provider.add("gui.gtceu.recipe_content.chance_no_boost", "Chance: %s%%");
+        provider.add("gui.gtceu.recipe_content.chance_no_boost_logic", "Chance: %s%% (%s)");
+        provider.add("gui.gtceu.recipe_content.chance_tier_boost_plus", "Bonus Chance: +%s%%/tier");
+        provider.add("gui.gtceu.recipe_content.chance_tier_boost_minus", "Bonus Chance: -%s%%/tier");
+        provider.add("gui.gtceu.recipe_content.chance_boosted", "Chance at Tier: %s%%");
+        provider.add("gui.gtceu.recipe_content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
+        provider.add("gui.gtceu.recipe_content.count_range", "%s-%sx");
+        provider.add("gui.gtceu.recipe_content.fluid_range", "%s-%smB");
+        provider.add("gui.gtceu.recipe_content.range", "%s-%s");
+        provider.add("gui.gtceu.recipe_content.times_item", "x %s");
 
-        provider.add("recipe_content.gtceu.per_tick", "Consumed/Produced Per Tick");
-        provider.add("recipe_content.gtceu.tips.per_tick_short", "/tick");
-        provider.add("recipe_content.gtceu.tips.per_second_short", "/second");
-
-        provider.add("chance_logic.gtceu.or", "OR");
-        provider.add("chance_logic.gtceu.and", "AND");
-        provider.add("chance_logic.gtceu.xor", "XOR");
-        provider.add("chance_logic.gtceu.first", "FIRST");
-        provider.add("chance_logic.gtceu.none", "NONE");
+        provider.add("gui.gtceu.recipe_content.per_tick", "Consumed/Produced Per Tick");
+        provider.add("gui.gtceu.recipe_content.tips.per_tick_short", "/tick");
+        provider.add("gui.gtceu.recipe_content.tips.per_second_short", "/second");
     }
 
     private static void generateModifierKeys(RegistrateLangProvider provider) {
@@ -110,23 +99,22 @@ public class RecipeLang {
 
     private static void generateRecipeDataKeys(GTLangProvider provider) {
         // Recipe Data
-        provider.add("recipe.gtceu.total", "Total: %s EU");
-        provider.add("recipe.gtceu.max_eu", "Max. EU: %s EU");
-        provider.add("recipe.gtceu.eu", "Usage: %s A @ %s");
-        provider.add("recipe.gtceu.eu_inverted", "Generation: %s A @ %s");
-        provider.add("recipe.gtceu.eu.total", "%s EU/t");
+        provider.add("gui.gtceu.recipe.total", "Total: %s EU");
+        provider.add("gui.gtceu.recipe.max_eu", "Max. EU: %s EU");
+        provider.add("gui.gtceu.recipe.eu", "Usage: %s A @ %s");
+        provider.add("gui.gtceu.recipe.eu_inverted", "Generation: %s A @ %s");
 
-        provider.add("recipe.gtceu.scan_for_research", "Scan for Assembly Line");
-        provider.add("recipe.gtceu.computation_per_tick", "Min. Computation: %s CWU/t");
-        provider.add("recipe.gtceu.total_computation", "Computation: %s CWU");
+        provider.add("gui.gtceu.recipe.scan_for_research", "Scan for Assembly Line");
+        provider.add("gui.gtceu.recipe.computation_per_tick", "Min. Computation: %s CWU/t");
+        provider.add("gui.gtceu.recipe.total_computation", "Computation: %s CWU");
 
-        provider.add("recipe.gtceu.duration", "Duration: %s secs");
-        provider.add("recipe.gtceu.voltage", "Usage: %s A @ %s");
-        provider.add("recipe.gtceu.total_eu", "Total Usage: %s EU/t");
+        provider.add("gui.gtceu.recipe.duration", "Duration: %s secs");
+        provider.add("gui.gtceu.recipe.voltage", "Usage: %s A @ %s");
+        provider.add("gui.gtceu.recipe.total_eu", "Total Usage: %s EU/t");
 
-        provider.add("recipe.gtceu.byproduct_tier", "Byproducts from %s§r+");
+        provider.add("gui.gtceu.recipe.byproduct_tier", "Byproducts from %s§r+");
 
-        provider.add("recipe.gtceu.temperature", "Temp: %s");
-        provider.add("recipe.gtceu.coil.tier", "Coil: %s");
+        provider.add("gui.gtceu.recipe.temperature", "Temp: %s");
+        provider.add("gui.gtceu.recipe.coil.tier", "Coil: %s");
     }
 }

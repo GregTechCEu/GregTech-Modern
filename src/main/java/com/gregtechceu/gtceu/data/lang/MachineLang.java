@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
-import net.minecraft.network.chat.Component;
 
 public class MachineLang {
 

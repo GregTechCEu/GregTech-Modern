@@ -80,7 +80,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
         // Attach duration here so it is always the first text row
         textComponents.child(Text
-                .dynamic(() -> Component.translatable("recipe.gtceu.duration",
+                .dynamic(() -> Component.translatable("gui.gtceu.recipe.duration",
                         FormattingUtil.formatNumbers((double) modifiedRecipe.duration / 20)))
                 .asWidget()
                 .setEnabledIf(v -> !modifiedRecipe.data.getBoolean("hide_duration")));
@@ -200,11 +200,11 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                 .rightRel(0.0f)
                 .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))
                 .tooltipBuilder(tooltip -> {
-                    tooltip.addLine(Text.lang("recipe_modifier.gtceu.oc.0", GTValues.VNF[minTier]));
-                    tooltip.addLine(Text.lang("recipe_modifier.gtceu.oc.1"));
-                    tooltip.addLine(Text.lang("recipe_modifier.gtceu.oc.2"));
-                    tooltip.addLine(Text.lang("recipe_modifier.gtceu.oc.3"));
-                    tooltip.addLine(Text.lang("recipe_modifier.gtceu.oc.4"));
+                    tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.0", GTValues.VNF[minTier]));
+                    tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.1"));
+                    tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.2"));
+                    tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.3"));
+                    tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.4"));
                 })
                 .onMousePressed((ctx, b) -> {
                     var mouse = MouseData.create(b);

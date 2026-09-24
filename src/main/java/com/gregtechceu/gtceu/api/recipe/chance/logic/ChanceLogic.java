@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.data.lang.LangGenerationHandler;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -278,6 +279,9 @@ public abstract class ChanceLogic {
 
     public ChanceLogic(ResourceLocation id) {
         GTRegistries.CHANCE_LOGICS.register(id, this);
+
+        LangGenerationHandler.forNamespace(id.getNamespace())
+                .add(p -> p.add(getLanguageKey(), id.getPath().toUpperCase()));
     }
 
     private ChanceLogic(String id) {

@@ -299,7 +299,7 @@ public class GTOreByProduct {
                 Content entry = chances.get(slotIndex);
                 float chance = 100 * (float) entry.chance() / entry.maxChance();
                 tooltip.addLine(
-                        FormattingUtil.formatPercentage2Places("recipe_content.gtceu.chance_no_boost", chance));
+                        FormattingUtil.formatPercentage2Places("gui.gtceu.recipe_content.chance_no_boost", chance));
             }
         };
     }

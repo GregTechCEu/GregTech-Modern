@@ -135,9 +135,9 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         syncManager.syncValue("minValue", minValueSync);
         syncManager.syncValue("maxValue", maxValueSync);
 
-        column.child(coverUIRow().child(Text.lang("cover.gtceu.advanced_energy_detector.min").asWidget().width(20))
+        column.child(coverUIRow().child(Text.lang("common.gtceu.min").asWidget().width(20))
                 .child(GTMuiWidgets.createLongInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(142)))
-                .child(coverUIRow().child(Text.lang("cover.gtceu.advanced_energy_detector.max").asWidget().width(20))
+                .child(coverUIRow().child(Text.lang("common.gtceu.max").asWidget().width(20))
                         .child(GTMuiWidgets.createLongInputWithButtons(maxValueSync, () -> 0,
                                 () -> usePercent ? 100 : getEnergyCapacity()).width(142)))
                 .child(coverUIRow()

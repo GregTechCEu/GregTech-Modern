@@ -20,9 +20,9 @@ public record ActionResult(boolean isSuccess, @Nullable Component reason, @Nulla
     public final static ActionResult SUCCESS = new ActionResult(true, null, null, null, 1.0);
     public final static ActionResult FAIL_NO_REASON = new ActionResult(false, null, null, null, 0.0);
     public final static ActionResult PASS_NO_CONTENTS = new ActionResult(true,
-            Component.translatable("recipe_logic.gtceu.no_contents"), null, null, 1.0);
+            Component.translatable("gui.gtceu.recipe.no_contents"), null, null, 1.0);
     public final static ActionResult FAIL_NO_CAPABILITIES = new ActionResult(false,
-            Component.translatable("recipe_logic.gtceu.no_capabilities"), null, null, 0.0);
+            Component.translatable("gui.gtceu.recipe.no_capabilities"), null, null, 0.0);
 
     public static ActionResult fail(@Nullable Component component, @Nullable RecipeCapability<?> capability, IO io) {
         return fail(component, capability, io, 0.0);

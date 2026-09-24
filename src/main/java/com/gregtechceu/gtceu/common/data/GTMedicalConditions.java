@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModLoader;
-import org.jetbrains.annotations.Nullable;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
