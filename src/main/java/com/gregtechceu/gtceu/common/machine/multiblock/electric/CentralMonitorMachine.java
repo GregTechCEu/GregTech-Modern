@@ -75,7 +75,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         if (MULTI_PREDICATE == null) {
             MULTI_PREDICATE = Predicates.machines(GTMachines.MONITOR)
                     .and(Predicates.abilities(PartAbility.INPUT_ENERGY)
-                            .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1))
+                            .setGlobalMinMax(1, 2).setPreviewCount(1))
                     .and(Predicates.abilities(PartAbility.DATA_ACCESS).setPreviewCount(1)
                             .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4).setPreviewCount(0))
                             .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16).setPreviewCount(0))
@@ -139,7 +139,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         CONTEXT.setCheckLayer(false);
         CONTEXT.updateLevel(level);
         CONTEXT.updatePos(pos);
-        return getMultiPredicate().getPredicateAtPos(CONTEXT) != null;
+        return getMultiPredicate().getPredicateAtPos(CONTEXT).hasMatched();
     }
 
     public void updateStructureDimensions() {
