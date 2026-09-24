@@ -5,10 +5,10 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.worldgen.*;
-import com.gregtechceu.gtceu.data.loot.GTLootModifications;
-import com.gregtechceu.gtceu.data.loot.GTLootTables;
+import com.gregtechceu.gtceu.data.loot.*;
 import com.gregtechceu.gtceu.data.tags.BiomeTagsLoader;
 import com.gregtechceu.gtceu.data.tags.DamageTypeTagsLoader;
+import com.gregtechceu.gtceu.data.tags.EnchantmentTagsLoader;
 
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -36,8 +36,6 @@ public class DataGenerators {
             generator.addProvider(true, new SoundEntryBuilder.SoundEntryProvider(packOutput, GTCEu.MOD_ID));
         }
         if (event.includeServer()) {
-            var set = Set.of(GTCEu.MOD_ID);
-            generator.addProvider(true, new BiomeTagsLoader(packOutput, registries, existingFileHelper));
             DatapackBuiltinEntriesProvider provider = generator.addProvider(true, new DatapackBuiltinEntriesProvider(
                     packOutput, registries, new RegistrySetBuilder()
                             .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
@@ -48,12 +46,17 @@ public class DataGenerators {
                             .add(Registries.JUKEBOX_SONG, GTJukeboxSongs::bootstrap)
                             .add(Registries.ENCHANTMENT_PROVIDER, GTEnchantmentProviders::bootstrap)
                             .add(GTRegistries.Keys.BEDROCK_FLUID, GTBedrockFluids::bootstrap)
-                            .add(GTRegistries.Keys.ORE_VEIN, GTOreVeins::bootstrap),
-                    set));
-            generator.addProvider(true,
-                    new DamageTypeTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));
-            generator.addProvider(true, new GTLootTables(packOutput, provider.getRegistryProvider()));
-            generator.addProvider(true, new GTLootModifications(packOutput, provider.getRegistryProvider()));
+                            .add(GTRegistries.Keys.ORE_VEIN, GTOreVeins::bootstrap)
+                            .add(Registries.ENCHANTMENT, GTEnchantments::bootstrap),
+                    Set.of(GTCEu.MOD_ID)));
+            registries = provider.getRegistryProvider();
+
+            generator.addProvider(true, new BiomeTagsLoader(packOutput, registries, existingFileHelper));
+            generator.addProvider(true, new DamageTypeTagsLoader(packOutput, registries, existingFileHelper));
+            generator.addProvider(true, new EnchantmentTagsLoader(packOutput, registries, existingFileHelper));
+
+            generator.addProvider(true, new GTLootTables(packOutput, registries));
+            generator.addProvider(true, new GTLootModifications(packOutput, registries));
         }
     }
 }

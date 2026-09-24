@@ -15,11 +15,12 @@ import net.minecraft.world.item.enchantment.providers.SingleEnchantment;
 public class GTEnchantmentProviders {
 
     // spotless:off
-    public static final ResourceKey<EnchantmentProvider> SILK_TOUCH = create("silk_touch");
+    public static final ResourceKey<EnchantmentProvider> HARD_HAMMER_LOOT_CHECK = create("hard_hammer_loot_check");
 
     public static void bootstrap(BootstrapContext<EnchantmentProvider> context) {
-        HolderGetter<Enchantment> holdergetter = context.lookup(Registries.ENCHANTMENT);
-        context.register(SILK_TOUCH, new SingleEnchantment(holdergetter.getOrThrow(Enchantments.SILK_TOUCH), ConstantInt.of(1)));
+        HolderGetter<Enchantment> enchantments = context.lookup(Registries.ENCHANTMENT);
+
+        context.register(HARD_HAMMER_LOOT_CHECK, new SingleEnchantment(enchantments.getOrThrow(Enchantments.SILK_TOUCH), ConstantInt.of(1)));
     }
     // spotless:on
 
