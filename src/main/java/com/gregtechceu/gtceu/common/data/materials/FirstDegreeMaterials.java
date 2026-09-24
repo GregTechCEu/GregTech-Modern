@@ -732,7 +732,6 @@ public class FirstDegreeMaterials {
                 .rotorStats(145, 105, 3.5f, 384)
                 .buildAndRegister();
         Iron.getProperty(PropertyKey.INGOT).setSmeltingInto(WroughtIron);
-        Iron.getProperty(PropertyKey.INGOT).setArcSmeltingInto(WroughtIron);
 
         Wulfenite = new Material.Builder(GTCEu.id("wulfenite"))
                 .dust(3).ore()
