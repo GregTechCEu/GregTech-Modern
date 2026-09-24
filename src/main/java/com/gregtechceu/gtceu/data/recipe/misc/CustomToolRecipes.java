@@ -139,7 +139,7 @@ public final class CustomToolRecipes {
 
     private static void registerFlintToolRecipes(@NotNull Consumer<FinishedRecipe> provider) {
         final MaterialEntry flint = new MaterialEntry(TagPrefix.gem, GTMaterials.Flint);
-        final ItemStack stick = new ItemStack(Items.STICK);
+        final TagKey<Item> stick = Tags.Items.RODS_WOODEN;
 
         addToolRecipe(provider, GTMaterials.Flint, GTToolType.MORTAR, false,
                 " I ", "SIS", "SSS",
@@ -178,7 +178,7 @@ public final class CustomToolRecipes {
     }
 
     private static void registerSoftToolRecipes(@NotNull Consumer<FinishedRecipe> provider) {
-        final ItemStack stick = new ItemStack(Items.STICK);
+        final TagKey<Item> stick = Tags.Items.RODS_WOODEN;
 
         for (int i = 0; i < softMaterials.length; i++) {
             Material material = softMaterials[i];
