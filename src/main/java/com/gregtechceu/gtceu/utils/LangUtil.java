@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.lang;
+package com.gregtechceu.gtceu.utils;
 
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
