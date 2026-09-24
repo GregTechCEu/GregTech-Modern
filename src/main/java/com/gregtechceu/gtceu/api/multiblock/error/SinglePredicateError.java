@@ -127,13 +127,13 @@ public class SinglePredicateError extends PatternError {
 
         private Component getComponent(SinglePredicateError error) {
             return switch (this) {
-                case MAX_COUNT -> Component.translatable("gtceu.multiblock.pattern.error.limited.max_count",
+                case MAX_COUNT -> Component.translatable("multiblock.gtceu.predicate.limit_max",
                         error.predMaxCount, error.actualCount);
-                case MIN_COUNT -> Component.translatable("gtceu.multiblock.pattern.error.limited.min_count",
+                case MIN_COUNT -> Component.translatable("multiblock.gtceu.predicate.limit_min",
                         error.predMinCount, error.actualCount);
-                case MAX_LAYER_COUNT -> Component.translatable("gtceu.multiblock.pattern.error.limited.max_layer_count",
+                case MAX_LAYER_COUNT -> Component.translatable("multiblock.gtceu.predicate.limit_layer_max",
                         error.predMaxLayerCount, error.actualCount);
-                case MIN_LAYER_COUNT -> Component.translatable("gtceu.multiblock.pattern.error.limited.min_layer_count",
+                case MIN_LAYER_COUNT -> Component.translatable("multiblock.gtceu.predicate.limit_layer_min",
                         error.predMinLayerCount, error.actualCount);
             };
         }

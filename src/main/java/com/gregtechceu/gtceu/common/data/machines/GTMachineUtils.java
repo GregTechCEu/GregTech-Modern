@@ -701,12 +701,13 @@ public class GTMachineUtils {
                                         IntStream.of(ULV, LV, MV, HV, EV, IV, LuV, ZPM, UV, UHV)
                                                 .filter(t -> t >= tier)
                                                 .toArray())
-                                        .addTooltips(Component.translatable(
-                                                "gtceu.multiblock.pattern.error.limited.1", GTValues.VN[tier])))
+                                        .addTooltips(Component.translatable("multiblock.gtceu.predicate.limit_min",
+                                                GTValues.VN[tier])))
                         .where('A',
                                 blocks(intake.get())
-                                        .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_1")))
-                        .where('Y', controller(blocks(definition.getBlock())))
+                                        .addTooltips(Component.translatable("multiblock.gtceu.pattern.clear_amount", 1,
+                                                1, 1)))
+                        .where('Y', controller(definition))
                         .build())
                 .recoveryItems(
                         () -> new ItemLike[] {
