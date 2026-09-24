@@ -162,7 +162,7 @@ public class ConfigHolder {
         @Configurable.Comment({
                 "Whether tools should have enchants or not. Like the flint sword getting fire aspect.",
                 "Default: false" })
-        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean enchantedTools = false;
 
         @Configurable
