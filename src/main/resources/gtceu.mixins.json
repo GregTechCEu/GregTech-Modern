@@ -22,6 +22,8 @@
         "client.GuiGraphicsMixin",
         "client.ItemEntityMixin",
         "client.LevelRendererMixin",
+        "client.LiquidBlockRendererMixin",
+        "client.MinecraftAccessor",
         "client.ModelBakerImplMixin",
         "client.ModelBakeryAccessor",
         "client.ModelManagerMixin",

@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardPropert
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
@@ -1291,7 +1291,7 @@ public class FirstDegreeMaterials {
 
         Steam = new Material.Builder(GTCEu.id("steam"))
                 .gas(new FluidBuilder()
-                        .state(FluidState.GAS)
+                        .state(MaterialFluidState.GAS)
                         .temperature(373)
                         .customStill())
                 .flags(DISABLE_DECOMPOSITION)
