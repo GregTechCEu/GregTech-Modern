@@ -5,18 +5,15 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.utils.ComponentUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -99,25 +96,9 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                                 .withStyle(ChatFormatting.GREEN);
                     } else {
                         var voltage = recipeInfo.getLong("voltage");
-                        var tier = GTUtil.getTierByVoltage(voltage);
                         float minAmperage = (float) EUt / voltage;
 
-                        text = ComponentUtil.prepend("common.gtceu.amperage",
-                                FormattingUtil.formatNumber2Places(minAmperage))
-                                .withStyle(ChatFormatting.RED)
-                                .append(Component.literal(" @ ").withStyle(ChatFormatting.GREEN));
-                        if (tier < GTValues.TIER_COUNT) {
-                            text = text.append(Component.literal(GTValues.VNF[tier])
-                                    .withStyle(style -> style.withColor(GTValues.VC[tier])));
-                        } else {
-                            int speed = Mth.clamp(tier - GTValues.TIER_COUNT - 1, 0, GTValues.TIER_COUNT);
-                            text = text.append(Component.literal("MAX")
-                                    .withStyle(style -> style.withColor(TooltipHelper.rainbowColor(speed)))
-                                    .append(Component.literal("+")
-                                            .withStyle(style -> style.withColor(GTValues.VC[speed]))
-                                            .append(FormattingUtil.formatNumbers(speed))));
-
-                        }
+                        text = ComponentUtil.formattedEUt(minAmperage, voltage, true);
 
                         text.append(ComponentUtil.wrap(ComponentUtil.prepend("common.gtceu.eu_per_tick",
                                 FormattingUtil.formatNumbers(EUt))

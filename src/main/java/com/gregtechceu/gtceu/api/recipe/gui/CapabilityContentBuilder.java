@@ -193,8 +193,9 @@ public interface CapabilityContentBuilder {
             else flow.child(maxEu.asWidget().name("max_eu"));
 
             var euText = Text
-                    .lang(io == IO.IN ? "gui.gtceu.recipe.eu" : "gui.gtceu.recipe.eu_inverted",
-                            FormattingUtil.formatNumber2Places(minAmperage), GTValues.VN[minVoltageTier])
+                    .lang(io == IO.IN ? "gui.gtceu.recipe.eu" : "gui.gtceu.recipe.eu_inverted")
+                    .append(" ")
+                    .append(ComponentUtil.formattedEUt(minAmperage, eu.voltage(), false))
                     .withStyle(ChatFormatting.UNDERLINE);
 
             RichTooltip tooltip = new RichTooltip();

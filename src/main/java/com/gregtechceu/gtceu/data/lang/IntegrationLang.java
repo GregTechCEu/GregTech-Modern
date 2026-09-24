@@ -146,7 +146,6 @@ public class IntegrationLang {
         provider.add("integration.gtceu.jade.cleaned_this_second", "Cleaned hazard: %s/s");
         provider.add("integration.gtceu.jade.remaining_charge_time", "Until charged: %s");
         provider.add("integration.gtceu.jade.remaining_discharge_time", "Until empty: %s");
-        provider.add("integration.gtceu.jade.changes_eu_sec", "%s EU/s");
 
         provider.add("integration.gtceu.jade.ldp_endpoint.is_formed", "Pipeline Formed");
         provider.add("integration.gtceu.jade.ldp_endpoint.not_formed", "Pipeline Incomplete");

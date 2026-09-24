@@ -1101,7 +1101,7 @@ public class MachineLang {
         // Recipe Logic
         provider.add("gtceu.multiblock.work_paused", "Work Paused.");
         provider.add("gtceu.multiblock.running", "Running perfectly.");
-        provider.add("gtceu.multiblock.idling", "§6Idling.");
+        provider.add("gtceu.multiblock.idling", "Idling.");
 
         // Creative Mode
         provider.add("gtceu.creative_tooltip.1", "§7You just need");

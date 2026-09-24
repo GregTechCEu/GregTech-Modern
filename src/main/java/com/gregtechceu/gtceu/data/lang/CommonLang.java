@@ -53,6 +53,7 @@ public class CommonLang {
         provider.add("common.gtceu.amperage", "A");
         provider.add("common.gtceu.eu", "EU");
         provider.add("common.gtceu.eu_per_tick", "EU/t");
+        provider.add("common.gtceu.eu_per_sec", "EU/s");
 
         // Base mc has gui.minutes/hours/days
         provider.add("common.gtceu.seconds", "%s second(s)");
