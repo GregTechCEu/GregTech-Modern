@@ -68,12 +68,12 @@ public final class StagingRecipeDB {
         for (GTRecipe recipe : recipes) {
             recipe.inputs.forEach((cap, list) -> {
                 for (var input : compressedContent(list, cap)) {
-                    map.mergeInt(input, 1, Integer::sum);
+                    map.addTo(input, 1);
                 }
             });
             recipe.tickInputs.forEach((cap, list) -> {
                 for (var input : compressedContent(list, cap)) {
-                    map.mergeInt(input, 1, Integer::sum);
+                    map.addTo(input, 1);
                 }
             });
         }

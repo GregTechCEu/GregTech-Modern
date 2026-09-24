@@ -1259,7 +1259,7 @@ public final class Material {
          *
          * @param key The tag to add.
          */
-        public Builder customTags(TagKey<Item> key) {
+        public Builder customTag(TagKey<Item> key) {
             this.itemTags.add(key);
             return this;
         }
