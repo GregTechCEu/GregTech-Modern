@@ -8,7 +8,9 @@ import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -109,6 +111,7 @@ public class AutobuildHelper {
             whatWeHave.put(desiredItem, toDeduct);
         }
 
+        Map<Item, Integer> whatWePlaced = new Object2IntArrayMap<>();
         // Step 3. Place what was fetched
         for (var entry : replaceableBlocks.long2ObjectEntrySet()
                 .stream()
@@ -118,20 +121,17 @@ public class AutobuildHelper {
             var blocksLeft = whatWeHave.merge(blockState.getBlock().asItem(), -1, Integer::sum);
             if (blocksLeft < 0) continue;
             whatWeWant.merge(blockState.getBlock().asItem(), -1, Integer::sum);
+            whatWePlaced.merge(blockState.getBlock().asItem(), 1, Integer::sum);
             level.setBlockAndUpdate(BlockPos.of(entry.getLongKey()), blockState);
         }
 
-        if (!whatWeWant.isEmpty()) {
-            player.displayClientMessage(
-                    Component.translatable("gtceu.autobuild.missing_blocks").withStyle(ChatFormatting.RED), false);
-        }
-        for (var entry : whatWeWant.entrySet()) {
-            if (entry.getValue() > 0) {
-                player.displayClientMessage(Component.literal(entry.getKey().toString() + " " + entry.getValue()),
-                        false);
-            }
-        }
+        printBlockList(Component.translatable("gtceu.autobuild.placed_blocks").withStyle(ChatFormatting.GREEN),
+                whatWePlaced, player);
+        printBlockList(Component.translatable("gtceu.autobuild.missing_blocks").withStyle(ChatFormatting.RED),
+                whatWeWant, player);
 
+        if (!canNotPlaceBlocks.isEmpty()) player.displayClientMessage(
+                Component.translatable("gtceu.autobuild.unplaced_blocks").withStyle(ChatFormatting.RED), false);
         for (var entry : canNotPlaceBlocks.long2ObjectEntrySet()) {
             AABBHighlightRenderer.INSTANCE.addHighlight(AABBHighlightRenderer.builder()
                     .aabb(BlockPos.of(entry.getLongKey()))
@@ -140,6 +140,22 @@ public class AutobuildHelper {
                     .durationMillis(10000)
                     .phaseMillis(750)
                     .build());
+        }
+    }
+
+    public static void printBlockList(Component firstMessage, Map<Item, Integer> blockList, Player player) {
+        if (!blockList.isEmpty()) {
+            player.displayClientMessage(
+                    firstMessage, false);
+            MutableComponent toPrint = Component.empty();
+            boolean first = true;
+            for (var entry : blockList.entrySet()) {
+                if (entry.getValue() <= 0) continue;
+                if (!first) toPrint = toPrint.append(", ");
+                toPrint = toPrint.append(entry.getValue() + "x ").append(entry.getKey().getDescription());
+                first = false;
+            }
+            player.displayClientMessage(toPrint, false);
         }
     }
 }
