@@ -117,7 +117,7 @@ public class GTBucketItem extends BucketItem {
             return true;
         }
 
-        if (doesFluidVaporize(material, level)) {
+        if (doesFluidVaporize(this.getFluid(), material, level)) {
             int i = pos.getX();
             int j = pos.getY();
             int k = pos.getZ();
@@ -144,7 +144,7 @@ public class GTBucketItem extends BucketItem {
                 level.destroyBlock(pos, true);
             }
 
-            var fluidBlockState = material.getFluid().defaultFluidState().createLegacyBlock();
+            var fluidBlockState = this.getFluid().defaultFluidState().createLegacyBlock();
             if (hasFluidBlock(material) && level.setBlock(pos, fluidBlockState, Block.UPDATE_ALL_IMMEDIATE) &&
                     fluidBlockState.getFluidState().isSource()) {
                 this.playEmptySound(player, level, pos);
@@ -169,21 +169,16 @@ public class GTBucketItem extends BucketItem {
         return false;
     }
 
-    private boolean doesFluidVaporize(Material mat, Level level) {
+    private boolean doesFluidVaporize(Fluid fluid, Material mat, Level level) {
         // water in nether behavior
         if (level.dimensionType().ultraWarm() && this.getFluid().defaultFluidState().is(FluidTags.WATER)) {
             return true;
+        } else if (fluid == mat.getFluid(FluidStorageKeys.PLASMA)) {
+            return true;
+        } else if (fluid == mat.getFluid(FluidStorageKeys.GAS)) {
+            return true;
+        } else {
+            return false;
         }
-        var fluidStorage = mat.getProperty(PropertyKey.FLUID).getStorage();
-        var plasmaEntry = fluidStorage.getEntry(FluidStorageKeys.PLASMA);
-        var gasEntry = fluidStorage.getEntry(FluidStorageKeys.GAS);
-        if (plasmaEntry != null) {
-            var plasmaBuilder = plasmaEntry.getBuilder();
-            return plasmaBuilder != null && plasmaBuilder.hasFluidBlock();
-        } else if (gasEntry != null) {
-            var gasBuilder = gasEntry.getBuilder();
-            return gasBuilder != null && gasBuilder.hasFluidBlock();
-        }
-        return false;
     }
 }
