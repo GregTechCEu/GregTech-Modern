@@ -75,7 +75,7 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
                         adjustCleanAmount(true);
                     }
 
-                    setWaiting(Component.translatable("recipe_logic.gtceu.insufficient_in").append(": ")
+                    setWaiting(Component.translatable("gui.gtceu.recipe.insufficient_in").append(": ")
                             .append(EURecipeCapability.CAP.getName()));
                     return;
                 }

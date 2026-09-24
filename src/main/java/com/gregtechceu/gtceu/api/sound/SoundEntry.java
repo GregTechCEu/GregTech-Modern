@@ -14,20 +14,25 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.google.gson.JsonObject;
+import lombok.Getter;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
+import javax.annotation.Nullable;
+
 public abstract class SoundEntry {
 
+    @Getter
     protected ResourceLocation id;
-    protected String subtitle;
+    @Getter
+    protected @Nullable String subtitleKey;
     protected SoundSource category;
     protected int attenuationDistance;
 
-    public SoundEntry(ResourceLocation id, String subtitle, SoundSource category, int attenuationDistance) {
+    public SoundEntry(ResourceLocation id, String subtitleKey, SoundSource category, int attenuationDistance) {
         this.id = id;
-        this.subtitle = subtitle;
+        this.subtitleKey = subtitleKey;
         this.category = category;
         this.attenuationDistance = attenuationDistance;
     }
@@ -40,20 +45,8 @@ public abstract class SoundEntry {
 
     public abstract SoundEvent getMainEvent();
 
-    public String getSubtitleKey() {
-        return "subtitles." + id.getNamespace() + "." + id.getPath();
-    }
-
-    public ResourceLocation getId() {
-        return id;
-    }
-
     public boolean hasSubtitle() {
-        return subtitle != null;
-    }
-
-    public String getSubtitle() {
-        return subtitle;
+        return subtitleKey != null;
     }
 
     public void playOnServer(Level world, Vec3i pos) {

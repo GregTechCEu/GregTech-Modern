@@ -1,5 +1,6 @@
 dependencies {
     compileOnly(libs.jetbrains.annotations)
+    compileOnly(libs.mcdev.annotations)
 
     // Registrate
     jarJar(modApi(forge.registrate.get()))
@@ -19,8 +20,6 @@ dependencies {
     jarJar(api(forge.mixinExtras.forge.get())).version {
         require("[${forge.versions.mixinExtras.get()},)")
     }
-
-    compileOnly(libs.mcdevAnnotations)
 
     // Recipe Viewers
     modCompileOnly(forge.bundles.jei)

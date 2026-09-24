@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
+
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -33,7 +34,7 @@ public class LangGenerationHandler {
     }
 
     private void generate(RegistrateLangProvider provider) {
-        var gtProvider = (GTLangProvider)provider;
+        var gtProvider = (GTLangProvider) provider;
         providers.forEach(v -> v.accept(gtProvider));
     }
 }

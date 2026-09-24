@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.data.lang.LangGenerationHandler;
 import com.gregtechceu.gtceu.utils.codec.DispatchedMapCodec;
 
 import net.minecraft.nbt.Tag;
@@ -54,6 +55,17 @@ public abstract class RecipeCapability<T> {
         this.doRenderSlot = doRenderSlot;
         this.sortIndex = sortIndex;
         this.serializer = serializer;
+    }
+
+    protected RecipeCapability(ResourceLocation id, String name, int color, boolean doRenderSlot, int sortIndex,
+                               IContentSerializer<T> serializer) {
+        this.id = id;
+        this.color = color;
+        this.doRenderSlot = doRenderSlot;
+        this.sortIndex = sortIndex;
+        this.serializer = serializer;
+
+        LangGenerationHandler.forNamespace(id.getNamespace()).add(p -> p.add(getLanguageKey(), name));
     }
 
     /**
@@ -110,16 +122,12 @@ public abstract class RecipeCapability<T> {
         return serializer.of(o);
     }
 
-    public String slotName(IO io) {
-        return "%s_%s".formatted(id, io.name().toLowerCase(Locale.ROOT));
-    }
-
-    public String slotName(IO io, int index) {
-        return "%s_%s_%s".formatted(id, io.name().toLowerCase(Locale.ROOT), index);
+    public String getLanguageKey() {
+        return id.toLanguageKey("recipe_capability");
     }
 
     public MutableComponent getName() {
-        return Component.translatable(id.toLanguageKey("recipe_capability"));
+        return Component.translatable(getLanguageKey());
     }
 
     public MutableComponent getColoredName() {

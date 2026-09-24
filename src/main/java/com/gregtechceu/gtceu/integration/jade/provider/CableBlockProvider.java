@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.gregtechceu.gtceu.data.lang.ComponentUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
@@ -44,7 +45,7 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
                 if (amperage != 0) {
                     iTooltip.append(Component.literal(DECIMAL_FORMAT_1F.format(amperage) + "A / "));
                 }
-                iTooltip.append(Component.translatable("integration.gtceu.jade.amperage_use",
+                iTooltip.append(ComponentUtil.prepend("common.gtceu.amperage",
                         DECIMAL_FORMAT_1F.format(tag.getDouble("maxAmperage"))));
 
                 if (temperature != CableBlockEntity.getDefaultTemp()) {

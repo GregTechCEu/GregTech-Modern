@@ -24,7 +24,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
     public final static EURecipeCapability CAP = new EURecipeCapability();
 
     protected EURecipeCapability() {
-        super(GTCEu.id("eu"), 0xFFFFFF00, false, 2, SerializerEnergyStack.INSTANCE);
+        super(GTCEu.id("eu"), "GTCEu Energy", 0xFFFFFF00, false, 2, SerializerEnergyStack.INSTANCE);
     }
 
     @Override

@@ -111,7 +111,8 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
         langValue = FormattingUtil.toEnglishName(registryName.getPath());
 
-        LangGenerationHandler.forNamespace(registryName.getNamespace()).add(v -> v.add(registryName.toLanguageKey("recipe_type"), langValue));
+        LangGenerationHandler.forNamespace(registryName.getNamespace())
+                .add(v -> v.add(registryName.toLanguageKey("recipe_type"), langValue));
     }
 
     public GTRecipeType setMaxIOSize(int maxItemInputs, int maxItemOutputs, int maxFluidInputs, int maxFluidOutputs) {

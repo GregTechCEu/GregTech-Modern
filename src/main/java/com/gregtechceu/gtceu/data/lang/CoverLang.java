@@ -152,9 +152,6 @@ public class CoverLang {
                 "Behavior: Continuous\n\n" + detectorLatchDescription);
 
         // Advanced energy detector
-        provider.add("cover.gtceu.advanced_energy_detector.min", "Min");
-        provider.add("cover.gtceu.advanced_energy_detector.max", "Max");
-
         var advancedEnergyDetectorInvertDescription = """
                         Toggle to invert the redstone logic
                         By default, redstone is emitted when less than the minimum EU, and stops emitting when greater than the max EU
