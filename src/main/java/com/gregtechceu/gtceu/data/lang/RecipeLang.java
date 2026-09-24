@@ -21,7 +21,7 @@ public class RecipeLang {
         provider.add("gui.gtceu.recipe.no_capabilities", "Machine has no Capabilities");
 
         provider.add("gui.gtceu.recipe.setup_fail", "Fail to setup recipe: ");
-        provider.add("gui.gtceu.recipe.recipe_waiting", "Recipe Waiting: ");
+        provider.add("gui.gtceu.recipe.recipe_waiting", "Recipe Waiting");
 
         provider.add("gui.gtceu.recipe.insufficient_fuel", "Insufficient Fuel");
         provider.add("gui.gtceu.recipe.insufficient_in", "Insufficient Inputs");
@@ -44,8 +44,6 @@ public class RecipeLang {
         provider.add("gui.gtceu.recipe_content.chance_no_boost_logic", "Chance: %s%% (%s)");
         provider.add("gui.gtceu.recipe_content.chance_tier_boost_plus", "Bonus Chance: +%s%%/tier");
         provider.add("gui.gtceu.recipe_content.chance_tier_boost_minus", "Bonus Chance: -%s%%/tier");
-        provider.add("gui.gtceu.recipe_content.chance_boosted", "Chance at Tier: %s%%");
-        provider.add("gui.gtceu.recipe_content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
         provider.add("gui.gtceu.recipe_content.count_range", "%s-%sx");
         provider.add("gui.gtceu.recipe_content.fluid_range", "%s-%smB");
         provider.add("gui.gtceu.recipe_content.range", "%s-%s");
@@ -101,15 +99,14 @@ public class RecipeLang {
         // Recipe Data
         provider.add("gui.gtceu.recipe.total", "Total: %s EU");
         provider.add("gui.gtceu.recipe.max_eu", "Max. EU: %s EU");
-        provider.add("gui.gtceu.recipe.eu", "Usage: %s A @ %s");
-        provider.add("gui.gtceu.recipe.eu_inverted", "Generation: %s A @ %s");
+        provider.add("gui.gtceu.recipe.eu_usage", "Usage:");
+        provider.add("gui.gtceu.recipe.eu_generation", "Generation:");
 
         provider.add("gui.gtceu.recipe.scan_for_research", "Scan for Assembly Line");
         provider.add("gui.gtceu.recipe.computation_per_tick", "Min. Computation: %s CWU/t");
         provider.add("gui.gtceu.recipe.total_computation", "Computation: %s CWU");
 
         provider.add("gui.gtceu.recipe.duration", "Duration: %s secs");
-        provider.add("gui.gtceu.recipe.voltage", "Usage: %s A @ %s");
         provider.add("gui.gtceu.recipe.total_eu", "Total Usage: %s EU/t");
 
         provider.add("gui.gtceu.recipe.byproduct_tier", "Byproducts from %s§r+");
