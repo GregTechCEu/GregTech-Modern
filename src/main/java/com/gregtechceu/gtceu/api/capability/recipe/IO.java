@@ -27,7 +27,7 @@ public enum IO {
     }
 
     public String getTooltip() {
-        return "gtceu.io." + localeName;
+        return "common.gtceu.io." + localeName;
     }
 
     public boolean support(IO io) {

@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -93,27 +94,31 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
         super.appendHoverText(stack, level, tooltip, flag);
         FluidPipeProperties properties = createProperties(defaultBlockState(), stack);
 
-        tooltip.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", properties.getThroughput()));
-        tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature",
+        tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.throughput", properties.getThroughput()));
+        tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.max_temperature",
                 FormattingUtil.formatTemperature(properties.getMaxFluidTemperature())));
 
         if (properties.getChannels() > 1) {
-            tooltip.add(Component.translatable("gtceu.fluid_pipe.channels", properties.getChannels()));
+            tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.channels", properties.getChannels()));
         }
 
         if (!GTUtil.isShiftDown()) {
-            tooltip.add(Component.translatable("gtceu.tooltip.fluid_pipe_hold_shift"));
+            tooltip.add(Component.translatable("common.gtceu.tooltip.fluid_pipe_hold_shift"));
             return;
         }
 
         if (properties.isGasProof())
-            tooltip.add(Component.translatable("gtceu.fluid_pipe.gas_proof"));
+            tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.gas_proof").withStyle(ChatFormatting.GOLD));
         else
-            tooltip.add(Component.translatable("gtceu.fluid_pipe.not_gas_proof"));
+            tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.not_gas_proof")
+                    .withStyle(ChatFormatting.DARK_RED));
 
-        if (properties.isAcidProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.acid_proof"));
-        if (properties.isCryoProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.cryo_proof"));
-        if (properties.isPlasmaProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));
+        if (properties.isAcidProof())
+            tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.acid_proof").withStyle(ChatFormatting.GOLD));
+        if (properties.isCryoProof())
+            tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.cryo_proof").withStyle(ChatFormatting.GOLD));
+        if (properties.isPlasmaProof())
+            tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.plasma_proof").withStyle(ChatFormatting.GOLD));
     }
 
     @Override

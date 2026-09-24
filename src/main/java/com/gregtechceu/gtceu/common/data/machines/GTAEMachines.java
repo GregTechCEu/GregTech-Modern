@@ -27,7 +27,7 @@ public class GTAEMachines {
                     Component.translatable("gtceu.machine.item_bus.import.tooltip"),
                     Component.translatable("gtceu.machine.me.item_import.tooltip"),
                     Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+                    Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
 
     public final static MachineDefinition STOCKING_IMPORT_BUS_ME = REGISTRATE
@@ -43,7 +43,7 @@ public class GTAEMachines {
                     Component.translatable("gtceu.machine.me_import_item_hatch.configs.tooltip"),
                     Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
                     Component.translatable("gtceu.machine.me.stocking_item.tooltip.1"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+                    Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
 
     public final static MachineDefinition ITEM_EXPORT_BUS_ME = REGISTRATE
@@ -57,7 +57,7 @@ public class GTAEMachines {
                     Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                     Component.translatable("gtceu.machine.me.item_export.tooltip"),
                     Component.translatable("gtceu.machine.me.export.tooltip"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+                    Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
 
     public final static MachineDefinition FLUID_IMPORT_HATCH_ME = REGISTRATE
@@ -71,7 +71,7 @@ public class GTAEMachines {
                     Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"),
                     Component.translatable("gtceu.machine.me.fluid_import.tooltip"),
                     Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+                    Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
 
     public final static MachineDefinition STOCKING_IMPORT_HATCH_ME = REGISTRATE
@@ -87,7 +87,7 @@ public class GTAEMachines {
                     Component.translatable("gtceu.machine.me_import_fluid_hatch.configs.tooltip"),
                     Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
                     Component.translatable("gtceu.machine.me.stocking_fluid.tooltip.1"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+                    Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
 
     public final static MachineDefinition FLUID_EXPORT_HATCH_ME = REGISTRATE
@@ -101,7 +101,7 @@ public class GTAEMachines {
                     Component.translatable("gtceu.machine.fluid_hatch.export.tooltip"),
                     Component.translatable("gtceu.machine.me.fluid_export.tooltip"),
                     Component.translatable("gtceu.machine.me.export.tooltip"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+                    Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
     public static final MachineDefinition ME_PATTERN_BUFFER = REGISTRATE
             .machine("me_pattern_buffer", MEPatternBufferPartMachine::new)
@@ -111,11 +111,10 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_buffer_hatch"))
             .langValue("ME Pattern Buffer")
-            .tooltips(
-                    Component.translatable("block.gtceu.pattern_buffer.desc.0"),
-                    Component.translatable("block.gtceu.pattern_buffer.desc.1"),
-                    Component.translatable("block.gtceu.pattern_buffer.desc.2"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+            .tooltipLang("§fAllows direct §6AE2 pattern storage §ffor GregTech Multiblocks.",
+                    "§fAE2 Patterns can utilize anything stored in the §6shared inventory §fwidget.",
+                    "§fLink §6Pattern Buffer Proxies §fwith a §bdatastick §fto link machines together!")
+            .tooltips(Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
     public static final MachineDefinition ME_PATTERN_BUFFER_PROXY = REGISTRATE
             .machine("me_pattern_buffer_proxy", MEPatternBufferProxyPartMachine::new)
@@ -125,11 +124,10 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_buffer_hatch_proxy"))
             .langValue("ME Pattern Buffer Proxy")
-            .tooltips(
-                    Component.translatable("block.gtceu.pattern_buffer_proxy.desc.0"),
-                    Component.translatable("block.gtceu.pattern_buffer_proxy.desc.1"),
-                    Component.translatable("block.gtceu.pattern_buffer_proxy.desc.2"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+            .tooltipLang("§fAllows linking many machines to a singular §6ME Pattern Buffer§f.",
+                    "§fAll connected proxies will share the patterns held within the §6original buffer§f.",
+                    "§fLet the factory grow!")
+            .tooltips(Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
 
     public static void init() {}

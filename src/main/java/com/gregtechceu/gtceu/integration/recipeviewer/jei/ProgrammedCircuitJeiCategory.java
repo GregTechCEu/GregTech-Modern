@@ -15,6 +15,7 @@ import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.IntStream;
@@ -38,8 +39,8 @@ public class ProgrammedCircuitJeiCategory extends
     }
 
     @Override
-    public Component getTitle() {
-        return Component.translatable("gtceu.jei.programmed_circuit");
+    public @NotNull Component getTitle() {
+        return Component.translatable("recipeviewer.gtceu.category.programmed_circuit");
     }
 
     @Override

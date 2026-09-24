@@ -454,7 +454,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
         GenericSyncValue<Component> distComponent = GenericSyncValue.builder(Component.class)
                 .adapter(COMPONENT)
-                .getter(() -> Component.translatable("gtceu.multiblock.dimensions.1", bounds.get(3) + bounds.get(4) + 1,
+                .getter(() -> Component.translatable("multiblock.gtceu.dimensions.1", bounds.get(3) + bounds.get(4) + 1,
                         bounds.get(1) + 1,
                         bounds.get(4) + bounds.get(5) + 1))
                 .build();
@@ -509,7 +509,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));
 
-        widgets.add(Text.of(Component.translatable("gtceu.multiblock.dimensions.0"))
+        widgets.add(Text.of(Component.translatable("multiblock.gtceu.dimensions.0"))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));
         widgets.add(Text.dynamic(distComponent::getValue)

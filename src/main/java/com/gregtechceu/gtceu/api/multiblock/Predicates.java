@@ -329,7 +329,7 @@ public class Predicates {
                 GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
                         .map(e -> (Block) e.getValue().get()).toList())
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"))
+                .addTooltips(Component.translatable("multiblock.gtceu.pattern.coils_must_match"))
                 .setPriority(0);
     }
 
@@ -339,7 +339,7 @@ public class Predicates {
                         .sorted(Comparator.comparingInt(e -> e.getKey().getCleanroomType().getTier()))
                         .map(entry -> entry.getValue().get())
                         .toList())
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.filters"));
+                .addTooltips(Component.translatable("multiblock.gtceu.pattern.filters_must_match"));
     }
 
     public static MultiPredicate powerSubstationBatteries() {
@@ -347,7 +347,7 @@ public class Predicates {
                 .stream().sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
                 .map(e -> (Block) e.getValue().get())
                 .toList())
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
+                .addTooltips(Component.translatable("multiblock.gtceu.pattern.batteries_must_match"));
     }
 
     public static @Nullable MultiPredicate dataHatchPredicate() {

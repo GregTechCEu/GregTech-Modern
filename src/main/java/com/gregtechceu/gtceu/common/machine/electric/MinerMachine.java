@@ -104,7 +104,7 @@ public class MinerMachine extends WorkableTieredMachine
 
             int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
             context.getPlayer().sendSystemMessage(
-                    Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
+                    Component.translatable("machine.gtceu.miner.working_area", workingArea, workingArea));
         } else {
             context.getPlayer().sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
         }
@@ -118,7 +118,7 @@ public class MinerMachine extends WorkableTieredMachine
                 mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
             int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
             return Collections.singletonList(
-                    Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
+                    Component.translatable("machine.gtceu.miner.working_area", workingArea, workingArea));
         }
         return new ArrayList<>();
     }
@@ -158,7 +158,7 @@ public class MinerMachine extends WorkableTieredMachine
                                 .withStyle(ChatFormatting.WHITE))
                         .asWidget())
                 .child(Text
-                        .dynamic(() -> Component.translatable("gtceu.universal.tooltip.working_area",
+                        .dynamic(() -> Component.translatable("machine.gtceu.miner.working_area",
                                 workingArea.getIntValue(), workingArea.getIntValue()).withStyle(ChatFormatting.WHITE))
                         .asWidget())
                 .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.done")

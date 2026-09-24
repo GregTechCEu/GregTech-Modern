@@ -87,7 +87,7 @@ public class MultiblockInfoJeiCategory extends ModularUIJeiCategory<MultiblockMa
 
     @Override
     public Component getTitle() {
-        return Component.translatable("gtceu.jei.multiblock_info");
+        return Component.translatable("recipeviewer.gtceu.category.multiblock_info");
     }
 
     @Override

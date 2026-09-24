@@ -115,9 +115,9 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
         syncManager.syncValue("stored", storedSlot);
 
-        IntSyncValue itemsPerCycle = new IntSyncValue(this::getItemsPerCycle, this::setItemsPerCycle).allowC2S();;
+        IntSyncValue itemsPerCycle = new IntSyncValue(this::getItemsPerCycle, this::setItemsPerCycle);
         syncManager.syncValue("itemsPerCycle", itemsPerCycle);
-        IntSyncValue ticksPerCycle = new IntSyncValue(this::getTicksPerCycle, this::setTicksPerCycle).allowC2S();;
+        IntSyncValue ticksPerCycle = new IntSyncValue(this::getTicksPerCycle, this::setTicksPerCycle);
         syncManager.syncValue("ticksPerCycle", ticksPerCycle);
 
         mainWidget

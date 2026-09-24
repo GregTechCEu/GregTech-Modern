@@ -35,9 +35,10 @@ public class SimplePatternError extends PatternError {
         return (parent) -> {
             List<Component> lines = new ArrayList<>();
 
-            lines.add(Component.translatable("gtceu.multiblock.pattern.error.0"));
-            lines.add(Component.translatable("gtceu.multiblock.pattern.error.1", pos.getX(), pos.getY(),
+            lines.add(Component.translatable("multiblock.gtceu.predicate.count.0"));
+            lines.add(Component.translatable("multiblock.gtceu.predicate.count.1", pos.getX(), pos.getY(),
                     pos.getZ()));
+
             for (List<BlockInfo> candidate : candidates) {
                 if (!candidate.isEmpty()) {
                     Component c = candidate.get(0).getItemStackForm().getHoverName();

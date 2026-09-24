@@ -288,7 +288,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     @Override
     protected InteractionResult onSoftMalletClick(ExtendedUseOnContext context) {
         if (!isRemote()) {
-            context.getPlayer().sendSystemMessage(Component.translatable("behaviour.soft_hammer.ignored"));
+            context.getPlayer().sendSystemMessage(Component.translatable("item.gtceu.behavior.soft_hammer.ignored"));
         }
         return InteractionResult.sidedSuccess(getLevel().isClientSide);
     }
@@ -386,7 +386,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
                 mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
-            return Collections.singletonList(Component.translatable("gtceu.machine.steam_boiler.heat_amount",
+            return Collections.singletonList(Component.translatable("machine.gtceu.boiler.heat_info",
                     FormattingUtil.formatNumbers((int) (getTemperaturePercent() * 100))));
         }
         return new ArrayList<>();

@@ -139,7 +139,7 @@ public class GTMuiWidgets {
                 recipeLogicMachine::setWorkingEnabled,
                 GTGuiTextures.BUTTON_POWER[0],
                 GTGuiTextures.BUTTON_POWER[1],
-                "behaviour.soft_hammer");
+                "item.gtceu.behavior.soft_hammer");
     }
 
     public static ToggleButton createPowerButton(IControllable workable) {
@@ -148,7 +148,7 @@ public class GTMuiWidgets {
                 workable::setWorkingEnabled,
                 GTGuiTextures.BUTTON_POWER[0],
                 GTGuiTextures.BUTTON_POWER[1],
-                "behaviour.soft_hammer");
+                "item.gtceu.behavior.soft_hammer");
     }
 
     public static FluidSlot createTankWidget() {

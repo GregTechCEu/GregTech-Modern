@@ -364,7 +364,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 }
                 int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
                 context.getPlayer()
-                        .sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
+                        .sendSystemMessage(Component.translatable("machine.gtceu.miner.working_area_chunks",
                                 workingAreaChunks, workingAreaChunks));
             } else {
                 if (currentRadius - CHUNK_LENGTH / 2 <= 0) {
@@ -374,7 +374,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 }
                 int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
                 context.getPlayer().sendSystemMessage(
-                        Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
+                        Component.translatable("machine.gtceu.miner.working_area", workingArea, workingArea));
             }
             getRecipeLogic().resetArea(true);
         } else {
@@ -389,7 +389,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
             int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
             return Collections.singletonList(
-                    Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
+                    Component.translatable("machine.gtceu.miner.working_area", workingArea, workingArea));
         }
         return new ArrayList<>();
     }

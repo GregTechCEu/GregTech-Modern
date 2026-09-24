@@ -44,7 +44,7 @@ public class PositionYCondition extends RecipeCondition<PositionYCondition> {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.pos_y.tooltip", this.min, this.max);
+        return Component.translatable("recipe_condition.gtceu.pos_y", this.min, this.max);
     }
 
     public int getMin() {

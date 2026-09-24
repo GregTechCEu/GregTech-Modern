@@ -55,7 +55,7 @@ import java.util.*;
 public abstract class ProspectorMode<T> {
 
     public static ProspectorMode<Either<Material, BlockState>> ORE = new ProspectorMode<>(
-            "behavior.prospector.mode.ores", 16) {
+            "item.prospector.mode.ores", 16) {
 
         private static final String MATERIAL_PREFIX = "material_";
 
@@ -224,7 +224,7 @@ public abstract class ProspectorMode<T> {
         }
     }
 
-    public static ProspectorMode<FluidInfo> FLUID = new ProspectorMode<>("behavior.prospector.mode.fluid", 1) {
+    public static ProspectorMode<FluidInfo> FLUID = new ProspectorMode<>("item.prospector.mode.fluid", 1) {
 
         @Override
         public void scan(FluidInfo[][][] storage, LevelChunk chunk) {
@@ -310,7 +310,7 @@ public abstract class ProspectorMode<T> {
     public record BedrockOreInfo(Material material, int weight, int left, int yield) {}
 
     public static ProspectorMode<BedrockOreInfo> BEDROCK_ORE = new ProspectorMode<>(
-            "behavior.prospector.mode.bedrock_ore",
+            "item.prospector.mode.bedrock_ore",
             1) {
 
         @Override
@@ -384,7 +384,7 @@ public abstract class ProspectorMode<T> {
                     float chance = (float) item.weight / totalWeight * 100;
                     tooltips.add(Component.empty().append(getDescription(item))
                             .append(" (")
-                            .append(Component.translatable("gtceu.gui.content.chance_base",
+                            .append(Component.translatable("recipe_content.gtceu.chance_base",
                                     FormattingUtil.formatNumber2Places(chance)))
                             .append(") --- %s (%s%%)".formatted(item.yield, item.left)));
                 }

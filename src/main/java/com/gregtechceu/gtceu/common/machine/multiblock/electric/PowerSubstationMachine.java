@@ -157,7 +157,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         if (batteries.isEmpty()) {
             // only empty batteries found in the structure
             pState.setError(new PatternStringError(
-                    Component.translatable("gtceu.predicate_error.power_substation.missing_batteries")));
+                    Component.translatable("multiblock.gtceu.pattern_error.power_substation.missing_batteries")));
             invalidateStructure();
             return;
         }
@@ -222,19 +222,19 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         long fillTime;
         if (duration.getSeconds() <= 180) {
             fillTime = duration.getSeconds();
-            key = "gtceu.multiblock.power_substation.time_seconds";
+            key = "common.gtceu.seconds";
         } else if (duration.toMinutes() <= 180) {
             fillTime = duration.toMinutes();
-            key = "gtceu.multiblock.power_substation.time_minutes";
+            key = "gui.minutes";
         } else if (duration.toHours() <= 72) {
             fillTime = duration.toHours();
-            key = "gtceu.multiblock.power_substation.time_hours";
+            key = "gui.hours";
         } else if (duration.toDays() <= 730) { // 2 years
             fillTime = duration.toDays();
-            key = "gtceu.multiblock.power_substation.time_days";
+            key = "gui.days";
         } else if (duration.toDays() / 365 < 1_000_000) {
             fillTime = duration.toDays() / 365;
-            key = "gtceu.multiblock.power_substation.time_years";
+            key = "common.gtceu.years";
         } else {
             return Component.translatable("gtceu.multiblock.power_substation.time_forever");
         }

@@ -49,7 +49,7 @@ public class ShutterCover extends CoverBehavior implements IControllable {
         this.workingEnabled = !this.workingEnabled;
         if (!coverHolder.isRemote()) {
             context.getPlayer().sendSystemMessage(Component.translatable(isWorkingEnabled() ?
-                    "cover.shutter.message.enabled" : "cover.shutter.message.disabled"));
+                    "cover.gtceu.shutter.enabled" : "cover.gtceu.shutter.disabled"));
         }
         return InteractionResult.SUCCESS;
     }

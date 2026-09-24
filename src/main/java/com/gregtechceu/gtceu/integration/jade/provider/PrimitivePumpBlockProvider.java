@@ -30,7 +30,7 @@ public class PrimitivePumpBlockProvider extends MachineInfoProvider<PrimitivePum
     @Override
     protected void addTooltip(LongTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        tooltip.add(Component.translatable("gtceu.top.primitive_pump_production",
+        tooltip.add(Component.translatable("integration.gtceu.jade.primitive_pump_production",
                 FormattingUtil.formatNumbers(data.getAsLong())));
     }
 }

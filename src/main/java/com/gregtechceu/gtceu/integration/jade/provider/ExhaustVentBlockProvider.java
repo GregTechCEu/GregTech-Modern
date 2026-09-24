@@ -41,7 +41,7 @@ public class ExhaustVentBlockProvider extends MachineTraitProvider<ExhaustVentMa
                               BlockEntity blockEntity, IPluginConfig iPluginConfig) {
         var direction = Direction.byName(compoundTag.getString("ventDirection"));
         if (direction != null) {
-            iTooltip.add(Component.translatable("gtceu.top.exhaust_vent_direction",
+            iTooltip.add(Component.translatable("integration.gtceu.jade.exhaust_vent_direction",
                     StringUtils.capitalize(direction.getName())));
             if (!compoundTag.getBoolean("ventBlocked")) return;
 
@@ -53,7 +53,8 @@ public class ExhaustVentBlockProvider extends MachineTraitProvider<ExhaustVentMa
 
             if (compoundTag.getBoolean("needsVenting")) {
                 iTooltip.append(Component.literal(" ("));
-                iTooltip.append(Component.translatable("gtceu.top.exhaust_vent_blocked").withStyle(ChatFormatting.RED)
+                iTooltip.append(Component.translatable("integration.gtceu.jade.exhaust_vent_blocked")
+                        .withStyle(ChatFormatting.RED)
                         .append(Component.literal(")").withStyle(ChatFormatting.GRAY)));
             }
         }

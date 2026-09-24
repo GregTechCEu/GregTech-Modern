@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.widgets.textfield.TextEditorWidget;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangUtil;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
 import net.minecraft.nbt.CompoundTag;
@@ -70,7 +70,10 @@ public class TagFilter<T, S> extends Filter<T> {
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         StringSyncValue filterString = new StringSyncValue(this::getFilterString, this::setFilterString).allowC2S();
         RichTooltip infoTooltip = new RichTooltip();
-        LangHandler.getMultiLang("cover.tag_filter.info").forEach(infoTooltip::addLine);
+
+        for (var lang : LangUtil.getMultiLang("cover.tag_filter.info")) {
+            infoTooltip.addLine(lang);
+        }
 
         return Flow.row()
                 .coverChildren()

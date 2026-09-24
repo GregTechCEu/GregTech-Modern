@@ -90,7 +90,7 @@ public class GTOreProcessingJeiCategory extends ModularUIJeiCategory<Material> {
 
     @Override
     public Component getTitle() {
-        return Component.translatable("gtceu.jei.ore_processing_diagram");
+        return Component.translatable("recipeviewer.gtceu.category.ore_processing");
     }
 
     @Override

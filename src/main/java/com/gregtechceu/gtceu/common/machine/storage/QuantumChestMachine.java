@@ -247,7 +247,7 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
                         .background(GTGuiTextures.DISPLAY)
                         .size(90, 63)
                         .center()
-                        .child(Text.lang("gtceu.machine.quantum_chest.items_stored").asWidget()
+                        .child(Text.lang("machine.gtceu.quantum_chest.items_stored").asWidget()
                                 .color(0xffffff)
                                 .margin(8, 0, 8, 0))
                         .child(Text.dynamic(

@@ -52,14 +52,14 @@ public class BatteryStorageInfoProvider extends MachineInfoProvider<BatteryBuffe
         CompoundTag container = data.getCompound("energy");
         long changed = container.getLong("changed"), stored = container.getLong("stored"),
                 capacity = container.getLong("capacity");
-        tooltip.add(Component.translatable("gtceu.jade.changes_eu_tick",
+        tooltip.add(Component.translatable("integration.gtceu.jade.changes_eu_sec",
                 FormattingUtil.formatNumbers(((double) changed) / 20.0)));
         if (changed > 0L) {
             tooltip.add(Component
-                    .translatable("gtceu.jade.remaining_charge_time",
+                    .translatable("integration.gtceu.jade.remaining_charge_time",
                             getStringRemainTime((capacity - stored) / changed)));
         } else if (changed < 0L) {
-            tooltip.add(Component.translatable("gtceu.jade.remaining_discharge_time",
+            tooltip.add(Component.translatable("integration.gtceu.jade.remaining_discharge_time",
                     getStringRemainTime((stored) / -changed)));
         }
         if (GTUtil.isShiftDown()) {

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
@@ -517,6 +518,9 @@ public class GTMultiblockTextUtil {
 
     public static Optional<Widget<?>> createItemLineForOutput(Content itemOutput, GTRecipe recipe) {
         int runs = recipe.getTotalRuns();
+
+        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
+        int chanceTier = recipeTier + recipe.ocLevel;
         double maxDurationSec = (double) recipe.duration / 20.0;
 
         boolean rounded = false;
@@ -530,7 +534,7 @@ public class GTMultiblockTextUtil {
         if (itemOutput.content() instanceof IntProviderIngredient provider) {
             rounded = true;
             stack = provider.getMaxSizeStack();
-            displaycount = Component.translatable("gtceu.gui.content.range",
+            displaycount = Component.translatable("recipe_content.gtceu.range",
                     provider.getCountProvider().getMinValue(),
                     provider.getCountProvider().getMaxValue());
             if (itemOutput.chance() < itemOutput.maxChance()) {
@@ -585,6 +589,8 @@ public class GTMultiblockTextUtil {
     public static Optional<Widget<?>> createFluidLineForOutput(Content fluidOutput, GTRecipe recipe) {
         int runs = recipe.getTotalRuns();
 
+        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
+        int chanceTier = recipeTier + recipe.ocLevel;
         double maxDurationSec = (double) recipe.duration / 20.0;
 
         boolean rounded = false;
@@ -598,7 +604,7 @@ public class GTMultiblockTextUtil {
         if (fluidOutput.content() instanceof IntProviderFluidIngredient provider) {
             rounded = true;
             stack = provider.getMaxSizeStack();
-            displaycount = Component.translatable("gtceu.gui.content.range",
+            displaycount = Component.translatable("recipe_content.gtceu.range",
                     provider.getCountProvider().getMinValue(),
                     provider.getCountProvider().getMaxValue());
             if (fluidOutput.chance() < fluidOutput.maxChance()) {

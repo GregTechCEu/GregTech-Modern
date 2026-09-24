@@ -36,11 +36,13 @@ public class LDPEndpointProvider extends MachineInfoProvider<LongDistanceEndpoin
         String ioType = data.getString("ioType");
         String outputDirection = data.getString("outputDirection");
 
-        tooltip.add(Component.translatable(
-                isFormed ? "gtceu.top.ldp_endpoint.is_formed" : "gtceu.top.ldp_endpoint.not_formed"));
-        tooltip.add(Component.translatable("gtceu.top.ldp_endpoint.io_type", Component.translatable(ioType)
+        tooltip.add(isFormed ?
+                Component.translatable("integration.gtceu.jade.ldp_endpoint.is_formed")
+                        .withStyle(ChatFormatting.GREEN) :
+                Component.translatable("integration.gtceu.jade.ldp_endpoint.not_formed").withStyle(ChatFormatting.RED));
+        tooltip.add(Component.translatable("integration.gtceu.jade.ldp_endpoint.io_type", Component.translatable(ioType)
                 .withStyle(ioType.contains("import") ? ChatFormatting.GREEN : ChatFormatting.RED)));
-        tooltip.add(Component.translatable("gtceu.top.ldp_endpoint.output_direction",
+        tooltip.add(Component.translatable("integration.gtceu.jade.ldp_endpoint.output_direction",
                 FormattingUtil.toEnglishName((outputDirection))));
     }
 }
