@@ -122,7 +122,7 @@ public class ItemNetHandler implements IItemHandlerModifiable, IBundleInsertable
                     insertIntoTarget(inv, stack, false, false);
                 }
                 if (trackFairness) {
-                    transferTo(inv, simulate, stack.getCount());
+                    transferTo(inv, simulate, stack);
                 }
                 return ItemStack.EMPTY;
             }
