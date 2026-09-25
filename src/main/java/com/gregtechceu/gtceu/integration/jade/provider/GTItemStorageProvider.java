@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
 import com.gregtechceu.gtceu.utils.GTMath;
 
@@ -12,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.stacks.AEItemKey;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.addon.universal.ItemStorageProvider;
 import snownee.jade.api.Accessor;
@@ -63,6 +65,17 @@ public enum GTItemStorageProvider implements IServerExtensionProvider<MetaMachin
             var buffer = proxy.getBuffer();
             if (buffer == null) return Collections.emptyList();
             return ItemStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, machine, b);
+        } else if (GTCEu.Mods.isAE2Loaded() && machine instanceof MEOutputBusPartMachine bus) {
+            List<ItemStack> list = new ArrayList<>();
+            var iterator = bus.storageIterator();
+            while (iterator.hasNext()) {
+                var entry = iterator.next();
+                if (entry.getKey() instanceof AEItemKey itemKey) {
+                    ItemStack stack = itemKey.toStack(GTMath.saturatedCast(entry.getLongValue()));
+                    list.add(stack.copy());
+                }
+            }
+            return list.isEmpty() ? Collections.emptyList() : List.of(new ViewGroup<>(list));
         }
 
         return ItemStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, machine, b);

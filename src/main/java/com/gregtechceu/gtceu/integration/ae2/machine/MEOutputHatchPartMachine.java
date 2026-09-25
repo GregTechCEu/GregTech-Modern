@@ -22,6 +22,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEKey;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -32,8 +33,10 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.scroll.VerticalScrollData;
 import brachy.modularui.widgets.DynamicSyncedWidget;
 import brachy.modularui.widgets.layout.Flow;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -146,6 +149,12 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                 .size(167, 80));
 
         mainWidget.child(flow);
+    }
+
+    // for Jade Provider
+
+    public Iterator<Object2LongMap.Entry<AEKey>> storageIterator() {
+        return internalBuffer.iterator();
     }
 
     private class InaccessibleInfiniteTank extends NotifiableFluidTank {
