@@ -173,9 +173,9 @@ public class GTBucketItem extends BucketItem {
         // water in nether behavior
         if (level.dimensionType().ultraWarm() && this.getFluid().defaultFluidState().is(FluidTags.WATER)) {
             return true;
-        } else if (fluid == mat.getFluid(FluidStorageKeys.PLASMA)) {
+        } else if (fluid.isSame(mat.getFluid(FluidStorageKeys.PLASMA))) {
             return true;
-        } else if (fluid == mat.getFluid(FluidStorageKeys.GAS)) {
+        } else if (fluid.isSame(mat.getFluid(FluidStorageKeys.GAS))) {
             return true;
         } else {
             return false;
