@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.fluid.potion;
 
 import com.gregtechceu.gtceu.api.misc.forge.FilteredFluidHandlerItemStackSimple;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class BottleItemFluidHandler extends FilteredFluidHandlerItemStackSimple {
 
     public BottleItemFluidHandler(@NotNull ItemStack container) {
-        super(container, PotionFluidHelper.BOTTLE_AMOUNT, s -> s.getFluid().is(CustomTags.POTION_FLUIDS));
+        super(container, PotionFluidHelper.BOTTLE_AMOUNT, s -> s.getFluid().is(GTTags.Fluids.POTION));
     }
 
     @Override

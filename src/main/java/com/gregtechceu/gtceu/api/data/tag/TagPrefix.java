@@ -23,7 +23,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTOreByProduct;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -763,7 +763,7 @@ public class TagPrefix {
             .langValue("%s Frame")
             .materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.frameGt)
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .unificationEnabled(true)
             .enableRecycling()
             .generateBlock(true)
@@ -775,35 +775,35 @@ public class TagPrefix {
     public static final TagPrefix pipeTinyFluid = new TagPrefix(GTCEu.id("pipeTinyFluid"))
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Tiny %s Fluid Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M / 2)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeSmallFluid = new TagPrefix(GTCEu.id("pipeSmallFluid"))
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Small %s Fluid Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeNormalFluid = new TagPrefix(GTCEu.id("pipeNormalFluid"))
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Normal %s Fluid Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 3)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeLargeFluid = new TagPrefix(GTCEu.id("pipeLargeFluid"))
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Large %s Fluid Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 6)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeHugeFluid = new TagPrefix(GTCEu.id("pipeHugeFluid"))
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Huge %s Fluid Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 12)
             .unificationEnabled(true)
             .enableRecycling();
@@ -811,14 +811,14 @@ public class TagPrefix {
     public static final TagPrefix pipeQuadrupleFluid = new TagPrefix(GTCEu.id("pipeQuadrupleFluid"))
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Quadruple %s Fluid Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 4)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeNonupleFluid = new TagPrefix(GTCEu.id("pipeNonupleFluid"))
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Nonuple %s Fluid Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 9)
             .unificationEnabled(true)
             .enableRecycling();
@@ -826,28 +826,28 @@ public class TagPrefix {
     public static final TagPrefix pipeSmallItem = new TagPrefix(GTCEu.id("pipeSmallItem"))
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
             .langValue("Small %s Item Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeNormalItem = new TagPrefix(GTCEu.id("pipeNormalItem"))
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
             .langValue("Normal %s Item Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 3)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeLargeItem = new TagPrefix(GTCEu.id("pipeLargeItem"))
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
             .langValue("Large %s Item Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 6)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeHugeItem = new TagPrefix(GTCEu.id("pipeHugeItem"))
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
             .langValue("Huge %s Item Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 12)
             .unificationEnabled(true)
             .enableRecycling();
@@ -855,23 +855,23 @@ public class TagPrefix {
     public static final TagPrefix pipeSmallRestrictive = new TagPrefix(GTCEu.id("pipeSmallRestrictive"))
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
             .langValue("Small Restrictive %s Item Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeNormalRestrictive = new TagPrefix(GTCEu.id("pipeNormalRestrictive"))
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Normal Restrictive %s Item Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 3)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 3)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeLargeRestrictive = new TagPrefix(GTCEu.id("pipeLargeRestrictive"))
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Large Restrictive %s Item Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 6)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 6)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeHugeRestrictive = new TagPrefix(GTCEu.id("pipeHugeRestrictive"))
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Huge Restrictive %s Item Pipe")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 12)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 12)
             .unificationEnabled(true)
             .enableRecycling();
 
@@ -879,7 +879,7 @@ public class TagPrefix {
     public static final TagPrefix wireGtHex = new TagPrefix(GTCEu.id("wireGtHex"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("16x %s Wire")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 8)
             .materialIconType(MaterialIconType.wire)
             .unificationEnabled(true)
@@ -887,7 +887,7 @@ public class TagPrefix {
     public static final TagPrefix wireGtOctal = new TagPrefix(GTCEu.id("wireGtOctal"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("8x %s Wire")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 4)
             .materialIconType(MaterialIconType.wire)
             .unificationEnabled(true)
@@ -895,7 +895,7 @@ public class TagPrefix {
     public static final TagPrefix wireGtQuadruple = new TagPrefix(GTCEu.id("wireGtQuadruple"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("4x %s Wire")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.wire)
             .unificationEnabled(true)
@@ -903,7 +903,7 @@ public class TagPrefix {
     public static final TagPrefix wireGtDouble = new TagPrefix(GTCEu.id("wireGtDouble"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("2x %s Wire")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.wire)
             .unificationEnabled(true)
@@ -911,7 +911,7 @@ public class TagPrefix {
     public static final TagPrefix wireGtSingle = new TagPrefix(GTCEu.id("wireGtSingle"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("1x %s Wire")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M / 2)
             .materialIconType(MaterialIconType.wire)
             .unificationEnabled(true)
@@ -920,34 +920,34 @@ public class TagPrefix {
     public static final TagPrefix cableGtHex = new TagPrefix(GTCEu.id("cableGtHex"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("16x %s Cable")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 8)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix cableGtOctal = new TagPrefix(GTCEu.id("cableGtOctal"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("8x %s Cable")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 4)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix cableGtQuadruple = new TagPrefix(GTCEu.id("cableGtQuadruple"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS).langValue("4x %s Cable")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 2)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix cableGtDouble = new TagPrefix(GTCEu.id("cableGtDouble"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("2x %s Cable")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix cableGtSingle = new TagPrefix(GTCEu.id("cableGtSingle"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("1x %s Cable")
-            .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
+            .miningToolTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M / 2)
             .unificationEnabled(true)
             .enableRecycling();
@@ -1139,6 +1139,11 @@ public class TagPrefix {
         return this;
     }
 
+    public TagPrefix defaultGTCEuTagPath(String path) {
+        this.tags.add(TagType.withGTNamespaceDefaultFormatter(path));
+        return this;
+    }
+
     public TagPrefix prefixTagPath(String path) {
         this.tags.add(TagType.withPrefixFormatter(path));
         return this;
@@ -1155,6 +1160,11 @@ public class TagPrefix {
 
     public TagPrefix unformattedTagPath(String path, boolean isVanilla) {
         this.tags.add(TagType.withNoFormatter(path, isVanilla));
+        return this;
+    }
+
+    public TagPrefix unformattedGTCEuTagPath(String path) {
+        this.tags.add(TagType.withGTNamespaceNoFormatter(path));
         return this;
     }
 

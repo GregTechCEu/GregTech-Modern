@@ -1,6 +1,9 @@
 {
   "values": [
     "gtceu:green_glass_lens",
-    "gtceu:emerald_lens"
+    {
+      "id": "gtceu:emerald_lens",
+      "required": false
+    }
   ]
 }
