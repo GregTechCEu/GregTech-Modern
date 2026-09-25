@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
@@ -51,21 +49,22 @@ public class AssemblyLineRender extends DynamicRender<AssemblyLineMachine, Assem
     private void renderLines(AssemblyLineMachine machine, float partialTick, PoseStack stack, VertexConsumer buffer) {
         GTRecipe recipe = machine.getRecipeLogic().getLastUnrolledRecipe();
         if (recipe == null) return;
+
+        Direction frontFace = machine.getFrontFacing();
+        Direction upFace = machine.getUpwardsFacing();
+        boolean flipped = machine.isFlipped();
+
         int asslineColor = Long.decode(ConfigHolder.INSTANCE.client.renderer.assemblyLineLaser).intValue();
-        float progress = machine.getProgress() / (float) machine.getMaxProgress();
-        int recipeInputs = Math.max(
-                recipe.getInputContents(ItemRecipeCapability.CAP).size(),
-                recipe.getInputContents(FluidRecipeCapability.CAP).size());
-        progress *= recipeInputs;
-        Direction down = RelativeDirection.DOWN.getRelativeFacing(machine.getFrontFacing(), machine.getUpwardsFacing(),
-                machine.isFlipped());
-        Direction back = RelativeDirection.BACK.getRelativeFacing(machine.getFrontFacing(), machine.getUpwardsFacing(),
-                machine.isFlipped());
-        Direction right = RelativeDirection.RIGHT.getRelativeFacing(machine.getFrontFacing(),
-                machine.getUpwardsFacing(), machine.isFlipped());
+
+        float progress = machine.getRendererLineCount();
+        int progressI = (int) progress;
+
+        Direction down = RelativeDirection.DOWN.getRelativeFacing(frontFace, upFace, flipped);
+        Direction back = RelativeDirection.BACK.getRelativeFacing(frontFace, upFace, flipped);
+        Direction right = RelativeDirection.RIGHT.getRelativeFacing(frontFace, upFace, flipped);
 
         BlockPos.MutableBlockPos pos = BlockPos.ZERO.offset(down.getNormal()).mutable();
-        for (int i = 0; i < (int) progress; i++) {
+        for (int i = 0; i < progressI; i++) {
             renderLineInternal(buffer, stack, pos, down, asslineColor | 0xff000000);
             pos.move(back.getNormal().multiply(2));
 
@@ -73,11 +72,11 @@ public class AssemblyLineRender extends DynamicRender<AssemblyLineMachine, Assem
             pos.move(back.getOpposite().getNormal().multiply(2)).move(right.getNormal());
         }
         renderLineInternal(buffer, stack, pos, down,
-                (asslineColor | (int) ((progress - (int) (progress)) * 255.f) << 24));
+                (asslineColor | (int) ((progress - progressI) * 255.f) << 24));
 
         pos.move(back.getNormal().multiply(2));
         renderLineInternal(buffer, stack, pos, down,
-                (asslineColor | (int) ((progress - (int) (progress)) * 255.f) << 24));
+                (asslineColor | (int) ((progress - progressI) * 255.f) << 24));
     }
 
     public void renderLineInternal(VertexConsumer buffer, PoseStack stack, BlockPos pos, Direction down, int color) {
