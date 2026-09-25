@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
@@ -26,7 +27,6 @@ import lombok.Getter;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ore;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.oreNetherrack;
@@ -713,8 +713,8 @@ public class GTOres {
         return def;
     }
 
-    private static Supplier<? extends Block> ore(TagPrefix oreTag, Material material) {
-        var block = GTMaterialBlocks.MATERIAL_BLOCKS.get(oreTag, material);
+    private static Block ore(TagPrefix oreTag, Material material) {
+        var block = ChemicalHelper.getBlock(oreTag, material);
         if (block == null) {
             ResourceLocation oreKey;
             if (oreTag == ore) {
@@ -724,8 +724,8 @@ public class GTOres {
             } else {
                 oreKey = ResourceLocation.tryParse("%s_%s_ore".formatted(oreTag.name, material.getName()));
             }
-            return BuiltInRegistries.BLOCK.containsKey(oreKey) ? () -> BuiltInRegistries.BLOCK.get(oreKey) :
-                    () -> Blocks.AIR;
+            return BuiltInRegistries.BLOCK.containsKey(oreKey) ? BuiltInRegistries.BLOCK.get(oreKey) :
+                    Blocks.AIR;
         }
         return block;
     }
