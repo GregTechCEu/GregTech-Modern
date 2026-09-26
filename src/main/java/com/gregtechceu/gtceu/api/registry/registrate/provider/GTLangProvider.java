@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.registry.registrate.provider;
 
 import com.gregtechceu.gtceu.core.mixins.registrate.LanguageProviderAccessor;
 
+import lombok.Getter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -15,6 +17,7 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -24,12 +27,16 @@ import java.util.concurrent.CompletableFuture;
 public class GTLangProvider extends RegistrateLangProvider implements RegistrateProvider {
 
     protected final AbstractRegistrate<?> owner;
+    protected final CompletableFuture<HolderLookup.Provider> registryLookup;
     protected final PackOutput output;
+    @Getter
+    protected HolderLookup.Provider registries = null;
 
     public GTLangProvider(AbstractRegistrate<?> owner, GatherDataEvent event,
                           Map<ProviderType<?>, RegistrateProvider> existing) {
         super(owner, event.getGenerator().getPackOutput());
         this.owner = owner;
+        this.registryLookup = event.getLookupProvider();
         this.output = event.getGenerator().getPackOutput();
     }
 
@@ -40,19 +47,23 @@ public class GTLangProvider extends RegistrateLangProvider implements Registrate
 
     @Override
     public @NotNull CompletableFuture<?> run(@NotNull CachedOutput cache) {
-        addTranslations();
+        return registryLookup.thenAccept(v -> {
+            registries = v;
+            addTranslations();
+        }).thenCompose(v -> {
+            var translations = ((LanguageProviderAccessor) this).gtceu$getData();
+            if (translations.isEmpty()) {
+                return CompletableFuture.completedFuture(null);
+            }
 
-        var translations = ((LanguageProviderAccessor) this).gtceu$getData();
-        if (translations.isEmpty()) {
-            return CompletableFuture.completedFuture(null);
-        }
+            JsonObject json = new JsonObject();
+            translations.forEach(json::addProperty);
 
-        JsonObject json = new JsonObject();
-        translations.forEach(json::addProperty);
+            Path target = this.output.getOutputFolder(PackOutput.Target.RESOURCE_PACK)
+                    .resolve(this.owner.getModid()).resolve("lang").resolve("en_us.json");
 
-        Path target = this.output.getOutputFolder(PackOutput.Target.RESOURCE_PACK)
-                .resolve(this.owner.getModid()).resolve("lang").resolve("en_us.json");
-        return DataProvider.saveStable(cache, json, target);
+            return DataProvider.saveStable(cache, json, target);
+        });
     }
 
     /**
