@@ -144,16 +144,8 @@ public class IntegrationLang {
         provider.add("integration.gtceu.jade.progress_tick", "%s / %s t");
 
         provider.add("integration.gtceu.jade.cleaned_this_second", "Cleaned hazard: %s/s");
-        provider.add("integration.gtceu.jade.fluid_use", "%s mB/t");
-        provider.add("integration.gtceu.jade.amperage_use", "%s A");
         provider.add("integration.gtceu.jade.remaining_charge_time", "Until charged: %s");
         provider.add("integration.gtceu.jade.remaining_discharge_time", "Until empty: %s");
-        provider.add("integration.gtceu.jade.changes_eu_sec", "%s EU/s");
-        provider.add("integration.gtceu.jade.seconds", "%s seconds");
-        provider.add("integration.gtceu.jade.minutes", "%s minutes");
-        provider.add("integration.gtceu.jade.hours", "%s hours");
-        provider.add("integration.gtceu.jade.days", "%s days");
-        provider.add("integration.gtceu.jade.years", "%s years");
 
         provider.add("integration.gtceu.jade.ldp_endpoint.is_formed", "Pipeline Formed");
         provider.add("integration.gtceu.jade.ldp_endpoint.not_formed", "Pipeline Incomplete");

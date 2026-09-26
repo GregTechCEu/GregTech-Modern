@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
+import com.gregtechceu.gtceu.data.lang.LangGenerationHandler;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -1889,6 +1890,16 @@ public final class Material implements Comparable<Material> {
             if (ignoredTagPrefixes != null) {
                 ignoredTagPrefixes.forEach(p -> p.setIgnored(mat));
             }
+
+            LangGenerationHandler.forNamespace(id.getNamespace()).add(provider -> {
+                provider.add(mat.getUnlocalizedName(), mat.getDefaultTranslation());
+
+                for (var entry : mat.getLangOverrides().entrySet()) {
+                    var key = String.format("item.%s.%s", mat.getResourceLocation().getNamespace(),
+                            entry.getKey().idPattern().formatted(mat.getResourceLocation().getPath()));
+                    provider.add(key, entry.getValue());
+                }
+            });
 
             return mat;
         }

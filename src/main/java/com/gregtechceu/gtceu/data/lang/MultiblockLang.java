@@ -15,18 +15,18 @@ public class MultiblockLang {
 
         provider.add("multiblock.gtceu.predicate.count.exact", "§cExactly: %d§r");
         provider.add("multiblock.gtceu.predicate.count.range", "§cBetween %d and %d§r");
-        provider.addMultiLang("multiblock.gtceu.predicate.count.limit", "§cMaximum: %d§r", "§cMinimum: %d§r",
-                "§cMaximum: %d per layer§r", "§cMinimum: %d per layer§r");
+        provider.add("multiblock.gtceu.predicate.limit_max", "§cMaximum: %d§r");
+        provider.add("multiblock.gtceu.predicate.limit_min", "§cMinimum: %d§r");
+        provider.add("multiblock.gtceu.predicate.limit_layer_max", "§cMaximum: %d per layer§r");
+        provider.add("multiblock.gtceu.predicate.limit_layer_min", "§cMinimum: %d per layer§r");
 
-        provider.add("multiblock.gtceu.pattern.clear_amount_1", "§6Must have a clear 1x1x1 space in front§r");
-        provider.add("multiblock.gtceu.pattern.clear_amount_3", "§6Must have a clear 3x3x1 space in front§r");
+        provider.add("multiblock.gtceu.pattern.clear_amount", "§6Must have a clear %dx%dx%d space in front§r");
         provider.add("multiblock.gtceu.pattern.location_end", "§cVery End§r");
         provider.add("multiblock.gtceu.pattern.replaceable_air", "Replaceable by Air");
         provider.add("multiblock.gtceu.predicate.single", "§6Only this block can be used§r");
 
         provider.add("multiblock.gtceu.pattern.coils_must_match", "All heating coils must be the same");
         provider.add("multiblock.gtceu.pattern.filters_must_match", "§cAll filters must be the same§r");
-        provider.add("multiblock.gtceu.pattern.batteries_must_match", "§cAll batteries must be the same§r");
 
         // Pattern Errors
 

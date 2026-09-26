@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.common.mui.GTByteBufAdapters;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -694,7 +695,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
             // Coolant Required
             if (getMaxCoolantDemand() > 0) {
-                data = Component.translatable("common.gtceu.millibuckets", getMaxCoolantDemand())
+                data = FormattingUtil.prepend("common.gtceu.millibucket", getMaxCoolantDemand())
                         .withStyle(ChatFormatting.YELLOW).append(" ");
                 Component coolantName = Component.translatable("gtceu.multiblock.hpca.info_coolant_name")
                         .withStyle(ChatFormatting.YELLOW);

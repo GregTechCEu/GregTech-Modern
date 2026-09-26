@@ -37,8 +37,6 @@ import org.jetbrains.annotations.ApiStatus;
 
 public final class GTRegistries {
 
-    // spotless:off
-
     // Material related registries
 
     // spotless:off

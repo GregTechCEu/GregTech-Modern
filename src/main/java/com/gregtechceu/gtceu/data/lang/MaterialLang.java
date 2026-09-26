@@ -1,25 +1,8 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 
-import java.util.stream.Collectors;
-
 public class MaterialLang {
-
-    public static void generateMaterialLang(GTLangProvider provider, String namespace) {
-        for (Material material : GTRegistries.MATERIALS.values().stream().filter(v -> v.getModid().equals(namespace))
-                .collect(Collectors.toSet())) {
-            provider.add(material.getUnlocalizedName(), material.getDefaultTranslation());
-
-            for (var entry : material.getLangOverrides().entrySet()) {
-                var key = String.format("item.%s.%s", material.getResourceLocation().getNamespace(),
-                        entry.getKey().idPattern().formatted(material.getResourceLocation().getPath()));
-                provider.add(key, entry.getValue());
-            }
-        }
-    }
 
     public static void init(GTLangProvider provider) {
         generateCustomMaterialNames(provider);

@@ -162,12 +162,12 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
                         getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
                     } else {
                         getRecipeLogic()
-                                .setWaiting(Component.translatable("recipe_logic.gtceu.insufficient_in")
+                                .setWaiting(Component.translatable("gui.gtceu.recipe.insufficient_in")
                                         .append(": ").append(EURecipeCapability.CAP.getName()));
                     }
                 }
             } else {
-                getRecipeLogic().setWaiting(Component.translatable("recipe_logic.gtceu.insufficient_in").append(": ")
+                getRecipeLogic().setWaiting(Component.translatable("gui.gtceu.recipe.insufficient_in").append(": ")
                         .append(EURecipeCapability.CAP.getName()));
             }
         }

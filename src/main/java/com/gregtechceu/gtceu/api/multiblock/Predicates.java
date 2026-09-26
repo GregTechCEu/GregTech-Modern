@@ -346,8 +346,7 @@ public class Predicates {
         return blocks("PSS-Batteries", GTCEuAPI.PSS_BATTERIES.entrySet()
                 .stream().sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
                 .map(e -> (Block) e.getValue().get())
-                .toList())
-                .addTooltips(Component.translatable("multiblock.gtceu.pattern.batteries_must_match"));
+                .toList());
     }
 
     public static @Nullable MultiPredicate dataHatchPredicate() {

@@ -38,17 +38,26 @@ public class CommonLang {
         provider.add("common.gtceu.min", "Min");
         provider.add("common.gtceu.max", "Max");
 
-        provider.add("common.gtceu.millibucket", "mB");
-        provider.add("common.gtceu.bucket", "B");
-
-        provider.add("common.gtceu.seconds", "%s second(s)");
-        provider.add("common.gtceu.years", "%s year(s)");
-
         provider.add("common.gtceu.false", "False");
         provider.add("common.gtceu.true", "True");
         provider.add("common.gtceu.unknown", "Unknown");
 
         provider.add("common.gtceu.empty", "Empty");
+
+        // Units & Amounts
+
+        provider.add("common.gtceu.millibucket", "mB");
+        provider.add("common.gtceu.bucket", "B");
+        provider.add("common.gtceu.mb_per_tick", "mB/t");
+
+        provider.add("common.gtceu.amperage", "A");
+        provider.add("common.gtceu.eu", "EU");
+        provider.add("common.gtceu.eu_per_tick", "EU/t");
+        provider.add("common.gtceu.eu_per_sec", "EU/s");
+
+        // Base mc has gui.minutes/hours/days
+        provider.add("common.gtceu.seconds", "%s second(s)");
+        provider.add("common.gtceu.years", "%s year(s)");
     }
 
     private static void generateCommonTooltips(GTLangProvider provider) {

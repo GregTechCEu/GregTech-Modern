@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.lang.LangGenerationHandler;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 
 import net.minecraft.resources.ResourceLocation;
@@ -36,6 +37,9 @@ public class GTRecipeCategory {
     @Setter
     private boolean isXEIVisible = true;
 
+    @Getter
+    private @Nullable String langValue;
+
     public GTRecipeCategory(@NotNull GTRecipeType recipeType) {
         this.recipeType = recipeType;
         this.name = recipeType.registryName.getPath();
@@ -43,11 +47,24 @@ public class GTRecipeCategory {
         this.languageKey = "recipe_type.%s".formatted(recipeType.registryName.toLanguageKey());
     }
 
-    public GTRecipeCategory(@NotNull String categoryName, @NotNull GTRecipeType recipeType) {
+    public GTRecipeCategory(@NotNull ResourceLocation id, @NotNull GTRecipeType recipeType) {
         this.recipeType = recipeType;
-        this.name = categoryName;
-        this.registryKey = GTCEu.id(categoryName);
-        this.languageKey = "recipe_type.%s.category.%s".formatted(GTCEu.MOD_ID, categoryName);
+        this.name = id.getPath();
+        this.registryKey = id;
+        this.languageKey = id.toLanguageKey("recipe_category");
+
+        LangGenerationHandler.forNamespace(id.getNamespace()).add(p -> {
+            if (langValue != null) p.add(languageKey, langValue);
+        });
+    }
+
+    public GTRecipeCategory(@NotNull String id, @NotNull GTRecipeType recipeType) {
+        this(GTCEu.id(id), recipeType);
+    }
+
+    public GTRecipeCategory langValue(String lang) {
+        this.langValue = lang;
+        return this;
     }
 
     public static GTRecipeCategory registerDefault(@NotNull GTRecipeType recipeType) {
