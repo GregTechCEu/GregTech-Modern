@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
@@ -77,6 +78,14 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
             var buffer = proxy.getBuffer();
             if (buffer == null) return Collections.emptyList();
             return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, proxy, b);
+        } else if (machine instanceof FluidHatchPartMachine hatch) {
+            if (hatch.tank.getTanks() == 1 && hatch.tank.getFluidInTank(0).isEmpty() && hatch.tank.isLocked()) {
+                FluidStack stored = hatch.tank.getLockedFluid().getFluid();
+                CompoundTag tag = JadeForgeUtils.fromFluidStack(stored, hatch.tank.getTankCapacity(0));
+                tag.putBoolean("special", true);
+                tag.putLong("amount", 0L);
+                return List.of(new ViewGroup<>(List.of(tag)));
+            }
         }
 
         return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, machine, b);
