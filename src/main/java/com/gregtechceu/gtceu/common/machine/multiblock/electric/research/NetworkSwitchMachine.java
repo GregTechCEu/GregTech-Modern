@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableComputationContainer;
 
@@ -17,10 +18,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -96,20 +94,24 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
     }
 
     @Override
-    public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
+    public int requestCWUt(int cwut, boolean simulate, Set<IOpticalComputationProvider> seen,
+                           Map<IOpticalComputationProvider, Object> simulationState) {
         seen.add(this);
-        return isActive() && !getRecipeLogic().isWaiting() ? computationHandler.requestCWUt(cwut, simulate, seen) : 0;
+        return isActive() && !getRecipeLogic().isWaiting() ?
+                computationHandler.requestCWUt(cwut, simulate, seen, simulationState) : 0;
     }
 
     @Override
-    public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
+    public int getMaxCWUt(Set<IOpticalComputationProvider> seen,
+                          Map<IOpticalComputationProvider, Object> simulationState) {
         seen.add(this);
-        return isFormed() ? computationHandler.getMaxCWUt(seen) : 0;
+        return isFormed() ? computationHandler.getMaxCWUt(seen, simulationState) : 0;
     }
 
     // allows chaining Network Switches together
     @Override
-    public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
+    public boolean canBridge(Set<IOpticalComputationProvider> seen,
+                             Map<IOpticalComputationProvider, Object> simulationState) {
         seen.add(this);
         return true;
     }
@@ -150,8 +152,26 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
         @Getter(value = AccessLevel.PRIVATE)
         private int EUt;
 
-        private boolean tickSaturated;
-        private long timerCWUt = -1;
+        private SwitchTransferContext transferContext = SwitchTransferContext.create();
+
+        private record SwitchTransferContext(long timerCWUt, boolean tickSaturated) {
+
+            public static SwitchTransferContext create() {
+                return new SwitchTransferContext(-1, false);
+            }
+
+            public SwitchTransferContext conditionalTimedUpdate(MetaMachine machine) {
+                long timer = machine.getOffsetTimer();
+                if (timerCWUt != timer) {
+                    return new SwitchTransferContext(timer, false);
+                }
+                return this;
+            }
+
+            public SwitchTransferContext markSaturated() {
+                return new SwitchTransferContext(timerCWUt, true);
+            }
+        }
 
         public MultipleComputationHandler() {
             super(IO.IN, false);
@@ -172,75 +192,89 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
         }
 
         @Override
-        public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
+        public int requestCWUt(int cwut, boolean simulate, Set<IOpticalComputationProvider> seen,
+                               Map<IOpticalComputationProvider, Object> simulationState) {
             if (seen.contains(this)) return 0;
-            // The max CWU/t that this Network Switch can provide, combining all its inputs.
             seen.add(this);
 
-            if (cwut == 0) return 0;
-
-            // Exit early if this Network Switch has already provided all available CWUt on its subnetwork for this tick
-            long timer = NetworkSwitchMachine.this.getOffsetTimer();
-            if (timerCWUt == timer) {
-                if (tickSaturated) {
-                    return 0;
-                }
+            // The max CWU/t that this Network Switch can provide, combining all its inputs.
+            SwitchTransferContext localTransferContext = (SwitchTransferContext) simulationState.getOrDefault(this,
+                    this.transferContext);
+            localTransferContext = localTransferContext.conditionalTimedUpdate(getMachine());
+            if (!simulate) {
+                this.transferContext = localTransferContext;
             } else {
-                // First call this tick, reset saturation
-                timerCWUt = timer;
-                tickSaturated = false;
+                simulationState.put(this, localTransferContext);
             }
 
-            Collection<IOpticalComputationProvider> bridgeSeen = new ArrayList<>(seen);
+            // Exit early if this Network Switch has already provided all available CWUt on its subnetwork for this tick
+            if (cwut == 0 || localTransferContext.tickSaturated()) {
+                if (!simulate) {
+                    this.transferContext = localTransferContext;
+                } else {
+                    simulationState.put(this, localTransferContext);
+                }
+                return 0;
+            }
+
+            Set<IOpticalComputationProvider> bridgeSeen = new HashSet<>(seen);
             int allocatedCWUt = 0;
             for (var provider : providers) {
-                if (!provider.canBridge(bridgeSeen)) continue;
-                int allocated = provider.requestCWUt(cwut, simulate, seen);
+                if (!provider.canBridge(bridgeSeen, simulationState)) continue;
+                int allocated = provider.requestCWUt(cwut, simulate, seen, simulationState);
                 allocatedCWUt += allocated;
                 cwut -= allocated;
                 if (cwut == 0) break;
             }
 
-            if (!simulate && allocatedCWUt == 0) {
+            if (allocatedCWUt == 0) {
                 // No computation left to give, remember this for subsequent calls this tick
-                tickSaturated = true;
+                localTransferContext = localTransferContext.markSaturated();
+                if (!simulate) {
+                    this.transferContext = localTransferContext;
+                } else {
+                    simulationState.put(this, localTransferContext);
+                }
             }
 
             return allocatedCWUt;
         }
 
         public int getMaxCWUtForDisplay() {
-            Collection<IOpticalComputationProvider> seen = new ArrayList<>();
+            Set<IOpticalComputationProvider> seen = new HashSet<>();
+            Map<IOpticalComputationProvider, Object> simulationState = new HashMap<>();
             // The max CWU/t that this Network Switch can provide, combining all its inputs.
             seen.add(this);
-            Collection<IOpticalComputationProvider> bridgeSeen = new ArrayList<>(seen);
+            Set<IOpticalComputationProvider> bridgeSeen = new HashSet<>(seen);
             int maximumCWUt = 0;
             for (var provider : providers) {
-                if (!provider.canBridge(bridgeSeen)) continue;
-                maximumCWUt += provider.getMaxCWUt(seen);
+                if (!provider.canBridge(bridgeSeen, simulationState)) continue;
+                maximumCWUt += provider.getMaxCWUt(seen, simulationState);
             }
             return maximumCWUt;
         }
 
-        public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
+        public int getMaxCWUt(Set<IOpticalComputationProvider> seen,
+                              Map<IOpticalComputationProvider, Object> simulationState) {
             if (seen.contains(this)) return 0;
             // The max CWU/t that this Network Switch can provide, combining all its inputs.
             seen.add(this);
-            Collection<IOpticalComputationProvider> bridgeSeen = new ArrayList<>(seen);
+            Set<IOpticalComputationProvider> bridgeSeen = new HashSet<>(seen);
             int maximumCWUt = 0;
             for (var provider : providers) {
-                if (!provider.canBridge(bridgeSeen)) continue;
-                maximumCWUt += provider.getMaxCWUt(seen);
+                if (!provider.canBridge(bridgeSeen, simulationState)) continue;
+                maximumCWUt += provider.getMaxCWUt(seen, simulationState);
             }
             return maximumCWUt;
         }
 
         @Override
-        public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
+        public boolean canBridge(Set<IOpticalComputationProvider> seen,
+                                 Map<IOpticalComputationProvider, Object> simulationState) {
             if (seen.contains(this)) return false;
             seen.add(this);
             for (var provider : providers) {
-                if (provider.canBridge(seen)) {
+                if (provider.canBridge(seen, simulationState)) {
                     return true;
                 }
             }
@@ -249,9 +283,10 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
 
         /** Test if any of the provider hatches do not allow bridging */
         private boolean hasNonBridgingConnections() {
-            Collection<IOpticalComputationProvider> seen = new ArrayList<>();
+            Set<IOpticalComputationProvider> seen = new HashSet<>();
+            Map<IOpticalComputationProvider, Object> simulationState = new HashMap<>();
             for (var provider : providers) {
-                if (!provider.canBridge(seen)) {
+                if (!provider.canBridge(seen, simulationState)) {
                     return true;
                 }
             }
