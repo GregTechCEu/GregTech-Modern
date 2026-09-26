@@ -684,7 +684,6 @@ public class GTMachineUtils {
                         () -> new ItemLike[] {
                                 ChemicalHelper.getItemOrThrow(TagPrefix.dustTiny, GTMaterials.Ash) })
                 .workableCasingModel(casingTexture, overlayModel)
-                .additionalDisplay(LargeCombustionEngineMachine::additionalDisplay)
                 .tooltips(
                         Component.translatable("gtceu.universal.tooltip.base_production_eut", V[tier]),
                         Component.translatable("gtceu.universal.tooltip.uses_per_hour_lubricant",

@@ -3428,6 +3428,7 @@
   "gtceu.multiblock.large_combustion_engine.lubricant_amount": "Lubricant Amount: %sL",
   "gtceu.multiblock.large_combustion_engine.no_lubricant": "Machine needs Lubricant to run",
   "gtceu.multiblock.large_combustion_engine.obstructed": "Engine Intakes Obstructed.",
+  "gtceu.multiblock.large_combustion_engine.output": "Producing %s EU/t",
   "gtceu.multiblock.large_combustion_engine.oxygen_amount": "Oxygen Amount: %sL",
   "gtceu.multiblock.large_combustion_engine.oxygen_boosted": "§bOxygen boosted.",
   "gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost": "Supply §9Liquid Oxygen§7 to boost.",
