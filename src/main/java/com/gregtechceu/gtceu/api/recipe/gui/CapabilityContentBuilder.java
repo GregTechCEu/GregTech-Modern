@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
-import com.gregtechceu.gtceu.utils.ComponentUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -195,12 +194,12 @@ public interface CapabilityContentBuilder {
             var euText = Text
                     .lang(io == IO.IN ? "gui.gtceu.recipe.eu" : "gui.gtceu.recipe.eu_inverted")
                     .append(" ")
-                    .append(ComponentUtil.formattedEUt(minAmperage, eu.voltage(), false))
+                    .append(FormattingUtil.formattedEUt(minAmperage, eu.voltage(), false))
                     .withStyle(ChatFormatting.UNDERLINE);
 
             RichTooltip tooltip = new RichTooltip();
             tooltip.addLine(
-                    ComponentUtil.prepend("common.gtceu.eu_per_tick", FormattingUtil.formatNumbers(eu.getTotalEU()))
+                    FormattingUtil.prepend("common.gtceu.eu_per_tick", FormattingUtil.formatNumbers(eu.getTotalEU()))
                             .withStyle(ChatFormatting.UNDERLINE));
 
             if (euWidget != null) ((TextWidget<?>) euWidget).value(euText).tooltip(tooltip);

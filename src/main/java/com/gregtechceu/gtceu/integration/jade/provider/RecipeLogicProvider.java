@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
-import com.gregtechceu.gtceu.utils.ComponentUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
@@ -92,15 +91,15 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                     MutableComponent text;
 
                     if (isSteam) {
-                        text = ComponentUtil.prepend("common.gtceu.mb_per_tick", FormattingUtil.formatNumbers(EUt))
+                        text = FormattingUtil.prepend("common.gtceu.mb_per_tick", FormattingUtil.formatNumbers(EUt))
                                 .withStyle(ChatFormatting.GREEN);
                     } else {
                         var voltage = recipeInfo.getLong("voltage");
                         float minAmperage = (float) EUt / voltage;
 
-                        text = ComponentUtil.formattedEUt(minAmperage, voltage, true);
+                        text = FormattingUtil.formattedEUt(minAmperage, voltage, true);
 
-                        text.append(ComponentUtil.wrap(ComponentUtil.prepend("common.gtceu.eu_per_tick",
+                        text.append(FormattingUtil.wrap(FormattingUtil.prepend("common.gtceu.eu_per_tick",
                                 FormattingUtil.formatNumbers(EUt))
                                 .withStyle(ChatFormatting.WHITE), " (", ") "));
                     }

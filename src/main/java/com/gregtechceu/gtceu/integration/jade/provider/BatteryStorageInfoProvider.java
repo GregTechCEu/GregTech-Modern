@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
-import com.gregtechceu.gtceu.utils.ComponentUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -53,7 +52,7 @@ public class BatteryStorageInfoProvider extends MachineInfoProvider<BatteryBuffe
         CompoundTag container = data.getCompound("energy");
         long changed = container.getLong("changed"), stored = container.getLong("stored"),
                 capacity = container.getLong("capacity");
-        tooltip.add(ComponentUtil.prepend("integration.gtceu.jade.changes_eu_sec",
+        tooltip.add(FormattingUtil.prepend("integration.gtceu.jade.changes_eu_sec",
                 FormattingUtil.formatNumbers(((double) changed) / 20.0)));
         if (changed > 0L) {
             tooltip.add(Component
