@@ -24,6 +24,7 @@ import brachy.modularui.drawable.Icon;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.LongSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.Widget;
@@ -119,8 +120,15 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
         List<IWidget> widgets = new ArrayList<>();
+        LongSyncValue machinePower = syncManager.getOrCreateSyncHandler("machinePower", LongSyncValue.class,
+                () -> new LongSyncValue(this::getRecipeEUt));
+        LongSyncValue voltage = syncManager.getOrCreateSyncHandler("voltage", LongSyncValue.class,
+                () -> new LongSyncValue(this::getDisplayWorkingVoltage));
+
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, machinePower, voltage,
+                this.isGenerator()));
         widgets.addAll(super.getWidgetsForDisplay(syncManager));
         return widgets;
     }
@@ -246,6 +254,17 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
             return power;
         }
         return -1;
+    }
+
+    public long getDisplayWorkingVoltage() {
+        return this.isGenerator() ? getDisplayGeneratorPower() : getDisplayRecipeVoltage();
+    }
+
+    public long getRecipeEUt() {
+        return isActive() && recipeLogic.getLastUnrolledRecipe() != null ?
+                (this.isGenerator() ? recipeLogic.getLastUnrolledRecipe().getOutputEUt().getTotalEU() :
+                        recipeLogic.getLastUnrolledRecipe().getInputEUt().getTotalEU()) :
+                0;
     }
 
     /**
