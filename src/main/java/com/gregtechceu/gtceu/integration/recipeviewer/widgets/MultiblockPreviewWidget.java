@@ -9,15 +9,14 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,6 +27,7 @@ import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.IIcon;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IGuiAction;
+import brachy.modularui.drawable.DynamicDrawable;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.SchemaRenderer;
@@ -46,11 +46,9 @@ import brachy.modularui.widgets.dynamic.DynamicHandler;
 import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.mojang.blaze3d.platform.InputConstants;
-import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
@@ -60,8 +58,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-
-import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
 @Accessors(chain = true)
 public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidget> {
@@ -89,8 +85,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     private @Nullable BlockPos controllerPos;
     private SelectionInfo selectionInfo = SelectionInfo.empty();
 
-    private int yLevel = -1;
-    private int maxHeight = 0;
+    private int yLevel = Integer.MAX_VALUE;
 
     @Setter
     private @Nullable Runnable onSchemaRefresh;
@@ -129,16 +124,20 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 .wrap()
                 .coverChildrenWidth(20)
                 .height(height)
-                .children(this.multiblockSchemaInfo.getBlockCounts().reference2IntEntrySet(), e -> {
-                    ItemStack stack = new ItemStack(e.getKey(), e.getIntValue());
-                    return RecipeViewerSlotWidget.create(ItemStack.class)
-                            .recipeSlotRole(RecipeSlotRole.OUTPUT)
-                            .value(stack)
-                            .background(IDrawable.EMPTY)
-                            .size(16)
-                            .margin(1)
-                            .tooltip(r -> r.addFromItem(stack));
-                }));
+                .children(this.multiblockSchemaInfo.getBlockCounts()
+                        .reference2IntEntrySet()
+                        .stream()
+                        .filter(x -> !x.getKey().defaultBlockState().isAir())
+                        .toList(), e -> {
+                            ItemStack stack = new ItemStack(e.getKey(), e.getIntValue());
+                            return RecipeViewerSlotWidget.create(ItemStack.class)
+                                    .recipeSlotRole(RecipeSlotRole.OUTPUT)
+                                    .value(stack)
+                                    .background(IDrawable.EMPTY)
+                                    .size(16)
+                                    .margin(1)
+                                    .tooltip(r -> r.addFromItem(stack));
+                        }));
 
         this.selectedBlockHandler.widgetProvider(() -> {
             ItemStack selected = this.selectionInfo.stack();
@@ -164,7 +163,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         List<Map.Entry<String, IBlockPattern>> patterns = multiblockDefinition.getStructurePatterns()
                 .entrySet().stream().map(e -> Map.entry(e.getKey(), e.getValue().get())).toList();
 
-        this.multiblockSchemaInfo.getRenderer().camera().setPosAndLookAt(0, 0, -10,
+        this.multiblockSchemaInfo.getRenderer().camera().setPosAndLookAt(0, 0, 0,
                 this.multiblockSchemaInfo.getMapSchema().getCenter());
         PredicateContext context = new PredicateContext(null);
         SchemaWidget schema = this.multiblockSchemaInfo.getRenderer().asWidget()
@@ -194,10 +193,10 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
         this.multiblockSchemaInfo.setMultiSchema(schema);
         this.multiblockSchemaInfo.getMultiSchema().getSchemaRenderer().updateRenderFilter((pos, state) -> {
-            if (yLevel == -1) {
+            if (yLevel == Integer.MAX_VALUE) {
                 return true;
             }
-            return pos.getY() >= yLevel;
+            return pos.getY() <= yLevel;
         });
 
         this.coverChildren()
@@ -215,6 +214,51 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                         this.multiblockSchemaInfo.getMultiSchema().getSchemaRenderer().renderFilter(),
                                         ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
                             }
+                            return true;
+                        }))
+                // todo serialize these values as part of the schema nbt
+                .child(new ToggleButton()
+                        .tooltip(r -> r.addLine(Component.literal("Press to flip structure")))
+                        .left(25)
+                        .value(new BoolValue.Dynamic(() -> isFlipped, v -> {
+                            setFlipped(!isFlipped);
+                            refreshSchema();
+                            refreshViewWidget();
+                        })))
+                .child(new ButtonWidget<>()
+                        .overlay(new DynamicDrawable(() -> Text.dynamic(
+                                () -> Component.literal(yLevel == Integer.MAX_VALUE ? "A" : String.valueOf(yLevel)))
+                                .asIcon()))
+                        .left(45)
+                        .onMousePressed((c, b) -> {
+                            var bounds = multiblockSchemaInfo.getMapSchema().getBounds();
+                            int min = bounds.getFirst().getY();
+                            int max = bounds.getSecond().getY();
+
+                            if (b == InputConstants.MOUSE_BUTTON_LEFT) {
+                                if (yLevel == Integer.MAX_VALUE) yLevel = min - 1;
+                                yLevel += 1;
+                            } else if (b == InputConstants.MOUSE_BUTTON_RIGHT) {
+                                if (yLevel == Integer.MAX_VALUE) yLevel = max;
+                                yLevel -= 1;
+                            } else if (b == InputConstants.MOUSE_BUTTON_MIDDLE) {
+                                yLevel = Integer.MAX_VALUE;
+                            }
+                            if (yLevel >= max) {
+                                yLevel = Integer.MAX_VALUE;
+                            }
+                            if (yLevel < min) {
+                                yLevel = Integer.MAX_VALUE;
+                            }
+                            refreshSchema();
+                            Reference2IntMap<Block> newBlockCounts = new Reference2IntOpenHashMap<>();
+                            for (var entry : this.multiblockSchemaInfo.getStructureBlocks().entrySet()) {
+                                if (entry.getKey().getY() <= yLevel) {
+                                    newBlockCounts.merge(entry.getValue().getBlockState().getBlock(), 1, Integer::sum);
+                                }
+                            }
+                            this.multiblockSchemaInfo.setBlockCounts(newBlockCounts);
+                            refreshViewWidget();
                             return true;
                         }))
                 .child(Flow.col()
@@ -271,7 +315,6 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .coverChildrenWidth()
                         .collapseDisabledChildren()
                         .childSeparator(Icon.EMPTY_2PX)
-                        // todo handle children
                         .children(predicate.expand(), basePredicate -> {
                             List<BlockInfo> candidates = basePredicate.getCandidates();
                             if (candidates.isEmpty())
@@ -441,20 +484,45 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             IntIntPair value = constraints.get(i);
             if (value.leftInt() != value.rightInt()) {
                 final int index = i;
-                parent.child(new SliderWidget()
-                        .background(GTGuiTextures.FLUID_SLOT)
-                        .bounds(value.leftInt(), value.rightInt())
-                        .height(16)
-                        .width(value.rightInt() * 12)
-                        .stopper(1.0f)
-                        .value(new IntValue.Dynamic(
-                                () -> this.getMultiblockSchemaInfo().getUserDimensions().getInt(index), v -> {
-                                    int oldValue = this.getMultiblockSchemaInfo().getUserDimensions().getInt(index);
-                                    if (oldValue == v) return;
-                                    this.getMultiblockSchemaInfo().getUserDimensions().set(index, v);
-                                    refreshSchema();
-                                    refreshViewWidget();
-                                })));
+                IntValue.Dynamic syncValue = new IntValue.Dynamic(
+                        () -> this.getMultiblockSchemaInfo().getUserDimensions().getInt(index), v -> {
+                            int oldValue = this.getMultiblockSchemaInfo().getUserDimensions().getInt(index);
+                            if (oldValue == v) return;
+                            this.getMultiblockSchemaInfo().getUserDimensions().set(index, v);
+                            refreshSchema();
+                            refreshViewWidget();
+                        });
+
+                var textField = new TextFieldWidget() {
+
+                    @Override
+                    public boolean onMouseScrolled(double delta) {
+                        int inc = (int) delta;
+                        int val = Mth.clamp(syncValue.getIntValue() + inc, value.leftInt(),
+                                value.rightInt());
+                        syncValue.setIntValue(val);
+                        return true;
+                    }
+                };
+
+                parent.child(textField);
+
+                /*
+                 * parent.child(new SliderWidget()
+                 * .background(GTGuiTextures.FLUID_SLOT)
+                 * .bounds(value.leftInt(), value.rightInt())
+                 * .height(16)
+                 * .width(value.rightInt() * 12)
+                 * .stopper(1.0f)
+                 * .value(new IntValue.Dynamic(
+                 * () -> this.getMultiblockSchemaInfo().getUserDimensions().getInt(index), v -> {
+                 * int oldValue = this.getMultiblockSchemaInfo().getUserDimensions().getInt(index);
+                 * if (oldValue == v) return;
+                 * this.getMultiblockSchemaInfo().getUserDimensions().set(index, v);
+                 * refreshSchema();
+                 * refreshViewWidget();
+                 * })));
+                 */
             }
         }
     }
@@ -471,22 +539,39 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             }
             if (patternSlice.getMinRepeats() != patternSlice.getMaxRepeats()) {
                 final int index = repeatSliceIndex;
-                col.child(new SliderWidget()
-                        .background(GTGuiTextures.FLUID_SLOT)
-                        .height(16)
-                        .width(patternSlice.getMaxRepeats() * 12)
-                        .stopper(1.0f)
-                        .bounds(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats())
-                        .value(new IntValue.Dynamic(() -> {
-                            if (!this.multiblockSchemaInfo.getUserSliceRepeats().containsKey(index)) return 0;
-                            return this.multiblockSchemaInfo.getUserSliceRepeats().get(index);
-                        }, v -> {
-                            int oldValue = this.multiblockSchemaInfo.getUserSliceRepeats().getOrDefault(index, 0);
-                            if (oldValue == v) return;
-                            this.multiblockSchemaInfo.getUserSliceRepeats().put(index, v);
-                            refreshSchema();
-                            refreshViewWidget();
-                        })));
+                IntValue.Dynamic syncValue = new IntValue.Dynamic(() -> {
+                    if (!this.multiblockSchemaInfo.getUserSliceRepeats().containsKey(index)) return 0;
+                    return this.multiblockSchemaInfo.getUserSliceRepeats().get(index);
+                }, v -> {
+                    int oldValue = this.multiblockSchemaInfo.getUserSliceRepeats().getOrDefault(index, 0);
+                    if (oldValue == v) return;
+                    this.multiblockSchemaInfo.getUserSliceRepeats().put(index, v);
+                    refreshSchema();
+                    refreshViewWidget();
+                });
+
+                var textField = new TextFieldWidget() {
+
+                    @Override
+                    public boolean onMouseScrolled(double delta) {
+                        int inc = (int) delta;
+                        int val = Mth.clamp(syncValue.getIntValue() + inc, patternSlice.getMinRepeats(),
+                                patternSlice.getMaxRepeats());
+                        syncValue.setIntValue(val);
+                        return true;
+                    }
+                };
+
+                col.child(textField.width(30).setNumbers(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats()));
+                /*
+                 * col.child(new SliderWidget()
+                 * .background(GTGuiTextures.FLUID_SLOT)
+                 * .height(16)
+                 * .width(patternSlice.getMaxRepeats() * 12)
+                 * .stopper(1.0f)
+                 * .bounds(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats())
+                 * );
+                 */
             }
             repeatSliceIndex++;
         }
@@ -513,40 +598,5 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         public ItemStack stack() {
             return info().getItemStackForm();
         }
-    }
-
-    public static List<ItemStack> initializeContainedBlocks(MultiblockMachineDefinition definition) {
-        List<ItemStack> containedBlocks = new ArrayList<>();
-        Map<BlockPos, BlockInfo> resultStructure = new HashMap<>();
-
-        IBlockPattern pattern = definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
-        AbstractStructureHelper structureHelper = null;
-        if (pattern instanceof BlockPattern blockPattern) {
-            var sliceRepeats = new Int2IntArrayMap();
-            for (int i = 0; i < blockPattern.getSlices().length; i++) {
-                sliceRepeats.put(i, blockPattern.getSlices()[i].getMinRepeats());
-            }
-            structureHelper = AbstractStructureHelper.blockPattern(sliceRepeats);
-        } else if (pattern instanceof ExpandablePattern expandablePattern) {
-            var userDimensions = new IntArrayList();
-            expandablePattern.getBoundsConstraints().apply().stream()
-                    .mapToInt(Pair::left)
-                    .forEach(userDimensions::add);
-            structureHelper = AbstractStructureHelper.expandable(userDimensions);
-        }
-        if (structureHelper != null) {
-            structureHelper.populate(resultStructure, pattern, null,
-                    definition.getRotationState().defaultDirection, switch (definition.getRotationState()) {
-                        case Y_AXIS -> Direction.NORTH;
-                        case ALL, NON_Y_AXIS, NONE -> Direction.UP;
-                    }, false);
-
-            Object2IntMap<Block> blockCount = new Object2IntOpenHashMap<>();
-            resultStructure.forEach(
-                    (pos, state) -> blockCount.mergeInt(state.getBlockState().getBlock(), 1, Integer::sum));
-            blockCount.forEach((block, count) -> containedBlocks.add(new ItemStack(block.asItem(), count)));
-        }
-
-        return containedBlocks;
     }
 }

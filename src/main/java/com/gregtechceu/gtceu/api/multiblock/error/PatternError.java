@@ -7,13 +7,17 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Codec;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
+@Accessors(fluent = true)
 public abstract class PatternError {
 
     public static final Codec<PatternError> CODEC = GTRegistries.PATTERN_ERRORS.codec()
             .dispatch(PatternError::type, PatternErrorType::codec);
 
     @Getter
+    @Setter
     protected BlockPos pos;
 
     public PatternError(BlockPos pos) {

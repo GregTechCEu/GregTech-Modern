@@ -83,7 +83,7 @@ public class GTMultiblockTextUtil {
                     if (listSyncHandler.getValue().isEmpty()) {
                         return unformed;
                     }
-                    BlockPos pos = listSyncHandler.getValue().stream().toList().get(0).getPos();
+                    BlockPos pos = listSyncHandler.getValue().stream().toList().get(0).pos();
                     unformed.child(new ButtonWidget<>()
                             .onMousePressed((c, b) -> {
                                 ((ModularGuiContext) c).getScreen().getMainPanel().closeIfOpen();

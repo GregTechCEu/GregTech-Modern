@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.gregtechceu.gtceu.core.mixins.mui.ModularUIEmiRecipeAccessor;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
 import net.minecraft.network.chat.Component;
@@ -17,7 +18,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.*;
 
 public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
 
@@ -44,13 +45,10 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
     public static class MultiblockInfoEmiWrapper extends ModularUIEmiRecipe {
 
         private final MultiblockMachineDefinition definition;
-        private final List<EmiIngredient> containedBlocks;
 
         public MultiblockInfoEmiWrapper(MultiblockMachineDefinition definition) {
             super(definition.getId(), () -> new MultiblockPreviewWidget(definition, null, 200, 180));
             this.definition = definition;
-            containedBlocks = MultiblockPreviewWidget.initializeContainedBlocks(definition).stream()
-                    .map(v -> (EmiIngredient) EmiStack.of(v)).toList();
         }
 
         @Override
@@ -70,7 +68,12 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
 
         @Override
         public List<EmiIngredient> getInputs() {
-            return containedBlocks;
+            var recipeUI = ((MultiblockPreviewWidget) ((ModularUIEmiRecipeAccessor) this).getRecipeUI().get());
+            if (recipeUI.getMultiblockSchemaInfo() == null) return Collections.emptyList();
+            var blockCounts = recipeUI.getMultiblockSchemaInfo().getBlockCounts();
+            List<EmiIngredient> inputs = new ArrayList<>();
+            blockCounts.forEach((block, count) -> inputs.add(EmiStack.of(block.asItem(), count)));
+            return inputs;
         }
 
         @Override

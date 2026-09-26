@@ -75,7 +75,7 @@ public class MultiblockInfoJeiCategory extends ModularUIJeiCategory<MultiblockMa
     @Override
     public void setupRecipeIngredients(IRecipeLayoutBuilder builder, MultiblockMachineDefinition definition,
                                        IFocusGroup focuses) {
-        List<ItemStack> containedBlocks = MultiblockPreviewWidget.initializeContainedBlocks(definition);
+        List<ItemStack> containedBlocks = List.of(); // TODO: Copy how EMI does it
 
         builder.addSlot(RecipeIngredientRole.OUTPUT).addIngredient(VanillaTypes.ITEM_STACK,
                 new ItemStack(definition.getBlock()));
