@@ -125,6 +125,10 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     protected int duration;
     @Getter(onMethod_ = @VisibleForTesting)
     protected boolean recipeDirty;
+    protected int lastEmptySearchInputVersion = -1;
+    private int cacheableSearchTopologyVersion = -1;
+    private boolean cacheableSearch;
+    private boolean searchYieldedCandidates;
     @SaveField
     @Getter
     protected long totalContinuousRunningTime;
@@ -201,6 +205,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         duration = 0;
         isActive = false;
         lastFailedMatches = null;
+        lastEmptySearchInputVersion = -1;
         clearFailureReason();
         if (status != Status.SUSPEND) {
             setStatus(Status.IDLE);
@@ -251,6 +256,26 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         return GTCEu.getMinecraftServer().getRecipeManager();
     }
 
+    protected boolean canCacheRecipeSearch() {
+        int topologyVersion = getRLMachine().getRecipeVersions().topologyVersion;
+        if (cacheableSearchTopologyVersion != topologyVersion) {
+            cacheableSearchTopologyVersion = topologyVersion;
+            cacheableSearch = computeCanCacheRecipeSearch();
+        }
+        return cacheableSearch;
+    }
+
+    private boolean computeCanCacheRecipeSearch() {
+        for (var byCap : getRLMachine().getCapabilitiesFlat().values()) {
+            for (var cap : byCap.keySet()) {
+                if (!cap.canCacheRecipeSearch()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public void serverTick() {
         if (!isSuspend()) {
             if (!isIdle() && lastRecipe != null) {
@@ -267,7 +292,15 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             } else if (lastRecipe != null) {
                 findAndHandleRecipe();
             } else if (!keepSubscribing || getMachine().getOffsetTimer() % 5 == 0) {
-                findAndHandleRecipe();
+                int inputVersion = getRLMachine().getRecipeVersions().inputVersion;
+                boolean searchWouldBeIdentical = lastFailedMatches == null &&
+                        lastEmptySearchInputVersion == inputVersion;
+                if (!searchWouldBeIdentical || !canCacheRecipeSearch()) {
+                    findAndHandleRecipe();
+                    if (lastRecipe == null && lastFailedMatches == null && !searchYieldedCandidates) {
+                        lastEmptySearchInputVersion = inputVersion;
+                    }
+                }
                 if (lastFailedMatches != null) {
                     for (GTRecipe match : lastFailedMatches) {
                         if (checkMatchedRecipeAvailable(match)) break;
@@ -382,6 +415,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     public void findAndHandleRecipe() {
         lastFailedMatches = null;
+        searchYieldedCandidates = false;
         clearFailureReason();
 
         // try to execute last recipe if possible
@@ -411,6 +445,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     protected void handleSearchingRecipes(Iterator<GTRecipe> matches) {
         while (matches.hasNext()) {
             GTRecipe match = matches.next();
+            searchYieldedCandidates = true;
 
             // If a new recipe was found, cache found recipe.
             if (checkMatchedRecipeAvailable(match))
