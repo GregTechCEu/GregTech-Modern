@@ -523,11 +523,6 @@ public final class Material implements Comparable<Material> {
         return materialInfo.resourceLocation.toString();
     }
 
-    // must be named multiply for GroovyScript to allow `material * quantity -> MaterialStack`
-    public MaterialStack multiply(long amount) {
-        return new MaterialStack(this, amount);
-    }
-
     public <T extends IMaterialProperty> boolean hasProperty(PropertyKey<T> key) {
         return properties.hasProperty(key);
     }
@@ -544,7 +539,7 @@ public final class Material implements Comparable<Material> {
         properties.removeProperty(key);
     }
 
-    public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty property) {
+    public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, T property) {
         if (!GTRegistries.MATERIALS.canModifyMaterials()) {
             throw new IllegalStateException("Cannot add properties to a Material when registry is frozen!");
         }
@@ -618,6 +613,22 @@ public final class Material implements Comparable<Material> {
          */
         public Builder langValue(String name) {
             materialInfo.setOverriddenName(name);
+            return this;
+        }
+
+        /**
+         * Adds a property to this material.
+         */
+        public <T extends IMaterialProperty> Builder property(PropertyKey<T> key, T value) {
+            properties.setProperty(key, value);
+            return this;
+        }
+
+        /**
+         * Adds a property to this material
+         */
+        public <T extends IMaterialProperty> Builder property(PropertyKey<T> key) {
+            properties.ensureSet(key);
             return this;
         }
 

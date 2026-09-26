@@ -142,7 +142,7 @@ public class ItemMaterialData {
     }
 
     @SuppressWarnings("unchecked")
-    public static @Nullable Supplier<? extends Block> convertToBlock(@NotNull Supplier<? extends ItemLike> supplier) {
+    public static @Nullable Supplier<? extends Block> convertToBlock(@Nullable Supplier<? extends ItemLike> supplier) {
         if (supplier instanceof RegistryObject<? extends ItemLike> registryObject) {
             var key = registryObject.getKey();
             if (key != null && key.isFor(Registries.BLOCK)) {

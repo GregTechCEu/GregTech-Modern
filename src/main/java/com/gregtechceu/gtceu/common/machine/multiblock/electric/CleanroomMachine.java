@@ -22,7 +22,6 @@ import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -73,7 +72,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -377,13 +375,9 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return builder("DoorPredicate")
                 .predicate(ctx -> ctx.state().getBlock() instanceof DoorBlock)
                 // .errorFunction(ctx -> PLACEHOLDER)
-                // spotless:off
-                .candidates(Stream.of(
-                        new BlockInfo(Blocks.IRON_DOOR),
-                        new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()
-                                .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))
-                ))
-                //spotless:on
+                .blocks(Blocks.IRON_DOOR)
+                .states(Blocks.IRON_DOOR.defaultBlockState()
+                        .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))
                 .toMultiPredicate();
     }
 
