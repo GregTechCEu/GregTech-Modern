@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.EnumSyncValue;
 import brachy.modularui.value.sync.IntSyncValue;
@@ -65,8 +66,8 @@ public class RobotArmCover extends ConveyorCover {
         }
         return switch (transferMode) {
             case TRANSFER_ANY -> moveInventoryItems(itemHandler, myItemHandler, maxTransferAmount);
-            case TRANSFER_EXACT -> doTransferExact(itemHandler, myItemHandler, maxTransferAmount);
-            case KEEP_EXACT -> doKeepExact(itemHandler, myItemHandler, maxTransferAmount);
+            case TRANSFER_EXACT, TRANSFER_MULTIPLE -> doTransferExact(itemHandler, myItemHandler, maxTransferAmount);
+            case KEEP_EXACT, KEEP_MULTIPLE -> doKeepExact(itemHandler, myItemHandler, maxTransferAmount);
         };
     }
 
@@ -80,7 +81,11 @@ public class RobotArmCover extends ConveyorCover {
             int itemToMoveAmount = getFilteredItemAmount(sourceInfo.itemStack);
 
             if (itemAmount >= itemToMoveAmount) {
-                sourceInfo.totalCount = itemToMoveAmount;
+                if (transferMode == TransferMode.TRANSFER_MULTIPLE) {
+                    sourceInfo.totalCount = itemAmount - (itemAmount % itemToMoveAmount);
+                } else {
+                    sourceInfo.totalCount = itemToMoveAmount;
+                }
             } else {
                 iterator.remove();
             }
@@ -116,6 +121,7 @@ public class RobotArmCover extends ConveyorCover {
         while (iterator.hasNext()) {
             ItemStack filteredItem = iterator.next();
             GroupItemInfo sourceInfo = sourceItemAmounts.get(filteredItem);
+            int sourceAmount = sourceInfo.totalCount;
             int itemToKeepAmount = getFilteredItemAmount(sourceInfo.itemStack);
 
             int itemAmount = 0;
@@ -123,7 +129,10 @@ public class RobotArmCover extends ConveyorCover {
                 GroupItemInfo destItemInfo = targetItemAmounts.get(filteredItem);
                 itemAmount = destItemInfo.totalCount;
             }
-            if (itemAmount < itemToKeepAmount) {
+            int maxMultiple = ((sourceAmount + itemAmount) / itemToKeepAmount) * itemToKeepAmount;
+            if (transferMode == TransferMode.KEEP_MULTIPLE && itemAmount < maxMultiple) {
+                sourceInfo.totalCount = maxMultiple - itemAmount;
+            } else if (itemAmount < itemToKeepAmount) {
                 sourceInfo.totalCount = itemToKeepAmount - itemAmount;
             } else {
                 iterator.remove();
@@ -155,6 +164,13 @@ public class RobotArmCover extends ConveyorCover {
 
     //////////////////////////////////////
     // *********** GUI ***********//
+
+    @Override
+    public ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return super.buildUI(data, syncManager, settings)
+                .height(192 + 18 + 20)
+                .width(176 + 20);
+    }
 
     @Override
     public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
