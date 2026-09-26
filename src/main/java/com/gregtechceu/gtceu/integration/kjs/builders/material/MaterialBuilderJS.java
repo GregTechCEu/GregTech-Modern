@@ -2,37 +2,48 @@ package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.MaterialBuilder;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.DeferredMaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 
+import dev.latvian.mods.kubejs.client.LangKubeEvent;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.UnaryOperator;
 
 @SuppressWarnings("unused")
-public class MaterialBuilderWrapper extends BuilderBase<Material> {
+public class MaterialBuilderJS extends BuilderBase<Material> {
 
-    private final Material.Builder internal;
+    private final MaterialBuilder internal;
+    private @Nullable String langValue = null;
 
-    public MaterialBuilderWrapper(ResourceLocation id) {
+    public MaterialBuilderJS(ResourceLocation id) {
         super(id);
-        this.internal = new Material.Builder(this.id);
-        this.dummyBuilder = true;
+        this.internal = new MaterialBuilder(id);
+    }
+
+    public MaterialBuilderJS langValue(String langValue) {
+        this.langValue = langValue;
+        return this;
     }
 
     /*
@@ -43,7 +54,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
             Add a `FluidProperty` to this Material.
             Will be created as a `FluidStorageKeys#LIQUID`, without a Fluid Block.
             """)
-    public MaterialBuilderWrapper fluid() {
+    public MaterialBuilderJS fluid() {
         internal.fluid();
         return this;
     }
@@ -54,7 +65,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             Can be called multiple times to add multiple fluids.
             """)
-    public MaterialBuilderWrapper fluid(FluidStorageKey key, FluidState state) {
+    public MaterialBuilderJS fluid(FluidStorageKey key, FluidState state) {
         internal.fluid(key, state);
         return this;
     }
@@ -64,7 +75,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             Can be called multiple times to add multiple fluids.
             """)
-    public MaterialBuilderWrapper fluid(FluidStorageKey key, FluidBuilder builder) {
+    public MaterialBuilderJS fluid(FluidStorageKey key, FluidBuilder builder) {
         internal.fluid(key, builder);
         return this;
     }
@@ -74,7 +85,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             @see #fluid(FluidStorageKey, FluidState)
             """)
-    public MaterialBuilderWrapper liquid() {
+    public MaterialBuilderJS liquid() {
         internal.liquid();
         return this;
     }
@@ -84,12 +95,12 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             @see #fluid(FluidStorageKey, FluidState)
             """)
-    public MaterialBuilderWrapper liquid(FluidBuilder builder) {
+    public MaterialBuilderJS liquid(FluidBuilder builder) {
         internal.liquid(builder);
         return this;
     }
 
-    public MaterialBuilderWrapper liquid(int temp) {
+    public MaterialBuilderJS liquid(int temp) {
         internal.liquid(temp);
         return this;
     }
@@ -99,7 +110,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             @see #fluid(FluidStorageKey, FluidState)
             """)
-    public MaterialBuilderWrapper plasma() {
+    public MaterialBuilderJS plasma() {
         internal.plasma();
         return this;
     }
@@ -109,12 +120,12 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             @see #fluid(FluidStorageKey, FluidState)
             """)
-    public MaterialBuilderWrapper plasma(FluidBuilder builder) {
+    public MaterialBuilderJS plasma(FluidBuilder builder) {
         internal.plasma(builder);
         return this;
     }
 
-    public MaterialBuilderWrapper plasma(int temp) {
+    public MaterialBuilderJS plasma(int temp) {
         internal.plasma(temp);
         return this;
     }
@@ -124,7 +135,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             @see #fluid(FluidStorageKey, FluidState)
             """)
-    public MaterialBuilderWrapper gas() {
+    public MaterialBuilderJS gas() {
         internal.gas();
         return this;
     }
@@ -134,12 +145,12 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             @see #fluid(FluidStorageKey, FluidState)
             """)
-    public MaterialBuilderWrapper gas(FluidBuilder builder) {
+    public MaterialBuilderJS gas(FluidBuilder builder) {
         internal.gas(builder);
         return this;
     }
 
-    public MaterialBuilderWrapper gas(int temp) {
+    public MaterialBuilderJS gas(int temp) {
         internal.gas(temp);
         return this;
     }
@@ -148,7 +159,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
             Add a `DustProperty` to this Material.
             Will be created with a Harvest Level of 2 and no Burn Time (Furnace Fuel).
             """)
-    public MaterialBuilderWrapper dust() {
+    public MaterialBuilderJS dust() {
         internal.dust();
         return this;
     }
@@ -166,7 +177,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
                                  If this Material already had a Harvest Level defined, it will be overridden.
                                  """)
           })
-    public MaterialBuilderWrapper dust(int harvestLevel) {
+    public MaterialBuilderJS dust(int harvestLevel) {
         internal.dust(harvestLevel);
         return this;
     }
@@ -188,7 +199,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
                                  If this Material already had a Burn Time defined, it will be overridden.
                                  """)
           })
-    public MaterialBuilderWrapper dust(int harvestLevel, int burnTime) {
+    public MaterialBuilderJS dust(int harvestLevel, int burnTime) {
         internal.dust(harvestLevel, burnTime);
         return this;
     }
@@ -198,7 +209,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
             Useful for marking a Material as Wood for various additional behaviors.
             Will be created with a Harvest Level of 0, and a Burn Time of 300 (Furnace Fuel).
             """)
-    public MaterialBuilderWrapper wood() {
+    public MaterialBuilderJS wood() {
         internal.wood();
         return this;
     }
@@ -217,7 +228,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
                                  If this Material already had a Harvest Level defined, it will be overridden.
                                  """)
           })
-    public MaterialBuilderWrapper wood(int harvestLevel) {
+    public MaterialBuilderJS wood(int harvestLevel) {
         internal.wood(harvestLevel);
         return this;
     }
@@ -240,7 +251,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
                                  If this Material already had a Burn Time defined, it will be overridden.
                                  """)
           })
-    public MaterialBuilderWrapper wood(int harvestLevel, int burnTime) {
+    public MaterialBuilderJS wood(int harvestLevel, int burnTime) {
         internal.wood(harvestLevel, burnTime);
         return this;
     }
@@ -250,7 +261,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
             Will be created with a Harvest Level of 2 and no Burn Time (Furnace Fuel).
             Will automatically add a `DustProperty` to this Material if it does not already have one.
             """)
-    public MaterialBuilderWrapper ingot() {
+    public MaterialBuilderJS ingot() {
         internal.ingot();
         return this;
     }
@@ -269,7 +280,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
                                  If this Material already had a Harvest Level defined, it will be overridden.
                                  """)
           })
-    public MaterialBuilderWrapper ingot(int harvestLevel) {
+    public MaterialBuilderJS ingot(int harvestLevel) {
         internal.ingot(harvestLevel);
         return this;
     }
@@ -292,7 +303,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
                                  If this Material already had a Burn Time defined, it will be overridden.
                                  """)
           })
-    public MaterialBuilderWrapper ingot(int harvestLevel, int burnTime) {
+    public MaterialBuilderJS ingot(int harvestLevel, int burnTime) {
         internal.ingot(harvestLevel, burnTime);
         return this;
     }
@@ -302,7 +313,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
             Will be created with a Harvest Level of 2 and no Burn Time (Furnace Fuel).
             Will automatically add a `DustProperty` to this Material if it does not already have one.
             """)
-    public MaterialBuilderWrapper gem() {
+    public MaterialBuilderJS gem() {
         internal.gem();
         return this;
     }
@@ -321,7 +332,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
                                  If this Material already had a Harvest Level defined, it will be overridden.
                                  """)
           })
-    public MaterialBuilderWrapper gem(int harvestLevel) {
+    public MaterialBuilderJS gem(int harvestLevel) {
         internal.gem(harvestLevel);
         return this;
     }
@@ -344,7 +355,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
                                  If this Material already had a Burn Time defined, it will be overridden.
                                  """)
           })
-    public MaterialBuilderWrapper gem(int harvestLevel, int burnTime) {
+    public MaterialBuilderJS gem(int harvestLevel, int burnTime) {
         internal.gem(harvestLevel, burnTime);
         return this;
     }
@@ -354,7 +365,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
             Will be created with a Harvest Level of 2 and no Burn Time (Furnace Fuel).
             Will automatically add a `DustProperty` to this Material if it does not already have one.
             """)
-    public MaterialBuilderWrapper polymer() {
+    public MaterialBuilderJS polymer() {
         internal.polymer();
         return this;
     }
@@ -373,12 +384,12 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
                                  If this Material already had a Harvest Level defined, it will be overridden.
                                  """)
           })
-    public MaterialBuilderWrapper polymer(int harvestLevel) {
+    public MaterialBuilderJS polymer(int harvestLevel) {
         internal.polymer(harvestLevel);
         return this;
     }
 
-    public MaterialBuilderWrapper burnTime(int burnTime) {
+    public MaterialBuilderJS burnTime(int burnTime) {
         internal.burnTime(burnTime);
         return this;
     }
@@ -390,7 +401,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             @param color The RGB-formatted Color.
             """)
-    public MaterialBuilderWrapper color(int color) {
+    public MaterialBuilderJS color(int color) {
         internal.color(color);
         return this;
     }
@@ -403,7 +414,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
             @param color         The RGB-formatted Color.
             @param hasFluidColor Whether the fluid should be colored or not.
             """)
-    public MaterialBuilderWrapper color(int color, boolean hasFluidColor) {
+    public MaterialBuilderJS color(int color, boolean hasFluidColor) {
         internal.color(color, hasFluidColor);
         return this;
     }
@@ -415,12 +426,12 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             @param color The RGB-formatted Color.
             """)
-    public MaterialBuilderWrapper secondaryColor(int color) {
+    public MaterialBuilderJS secondaryColor(int color) {
         internal.secondaryColor(color);
         return this;
     }
 
-    public MaterialBuilderWrapper colorAverage() {
+    public MaterialBuilderJS colorAverage() {
         internal.colorAverage();
         return this;
     }
@@ -437,13 +448,13 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
           params = {
                   @Param(name = "iconSet", value = "The `MaterialIconSet` of this Material.")
           })
-    public MaterialBuilderWrapper iconSet(MaterialIconSet iconSet) {
-        internal.iconSet(iconSet);
+    public MaterialBuilderJS iconSet(MaterialIconSet iconSet) {
+        internal.iconSet(GTRegistries.MATERIAL_ICON_SETS.wrapAsHolder(iconSet));
         return this;
     }
 
-    public MaterialBuilderWrapper components(MaterialStackWrapper... components) {
-        internal.kjs$components(components);
+    public MaterialBuilderJS components(DeferredMaterialStack... components) {
+        internal.componentStacks(components);
         return this;
     }
 
@@ -452,7 +463,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
             Dependent Flags (for example, `MaterialFlags#GENERATE_LONG_ROD` requiring
             `MaterialFlags#GENERATE_ROD`) will be automatically applied.
             """)
-    public MaterialBuilderWrapper flags(MaterialFlag... flags) {
+    public MaterialBuilderJS flags(MaterialFlag... flags) {
         internal.flags(flags);
         return this;
     }
@@ -469,25 +480,26 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
                          value = "An Array of `MaterialFlag`. If no `Collection` is required, use `MaterialBuilderWrapper#flags(MaterialFlag...)`.")
           })
     // rename for kjs conflicts
-    public MaterialBuilderWrapper appendFlags(Collection<MaterialFlag> f1, MaterialFlag... f2) {
+    public MaterialBuilderJS appendFlags(Collection<MaterialFlag> f1, MaterialFlag... f2) {
         internal.appendFlags(f1, f2);
         return this;
     }
 
+    @SafeVarargs
     @Info("""
             Added `TagPrefix` to be ignored by this Material.
             """)
-    public MaterialBuilderWrapper ignoredTagPrefixes(TagPrefix... prefixes) {
+    public final MaterialBuilderJS ignoredTagPrefixes(Holder<TagPrefix>... prefixes) {
         internal.ignoredTagPrefixes(prefixes);
         return this;
     }
 
-    public MaterialBuilderWrapper element(Element element) {
-        internal.element(element);
+    public MaterialBuilderJS element(Element element) {
+        internal.element(GTRegistries.ELEMENTS.wrapAsHolder(element));
         return this;
     }
 
-    public MaterialBuilderWrapper formula(String formula) {
+    public MaterialBuilderJS formula(String formula) {
         internal.formula(formula);
         return this;
     }
@@ -496,180 +508,179 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
             Replaced the old toolStats methods which took many parameters.
             Use `ToolProperty.Builder` instead to create a Tool Property.
             """)
-    public MaterialBuilderWrapper toolStats(ToolProperty toolProperty) {
+    public MaterialBuilderJS toolStats(ToolProperty toolProperty) {
         internal.toolStats(toolProperty);
         return this;
     }
 
-    public MaterialBuilderWrapper rotorStats(int power, int efficiency, float damage, int durability) {
+    public MaterialBuilderJS rotorStats(int power, int efficiency, float damage, int durability) {
         internal.rotorStats(power, efficiency, damage, durability);
         return this;
     }
 
-    public MaterialBuilderWrapper blastTemp(int temp) {
+    public MaterialBuilderJS blastTemp(int temp) {
         internal.blast(temp);
         return this;
     }
 
-    public MaterialBuilderWrapper blast(int temp) {
+    public MaterialBuilderJS blast(int temp) {
         internal.blast(temp);
         return this;
     }
 
-    public MaterialBuilderWrapper blast(int temp, BlastProperty.GasTier gasTier) {
+    public MaterialBuilderJS blast(int temp, BlastProperty.GasTier gasTier) {
         internal.blast(temp, gasTier);
         return this;
     }
 
-    public MaterialBuilderWrapper blast(UnaryOperator<BlastProperty.Builder> b) {
+    public MaterialBuilderJS blast(UnaryOperator<BlastProperty.Builder> b) {
         internal.blast(b);
         return this;
     }
 
     // Tons of shortcut functions for adding various hazard effects.
 
-    public MaterialBuilderWrapper removeHazard() {
+    public MaterialBuilderJS removeHazard() {
         internal.removeHazard();
         return this;
     }
 
-    public MaterialBuilderWrapper radioactiveHazard(float multiplier) {
+    public MaterialBuilderJS radioactiveHazard(float multiplier) {
         internal.radioactiveHazard(multiplier);
         return this;
     }
 
-    public MaterialBuilderWrapper hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
+    public MaterialBuilderJS hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
         internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition));
         return this;
     }
 
-    public MaterialBuilderWrapper hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
-                                         float progressionMultiplier) {
+    public MaterialBuilderJS hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+                                    float progressionMultiplier) {
         internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition), progressionMultiplier);
         return this;
     }
 
-    public MaterialBuilderWrapper hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
-                                         float progressionMultiplier, boolean applyToDerivatives) {
+    public MaterialBuilderJS hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+                                    float progressionMultiplier, boolean applyToDerivatives) {
         internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition), progressionMultiplier,
                 applyToDerivatives);
         return this;
     }
 
-    public MaterialBuilderWrapper hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
-                                         boolean applyToDerivatives) {
+    public MaterialBuilderJS hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+                                    boolean applyToDerivatives) {
         internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition), applyToDerivatives);
         return this;
     }
 
-    public MaterialBuilderWrapper ore() {
+    public MaterialBuilderJS ore() {
         internal.ore();
         return this;
     }
 
-    public MaterialBuilderWrapper ore(boolean emissive) {
+    public MaterialBuilderJS ore(boolean emissive) {
         internal.ore(emissive);
         return this;
     }
 
-    public MaterialBuilderWrapper ore(int oreMultiplier, int byproductMultiplier) {
+    public MaterialBuilderJS ore(int oreMultiplier, int byproductMultiplier) {
         internal.ore(oreMultiplier, byproductMultiplier);
         return this;
     }
 
-    public MaterialBuilderWrapper ore(int oreMultiplier, int byproductMultiplier, boolean emissive) {
+    public MaterialBuilderJS ore(int oreMultiplier, int byproductMultiplier, boolean emissive) {
         internal.ore(oreMultiplier, byproductMultiplier, emissive);
         return this;
     }
 
-    public MaterialBuilderWrapper washedIn(Material m) {
+    public MaterialBuilderJS washedIn(Holder<Material> m) {
         internal.washedIn(m);
         return this;
     }
 
-    public MaterialBuilderWrapper washedIn(Material m, int washedAmount) {
-        internal.washedIn(m, washedAmount);
+    public MaterialBuilderJS washedIn(Material m, int washedAmount) {
+        internal.washedIn(m.getRegistryHolder(), washedAmount);
         return this;
     }
 
-    public MaterialBuilderWrapper separatedInto(Material... m) {
-        internal.separatedInto(m);
+    @SuppressWarnings("unchecked")
+    public final MaterialBuilderJS separatedInto(Material... m) {
+        internal.oreByproducts(Arrays.stream(m).map(Material::getRegistryHolder).toArray(Holder[]::new));
         return this;
     }
 
-    public MaterialBuilderWrapper oreSmeltInto(Material m) {
-        internal.oreSmeltInto(m);
+    public MaterialBuilderJS oreSmeltInto(Material m) {
+        internal.oreSmeltInto(m.getRegistryHolder());
         return this;
     }
 
-    public MaterialBuilderWrapper polarizesInto(Material m) {
-        internal.polarizesInto(m);
+    public MaterialBuilderJS polarizesInto(Material m) {
+        internal.polarizesInto(m.getRegistryHolder());
         return this;
     }
 
-    public MaterialBuilderWrapper arcSmeltInto(Material m) {
-        internal.arcSmeltInto(m);
+    public MaterialBuilderJS arcSmeltInto(Material m) {
+        internal.arcSmeltInto(m.getRegistryHolder());
         return this;
     }
 
-    public MaterialBuilderWrapper macerateInto(Material m) {
-        internal.macerateInto(m);
+    public MaterialBuilderJS macerateInto(Material m) {
+        internal.macerateInto(m.getRegistryHolder());
         return this;
     }
 
-    public MaterialBuilderWrapper ingotSmeltInto(Material m) {
-        internal.ingotSmeltInto(m);
+    public MaterialBuilderJS ingotSmeltInto(Material m) {
+        internal.ingotSmeltInto(m.getRegistryHolder());
         return this;
     }
 
-    public MaterialBuilderWrapper addOreByproducts(Material... byproducts) {
-        internal.addOreByproducts(byproducts);
+    @SuppressWarnings("unchecked")
+    public MaterialBuilderJS addOreByproducts(Material... byproducts) {
+        internal.oreByproducts(Arrays.stream(byproducts).map(Material::getRegistryHolder).toArray(Holder[]::new));
         return this;
     }
 
-    public MaterialBuilderWrapper cableProperties(long voltage, int amperage, int loss) {
+    public MaterialBuilderJS cableProperties(long voltage, int amperage, int loss) {
         internal.cableProperties(voltage, amperage, loss);
         return this;
     }
 
-    public MaterialBuilderWrapper cableProperties(long voltage, int amperage, int loss, boolean isSuperCon) {
+    public MaterialBuilderJS cableProperties(long voltage, int amperage, int loss, boolean isSuperCon) {
         internal.cableProperties(voltage, amperage, loss, isSuperCon);
         return this;
     }
 
-    public MaterialBuilderWrapper cableProperties(long voltage, int amperage, int loss, boolean isSuperCon,
-                                                  int criticalTemperature) {
+    public MaterialBuilderJS cableProperties(long voltage, int amperage, int loss, boolean isSuperCon,
+                                             int criticalTemperature) {
         internal.cableProperties(voltage, amperage, loss, isSuperCon, criticalTemperature);
         return this;
     }
 
-    public MaterialBuilderWrapper fluidPipeProperties(int maxTemp, int throughput, boolean gasProof) {
+    public MaterialBuilderJS fluidPipeProperties(int maxTemp, int throughput, boolean gasProof) {
         internal.fluidPipeProperties(maxTemp, throughput, gasProof);
         return this;
     }
 
-    public MaterialBuilderWrapper fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof,
-                                                      boolean cryoProof, boolean plasmaProof) {
+    public MaterialBuilderJS fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof,
+                                                 boolean cryoProof, boolean plasmaProof) {
         internal.fluidPipeProperties(maxTemp, throughput, gasProof, acidProof, cryoProof, plasmaProof);
         return this;
     }
 
-    public MaterialBuilderWrapper itemPipeProperties(int priority, float stacksPerSec) {
+    public MaterialBuilderJS itemPipeProperties(int priority, float stacksPerSec) {
         internal.itemPipeProperties(priority, stacksPerSec);
         return this;
     }
 
     @Override
-    public Material createObject() {
-        return internal.buildAndRegister();
+    public void generateLang(LangKubeEvent lang) {
+        lang.add(id.toLanguageKey("material"),
+                langValue != null ? langValue : FormattingUtil.toEnglishName(id.getPath()));
     }
 
     @Override
-    public Material transformObject(Material material) {
-        // this method is called right after `createObject`.
-        // here, you can add things that have to be done after registration
-        // but would be nice to do without using a separate material modification event.
-
-        return super.transformObject(material);
+    public Material createObject() {
+        return internal.createMaterial();
     }
 }

@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
@@ -32,9 +32,9 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
-import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
@@ -379,30 +379,36 @@ public class GTMachineUtils {
                 HIGH_TIERS);
     }
 
-    public static MachineEntry<MachineDefinition> registerCrate(GTRegistrate registrate, Material material,
+    public static MachineEntry<MachineDefinition> registerCrate(GTRegistrate registrate, MaterialRegistryEntry material,
+                                                                boolean wooden,
                                                                 int capacity,
                                                                 int rowLength, String lang) {
-        final boolean wooden = material.hasProperty(PropertyKey.WOOD);
-
         return registrate
                 .machine(material.getName() + "_crate",
-                        info -> new CrateMachine(info, material, capacity, rowLength))
+                        info -> new CrateMachine(info, material.value(), capacity, rowLength))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
                 .modelProperty(GTMachineModelProperties.IS_TAPED, false)
                 .model(GTMachineModels.createCrateModel(wooden))
-                .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .paintingColor(() -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .item().color(() -> () -> (s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB()).build()
                 .register();
     }
 
-    public static MachineEntry<MachineDefinition> registerDrum(GTRegistrate registrate, Material material, int capacity,
+    public static MachineEntry<MachineDefinition> registerCrate(GTRegistrate registrate, MaterialRegistryEntry material,
+                                                                int capacity,
+                                                                int rowLength, String lang) {
+        return registerCrate(registrate, material, false, capacity, rowLength, lang);
+    }
+
+    public static MachineEntry<MachineDefinition> registerDrum(GTRegistrate registrate, MaterialRegistryEntry material,
+                                                               boolean wooden,
+                                                               int capacity,
                                                                String lang) {
-        boolean wooden = material.hasProperty(PropertyKey.WOOD);
-        var definition = registrate
-                .machine(material.getName() + "_drum", info -> new DrumMachine(info, material, capacity))
-                .item((holder, prop) -> DrumMachineItem.create(holder, prop, material))
+        return registrate
+                .machine(material.getName() + "_drum", info -> new DrumMachine(info, material.value(), capacity))
+                .item((holder, prop) -> DrumMachineItem.create(holder, prop, material.value()))
                 .color(() -> () -> (s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .build()
                 .langValue(lang)
@@ -418,10 +424,15 @@ public class GTMachineUtils {
                 .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                         Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                 FormattingUtil.formatNumbers(capacity)))
-                .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .paintingColor(() -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .onRegister(d -> DRUM_CAPACITY.put(d, capacity))
                 .register();
-        return definition;
+    }
+
+    public static MachineEntry<MachineDefinition> registerDrum(GTRegistrate registrate, MaterialRegistryEntry material,
+                                                               int capacity,
+                                                               String lang) {
+        return registerDrum(registrate, material, false, capacity, lang);
     }
 
     @SuppressWarnings("unchecked")
@@ -588,7 +599,7 @@ public class GTMachineUtils {
                 })
                 .recoveryItems(
                         () -> new ItemLike[] {
-                                GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get()})
+                                ChemicalHelper.getItem(TagPrefix.dustTiny, GTMaterials.Ash)})
                 .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
                 .model(createWorkableCasingMachineModel(texture,
                         GTCEu.id("block/multiblock/generator/large_%s_boiler".formatted(name)))
@@ -641,7 +652,7 @@ public class GTMachineUtils {
                         .build())
                 .recoveryItems(
                         () -> new ItemLike[] {
-                                GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
+                                ChemicalHelper.getItem(TagPrefix.dustTiny, GTMaterials.Ash) })
                 .workableCasingModel(casingTexture, overlayModel)
                 .additionalDisplay(LargeCombustionEngineMachine::additionalDisplay)
                 .tooltips(
@@ -696,7 +707,7 @@ public class GTMachineUtils {
                         .build())
                 .recoveryItems(
                         () -> new ItemLike[] {
-                                GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
+                                ChemicalHelper.getItem(TagPrefix.dustTiny, GTMaterials.Ash) })
                 .workableCasingModel(casingTexture, overlayModel)
                 .tooltips(
                         Component.translatable("gtceu.universal.tooltip.base_production_eut", V[tier] * 2),

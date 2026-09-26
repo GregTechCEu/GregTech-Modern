@@ -72,7 +72,7 @@ public class OreRenderLayer extends MapRenderLayer {
                         .append(state.getBlock().getName()));
             }).ifRight(material -> {
                 tooltip.add(Component.literal(ConfigHolder.INSTANCE.compat.minimap.oreNamePrefix)
-                        .append(TagPrefix.ore.getLocalizedName(material)));
+                        .append(TagPrefix.ore.value().getLocalizedName(material)));
             });
         }
         return tooltip;

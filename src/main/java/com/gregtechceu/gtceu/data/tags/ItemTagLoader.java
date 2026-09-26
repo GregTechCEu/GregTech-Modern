@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
@@ -26,7 +25,7 @@ public class ItemTagLoader {
 
     public static void init(RegistrateItemTagsProvider provider) {
         provider.addTag(CustomTags.DOUGHS).addTag(CustomTags.WHEAT_DOUGHS);
-        provider.addTag(CustomTags.WHEAT_GRAINS).add(GTMaterialItems.MATERIAL_ITEMS.get(dust, Wheat).get());
+        provider.addTag(CustomTags.WHEAT_GRAINS).add(ChemicalHelper.getItem(dust, Wheat));
         provider.addTag(CustomTags.GRAINS).addTag(CustomTags.WHEAT_GRAINS);
 
         provider.addTag(TagUtil.createItemTag("foods/dough")).addTag(CustomTags.DOUGHS);
@@ -72,30 +71,29 @@ public class ItemTagLoader {
         // spotless:on
 
         provider.addTag(CustomTags.WHITE_LENS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Glass).get())
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
+                .add(ChemicalHelper.getItem(lens, Glass))
+                .add(ChemicalHelper.getItem(lens, NetherStar));
         provider.addTag(CustomTags.LIGHT_BLUE_LENS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Diamond).get());
+                .add(ChemicalHelper.getItem(lens, Diamond));
         provider.addTag(CustomTags.RED_LENS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Ruby).get());
+                .add(ChemicalHelper.getItem(lens, Ruby));
         provider.addTag(CustomTags.GREEN_LENS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Emerald).get());
+                .add(ChemicalHelper.getItem(lens, Emerald));
         provider.addTag(CustomTags.BLUE_LENS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Sapphire).get());
+                .add(ChemicalHelper.getItem(lens, Sapphire));
         provider.addTag(CustomTags.PURPLE_LENS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Amethyst).get());
+                .add(ChemicalHelper.getItem(lens, Amethyst));
 
         provider.addTag(CustomTags.PISTONS).add(Items.PISTON, Items.STICKY_PISTON);
 
         // add treated wood stick to vanilla sticks tag
-        // noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod
         provider.addTag(Tags.Items.RODS_WOODEN)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood).get());
+                .add(ChemicalHelper.getItem(TagPrefix.rod, TreatedWood));
 
         // add treated and untreated wood plates to vanilla planks tag
         provider.addTag(ItemTags.PLANKS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(plate, TreatedWood).get())
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(plate, Wood).get());
+                .add(ChemicalHelper.getItem(plate, TreatedWood))
+                .add(ChemicalHelper.getItem(plate, Wood));
 
         provider.addTag(CustomTags.CIRCUITS)
                 .addTag(CustomTags.ULV_CIRCUITS)
@@ -195,8 +193,8 @@ public class ItemTagLoader {
 
         // Add sodalite and lazurite as enchanting fuels
         provider.addTag(Tags.Items.ENCHANTING_FUELS)
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(gem, Lazurite).get())
-                .add(GTMaterialItems.MATERIAL_ITEMS.get(gem, Sodalite).get());
+                .add(ChemicalHelper.getItem(gem, Lazurite))
+                .add(ChemicalHelper.getItem(gem, Sodalite));
     }
 
     private static IntrinsicHolderTagsProvider.IntrinsicTagAppender<Item> addTag(RegistrateItemTagsProvider provider,
