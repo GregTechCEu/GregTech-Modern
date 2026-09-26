@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.integration.ae2.gridservice.StockingGridService;
 import com.gregtechceu.gtceu.integration.ae2.machine.*;
 
 import net.minecraft.network.chat.Component;
@@ -132,5 +133,7 @@ public class GTAEMachines {
                     Component.translatable("gtceu.part_sharing.enabled"))
             .register();
 
-    public static void init() {}
+    public static void init() {
+        StockingGridService.register();
+    }
 }
