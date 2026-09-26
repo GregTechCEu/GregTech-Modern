@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
@@ -283,6 +284,8 @@ public class GTMaterials {
 
         rod.modifyMaterialAmount(Blaze, 4);
         rod.modifyMaterialAmount(Bone, 5);
+
+        Iron.getProperty(PropertyKey.INGOT).setSmeltingInto(WroughtIron);
     }
 
     private static void excludeAllGems(Holder<Material> material, ItemLike... items) {

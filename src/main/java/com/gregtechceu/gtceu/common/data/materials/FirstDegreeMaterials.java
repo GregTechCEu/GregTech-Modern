@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.data.materials;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
@@ -646,7 +645,6 @@ public class FirstDegreeMaterials {
                         .addTypes(GTToolType.MORTAR)
                         .attackSpeed(-0.2F).enchantability(5).build())
                 .rotorStats(145, 105, 3.5f, 384));
-        Iron.getProperty(PropertyKey.INGOT).setSmeltingInto(WroughtIron);
 
         Wulfenite = REGISTRATE.material("wulfenite", builder -> builder
                 .dust(3).ore()
