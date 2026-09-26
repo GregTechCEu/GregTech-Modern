@@ -1777,6 +1777,8 @@
   "config.gtceu.option.batchDuration": "uoıʇɐɹnᗡɥɔʇɐq",
   "config.gtceu.option.bedrockOreDistance": "ǝɔuɐʇsıᗡǝɹOʞɔoɹpǝq",
   "config.gtceu.option.bedrockOreDropTagPrefix": "xıɟǝɹԀbɐ⟘doɹᗡǝɹOʞɔoɹpǝq",
+  "config.gtceu.option.blockFovChange": "ǝbuɐɥƆʌoℲʞɔoןq",
+  "config.gtceu.option.blockSpeedChange": "ǝbuɐɥƆpǝǝdSʞɔoןq",
   "config.gtceu.option.bloom": "ɯooןq",
   "config.gtceu.option.bloomType.load_error": "sןıɐʇǝp ɹoɟ %s ǝǝs 'ʇɔǝɟɟǝ ɯooןq ǝɥʇ ɹoɟ sɹǝpɐɥs pɐoן ʇou pןnoƆ",
   "config.gtceu.option.borderColor": "ɹoןoƆɹǝpɹoq",
