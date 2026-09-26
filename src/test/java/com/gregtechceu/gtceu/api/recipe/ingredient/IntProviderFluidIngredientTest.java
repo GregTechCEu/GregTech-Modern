@@ -51,16 +51,16 @@ public class IntProviderFluidIngredientTest {
     private static GTRecipeType CENTRIFUGE_RECIPE_TYPE;
 
     // fluids used in recipes. Up top here for quick replacements.
-    private static final FluidStack CR_IN = GTMaterials.Hydrogen.getFluid(1);
-    private static final FluidStack CR_OUT = GTMaterials.Iron.getFluid(1);
-    private static final FluidStack CR_TICK_IN = GTMaterials.Silicon.getFluid(1);
-    private static final FluidStack CR_TICK_OUT = GTMaterials.Cobalt.getFluid(1);
-    private static final FluidStack LCR_IN = GTMaterials.Oxygen.getFluid(1);
-    private static final FluidStack LCR_OUT = GTMaterials.Copper.getFluid(1);
-    private static final FluidStack LCENT_IN = GTMaterials.Nitrogen.getFluid(1);
-    private static final FluidStack LCENT_OUT = GTMaterials.Gold.getFluid(1);
-    private static final FluidStack RUBBER = GTMaterials.Rubber.getFluid(1);
-    private static final FluidStack REDSTONE = GTMaterials.Redstone.getFluid(1);
+    private static FluidStack CR_IN;
+    private static FluidStack CR_OUT;
+    private static FluidStack CR_TICK_IN;
+    private static FluidStack CR_TICK_OUT;
+    private static FluidStack LCR_IN;
+    private static FluidStack LCR_OUT;
+    private static FluidStack LCENT_IN;
+    private static FluidStack LCENT_OUT;
+    private static FluidStack RUBBER;
+    private static FluidStack REDSTONE;
     private static final ItemStack COBBLE = new ItemStack(Items.COBBLESTONE);
     private static final ItemStack STONE = new ItemStack(Items.STONE);
 
@@ -74,6 +74,17 @@ public class IntProviderFluidIngredientTest {
 
     @BeforeBatch(batch = "RangedFluidIngredients")
     public static void prepare(ServerLevel level) {
+        CR_IN = GTMaterials.Hydrogen.getFluid(1);
+        CR_OUT = GTMaterials.Iron.getFluid(1);
+        CR_TICK_IN = GTMaterials.Silicon.getFluid(1);
+        CR_TICK_OUT = GTMaterials.Cobalt.getFluid(1);
+        LCR_IN = GTMaterials.Oxygen.getFluid(1);
+        LCR_OUT = GTMaterials.Copper.getFluid(1);
+        LCENT_IN = GTMaterials.Nitrogen.getFluid(1);
+        LCENT_OUT = GTMaterials.Gold.getFluid(1);
+        RUBBER = GTMaterials.Rubber.getFluid(1);
+        REDSTONE = GTMaterials.Redstone.getFluid(1);
+
         CR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_fluid_ingredient_cr_tests", GTRecipeTypes.CHEMICAL_RECIPES);
         LCR_RECIPE_TYPE = TestUtils.createRecipeType("ranged_fluid_ingredient_lcr_tests",
                 GTRecipeTypes.LARGE_CHEMICAL_RECIPES);
