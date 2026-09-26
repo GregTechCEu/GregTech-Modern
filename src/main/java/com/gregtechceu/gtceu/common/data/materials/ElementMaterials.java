@@ -355,7 +355,6 @@ public class ElementMaterials {
                 .rotorStats(115, 115, 2.5f, 256)
                 .cableProperties(V[MV], 2, 3)
                 .ingotSmeltInto(WroughtIron)
-                .arcSmeltInto(WroughtIron)
                 .magneticMaterial(IronMagnetic));
 
         Krypton = REGISTRATE.material("krypton", builder -> builder
