@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapabilityVersions;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
@@ -61,6 +62,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     protected final Map<IO, List<RecipeHandlerList>> capabilitiesProxy;
     @Getter
     protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
+    @Getter
+    protected final RecipeCapabilityVersions recipeVersions;
     protected final List<ISubscription> traitSubscriptions;
     @Getter
     @SaveField
@@ -86,6 +89,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         this.recipeLogic.setKeepSubscribing(false);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
+        this.recipeVersions = new RecipeCapabilityVersions();
         this.traitSubscriptions = new ArrayList<>();
     }
 
@@ -133,7 +137,10 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                this.addHandlerList(handlerList);
+                ISubscription versionSubscription = this.addHandlerList(handlerList);
+                if (versionSubscription != null) {
+                    traitSubscriptions.add(versionSubscription);
+                }
                 traitSubscriptions.add(handlerList.subscribe(recipeLogic::updateTickSubscription));
             }
         }
@@ -146,7 +153,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
         for (var entry : ioTraits.entrySet()) {
             var handlerList = RecipeHandlerList.of(entry.getKey(), entry.getValue());
-            this.addHandlerList(handlerList);
+            ISubscription versionSubscription = this.addHandlerList(handlerList);
+            if (versionSubscription != null) traitSubscriptions.add(versionSubscription);
             traitSubscriptions.add(handlerList.subscribe(recipeLogic::updateTickSubscription));
         }
         // schedule recipe logic
