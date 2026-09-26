@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.registry.registrate.provider;
 
 import com.gregtechceu.gtceu.core.mixins.registrate.LanguageProviderAccessor;
 
-import lombok.Getter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -16,8 +15,8 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.List;
