@@ -153,9 +153,9 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         BasePredicate baseNotSatisfied = null;
         if (predicate.isAnd() || predicate.isOr()) {
             for (BasePredicate basePredicate : predicate.predicates()) {
-                int baseMinCount = info.getMinCount(predicate, basePredicate);
+                int baseMinCount = basePredicate.getMinCount();
                 if (baseMinCount == 0) continue;
-                int baseMinSliceCount = info.getMinSliceCount(predicate, basePredicate);
+                int baseMinSliceCount = basePredicate.getMinSliceCount();
                 if (baseMinSliceCount == 0) continue;
 
                 int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
@@ -182,10 +182,10 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
             for (BasePredicate basePredicate : predicate.predicates()) {
                 // Same goes for the basePredicates, any satisfied basePredicate with mins returns false
-                int baseMinCount = info.getMinCount(predicate, basePredicate);
+                int baseMinCount = basePredicate.getMinCount();
                 if (baseMinCount == 0) return false;
 
-                int baseMinSliceCount = info.getMinSliceCount(predicate, basePredicate);
+                int baseMinSliceCount = basePredicate.getMinSliceCount();
                 if (baseMinSliceCount == 0) return false;
 
                 int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
@@ -282,9 +282,9 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         BasePredicate baseNotSatisfied = null;
         if (predicate.isAnd() || predicate.isOr()) {
             for (BasePredicate basePredicate : predicate.predicates()) {
-                int baseMaxCount = info.getMaxCount(predicate, basePredicate);
+                int baseMaxCount = basePredicate.getMaxCount();
                 if (baseMaxCount == 0) continue;
-                int baseMaxSliceCount = info.getMaxSliceCount(predicate, basePredicate);
+                int baseMaxSliceCount = basePredicate.getMaxSliceCount();
                 if (baseMaxSliceCount == 0) continue;
 
                 int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
@@ -300,9 +300,9 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         } else if (predicate.isXor()) {
             for (BasePredicate basePredicate : predicate.predicates()) {
                 // Any satisfied basePredicate with mins and maxs satisfied returns false
-                int baseMaxCount = info.getMaxCount(predicate, basePredicate);
+                int baseMaxCount = basePredicate.getMaxCount();
                 if (baseMaxCount == 0) return false;
-                int baseMaxSliceCount = info.getMaxSliceCount(predicate, basePredicate);
+                int baseMaxSliceCount = basePredicate.getMaxSliceCount();
                 if (baseMaxSliceCount == 0) return false;
 
                 int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
