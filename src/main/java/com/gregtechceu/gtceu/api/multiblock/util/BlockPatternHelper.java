@@ -198,7 +198,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                 if (baseMinSliceCount != -1 && baseSliceMinMet) return false;
 
                 // If there is a limit, and it hasn't been met, we have a predicate that needs blocks
-                //noinspection ConstantConditions
+                // noinspection ConstantConditions
                 if ((baseMinCount != -1 && !baseGlobalMinMet) || (baseMinSliceCount != -1 && !baseSliceMinMet)) {
                     baseNotSatisfied = basePredicate;
                     break;
@@ -314,9 +314,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                 if (baseMaxCount != -1 && baseGlobalMaxMet) return false;
                 if (baseMaxSliceCount != -1 && baseSliceMaxMet) return false;
 
-
                 // If there is no limit, or there is one that hasn't been met, we have a predicate that allows blocks
-                //noinspection ConstantConditions
+                // noinspection ConstantConditions
                 if ((baseMaxCount == -1 || !baseGlobalMaxMet) && (baseMaxSliceCount == -1 || !baseSliceMaxMet)) {
                     baseNotSatisfied = basePredicate;
                     break;
