@@ -119,7 +119,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
 
         syncManager.addCloseListener(player -> {
             held.update(GTDataComponents.MAGNET, MagnetComponent.EMPTY,
-                    c -> new MagnetComponent(c.active(), selectedFilter));
+                    c -> new MagnetComponent(c.active(), filterSync.getValue()));
         });
 
         return new ModularPanel<>("item_magnet")
