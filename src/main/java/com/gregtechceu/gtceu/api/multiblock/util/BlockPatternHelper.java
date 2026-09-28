@@ -1,7 +1,11 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
+import com.gregtechceu.gtceu.api.multiblock.AndPredicate;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
@@ -9,6 +13,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -23,6 +28,11 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
     private final Int2IntMap sliceRepeats;
     private char[][][] flattenedBlockPattern = new char[0][][];
+
+    private Object2IntOpenHashMap<MultiPredicate> predicateCount = new Object2IntOpenHashMap<>();
+    private Object2IntOpenHashMap<BasePredicate> basePredicateCount = new Object2IntOpenHashMap<>();
+    private Table<MultiPredicate, Integer, Integer> predicateLayerCount = HashBasedTable.create();
+    private Table<BasePredicate, Integer, Integer> basePredicateLayerCount = HashBasedTable.create();
 
     protected BlockPatternHelper(Int2IntMap sliceRepeats) {
         this.sliceRepeats = sliceRepeats;
@@ -49,6 +59,11 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         this.flattenedBlockPattern = rotateAndFlipPattern(flattenBlockPattern(blockPattern),
                 blockPattern.getDirections(),
                 frontFacing, upFacing, isFlipped);
+
+        this.predicateCount.clear();
+        this.predicateLayerCount.clear();
+        this.basePredicateCount.clear();
+        this.basePredicateLayerCount.clear();
     }
 
     protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
@@ -135,65 +150,173 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
                                 MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
-        for (BasePredicate basePredicate : predicate.predicates()) {
-            int minCount = info.getMinCount(predicate, basePredicate);
-            if (minCount == 0) continue;
+        // TODO rehandle user min count
+        // check if each base predicate min is satisfied
+        BasePredicate baseNotSatisfied = null;
+        if (predicate.isAnd()) {
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                int baseMinCount = info.getMinCount(predicate, basePredicate);
+                if (baseMinCount == 0) continue;
 
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset);
-            boolean globalMinMet = minCount == -1 || totalAlreadyPopulated >= minCount;
-            boolean sliceMinMet = basePredicate.testSliceMin(layerAlreadyPopulated);
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                int baseLayerAlreadyPopulated = basePredicateLayerCount.row(basePredicate).getOrDefault(offset, 0);
+                boolean baseGlobalMinMet = baseMinCount == -1 || baseTotalAlreadyPopulated >= baseMinCount;
+                boolean baseSliceMinMet = basePredicate.testSliceMin(baseLayerAlreadyPopulated);
 
-            if (globalMinMet && sliceMinMet) continue;
-
-            BlockInfo toInsert = info.getBlockPreferences().get(predicate, basePredicate);
-            if (toInsert == null) {
-                toInsert = basePredicate.getFirstCandidate().orElseGet(() -> {
-                    GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", basePredicate);
-                    return BlockInfo.EMPTY;
-                });
+                if (!baseGlobalMinMet || !baseSliceMinMet) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
             }
+        } else if (predicate.isXor()) {
+            int baseTotalAlreadyPopulated = predicateCount.getInt(predicate);
+            int baseLayerAlreadyPopulated = predicateLayerCount.row(predicate).getOrDefault(offset, 0);
+            boolean noMin = info. == -1 && baseMinSliceCount == -1;
+            boolean baseGlobalMinMet = baseTotalAlreadyPopulated >= baseMinCount;
+            boolean baseSliceMinMet = baseLayerAlreadyPopulated >= baseMinSliceCount;
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                int baseMinCount = info.getMinCount(predicate, basePredicate);
+                if (baseMinCount == 0) continue;
+
+                int baseMinSliceCount = info.getMinSliceCount(predicate, basePredicate);
+                if (baseMinSliceCount == 0) continue;
+
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                int baseLayerAlreadyPopulated = basePredicateLayerCount.row(basePredicate).getOrDefault(offset, 0);
+                boolean noMin = baseMinCount == -1 && baseMinSliceCount == -1;
+                boolean baseGlobalMinMet = baseTotalAlreadyPopulated >= baseMinCount;
+                boolean baseSliceMinMet = baseLayerAlreadyPopulated >= baseMinSliceCount;
+
+                if (!noMin && (baseGlobalMinMet || baseSliceMinMet)) {
+                    return false;
+                } else if (!baseGlobalMinMet || !baseSliceMinMet) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
+            }
+        }
+
+        if (baseNotSatisfied != null) {
+            BasePredicate finalBaseNotSatisfied = baseNotSatisfied;
+            BlockInfo toInsert = baseNotSatisfied.getFirstCandidate().orElseGet(() -> {
+                GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", finalBaseNotSatisfied);
+                return BlockInfo.EMPTY;
+            });
             resultStructure.put(pos, toInsert);
             if (this.controllerBlock == null && predicate.isController()) {
                 this.controllerBlock = toInsert.getBlockState().getBlock();
             }
+            basePredicateCount.merge(baseNotSatisfied, 1, Integer::sum);
+            basePredicateLayerCount.column(offset).merge(baseNotSatisfied, 1, Integer::sum);
             return true;
         }
+
+        // check if each child predicate min is satisfied
         for (MultiPredicate child : predicate.children()) {
             if (tryMinCount(info, resultStructure, child, pos, dir, offset)) return true;
         }
-        return false;
+
+        // check if main predicate min is satisfied
+        int minCount = predicate.getMinCount();
+        if (minCount == 0) return false;
+
+        int totalAlreadyPopulated = predicateCount.getInt(predicate);
+        int layerAlreadyPopulated = predicateLayerCount.row(predicate).getOrDefault(offset, 0);
+
+        boolean globalMinMet = minCount == -1 || totalAlreadyPopulated >= minCount;
+        boolean sliceMinMet = predicate.testSliceMin(layerAlreadyPopulated);
+        if (globalMinMet && sliceMinMet) {
+            return false;
+        }
+
+        BlockInfo toInsert = info.getBlockPreferences().get(predicate);
+        if (toInsert == null) {
+            // TODO filtering?
+            toInsert = predicate.getCandidates().get(0).get(0);
+        }
+        resultStructure.put(pos, toInsert);
+        if (this.controllerBlock == null && predicate.isController()) {
+            this.controllerBlock = toInsert.getBlockState().getBlock();
+        }
+        predicateCount.merge(predicate, 1, Integer::sum);
+        predicateLayerCount.column(offset).merge(predicate, 1, Integer::sum);
+        for (var child : predicate.children()) {
+            predicateCount.merge(child, 1, Integer::sum);
+            predicateLayerCount.column(offset).merge(child, 1, Integer::sum);
+        }
+        return true;
     }
 
     private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
                                 MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
+        // check if main predicate min is satisfied
+        int maxCount = predicate.getMaxCount();
+        if (maxCount == 0) return false;
+
+        int totalAlreadyPopulated = predicateCount.getInt(predicate);
+        int layerAlreadyPopulated = predicateLayerCount.row(predicate).getOrDefault(offset, 0);
+
+        boolean globalMaxMet = maxCount != -1 && totalAlreadyPopulated >= maxCount;
+        boolean sliceMaxMet = !predicate.testSliceMax(layerAlreadyPopulated + 1);
+
+        if (globalMaxMet || sliceMaxMet) {
+            return false;
+        }
+
+        // check if each base predicate max is satisfied
+        BasePredicate baseNotSatisfied = null;
         for (BasePredicate basePredicate : predicate.predicates()) {
-            int maxCount = info.getMaxCount(predicate, basePredicate);
-            if (maxCount == 0) continue;
+            int baseMaxCount = info.getMaxCount(predicate, basePredicate);
+            if (baseMaxCount == 0) continue;
 
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset);
-            if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
-            if (!basePredicate.testSliceMax(layerAlreadyPopulated + 1)) continue;
+            int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+            int baseLayerAlreadyPopulated = basePredicateLayerCount.row(basePredicate).getOrDefault(offset, 0);
+            boolean baseGlobalMaxMet = baseMaxCount != -1 && baseTotalAlreadyPopulated >= baseMaxCount;
+            boolean baseSliceMaxMet = basePredicate.testSliceMax(baseLayerAlreadyPopulated + 1);
 
-            BlockInfo toInsert = info.getBlockPreferences().get(predicate, basePredicate);
-            if (toInsert == null) {
-                toInsert = basePredicate.getFirstCandidate().orElseGet(() -> {
-                    GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", basePredicate);
-                    return BlockInfo.EMPTY;
-                });
+            if (!baseGlobalMaxMet && !baseSliceMaxMet) {
+                baseNotSatisfied = basePredicate;
+                break;
             }
+        }
+
+        if (baseNotSatisfied != null) {
+            basePredicateCount.merge(baseNotSatisfied, 1, Integer::sum);
+            basePredicateLayerCount.column(offset).merge(baseNotSatisfied, 1, Integer::sum);
+            BasePredicate finalBaseNotSatisfied = baseNotSatisfied;
+            BlockInfo toInsert = baseNotSatisfied.getFirstCandidate().orElseGet(() -> {
+                GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", finalBaseNotSatisfied);
+                return BlockInfo.EMPTY;
+            });
             resultStructure.put(pos, toInsert);
             if (this.controllerBlock == null && predicate.isController()) {
                 this.controllerBlock = toInsert.getBlockState().getBlock();
             }
             return true;
         }
+
+        // check if each child predicate min is satisfied
         for (MultiPredicate child : predicate.children()) {
             if (tryMaxCount(info, resultStructure, child, pos, dir, offset)) return true;
         }
-        return false;
+
+        BlockInfo toInsert = info.getBlockPreferences().get(predicate);
+        if (toInsert == null) {
+            // TODO filtering?
+            toInsert = predicate.getCandidates().get(0).get(0);
+        }
+        resultStructure.put(pos, toInsert);
+        if (this.controllerBlock == null && predicate.isController()) {
+            this.controllerBlock = toInsert.getBlockState().getBlock();
+        }
+        predicateCount.merge(predicate, 1, Integer::sum);
+        predicateLayerCount.column(offset).merge(predicate, 1, Integer::sum);
+        for (var child : predicate.children()) {
+            predicateCount.merge(child, 1, Integer::sum);
+            predicateLayerCount.column(offset).merge(child, 1, Integer::sum);
+        }
+        return true;
     }
 
     private boolean isValidCandidate(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,

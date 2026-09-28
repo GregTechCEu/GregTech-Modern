@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -53,8 +54,7 @@ public class MultiblockSchemaInfo {
     @Getter
     private final Long2ObjectMap<BlockInfo> userGlobalBlockPreferences = new Long2ObjectOpenHashMap<>();
     @Getter
-    protected final HashBasedTable<MultiPredicate, BasePredicate, BlockInfo> blockPreferences = HashBasedTable
-            .create();
+    protected final Map<MultiPredicate, BlockInfo> blockPreferences = new Object2ObjectOpenHashMap<>();
     @Getter
     protected final HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences = HashBasedTable
             .create();
@@ -138,12 +138,27 @@ public class MultiblockSchemaInfo {
         return minMaxPreferences.get(predicate, basePredicate).rightInt();
     }
 
+    public int getMinSliceCount(MultiPredicate predicate, BasePredicate basePredicate) {
+        if (!minMaxPreferences.contains(predicate, basePredicate))
+            return Math.max(predicate.getMinSliceCount(), basePredicate.getMinSliceCount());
+        return minMaxPreferences.get(predicate, basePredicate).leftInt();
+    }
+
+    public int getMaxSliceCount(MultiPredicate predicate, BasePredicate basePredicate) {
+        if (!minMaxPreferences.contains(predicate, basePredicate)) {
+            if (predicate.getMaxSliceCount() == -1) return basePredicate.getMaxSliceCount();
+            if (basePredicate.getMaxSliceCount() == -1) return predicate.getMaxSliceCount();
+            return Math.min(predicate.getMaxSliceCount(), basePredicate.getMaxSliceCount());
+        }
+        return minMaxPreferences.get(predicate, basePredicate).rightInt();
+    }
+
     public void clearUserPreferences() {
         this.userSliceRepeats.clear();
         this.userDimensions.clear();
     }
 
-    public void putPredicatePreference(MultiPredicate predicate, BasePredicate basePredicate, BlockInfo info) {
-        this.blockPreferences.put(predicate, basePredicate, info);
+    public void putPredicatePreference(MultiPredicate predicate, BlockInfo info) {
+        this.blockPreferences.put(predicate, info);
     }
 }

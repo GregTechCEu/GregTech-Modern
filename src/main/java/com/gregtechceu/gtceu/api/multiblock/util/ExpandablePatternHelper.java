@@ -122,8 +122,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             if (minCount == -1 || totalAlreadyPopulated >= minCount) continue;
 
             BlockInfo toInsert = null;
-            if (info.getBlockPreferences().contains(predicate, basePredicate)) {
-                toInsert = info.getBlockPreferences().get(predicate, basePredicate);
+            if (info.getBlockPreferences().containsKey(predicate)) {
+                toInsert = info.getBlockPreferences().get(predicate);
             } else if (!basePredicate.getCandidates().isEmpty()) {
                 toInsert = basePredicate.getCandidates().get(0);
             }
@@ -147,8 +147,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
 
             BlockInfo toInsert = null;
-            if (info.getBlockPreferences().contains(predicate, basePredicate)) {
-                toInsert = info.getBlockPreferences().get(predicate, basePredicate);
+            if (info.getBlockPreferences().containsKey(predicate)) {
+                toInsert = info.getBlockPreferences().get(predicate);
             } else if (!basePredicate.getCandidates().isEmpty()) {
                 toInsert = basePredicate.getCandidates().get(0);
             }

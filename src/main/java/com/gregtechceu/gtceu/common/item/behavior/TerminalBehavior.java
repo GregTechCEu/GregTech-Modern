@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.CPacketTerminalSettings;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,6 +29,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -317,14 +319,12 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             for (int i = 0; i < preferences.size(); i++) {
                 CompoundTag inner = preferences.getCompound(i);
                 char c = (char) inner.getByte("p");
-                int baseIndex = inner.getInt("b");
-                int candidateIndex = inner.getInt("i");
+                CompoundTag blockState = inner.getCompound("b");
 
                 MultiPredicate pred = blockPattern.getPredicates().get(c);
-                BasePredicate base = pred.predicates().get(baseIndex);
-                BlockInfo blockInfo = base.getCandidates().get(candidateIndex);
+                BlockInfo blockInfo = BlockInfo.fromBlockState(NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), blockState));
 
-                info.getBlockPreferences().put(pred, base, blockInfo);
+                info.getBlockPreferences().put(pred, blockInfo);
             }
         }
 
@@ -351,7 +351,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
 
     public static void applyUserPreferences(ItemStack item, Int2IntMap sliceRepeats, IntList dimensions,
                                             Long2ObjectMap<BlockState> globalPreferences,
-                                            HashBasedTable<MultiPredicate, BasePredicate, BlockInfo> blockPreferences,
+                                            Map<MultiPredicate, BlockInfo> blockPreferences,
                                             HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences) {
         CompoundTag tag = item.getOrCreateTag();
 
@@ -398,7 +398,21 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             ResourceLocation controllerLocation = ResourceLocation.parse(tag.getString("controller"));
             var definition = (MultiblockMachineDefinition) GTRegistries.MACHINES.get(controllerLocation);
             BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
-            for (var entry : blockPreferences.cellSet()) {
+            for (var entry : blockPreferences.entrySet()) {
+                CompoundTag preference = new CompoundTag();
+                MultiPredicate pred = entry.getKey();
+
+                char c = blockPattern.getPredicates().char2ObjectEntrySet()
+                        .stream()
+                        .filter(e -> e.getValue().equals(pred))
+                        .findFirst()
+                        .get().getCharKey();
+
+                preference.putByte("p", (byte) c);
+                preference.put("b", NbtUtils.writeBlockState(entry.getValue().getBlockState()));
+                preferences.add(preference);
+            }
+            /*for (var entry : blockPreferences.cellSet()) {
                 CompoundTag preference = new CompoundTag();
                 MultiPredicate pred = entry.getRowKey();
                 BasePredicate base = entry.getColumnKey();
@@ -413,7 +427,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                 preference.putInt("b", pred.predicates().indexOf(base));
                 preference.putInt("i", base.getCandidates().indexOf(entry.getValue()));
                 preferences.add(preference);
-            }
+            }*/
             tag.put("blockPreferences", preferences);
         }
 

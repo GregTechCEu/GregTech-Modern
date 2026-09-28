@@ -12,6 +12,10 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.behavior.TerminalBehavior;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,6 +31,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 public class CPacketTerminalSettings implements GTNetwork.INetPacket {
 
@@ -35,13 +40,13 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
     private final Int2IntMap sliceRepeats;
     private final IntList dimensions;
     private final Long2ObjectMap<BlockState> globalPreferences;
-    private final HashBasedTable<MultiPredicate, BasePredicate, BlockInfo> blockPreferences;
+    private final Map<MultiPredicate, BlockInfo> blockPreferences;
     private final HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences;
 
     public CPacketTerminalSettings(InteractionHand hand, MultiblockMachineDefinition def, Int2IntMap sliceRepeats,
                                    IntList dimensions,
                                    Long2ObjectMap<BlockState> globalPreferences,
-                                   HashBasedTable<MultiPredicate, BasePredicate, BlockInfo> blockPreferences,
+                                   Map<MultiPredicate, BlockInfo> blockPreferences,
                                    HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences) {
         this.hand = hand;
         this.machineDefinition = def;
@@ -79,7 +84,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
             this.globalPreferences.put(pos, state);
         }
 
-        blockPreferences = HashBasedTable.create();
+        blockPreferences = new Object2ObjectOpenHashMap<>();
         minMaxPreferences = HashBasedTable.create();
         IBlockPattern pattern = machineDefinition.getStructurePatterns()
                 .get(MultiblockControllerMachine.DEFAULT_STRUCTURE).get();
@@ -87,14 +92,10 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
             int preferenceSize = buf.readVarInt();
             for (int i = 0; i < preferenceSize; i++) {
                 char c = buf.readChar();
-                int baseIndex = buf.readVarInt();
-                int candidateIndex = buf.readVarInt();
-
                 MultiPredicate pred = blockPattern.getPredicates().get(c);
-                BasePredicate base = pred.predicates().get(baseIndex);
-                BlockInfo info = base.getCandidates().get(candidateIndex);
-
-                this.blockPreferences.put(pred, base, info);
+                CompoundTag stateTag = buf.readNbt();
+                BlockInfo info = BlockInfo.fromBlockState(NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), stateTag));
+                this.blockPreferences.put(pred, info);
             }
 
             int minMaxSize = buf.readVarInt();
@@ -139,10 +140,9 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         IBlockPattern pattern = machineDefinition.getStructurePatterns()
                 .get(MultiblockControllerMachine.DEFAULT_STRUCTURE).get();
         if (pattern instanceof BlockPattern blockPattern) {
-            buf.writeVarInt(this.blockPreferences.rowKeySet().size());
-            for (var entry : this.blockPreferences.cellSet()) {
-                MultiPredicate pred = entry.getRowKey();
-                BasePredicate base = entry.getColumnKey();
+            buf.writeVarInt(this.blockPreferences.size());
+            for (var entry : this.blockPreferences.entrySet()) {
+                MultiPredicate pred = entry.getKey();
 
                 char c = blockPattern.getPredicates().char2ObjectEntrySet()
                         .stream()
@@ -150,9 +150,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
                         .findFirst()
                         .get().getCharKey();
                 buf.writeChar(c);
-
-                buf.writeVarInt(pred.predicates().indexOf(base));
-                buf.writeVarInt(base.getCandidates().indexOf(entry.getValue()));
+                buf.writeNbt(NbtUtils.writeBlockState(entry.getValue().getBlockState()));
             }
 
             buf.writeVarInt(this.minMaxPreferences.rowKeySet().size());

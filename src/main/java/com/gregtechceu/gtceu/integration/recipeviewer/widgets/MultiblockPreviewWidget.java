@@ -390,7 +390,6 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             .coverChildrenWidth()
                             .collapseDisabledChildren()
                             .childSeparator(Icon.EMPTY_2PX)
-                            // todo handle children
                             .children(predicate.expand(), basePredicate -> {
                                 List<BlockInfo> candidates = basePredicate.getCandidates();
                                 if (candidates.isEmpty()) {
@@ -400,7 +399,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                 } else {
                                     return new ToggleButton()
                                             .value(new BoolValue.Dynamic(() -> false,
-                                                    (b) -> setPredicateDefaultBlock(predicate, basePredicate,
+                                                    (b) -> setPredicateDefaultBlock(predicate,
                                                             candidates.get(0))))
                                             .size(16)
                                             .tooltip(r -> r.add(
@@ -433,7 +432,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             return new ToggleButton()
                                     .value(new BoolValue.Dynamic(
                                             () -> false,
-                                            (b) -> setPredicateDefaultBlock(predicate, basePredicate, blockInfo)))
+                                            (b) -> setPredicateDefaultBlock(predicate, blockInfo)))
                                     .size(16)
                                     .tooltip(r -> r.add(stackName))
                                     .overlay(new ItemDrawable(
@@ -461,9 +460,9 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     }
 
     /// ==== User Preference UI ======
-    private void setPredicateDefaultBlock(MultiPredicate predicate, BasePredicate basePredicate,
+    private void setPredicateDefaultBlock(MultiPredicate predicate,
                                           BlockInfo blockInfo) {
-        this.multiblockSchemaInfo.putPredicatePreference(predicate, basePredicate, blockInfo);
+        this.multiblockSchemaInfo.putPredicatePreference(predicate, blockInfo);
         refreshSchema();
         refreshViewWidget();
     }

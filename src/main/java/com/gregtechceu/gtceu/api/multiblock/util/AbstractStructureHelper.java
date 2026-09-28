@@ -64,12 +64,14 @@ public abstract class AbstractStructureHelper {
     public abstract MultiPredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
                                                        Direction frontFacing, Direction upFacing, boolean isFlipped);
 
+    // TODO backing map from predicate(base?) -> count
     protected static int countPopulatedGlobal(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate) {
         return (int) resultStructure.values().stream()
                 .filter(blockInfo -> basePredicate.getCandidates().contains(blockInfo))
                 .count();
     }
 
+    // TODO backing map from predicate(base?) + layer offset -> count
     protected static int countPopulatedInLayer(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate,
                                                Direction dir, int offset) {
         return (int) resultStructure.entrySet().stream()
