@@ -399,19 +399,20 @@ public class GTUtil {
     }
 
     public static String getStringRemainTime(long time, long threshold) {
-        String s = Component.translatable("gtceu.jade.seconds", time % 60).getString();
+        String s = Component.translatable("integration.gtceu.jade.seconds", time % 60).getString();
         time /= 60;
         if (time > 0) {
-            s = Component.translatable("gtceu.jade.minutes", time % 60).getString() + " " + s;
+            s = Component.translatable("integration.gtceu.jade.minutes", time % 60).getString() + " " + s;
             time /= 60;
             if (time > 0) {
-                s = Component.translatable("gtceu.jade.hours", time % 60).getString() + " " + s;
+                s = Component.translatable("integration.gtceu.jade.hours", time % 60).getString() + " " + s;
                 time /= 60;
                 if (time > 0) {
-                    s = Component.translatable("gtceu.jade.days", time % 24).getString() + " " + s;
+                    s = Component.translatable("integration.gtceu.jade.days", time % 24).getString() + " " + s;
                     time /= 24;
                     if (time > 0) {
-                        s = Component.translatable("gtceu.jade.years", formatLongNumber(time, threshold)).getString() +
+                        s = Component.translatable("integration.gtceu.jade.years", formatLongNumber(time, threshold))
+                                .getString() +
                                 " " + s;
                     }
                 }
@@ -576,13 +577,13 @@ public class GTUtil {
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD)) return;
 
         if (GTUtil.isShiftDown()) {
-            tooltipComponents.add(Component.translatable("tooltip.gtceu.medical_condition.description_shift"));
+            tooltipComponents.add(Component.translatable("medical_condition.gtceu.tooltip.description_shift"));
             tooltipComponents.add(material.getProperty(HAZARD).condition.getTranslatableName());
-            tooltipComponents.add(Component.translatable("tooltip.gtceu.hazard_trigger"));
+            tooltipComponents.add(Component.translatable("hazard_trigger.gtceu"));
             tooltipComponents.add(material.getProperty(HAZARD).hazardTrigger.getTranslatableName());
             return;
         }
-        tooltipComponents.add(Component.translatable("tooltip.gtceu.medical_condition.description"));
+        tooltipComponents.add(Component.translatable("medical_condition.gtceu.tooltip.description"));
     }
 
     public static CompoundTag saveItemStack(ItemStack itemStack, CompoundTag compoundTag) {
@@ -620,29 +621,29 @@ public class GTUtil {
 
     public static Pair<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
         return switch (flag) {
-            case 0 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.WRENCH),
-                    Component.translatable("gtceu.top.maintenance.wrench"));
-            case 1 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.SCREWDRIVER),
-                    Component.translatable("gtceu.top.maintenance.screwdriver"));
-            case 2 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.SOFT_MALLET),
-                    Component.translatable("gtceu.top.maintenance.soft_mallet"));
-            case 3 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.HARD_HAMMER),
-                    Component.translatable("gtceu.top.maintenance.hard_hammer"));
-            case 4 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.WIRE_CUTTER),
-                    Component.translatable("gtceu.top.maintenance.wire_cutter"));
-            default -> Pair.of(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
-                    Component.translatable("gtceu.top.maintenance.crowbar"));
+            case 0 -> new Pair<>(ToolItemHelper.getToolItem(GTToolType.WRENCH),
+                    Component.translatable("integration.gtceu.jade.maintenance.wrench"));
+            case 1 -> new Pair<>(ToolItemHelper.getToolItem(GTToolType.SCREWDRIVER),
+                    Component.translatable("integration.gtceu.jade.maintenance.screwdriver"));
+            case 2 -> new Pair<>(ToolItemHelper.getToolItem(GTToolType.SOFT_MALLET),
+                    Component.translatable("integration.gtceu.jade.maintenance.soft_mallet"));
+            case 3 -> new Pair<>(ToolItemHelper.getToolItem(GTToolType.HARD_HAMMER),
+                    Component.translatable("integration.gtceu.jade.maintenance.hard_hammer"));
+            case 4 -> new Pair<>(ToolItemHelper.getToolItem(GTToolType.WIRE_CUTTER),
+                    Component.translatable("integration.gtceu.jade.maintenance.wire_cutter"));
+            default -> new Pair<>(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
+                    Component.translatable("integration.gtceu.jade.maintenance.crowbar"));
         };
     }
 
     public static void addPotionTooltip(List<Pair<MobEffectInstance, Float>> effects, List<Component> list) {
         if (!effects.isEmpty()) {
-            list.add(Component.translatable("gtceu.tooltip.potion.header"));
+            list.add(Component.translatable("potion.gtceu.tooltip.header"));
         }
         effects.forEach(pair -> {
             var effect = pair.getFirst();
             float probability = pair.getSecond();
-            list.add(Component.translatable("gtceu.tooltip.potion.each",
+            list.add(Component.translatable("potion.gtceu.tooltip.each",
                     Component.translatable(effect.getDescriptionId())
                             .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)),
                     Component.translatable("enchantment.level." + (effect.getAmplifier() + 1))

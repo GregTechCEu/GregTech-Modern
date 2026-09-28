@@ -10,12 +10,12 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncEntityBlock;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.data.lang.LangUtil;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -191,25 +191,12 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
-        definition.getTooltipBuilder().accept(stack, tooltip);
-        String mainKey = String.format("%s.machine.%s.tooltip", definition.getId().getNamespace(),
-                definition.getId().getPath());
-        /*
-         * if (GTUtil.isShiftDown()) {
-         * if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
-         * var pattern = multiblockDefinition.getPatternFactory().get();
-         * if (pattern != null) {
-         * var aisleDims = pattern.getDimensions();
-         * assert aisleDims.length == 3;
-         * tooltip.add(Component.translatable("gtceu.multiblock.dimension", aisleDims[0], aisleDims[1],
-         * aisleDims[2]));
-         * }
-         * }
-         * }
-         */
-        if (Language.getInstance().has(mainKey)) {
-            tooltip.add(1, Component.translatable(mainKey));
+        String mainKey = definition.getId().toLanguageKey("machine", "tooltip");
+        if (LangUtil.hasSingleOrMultiLang(mainKey)) {
+            var langs = LangUtil.getSingleOrMultiLang(mainKey);
+            tooltip.addAll(List.of(langs));
         }
+        definition.getTooltipBuilder().accept(stack, tooltip);
     }
 
     @Override

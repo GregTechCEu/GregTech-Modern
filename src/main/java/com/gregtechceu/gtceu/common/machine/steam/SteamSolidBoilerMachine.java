@@ -126,10 +126,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
                 GTGuiTextures.PROGRESS_BAR_BOILER_FUEL_BRONZE;
 
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
-                () -> new DoubleSyncValue(() -> {
-                    if (recipeLogic == null) return -1f;
-                    return recipeLogic.getProgressPercent();
-                }));
+                () -> new DoubleSyncValue(recipeLogic::getProgressPercent));
 
         mainWidget.child(Flow.col()
                 .coverChildren()

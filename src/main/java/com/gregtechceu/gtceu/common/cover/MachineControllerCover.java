@@ -212,7 +212,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                                         .value(new BooleanSyncValue(this::isInverted,
                                                 this::setInverted).allowC2S())
                                         .overlay(GTGuiTextures.OVERLAY_REDSTONE_ON))
-                                .child(Text.comp(Component.translatable("cover.enable_with_redstone")).asWidget()
+                                .child(Text.comp(Component.translatable("cover.gtceu.enable_with_redstone")).asWidget()
                                         .heightRel(1.0f).left(20)))
                         .child(coverUIRow()
                                 .child(new ToggleButton()
@@ -220,7 +220,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                                         .value(new BooleanSyncValue(() -> !this.isInverted(),
                                                 ($) -> this.setInverted(!$)).allowC2S())
                                         .overlay(GTGuiTextures.OVERLAY_REDSTONE_OFF))
-                                .child(Text.lang("cover.disable_with_redstone").asWidget()
+                                .child(Text.lang("cover.gtceu.disable_with_redstone").asWidget()
                                         .heightRel(1.0f).left(20)))
                         .child(coverUIRow()
                                 .child(new ToggleButton()
@@ -231,11 +231,11 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                                                 GTGuiTextures.BUTTON_POWER[0])
                                         .background(true,
                                                 GTGuiTextures.BUTTON_POWER[1]))
-                                .child(Text.lang("cover.machine_controller.suspend_powerfail").asWidget()
+                                .child(Text.lang("cover.gtceu.machine_controller.suspend_powerfail").asWidget()
                                         .heightRel(1.0f).left(20)))
                         .child(coverUIRow()
                                 .child(Text
-                                        .dynamic(() -> Component.translatable("cover.machine_controller.redstone",
+                                        .dynamic(() -> Component.translatable("cover.gtceu.machine_controller.redstone",
                                                 redstoneSignalOutput))
                                         .asWidget()
                                         .height(16).leftRel(0f)))
@@ -253,7 +253,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                         .child(coverUIRow().child(new Rectangle().color(UI_TEXT_COLOR).asWidget()
                                 .height(1).widthRel(0.9f).leftRel(0.5f)).margin(0, 2))
 
-                        .child(coverUIRow().child(Text.lang("cover.machine_controller.control").asWidget()
+                        .child(coverUIRow().child(Text.lang("cover.gtceu.machine_controller.control").asWidget()
                                 .height(16)))
 
                         // Controlling selector
@@ -282,13 +282,13 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
             Text detail;
             if (mode.side == attachedSide) {
                 // our own side, we can't control ourselves
-                detail = Text.lang("cover.machine_controller.this_cover");
+                detail = Text.lang("cover.gtceu.machine_controller.this_cover");
             } else if (mode.side != null) {
                 // some potential cover that either doesn't exist or isn't controllable
-                detail = Text.lang("cover.machine_controller.cover_not_controllable");
+                detail = Text.lang("cover.gtceu.machine_controller.cover_not_controllable");
             } else {
                 // cover holder is not controllable
-                detail = Text.lang("cover.machine_controller.machine_not_controllable");
+                detail = Text.lang("cover.gtceu.machine_controller.machine_not_controllable");
             }
 
             return GuiTextures.MC_BUTTON.asWidget().size(18)

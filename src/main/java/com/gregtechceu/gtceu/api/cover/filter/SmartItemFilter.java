@@ -85,7 +85,7 @@ public class SmartItemFilter extends Filter<ItemStack> {
                 .child(new ContextMenuButton<>("smart_filter")
                         .size(18)
                         .requiresClick()
-                        .tooltip(r -> r.add(Text.lang("cover.item_smart_filter.filtering_mode.description")))
+                        .tooltip(r -> r.add(Text.lang("cover.gtceu.item_smart_filter.filtering_mode.description")))
                         .openRightDown()
                         .overlay(new DynamicDrawable(() -> SmartFilteringMode.getTextures()[mode.getIntValue()]))
                         .menu(new Menu<>()
@@ -107,7 +107,8 @@ public class SmartItemFilter extends Filter<ItemStack> {
                                                     .tooltip(r -> r.add(Text.comp(Component
                                                             .translatable(SmartFilteringMode.VALUES[w].getTooltip()))));
                                         }))))
-                .child(Text.lang("cover.item_smart_filter.recipe_type").asWidget().verticalCenter().rightRel(0.f));
+                .child(Text.lang("cover.gtceu.item_smart_filter.recipe_type").asWidget().verticalCenter()
+                        .rightRel(0.f));
     }
 
     @Override
@@ -170,7 +171,7 @@ public class SmartItemFilter extends Filter<ItemStack> {
         }
 
         public String getTooltip() {
-            return "cover.item_smart_filter.filtering_mode." + localeName;
+            return "cover.gtceu.smart_item_filter.filtering_mode." + localeName;
         }
 
         public static UITexture[] getTextures() {

@@ -13,14 +13,13 @@ import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -70,7 +69,7 @@ public class TooltipsHandler {
             if (Language.getInstance().has(tooltipKey)) {
                 tooltips.add(1, Component.translatable(tooltipKey));
             } else {
-                List<MutableComponent> multiLang = LangHandler.getMultiLang(tooltipKey);
+                var multiLang = LangUtil.getListMultiLang(tooltipKey);
                 if (multiLang != null && !multiLang.isEmpty()) {
                     tooltips.addAll(1, multiLang);
                 }
@@ -120,21 +119,18 @@ public class TooltipsHandler {
 
         if (fluid instanceof GTFluid attributedFluid) {
             FluidState state = attributedFluid.getState();
-            switch (state) {
-                case LIQUID -> tooltips.accept(Component.translatable("gtceu.fluid.state_liquid"));
-                case GAS -> tooltips.accept(Component.translatable("gtceu.fluid.state_gas"));
-                case PLASMA -> tooltips.accept(Component.translatable("gtceu.fluid.state_plasma"));
-            }
+            tooltips.accept(Component.translatable(state.getTranslationKey()).withStyle(ChatFormatting.GREEN));
             attributedFluid.getAttributes().forEach(a -> a.appendFluidTooltips(tooltips));
         } else {
-            String key = "gtceu.fluid.state_" + (fluidType.isLighterThanAir() ? "gas" : "liquid");
+            String key = "material.gtceu.fluid_state." + (fluidType.isLighterThanAir() ? "gas" : "liquid");
             tooltips.accept(Component.translatable(key));
         }
 
-        tooltips.accept(Component.translatable("gtceu.fluid.temperature",
-                FormattingUtil.formatTemperature(fluidType.getTemperature())));
+        tooltips.accept(Component.translatable("material.gtceu.fluid_property.temperature",
+                FormattingUtil.formatTemperature(fluidType.getTemperature())).withStyle(ChatFormatting.RED));
         if (fluidType.getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD) {
-            tooltips.accept(Component.translatable("gtceu.fluid.temperature.cryogenic"));
+            tooltips.accept(
+                    Component.translatable("material.gtceu.fluid_property.cryogenic").withStyle(ChatFormatting.AQUA));
         }
     }
 }

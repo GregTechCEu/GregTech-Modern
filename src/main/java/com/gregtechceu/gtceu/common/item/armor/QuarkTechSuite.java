@@ -98,10 +98,13 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
-                    player.displayClientMessage(Component.translatable("metaarmor.qts.nightvision.error"), true);
+                    player.displayClientMessage(
+                            Component.translatable("armor.gtceu.quark_tech_suite.night_vision.error"), true);
                 } else {
                     player.displayClientMessage(Component
-                            .translatable("metaarmor.qts.nightvision." + (nightVision ? "enabled" : "disabled")), true);
+                            .translatable("armor.gtceu.quark_tech_suite.night_vision." +
+                                    (nightVision ? "enabled" : "disabled")),
+                            true);
                 }
             }
 
@@ -168,7 +171,9 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 boostedJump = !boostedJump;
                 toggleBootsTimer = JUMPING_TIMER;
                 player.displayClientMessage(Component
-                        .translatable("metaarmor.qts.boosted_jump." + (boostedJump ? "enabled" : "disabled")), true);
+                        .translatable(
+                                "armor.gtceu.quark_tech_suite.boosted_jump." + (boostedJump ? "enabled" : "disabled")),
+                        true);
             }
             if (boostedJump) {
                 if (!world.isClientSide) {
@@ -207,7 +212,9 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 stepAssist = !stepAssist;
                 toggleBootsTimer = 5;
                 if (world.isClientSide()) player.displayClientMessage(Component
-                        .translatable("metaarmor.qts.step_assist." + (stepAssist ? "enabled" : "disabled")), true);
+                        .translatable(
+                                "armor.gtceu.quark_tech_suite.step_assist." + (stepAssist ? "enabled" : "disabled")),
+                        true);
                 data.putBoolean("stepAssist", stepAssist);
             }
 
@@ -354,25 +361,25 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             CompoundTag nbtData = itemStack.getOrCreateTag();
             boolean nv = nbtData.getBoolean("nightVision");
             if (nv) {
-                lines.add(Component.translatable("metaarmor.message.nightvision.enabled"));
+                lines.add(Component.translatable("armor.gtceu.message.night_vision.enabled"));
             } else {
-                lines.add(Component.translatable("metaarmor.message.nightvision.disabled"));
+                lines.add(Component.translatable("armor.gtceu.message.night_vision.disabled"));
             }
-            lines.add(Component.translatable("metaarmor.tooltip.potions"));
-            lines.add(Component.translatable("metaarmor.tooltip.breath"));
-            lines.add(Component.translatable("metaarmor.tooltip.autoeat"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.potions"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.breath"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.auto_eat"));
         } else if (type == ArmorItem.Type.CHESTPLATE) {
-            lines.add(Component.translatable("metaarmor.tooltip.burning"));
-            lines.add(Component.translatable("metaarmor.tooltip.freezing"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.burning"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.freezing"));
         } else if (type == ArmorItem.Type.LEGGINGS) {
-            lines.add(Component.translatable("metaarmor.tooltip.speed"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.speed"));
         } else if (type == ArmorItem.Type.BOOTS) {
             CompoundTag nbtData = itemStack.getOrCreateTag();
             if (nbtData.getBoolean("stepAssist"))
-                lines.add(Component.translatable("metaarmor.message.step_assist.enabled"));
-            else lines.add(Component.translatable("metaarmor.message.step_assist.disabled"));
-            lines.add(Component.translatable("metaarmor.tooltip.falldamage"));
-            lines.add(Component.translatable("metaarmor.tooltip.jump"));
+                lines.add(Component.translatable("armor.gtceu.tooltip.step_assist.enabled"));
+            else lines.add(Component.translatable("armor.gtceu.tooltip.step_assist.disabled"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.fall_damage"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.jump"));
         }
     }
 

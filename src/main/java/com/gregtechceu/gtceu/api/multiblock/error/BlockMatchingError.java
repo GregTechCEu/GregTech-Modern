@@ -14,6 +14,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BlockMatchingError extends PatternError {
 
@@ -40,7 +41,9 @@ public class BlockMatchingError extends PatternError {
             for (Block block : blocks) {
                 comps.add(block.getName());
             }
-            comps.add(Component.translatable("gtceu.pattern_predicate.blocks", pos.getX(), pos.getY(), pos.getZ()));
+            Objects.requireNonNull(pos);
+            comps.add(Component.translatable("multiblock.gtceu.pattern_error.block_match_error", pos.getX(), pos.getY(),
+                    pos.getZ()));
             comps.forEach(comp -> parent.child(Text.of(comp).asWidget()));
         };
     }

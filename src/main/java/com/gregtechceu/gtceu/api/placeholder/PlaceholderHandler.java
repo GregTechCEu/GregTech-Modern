@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.placeholder.exceptions.UnknownPlaceholderExcept
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.common.mui.widgets.textfield.CodeEditorWidget;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
@@ -347,9 +347,8 @@ public class PlaceholderHandler {
                                                 .coverChildren()
                                                 .child(new TextWidget<>(s).center())
                                                 .tooltip(new RichTooltip()
-                                                        .addDrawableLines(LangHandler
-                                                                .getSingleOrMultiLang("gtceu.placeholder_info." + s)
-                                                                .stream()
+                                                        .addDrawableLines(Arrays.stream(LangUtil
+                                                                .getSingleOrMultiLang("gtceu.placeholder_info." + s))
                                                                 .map(Text::of)
                                                                 .map(key -> (IDrawable) key)
                                                                 .toList())))

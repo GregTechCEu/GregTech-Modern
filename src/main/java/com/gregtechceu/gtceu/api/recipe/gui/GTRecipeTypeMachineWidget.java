@@ -63,11 +63,11 @@ public class GTRecipeTypeMachineWidget extends Flow {
             for (IWidget w : progressWidget.getChildren()) {
                 if (w instanceof ITooltip<?> tooltipWidget) {
                     tooltipWidget
-                            .tooltip(r -> r.add(Text.comp(Component.translatable("gtceu.recipe_type.show_recipes"))));
+                            .tooltip(r -> r.add(Text.comp(Component.translatable("recipe_type.gtceu.show_recipes"))));
                 }
             }
         } else {
-            progressWidget.tooltip(r -> r.add(Text.comp(Component.translatable("gtceu.recipe_type.show_recipes"))));
+            progressWidget.tooltip(r -> r.add(Text.comp(Component.translatable("recipe_type.gtceu.show_recipes"))));
         }
         child(progressWidget);
         child(outputColumn);

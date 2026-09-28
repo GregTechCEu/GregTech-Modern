@@ -37,6 +37,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -155,6 +156,11 @@ public final class Material implements Comparable<Material> {
     @ApiStatus.Internal
     public String getDefaultTranslation() {
         return materialInfo.overriddenName != null ? materialInfo.overriddenName : toEnglishName(getName());
+    }
+
+    @ApiStatus.Internal
+    public Map<TagPrefix, String> getLangOverrides() {
+        return materialInfo.langOverrides;
     }
 
     public String getModid() {
@@ -572,7 +578,6 @@ public final class Material implements Comparable<Material> {
 
         private Set<TagPrefix> ignoredTagPrefixes = null;
         private final List<TagKey<Item>> itemTags = new ArrayList<>();
-
         /*
          * Temporary data used to determine the final material formula tooltip.
          */
@@ -1839,6 +1844,15 @@ public final class Material implements Comparable<Material> {
         }
 
         /**
+         * A custom English lang value which overrides the default tag prefix lang for this material.
+         * Generated during your addon's datagen with key {@code item.<mod_id>.<item_id>}
+         */
+        public Builder langOverride(TagPrefix prefix, String englishLang) {
+            materialInfo.langOverrides.put(prefix, englishLang);
+            return this;
+        }
+
+        /**
          * Verify the passed information and finalize the Material.
          *
          * @return The finalized Material.
@@ -1875,6 +1889,7 @@ public final class Material implements Comparable<Material> {
             if (ignoredTagPrefixes != null) {
                 ignoredTagPrefixes.forEach(p -> p.setIgnored(mat));
             }
+
             return mat;
         }
 
@@ -1901,6 +1916,10 @@ public final class Material implements Comparable<Material> {
         @Setter
         @Getter
         private String overriddenName;
+
+        @Setter
+        @Getter
+        private Map<TagPrefix, String> langOverrides = new Object2ObjectOpenHashMap<>();
 
         /**
          * The colors of this Material.

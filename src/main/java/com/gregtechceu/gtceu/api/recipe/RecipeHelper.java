@@ -235,7 +235,7 @@ public class RecipeHelper {
             GTCEu.LOGGER.warn("IO {} Error while handling recipe {} outputs for {}",
                     Component.translatable(io.getTooltip()).getString(), recipe, holder);
         }
-        String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
+        String key = "recipe_logic.gtceu.insufficient_" + (io == IO.IN ? "in" : "out");
         return ActionResult.fail(Component.translatable(key)
                 .append(": ").append(result.capability().getName()), result.capability(), io, result.score());
     }
@@ -261,7 +261,7 @@ public class RecipeHelper {
             if (condition.isOr()) {
                 or.computeIfAbsent(condition.getType(), type -> new ArrayList<>()).add(condition);
             } else if (!condition.check(recipe, recipeLogic)) {
-                return ActionResult.fail(Component.translatable("gtceu.recipe_logic.condition_fails")
+                return ActionResult.fail(Component.translatable("recipe_logic.gtceu.condition_fails")
                         .append(": ")
                         .append(condition.getTooltips()), null, null);
             }
@@ -269,7 +269,7 @@ public class RecipeHelper {
 
         for (List<RecipeCondition> conditions : or.values()) {
             boolean passed = conditions.isEmpty();
-            MutableComponent component = Component.translatable("gtceu.recipe_logic.condition_fails")
+            MutableComponent component = Component.translatable("recipe_logic.gtceu.condition_fails")
                     .append(": ");
             for (RecipeCondition condition : conditions) {
                 passed = condition.check(recipe, recipeLogic);
@@ -412,7 +412,7 @@ public class RecipeHelper {
      *
      * Takes the machine's current Chance Caches, but does not use them. Yet. This parameter will be used in
      * the future Chanced Item Prerolls, but it has been added early to avoid changing the method signature later.
-     * 
+     *
      * @return a copy of the input recipe with all ranged ingredients replaced
      */
     public static GTRecipe doPrerolls(GTRecipe recipe,
@@ -459,7 +459,7 @@ public class RecipeHelper {
      *
      * Takes the machine's current Chance Caches, but does not use them. Yet. This parameter will be used in
      * the future Chanced Item Prerolls, but it has been added early to avoid changing the method signature later.
-     * 
+     *
      * @return a copy of the input recipe with all per-tick ranged ingredients replaced
      */
     public static GTRecipe doTickPrerolls(GTRecipe recipe,

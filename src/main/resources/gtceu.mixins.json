@@ -106,6 +106,7 @@
         "jei.FluidHelperMixin",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",
+        "registrate.LanguageProviderAccessor",
     ],
     "injectors": {
         "defaultRequire": 1,
