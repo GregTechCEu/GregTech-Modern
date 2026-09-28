@@ -90,10 +90,11 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         MagnetComponent magnetData = held.getOrDefault(GTDataComponents.MAGNET, MagnetComponent.EMPTY);
         FilterMode selectedFilter = magnetData.filterType();
 
-        Map<FilterMode, ItemStack> stacks = new EnumMap<>(FilterMode.class);
-        for (FilterMode filter : FilterMode.values()) {
-            ItemStack stack = filter.getFilter(held);
-            stacks.put(filter, stack);
+        Map<FilterMode, Filter<ItemStack>> filters = new EnumMap<>(FilterMode.class);
+        for (FilterMode mode : FilterMode.values()) {
+            ItemStack stack = mode.getFilter(held);
+            Filter<ItemStack> filter = Filters.loadItemFilter(stack);
+            filters.put(mode, filter);
         }
 
         EnumSyncValue<FilterMode> filterSync = new EnumSyncValue<>(FilterMode.class,
@@ -107,9 +108,9 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                 .size(150, 55)
                 .initialPage(selectedFilter.ordinal())
                 .addPage(createSimpleFilterPage(
-                        (SimpleItemFilter) Filters.loadItemFilter(stacks.get(FilterMode.SIMPLE))))
+                        (SimpleItemFilter) filters.get(FilterMode.SIMPLE)))
                 .addPage(createTagFilterPage(
-                        (TagFilter<ItemStack, Item>) Filters.loadItemFilter(stacks.get(FilterMode.TAG))));
+                        (TagFilter<ItemStack, Item>) filters.get(FilterMode.TAG)));
         pages.onUpdateListener(widget -> {
             int selected = filterSync.getIntValue();
             if (selected != widget.getCurrentPageIndex()) {
@@ -120,6 +121,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         syncManager.addCloseListener(player -> {
             held.update(GTDataComponents.MAGNET, MagnetComponent.EMPTY,
                     c -> new MagnetComponent(c.active(), filterSync.getValue()));
+            held.set(GTDataComponents.SIMPLE_ITEM_FILTER, (SimpleItemFilter) filters.get(FilterMode.SIMPLE));
         });
 
         return new ModularPanel<>("item_magnet")
@@ -385,8 +387,16 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         public ItemStack getFilter(ItemStack magnet) {
             var mockStack = new ItemStack(item.asItem());
             switch (this) {
-                case SIMPLE -> mockStack.set(GTDataComponents.SIMPLE_ITEM_FILTER,
-                        magnet.get(GTDataComponents.SIMPLE_ITEM_FILTER));
+                case SIMPLE -> {
+                    SimpleItemFilter prototypeComponent = magnet.get(GTDataComponents.SIMPLE_ITEM_FILTER);
+                    SimpleItemFilter copy = null;
+                    if (prototypeComponent != null) {
+                        copy = SimpleItemFilter.forItems(prototypeComponent.isIgnoreNbt(),
+                                prototypeComponent.getMatches());
+                        copy.setBlackList(prototypeComponent.isBlackList());
+                    }
+                    mockStack.set(GTDataComponents.SIMPLE_ITEM_FILTER, copy);
+                }
                 case TAG -> mockStack.set(GTDataComponents.ITEM_TAG_FILTER,
                         magnet.get(GTDataComponents.ITEM_TAG_FILTER));
             }
