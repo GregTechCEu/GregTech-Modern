@@ -189,7 +189,7 @@ public final class ValueTransformers {
         registerCodecTransformer(MonitorGroup.class, MonitorGroup.CODEC, MonitorGroup.STREAM_CODEC);
         registerCodecTransformer(ConsumedInputsData.class, ConsumedInputsData.CODEC, ByteBufCodecs.fromCodecWithRegistries(ConsumedInputsData.CODEC));
 
-        registerTransformer(Material.class, new RegistryReferenceTransformer<>(GTRegistries.Keys.MATERIAL, Material::getResourceLocation));
+        registerRegistryTransformer(Material.class, GTRegistries.MATERIALS);
 
         // spotless:on
     }
