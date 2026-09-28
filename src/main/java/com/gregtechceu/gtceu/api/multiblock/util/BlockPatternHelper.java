@@ -1,11 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
-import com.gregtechceu.gtceu.api.multiblock.AndPredicate;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
@@ -13,13 +9,15 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Map;
@@ -151,9 +149,9 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                                 MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
         // TODO rehandle user min count
-        // check if each base predicate min is satisfied
+        // Find first unsatisfied min predicate while also checking type specific logic
         BasePredicate baseNotSatisfied = null;
-        if (predicate.isAnd()) {
+        if (predicate.isAnd() || predicate.isOr()) {
             for (BasePredicate basePredicate : predicate.predicates()) {
                 int baseMinCount = info.getMinCount(predicate, basePredicate);
                 if (baseMinCount == 0) continue;
@@ -169,27 +167,34 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                 }
             }
         } else if (predicate.isXor()) {
-            int baseTotalAlreadyPopulated = predicateCount.getInt(predicate);
-            int baseLayerAlreadyPopulated = predicateLayerCount.row(predicate).getOrDefault(offset, 0);
-            boolean noMin = info. == -1 && baseMinSliceCount == -1;
-            boolean baseGlobalMinMet = baseTotalAlreadyPopulated >= baseMinCount;
-            boolean baseSliceMinMet = baseLayerAlreadyPopulated >= baseMinSliceCount;
+            // For XOR, only one can be true. If we find any condition already satisfied, return false
+            int predTotalAlreadyPopulated = predicateCount.getInt(predicate);
+            int predLayerAlreadyPopulated = predicateLayerCount.row(predicate).getOrDefault(offset, 0);
+
+            int predMinCount = predicate.getMinCount();
+            int predMinSliceCount = predicate.getMinSliceCount();
+            boolean predGlobalMinMet = predTotalAlreadyPopulated >= predMinCount;
+            boolean predSliceMinMet = predLayerAlreadyPopulated >= predMinSliceCount;
+            if (predMinCount != -1 && predGlobalMinMet) return false;
+            if (predMinSliceCount != -1 && predSliceMinMet) return false;
+
             for (BasePredicate basePredicate : predicate.predicates()) {
+                // Same goes for the basePredicates, any satisfied basePredicate with mins returns false
                 int baseMinCount = info.getMinCount(predicate, basePredicate);
-                if (baseMinCount == 0) continue;
+                if (baseMinCount == 0) return false;
 
                 int baseMinSliceCount = info.getMinSliceCount(predicate, basePredicate);
-                if (baseMinSliceCount == 0) continue;
+                if (baseMinSliceCount == 0) return false;
 
                 int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
                 int baseLayerAlreadyPopulated = basePredicateLayerCount.row(basePredicate).getOrDefault(offset, 0);
-                boolean noMin = baseMinCount == -1 && baseMinSliceCount == -1;
                 boolean baseGlobalMinMet = baseTotalAlreadyPopulated >= baseMinCount;
                 boolean baseSliceMinMet = baseLayerAlreadyPopulated >= baseMinSliceCount;
 
-                if (!noMin && (baseGlobalMinMet || baseSliceMinMet)) {
-                    return false;
-                } else if (!baseGlobalMinMet || !baseSliceMinMet) {
+                if (baseMinCount != -1 && baseGlobalMinMet) return false;
+                if (baseMinSliceCount != -1 && baseSliceMinMet) return false;
+
+                if (!baseGlobalMinMet || !baseSliceMinMet) {
                     baseNotSatisfied = basePredicate;
                     break;
                 }

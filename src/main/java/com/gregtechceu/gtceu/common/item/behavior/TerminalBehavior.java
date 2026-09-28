@@ -21,7 +21,6 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.CPacketTerminalSettings;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,7 +28,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -322,7 +320,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                 CompoundTag blockState = inner.getCompound("b");
 
                 MultiPredicate pred = blockPattern.getPredicates().get(c);
-                BlockInfo blockInfo = BlockInfo.fromBlockState(NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), blockState));
+                BlockInfo blockInfo = BlockInfo
+                        .fromBlockState(NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), blockState));
 
                 info.getBlockPreferences().put(pred, blockInfo);
             }
@@ -412,22 +411,24 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                 preference.put("b", NbtUtils.writeBlockState(entry.getValue().getBlockState()));
                 preferences.add(preference);
             }
-            /*for (var entry : blockPreferences.cellSet()) {
-                CompoundTag preference = new CompoundTag();
-                MultiPredicate pred = entry.getRowKey();
-                BasePredicate base = entry.getColumnKey();
-
-                char c = blockPattern.getPredicates().char2ObjectEntrySet()
-                        .stream()
-                        .filter(e -> e.getValue().equals(pred))
-                        .findFirst()
-                        .get().getCharKey();
-
-                preference.putByte("p", (byte) c);
-                preference.putInt("b", pred.predicates().indexOf(base));
-                preference.putInt("i", base.getCandidates().indexOf(entry.getValue()));
-                preferences.add(preference);
-            }*/
+            /*
+             * for (var entry : blockPreferences.cellSet()) {
+             * CompoundTag preference = new CompoundTag();
+             * MultiPredicate pred = entry.getRowKey();
+             * BasePredicate base = entry.getColumnKey();
+             * 
+             * char c = blockPattern.getPredicates().char2ObjectEntrySet()
+             * .stream()
+             * .filter(e -> e.getValue().equals(pred))
+             * .findFirst()
+             * .get().getCharKey();
+             * 
+             * preference.putByte("p", (byte) c);
+             * preference.putInt("b", pred.predicates().indexOf(base));
+             * preference.putInt("i", base.getCandidates().indexOf(entry.getValue()));
+             * preferences.add(preference);
+             * }
+             */
             tag.put("blockPreferences", preferences);
         }
 

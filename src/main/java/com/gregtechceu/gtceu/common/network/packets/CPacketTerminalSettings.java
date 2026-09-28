@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.behavior.TerminalBehavior;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -29,6 +28,7 @@ import com.google.common.collect.HashBasedTable;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -94,7 +94,8 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
                 char c = buf.readChar();
                 MultiPredicate pred = blockPattern.getPredicates().get(c);
                 CompoundTag stateTag = buf.readNbt();
-                BlockInfo info = BlockInfo.fromBlockState(NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), stateTag));
+                BlockInfo info = BlockInfo
+                        .fromBlockState(NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), stateTag));
                 this.blockPreferences.put(pred, info);
             }
 
