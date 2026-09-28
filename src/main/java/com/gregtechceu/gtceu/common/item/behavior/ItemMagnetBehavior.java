@@ -122,6 +122,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
             held.update(GTDataComponents.MAGNET, MagnetComponent.EMPTY,
                     c -> new MagnetComponent(c.active(), filterSync.getValue()));
             held.set(GTDataComponents.SIMPLE_ITEM_FILTER, (SimpleItemFilter) filters.get(FilterMode.SIMPLE));
+            held.set(GTDataComponents.ITEM_TAG_FILTER, (TagFilter<ItemStack, Item>) filters.get(FilterMode.TAG));
         });
 
         return new ModularPanel<>("item_magnet")
