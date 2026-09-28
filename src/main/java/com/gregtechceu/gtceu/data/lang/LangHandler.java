@@ -80,7 +80,8 @@ public class LangHandler {
 
         provider.add("gtceu.autobuild.placed_blocks", "The following blocks were placed:");
         provider.add("gtceu.autobuild.missing_blocks", "The following blocks are missing:");
-        provider.add("gtceu.autobuild.unplaced_blocks", "Could not place some blocks. Obstructions are highlighted in-world.");
+        provider.add("gtceu.autobuild.unplaced_blocks",
+                "Could not place some blocks. Obstructions are highlighted in-world.");
 
         provider.add("enchantment.disjunction", "Disjunction");
 

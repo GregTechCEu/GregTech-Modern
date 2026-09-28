@@ -153,7 +153,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         BasePredicate baseNotSatisfied = null;
         if (predicate.isAnd() || predicate.isOr()) {
             for (BasePredicate basePredicate : predicate.predicates()) {
-                int baseMinCount = basePredicate.getMinCount();
+                int baseMinCount = basePredicate.getPreviewOrMinCount();
                 if (baseMinCount == 0) continue;
                 int baseMinSliceCount = basePredicate.getMinSliceCount();
                 if (baseMinSliceCount == 0) continue;
@@ -173,7 +173,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             int predTotalAlreadyPopulated = predicateCount.getInt(predicate);
             int predSliceAlreadyPopulated = predicateSliceCount.row(predicate).getOrDefault(offset, 0);
 
-            int predMinCount = predicate.getMinCount();
+            int predMinCount = predicate.getPreviewOrMinCount();
             int predMinSliceCount = predicate.getMinSliceCount();
             boolean predGlobalMinMet = predTotalAlreadyPopulated >= predMinCount;
             boolean predSliceMinMet = predSliceAlreadyPopulated >= predMinSliceCount;
@@ -182,7 +182,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
             for (BasePredicate basePredicate : predicate.predicates()) {
                 // Same goes for the basePredicates, any satisfied basePredicate with mins returns false
-                int baseMinCount = basePredicate.getMinCount();
+                int baseMinCount = basePredicate.getPreviewOrMinCount();
                 if (baseMinCount == 0) return false;
 
                 int baseMinSliceCount = basePredicate.getMinSliceCount();
@@ -227,7 +227,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         }
 
         // check if main predicate min is satisfied
-        int minCount = predicate.getMinCount();
+        int minCount = predicate.getPreviewOrMinCount();
         if (minCount == 0) return false;
         int sliceMinCount = predicate.getMinSliceCount();
         if (sliceMinCount == 0) return false;
