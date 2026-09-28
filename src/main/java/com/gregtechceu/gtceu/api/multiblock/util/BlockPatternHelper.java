@@ -29,8 +29,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
     private Object2IntOpenHashMap<MultiPredicate> predicateCount = new Object2IntOpenHashMap<>();
     private Object2IntOpenHashMap<BasePredicate> basePredicateCount = new Object2IntOpenHashMap<>();
-    private Table<MultiPredicate, Integer, Integer> predicateLayerCount = HashBasedTable.create();
-    private Table<BasePredicate, Integer, Integer> basePredicateLayerCount = HashBasedTable.create();
+    private Table<MultiPredicate, Integer, Integer> predicateSliceCount = HashBasedTable.create();
+    private Table<BasePredicate, Integer, Integer> basePredicateSliceCount = HashBasedTable.create();
 
     protected BlockPatternHelper(Int2IntMap sliceRepeats) {
         this.sliceRepeats = sliceRepeats;
@@ -59,9 +59,9 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                 frontFacing, upFacing, isFlipped);
 
         this.predicateCount.clear();
-        this.predicateLayerCount.clear();
+        this.predicateSliceCount.clear();
         this.basePredicateCount.clear();
-        this.basePredicateLayerCount.clear();
+        this.basePredicateSliceCount.clear();
     }
 
     protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
@@ -97,12 +97,12 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                                        IBlockPattern pattern,
                                        Direction frontFacing, Direction upFacing, boolean isFlipped) {
         // spotless:off
-        // 4. Iterate slice by slice (a slice == one "layer"), then over the other two axes within the slice,
+        // 4. Iterate slice by slice (a slice == one "slice"), then over the other two axes within the slice,
         // get the char at that position,
-        // 4a. Go through every BasePredicate in order of priority, see if there's a minCount/minLayerCount that's
+        // 4a. Go through every BasePredicate in order of priority, see if there's a minCount/minSliceCount that's
         //      not satisfied yet, then try those
-        // 4b. If all basePredicates with a mincount/minLayerCount are satisfied, place the first predicate that works
-        // 4c. If the BasePredicate is at its max (maxCount/maxLayerCount), remove it from the list to be considered
+        // 4b. If all basePredicates with a mincount/minSliceCount are satisfied, place the first predicate that works
+        // 4c. If the BasePredicate is at its max (maxCount/maxSliceCount), remove it from the list to be considered
         // 4d. error if none are valid candidates(?)
         // spotless:on
 
@@ -133,8 +133,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                         continue;
                     }
 
-                    // Attempts to first place the predicate if the minimum (layer) count isn't satisfied, then the
-                    // maximum (layer) count
+                    // Attempts to first place the predicate if the minimum (slice) count isn't satisfied, then the
+                    // maximum (slice) count
                     if (tryMinCount(info, resultStructure, predicate, pos, sliceDir, sliceCoord)) continue;
                     if (tryMaxCount(info, resultStructure, predicate, pos, sliceDir, sliceCoord)) continue;
                     // If we arrive here, there's nothing we can place that doesn't overflow a max count!
@@ -155,11 +155,13 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             for (BasePredicate basePredicate : predicate.predicates()) {
                 int baseMinCount = info.getMinCount(predicate, basePredicate);
                 if (baseMinCount == 0) continue;
+                int baseMinSliceCount = info.getMinSliceCount(predicate, basePredicate);
+                if (baseMinSliceCount == 0) continue;
 
                 int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
-                int baseLayerAlreadyPopulated = basePredicateLayerCount.row(basePredicate).getOrDefault(offset, 0);
+                int baseSliceAlreadyPopulated = basePredicateSliceCount.row(basePredicate).getOrDefault(offset, 0);
                 boolean baseGlobalMinMet = baseMinCount == -1 || baseTotalAlreadyPopulated >= baseMinCount;
-                boolean baseSliceMinMet = basePredicate.testSliceMin(baseLayerAlreadyPopulated);
+                boolean baseSliceMinMet = baseMinSliceCount == -1 || baseSliceAlreadyPopulated >= baseMinSliceCount;
 
                 if (!baseGlobalMinMet || !baseSliceMinMet) {
                     baseNotSatisfied = basePredicate;
@@ -169,12 +171,12 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         } else if (predicate.isXor()) {
             // For XOR, only one can be true. If we find any condition already satisfied, return false
             int predTotalAlreadyPopulated = predicateCount.getInt(predicate);
-            int predLayerAlreadyPopulated = predicateLayerCount.row(predicate).getOrDefault(offset, 0);
+            int predSliceAlreadyPopulated = predicateSliceCount.row(predicate).getOrDefault(offset, 0);
 
             int predMinCount = predicate.getMinCount();
             int predMinSliceCount = predicate.getMinSliceCount();
             boolean predGlobalMinMet = predTotalAlreadyPopulated >= predMinCount;
-            boolean predSliceMinMet = predLayerAlreadyPopulated >= predMinSliceCount;
+            boolean predSliceMinMet = predSliceAlreadyPopulated >= predMinSliceCount;
             if (predMinCount != -1 && predGlobalMinMet) return false;
             if (predMinSliceCount != -1 && predSliceMinMet) return false;
 
@@ -187,14 +189,17 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                 if (baseMinSliceCount == 0) return false;
 
                 int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
-                int baseLayerAlreadyPopulated = basePredicateLayerCount.row(basePredicate).getOrDefault(offset, 0);
+                int baseSliceAlreadyPopulated = basePredicateSliceCount.row(basePredicate).getOrDefault(offset, 0);
                 boolean baseGlobalMinMet = baseTotalAlreadyPopulated >= baseMinCount;
-                boolean baseSliceMinMet = baseLayerAlreadyPopulated >= baseMinSliceCount;
+                boolean baseSliceMinMet = baseSliceAlreadyPopulated >= baseMinSliceCount;
 
+                // If there is a limit, and it's been met, return
                 if (baseMinCount != -1 && baseGlobalMinMet) return false;
                 if (baseMinSliceCount != -1 && baseSliceMinMet) return false;
 
-                if (!baseGlobalMinMet || !baseSliceMinMet) {
+                // If there is a limit, and it hasn't been met, we have a predicate that needs blocks
+                //noinspection ConstantConditions
+                if ((baseMinCount != -1 && !baseGlobalMinMet) || (baseMinSliceCount != -1 && !baseSliceMinMet)) {
                     baseNotSatisfied = basePredicate;
                     break;
                 }
@@ -212,7 +217,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                 this.controllerBlock = toInsert.getBlockState().getBlock();
             }
             basePredicateCount.merge(baseNotSatisfied, 1, Integer::sum);
-            basePredicateLayerCount.column(offset).merge(baseNotSatisfied, 1, Integer::sum);
+            basePredicateSliceCount.column(offset).merge(baseNotSatisfied, 1, Integer::sum);
             return true;
         }
 
@@ -224,12 +229,14 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         // check if main predicate min is satisfied
         int minCount = predicate.getMinCount();
         if (minCount == 0) return false;
+        int sliceMinCount = predicate.getMinSliceCount();
+        if (sliceMinCount == 0) return false;
 
         int totalAlreadyPopulated = predicateCount.getInt(predicate);
-        int layerAlreadyPopulated = predicateLayerCount.row(predicate).getOrDefault(offset, 0);
+        int sliceAlreadyPopulated = predicateSliceCount.row(predicate).getOrDefault(offset, 0);
 
         boolean globalMinMet = minCount == -1 || totalAlreadyPopulated >= minCount;
-        boolean sliceMinMet = predicate.testSliceMin(layerAlreadyPopulated);
+        boolean sliceMinMet = sliceMinCount == -1 || sliceAlreadyPopulated >= sliceMinCount;
         if (globalMinMet && sliceMinMet) {
             return false;
         }
@@ -244,10 +251,10 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             this.controllerBlock = toInsert.getBlockState().getBlock();
         }
         predicateCount.merge(predicate, 1, Integer::sum);
-        predicateLayerCount.column(offset).merge(predicate, 1, Integer::sum);
+        predicateSliceCount.column(offset).merge(predicate, 1, Integer::sum);
         for (var child : predicate.children()) {
             predicateCount.merge(child, 1, Integer::sum);
-            predicateLayerCount.column(offset).merge(child, 1, Integer::sum);
+            predicateSliceCount.column(offset).merge(child, 1, Integer::sum);
         }
         return true;
     }
@@ -255,15 +262,17 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
                                 MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
-        // check if main predicate min is satisfied
+        // check if main predicate max is satisfied
         int maxCount = predicate.getMaxCount();
         if (maxCount == 0) return false;
+        int maxSliceCount = predicate.getMaxSliceCount();
+        if (maxSliceCount == 0) return false;
 
         int totalAlreadyPopulated = predicateCount.getInt(predicate);
-        int layerAlreadyPopulated = predicateLayerCount.row(predicate).getOrDefault(offset, 0);
+        int sliceAlreadyPopulated = predicateSliceCount.row(predicate).getOrDefault(offset, 0);
 
         boolean globalMaxMet = maxCount != -1 && totalAlreadyPopulated >= maxCount;
-        boolean sliceMaxMet = !predicate.testSliceMax(layerAlreadyPopulated + 1);
+        boolean sliceMaxMet = maxSliceCount != -1 && sliceAlreadyPopulated >= maxSliceCount;
 
         if (globalMaxMet || sliceMaxMet) {
             return false;
@@ -271,24 +280,53 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
         // check if each base predicate max is satisfied
         BasePredicate baseNotSatisfied = null;
-        for (BasePredicate basePredicate : predicate.predicates()) {
-            int baseMaxCount = info.getMaxCount(predicate, basePredicate);
-            if (baseMaxCount == 0) continue;
+        if (predicate.isAnd() || predicate.isOr()) {
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                int baseMaxCount = info.getMaxCount(predicate, basePredicate);
+                if (baseMaxCount == 0) continue;
+                int baseMaxSliceCount = info.getMaxSliceCount(predicate, basePredicate);
+                if (baseMaxSliceCount == 0) continue;
 
-            int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
-            int baseLayerAlreadyPopulated = basePredicateLayerCount.row(basePredicate).getOrDefault(offset, 0);
-            boolean baseGlobalMaxMet = baseMaxCount != -1 && baseTotalAlreadyPopulated >= baseMaxCount;
-            boolean baseSliceMaxMet = basePredicate.testSliceMax(baseLayerAlreadyPopulated + 1);
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                int baseSliceAlreadyPopulated = basePredicateSliceCount.row(basePredicate).getOrDefault(offset, 0);
+                boolean baseGlobalMaxMet = baseMaxCount != -1 && baseTotalAlreadyPopulated >= baseMaxCount;
+                boolean baseSliceMaxMet = baseMaxSliceCount != -1 && baseSliceAlreadyPopulated >= baseMaxSliceCount;
 
-            if (!baseGlobalMaxMet && !baseSliceMaxMet) {
-                baseNotSatisfied = basePredicate;
-                break;
+                if (!baseGlobalMaxMet && !baseSliceMaxMet) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
+            }
+        } else if (predicate.isXor()) {
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                // Any satisfied basePredicate with mins and maxs satisfied returns false
+                int baseMaxCount = info.getMaxCount(predicate, basePredicate);
+                if (baseMaxCount == 0) return false;
+                int baseMaxSliceCount = info.getMaxSliceCount(predicate, basePredicate);
+                if (baseMaxSliceCount == 0) return false;
+
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                int baseSliceAlreadyPopulated = basePredicateSliceCount.row(basePredicate).getOrDefault(offset, 0);
+                boolean baseGlobalMaxMet = baseTotalAlreadyPopulated >= baseMaxCount;
+                boolean baseSliceMaxMet = baseSliceAlreadyPopulated >= baseMaxSliceCount;
+
+                // If there is a limit, and it's been met, return
+                if (baseMaxCount != -1 && baseGlobalMaxMet) return false;
+                if (baseMaxSliceCount != -1 && baseSliceMaxMet) return false;
+
+
+                // If there is no limit, or there is one that hasn't been met, we have a predicate that allows blocks
+                //noinspection ConstantConditions
+                if ((baseMaxCount == -1 || !baseGlobalMaxMet) && (baseMaxSliceCount == -1 || !baseSliceMaxMet)) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
             }
         }
 
         if (baseNotSatisfied != null) {
             basePredicateCount.merge(baseNotSatisfied, 1, Integer::sum);
-            basePredicateLayerCount.column(offset).merge(baseNotSatisfied, 1, Integer::sum);
+            basePredicateSliceCount.column(offset).merge(baseNotSatisfied, 1, Integer::sum);
             BasePredicate finalBaseNotSatisfied = baseNotSatisfied;
             BlockInfo toInsert = baseNotSatisfied.getFirstCandidate().orElseGet(() -> {
                 GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", finalBaseNotSatisfied);
@@ -316,10 +354,10 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             this.controllerBlock = toInsert.getBlockState().getBlock();
         }
         predicateCount.merge(predicate, 1, Integer::sum);
-        predicateLayerCount.column(offset).merge(predicate, 1, Integer::sum);
+        predicateSliceCount.column(offset).merge(predicate, 1, Integer::sum);
         for (var child : predicate.children()) {
             predicateCount.merge(child, 1, Integer::sum);
-            predicateLayerCount.column(offset).merge(child, 1, Integer::sum);
+            predicateSliceCount.column(offset).merge(child, 1, Integer::sum);
         }
         return true;
     }
@@ -329,7 +367,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                                      BlockPos pos, BlockInfo newInfo, Direction sliceDir) {
         // force true because idk what to do with this
         if (newInfo == BlockInfo.EMPTY) return true;
-        // The slice (layer) this position belongs to.
+        // The slice this position belongs to.
         int sliceCoord = getCoordFromDir(pos, sliceDir);
 
         // newInfo is valid if there's a basePredicate it qualifies for whose maxCount (global) and maxSliceCount
@@ -347,10 +385,10 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             if (maxCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, sliceDir, sliceCoord);
+            int sliceAlreadyPopulated = countPopulatedInSlice(resultStructure, basePredicate, sliceDir, sliceCoord);
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
 
-            if (basePredicate.getMaxSliceCount() == -1 || layerAlreadyPopulated < basePredicate.getMaxSliceCount()) {
+            if (basePredicate.getMaxSliceCount() == -1 || sliceAlreadyPopulated < basePredicate.getMaxSliceCount()) {
                 return true;
             }
         }

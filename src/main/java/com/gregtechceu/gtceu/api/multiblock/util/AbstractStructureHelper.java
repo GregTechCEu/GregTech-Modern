@@ -72,7 +72,7 @@ public abstract class AbstractStructureHelper {
     }
 
     // TODO backing map from predicate(base?) + layer offset -> count
-    protected static int countPopulatedInLayer(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate,
+    protected static int countPopulatedInSlice(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate,
                                                Direction dir, int offset) {
         return (int) resultStructure.entrySet().stream()
                 .filter(e -> getCoordFromDir(e.getKey(), dir) == offset)
