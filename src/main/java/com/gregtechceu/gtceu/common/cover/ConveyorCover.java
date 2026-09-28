@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.transfer.item.IBundleInsertable;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
@@ -274,13 +275,13 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
 
         // now, see how much we can insert into destination inventory
         // if we can't insert as much as itemInfo requires, and remainder is empty, abort, abort
-        ItemStack remainder = ItemHandlerHelper.insertItem(targetInventory, resultStack, true);
+        ItemStack remainder = insertWhole(targetInventory, resultStack, true);
         if (!remainder.isEmpty()) {
             return false;
         }
 
         // otherwise, perform real insertion and then remove items from the source inventory
-        ItemHandlerHelper.insertItem(targetInventory, resultStack, false);
+        insertWhole(targetInventory, resultStack, false);
 
         // perform real extraction of the items from the source inventory now
         itemsLeftToExtract = itemInfo.totalCount;
@@ -296,6 +297,14 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
             }
         }
         return true;
+    }
+
+    /// Uses {@link IBundleInsertable} when the target supports it to allow correctly handling transfer mode
+    /// for aggregate inventories (like item pipes).
+    private static ItemStack insertWhole(IItemHandler targetInventory, ItemStack stack, boolean simulate) {
+        return targetInventory instanceof IBundleInsertable bundle ?
+                bundle.insertItemBundle(stack, simulate) :
+                ItemHandlerHelper.insertItem(targetInventory, stack, simulate);
     }
 
     protected int moveInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory,

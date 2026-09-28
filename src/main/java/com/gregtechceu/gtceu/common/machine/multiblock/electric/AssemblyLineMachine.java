@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -44,9 +45,35 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
     @SaveField
     protected boolean allowCircuitSlots;
 
+    /**
+     * The amount of lines the {@link com.gregtechceu.gtceu.client.renderer.machine.impl.AssemblyLineRender} should
+     * render.
+     */
+    @SyncToClient
+    @Getter
+    public float rendererLineCount = 0;
+
     public AssemblyLineMachine(BlockEntityCreationInfo info, boolean allowCircuitSlots) {
         super(info, new AsslineRecipeLogic());
         this.allowCircuitSlots = allowCircuitSlots;
+    }
+
+    @Override
+    public boolean onWorking() {
+        GTRecipe recipe = getRecipeLogic().getLastUnrolledRecipe();
+        if (recipe == null) return true;
+        float progress = getProgress() / (float) getMaxProgress();
+        int recipeInputs = Math.max(
+                recipe.getInputContents(ItemRecipeCapability.CAP).size(),
+                recipe.getInputContents(FluidRecipeCapability.CAP).size());
+
+        progress *= recipeInputs;
+        float linesToDraw = progress;
+        if (linesToDraw != rendererLineCount) {
+            rendererLineCount = linesToDraw;
+            getSyncDataHolder().markClientSyncFieldDirty("rendererLineCount");
+        }
+        return true;
     }
 
     public AssemblyLineMachine(BlockEntityCreationInfo info) {
