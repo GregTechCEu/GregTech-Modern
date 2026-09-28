@@ -19,7 +19,7 @@ public class GridNodeHostTrait extends MachineTrait implements IGridConnectedBlo
         super();
         this.proxy = GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE)
                 .setInWorldNode(true)
-                .setVisualRepresentation(machine.getDefinition().getItem());
+                .setVisualRepresentation(machine.getDefinition());
     }
 
     public void init() {

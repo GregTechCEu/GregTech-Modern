@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
@@ -76,11 +77,19 @@ public class MedicalConditionTracker implements INBTSerializable<CompoundTag> {
         }
     }
 
+    public void progressRelatedCondition(@NotNull Material material, int count) {
+        HazardProperty materialHazard = material.getProperty(PropertyKey.HAZARD);
+        if (materialHazard == null) return;
+        float strength = (float) count * materialHazard.progressionMultiplier;
+        progressCondition(materialHazard.condition.value(), strength);
+    }
+
     public void progressRelatedCondition(@NotNull MaterialEntry materialEntry, int count) {
         HazardProperty materialHazard = materialEntry.material().getProperty(PropertyKey.HAZARD);
+        if (materialHazard == null) return;
         float strength = (float) (materialEntry.getMaterialAmount() / GTValues.M) * count *
                 materialHazard.progressionMultiplier;
-        progressCondition(materialHazard.condition, strength);
+        progressCondition(materialHazard.condition.value(), strength);
     }
 
     /**

@@ -23,9 +23,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Safe mode version of {@link com.gregtechceu.gtceu.core.mixins.client.bloom.normal.sodium.BlockRendererMixin}
+ * Safe mode alternative to
+ * {@link com.gregtechceu.gtceu.core.mixins.client.customchunk.sodium.SodiumBlockRendererMixin}
  *
- * @see com.gregtechceu.gtceu.core.mixins.client.bloom.normal.sodium.BlockRendererMixin
+ * @see com.gregtechceu.gtceu.core.mixins.client.customchunk.sodium.SodiumBlockRendererMixin
  */
 @Mixin(value = BlockRenderer.class, remap = false)
 public abstract class BlockRendererMixin extends AbstractBlockRenderContext {

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
@@ -34,8 +35,8 @@ public class ItemMaterialInfo {
     /**
      * Returns the first MaterialStack in the "materials" list
      */
-    public MaterialStack getMaterial() {
-        return sortedMaterials.isEmpty() ? MaterialStack.EMPTY : sortedMaterials.getFirst();
+    public @Nullable MaterialStack getMaterial() {
+        return sortedMaterials.isEmpty() ? null : sortedMaterials.getFirst();
     }
 
     /**

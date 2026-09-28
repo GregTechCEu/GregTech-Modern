@@ -86,7 +86,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
     IGTToolDefinition getToolStats();
 
     @Nullable
-    SoundEntry getSound();
+    Holder<SoundEntry> getSound();
 
     boolean playSoundOnBlockDestroy();
 
@@ -100,6 +100,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         stack.set(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
         stack.set(GTDataComponents.INNATE_ENCHANTMENTS, ResolvableItemEnchantments.EMPTY);
         stack.set(GTDataComponents.AOE, AoESymmetrical.ZERO);
+        stack.set(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO);
         stack.set(GTDataComponents.GT_TOOL, GTTool.EMPTY);
 
         stack.remove(DataComponents.MAX_DAMAGE);
@@ -276,7 +277,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
             return;
         }
         if (!areaOfEffectBlockBreakRoutine(stack, serverPlayer, pos)) {
-            var behavior = getBehaviorsComponent(stack).getBehavior(GTToolBehaviors.TREE_FELLING);
+            var behavior = getBehaviorsComponent(stack).getBehavior(GTToolBehaviors.TREE_FELLING.value());
             if (behavior != null && behavior.isEnabled() && state.is(BlockTags.LOGS)) {
                 TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
             }
@@ -314,7 +315,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
             return getToolMaterial(toRepair) == gtTool.getToolMaterial(repair);
         }
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(repair.getItem());
-        if (entry.isEmpty()) return false;
+        if (entry == null) return false;
         if (entry.material() == getToolMaterial(toRepair)) {
             // special case wood to allow Wood Planks
             if (VanillaRecipeHelper.isMaterialWood(entry.material())) {
@@ -699,7 +700,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
 
     default void playSound(Player player) {
         if (ConfigHolder.INSTANCE.client.toolUseSounds && getSound() != null) {
-            player.level().playSound(null, player, getSound().getMainEvent(), SoundSource.PLAYERS, 1F, 1F);
+            player.level().playSound(null, player, getSound().value().getMainEvent(), SoundSource.PLAYERS, 1F, 1F);
         }
     }
 
@@ -713,10 +714,13 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
     default @Nullable ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager,
                                               UISettings settings) {
         for (var behavior : getToolStats().getBehaviors()) {
-            if (!(behavior instanceof IToolUIBehavior uiBehavior) ||
-                    !uiBehavior.shouldOpenUI(data.getPlayer(), data.getPlayer().getUsedItemHand())) {
+            if (!(behavior instanceof IToolUIBehavior<?> uiBehavior)) {
                 continue;
             }
+            if (!uiBehavior.shouldOpenUI(data.getPlayer(), data.getPlayer().getUsedItemHand())) {
+                continue;
+            }
+
             return uiBehavior.buildUI(data, syncManager, settings);
         }
         return null;

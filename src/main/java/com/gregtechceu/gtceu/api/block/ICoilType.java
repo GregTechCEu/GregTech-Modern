@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -27,7 +26,6 @@ public interface ICoilType {
     /**
      * @return The Unique Name of the Heating Coil
      */
-    @NotNull
     String getName();
 
     /**
@@ -57,8 +55,9 @@ public interface ICoilType {
     int getTier();
 
     /**
-     * @return the {@link Material} of the Heating Coil if it has one, otherwise {@code GTMaterials.NULL}
+     * @return the {@link Material} of the Heating Coil if it has one, otherwise {@code null}
      */
+    @Nullable
     Material getMaterial();
 
     /**

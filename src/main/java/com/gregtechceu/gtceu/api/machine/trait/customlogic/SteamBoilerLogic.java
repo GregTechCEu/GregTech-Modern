@@ -24,6 +24,7 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -70,7 +71,7 @@ public abstract class SteamBoilerLogic implements GTRecipeType.ICustomRecipeLogi
     }
 
     @Override
-    public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
+    public @Nullable GTRecipe createCustomRecipe(@NonNull IRecipeCapabilityHolder holder) {
         var itemInputs = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).stream()
                 .filter(IItemHandlerModifiable.class::isInstance).map(IItemHandlerModifiable.class::cast)
                 .toArray(IItemHandlerModifiable[]::new);

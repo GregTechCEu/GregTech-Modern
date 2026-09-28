@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.jei.subtype;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import net.minecraft.world.item.ItemStack;
@@ -18,13 +17,13 @@ public class MaterialSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
 
     @Override
     public @Nullable Object getSubtypeData(ItemStack ingredient, UidContext context) {
-        return ingredient.getOrDefault(GTDataComponents.ITEM_MATERIAL, GTMaterials.NULL);
+        return ingredient.get(GTDataComponents.ITEM_MATERIAL);
     }
 
     @Override
     public String getLegacyStringSubtypeInfo(ItemStack ingredient, UidContext context) {
-        Material material = ingredient.getOrDefault(GTDataComponents.ITEM_MATERIAL, GTMaterials.NULL);
-        if (material.isNull()) {
+        Material material = ingredient.get(GTDataComponents.ITEM_MATERIAL);
+        if (material == null) {
             return "";
         }
         return material.getUnlocalizedName();

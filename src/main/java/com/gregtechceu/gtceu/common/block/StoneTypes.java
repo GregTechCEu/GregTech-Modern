@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -70,7 +71,7 @@ public enum StoneTypes implements StringRepresentable {
         }
     }
 
-    public TagPrefix getOreBaseTagPrefix() {
+    public @Nullable TagPrefix getOreBaseTagPrefix() {
         return switch (this) {
             case STONE -> TagPrefix.ore;
             case DEEPSLATE -> TagPrefix.oreDeepslate;
@@ -82,7 +83,7 @@ public enum StoneTypes implements StringRepresentable {
             case BASALT -> TagPrefix.oreBasalt;
             default -> {
                 if (this.natural) yield TagPrefix.ore;
-                else yield TagPrefix.NULL_PREFIX;
+                else yield null;
             }
         };
     }

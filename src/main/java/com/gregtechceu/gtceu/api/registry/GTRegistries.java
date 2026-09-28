@@ -14,9 +14,11 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternErrorType;
 import com.gregtechceu.gtceu.api.placeholder.Placeholder;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
@@ -38,6 +40,7 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -82,6 +85,12 @@ public final class GTRegistries {
         public static final ResourceKey<Registry<BedrockOreDefinition>> BEDROCK_ORE = makeRegistryKey(GTCEu.id("bedrock_ore"));
         public static final ResourceKey<Registry<GTOreDefinition>> ORE_VEIN = makeRegistryKey(GTCEu.id("ore_vein"));
 
+        // Worldgen registries
+
+        public static final ResourceKey<Registry<IWorldGenLayer>> WORLD_GEN_LAYER = makeRegistryKey(GTCEu.id("world_gen_layer"));
+        public static final ResourceKey<Registry<MapCodec<? extends IndicatorGenerator>>> INDICATOR_GENERATOR = makeRegistryKey(GTCEu.id("indicator_generator"));
+        public static final ResourceKey<Registry<VeinGenerator.VeinGeneratorType<?>>> VEIN_GENERATOR = makeRegistryKey(GTCEu.id("vein_generator"));
+
         // Other registries
 
         public static final ResourceKey<Registry<CoverDefinition>> COVER = makeRegistryKey(GTCEu.id("cover"));
@@ -92,8 +101,7 @@ public final class GTRegistries {
         public static final ResourceKey<Registry<DimensionMarker>> DIMENSION_MARKER = makeRegistryKey(GTCEu.id("dimension_marker"));
         public static final ResourceKey<Registry<MedicalCondition>> MEDICAL_CONDITION = makeRegistryKey(GTCEu.id("medical_condition"));
         public static final ResourceKey<Registry<ToolBehaviorType<?>>> TOOL_BEHAVIOR = makeRegistryKey(GTCEu.id("tool_behavior"));
-        public static final ResourceKey<Registry<IWorldGenLayer>> WORLD_GEN_LAYER = makeRegistryKey(GTCEu.id("world_gen_layer"));
-        public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(GTCEu.id("pattern_error_type"));
+        public static final ResourceKey<Registry<PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(GTCEu.id("pattern_error_type"));
         public static final ResourceKey<Registry<Placeholder>> PLACEHOLDER = makeRegistryKey(GTCEu.id("placeholder"));
 
         private static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
@@ -130,8 +138,10 @@ public final class GTRegistries {
     public static final Registry<CoverDefinition> COVERS = makeRegistry(Keys.COVER);
 
     public static final Registry<Placeholder> PLACEHOLDERS = makeRegistry(Keys.PLACEHOLDER);
-    public static final Registry<PatternError.PatternErrorType> PATTERN_ERROR_TYPES = makeRegistry(Keys.PATTERN_ERROR_TYPE);
+    public static final Registry<PatternErrorType> PATTERN_ERROR_TYPES = makeRegistry(Keys.PATTERN_ERROR_TYPE);
     public static final Registry<IWorldGenLayer> WORLD_GEN_LAYERS = makeRegistry(Keys.WORLD_GEN_LAYER);
+    public static final Registry<MapCodec<? extends IndicatorGenerator>> INDICATOR_GENERATORS = makeRegistry(Keys.INDICATOR_GENERATOR);
+    public static final Registry<VeinGenerator.VeinGeneratorType<?>> VEIN_GENERATORS = makeRegistry(Keys.VEIN_GENERATOR);
 
     // spotless:on
 

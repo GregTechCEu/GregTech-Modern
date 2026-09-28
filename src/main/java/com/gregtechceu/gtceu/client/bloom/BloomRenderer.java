@@ -43,7 +43,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.gregtechceu.gtceu.api.GTValues.MODID_EMBEDDIUM;
+import static com.gregtechceu.gtceu.api.GTValues.MODID_SODIUM;
 import static com.gregtechceu.gtceu.client.bloom.BloomShaderManager.BLOOM_TARGET;
+import static com.gregtechceu.gtceu.core.config.GTEarlyConfig.isModLoaded;
 
 /**
  * The actual rendering logic for bloom
@@ -57,6 +60,10 @@ public class BloomRenderer {
     @Accessors(fluent = true)
     @Getter
     private static final ScopedValue.Object<Supplier<VertexConsumer>> bloomChunkContext = new ScopedValue.Object<>();
+
+    public static boolean usesChunkPassBackend() {
+        return !SafeMode.enabled() && (isModLoaded(MODID_SODIUM) || isModLoaded(MODID_EMBEDDIUM));
+    }
 
     @ApiStatus.Internal
     static void renderBloom(Camera camera, PoseStack poseStack, Frustum frustum,
@@ -74,7 +81,7 @@ public class BloomRenderer {
         renderSpecialBloom(camera, poseStack, frustum, partialTicks, profilerFiller);
 
         // safe mode disabled -> use deeper, faster hackery
-        if (!BloomRenderer.SafeMode.enabled()) {
+        if (usesChunkPassBackend()) {
             ((LevelRendererAccessor) levelRenderer).invokeRenderSectionLayer(GTRenderTypes.bloom(),
                     camPos.x, camPos.y, camPos.z, frustumMatrix, projectionMatrix);
 
@@ -170,7 +177,7 @@ public class BloomRenderer {
         BloomShaderManager.BLOOM_CHAIN.setUniform("MaxBrightness", config.maxBrightness);
     }
 
-    /// Helper function for copying bloom-enabled quads drawn with non-bloom render types
+    /// Copies bloom-enabled quads drawn with non-bloom render types
     public static void copyBloomQuad(BakedQuad quad, int[] packedLights, @Nullable RenderType renderType,
                                      Consumer<VertexConsumer> drawConsumer) {
         if (renderType == GTRenderTypes.bloom()) {
@@ -200,12 +207,12 @@ public class BloomRenderer {
         public static Map<SectionPos, MeshData.SortState> BLOOM_BUFFER_SORT_STATES = new ConcurrentHashMap<>();
 
         public static boolean enabled() {
-            return GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE);
+            return GTMixinPlugin.isOptionEnabled(GTEarlyConfig.BLOOM_SAFE_MODE);
         }
 
         @SubscribeEvent
         public static void registerSafeModeChunkGeometryRenderer(AddSectionGeometryEvent event) {
-            if (!BloomRenderer.SafeMode.enabled()) return;
+            if (BloomRenderer.usesChunkPassBackend()) return;
             if (!BloomShaderManager.isBloomActive()) return;
 
             final BlockPos sectionMinBlock = event.getSectionOrigin().immutable();
@@ -244,7 +251,7 @@ public class BloomRenderer {
 
                     // noinspection ConstantValue it just isn't annotated :))
                     if (buffer.isInvalid() || buffer.getFormat() == null) {
-                        // return early if buffer is invalid or has no vertex data bound
+                        // return early if buffer is invalid or has no vertex data
                         continue;
                     }
 

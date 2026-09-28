@@ -85,7 +85,7 @@ public class RecipeLogicTest {
     }
 
     private static ResourceLocation lcrRecipeId(String name) {
-        return GTCEu.id(LCR_RECIPE_TYPE.registryName.getPath() + "/" + name);
+        return GTCEu.id(LCR_RECIPE_TYPE.id.getPath() + "/" + name);
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,

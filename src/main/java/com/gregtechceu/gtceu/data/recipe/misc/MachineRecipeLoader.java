@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.block.LampBlock;
 import com.gregtechceu.gtceu.common.block.StoneBlockType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -1471,28 +1472,28 @@ public class MachineRecipeLoader {
     }
 
     private static void registerNBTRemoval(RecipeOutput provider) {
-        for (MachineDefinition chest : GTMachines.SUPER_CHEST) {
+        for (MachineEntry<MachineDefinition> chest : GTMachines.SUPER_CHEST) {
             if (chest != null) {
                 VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "super_chest_nbt_" + chest.getTier(),
                         chest.asStack(), chest.asStack());
             }
         }
 
-        for (MachineDefinition tank : GTMachines.SUPER_TANK) {
+        for (MachineEntry<MachineDefinition> tank : GTMachines.SUPER_TANK) {
             if (tank != null) {
                 VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "super_tank_nbt_" + tank.getTier(),
                         tank.asStack(), tank.asStack());
             }
         }
 
-        for (MachineDefinition chest : GTMachines.QUANTUM_CHEST) {
+        for (MachineEntry<MachineDefinition> chest : GTMachines.QUANTUM_CHEST) {
             if (chest != null) {
                 VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "quantum_chest_nbt_" + chest.getTier(),
                         chest.asStack(), chest.asStack());
             }
         }
 
-        for (MachineDefinition tank : GTMachines.QUANTUM_TANK) {
+        for (MachineEntry<MachineDefinition> tank : GTMachines.QUANTUM_TANK) {
             if (tank != null) {
                 VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "quantum_tank_nbt_" + tank.getTier(),
                         tank.asStack(), tank.asStack());

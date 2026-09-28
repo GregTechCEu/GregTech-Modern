@@ -126,8 +126,9 @@ public class ToolHelper {
         return stack.getOrDefault(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean hasBehaviorsComponent(ItemStack stack) {
-        return stack.has(GTDataComponents.TOOL_BEHAVIORS);
+        return !getBehaviorsComponent(stack).isEmpty();
     }
 
     public static ItemStack get(GTToolType toolType, Material material) {
@@ -212,7 +213,7 @@ public class ToolHelper {
 
     public static void playToolSound(@Nullable GTToolType toolType, ServerPlayer player) {
         if (toolType != null && toolType.soundEntry != null) {
-            toolType.soundEntry.playOnServer(player.level(), player.blockPosition());
+            toolType.soundEntry.value().playOnServer(player.level(), player.blockPosition());
         }
     }
 
@@ -281,7 +282,17 @@ public class ToolHelper {
     }
 
     public static AoESymmetrical getAoEDefinition(ItemStack stack) {
-        return stack.getOrDefault(GTDataComponents.AOE, AoESymmetrical.ZERO);
+        AoESymmetrical value = stack.getOrDefault(GTDataComponents.AOE, AoESymmetrical.ZERO);
+        if (stack.has(GTDataComponents.MAX_AOE)) {
+            AoESymmetrical max = stack.getOrDefault(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO);
+            return value.min(max);
+        } else {
+            return value;
+        }
+    }
+
+    public static AoESymmetrical.Mutable getAoEStateMutable(ItemStack stack) {
+        return getAoEDefinition(stack).toMutable(stack.getOrDefault(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO));
     }
 
     public static List<BlockPos> iterateAoE(AoESymmetrical aoeDefinition, Predicate<UseOnContext> predicate,
@@ -386,7 +397,7 @@ public class ToolHelper {
             DummyRecipeUtils.DummyRecipeCapabilityHolder capHolder = new DummyRecipeUtils.DummyRecipeCapabilityHolder(
                     dummyInputs, dummyOutputs);
 
-            Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(capHolder,
+            Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.value().searchRecipe(capHolder,
                     r -> RecipeHelper.matchContents(capHolder, r).isSuccess());
             GTRecipe hammerRecipe = null;
             // find the first valid recipe
@@ -407,7 +418,7 @@ public class ToolHelper {
                 cleared = true;
             }
             TagPrefix prefix = ChemicalHelper.getPrefix(silkTouchDrop.getItem());
-            boolean isOre = !prefix.isEmpty() && TagPrefix.ORES.containsKey(prefix);
+            boolean isOre = prefix != null && TagPrefix.ORES.containsKey(prefix);
 
             for (Content content : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
                 ItemStack output = ItemRecipeCapability.CAP.of(content.content()).getItems()[0];
@@ -563,7 +574,7 @@ public class ToolHelper {
         IGTTool tool = (IGTTool) stack.getItem();
         ToolHelper.damageItem(stack, player);
         if (tool.getSound() != null) {
-            level.playSound(player, pos.x, pos.y, pos.z, tool.getSound().getMainEvent(),
+            level.playSound(player, pos.x, pos.y, pos.z, tool.getSound().value().getMainEvent(),
                     SoundSource.PLAYERS, 1.0F, 1.0F);
         }
     }

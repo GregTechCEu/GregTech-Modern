@@ -21,7 +21,7 @@
             "to":   [ 14, 14, 1 ],
             "shade": false,
             "faces": {
-                "north": { "uv": [2, 2, 14, 14], "texture": "#overlay_screen", "cullface": "north" }
+                "north": { "uv": [2, 2, 14, 14], "texture": "#overlay_screen", "cullface": "north", "gtceu:face_layer": "machine_face" }
             }
         },
         {
@@ -30,7 +30,7 @@
             "neoforge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {
-                "north": { "uv": [4, 4, 12, 7], "texture": "#overlay_container", "cullface": "north", "tintindex": -101 }
+                "north": { "uv": [4, 4, 12, 7], "texture": "#overlay_container", "cullface": "north", "tintindex": -101, "gtceu:face_layer": "machine_face" }
             }
         },
         {

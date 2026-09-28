@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 
 import net.minecraft.core.BlockPos;
@@ -17,23 +16,26 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
 import java.util.Collection;
-import java.util.Collections;
 
 public class PartAbilityError extends PatternError {
 
-    public static MapCodec<PartAbilityError> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    // spotless:off
+    public static final MapCodec<PartAbilityError> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
             Codec.STRING.fieldOf("name").forGetter(PartAbilityError::getPartAbilityName))
-            .apply(instance, (a, b) -> new PartAbilityError(a, PartAbility.VALUES.get(b))));
-
-    public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("part_ability_error"), CODEC);
+    .apply(instance, PartAbilityError::new));
+    //spotless:on
 
     @Getter
     private final String partAbilityName;
 
     public PartAbilityError(BlockPos pos, PartAbility partAbility) {
-        super(pos, Collections.emptyList());
-        partAbilityName = partAbility.getName();
+        this(pos, partAbility.getName());
+    }
+
+    private PartAbilityError(BlockPos pos, String partAbilityName) {
+        super(pos);
+        this.partAbilityName = partAbilityName;
     }
 
     @Override
@@ -49,16 +51,14 @@ public class PartAbilityError extends PatternError {
                             .coverChildrenWidth()
                             .collapseDisabledChildren()
                             .childSeparator(Icon.EMPTY_2PX)
-                            .children(blocks, block -> {
-                                return new ItemDrawable(block.asItem()).asWidget()
-                                        .tooltip(r -> r.add(block.asItem().getDescription()));
-                            })));
+                            .children(blocks, block -> new ItemDrawable(block.asItem()).asWidget()
+                                    .tooltip(r -> r.add(block.asItem().getDescription())))));
             parent.child(row);
         };
     }
 
     @Override
     public PatternErrorType type() {
-        return TYPE;
+        return GTPatternErrors.PART_ABILITY_ERROR.value();
     }
 }

@@ -85,7 +85,7 @@ public class OreVeinElementRenderer extends
         int iconSize = ConfigHolder.INSTANCE.compat.minimap.oreIconSize;
 
         Material material = OreRenderLayer.getMaterial(vein);
-        int materialARGB = material.getMaterialARGB();
+        int materialARGB = material == null ? 0xFFFFFFFF : material.getMaterialARGB();
         float[] colors = RenderUtil.floats(materialARGB);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 

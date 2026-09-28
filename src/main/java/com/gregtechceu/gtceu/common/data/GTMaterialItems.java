@@ -41,6 +41,7 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -78,6 +79,8 @@ public class GTMaterialItems {
                     .filter(mat -> mat.hasProperty(PropertyKey.ARMOR))
                     .toList(),
             Arrays.asList(ArmorItem.Type.values()));
+
+    public static final Set<Item> ITEMS_WITHOUT_MATERIAL = new ObjectOpenHashSet<>();
 
     // spotless:on
 
@@ -135,6 +138,7 @@ public class GTMaterialItems {
         TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<Item, ? extends IGTTool>) (ItemProviderEntry<Item, ?>) registrate
                 .item(toolType.idFormat.formatted(tier.material.getName()), p -> toolType.constructor.create(toolType, tier, material, toolType.toolDefinition, p).asItem())
                 .properties(p -> {
+                    p.component(GTDataComponents.MAX_AOE, toolType.toolDefinition.getAoEDefinition());
                     p.component(GTDataComponents.AOE, toolType.toolDefinition.getAoEDefinition());
                     p.craftRemainder(Items.AIR);
 

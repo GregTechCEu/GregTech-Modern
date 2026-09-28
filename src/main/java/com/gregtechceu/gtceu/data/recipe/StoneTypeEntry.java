@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.world.item.Item;
 
@@ -35,7 +34,7 @@ public class StoneTypeEntry {
     public final Item pressurePlate;
     @Nullable
     public final Item wall;
-    public final Material material;
+    public final @Nullable Material material;
     public final long materialAmount;
     public final boolean addStoneTag;
     public final boolean addPolishedStoneTag;
@@ -61,7 +60,7 @@ public class StoneTypeEntry {
                            @Nullable Item crackedStone, @Nullable Item slab,
                            @Nullable Item stair, @Nullable Item button,
                            @Nullable Item wall, @Nullable Item pressurePlate,
-                           @NotNull Material material, long materialAmount,
+                           @Nullable Material material, long materialAmount,
                            boolean addStoneTag, boolean addPolishedStoneTag,
                            boolean addSlabTag,
                            boolean addStairTag, boolean addButtonTag,
@@ -118,8 +117,8 @@ public class StoneTypeEntry {
         public Item button = null;
         public Item wall = null;
         public Item pressurePlate = null;
-        @NotNull
-        private Material material = GTMaterials.NULL;
+        @Nullable
+        private Material material = null;
         private long materialAmount = GTValues.M;
         public boolean addStoneTag = false;
         public boolean addPolishedStoneTag = false;
@@ -198,7 +197,7 @@ public class StoneTypeEntry {
             return material(material, GTValues.M);
         }
 
-        public Builder material(@NotNull Material material, long materialAmount) {
+        public Builder material(@Nullable Material material, long materialAmount) {
             this.material = material;
             this.materialAmount = materialAmount;
             return this;

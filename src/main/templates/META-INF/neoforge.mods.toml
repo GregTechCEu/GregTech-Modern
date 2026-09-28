@@ -120,6 +120,20 @@ enumExtensions = "META-INF/enum_extensions.json"
     ordering = "NONE"
     side = "BOTH"
 
+[[dependencies.${mod_id}]]
+    modId = "sodium"
+    type = "optional"
+    versionRange = "[${sodium_version},0.9)"
+    ordering = "NONE"
+    side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+    modId = "embeddium"
+    type = "optional"
+    versionRange = "[${embeddium_version},1.1)"
+    ordering = "NONE"
+    side = "CLIENT"
+
 
 #[features.${mod_id}]
 #openGLVersion = "[3.2,)"

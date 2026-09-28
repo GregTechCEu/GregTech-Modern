@@ -143,7 +143,7 @@ public final class WoodTypeEntry {
                           @Nullable Item hangingSign, @Nullable String hangingSignRecipeName,
                           @Nullable Item button, @Nullable String buttonRecipeName,
                           @Nullable Item pressurePlate, @Nullable String pressurePlateRecipeName,
-                          @NotNull Material material,
+                          @Nullable Material material,
                           boolean addLogTag, boolean addPlanksTag, boolean addDoorsTag,
                           boolean addSlabsTag,
                           boolean addFencesTag, boolean addFenceGatesTag, boolean addStairsTag,
@@ -192,7 +192,7 @@ public final class WoodTypeEntry {
         this.buttonRecipeName = buttonRecipeName;
         this.pressurePlate = pressurePlate;
         this.pressurePlateRecipeName = pressurePlateRecipeName;
-        this.material = !material.isNull() ? material : GTMaterials.Wood;
+        this.material = material != null ? material : GTMaterials.Wood;
 
         this.addLogTag = addLogTag;
         this.addPlanksTag = addPlanksTag;
@@ -272,8 +272,8 @@ public final class WoodTypeEntry {
         private String buttonRecipeName;
         private Item pressurePlate = null;
         private String pressurePlateRecipeName;
-        @NotNull
-        private Material material = GTMaterials.NULL;
+        @Nullable
+        private Material material = null;
 
         private boolean addLogTag;
         private boolean addPlanksTag;

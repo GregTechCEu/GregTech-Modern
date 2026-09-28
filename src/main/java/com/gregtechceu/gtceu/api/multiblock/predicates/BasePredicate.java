@@ -66,6 +66,10 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
 
     public abstract void onError(PredicateContext ctx);
 
+    /// @param root the top-most multi predicate for this multi predicate
+    /// @return a list of components to be displayed while hovering over a block in the Multiblock Preview
+    public abstract List<Component> getRecipeViewerTooltips(MultiPredicate root);
+
     public abstract BasePredicate copy();
 
     protected void copyTo(BasePredicate other) {

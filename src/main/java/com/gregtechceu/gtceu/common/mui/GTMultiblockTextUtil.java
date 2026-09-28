@@ -456,7 +456,7 @@ public class GTMultiblockTextUtil {
     public static TextWidget<?> addRecipeTypeField(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         StringSyncValue recipeTypeName = syncManager.getOrCreateSyncHandler("recipeTypeName", StringSyncValue.class,
                 () -> new StringSyncValue(
-                        () -> FormattingUtil.toEnglishName(rlMachine.getRecipeType().registryName.getPath())));
+                        () -> FormattingUtil.toEnglishName(rlMachine.getRecipeType().id.getPath())));
 
         // No need to sync the rlMachine.getRecipeTypes().length > 1 condition because the recipe type array is the same
         // on client side.

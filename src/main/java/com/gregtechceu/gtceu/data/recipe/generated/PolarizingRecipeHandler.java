@@ -47,7 +47,7 @@ public final class PolarizingRecipeHandler {
 
         Material magneticMaterial = property.getMagneticMaterial();
 
-        if (!magneticMaterial.isNull() && (prefix.doGenerateBlock(magneticMaterial) ||
+        if (magneticMaterial != null && (prefix.doGenerateBlock(magneticMaterial) ||
                 prefix.doGenerateItem(magneticMaterial))) {
             ItemStack magneticStack = ChemicalHelper.get(prefix, magneticMaterial);
             POLARIZER_RECIPES.recipeBuilder("polarize_" + material.getName() + "_" + prefix.name) // polarizing
