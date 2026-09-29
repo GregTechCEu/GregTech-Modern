@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
+import com.gregtechceu.gtceu.api.transfer.item.IBundleInsertable;
+import com.gregtechceu.gtceu.api.transfer.item.IVirtualItemHandler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,11 +26,16 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 
 public class GTTransferUtils {
 
@@ -320,5 +327,125 @@ public class GTTransferUtils {
 
         if (!simulate) player.inventoryMenu.broadcastChanges();
         return true;
+    }
+
+    /// Attempts to insert the provided item stack in the given item handler as a single, indivisible unit that should
+    /// not be split over multiple
+    /// inventories if the target item handler represents a virtual inventory backing some kind of item distribution
+    /// system.
+    /// This is only a hint to the compatible implementation that the given item stack should not be split, which can be
+    /// ignored.
+    public static ItemStack insertItemBundle(IItemHandler targetInventory, ItemStack stack, boolean simulate) {
+        return targetInventory instanceof IBundleInsertable bundle ?
+                bundle.insertItemBundle(stack, simulate) :
+                ItemHandlerHelper.insertItem(targetInventory, stack, simulate);
+    }
+
+    @AllArgsConstructor
+    private static class GroupItemInfo {
+
+        public final ItemStack itemStack;
+        public int totalCount;
+    }
+
+    /// Similar to moveInventoryItems, but instead attempts to maintain amount of items per type as provided by
+    /// itemKeepAmountProvider in target inventory.
+    /// Returns the total amount of items transferred.
+    public static int stockInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory,
+                                          int maxTransferAmount, ToIntFunction<ItemStack> itemKeepAmountProvider) {
+        // Delegate to the virtual item handler specific implementation if possible
+        if (targetInventory instanceof IVirtualItemHandler virtualItemHandler) {
+            return virtualItemHandler.stockInventoryItems(sourceInventory, maxTransferAmount, itemKeepAmountProvider);
+        }
+
+        Predicate<ItemStack> itemStackPredicate = itemStack -> itemKeepAmountProvider.applyAsInt(itemStack) > 0;
+        Map<ItemStack, GroupItemInfo> targetItemAmounts = countInventoryItemsByMatchSlot(targetInventory,
+                itemStackPredicate);
+        Map<ItemStack, GroupItemInfo> sourceItemAmounts = countInventoryItemsByMatchSlot(sourceInventory,
+                itemStackPredicate);
+
+        Iterator<ItemStack> iterator = sourceItemAmounts.keySet().iterator();
+        while (iterator.hasNext()) {
+            ItemStack filteredItem = iterator.next();
+            GroupItemInfo sourceInfo = sourceItemAmounts.get(filteredItem);
+            int itemToKeepAmount = itemKeepAmountProvider.applyAsInt(sourceInfo.itemStack);
+
+            int itemAmount = 0;
+            if (targetItemAmounts.containsKey(filteredItem)) {
+                GroupItemInfo destItemInfo = targetItemAmounts.get(filteredItem);
+                itemAmount = destItemInfo.totalCount;
+            }
+            if (itemAmount < itemToKeepAmount) {
+                sourceInfo.totalCount = itemToKeepAmount - itemAmount;
+            } else {
+                iterator.remove();
+            }
+        }
+
+        return moveInventoryItemGroups(sourceInventory, targetInventory, sourceItemAmounts, maxTransferAmount,
+                itemStackPredicate);
+    }
+
+    /// Moves inventory items between item handlers in specified groups
+    private static int moveInventoryItemGroups(IItemHandler sourceInventory, IItemHandler targetInventory,
+                                               Map<ItemStack, GroupItemInfo> itemInfos, int maxTransferAmount,
+                                               Predicate<ItemStack> itemStackPredicate) {
+        int itemsLeftToTransfer = maxTransferAmount;
+
+        for (int i = 0; i < sourceInventory.getSlots(); i++) {
+            ItemStack itemStack = sourceInventory.getStackInSlot(i);
+            if (itemStack.isEmpty() || !itemStackPredicate.test(itemStack) || !itemInfos.containsKey(itemStack)) {
+                continue;
+            }
+
+            GroupItemInfo itemInfo = itemInfos.get(itemStack);
+
+            ItemStack extractedStack = sourceInventory.extractItem(i,
+                    Math.min(itemInfo.totalCount, itemsLeftToTransfer), true);
+
+            ItemStack remainderStack = ItemHandlerHelper.insertItemStacked(targetInventory, extractedStack, true);
+            int amountToInsert = extractedStack.getCount() - remainderStack.getCount();
+
+            if (amountToInsert > 0) {
+                extractedStack = sourceInventory.extractItem(i, amountToInsert, false);
+
+                if (!extractedStack.isEmpty()) {
+
+                    ItemHandlerHelper.insertItemStacked(targetInventory, extractedStack, false);
+                    itemsLeftToTransfer -= extractedStack.getCount();
+                    itemInfo.totalCount -= extractedStack.getCount();
+
+                    if (itemInfo.totalCount == 0) {
+                        itemInfos.remove(itemStack);
+                        if (itemInfos.isEmpty()) {
+                            break;
+                        }
+                    }
+                    if (itemsLeftToTransfer == 0) {
+                        break;
+                    }
+                }
+            }
+        }
+        return maxTransferAmount - itemsLeftToTransfer;
+    }
+
+    /// Groups identical items together and calculates total amount of items per type in inventory
+    private static Map<ItemStack, GroupItemInfo> countInventoryItemsByMatchSlot(IItemHandler inventory,
+                                                                                Predicate<ItemStack> itemStackPredicate) {
+        Map<ItemStack, GroupItemInfo> result = new Object2ObjectOpenCustomHashMap<>(
+                ItemStackHashStrategy.comparingAllButCount());
+
+        for (int srcIndex = 0; srcIndex < inventory.getSlots(); srcIndex++) {
+            ItemStack itemStack = inventory.getStackInSlot(srcIndex);
+            if (itemStack.isEmpty() || !itemStackPredicate.test(itemStack)) {
+                continue;
+            }
+
+            var itemInfo = result.computeIfAbsent(itemStack, s -> new GroupItemInfo(s, 0));
+
+            itemInfo.totalCount += itemStack.getCount();
+        }
+        return result;
     }
 }

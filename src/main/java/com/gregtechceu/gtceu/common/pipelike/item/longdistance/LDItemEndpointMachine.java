@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.pipelike.item.longdistance;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.transfer.item.IVirtualItemHandler;
 import com.gregtechceu.gtceu.common.machine.storage.LongDistanceEndpointMachine;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -12,6 +13,8 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.ToIntFunction;
 
 public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
 
@@ -33,7 +36,7 @@ public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
                 .orElse(null);
     }
 
-    public static class ItemHandlerWrapper implements IItemHandlerModifiable {
+    protected static class ItemHandlerWrapper implements IItemHandlerModifiable, IVirtualItemHandler {
 
         private final IItemHandler delegate;
 
@@ -79,6 +82,18 @@ public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
             if (delegate instanceof IItemHandlerModifiable modifiable) {
                 modifiable.setStackInSlot(i, itemStack);
             }
+        }
+
+        @Override
+        public @NotNull ItemStack insertItemBundle(@NotNull ItemStack stack, boolean simulate) {
+            return GTTransferUtils.insertItemBundle(delegate, stack, simulate);
+        }
+
+        @Override
+        public int stockInventoryItems(IItemHandler sourceInventory, int maxTransferAmount,
+                                       ToIntFunction<ItemStack> itemKeepAmountProvider) {
+            return GTTransferUtils.stockInventoryItems(sourceInventory, delegate, maxTransferAmount,
+                    itemKeepAmountProvider);
         }
     }
 }
