@@ -16,6 +16,8 @@ public abstract class PatternError {
     public static final Codec<PatternError> CODEC = GTRegistries.PATTERN_ERRORS.codec()
             .dispatch(PatternError::type, PatternErrorType::codec);
 
+    public static BlockPos CONTROLLER = BlockPos.of(0x112233445566788L);
+
     @Getter
     @Setter
     protected BlockPos pos;
@@ -25,7 +27,7 @@ public abstract class PatternError {
     }
 
     protected PatternError() {
-        this.pos = BlockPos.ZERO;
+        this.pos = CONTROLLER;
     }
 
     public abstract PatternErrorType type();

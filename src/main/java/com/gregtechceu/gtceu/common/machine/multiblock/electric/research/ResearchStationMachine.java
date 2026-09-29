@@ -63,7 +63,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
             if (part instanceof ObjectHolderMachine holder) {
                 if (holder.getFrontFacing() != getFrontFacing().getOpposite()) {
                     pState.setError(new PatternStringError(
-                            Component.translatable("gtceu.predicate_error.object_holder.direction")));
+                            Component.translatable("gtceu.predicate_error.object_holder.direction"))
+                            .pos(holder.getBlockPos()));
                     invalidateStructure(substructureName);
                     return;
                 }
@@ -102,7 +103,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         }
         if (objHolder != null && objHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
             patternState.setError(
-                    new PatternStringError(Component.translatable("gtceu.predicate_error.object_holder.direction")));
+                    new PatternStringError(Component.translatable("gtceu.predicate_error.object_holder.direction"))
+                            .pos(objHolder.getBlockPos()));
             invalidateStructure(name);
         }
         return patternState;

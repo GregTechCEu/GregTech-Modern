@@ -84,11 +84,13 @@ public class GTMultiblockTextUtil {
                         return unformed;
                     }
                     BlockPos pos = listSyncHandler.getValue().stream().toList().get(0).pos();
+                    if (PatternError.CONTROLLER.equals(pos)) pos = controller.getBlockPos();
+                    final BlockPos fpos = pos;
                     unformed.child(new ButtonWidget<>()
                             .onMousePressed((c, b) -> {
                                 ((ModularGuiContext) c).getScreen().getMainPanel().closeIfOpen();
                                 AABBHighlightRenderer.INSTANCE.addHighlight(AABBHighlightRenderer.builder()
-                                        .aabb(pos)
+                                        .aabb(fpos)
                                         .colorARGB(255, 255, 0, 0)
                                         .thickness(0.025)
                                         .durationMillis(10000)
@@ -96,7 +98,7 @@ public class GTMultiblockTextUtil {
                                         .build());
                                 return true;
                             })
-                            .setEnabledIf(w -> pos != null)
+                            .setEnabledIf(w -> fpos != null)
                             .tooltip(r -> r.add("Highlight the missing predicate in world")));
 
                     for (var error : listSyncHandler.getValue()) {

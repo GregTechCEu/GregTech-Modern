@@ -82,7 +82,8 @@ public class XorPredicate extends MultiPredicate {
         MutableComponent expected = Component
                 .literal("expected only: " + passed.getString());
         context.appendError(
-                PatternStringError.literal("XOR error\n" + found.getString() + "\n" + expected.getString()));
+                PatternStringError.literal("XOR error\n" + found.getString() + "\n" + expected.getString())
+                        .pos(context.pos()));
         context.skipFlipCheck();
     }
 

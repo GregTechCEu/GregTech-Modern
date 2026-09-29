@@ -69,13 +69,13 @@ public enum TestType {
         List<BlockInfo> candidates = extractCandidates(holder);
         ctx.appendError(switch (this) {
             case GLOBAL_MAX -> SinglePredicateError.maxCount(holder, candidates, count,
-                    ctx.getCurrentBlockInfo().getBlockPos());
+                    ctx.pos());
             case SLICE_MAX -> SinglePredicateError.maxLayerCount(holder, candidates, count,
-                    ctx.getCurrentBlockInfo().getBlockPos());
+                    ctx.pos());
             case GLOBAL_MIN -> SinglePredicateError.minCount(holder, candidates, count,
-                    ctx.getCurrentBlockInfo().getBlockPos());
+                    ctx.pos());
             case SLICE_MIN -> SinglePredicateError.minLayerCount(holder, candidates, count,
-                    ctx.getCurrentBlockInfo().getBlockPos());
+                    ctx.pos());
         });
     }
 
