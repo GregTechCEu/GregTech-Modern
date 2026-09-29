@@ -278,9 +278,8 @@ public class RecipeRemoval {
 
     private static void hardDyeRecipes(Consumer<ResourceLocation> registry) {
         for (DyeColor col : DyeColor.values()) {
-            String color = col.getName();
-            registry.accept(
-                    ResourceLocation.withDefaultNamespace(String.format("%s_concrete_powder", color)));
+            String color = col.getSerializedName();
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_concrete_powder", color)));
             registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", color)));
             registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", color)));
             registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_candle", color)));
@@ -288,7 +287,7 @@ public class RecipeRemoval {
             registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_carpet", color)));
             registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_bed", color)));
         }
-        registry.accept(ResourceLocation.withDefaultNamespace("dark_prismarine"));
+
         registry.accept(ResourceLocation.withDefaultNamespace("white_dye"));
         registry.accept(ResourceLocation.withDefaultNamespace("black_dye"));
         registry.accept(ResourceLocation.withDefaultNamespace("black_dye_from_wither_rose"));
@@ -316,6 +315,8 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("pink_dye_from_peony"));
         registry.accept(ResourceLocation.withDefaultNamespace("yellow_dye_from_sunflower"));
         registry.accept(ResourceLocation.withDefaultNamespace("light_gray_dye_from_oxeye_daisy"));
+
+        registry.accept(ResourceLocation.withDefaultNamespace("dark_prismarine"));
     }
 
     private static void flintAndSteelRequireSteel(Consumer<ResourceLocation> registry) {
@@ -401,8 +402,8 @@ public class RecipeRemoval {
 
         // Carpet replacement
         for (DyeColor color : DyeColor.values()) {
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_carpet",
-                    color.name().toLowerCase(Locale.ROOT))));
+            registry.accept(
+                    ResourceLocation.withDefaultNamespace(String.format("%s_carpet", color.getSerializedName())));
         }
 
         // Slab replacement

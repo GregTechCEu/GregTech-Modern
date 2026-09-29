@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.core.BlockPos;
@@ -151,14 +151,14 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
     private static MultiPredicate wallPredicate() {
         return Predicates.builder("WallPredicate")
-                .predicate(ctx -> ctx.state().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS))
+                .predicate(ctx -> ctx.state().is(GTTags.Blocks.CHARCOAL_PILE_IGNITER_WALLS))
                 .errorFunction(ctx -> {
                     BlockPos p = ctx.pos();
                     return PatternStringError.translatable(
                             "gtceu.predicate_error.charcoal.walls", p.getX(), p.getY(), p.getZ());
                 })
-                .blockTag(CustomTags.CHARCOAL_PILE_IGNITER_WALLS)
-                .contents(builder -> builder.append(CustomTags.CHARCOAL_PILE_IGNITER_WALLS.location()))
+                .blockTag(GTTags.Blocks.CHARCOAL_PILE_IGNITER_WALLS)
+                .contents(builder -> builder.append(GTTags.Blocks.CHARCOAL_PILE_IGNITER_WALLS.location()))
                 .toMultiPredicate();
     }
 
@@ -175,7 +175,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private static int findWallPos(Level level, Direction direction, BlockPos.MutableBlockPos pos) {
         for (int i = 1; i <= MAX_RADIUS; i++) {
             BlockState state = level.getBlockState(pos.move(direction));
-            if (state.is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS)) {
+            if (state.is(GTTags.Blocks.CHARCOAL_PILE_IGNITER_WALLS)) {
                 return i;
             }
         }
@@ -235,7 +235,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         var player = context.getPlayer();
         var hand = context.getHand();
 
-        if (!stack.is(CustomTags.TOOLS_IGNITER)) {
+        if (!stack.is(GTTags.Items.TOOLS_IGNITER)) {
             return InteractionResult.PASS;
         }
 
