@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -27,9 +28,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -51,6 +52,9 @@ import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 import com.google.common.collect.HashBasedTable;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -65,6 +69,8 @@ import java.util.Optional;
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
 public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddInformation {
+
+    private static final String CONTROLLER_INFO_TAG = "controller";
 
     // todo somewhere client panel warning if the structure to be built is invalid
     @Override
@@ -82,7 +88,12 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         if (!(MetaMachine.getMachine(level, pos) instanceof MultiblockControllerMachine controller)) {
             return InteractionResult.PASS;
         }
-        if (!controller.getDefinition().getId().equals(ResourceLocation.parse(tag.getString("controller")))) {
+
+        if (!tag.contains(CONTROLLER_INFO_TAG)) return InteractionResult.PASS;
+        ControllerInfo info = ControllerInfo.CODEC.parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
+                .getOrThrow(false, GTCEu.LOGGER::error);
+
+        if (controller.getDefinition() != info.definition()) {
             // TODO: Log errors in chat
             return InteractionResult.PASS;
         }
@@ -92,11 +103,6 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             return InteractionResult.PASS;
         }
 
-        if (!tag.contains("facing", CompoundTag.TAG_BYTE) ||
-                !tag.contains("upFacing", CompoundTag.TAG_BYTE) ||
-                !tag.contains("flipped", CompoundTag.TAG_BYTE)) {
-            return InteractionResult.PASS;
-        }
         Direction frontFacing = controller.getFrontFacing();
         Direction upFacing = controller.getUpwardsFacing();
         boolean flipped = controller.isFlipped();
@@ -133,7 +139,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             }
 
             if (structureHelper != null) {
-                MultiblockSchemaInfo schemaInfo = createSchemaInfoFromTag(stack);
+                MultiblockSchemaInfo schemaInfo = createSchemaInfoFromTag(stack, info);
 
                 structureHelper.populate(schemaInfo, resultStructure, pattern,
                         schemaInfo.getUserGlobalBlockPreferences(), frontFacing,
@@ -185,7 +191,10 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         if (level.isClientSide) {
             player.displayClientMessage(Component.literal("Loaded controller information"), false);
         } else {
-            writeControllerInfo(itemStack, controller);
+            itemStack.setTag(new CompoundTag());
+            itemStack.getOrCreateTag().put(CONTROLLER_INFO_TAG,
+                    ControllerInfo.CODEC.encodeStart(NbtOps.INSTANCE, new ControllerInfo(controller)).getOrThrow(false,
+                            GTCEu.LOGGER::error));
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
@@ -207,7 +216,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                     usedHand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND : player.getInventory().selected);
             Optional<ModularPanel<?>> clientPanel = clientPanel(player.getItemInHand(usedHand), usedHand);
             if (clientPanel.isEmpty()) {
-                return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide);
+                return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), true);
             }
             ClientGUI.open(createScreen(guiData, clientPanel.get()));
         }
@@ -216,45 +225,28 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
 
     private Optional<ModularPanel<?>> clientPanel(ItemStack item, InteractionHand hand) {
         CompoundTag tag = item.getOrCreateTag();
-        if (!tag.contains("controller")) {
-            return Optional.empty();
-        }
-        ResourceLocation controllerLocation = ResourceLocation.parse(tag.getString("controller"));
-        var definition = GTRegistries.MACHINES.get(controllerLocation);
-        if (definition == null || !(definition instanceof MultiblockMachineDefinition multiblockDefinition)) {
-            return Optional.empty();
-        }
-        if (!tag.contains("pos")) {
-            return Optional.empty();
-        }
-        BlockPos controllerPos = BlockPos.of(tag.getLong("pos"));
 
-        if (!tag.contains("facing", CompoundTag.TAG_BYTE) ||
-                !tag.contains("upFacing", CompoundTag.TAG_BYTE) ||
-                !tag.contains("flipped", CompoundTag.TAG_BYTE)) {
-            return Optional.empty();
-        }
+        if (!tag.contains(CONTROLLER_INFO_TAG)) return Optional.empty();
+        ControllerInfo controllerInfo = ControllerInfo.CODEC
+                .parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG)).getOrThrow(false, GTCEu.LOGGER::error);
 
-        Direction frontFacing = Direction.values()[tag.getByte("facing")];
-        Direction upFacing = Direction.values()[tag.getByte("upFacing")];
-        boolean flipped = tag.getBoolean("flipped");
+        MultiblockSchemaInfo info = createSchemaInfoFromTag(item, controllerInfo);
 
-        MultiblockSchemaInfo info = createSchemaInfoFromTag(item);
-
-        MultiblockPreviewWidget previewWidget = new MultiblockPreviewWidget(multiblockDefinition, info,
+        MultiblockPreviewWidget previewWidget = new MultiblockPreviewWidget(controllerInfo.definition(), info,
                 200, 200)
-                .setControllerPos(controllerPos)
-                .setFrontFacing(frontFacing).setUpFacing(upFacing).setFlipped(flipped);
+                .setControllerPos(controllerInfo.pos())
+                .setFrontFacing(controllerInfo.facing()).setUpFacing(controllerInfo.upFace())
+                .setFlipped(controllerInfo.flipped());
         previewWidget.refreshSchema();
 
         return Optional.of(ModularPanel.defaultPanel("terminal")
                 .coverChildren()
                 .child(previewWidget)
-                .onCloseAction(w -> writeMultiblockInfo(multiblockDefinition, hand, previewWidget, info)));
+                .onCloseAction(w -> writeMultiblockInfo(controllerInfo.definition(), hand, previewWidget)));
     }
 
     private void writeMultiblockInfo(MultiblockMachineDefinition definition, InteractionHand hand,
-                                     MultiblockPreviewWidget previewWidget, MultiblockSchemaInfo info) {
+                                     MultiblockPreviewWidget previewWidget) {
         MultiblockSchemaInfo schemaInfo = previewWidget.getMultiblockSchemaInfo();
 
         Long2ObjectMap<BlockState> blockPreferences = new Long2ObjectOpenHashMap<>();
@@ -267,21 +259,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                 schemaInfo.getMinMaxPreferences()));
     }
 
-    public static void writeControllerInfo(ItemStack item, MultiblockControllerMachine controller) {
-        // TODO uuid gathering
-
-        CompoundTag tag = item.getOrCreateTag();
-        if (!tag.isEmpty()) { // clear tag when trying to open a new machine definition
-            tag = new CompoundTag();
-        }
-        tag.putString("controller", controller.getDefinition().getId().toString());
-        tag.putLong("pos", controller.getBlockPos().asLong());
-        tag.putByte("facing", (byte) controller.getFrontFacing().ordinal());
-        tag.putByte("upFacing", (byte) controller.getUpwardsFacing().ordinal());
-        tag.putBoolean("flipped", controller.isFlipped());
-    }
-
-    public static MultiblockSchemaInfo createSchemaInfoFromTag(ItemStack item) {
+    public static MultiblockSchemaInfo createSchemaInfoFromTag(ItemStack item, ControllerInfo controllerInfo) {
         CompoundTag tag = item.getOrCreateTag();
         // TODO fix when trying to open overwritten info from another controller type
         MultiblockSchemaInfo info = new MultiblockSchemaInfo();
@@ -311,9 +289,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         // TODO maybe move this as part of per pattern type encoding?
         if (tag.contains("blockPreferences")) {
             ListTag preferences = tag.getList("blockPreferences", CompoundTag.TAG_COMPOUND);
-            ResourceLocation controllerLocation = ResourceLocation.parse(tag.getString("controller"));
-            var definition = (MultiblockMachineDefinition) GTRegistries.MACHINES.get(controllerLocation);
-            BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
+            BlockPattern blockPattern = (BlockPattern) controllerInfo.definition().getStructurePatterns()
+                    .get(DEFAULT_STRUCTURE).get();
             for (int i = 0; i < preferences.size(); i++) {
                 CompoundTag inner = preferences.getCompound(i);
                 char c = (char) inner.getByte("p");
@@ -329,9 +306,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
 
         if (tag.contains("minMaxPreferences")) {
             ListTag minMaxPreferences = tag.getList("minMaxPreferences", CompoundTag.TAG_COMPOUND);
-            ResourceLocation controllerLocation = ResourceLocation.parse(tag.getString("controller"));
-            var definition = (MultiblockMachineDefinition) GTRegistries.MACHINES.get(controllerLocation);
-            BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
+            BlockPattern blockPattern = (BlockPattern) controllerInfo.definition().getStructurePatterns()
+                    .get(DEFAULT_STRUCTURE).get();
             for (int i = 0; i < minMaxPreferences.size(); i++) {
                 CompoundTag inner = minMaxPreferences.getCompound(i);
                 char c = (char) inner.getByte("p");
@@ -353,6 +329,10 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                                             Map<MultiPredicate, BlockInfo> blockPreferences,
                                             HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences) {
         CompoundTag tag = item.getOrCreateTag();
+
+        if (!tag.contains(CONTROLLER_INFO_TAG)) return;
+        ControllerInfo info = ControllerInfo.CODEC.parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
+                .getOrThrow(false, GTCEu.LOGGER::error);
 
         if (sliceRepeats.isEmpty()) {
             tag.remove("sliceRepeatKeys");
@@ -394,9 +374,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             tag.remove("blockPreferences");
         } else {
             ListTag preferences = new ListTag();
-            ResourceLocation controllerLocation = ResourceLocation.parse(tag.getString("controller"));
-            var definition = (MultiblockMachineDefinition) GTRegistries.MACHINES.get(controllerLocation);
-            BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
+            BlockPattern blockPattern = (BlockPattern) info.definition().getStructurePatterns().get(DEFAULT_STRUCTURE)
+                    .get();
             for (var entry : blockPreferences.entrySet()) {
                 CompoundTag preference = new CompoundTag();
                 MultiPredicate pred = entry.getKey();
@@ -405,7 +384,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                         .stream()
                         .filter(e -> e.getValue().equals(pred))
                         .findFirst()
-                        .get().getCharKey();
+                        .orElseThrow().getCharKey();
 
                 preference.putByte("p", (byte) c);
                 preference.put("b", NbtUtils.writeBlockState(entry.getValue().getBlockState()));
@@ -436,9 +415,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             tag.remove("minMaxPreferences");
         } else {
             ListTag minMaxs = new ListTag();
-            ResourceLocation controllerLocation = ResourceLocation.parse(tag.getString("controller"));
-            var definition = (MultiblockMachineDefinition) GTRegistries.MACHINES.get(controllerLocation);
-            BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
+            BlockPattern blockPattern = (BlockPattern) info.definition().getStructurePatterns().get(DEFAULT_STRUCTURE)
+                    .get();
             for (var entry : minMaxPreferences.cellSet()) {
                 CompoundTag inner = new CompoundTag();
                 MultiPredicate pred = entry.getRowKey();
@@ -448,7 +426,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                         .stream()
                         .filter(e -> e.getValue().equals(pred))
                         .findFirst()
-                        .get().getCharKey();
+                        .orElseThrow().getCharKey();
 
                 inner.putByte("p", (byte) c);
                 inner.putInt("b", pred.predicates().indexOf(base));
@@ -470,17 +448,38 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                                 TooltipFlag isAdvanced) {
         CompoundTag tag = stack.getOrCreateTag();
 
-        if (tag.contains("pos")) {
-            long blockPos = tag.getLong("pos");
-            BlockPos pos = BlockPos.of(blockPos);
-            tooltipComponents
-                    .add(Component.translatable("gtceu.top.buffer_bound_pos", pos.getX(), pos.getY(), pos.getZ())
-                            .withStyle(ChatFormatting.GOLD));
-        }
-        if (tag.contains("controller")) {
-            ResourceLocation controllerLocation = ResourceLocation.parse(tag.getString("controller"));
-            var definition = (MultiblockMachineDefinition) GTRegistries.MACHINES.get(controllerLocation);
-            tooltipComponents.add(definition.get().getName());
+        if (!tag.contains(CONTROLLER_INFO_TAG)) return;
+        ControllerInfo info = ControllerInfo.CODEC.parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
+                .getOrThrow(false, GTCEu.LOGGER::error);
+
+        tooltipComponents
+                .add(Component
+                        .translatable("gtceu.top.buffer_bound_pos", info.pos().getX(), info.pos().getY(),
+                                info.pos().getZ())
+                        .withStyle(ChatFormatting.GOLD));
+
+        tooltipComponents.add(info.definition().getBlock().getName());
+    }
+
+    public record ControllerInfo(MultiblockMachineDefinition definition, BlockPos pos, Direction facing,
+                                 Direction upFace, boolean flipped) {
+
+        // spotless:off
+        public static final Codec<ControllerInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                GTRegistries.MACHINES.codec().comapFlatMap(def -> {
+                    if (def instanceof MultiblockMachineDefinition mDef) return DataResult.success(mDef);
+                    else return DataResult.error(() -> "%s is not a multiblock machine definition".formatted(def.getId()));
+                }, v -> v).fieldOf("definition").forGetter(ControllerInfo::definition),
+                BlockPos.CODEC.fieldOf("pos").forGetter(ControllerInfo::pos),
+                Direction.CODEC.fieldOf("facing").forGetter(ControllerInfo::facing),
+                Direction.CODEC.fieldOf("upFace").forGetter(ControllerInfo::upFace),
+                Codec.BOOL.fieldOf("flipped").forGetter(ControllerInfo::flipped)
+        ).apply(instance, ControllerInfo::new));
+        //spotless:on
+
+        public ControllerInfo(MultiblockControllerMachine machine) {
+            this(machine.getDefinition(), machine.getBlockPos(), machine.getFrontFacing(), machine.getUpwardsFacing(),
+                    machine.isFlipped());
         }
     }
 }

@@ -12,11 +12,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.behavior.TerminalBehavior;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -30,8 +26,8 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Objects;
 
 public class CPacketTerminalSettings implements GTNetwork.INetPacket {
 
@@ -60,42 +56,29 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
     public CPacketTerminalSettings(FriendlyByteBuf buf) {
         this.hand = buf.readEnum(InteractionHand.class);
 
-        int size = buf.readVarInt();
-        ResourceLocation resLoc = ResourceLocation.parse(buf.readCharSequence(size, StandardCharsets.UTF_8).toString());
+        var resLoc = buf.readResourceLocation();
         this.machineDefinition = (MultiblockMachineDefinition) GTRegistries.MACHINES.get(resLoc);
+        if (machineDefinition == null)
+            throw new IllegalStateException("Unknown machine definition %s".formatted(resLoc));
 
-        int repeatCount = buf.readVarInt();
-        this.sliceRepeats = new Int2IntArrayMap(repeatCount);
-        for (int i = 0; i < repeatCount; i++) {
-            this.sliceRepeats.put(buf.readVarInt(), buf.readVarInt());
-        }
-
-        int dimensionCount = buf.readVarInt();
-        this.dimensions = new IntArrayList(dimensionCount);
-        for (int i = 0; i < dimensionCount; i++) {
-            this.dimensions.add(buf.readVarInt());
-        }
-
-        int globalPreferenceCount = buf.readVarInt();
-        this.globalPreferences = new Long2ObjectOpenHashMap<>(globalPreferenceCount);
-        for (int i = 0; i < globalPreferenceCount; i++) {
-            long pos = buf.readLong();
-            BlockState state = Block.stateById(buf.readVarInt());
-            this.globalPreferences.put(pos, state);
-        }
+        this.sliceRepeats = buf.readMap(Int2IntArrayMap::new, FriendlyByteBuf::readVarInt, FriendlyByteBuf::readVarInt);
+        this.dimensions = buf.readCollection(IntArrayList::new, FriendlyByteBuf::readVarInt);
+        this.globalPreferences = buf.readMap(Long2ObjectOpenHashMap::new, FriendlyByteBuf::readLong,
+                (b) -> Block.stateById(buf.readVarInt()));
 
         blockPreferences = new Object2ObjectOpenHashMap<>();
         minMaxPreferences = HashBasedTable.create();
+
         IBlockPattern pattern = machineDefinition.getStructurePatterns()
                 .get(MultiblockControllerMachine.DEFAULT_STRUCTURE).get();
+
         if (pattern instanceof BlockPattern blockPattern) {
             int preferenceSize = buf.readVarInt();
             for (int i = 0; i < preferenceSize; i++) {
                 char c = buf.readChar();
                 MultiPredicate pred = blockPattern.getPredicates().get(c);
-                CompoundTag stateTag = buf.readNbt();
                 BlockInfo info = BlockInfo
-                        .fromBlockState(NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), stateTag));
+                        .fromBlockState(Objects.requireNonNull(buf.readById(Block.BLOCK_STATE_REGISTRY)));
                 this.blockPreferences.put(pred, info);
             }
 
@@ -118,29 +101,17 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
     public void encode(FriendlyByteBuf buf) {
         buf.writeEnum(this.hand);
 
-        buf.writeVarInt(this.machineDefinition.getId().toString().length());
-        buf.writeCharSequence(this.machineDefinition.getId().toString(), StandardCharsets.UTF_8);
+        buf.writeResourceLocation(this.machineDefinition.getId());
 
-        buf.writeVarInt(this.sliceRepeats.size());
-        for (var entry : this.sliceRepeats.int2IntEntrySet()) {
-            buf.writeVarInt(entry.getIntKey());
-            buf.writeVarInt(entry.getIntValue());
-        }
-
-        buf.writeVarInt(this.dimensions.size());
-        for (int dimension : this.dimensions) {
-            buf.writeVarInt(dimension);
-        }
-
-        buf.writeVarInt(this.globalPreferences.size());
-        for (var entry : this.globalPreferences.long2ObjectEntrySet()) {
-            buf.writeLong(entry.getLongKey());
-            buf.writeVarInt(Block.getId(entry.getValue()));
-        }
+        buf.writeMap(this.sliceRepeats, FriendlyByteBuf::writeVarInt, FriendlyByteBuf::writeVarInt);
+        buf.writeCollection(dimensions, FriendlyByteBuf::writeVarInt);
+        buf.writeMap(globalPreferences, FriendlyByteBuf::writeLong, (b, v) -> b.writeVarInt(Block.getId(v)));
 
         IBlockPattern pattern = machineDefinition.getStructurePatterns()
                 .get(MultiblockControllerMachine.DEFAULT_STRUCTURE).get();
+
         if (pattern instanceof BlockPattern blockPattern) {
+
             buf.writeVarInt(this.blockPreferences.size());
             for (var entry : this.blockPreferences.entrySet()) {
                 MultiPredicate pred = entry.getKey();
@@ -149,9 +120,9 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
                         .stream()
                         .filter(e -> e.getValue().equals(pred))
                         .findFirst()
-                        .get().getCharKey();
+                        .orElseThrow().getCharKey();
                 buf.writeChar(c);
-                buf.writeNbt(NbtUtils.writeBlockState(entry.getValue().getBlockState()));
+                buf.writeId(Block.BLOCK_STATE_REGISTRY, entry.getValue().getBlockState());
             }
 
             buf.writeVarInt(this.minMaxPreferences.rowKeySet().size());
@@ -163,7 +134,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
                         .stream()
                         .filter(e -> e.getValue().equals(pred))
                         .findFirst()
-                        .get().getCharKey();
+                        .orElseThrow().getCharKey();
                 buf.writeChar(c);
 
                 buf.writeVarInt(pred.predicates().indexOf(base));
