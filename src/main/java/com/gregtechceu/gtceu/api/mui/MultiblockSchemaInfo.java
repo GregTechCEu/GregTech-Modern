@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.mui;
 
+import com.google.common.collect.HashBiMap;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
@@ -10,6 +11,12 @@ import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 
+import com.gregtechceu.gtceu.utils.codec.GTCodecUtils;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -20,8 +27,6 @@ import brachy.modularui.widgets.SchemaWidget;
 import com.google.common.collect.HashBasedTable;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -33,12 +38,26 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
 public class MultiblockSchemaInfo {
 
+    //spotless:off
+    @SuppressWarnings("unchecked")
+    public static final Codec<MultiblockSchemaInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            MultiblockMachineDefinition.CODEC.fieldOf("definition").forGetter(MultiblockSchemaInfo::getDefinition),
+            GTCodecUtils.map(Int2IntMap.class, Int2IntArrayMap::new, Codec.INT, Codec.INT).fieldOf("userSliceRepeats").forGetter(MultiblockSchemaInfo::getUserSliceRepeats),
+            Codec.INT.listOf().fieldOf("userDimensions").forGetter(MultiblockSchemaInfo::getUserDimensions),
+            Codec.unboundedMap(BlockPos.CODEC, BlockInfo.CODEC).fieldOf("userGlobalBlockPreferences").forGetter(MultiblockSchemaInfo::getUserGlobalBlockPreferences),
+            GTCodecUtils.map(Char2ObjectMap.class, Char2ObjectArrayMap::new, GTCodecUtils.CHAR, BlockInfo.CODEC).fieldOf("blockPreferences").forGetter(MultiblockSchemaInfo::getBlockPreferenceCharMap)
+    ).apply(instance, MultiblockSchemaInfo::new));
+    //spotless:on
+
+    @Getter
+    private final MultiblockMachineDefinition definition;
     @Getter
     @Setter
     private SchemaWidget multiSchema;
@@ -52,7 +71,7 @@ public class MultiblockSchemaInfo {
     @Setter
     private Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
     @Getter
-    private final Long2ObjectMap<BlockInfo> userGlobalBlockPreferences = new Long2ObjectOpenHashMap<>();
+    private final Object2ObjectMap<BlockPos, BlockInfo> userGlobalBlockPreferences = new Object2ObjectOpenHashMap<>();
     @Getter
     protected final Map<MultiPredicate, BlockInfo> blockPreferences = new Object2ObjectOpenHashMap<>();
     @Getter
@@ -60,7 +79,7 @@ public class MultiblockSchemaInfo {
             .create();
 
     @Getter
-    private final Int2IntMap userSliceRepeats = new Int2IntArrayMap();
+    private Int2IntMap userSliceRepeats;
     @Getter
     private final IntList userDimensions = new IntArrayList();
     @Getter
@@ -68,6 +87,40 @@ public class MultiblockSchemaInfo {
 
     @Getter
     private @Nullable AbstractStructureHelper structureHelper;
+
+    public MultiblockSchemaInfo(MultiblockMachineDefinition definition) {
+        this.definition = definition;
+        this.userSliceRepeats = new Int2IntArrayMap();
+    }
+
+
+    public MultiblockSchemaInfo(MultiblockMachineDefinition definition, Int2IntMap userSliceRepeats, List<Integer> userDimensions,
+                                Map<BlockPos, BlockInfo> userGlobalBlockPreferences, Char2ObjectMap<BlockInfo> blockPreferenceMap) {
+        this.definition = definition;
+        this.userSliceRepeats = new Int2IntArrayMap(userSliceRepeats);
+        this.userDimensions.addAll(userDimensions);
+        this.userGlobalBlockPreferences.putAll(userGlobalBlockPreferences);
+
+        BlockPattern blockPattern = (BlockPattern)definition.getStructurePatterns()
+                .get(DEFAULT_STRUCTURE).get();
+        for (var entry: blockPreferenceMap.char2ObjectEntrySet()) {
+            blockPreferences.put(blockPattern.getPredicates().get(entry.getCharKey()), entry.getValue());
+        }
+    }
+
+    public Char2ObjectMap<BlockInfo> getBlockPreferenceCharMap() {
+        BlockPattern blockPattern = (BlockPattern)definition.getStructurePatterns()
+                .get(DEFAULT_STRUCTURE).get();
+
+        Char2ObjectMap<BlockInfo> charMap = new Char2ObjectArrayMap<>();
+
+        var predicateInverseMap = HashBiMap.create(blockPattern.getPredicates()).inverse();
+        for (var entry: blockPreferences.entrySet()) {
+            charMap.put(predicateInverseMap.get(entry.getKey()), entry.getValue());
+        }
+
+        return charMap;
+    }
 
     @ApiStatus.Internal
     public void refreshSchema(MultiblockMachineDefinition multiblockDefinition, Direction frontFacing,

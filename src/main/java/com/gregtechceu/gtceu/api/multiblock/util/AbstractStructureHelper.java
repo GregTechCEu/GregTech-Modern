@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -36,7 +37,7 @@ public abstract class AbstractStructureHelper {
     }
 
     public void populate(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
-                         @Nullable Long2ObjectMap<BlockInfo> userBlockPreferences,
+                         @Nullable Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                          Direction frontFacing, Direction upFacing, boolean isFlipped) {
         setup(pattern, frontFacing, upFacing, isFlipped);
         if (userBlockPreferences != null && !userBlockPreferences.isEmpty()) {
@@ -53,7 +54,7 @@ public abstract class AbstractStructureHelper {
     protected abstract void populateWithUserBlockPreferences(MultiblockSchemaInfo info,
                                                              Map<BlockPos, BlockInfo> resultStructure,
                                                              IBlockPattern pattern,
-                                                             Long2ObjectMap<BlockInfo> userBlockPreferences,
+                                                             Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                                                              Direction frontFacing, Direction upFacing,
                                                              boolean isFlipped);
 

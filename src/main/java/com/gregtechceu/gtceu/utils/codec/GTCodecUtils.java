@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.utils.codec;
 
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
+import com.mojang.serialization.codecs.PrimitiveCodec;
 import net.minecraft.util.ExtraCodecs;
 
 import com.mojang.datafixers.util.Either;
@@ -10,7 +11,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 
+import java.util.Map;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
 public final class GTCodecUtils {
@@ -30,6 +33,36 @@ public final class GTCodecUtils {
                 return DataResult.error(() -> errorMessage.apply(val));
             }
         });
+    }
+
+    public static final PrimitiveCodec<Character> CHAR = new PrimitiveCodec<>() {
+
+        @Override
+        public <T> DataResult<Character> read(final DynamicOps<T> ops, final T input) {
+            return ops.getNumberValue(input)
+                    .map(n -> (char) n.intValue());
+        }
+
+        @Override
+        public <T> T write(final DynamicOps<T> ops, final Character value) {
+            return ops.createShort((short) value.charValue());
+        }
+
+        @Override
+        public String toString() {
+            return "Char";
+        }
+    };
+
+    // Uses a list of pairs internally becuase the default map codec can't handle non-string primitive keys.
+    public static <K, V, T extends Map<K, V>> Codec<T> map(Class<T> mapClazz, IntFunction<? extends T> factory, Codec<K> keyCodec, Codec<V> valueCodec) {
+        return Codec.pair(keyCodec, valueCodec).listOf().xmap(list -> {
+            var map = factory.apply(list.size());
+            for (var pair: list) {
+                map.put(pair.getFirst(), pair.getSecond());
+            }
+            return map;
+        }, v -> v.entrySet().stream().map(e -> Pair.of(e.getKey(), e.getValue())).toList());
     }
 
     public static Codec<Long> longRange(long min, long max) {
