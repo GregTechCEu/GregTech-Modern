@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import java.util.Collection;
 import java.util.List;
 
+import static com.gregtechceu.gtceu.api.multiblock.error.PatternError.CONTROLLER;
+
 public enum TestType {
 
     GLOBAL_MIN,
@@ -69,13 +71,13 @@ public enum TestType {
         List<BlockInfo> candidates = extractCandidates(holder);
         ctx.appendError(switch (this) {
             case GLOBAL_MAX -> SinglePredicateError.maxCount(holder, candidates, count,
-                    ctx.pos());
+                    CONTROLLER);
             case SLICE_MAX -> SinglePredicateError.maxLayerCount(holder, candidates, count,
-                    ctx.pos());
+                    CONTROLLER);
             case GLOBAL_MIN -> SinglePredicateError.minCount(holder, candidates, count,
-                    ctx.pos());
+                    CONTROLLER);
             case SLICE_MIN -> SinglePredicateError.minLayerCount(holder, candidates, count,
-                    ctx.pos());
+                    CONTROLLER);
         });
     }
 
