@@ -909,6 +909,9 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, GTMachines.CHARGER_4, "WTW", "WMW", "BCB", 'M', HULL, 'W', WIRE_QUAD, 'T',
                 Tags.Items.CHESTS_WOODEN, 'B', CABLE, 'C', CIRCUIT);
 
+        registerMachineRecipe(provider, GTMachines.WIRELESS_CHARGER, "WEW", "CMC", "WBW", 'M', HULL, 'W', WIRE_QUAD,
+                'E', EMITTER, 'C', CIRCUIT, 'B', CABLE);
+
         Material[] fluidMap = new Material[] { GTMaterials.Glue, GTMaterials.Polyethylene,
                 GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole };
 
