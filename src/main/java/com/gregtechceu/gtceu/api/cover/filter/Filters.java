@@ -32,7 +32,7 @@ public class Filters {
         if (entry.filterableType != filterableType) return null;
         Filter<T> filter = (Filter<T>) stack.getOrDefault(entry.dataComponentType.value(), entry.filterFactory.get());
         filter.setFilterItemStack(stack);
-        filter.setItemWriter(w -> stack.set((DataComponentType<? super Filter<T>>) entry.dataComponentType, w));
+        filter.setItemWriter(w -> stack.set((DataComponentType<? super Filter<T>>) entry.dataComponentType.value(), w));
         return filter;
     }
 

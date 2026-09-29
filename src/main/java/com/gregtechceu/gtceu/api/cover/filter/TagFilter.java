@@ -76,6 +76,10 @@ public class TagFilter<T, S> extends Filter<T> {
                 .map(ResourceLocation::toString)
                 .collect(Collectors.toSet());
 
+        if (matchExpr == null && !filterString.isEmpty()) {
+            matchExpr = TagExprFilter.parseExpression(filterString);
+        }
+
         return matchExpr != null && matchExpr.matches(tags);
     }
 
