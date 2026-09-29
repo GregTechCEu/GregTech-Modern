@@ -111,6 +111,9 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addSmeltingRecipe(provider, "wrought_iron_nugget",
                 ChemicalHelper.getTagOrThrow(nugget, Iron),
                 ChemicalHelper.get(nugget, WroughtIron));
+        VanillaRecipeHelper.addSmeltingRecipe(provider, "wrought_iron_ingot",
+                ChemicalHelper.getTagOrThrow(ingot, Iron),
+                ChemicalHelper.get(ingot, WroughtIron));
         VanillaRecipeHelper.addShapelessRecipe(provider, "nugget_disassembling_iron",
                 new ItemStack(Items.IRON_NUGGET, 9), new ItemStack(Items.IRON_INGOT), 's');
 

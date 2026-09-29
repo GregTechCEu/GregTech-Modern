@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.data.tags;
 
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
@@ -18,7 +18,7 @@ public class ItemTagLoader {
     @SuppressWarnings({ "DataFlowIssue", "unchecked" })
     public static void init(RegistrateItemTagsProvider provider) {
         provider.addTag(GTTags.Items.DOUGHS).addTag(GTTags.Items.DOUGHS_WHEAT);
-        provider.addTag(GTTags.Items.GRAINS_WHEAT).addOptional(GTMaterialItems.MATERIAL_ITEMS.get(dust, Wheat));
+        provider.addTag(GTTags.Items.GRAINS_WHEAT).addOptional(ChemicalHelper.getItemOrThrow(dust, Wheat));
         provider.addTag(GTTags.Items.GRAINS).addTag(GTTags.Items.GRAINS_WHEAT);
 
         provider.copy(GTTags.Blocks.CONCRETES, GTTags.Items.CONCRETES);
@@ -68,30 +68,29 @@ public class ItemTagLoader {
                 .addTag(GTTags.Items.LENSES_GLASS);
 
         provider.addTag(GTTags.Items.LENSES_WHITE)
-                .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(lens, Glass))
-                .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(lens, NetherStar));
+                .addOptional(ChemicalHelper.getItemOrThrow(lens, Glass))
+                .addOptional(ChemicalHelper.getItemOrThrow(lens, NetherStar));
         provider.addTag(GTTags.Items.LENSES_LIGHT_BLUE)
-                .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(lens, Diamond));
+                .addOptional(ChemicalHelper.getItemOrThrow(lens, Diamond));
         provider.addTag(GTTags.Items.LENSES_RED)
-                .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(lens, Ruby));
+                .addOptional(ChemicalHelper.getItemOrThrow(lens, Ruby));
         provider.addTag(GTTags.Items.LENSES_GREEN)
-                .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(lens, Emerald));
+                .addOptional(ChemicalHelper.getItemOrThrow(lens, Emerald));
         provider.addTag(GTTags.Items.LENSES_BLUE)
-                .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(lens, Sapphire));
+                .addOptional(ChemicalHelper.getItemOrThrow(lens, Sapphire));
         provider.addTag(GTTags.Items.LENSES_PURPLE)
-                .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(lens, Amethyst));
+                .addOptional(ChemicalHelper.getItemOrThrow(lens, Amethyst));
 
         provider.addTag(GTTags.Items.PISTONS).add(Items.PISTON, Items.STICKY_PISTON);
 
         // add treated wood stick to vanilla sticks tag
-        // noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod
         provider.addTag(Tags.Items.RODS_WOODEN)
-                .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood));
+                .addOptional(ChemicalHelper.getItemOrThrow(rod, TreatedWood));
 
         // add treated and untreated wood plates to vanilla planks tag
         provider.addTag(ItemTags.PLANKS)
-                .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(plate, TreatedWood))
-                .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(plate, Wood));
+                .addOptional(ChemicalHelper.getItemOrThrow(plate, TreatedWood))
+                .addOptional(ChemicalHelper.getItemOrThrow(plate, Wood));
 
         // add (likely empty) tags for the high tier circuits so we can add them to the `gtceu:circuits` tag easily
         provider.addTag(GTTags.Items.CIRCUITS_UEV);
@@ -202,7 +201,7 @@ public class ItemTagLoader {
 
         // Add sodalite and lazurite as enchanting fuels
         provider.addTag(Tags.Items.ENCHANTING_FUELS)
-                .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(gem, Lazurite))
-                .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(gem, Sodalite));
+                .addOptional(ChemicalHelper.getItemOrThrow(gem, Lazurite))
+                .addOptional(ChemicalHelper.getItemOrThrow(gem, Sodalite));
     }
 }
