@@ -99,7 +99,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             case Y_AXIS -> Direction.NORTH;
             case ALL, NON_Y_AXIS, NONE -> Direction.UP;
         };
-        this.multiblockSchemaInfo = schemaInfo == null ? new MultiblockSchemaInfo() : schemaInfo;
+        this.multiblockSchemaInfo = schemaInfo == null ? new MultiblockSchemaInfo(definition) : schemaInfo;
         refreshSchema();
         this.multiblockSchemaInfo.setRenderer(new SchemaRenderer(this.multiblockSchemaInfo.getMapSchema())
                 .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f)));
@@ -469,7 +469,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
     private void setUserDefinedBlockInfo(BlockPos pos, BlockInfo blockInfo) {
         // todo validation testing?
-        this.multiblockSchemaInfo.getUserGlobalBlockPreferences().put(pos.asLong(), blockInfo);
+        this.multiblockSchemaInfo.getUserGlobalBlockPreferences().put(pos, blockInfo);
         refreshSchema();
         refreshViewWidget();
     }

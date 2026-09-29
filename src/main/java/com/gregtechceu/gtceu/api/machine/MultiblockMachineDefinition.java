@@ -4,6 +4,9 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -23,6 +26,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class MultiblockMachineDefinition extends MachineDefinition {
+
+    //spotless:off
+    public static final Codec<MultiblockMachineDefinition> CODEC = GTRegistries.MACHINES.codec().comapFlatMap(def -> {
+        if (def instanceof MultiblockMachineDefinition mDef) return DataResult.success(mDef);
+        else return DataResult.error(() -> "%s is not a multiblock machine definition".formatted(def.getId()));
+    }, v -> v);
+    //spotless:on
 
     @Getter
     @Setter

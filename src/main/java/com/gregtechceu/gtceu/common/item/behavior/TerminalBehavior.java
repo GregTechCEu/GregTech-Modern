@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.AutobuildHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.CPacketTerminalSettings;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
@@ -51,14 +50,10 @@ import brachy.modularui.factory.inventory.InventoryTypes;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
-import com.google.common.collect.HashBasedTable;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -71,7 +66,7 @@ import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerM
 public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddInformation {
 
     private static final String CONTROLLER_INFO_TAG = "controller";
-
+    private static final String SCHEMA_INFO_TAG = "schema";
     // todo somewhere client panel warning if the structure to be built is invalid
     @Override
     public InteractionResult useOn(UseOnContext context) {
@@ -249,20 +244,15 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                                      MultiblockPreviewWidget previewWidget) {
         MultiblockSchemaInfo schemaInfo = previewWidget.getMultiblockSchemaInfo();
 
-        Long2ObjectMap<BlockState> blockPreferences = new Long2ObjectOpenHashMap<>();
-        for (var entry : schemaInfo.getUserGlobalBlockPreferences().long2ObjectEntrySet()) {
-            blockPreferences.put(entry.getLongKey(), entry.getValue().getBlockState());
-        }
-
         GTNetwork.sendToServer(new CPacketTerminalSettings(hand, definition, schemaInfo.getUserSliceRepeats(),
-                schemaInfo.getUserDimensions(), blockPreferences, schemaInfo.getBlockPreferences(),
+                schemaInfo.getUserDimensions(), schemaInfo.getUserGlobalBlockPreferences(), schemaInfo.getBlockPreferences(),
                 schemaInfo.getMinMaxPreferences()));
     }
 
     public static MultiblockSchemaInfo createSchemaInfoFromTag(ItemStack item, ControllerInfo controllerInfo) {
         CompoundTag tag = item.getOrCreateTag();
         // TODO fix when trying to open overwritten info from another controller type
-        MultiblockSchemaInfo info = new MultiblockSchemaInfo();
+        MultiblockSchemaInfo info = new MultiblockSchemaInfo(controllerInfo.definition);
         if (tag.contains("sliceRepeatKeys") && tag.contains("sliceRepeatValues")) {
             int[] repeatKeys = tag.getIntArray("sliceRepeatKeys");
             int[] repeatValues = tag.getIntArray("sliceRepeatValues");
@@ -279,7 +269,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             ListTag preferences = tag.getList("globalPreferences", CompoundTag.TAG_COMPOUND);
             for (int i = 0; i < preferences.size(); i++) {
                 CompoundTag blockTag = preferences.getCompound(i);
-                long pos = blockTag.getLong("pos");
+                BlockPos pos = NbtUtils.readBlockPos(blockTag.getCompound("pos"));
                 BlockState state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(),
                         blockTag.getCompound("state"));
                 info.getUserGlobalBlockPreferences().put(pos, BlockInfo.fromBlockState(state));
@@ -291,6 +281,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             ListTag preferences = tag.getList("blockPreferences", CompoundTag.TAG_COMPOUND);
             BlockPattern blockPattern = (BlockPattern) controllerInfo.definition().getStructurePatterns()
                     .get(DEFAULT_STRUCTURE).get();
+
             for (int i = 0; i < preferences.size(); i++) {
                 CompoundTag inner = preferences.getCompound(i);
                 char c = (char) inner.getByte("p");
@@ -324,118 +315,9 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         return info;
     }
 
-    public static void applyUserPreferences(ItemStack item, Int2IntMap sliceRepeats, IntList dimensions,
-                                            Long2ObjectMap<BlockState> globalPreferences,
-                                            Map<MultiPredicate, BlockInfo> blockPreferences,
-                                            HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences) {
+    public static void applyUserPreferences(ItemStack item, MultiblockSchemaInfo schemaInfo) {
         CompoundTag tag = item.getOrCreateTag();
-
-        if (!tag.contains(CONTROLLER_INFO_TAG)) return;
-        ControllerInfo info = ControllerInfo.CODEC.parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
-                .getOrThrow(false, GTCEu.LOGGER::error);
-
-        if (sliceRepeats.isEmpty()) {
-            tag.remove("sliceRepeatKeys");
-            tag.remove("sliceRepeatValues");
-        } else {
-            int[] keys = new int[sliceRepeats.size()];
-            int[] values = new int[sliceRepeats.size()];
-            int i = 0;
-            for (var entry : sliceRepeats.int2IntEntrySet()) {
-                keys[i] = entry.getIntKey();
-                values[i] = entry.getIntValue();
-                i++;
-            }
-            tag.putIntArray("sliceRepeatKeys", keys);
-            tag.putIntArray("sliceRepeatValues", values);
-        }
-
-        if (dimensions.isEmpty()) {
-            tag.remove("dimensions");
-        } else {
-            tag.putIntArray("dimensions", dimensions.toIntArray());
-        }
-
-        if (globalPreferences.isEmpty()) {
-            tag.remove("globalPreferences");
-        } else {
-            ListTag preferences = new ListTag();
-            for (var entry : globalPreferences.long2ObjectEntrySet()) {
-                CompoundTag preference = new CompoundTag();
-                preference.putLong("pos", entry.getLongKey());
-                // TODO move to base predicate candidate index?
-                preference.put("state", NbtUtils.writeBlockState(entry.getValue()));
-                preferences.add(preference);
-            }
-            tag.put("globalPreferences", preferences);
-        }
-
-        if (blockPreferences.isEmpty()) {
-            tag.remove("blockPreferences");
-        } else {
-            ListTag preferences = new ListTag();
-            BlockPattern blockPattern = (BlockPattern) info.definition().getStructurePatterns().get(DEFAULT_STRUCTURE)
-                    .get();
-            for (var entry : blockPreferences.entrySet()) {
-                CompoundTag preference = new CompoundTag();
-                MultiPredicate pred = entry.getKey();
-
-                char c = blockPattern.getPredicates().char2ObjectEntrySet()
-                        .stream()
-                        .filter(e -> e.getValue().equals(pred))
-                        .findFirst()
-                        .orElseThrow().getCharKey();
-
-                preference.putByte("p", (byte) c);
-                preference.put("b", NbtUtils.writeBlockState(entry.getValue().getBlockState()));
-                preferences.add(preference);
-            }
-            /*
-             * for (var entry : blockPreferences.cellSet()) {
-             * CompoundTag preference = new CompoundTag();
-             * MultiPredicate pred = entry.getRowKey();
-             * BasePredicate base = entry.getColumnKey();
-             * 
-             * char c = blockPattern.getPredicates().char2ObjectEntrySet()
-             * .stream()
-             * .filter(e -> e.getValue().equals(pred))
-             * .findFirst()
-             * .get().getCharKey();
-             * 
-             * preference.putByte("p", (byte) c);
-             * preference.putInt("b", pred.predicates().indexOf(base));
-             * preference.putInt("i", base.getCandidates().indexOf(entry.getValue()));
-             * preferences.add(preference);
-             * }
-             */
-            tag.put("blockPreferences", preferences);
-        }
-
-        if (minMaxPreferences.isEmpty()) {
-            tag.remove("minMaxPreferences");
-        } else {
-            ListTag minMaxs = new ListTag();
-            BlockPattern blockPattern = (BlockPattern) info.definition().getStructurePatterns().get(DEFAULT_STRUCTURE)
-                    .get();
-            for (var entry : minMaxPreferences.cellSet()) {
-                CompoundTag inner = new CompoundTag();
-                MultiPredicate pred = entry.getRowKey();
-                BasePredicate base = entry.getColumnKey();
-
-                char c = blockPattern.getPredicates().char2ObjectEntrySet()
-                        .stream()
-                        .filter(e -> e.getValue().equals(pred))
-                        .findFirst()
-                        .orElseThrow().getCharKey();
-
-                inner.putByte("p", (byte) c);
-                inner.putInt("b", pred.predicates().indexOf(base));
-                inner.putInt("min", entry.getValue().firstInt());
-                inner.putInt("max", entry.getValue().secondInt());
-                minMaxs.add(inner);
-            }
-            tag.put("minMaxPreferences", minMaxs);
-        }
+        tag.put(SCHEMA_INFO_TAG, MultiblockSchemaInfo.CODEC.encodeStart(NbtOps.INSTANCE, schemaInfo).getOrThrow(false, GTCEu.LOGGER::error));
     }
 
     @Override
@@ -466,10 +348,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
 
         // spotless:off
         public static final Codec<ControllerInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                GTRegistries.MACHINES.codec().comapFlatMap(def -> {
-                    if (def instanceof MultiblockMachineDefinition mDef) return DataResult.success(mDef);
-                    else return DataResult.error(() -> "%s is not a multiblock machine definition".formatted(def.getId()));
-                }, v -> v).fieldOf("definition").forGetter(ControllerInfo::definition),
+                MultiblockMachineDefinition.CODEC.fieldOf("definition").forGetter(ControllerInfo::definition),
                 BlockPos.CODEC.fieldOf("pos").forGetter(ControllerInfo::pos),
                 Direction.CODEC.fieldOf("facing").forGetter(ControllerInfo::facing),
                 Direction.CODEC.fieldOf("upFace").forGetter(ControllerInfo::upFace),

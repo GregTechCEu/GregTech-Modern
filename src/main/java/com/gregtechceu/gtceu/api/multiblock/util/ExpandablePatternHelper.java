@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -54,7 +55,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     @Override
     protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
                                                     IBlockPattern pattern,
-                                                    Long2ObjectMap<BlockInfo> userBlockPreferences,
+                                                    Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
         ExpandablePattern expandablePattern = (ExpandablePattern) pattern;
 
@@ -65,8 +66,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         // kinda gross, but it's the least invasive way I guess, maybe look for something better
         BoundingBox bounds = corners.inflatedBy(1);
 
-        for (var entry : userBlockPreferences.long2ObjectEntrySet()) {
-            BlockPos pos = BlockPos.of(entry.getLongKey()); // absolute-space
+        for (var entry : userBlockPreferences.object2ObjectEntrySet()) {
+            BlockPos pos = entry.getKey(); // absolute-space
             // Reverse-transform to relative/pattern space (transpose of orthogonal rotation) to check against bounds
             int relX = getOffsetFromDirection(absolutes[0], pos);
             int relY = getOffsetFromDirection(absolutes[1], pos);
