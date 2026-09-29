@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.tags;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
 import net.minecraft.tags.ItemTags;
@@ -15,7 +14,7 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class ItemTagLoader {
 
-    @SuppressWarnings({ "DataFlowIssue", "unchecked" })
+    @SuppressWarnings("unchecked")
     public static void init(RegistrateItemTagsProvider provider) {
         provider.addTag(GTTags.Items.DOUGHS).addTag(GTTags.Items.DOUGHS_WHEAT);
         provider.addTag(GTTags.Items.GRAINS_WHEAT).addOptional(ChemicalHelper.getItemOrThrow(dust, Wheat));
