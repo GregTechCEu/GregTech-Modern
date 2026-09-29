@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
-import com.gregtechceu.gtceu.data.loot.DungeonLootLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 
 import net.minecraft.core.HolderLookup;
@@ -49,9 +48,6 @@ public final class DynamicLootHandler {
     public static void generateDynamicLoot(HolderLookup.Provider registries) {
         long startTime = System.currentTimeMillis();
         DynamicLootHandler.generateDynamicLoot0(registries);
-        // Initialize dungeon loot additions
-        DungeonLootLoader.init();
-
         GTCEu.LOGGER.info("GregTech dynamic loot table generation took {}ms", System.currentTimeMillis() - startTime);
     }
 
