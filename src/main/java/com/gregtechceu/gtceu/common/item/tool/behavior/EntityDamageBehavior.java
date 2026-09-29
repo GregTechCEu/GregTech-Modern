@@ -166,7 +166,7 @@ public class EntityDamageBehavior implements IToolBehavior<EntityDamageBehavior>
 
     @Override
     public ToolBehaviorType<EntityDamageBehavior> getType() {
-        return GTToolBehaviors.ENTITY_DAMAGE;
+        return GTToolBehaviors.ENTITY_DAMAGE.value();
     }
 
     @Override

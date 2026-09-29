@@ -91,7 +91,7 @@ public class AdjacentBlockCondition extends RecipeCondition<AdjacentBlockConditi
 
     @Override
     public RecipeConditionType<AdjacentBlockCondition> getType() {
-        return GTRecipeConditions.ADJACENT_BLOCK;
+        return GTRecipeConditions.ADJACENT_BLOCK.value();
     }
 
     @Override
@@ -114,7 +114,8 @@ public class AdjacentBlockCondition extends RecipeCondition<AdjacentBlockConditi
             }
 
             for (var stack : stacksToDisplay) {
-                row.child(RecipeViewerSlotWidget.create().marginLeft(2).recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
+                row.child(RecipeViewerSlotWidget.create(ItemStack.class).marginLeft(2)
+                        .recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
                         .value(stack));
             }
 

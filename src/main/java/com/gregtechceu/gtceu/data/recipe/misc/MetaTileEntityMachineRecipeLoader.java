@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -414,7 +415,7 @@ public class MetaTileEntityMachineRecipeLoader {
             var hatch = ENERGY_INPUT_HATCH_16A[tier];
             if (hatch == null) continue;
 
-            MachineDefinition transformer;
+            MachineEntry<MachineDefinition> transformer;
             if (tier == (GTCEuAPI.isHighTier() ? MAX : UHV)) {
                 transformer = HI_AMP_TRANSFORMER_4A[tier - 1];
             } else {
@@ -436,7 +437,7 @@ public class MetaTileEntityMachineRecipeLoader {
             var hatch = SUBSTATION_ENERGY_INPUT_HATCH[tier];
             if (hatch == null) continue;
 
-            MachineDefinition transformer;
+            MachineEntry<MachineDefinition> transformer;
             if (tier == (GTCEuAPI.isHighTier() ? MAX : UHV)) {
                 transformer = POWER_TRANSFORMER[tier - 1];
             } else {
@@ -472,7 +473,7 @@ public class MetaTileEntityMachineRecipeLoader {
             var hatch = ENERGY_OUTPUT_HATCH_16A[tier];
             if (hatch == null) continue;
 
-            MachineDefinition transformer;
+            MachineEntry<MachineDefinition> transformer;
             if (tier == (GTCEuAPI.isHighTier() ? MAX : UHV)) {
                 transformer = HI_AMP_TRANSFORMER_4A[tier - 1];
             } else {
@@ -494,7 +495,7 @@ public class MetaTileEntityMachineRecipeLoader {
             var hatch = SUBSTATION_ENERGY_OUTPUT_HATCH[tier];
             if (hatch == null) continue;
 
-            MachineDefinition transformer;
+            MachineEntry<MachineDefinition> transformer;
             if (tier == (GTCEuAPI.isHighTier() ? MAX : UHV)) {
                 transformer = POWER_TRANSFORMER[tier - 1];
             } else {

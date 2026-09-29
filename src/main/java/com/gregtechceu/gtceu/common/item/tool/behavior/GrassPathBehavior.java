@@ -116,6 +116,6 @@ public class GrassPathBehavior implements IToolBehavior<GrassPathBehavior> {
 
     @Override
     public ToolBehaviorType<GrassPathBehavior> getType() {
-        return GTToolBehaviors.PATH;
+        return GTToolBehaviors.PATH.value();
     }
 }

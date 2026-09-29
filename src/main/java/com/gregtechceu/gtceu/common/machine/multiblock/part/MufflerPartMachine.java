@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -21,6 +22,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -29,9 +31,13 @@ import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
+import dev.ryanhcode.sable.companion.ClientSubLevelAccess;
+import dev.ryanhcode.sable.companion.SableCompanion;
+import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
 
 import java.util.stream.IntStream;
 
@@ -146,6 +152,8 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
     public void emitPollutionParticles() {
         var pos = getBlockPos();
         var facing = getFrontFacing();
+        Vector3d normal = new Vector3d(
+                facing.getStepX(), facing.getStepY(), facing.getStepZ());
 
         IHazardParticleContainer container = GTCapabilityHelper.getHazardContainer(getLevel(),
                 pos.relative(facing), facing.getOpposite());
@@ -155,14 +163,19 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
         }
 
         var center = pos.getCenter();
-        var offset = .75f;
-        var xPos = (float) (center.x + facing.getStepX() * offset + (GTValues.RNG.nextFloat() - .5f) * .35f);
-        var yPos = (float) (center.y + facing.getStepY() * offset + (GTValues.RNG.nextFloat() - .5f) * .35f);
-        var zPos = (float) (center.z + facing.getStepZ() * offset + (GTValues.RNG.nextFloat() - .5f) * .35f);
 
-        var ySpd = facing.getStepY() + (GTValues.RNG.nextFloat() - .15f) * .5f;
-        var xSpd = facing.getStepX() + (GTValues.RNG.nextFloat() - .5f) * .5f;
-        var zSpd = facing.getStepZ() + (GTValues.RNG.nextFloat() - .5f) * .5f;
+        if (GTCEu.Mods.isSableLoaded()) {
+            center = SableUtils.transformPositionAndNormal(center, normal);
+        }
+
+        var offset = .75f;
+        var xPos = (float) (center.x + normal.x * offset + (GTValues.RNG.nextFloat() - .5f) * .35f);
+        var yPos = (float) (center.y + normal.y * offset + (GTValues.RNG.nextFloat() - .5f) * .35f);
+        var zPos = (float) (center.z + normal.z * offset + (GTValues.RNG.nextFloat() - .5f) * .35f);
+
+        var ySpd = normal.y + (GTValues.RNG.nextFloat() - .15f) * .5f;
+        var xSpd = normal.x + (GTValues.RNG.nextFloat() - .5f) * .5f;
+        var zSpd = normal.z + (GTValues.RNG.nextFloat() - .5f) * .5f;
 
         getLevel().addParticle(GTParticleTypes.MUFFLER_PARTICLE.get(),
                 xPos, yPos, zPos, xSpd, ySpd, zSpd);
@@ -178,5 +191,19 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
         mainWidget
                 .child(createSquareSlotGroupFromInventory(inventory, "muffler_inventory", syncManager).margin(10)
                         .center());
+    }
+
+    private static class SableUtils {
+
+        public static Vec3 transformPositionAndNormal(Vec3 pos, Vector3d normal) {
+            ClientSubLevelAccess clientSubLevelAccess = SableCompanion.INSTANCE.getContainingClient(pos);
+            if (clientSubLevelAccess != null) {
+                // if in a sublevel, we should transform our center and normal to match the sublevel's pose
+                clientSubLevelAccess.renderPose().transformNormal(normal);
+                return JOMLConversion
+                        .toMojang(clientSubLevelAccess.renderPose().transformPosition(JOMLConversion.toJOML(pos)));
+            }
+            return pos;
+        }
     }
 }

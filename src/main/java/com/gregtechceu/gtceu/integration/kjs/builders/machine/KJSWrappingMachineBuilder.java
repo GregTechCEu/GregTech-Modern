@@ -11,8 +11,7 @@ import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
-
-import java.util.Arrays;
+import org.jspecify.annotations.Nullable;
 
 @SuppressWarnings("unused")
 public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> implements IMachineBuilderKJS {
@@ -83,14 +82,7 @@ public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> im
     }
 
     @Override
-    public MachineDefinition createObject() {
-        for (var def : tieredBuilder.createTransformedObject()) {
-            if (def != null) {
-                return def;
-            }
-        }
-        // should never happen.
-        throw new IllegalStateException("Empty tiered machine builder " + Arrays.toString(tieredBuilder.get()) +
-                " With id " + tieredBuilder.id);
+    public @Nullable MachineDefinition createObject() {
+        return null;
     }
 }

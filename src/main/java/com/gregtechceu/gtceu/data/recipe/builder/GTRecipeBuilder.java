@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.gregtechceu.gtceu.utils.codec.CodecUtils;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
@@ -69,7 +70,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.*;
 
-@SuppressWarnings({ "unchecked", "UnusedReturnValue" })
+@SuppressWarnings({ "unchecked", "UnusedReturnValue", "unused" })
 @ExtensionMethod(SizedIngredientExtensions.class)
 @Accessors(chain = true, fluent = true)
 public class GTRecipeBuilder {
@@ -104,7 +105,7 @@ public class GTRecipeBuilder {
     private boolean removePreviousMatInfo = false;
     @Setter
     public boolean keepSpoilingProgress = true;
-    public GTRecipeCategory recipeCategory;
+    public @Nullable GTRecipeCategory recipeCategory;
     @Setter
     public @Nullable BiConsumer<GTRecipeBuilder, RecipeOutput> onSave;
 
@@ -147,7 +148,7 @@ public class GTRecipeBuilder {
     }
 
     public static GTRecipeBuilder ofRaw() {
-        return new GTRecipeBuilder(GTCEu.id("raw"), GTRecipeTypes.DUMMY_RECIPES);
+        return new GTRecipeBuilder(GTCEu.id("raw"), GTRecipeTypes.DUMMY_RECIPES.value());
     }
 
     public GTRecipeBuilder copy(String id) {
@@ -176,7 +177,6 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder copyFrom(GTRecipeBuilder builder) {
-        recipeType.setMinRecipeConditions(builder.conditions.size());
         return builder.copy(builder.id).onSave(null).recipeType(recipeType).category(recipeCategory);
     }
 
@@ -216,7 +216,6 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder addCondition(RecipeCondition<?> condition) {
         conditions.add(condition);
-        recipeType.setMinRecipeConditions(conditions.size());
         return this;
     }
 
@@ -302,14 +301,13 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputItems(Object input) {
         return switch (input) {
-            case Item item -> inputItems(item);
+            case ItemLike item -> inputItems(item);
             case Supplier<?> supplier when supplier.get() instanceof ItemLike item -> inputItems(item.asItem());
             case ItemStack stack -> inputItems(stack);
             case Ingredient ingredient -> inputItems(ingredient);
             case SizedIngredient ingredient -> inputItems(ingredient);
             case MaterialEntry entry -> inputItems(entry);
             case TagKey<?> tag -> inputItems((TagKey<Item>) tag);
-            case MachineDefinition machine -> inputItems(machine);
             case IntProviderIngredient ingredient -> inputItems(
                     new SizedIngredient(ingredient.toVanilla(), ingredient.getCountProvider().getMaxValue()));
             default -> {
@@ -326,14 +324,13 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputItems(Object input, int count) {
         return switch (input) {
-            case Item item -> inputItems(item, count);
+            case ItemLike item -> inputItems(item, count);
             case Supplier<?> supplier when supplier.get() instanceof ItemLike item -> inputItems(item.asItem(), count);
             case ItemStack stack -> inputItems(stack.copyWithCount(count));
             case Ingredient ingredient -> inputItems(ingredient, count);
             case SizedIngredient ingredient -> inputItems(ingredient.ingredient(), count);
             case MaterialEntry entry -> inputItems(entry, count);
             case TagKey<?> tag -> inputItems((TagKey<Item>) tag, count);
-            case MachineDefinition machine -> inputItems(machine, count);
             case IntProviderIngredient ingredient -> inputItems(
                     new SizedIngredient(ingredient.toVanilla(), ingredient.getCountProvider().getMaxValue()));
             default -> {
@@ -425,20 +422,12 @@ public class GTRecipeBuilder {
         return inputItems(tag, 1);
     }
 
-    public GTRecipeBuilder inputItems(Item input, int amount) {
+    public GTRecipeBuilder inputItems(ItemLike input, int amount) {
         return inputItems(new ItemStack(input, amount));
     }
 
-    public GTRecipeBuilder inputItems(Item input) {
+    public GTRecipeBuilder inputItems(ItemLike input) {
         return inputItems(input, 1);
-    }
-
-    public GTRecipeBuilder inputItems(Supplier<? extends Item> input) {
-        return inputItems(input.get());
-    }
-
-    public GTRecipeBuilder inputItems(Supplier<? extends Item> input, int amount) {
-        return inputItems(input.get(), amount);
     }
 
     public GTRecipeBuilder inputItems(TagPrefix orePrefix, Material material) {
@@ -520,12 +509,11 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder outputItems(Object output) {
         return switch (output) {
-            case Item item -> outputItems(item);
+            case ItemLike item -> outputItems(item);
             case Ingredient ingredient -> outputItems(ingredient);
             case Supplier<?> supplier when supplier.get() instanceof ItemLike item -> outputItems(item.asItem());
             case ItemStack stack -> outputItems(stack);
             case MaterialEntry entry -> outputItems(entry);
-            case MachineDefinition machine -> outputItems(machine);
             case IntProviderIngredient ingredient -> outputItems(
                     new SizedIngredient(ingredient.toVanilla(), ingredient.getCountProvider().getMaxValue()));
             default -> {
@@ -540,12 +528,11 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder outputItems(Object output, int count) {
         return switch (output) {
-            case Item item -> outputItems(item, count);
+            case ItemLike item -> outputItems(item, count);
             case Ingredient ingredient -> outputItems(ingredient, count);
             case Supplier<?> supplier when supplier.get() instanceof ItemLike item -> outputItems(item.asItem(), count);
             case ItemStack stack -> outputItems(stack.copyWithCount(count));
             case MaterialEntry entry -> outputItems(entry, count);
-            case MachineDefinition machine -> outputItems(machine, count);
             case IntProviderIngredient ingredient -> outputItems(
                     new SizedIngredient(ingredient.toVanilla(), ingredient.getCountProvider().getMaxValue()));
             default -> {
@@ -586,20 +573,12 @@ public class GTRecipeBuilder {
         return output(ItemRecipeCapability.CAP, ingredients.toArray(SizedIngredient[]::new));
     }
 
-    public GTRecipeBuilder outputItems(Item output, int amount) {
+    public GTRecipeBuilder outputItems(ItemLike output, int amount) {
         return outputItems(new ItemStack(output, amount));
     }
 
-    public GTRecipeBuilder outputItems(Item output) {
+    public GTRecipeBuilder outputItems(ItemLike output) {
         return outputItems(new ItemStack(output));
-    }
-
-    public GTRecipeBuilder outputItems(Supplier<? extends ItemLike> input) {
-        return outputItems(new ItemStack(input.get().asItem()));
-    }
-
-    public GTRecipeBuilder outputItems(Supplier<? extends ItemLike> input, int amount) {
-        return outputItems(new ItemStack(input.get().asItem(), amount));
     }
 
     public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material) {
@@ -1221,6 +1200,14 @@ public class GTRecipeBuilder {
         return environmentalHazard(condition, false);
     }
 
+    public GTRecipeBuilder environmentalHazard(Holder<MedicalCondition> condition, boolean reverse) {
+        return addCondition(new EnvironmentalHazardCondition(condition.value()).setReverse(reverse));
+    }
+
+    public GTRecipeBuilder environmentalHazard(Holder<MedicalCondition> condition) {
+        return environmentalHazard(condition, false);
+    }
+
     public final GTRecipeBuilder adjacentFluids(Fluid... fluids) {
         return adjacentFluids(false, fluids);
     }
@@ -1434,7 +1421,12 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder category(@NotNull GTRecipeCategory category) {
+    public GTRecipeBuilder category(Holder<GTRecipeCategory> category) {
+        this.recipeCategory = category.value();
+        return this;
+    }
+
+    public GTRecipeBuilder category(@Nullable GTRecipeCategory category) {
         this.recipeCategory = category;
         return this;
     }
@@ -1484,6 +1476,9 @@ public class GTRecipeBuilder {
         if (onSave != null) {
             onSave.accept(this, output);
         }
+
+        Objects.requireNonNull(recipeType, "Recipe cannot have null recipe type");
+
         ResearchCondition condition = this.conditions.stream()
                 .filter(ResearchCondition.class::isInstance)
                 .findAny()
@@ -1495,13 +1490,9 @@ public class GTRecipeBuilder {
             }
         }
 
-        if (recipeType != null) {
-            if (recipeCategory == null) {
-                GTCEu.LOGGER.error("Recipes must have a category", new IllegalArgumentException());
-            } else if (recipeCategory != GTRecipeCategory.DEFAULT && recipeCategory.getRecipeType() != recipeType) {
-                GTCEu.LOGGER.error("Cannot apply Category with incompatible RecipeType",
-                        new IllegalArgumentException());
-            }
+        if (recipeCategory != null && recipeCategory.getRecipeType() != recipeType) {
+            GTCEu.LOGGER.error("Cannot apply Category with incompatible RecipeType",
+                    new IllegalArgumentException());
         }
 
         if (removePreviousMatInfo) {
@@ -1516,7 +1507,7 @@ public class GTRecipeBuilder {
         tempItemMaterialStacks = null;
         tempFluidStacks = null;
 
-        output.accept(id.withPrefix(recipeType.registryName.getPath() + "/"), build(), null);
+        output.accept(id.withPrefix(recipeType.id.getPath() + "/"), build(), null);
     }
 
     private void gatherMaterialInfoFromStack(ItemStack input) {
@@ -1627,10 +1618,11 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipe build() {
-        return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
+        return new GTRecipe(recipeType, id.withPrefix(recipeType.id.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, recipeCategory, -1,
+                conditions, List.of(), data, duration,
+                recipeCategory == null ? recipeType.getCategory() : recipeCategory, -1,
                 keepSpoilingProgress);
     }
 

@@ -38,7 +38,7 @@ public class MachineModeProvider extends MachineInfoProvider<MetaMachine, Compou
                     if (recipeTypes[i] == currentRecipeType) {
                         currentRecipeTypeIndex = i;
                     }
-                    recipeTypesTagList.add(StringTag.valueOf(recipeTypes[i].registryName.toString()));
+                    recipeTypesTagList.add(StringTag.valueOf(recipeTypes[i].id.toString()));
                 }
                 compoundTag.put("RecipeTypes", recipeTypesTagList);
                 compoundTag.putInt("CurrentRecipeType", currentRecipeTypeIndex);

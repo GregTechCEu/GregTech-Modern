@@ -124,7 +124,7 @@ public enum ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
 
         assert pickaxeRecipe != null : "Default Tool Decomp recipe couldn't be generated";
         pickaxeRecipe.setId(pickaxeRecipe.getId().withPrefix("/"));
-        ARC_FURNACE_RECYCLING.addRecipe(pickaxeRecipe);
-        ARC_FURNACE_RECYCLING.addRecipe(rotorRecipe);
+        ARC_FURNACE_RECYCLING.value().addRecipe(pickaxeRecipe);
+        ARC_FURNACE_RECYCLING.value().addRecipe(rotorRecipe);
     }
 }

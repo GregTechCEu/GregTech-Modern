@@ -14,13 +14,16 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import com.google.gson.JsonObject;
+import lombok.Getter;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 public abstract class SoundEntry {
 
+    @Getter
     protected ResourceLocation id;
+    @Getter
     protected String subtitle;
     protected SoundSource category;
     protected int attenuationDistance;
@@ -41,19 +44,11 @@ public abstract class SoundEntry {
     public abstract SoundEvent getMainEvent();
 
     public String getSubtitleKey() {
-        return id.getNamespace() + ".subtitle." + id.getPath();
-    }
-
-    public ResourceLocation getId() {
-        return id;
+        return id.toLanguageKey("subtitle");
     }
 
     public boolean hasSubtitle() {
         return subtitle != null;
-    }
-
-    public String getSubtitle() {
-        return subtitle;
     }
 
     public void playOnServer(Level world, Vec3i pos) {

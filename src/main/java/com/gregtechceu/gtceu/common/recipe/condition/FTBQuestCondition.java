@@ -48,7 +48,7 @@ public class FTBQuestCondition extends RecipeCondition<FTBQuestCondition> {
 
     @Override
     public RecipeConditionType<FTBQuestCondition> getType() {
-        return GTRecipeConditions.FTB_QUEST;
+        return GTRecipeConditions.FTB_QUEST.value();
     }
 
     @Override

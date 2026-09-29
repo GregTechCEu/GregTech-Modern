@@ -155,7 +155,7 @@ public interface GTRecipeSchema {
         }
 
         public GTKubeRecipe category(GTRecipeCategory category) {
-            setValue(CATEGORY, category.registryKey);
+            setValue(CATEGORY, category.id);
             save();
             return this;
         }

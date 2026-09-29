@@ -58,6 +58,8 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import appeng.api.AECapabilities;
 import appeng.api.networking.IInWorldGridNodeHost;
+import dev.ryanhcode.sable.companion.SableCompanion;
+import dev.ryanhcode.sable.companion.SubLevelAccess;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -162,6 +164,11 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
             }
 
             Vec3 pos = player.position();
+
+            if (GTCEu.Mods.isSableLoaded()) {
+                pos = SableUtils.transformIntoSubLevel(pos, player.level(), blockPos);
+            }
+
             if (Math.abs(pos.x - (double) ((float) blockPos.getX() + 0.5F)) < 2.0D &&
                     Math.abs(pos.z - (double) ((float) blockPos.getZ() + 0.5F)) < 2.0D) {
                 double d0 = pos.y + (double) player.getEyeHeight();
@@ -583,5 +590,16 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
     @Override
     public final BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return getDefinition().getBlockEntityType().create(pos, state);
+    }
+
+    private static class SableUtils {
+
+        public static Vec3 transformIntoSubLevel(Vec3 pos, Level level, BlockPos blockPos) {
+            // transform the players "global" position into the sublevel plot's local space for the distance checks
+            SubLevelAccess subLevel = SableCompanion.INSTANCE.getContaining(level, blockPos);
+            if (subLevel != null) return subLevel.logicalPose().transformPositionInverse(pos);
+
+            return pos;
+        }
     }
 }

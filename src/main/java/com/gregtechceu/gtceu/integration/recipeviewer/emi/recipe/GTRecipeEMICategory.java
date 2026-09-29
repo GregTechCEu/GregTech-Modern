@@ -28,7 +28,7 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
     private final GTRecipeCategory category;
 
     private GTRecipeEMICategory(GTRecipeCategory category) {
-        super(category.registryKey, (EmiRenderable) category.getIcon().get());
+        super(category.id, (EmiRenderable) category.getIcon().get());
         this.category = category;
     }
 

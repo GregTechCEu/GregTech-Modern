@@ -108,7 +108,7 @@ public class GTToolItem extends TieredItem implements IGTTool {
 
     @Nullable
     @Override
-    public SoundEntry getSound() {
+    public Holder<SoundEntry> getSound() {
         return toolType.soundEntry;
     }
 

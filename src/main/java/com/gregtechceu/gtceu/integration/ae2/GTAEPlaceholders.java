@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.Filters;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -103,8 +105,12 @@ public class GTAEPlaceholders {
         return new Vector3i(tmp.getX(), tmp.getY(), tmp.getZ()).absolute();
     }
 
+    private static void registerPlaceholder(Placeholder placeholder) {
+        GTRegistration.REGISTRATE.simple(placeholder.getName(), GTRegistries.Keys.PLACEHOLDER, () -> placeholder);
+    }
+
     public static void init() {
-        PlaceholderHandler.addPlaceholder(new Placeholder("ae2itemCount") {
+        registerPlaceholder(new Placeholder("ae2_item_count") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -127,7 +133,7 @@ public class GTAEPlaceholders {
                 throw new InvalidArgsException();
             }
         });
-        PlaceholderHandler.addPlaceholder(new Placeholder("ae2fluidCount") {
+        registerPlaceholder(new Placeholder("ae2_fluid_count") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -139,7 +145,7 @@ public class GTAEPlaceholders {
                 throw new WrongNumberOfArgsException(1, args.size());
             }
         });
-        PlaceholderHandler.addPlaceholder(new Placeholder("ae2power") {
+        registerPlaceholder(new Placeholder("ae2_power") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -149,7 +155,7 @@ public class GTAEPlaceholders {
                 return MultiLineComponent.literal(grid.getEnergyService().getStoredPower());
             }
         });
-        PlaceholderHandler.addPlaceholder(new Placeholder("ae2maxPower") {
+        registerPlaceholder(new Placeholder("ae2_max_power") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -159,7 +165,7 @@ public class GTAEPlaceholders {
                 return MultiLineComponent.literal(grid.getEnergyService().getMaxStoredPower());
             }
         });
-        PlaceholderHandler.addPlaceholder(new Placeholder("ae2powerUsage") {
+        registerPlaceholder(new Placeholder("ae2_power_usage") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -169,7 +175,7 @@ public class GTAEPlaceholders {
                 return MultiLineComponent.literal(grid.getEnergyService().getAvgPowerUsage());
             }
         });
-        PlaceholderHandler.addPlaceholder(new Placeholder("ae2spatial") {
+        registerPlaceholder(new Placeholder("ae2_spatial") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -189,7 +195,7 @@ public class GTAEPlaceholders {
                 } else throw new InvalidArgsException();
             }
         });
-        PlaceholderHandler.addPlaceholder(new Placeholder("ae2crafting") {
+        registerPlaceholder(new Placeholder("ae2_crafting") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,

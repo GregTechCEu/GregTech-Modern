@@ -21,6 +21,7 @@ import dev.emi.emi.api.stack.EmiStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.ORE;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
@@ -44,8 +45,9 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
     public static void registerWorkStations(EmiRegistry registry) {
         List<MachineDefinition> registeredMachines = new ArrayList<>();
         GTRecipeType[] validTypes = new GTRecipeType[] {
-                MACERATOR_RECIPES, ORE_WASHER_RECIPES, THERMAL_CENTRIFUGE_RECIPES, CENTRIFUGE_RECIPES,
-                CHEMICAL_BATH_RECIPES, ELECTROMAGNETIC_SEPARATOR_RECIPES, SIFTER_RECIPES
+                MACERATOR_RECIPES.value(), ORE_WASHER_RECIPES.value(), THERMAL_CENTRIFUGE_RECIPES.value(),
+                CENTRIFUGE_RECIPES.value(),
+                CHEMICAL_BATH_RECIPES.value(), ELECTROMAGNETIC_SEPARATOR_RECIPES.value(), SIFTER_RECIPES.value()
         };
         for (MachineDefinition machine : GTEMIPlugin.SORTED_MACHINES) {
             for (GTRecipeType type : machine.getRecipeTypes()) {
@@ -87,9 +89,10 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
             var fluids = byProduct.getFluidInputs();
             List<EmiIngredient> ingredients = new ArrayList<>();
             ingredients.addAll(items.stream()
-                    .map(v -> EmiStackConverter.ITEM.convertTo(v, 1)).toList());
+                    .map(v -> EmiStackConverter.ITEM.convertTo(v, 1, UnaryOperator.identity())).toList());
             ingredients.addAll(
-                    fluids.stream().map(v -> EmiStackConverter.FLUID.convertTo(v, 1)).toList());
+                    fluids.stream().map(v -> EmiStackConverter.FLUID.convertTo(v, 1, UnaryOperator.identity()))
+                            .toList());
             return ingredients;
         }
 
