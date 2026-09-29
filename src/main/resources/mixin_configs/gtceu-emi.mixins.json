@@ -10,6 +10,7 @@
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [],
     "mixins": [
+        "emi.EmiApiAccessor",
         "emi.FillRecipePacketMixin",
         "emi.FluidEmiStackMixin"
     ],
