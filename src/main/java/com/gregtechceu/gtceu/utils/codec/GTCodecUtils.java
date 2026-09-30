@@ -62,7 +62,7 @@ public final class GTCodecUtils {
         }
     };
 
-    // Uses a list of pairs internally becuase the default map codec can't handle non-string primitive keys.
+    // Uses a list of pairs internally because the default map codec can't handle non-string primitive keys.
     public static <K, V, T extends Map<K, V>> Codec<T> map(IntFunction<? extends T> factory, Codec<K> keyCodec,
                                                            Codec<V> valueCodec) {
         return Codec.pair(keyCodec, valueCodec).listOf().xmap(list -> {
