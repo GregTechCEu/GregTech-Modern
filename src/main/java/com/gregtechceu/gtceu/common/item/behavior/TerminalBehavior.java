@@ -269,10 +269,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         ControllerInfo info = ControllerInfo.CODEC.parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
                 .getOrThrow(false, GTCEu.LOGGER::error);
 
-        tooltipComponents
-                .add(Component
-                        .translatable("gtceu.top.buffer_bound_pos", info.pos().getX(), info.pos().getY(),
-                                info.pos().getZ())
+        tooltipComponents.add(Component.translatable("gtceu.top.buffer_bound_pos",
+                                info.pos().getX(), info.pos().getY(), info.pos().getZ())
                         .withStyle(ChatFormatting.GOLD));
 
         tooltipComponents.add(info.definition().getBlock().getName());
@@ -286,7 +284,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                 MultiblockMachineDefinition.CODEC.fieldOf("definition").forGetter(ControllerInfo::definition),
                 BlockPos.CODEC.fieldOf("pos").forGetter(ControllerInfo::pos),
                 Direction.CODEC.fieldOf("facing").forGetter(ControllerInfo::facing),
-                Direction.CODEC.fieldOf("upFace").forGetter(ControllerInfo::upFace),
+                Direction.CODEC.fieldOf("up").forGetter(ControllerInfo::upFace),
                 Codec.BOOL.fieldOf("flipped").forGetter(ControllerInfo::flipped)
         ).apply(instance, ControllerInfo::new));
         //spotless:on

@@ -113,7 +113,6 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
                 .get(MultiblockControllerMachine.DEFAULT_STRUCTURE).get();
 
         if (pattern instanceof BlockPattern blockPattern) {
-
             var predicateInverseMap = HashBiMap.create(blockPattern.getPredicates()).inverse();
 
             buf.writeVarInt(this.blockPreferences.size());
