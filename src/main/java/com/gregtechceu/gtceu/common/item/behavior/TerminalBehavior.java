@@ -8,12 +8,10 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
-import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.AutobuildHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
@@ -24,11 +22,8 @@ import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewW
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -42,7 +37,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.factory.ClientGUI;
 import brachy.modularui.factory.PlayerInventoryGuiData;
@@ -67,6 +61,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
 
     private static final String CONTROLLER_INFO_TAG = "controller";
     private static final String SCHEMA_INFO_TAG = "schema";
+
     // todo somewhere client panel warning if the structure to be built is invalid
     @Override
     public InteractionResult useOn(UseOnContext context) {
@@ -103,6 +98,11 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         boolean flipped = controller.isFlipped();
 
         if (!level.isClientSide) {
+            if (!tag.contains(SCHEMA_INFO_TAG)) return InteractionResult.PASS;
+            MultiblockSchemaInfo schemaInfo = MultiblockSchemaInfo.CODEC
+                    .parse(NbtOps.INSTANCE, tag.getCompound(SCHEMA_INFO_TAG))
+                    .getOrThrow(false, GTCEu.LOGGER::error);
+
             ServerPlayer serverPlayer = (ServerPlayer) player;
             // Partially copy pasted from MultiblockControllerMachine#onUse.
             // TODO: Probably extract into helper function
@@ -114,14 +114,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                 for (int i = 0; i < blockPattern.getSlices().length; i++) {
                     slices.put(i, blockPattern.getSlices()[i].getMinRepeats());
                 }
-                if (tag.contains("sliceRepeatKeys") && tag.contains("sliceRepeatValues")) {
-                    var sliceRepeatKeys = tag.getIntArray("sliceRepeatKeys");
-                    var sliceRepeatValues = tag.getIntArray("sliceRepeatValues");
-                    var length = Math.min(sliceRepeatKeys.length, sliceRepeatValues.length);
-                    for (int i = 0; i < length; i++) {
-                        slices.put(sliceRepeatKeys[i], sliceRepeatValues[i]);
-                    }
-                }
+                slices.putAll(schemaInfo.getUserSliceRepeats());
+
                 structureHelper = AbstractStructureHelper.blockPattern(slices);
             } else if (pattern instanceof ExpandablePattern expandablePattern) {
                 IntList dims = new IntArrayList();
@@ -134,8 +128,6 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             }
 
             if (structureHelper != null) {
-                MultiblockSchemaInfo schemaInfo = createSchemaInfoFromTag(stack, info);
-
                 structureHelper.populate(schemaInfo, resultStructure, pattern,
                         schemaInfo.getUserGlobalBlockPreferences(), frontFacing,
                         upFacing,
@@ -195,7 +187,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
     }
 
     public boolean shouldOpenUI(ItemStack item) {
-        return item.getOrCreateTag().contains("controller");
+        return item.getOrCreateTag().contains(CONTROLLER_INFO_TAG);
     }
 
     @Override
@@ -225,9 +217,16 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         ControllerInfo controllerInfo = ControllerInfo.CODEC
                 .parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG)).getOrThrow(false, GTCEu.LOGGER::error);
 
-        MultiblockSchemaInfo info = createSchemaInfoFromTag(item, controllerInfo);
+        MultiblockSchemaInfo schemaInfo;
+        if (tag.contains(SCHEMA_INFO_TAG)) {
+            schemaInfo = MultiblockSchemaInfo.CODEC
+                    .parse(NbtOps.INSTANCE, tag.getCompound(SCHEMA_INFO_TAG))
+                    .getOrThrow(false, GTCEu.LOGGER::error);
+        } else {
+            schemaInfo = new MultiblockSchemaInfo(controllerInfo.definition);
+        }
 
-        MultiblockPreviewWidget previewWidget = new MultiblockPreviewWidget(controllerInfo.definition(), info,
+        MultiblockPreviewWidget previewWidget = new MultiblockPreviewWidget(controllerInfo.definition(), schemaInfo,
                 200, 200)
                 .setControllerPos(controllerInfo.pos())
                 .setFrontFacing(controllerInfo.facing()).setUpFacing(controllerInfo.upFace())
@@ -245,79 +244,15 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         MultiblockSchemaInfo schemaInfo = previewWidget.getMultiblockSchemaInfo();
 
         GTNetwork.sendToServer(new CPacketTerminalSettings(hand, definition, schemaInfo.getUserSliceRepeats(),
-                schemaInfo.getUserDimensions(), schemaInfo.getUserGlobalBlockPreferences(), schemaInfo.getBlockPreferences(),
+                schemaInfo.getUserDimensions(), schemaInfo.getUserGlobalBlockPreferences(),
+                schemaInfo.getBlockPreferences(),
                 schemaInfo.getMinMaxPreferences()));
-    }
-
-    public static MultiblockSchemaInfo createSchemaInfoFromTag(ItemStack item, ControllerInfo controllerInfo) {
-        CompoundTag tag = item.getOrCreateTag();
-        // TODO fix when trying to open overwritten info from another controller type
-        MultiblockSchemaInfo info = new MultiblockSchemaInfo(controllerInfo.definition);
-        if (tag.contains("sliceRepeatKeys") && tag.contains("sliceRepeatValues")) {
-            int[] repeatKeys = tag.getIntArray("sliceRepeatKeys");
-            int[] repeatValues = tag.getIntArray("sliceRepeatValues");
-            for (int i = 0; i < repeatKeys.length; i++) {
-                info.getUserSliceRepeats().put(repeatKeys[i], repeatValues[i]);
-            }
-        }
-
-        if (tag.contains("dimensions")) {
-            info.getUserDimensions().addAll(IntList.of(tag.getIntArray("dimensions")));
-        }
-
-        if (tag.contains("globalPreferences")) {
-            ListTag preferences = tag.getList("globalPreferences", CompoundTag.TAG_COMPOUND);
-            for (int i = 0; i < preferences.size(); i++) {
-                CompoundTag blockTag = preferences.getCompound(i);
-                BlockPos pos = NbtUtils.readBlockPos(blockTag.getCompound("pos"));
-                BlockState state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(),
-                        blockTag.getCompound("state"));
-                info.getUserGlobalBlockPreferences().put(pos, BlockInfo.fromBlockState(state));
-            }
-        }
-
-        // TODO maybe move this as part of per pattern type encoding?
-        if (tag.contains("blockPreferences")) {
-            ListTag preferences = tag.getList("blockPreferences", CompoundTag.TAG_COMPOUND);
-            BlockPattern blockPattern = (BlockPattern) controllerInfo.definition().getStructurePatterns()
-                    .get(DEFAULT_STRUCTURE).get();
-
-            for (int i = 0; i < preferences.size(); i++) {
-                CompoundTag inner = preferences.getCompound(i);
-                char c = (char) inner.getByte("p");
-                CompoundTag blockState = inner.getCompound("b");
-
-                MultiPredicate pred = blockPattern.getPredicates().get(c);
-                BlockInfo blockInfo = BlockInfo
-                        .fromBlockState(NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), blockState));
-
-                info.getBlockPreferences().put(pred, blockInfo);
-            }
-        }
-
-        if (tag.contains("minMaxPreferences")) {
-            ListTag minMaxPreferences = tag.getList("minMaxPreferences", CompoundTag.TAG_COMPOUND);
-            BlockPattern blockPattern = (BlockPattern) controllerInfo.definition().getStructurePatterns()
-                    .get(DEFAULT_STRUCTURE).get();
-            for (int i = 0; i < minMaxPreferences.size(); i++) {
-                CompoundTag inner = minMaxPreferences.getCompound(i);
-                char c = (char) inner.getByte("p");
-                int baseIndex = inner.getInt("b");
-                int min = inner.getInt("min");
-                int max = inner.getInt("min");
-
-                MultiPredicate pred = blockPattern.getPredicates().get(c);
-                BasePredicate base = pred.predicates().get(baseIndex);
-
-                info.getMinMaxPreferences().put(pred, base, IntIntPair.of(min, max));
-            }
-        }
-        return info;
     }
 
     public static void applyUserPreferences(ItemStack item, MultiblockSchemaInfo schemaInfo) {
         CompoundTag tag = item.getOrCreateTag();
-        tag.put(SCHEMA_INFO_TAG, MultiblockSchemaInfo.CODEC.encodeStart(NbtOps.INSTANCE, schemaInfo).getOrThrow(false, GTCEu.LOGGER::error));
+        tag.put(SCHEMA_INFO_TAG, MultiblockSchemaInfo.CODEC.encodeStart(NbtOps.INSTANCE, schemaInfo).getOrThrow(false,
+                GTCEu.LOGGER::error));
     }
 
     @Override

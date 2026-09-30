@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.behavior.TerminalBehavior;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +22,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.network.NetworkEvent;
 
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.HashBiMap;
 import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.util.Map;
@@ -105,22 +106,21 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
 
         buf.writeMap(this.sliceRepeats, FriendlyByteBuf::writeVarInt, FriendlyByteBuf::writeVarInt);
         buf.writeCollection(dimensions, FriendlyByteBuf::writeVarInt);
-        buf.writeMap(globalPreferences, FriendlyByteBuf::writeBlockPos, (b, v) -> b.writeVarInt(Block.getId(v.getBlockState())));
+        buf.writeMap(globalPreferences, FriendlyByteBuf::writeBlockPos,
+                (b, v) -> b.writeVarInt(Block.getId(v.getBlockState())));
 
         IBlockPattern pattern = machineDefinition.getStructurePatterns()
                 .get(MultiblockControllerMachine.DEFAULT_STRUCTURE).get();
 
         if (pattern instanceof BlockPattern blockPattern) {
 
+            var predicateInverseMap = HashBiMap.create(blockPattern.getPredicates()).inverse();
+
             buf.writeVarInt(this.blockPreferences.size());
             for (var entry : this.blockPreferences.entrySet()) {
                 MultiPredicate pred = entry.getKey();
 
-                char c = blockPattern.getPredicates().char2ObjectEntrySet()
-                        .stream()
-                        .filter(e -> e.getValue().equals(pred))
-                        .findFirst()
-                        .orElseThrow().getCharKey();
+                char c = predicateInverseMap.get(pred);
                 buf.writeChar(c);
                 buf.writeId(Block.BLOCK_STATE_REGISTRY, entry.getValue().getBlockState());
             }
@@ -130,11 +130,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
                 MultiPredicate pred = entry.getRowKey();
                 BasePredicate base = entry.getColumnKey();
 
-                char c = blockPattern.getPredicates().char2ObjectEntrySet()
-                        .stream()
-                        .filter(e -> e.getValue().equals(pred))
-                        .findFirst()
-                        .orElseThrow().getCharKey();
+                char c = predicateInverseMap.get(pred);
                 buf.writeChar(c);
 
                 buf.writeVarInt(pred.predicates().indexOf(base));
