@@ -49,10 +49,10 @@ public class MultiblockSchemaInfo {
     // spotless:off
     public static final Codec<MultiblockSchemaInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             MultiblockMachineDefinition.CODEC.fieldOf("definition").forGetter(MultiblockSchemaInfo::getDefinition),
-            GTCodecUtils.<Integer, Integer, Int2IntMap>map(Int2IntArrayMap::new, Codec.INT, Codec.INT).fieldOf("userSliceRepeats").forGetter(MultiblockSchemaInfo::getUserSliceRepeats),
+            GTCodecUtils.primitiveKeyedMap(Codec.INT, Codec.INT).fieldOf("userSliceRepeats").forGetter(MultiblockSchemaInfo::getUserSliceRepeats),
             Codec.INT.listOf().fieldOf("userDimensions").forGetter(MultiblockSchemaInfo::getUserDimensions),
             Codec.unboundedMap(BlockPos.CODEC, BlockInfo.CODEC).fieldOf("userGlobalBlockPreferences").forGetter(MultiblockSchemaInfo::getUserGlobalBlockPreferences),
-            GTCodecUtils.<Character, BlockInfo, Char2ObjectMap<BlockInfo>>map(Char2ObjectArrayMap::new, GTCodecUtils.CHAR, BlockInfo.CODEC).fieldOf("blockPreferences").forGetter(MultiblockSchemaInfo::getBlockPreferenceCharMap),
+            GTCodecUtils.primitiveKeyedMap(GTCodecUtils.CHAR, BlockInfo.CODEC).fieldOf("blockPreferences").forGetter(MultiblockSchemaInfo::getBlockPreferenceCharMap),
             GTCodecUtils.table(GTCodecUtils.CHAR, Codec.INT, GTCodecUtils.FAST_UTIL_INT_PAIR_CODEC).fieldOf("minMaxPreferences").forGetter(MultiblockSchemaInfo::getMinMaxPreferenceCharTable)
     ).apply(instance, MultiblockSchemaInfo::new));
     //spotless:on
@@ -94,10 +94,10 @@ public class MultiblockSchemaInfo {
         this.userSliceRepeats = new Int2IntArrayMap();
     }
 
-    public MultiblockSchemaInfo(MultiblockMachineDefinition definition, Int2IntMap userSliceRepeats,
+    public MultiblockSchemaInfo(MultiblockMachineDefinition definition, Map<Integer, Integer> userSliceRepeats,
                                 List<Integer> userDimensions,
                                 Map<BlockPos, BlockInfo> userGlobalBlockPreferences,
-                                Char2ObjectMap<BlockInfo> blockPreferenceMap,
+                                Map<Character, BlockInfo> blockPreferenceMap,
                                 Table<Character, Integer, IntIntPair> minMaxPreferences) {
         this.definition = definition;
         this.userSliceRepeats = new Int2IntArrayMap(userSliceRepeats);
@@ -106,12 +106,11 @@ public class MultiblockSchemaInfo {
 
         BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns()
                 .get(DEFAULT_STRUCTURE).get();
-        for (var entry : blockPreferenceMap.char2ObjectEntrySet()) {
-            blockPreferences.put(blockPattern.getPredicates().get(entry.getCharKey()), entry.getValue());
+        for (var entry : blockPreferenceMap.entrySet()) {
+            blockPreferences.put(blockPattern.getPredicates().get(entry.getKey()), entry.getValue());
         }
 
         for (var entry : minMaxPreferences.cellSet()) {
-
             MultiPredicate pred = blockPattern.getPredicates().get(entry.getRowKey());
             BasePredicate base = pred.predicates().get(entry.getColumnKey());
             getMinMaxPreferences().put(pred, base, entry.getValue());

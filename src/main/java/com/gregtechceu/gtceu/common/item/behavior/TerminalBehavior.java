@@ -215,7 +215,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         CompoundTag tag = item.getOrCreateTag();
 
         if (!tag.contains(CONTROLLER_INFO_TAG)) return Optional.empty();
-        ControllerInfo controllerInfo = ControllerInfo.CODEC.parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
+        ControllerInfo controllerInfo = ControllerInfo.CODEC
+                .parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
                 .getOrThrow(false, GTCEu.LOGGER::error);
 
         MultiblockSchemaInfo schemaInfo;
@@ -271,8 +272,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                 .getOrThrow(false, GTCEu.LOGGER::error);
 
         tooltipComponents.add(Component.translatable("gtceu.top.buffer_bound_pos",
-                                info.pos().getX(), info.pos().getY(), info.pos().getZ())
-                        .withStyle(ChatFormatting.GOLD));
+                info.pos().getX(), info.pos().getY(), info.pos().getZ())
+                .withStyle(ChatFormatting.GOLD));
 
         tooltipComponents.add(info.definition().getBlock().getName());
     }

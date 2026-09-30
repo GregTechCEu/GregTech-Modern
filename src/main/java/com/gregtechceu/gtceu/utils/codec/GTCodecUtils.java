@@ -17,7 +17,6 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
 public final class GTCodecUtils {
@@ -63,10 +62,10 @@ public final class GTCodecUtils {
     };
 
     // Uses a list of pairs internally because the default map codec can't handle non-string primitive keys.
-    public static <K, V, T extends Map<K, V>> Codec<T> map(IntFunction<? extends T> factory, Codec<K> keyCodec,
-                                                           Codec<V> valueCodec) {
+    public static <K, V> Codec<Map<K, V>> primitiveKeyedMap(Codec<K> keyCodec,
+                                                            Codec<V> valueCodec) {
         return Codec.pair(keyCodec, valueCodec).listOf().xmap(list -> {
-            var map = factory.apply(list.size());
+            Map<K, V> map = new HashMap<>(list.size());
             for (var pair : list) {
                 map.put(pair.getFirst(), pair.getSecond());
             }
@@ -75,8 +74,8 @@ public final class GTCodecUtils {
     }
 
     public static <R, C, V> Codec<Table<R, C, V>> table(Codec<R> rowCodec, Codec<C> colCodec, Codec<V> valueCodec) {
-        var colMap = GTCodecUtils.<C, V, Map<C, V>>map(HashMap::new, colCodec, valueCodec);
-        var rowMap = GTCodecUtils.<R, Map<C, V>, Map<R, Map<C, V>>>map(HashMap::new, rowCodec, colMap);
+        var colMap = GTCodecUtils.primitiveKeyedMap(colCodec, valueCodec);
+        var rowMap = GTCodecUtils.primitiveKeyedMap(rowCodec, colMap);
 
         return rowMap.xmap(v -> {
             Table<R, C, V> table = HashBasedTable.create();
