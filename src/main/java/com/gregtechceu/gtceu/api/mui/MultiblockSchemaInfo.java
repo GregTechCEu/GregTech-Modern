@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.mui;
 
-import com.google.common.collect.HashBiMap;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
@@ -10,13 +9,8 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
-
 import com.gregtechceu.gtceu.utils.codec.GTCodecUtils;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
-import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -25,10 +19,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import brachy.modularui.drawable.SchemaRenderer;
 import brachy.modularui.widgets.SchemaWidget;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Table;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
@@ -45,14 +46,14 @@ import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerM
 
 public class MultiblockSchemaInfo {
 
-    //spotless:off
-    @SuppressWarnings("unchecked")
+    // spotless:off
     public static final Codec<MultiblockSchemaInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             MultiblockMachineDefinition.CODEC.fieldOf("definition").forGetter(MultiblockSchemaInfo::getDefinition),
-            GTCodecUtils.map(Int2IntMap.class, Int2IntArrayMap::new, Codec.INT, Codec.INT).fieldOf("userSliceRepeats").forGetter(MultiblockSchemaInfo::getUserSliceRepeats),
+            GTCodecUtils.<Integer, Integer, Int2IntMap>map(Int2IntArrayMap::new, Codec.INT, Codec.INT).fieldOf("userSliceRepeats").forGetter(MultiblockSchemaInfo::getUserSliceRepeats),
             Codec.INT.listOf().fieldOf("userDimensions").forGetter(MultiblockSchemaInfo::getUserDimensions),
             Codec.unboundedMap(BlockPos.CODEC, BlockInfo.CODEC).fieldOf("userGlobalBlockPreferences").forGetter(MultiblockSchemaInfo::getUserGlobalBlockPreferences),
-            GTCodecUtils.map(Char2ObjectMap.class, Char2ObjectArrayMap::new, GTCodecUtils.CHAR, BlockInfo.CODEC).fieldOf("blockPreferences").forGetter(MultiblockSchemaInfo::getBlockPreferenceCharMap)
+            GTCodecUtils.<Character, BlockInfo, Char2ObjectMap<BlockInfo>>map(Char2ObjectArrayMap::new, GTCodecUtils.CHAR, BlockInfo.CODEC).fieldOf("blockPreferences").forGetter(MultiblockSchemaInfo::getBlockPreferenceCharMap),
+            GTCodecUtils.table(GTCodecUtils.CHAR, Codec.INT, GTCodecUtils.FAST_UTIL_INT_PAIR_CODEC).fieldOf("minMaxPreferences").forGetter(MultiblockSchemaInfo::getMinMaxPreferenceCharTable)
     ).apply(instance, MultiblockSchemaInfo::new));
     //spotless:on
 
@@ -93,33 +94,59 @@ public class MultiblockSchemaInfo {
         this.userSliceRepeats = new Int2IntArrayMap();
     }
 
-
-    public MultiblockSchemaInfo(MultiblockMachineDefinition definition, Int2IntMap userSliceRepeats, List<Integer> userDimensions,
-                                Map<BlockPos, BlockInfo> userGlobalBlockPreferences, Char2ObjectMap<BlockInfo> blockPreferenceMap) {
+    public MultiblockSchemaInfo(MultiblockMachineDefinition definition, Int2IntMap userSliceRepeats,
+                                List<Integer> userDimensions,
+                                Map<BlockPos, BlockInfo> userGlobalBlockPreferences,
+                                Char2ObjectMap<BlockInfo> blockPreferenceMap,
+                                Table<Character, Integer, IntIntPair> minMaxPreferences) {
         this.definition = definition;
         this.userSliceRepeats = new Int2IntArrayMap(userSliceRepeats);
         this.userDimensions.addAll(userDimensions);
         this.userGlobalBlockPreferences.putAll(userGlobalBlockPreferences);
 
-        BlockPattern blockPattern = (BlockPattern)definition.getStructurePatterns()
+        BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns()
                 .get(DEFAULT_STRUCTURE).get();
-        for (var entry: blockPreferenceMap.char2ObjectEntrySet()) {
+        for (var entry : blockPreferenceMap.char2ObjectEntrySet()) {
             blockPreferences.put(blockPattern.getPredicates().get(entry.getCharKey()), entry.getValue());
+        }
+
+        for (var entry : minMaxPreferences.cellSet()) {
+
+            MultiPredicate pred = blockPattern.getPredicates().get(entry.getRowKey());
+            BasePredicate base = pred.predicates().get(entry.getColumnKey());
+            getMinMaxPreferences().put(pred, base, entry.getValue());
         }
     }
 
     public Char2ObjectMap<BlockInfo> getBlockPreferenceCharMap() {
-        BlockPattern blockPattern = (BlockPattern)definition.getStructurePatterns()
+        BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns()
                 .get(DEFAULT_STRUCTURE).get();
 
         Char2ObjectMap<BlockInfo> charMap = new Char2ObjectArrayMap<>();
 
         var predicateInverseMap = HashBiMap.create(blockPattern.getPredicates()).inverse();
-        for (var entry: blockPreferences.entrySet()) {
+        for (var entry : blockPreferences.entrySet()) {
             charMap.put(predicateInverseMap.get(entry.getKey()), entry.getValue());
         }
 
         return charMap;
+    }
+
+    public Table<Character, Integer, IntIntPair> getMinMaxPreferenceCharTable() {
+        BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns()
+                .get(DEFAULT_STRUCTURE).get();
+
+        var predicateInverseMap = HashBiMap.create(blockPattern.getPredicates()).inverse();
+
+        Table<Character, Integer, IntIntPair> table = HashBasedTable.create();
+
+        for (var entry : getMinMaxPreferences().cellSet()) {
+            var row = predicateInverseMap.get(entry.getRowKey());
+            var col = entry.getRowKey().predicates().indexOf(entry.getColumnKey());
+            table.put(row, col, entry.getValue());
+        }
+
+        return table;
     }
 
     @ApiStatus.Internal
