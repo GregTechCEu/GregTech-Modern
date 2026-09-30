@@ -178,7 +178,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         if (level.isClientSide) {
             player.displayClientMessage(Component.literal("Loaded controller information"), false);
         } else {
-            itemStack.setTag(new CompoundTag());
+            itemStack.removeTagKey(CONTROLLER_INFO_TAG);
+            itemStack.removeTagKey(SCHEMA_INFO_TAG);
             itemStack.getOrCreateTag().put(CONTROLLER_INFO_TAG,
                     ControllerInfo.CODEC.encodeStart(NbtOps.INSTANCE, new ControllerInfo(controller)).getOrThrow(false,
                             GTCEu.LOGGER::error));
@@ -214,8 +215,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         CompoundTag tag = item.getOrCreateTag();
 
         if (!tag.contains(CONTROLLER_INFO_TAG)) return Optional.empty();
-        ControllerInfo controllerInfo = ControllerInfo.CODEC
-                .parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG)).getOrThrow(false, GTCEu.LOGGER::error);
+        ControllerInfo controllerInfo = ControllerInfo.CODEC.parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
+                .getOrThrow(false, GTCEu.LOGGER::error);
 
         MultiblockSchemaInfo schemaInfo;
         if (tag.contains(SCHEMA_INFO_TAG)) {
@@ -251,8 +252,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
 
     public static void applyUserPreferences(ItemStack item, MultiblockSchemaInfo schemaInfo) {
         CompoundTag tag = item.getOrCreateTag();
-        tag.put(SCHEMA_INFO_TAG, MultiblockSchemaInfo.CODEC.encodeStart(NbtOps.INSTANCE, schemaInfo).getOrThrow(false,
-                GTCEu.LOGGER::error));
+        tag.put(SCHEMA_INFO_TAG, MultiblockSchemaInfo.CODEC.encodeStart(NbtOps.INSTANCE, schemaInfo)
+                .getOrThrow(false, GTCEu.LOGGER::error));
     }
 
     @Override
