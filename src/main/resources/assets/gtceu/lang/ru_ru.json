@@ -6192,6 +6192,21 @@
     "gtceu.tooltip.spoils_into": "Портится в: %s",
     "gtceu.tooltip.spoil_time_total": "Общее время до порчи: %s",
     "gtceu.tooltip.spoil_time_remaining": "До порчи: %s",
-    "gtceu.tooltip.location_entity": "Энтити: %s",
-    "gtceu.tooltip.location": "Локация: %s (%d, %d, %d)"
+    "gtceu.tooltip.location_entity": "Сущность : %s",
+    "gtceu.tooltip.location": "Локация: %s (%d, %d, %d)",
+    "gtceu.multiblock.pattern.between_count": "§cМежду %d и %d§r",
+    "gtceu.multiblock.pattern.exact_count": "§Должно быть ровно: %d§r",
+    "gtceu.multiblock.pattern.max_count": "§cНе более: %d§r",
+    "gtceu.multiblock.pattern.min_count": "§cНе менее: %d§r",
+    "item.gtceu.entity_spoilable": "Сущность, подверженная порче",
+    "gtceu.tooltip.creation_tick": "Создано на тике Верхнего мира %d",
+    "gtceu.tooltip.item_handler_data": "Данные обработчика: %s",
+    "gtceu.tooltip.item_handler_source": "Источник обработчика: %s",
+    "item.gtceu.magnetic_golden_carrot": "Магнитная золотая морковь",
+    "item.gtceu.spoilable_1": "Скоропортящийся 1",
+    "item.gtceu.spoilable_2": "Скоропортящийся 2",
+    "item.gtceu.spoilable_3": "Скоропортящийся 3",
+    "item.gtceu.spoilable_4": "Скоропортящийся 4",
+    "item.gtceu.spoilable_5": "Скоропортящийся 5",
+    "material.gtceu.null": "Null"
 }
