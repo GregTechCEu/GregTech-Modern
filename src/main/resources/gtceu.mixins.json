@@ -38,8 +38,7 @@
         "client.bloom.ModelBlockRendererMixin",
         "client.bloom.QuadLighterMixin",
         "client.bloom.SectionCompilerMixin",
-        "dev.client.KeyboardHandlerMixin",
-        "jei.RecipesGuiAccessor",
+        "dev.client.KeyboardHandlerMixin"
     ],
     "mixins": [
         "BlockBehaviourAccessor",
@@ -76,10 +75,6 @@
         "WorldLoaderMixin",
         "dev.datagen.FixParallelKeyMappingRegistrationMixin",
         "dev.test.GameTestRegistryMixin",
-        "emi.EmiApiAccessor",
-        "emi.FillRecipePacketMixin",
-        "emi.FluidEmiStackMixin",
-        "jei.FluidHelperMixin",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor"
     ],
