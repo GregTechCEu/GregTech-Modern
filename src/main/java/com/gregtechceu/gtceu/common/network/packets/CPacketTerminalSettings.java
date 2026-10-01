@@ -1,12 +1,7 @@
 package com.gregtechceu.gtceu.common.network.packets;
 
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
-import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
-import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -22,13 +17,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.network.NetworkEvent;
 
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Table;
+import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-
-import java.util.Map;
-import java.util.Objects;
 
 public class CPacketTerminalSettings implements GTNetwork.INetPacket {
 
@@ -37,14 +31,14 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
     private final Int2IntMap sliceRepeats;
     private final IntList dimensions;
     private final Object2ObjectMap<BlockPos, BlockInfo> globalPreferences;
-    private final Map<MultiPredicate, BlockInfo> blockPreferences;
-    private final HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences;
+    private final Char2ObjectMap<BlockInfo> blockPreferences;
+    private final Table<Character, Integer, IntIntPair> minMaxPreferences;
 
     public CPacketTerminalSettings(InteractionHand hand, MultiblockMachineDefinition def, Int2IntMap sliceRepeats,
                                    IntList dimensions,
                                    Object2ObjectMap<BlockPos, BlockInfo> globalPreferences,
-                                   Map<MultiPredicate, BlockInfo> blockPreferences,
-                                   HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences) {
+                                   Char2ObjectMap<BlockInfo> blockPreferences,
+                                   Table<Character, Integer, IntIntPair> minMaxPreferences) {
         this.hand = hand;
         this.machineDefinition = def;
         this.sliceRepeats = sliceRepeats;
@@ -53,6 +47,11 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         this.blockPreferences = blockPreferences;
         this.minMaxPreferences = minMaxPreferences;
     }
+
+    private static final FriendlyByteBuf.Reader<BlockInfo> blockInfoReader = (b) -> BlockInfo
+            .fromBlockState(Block.stateById(b.readVarInt()));
+    private static final FriendlyByteBuf.Writer<BlockInfo> blockInfoWriter = (b, v) -> b
+            .writeVarInt(Block.getId(v.getBlockState()));
 
     public CPacketTerminalSettings(FriendlyByteBuf buf) {
         this.hand = buf.readEnum(InteractionHand.class);
@@ -65,35 +64,19 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         this.sliceRepeats = buf.readMap(Int2IntArrayMap::new, FriendlyByteBuf::readVarInt, FriendlyByteBuf::readVarInt);
         this.dimensions = buf.readCollection(IntArrayList::new, FriendlyByteBuf::readVarInt);
         this.globalPreferences = buf.readMap(Object2ObjectOpenHashMap::new, FriendlyByteBuf::readBlockPos,
-                (b) -> BlockInfo.fromBlockState(Block.stateById(buf.readVarInt())));
+                blockInfoReader);
+        this.blockPreferences = buf.readMap(Char2ObjectArrayMap::new, FriendlyByteBuf::readChar, blockInfoReader);
 
-        blockPreferences = new Object2ObjectOpenHashMap<>();
+        Char2ObjectMap<Int2ObjectMap<IntIntPair>> minMaxPreferenceMap = buf.readMap(Char2ObjectArrayMap::new,
+                FriendlyByteBuf::readChar,
+                (b) -> b.readMap(Int2ObjectArrayMap::new, FriendlyByteBuf::readVarInt,
+                        (b1) -> IntIntPair.of(b1.readVarInt(), b1.readVarInt())));
+
         minMaxPreferences = HashBasedTable.create();
-
-        IBlockPattern pattern = machineDefinition.getStructurePatterns()
-                .get(MultiblockControllerMachine.DEFAULT_STRUCTURE).get();
-
-        if (pattern instanceof BlockPattern blockPattern) {
-            int preferenceSize = buf.readVarInt();
-            for (int i = 0; i < preferenceSize; i++) {
-                char c = buf.readChar();
-                MultiPredicate pred = blockPattern.getPredicates().get(c);
-                BlockInfo info = BlockInfo
-                        .fromBlockState(Objects.requireNonNull(buf.readById(Block.BLOCK_STATE_REGISTRY)));
-                this.blockPreferences.put(pred, info);
-            }
-
-            int minMaxSize = buf.readVarInt();
-            for (int i = 0; i < minMaxSize; i++) {
-                char c = buf.readChar();
-                int baseIndex = buf.readVarInt();
-
-                MultiPredicate pred = blockPattern.getPredicates().get(c);
-                BasePredicate base = pred.predicates().get(baseIndex);
-                int min = buf.readVarInt();
-                int max = buf.readVarInt();
-
-                this.minMaxPreferences.put(pred, base, IntIntPair.of(min, max));
+        for (var row : minMaxPreferenceMap.char2ObjectEntrySet()) {
+            var rowKey = row.getCharKey();
+            for (var col : row.getValue().int2ObjectEntrySet()) {
+                minMaxPreferences.put(rowKey, col.getIntKey(), col.getValue());
             }
         }
     }
@@ -106,37 +89,14 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
 
         buf.writeMap(this.sliceRepeats, FriendlyByteBuf::writeVarInt, FriendlyByteBuf::writeVarInt);
         buf.writeCollection(dimensions, FriendlyByteBuf::writeVarInt);
-        buf.writeMap(globalPreferences, FriendlyByteBuf::writeBlockPos,
-                (b, v) -> b.writeVarInt(Block.getId(v.getBlockState())));
+        buf.writeMap(globalPreferences, FriendlyByteBuf::writeBlockPos, blockInfoWriter);
+        buf.writeMap(blockPreferences, (b, v) -> b.writeChar(v), blockInfoWriter);
 
-        IBlockPattern pattern = machineDefinition.getStructurePatterns()
-                .get(MultiblockControllerMachine.DEFAULT_STRUCTURE).get();
-
-        if (pattern instanceof BlockPattern blockPattern) {
-            var predicateInverseMap = HashBiMap.create(blockPattern.getPredicates()).inverse();
-
-            buf.writeVarInt(this.blockPreferences.size());
-            for (var entry : this.blockPreferences.entrySet()) {
-                MultiPredicate pred = entry.getKey();
-
-                char c = predicateInverseMap.get(pred);
-                buf.writeChar(c);
-                buf.writeId(Block.BLOCK_STATE_REGISTRY, entry.getValue().getBlockState());
-            }
-
-            buf.writeVarInt(this.minMaxPreferences.rowKeySet().size());
-            for (var entry : this.minMaxPreferences.cellSet()) {
-                MultiPredicate pred = entry.getRowKey();
-                BasePredicate base = entry.getColumnKey();
-
-                char c = predicateInverseMap.get(pred);
-                buf.writeChar(c);
-
-                buf.writeVarInt(pred.predicates().indexOf(base));
-                buf.writeVarInt(entry.getValue().firstInt());
-                buf.writeVarInt(entry.getValue().secondInt());
-            }
-        }
+        buf.writeMap(minMaxPreferences.rowMap(), (b, v) -> b.writeChar(v),
+                (b, v) -> b.writeMap(v, FriendlyByteBuf::writeVarInt, (b1, p) -> {
+                    b1.writeVarInt(p.firstInt());
+                    b1.writeVarInt(p.secondInt());
+                }));
     }
 
     @Override
@@ -147,13 +107,8 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         ItemStack held = sender.getItemInHand(this.hand);
         if (!GTItems.TERMINAL.isIn(held)) return;
 
-        var schemaInfo = new MultiblockSchemaInfo(this.machineDefinition);
-        schemaInfo.getUserSliceRepeats().putAll(this.sliceRepeats);
-        schemaInfo.getUserDimensions().addAll(this.dimensions);
-        schemaInfo.getUserGlobalBlockPreferences().putAll(this.globalPreferences);
-        schemaInfo.getBlockPreferences().putAll(this.blockPreferences);
-        schemaInfo.getMinMaxPreferences().putAll(this.minMaxPreferences);
-
+        var schemaInfo = new MultiblockSchemaInfo(this.machineDefinition, this.sliceRepeats, this.dimensions,
+                this.globalPreferences, this.blockPreferences, this.minMaxPreferences);
         TerminalBehavior.applyUserPreferences(held, schemaInfo);
     }
 }
