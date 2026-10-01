@@ -71,6 +71,11 @@ public class Filters {
             public int testAmount(T stack) {
                 return Integer.MAX_VALUE;
             }
+
+            @Override
+            public Filter<T> createCopy() {
+                return getEmptyFilter();
+            }
         };
     }
 

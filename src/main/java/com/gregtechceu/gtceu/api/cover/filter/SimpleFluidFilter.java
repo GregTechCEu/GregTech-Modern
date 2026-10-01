@@ -128,6 +128,11 @@ public class SimpleFluidFilter extends Filter<FluidStack> {
         return totalFluidAmount;
     }
 
+    @Override
+    public Filter<FluidStack> createCopy() {
+        return new SimpleFluidFilter(isBlackList, ignoreNbt, Arrays.asList(matches));
+    }
+
     public int getTotalConfiguredFluidAmount(FluidStack fluidStack) {
         int totalAmount = 0;
 

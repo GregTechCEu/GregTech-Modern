@@ -98,4 +98,9 @@ public abstract class Filter<T> implements Predicate<T> {
     public int testAmount(T stack) {
         throw new NotImplementedException("This filter does not support testing amounts.");
     }
+
+    /**
+     * @return A new object that is a copy of this filter
+     */
+    public abstract Filter<T> createCopy();
 }

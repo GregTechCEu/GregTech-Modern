@@ -123,6 +123,11 @@ public class SmartItemFilter extends Filter<ItemStack> {
         return filterMode.cache.computeIfAbsent(itemStack, this::lookup);
     }
 
+    @Override
+    public Filter<ItemStack> createCopy() {
+        return new SmartItemFilter(filterMode);
+    }
+
     private int lookup(ItemStack itemStack) {
         ItemStack copy = itemStack.copyWithCount(Integer.MAX_VALUE);
         var recipe = filterMode.recipeType.get().db()

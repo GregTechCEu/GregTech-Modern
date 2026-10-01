@@ -52,7 +52,7 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
 
     public Filter<ItemStack> getItemFilter() {
         if (itemFilter == null) {
-            itemFilter = Filters.loadItemFilter(attachItem);
+            itemFilter = Filters.loadItemFilter(attachItem).createCopy();
             if (itemFilter instanceof SmartItemFilter smart && coverHolder instanceof MachineCoverContainer mcc) {
                 var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getBlockPos());
                 if (machine != null) smart.setModeFromMachine(machine.getDefinition().getName());
@@ -80,6 +80,7 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
     @Override
     public void onAttached(ItemStack itemStack, @Nullable ServerPlayer player) {
         super.onAttached(itemStack, player);
+        attachItem.applyComponents(itemStack.getComponentsPatch());
     }
 
     @Override
