@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
@@ -54,7 +54,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             Can be called multiple times to add multiple fluids.
             """)
-    public MaterialBuilderWrapper fluid(FluidStorageKey key, FluidState state) {
+    public MaterialBuilderWrapper fluid(FluidStorageKey key, MaterialFluidState state) {
         internal.fluid(key, state);
         return this;
     }

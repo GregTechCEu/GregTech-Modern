@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastPro
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -56,7 +56,7 @@ public class AlloyBlastPropertyAddition {
 
         material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty());
         material.getProperty(PropertyKey.FLUID)
-                .enqueueRegistration(FluidStorageKeys.MOLTEN, new FluidBuilder().state(FluidState.LIQUID));
+                .enqueueRegistration(FluidStorageKeys.MOLTEN, new FluidBuilder().state(MaterialFluidState.LIQUID));
     }
 
     private static boolean isMaterialStackFluidOnly(@NotNull MaterialStack ms) {

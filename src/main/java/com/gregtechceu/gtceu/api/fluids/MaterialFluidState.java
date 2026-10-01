@@ -7,9 +7,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
-public enum FluidState {
+public enum MaterialFluidState {
 
     LIQUID("gtceu.fluid.state_liquid", CustomTags.LIQUID_FLUIDS),
     GAS("gtceu.fluid.state_gas", Tags.Fluids.GASEOUS),
@@ -21,7 +20,7 @@ public enum FluidState {
     @Getter
     private final TagKey<Fluid> tagKey;
 
-    FluidState(@NotNull String translationKey, @NotNull TagKey<Fluid> tagKey) {
+    MaterialFluidState(String translationKey, TagKey<Fluid> tagKey) {
         this.translationKey = translationKey;
         this.tagKey = tagKey;
     }
