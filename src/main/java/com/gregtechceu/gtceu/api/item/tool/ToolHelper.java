@@ -496,7 +496,7 @@ public class ToolHelper {
         LootParams params = lootParams.withParameter(LootContextParams.BLOCK_STATE, state)
                 .create(LootContextParamSets.BLOCK);
         LootTable lootTable = level.getServer().getLootData().getLootTable(state.getBlock().getLootTable());
-        return new LootContext.Builder(params).create(((LootTableAccessor) lootTable).getRandomSequence().orElse(null));
+        return new LootContext.Builder(params).create(((LootTableAccessor) lootTable).getRandomSequence());
     }
 
     public static boolean breakBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos, boolean playSound) {
