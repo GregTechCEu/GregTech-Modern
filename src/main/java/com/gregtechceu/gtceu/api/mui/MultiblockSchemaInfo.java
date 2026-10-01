@@ -72,7 +72,7 @@ public class MultiblockSchemaInfo {
     @Setter
     private Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
     @Getter
-    private final Object2ObjectMap<BlockPos, BlockInfo> userGlobalBlockPreferences = new Object2ObjectOpenHashMap<>();
+    private final Object2ObjectMap<BlockPos, BlockInfo> userGlobalBlockPreferences;
     @Getter
     protected final Map<MultiPredicate, BlockInfo> blockPreferences = new Object2ObjectOpenHashMap<>();
     @Getter
@@ -82,7 +82,7 @@ public class MultiblockSchemaInfo {
     @Getter
     private Int2IntMap userSliceRepeats;
     @Getter
-    private final IntList userDimensions = new IntArrayList();
+    private final IntList userDimensions;
     @Getter
     private final Map<BlockPos, BlockInfo> structureBlocks = new HashMap<>();
 
@@ -92,6 +92,8 @@ public class MultiblockSchemaInfo {
     public MultiblockSchemaInfo(MultiblockMachineDefinition definition) {
         this.definition = definition;
         this.userSliceRepeats = new Int2IntArrayMap();
+        this.userDimensions = new IntArrayList();
+        this.userGlobalBlockPreferences = new Object2ObjectOpenHashMap<>();
     }
 
     public MultiblockSchemaInfo(MultiblockMachineDefinition definition, Map<Integer, Integer> userSliceRepeats,
@@ -101,8 +103,8 @@ public class MultiblockSchemaInfo {
                                 Table<Character, Integer, IntIntPair> minMaxPreferences) {
         this.definition = definition;
         this.userSliceRepeats = new Int2IntArrayMap(userSliceRepeats);
-        this.userDimensions.addAll(userDimensions);
-        this.userGlobalBlockPreferences.putAll(userGlobalBlockPreferences);
+        this.userDimensions = new IntArrayList(userDimensions);
+        this.userGlobalBlockPreferences = new Object2ObjectOpenHashMap<>(userGlobalBlockPreferences);
 
         BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns()
                 .get(DEFAULT_STRUCTURE).get();

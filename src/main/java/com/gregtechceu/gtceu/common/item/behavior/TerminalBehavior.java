@@ -247,8 +247,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
 
         GTNetwork.sendToServer(new CPacketTerminalSettings(hand, definition, schemaInfo.getUserSliceRepeats(),
                 schemaInfo.getUserDimensions(), schemaInfo.getUserGlobalBlockPreferences(),
-                schemaInfo.getBlockPreferences(),
-                schemaInfo.getMinMaxPreferences()));
+                schemaInfo.getBlockPreferenceCharMap(),
+                schemaInfo.getMinMaxPreferenceCharTable()));
     }
 
     public static void applyUserPreferences(ItemStack item, MultiblockSchemaInfo schemaInfo) {
