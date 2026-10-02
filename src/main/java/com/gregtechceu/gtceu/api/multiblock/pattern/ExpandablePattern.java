@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.PredicateResult;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -22,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 public class ExpandablePattern implements IBlockPattern {
 
@@ -41,23 +41,31 @@ public class ExpandablePattern implements IBlockPattern {
         List<IntIntPair> apply();
     }
 
+    public interface PredicateProvider {
+
+        char getPredicateKey(BlockPos pos, List<Integer> list);
+    }
+
     protected final BoundsProvider boundsProvider;
     @Getter
     @Setter
     protected @Nullable BoundsConstraintProvider boundsConstraints = null;
     @Getter
-    protected final BiFunction<BlockPos.MutableBlockPos, List<Integer>, MultiPredicate> predicateProvider;
+    protected final PredicateProvider predicateProvider;
     @Getter
     protected final OriginOffset offset = new OriginOffset();
 
     @Getter
+    private final Char2ObjectMap<@Nullable MultiPredicate> symbolMap;
+    @Getter
     protected final RelativeDirection[] directions;
 
     public ExpandablePattern(BoundsProvider boundsProvider,
-                             BiFunction<BlockPos.MutableBlockPos, List<Integer>, MultiPredicate> predicateProvider,
-                             RelativeDirection[] directions) {
+                             PredicateProvider predicateProvider,
+                             Char2ObjectMap<@Nullable MultiPredicate> symbolMap, RelativeDirection[] directions) {
         this.boundsProvider = boundsProvider;
         this.predicateProvider = predicateProvider;
+        this.symbolMap = symbolMap;
         this.directions = directions;
     }
 
@@ -160,7 +168,10 @@ public class ExpandablePattern implements IBlockPattern {
         Set<MultiPredicate> visited = new HashSet<>();
         for (var pos : BlockPos.betweenClosed(negCorner, posCorner)) {
             BlockPos.MutableBlockPos mPos = pos.mutable();
-            MultiPredicate multiPredicate = predicateProvider.apply(mPos, bounds);
+            char key = predicateProvider.getPredicateKey(mPos, bounds);
+            /* log missing char -> multi predicate? */
+            MultiPredicate multiPredicate = this.symbolMap.get(key);
+            if (multiPredicate == null) continue;
 
             if (visited.add(multiPredicate)) {
                 multiPredicate.resetLogic();

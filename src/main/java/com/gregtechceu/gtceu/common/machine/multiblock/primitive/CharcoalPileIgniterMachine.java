@@ -124,9 +124,12 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                     .constraintProvider(() -> List.of(IntIntPair.of(0, 0), IntIntPair.of(MIN_DEPTH, MAX_DEPTH),
                             IntIntPair.of(MIN_RADIUS, MAX_RADIUS), IntIntPair.of(MIN_RADIUS, MAX_RADIUS),
                             IntIntPair.of(MIN_RADIUS, MAX_RADIUS), IntIntPair.of(MIN_RADIUS, MAX_RADIUS)))
+                    .where('c', Predicates.controller(definition))
+                    .where('f', floor)
+                    .where('w', walls)
+                    .where('l', logs)
                     .predicateProvider((bp, b) -> {
-                        if (bp.equals(BlockPos.ZERO))
-                            return Predicates.controller(definition);
+                        if (bp.equals(BlockPos.ZERO)) return 'c';
 
                         int intersects = 0;
                         boolean topAisle = bp.getX() == b.get(0);
@@ -137,13 +140,12 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                         if (bp.getY() == -b.get(2) || bp.getY() == b.get(3)) intersects++;
                         if (bp.getZ() == b.get(4) || bp.getZ() == -b.get(5)) intersects++;
 
-                        if (intersects >= 2) return Predicates.any();
+                        if (intersects >= 2) return ' ';
 
                         if (intersects == 1) {
-                            if (bottomAisle) return floor;
-                            return walls;
+                            return bottomAisle ? 'f' : 'w';
                         }
-                        return logs;
+                        return 'l';
                     })
                     .build();
         };
