@@ -11,7 +11,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.codecs.PrimitiveCodec;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 
 import java.util.HashMap;
@@ -41,25 +40,6 @@ public final class GTCodecUtils {
             }
         });
     }
-
-    public static final PrimitiveCodec<Character> CHAR = new PrimitiveCodec<>() {
-
-        @Override
-        public <T> DataResult<Character> read(final DynamicOps<T> ops, final T input) {
-            return ops.getNumberValue(input)
-                    .map(n -> (char) n.intValue());
-        }
-
-        @Override
-        public <T> T write(final DynamicOps<T> ops, final Character value) {
-            return ops.createShort((short) value.charValue());
-        }
-
-        @Override
-        public String toString() {
-            return "Char";
-        }
-    };
 
     // Uses a list of pairs internally because the default map codec can't handle non-string primitive keys.
     public static <K, V> Codec<Map<K, V>> primitiveKeyedMap(Codec<K> keyCodec,
