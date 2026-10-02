@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import com.gregtechceu.gtceu.api.sync_system.data_transformers.SyncSystemCodecs;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.utils.codec.GTCodecUtils;
 
@@ -52,8 +53,8 @@ public class MultiblockSchemaInfo {
             GTCodecUtils.primitiveKeyedMap(Codec.INT, Codec.INT).fieldOf("userSliceRepeats").forGetter(MultiblockSchemaInfo::getUserSliceRepeats),
             Codec.INT.listOf().fieldOf("userDimensions").forGetter(MultiblockSchemaInfo::getUserDimensions),
             Codec.unboundedMap(BlockPos.CODEC, BlockInfo.CODEC).fieldOf("userGlobalBlockPreferences").forGetter(MultiblockSchemaInfo::getUserGlobalBlockPreferences),
-            GTCodecUtils.primitiveKeyedMap(GTCodecUtils.CHAR, BlockInfo.CODEC).fieldOf("blockPreferences").forGetter(MultiblockSchemaInfo::getBlockPreferenceCharMap),
-            GTCodecUtils.table(GTCodecUtils.CHAR, Codec.INT, GTCodecUtils.FAST_UTIL_INT_PAIR_CODEC).fieldOf("minMaxPreferences").forGetter(MultiblockSchemaInfo::getMinMaxPreferenceCharTable)
+            GTCodecUtils.primitiveKeyedMap(SyncSystemCodecs.CHAR, BlockInfo.CODEC).fieldOf("blockPreferences").forGetter(MultiblockSchemaInfo::getBlockPreferenceCharMap),
+            GTCodecUtils.table(SyncSystemCodecs.CHAR, Codec.INT, GTCodecUtils.FAST_UTIL_INT_PAIR_CODEC).fieldOf("minMaxPreferences").forGetter(MultiblockSchemaInfo::getMinMaxPreferenceCharTable)
     ).apply(instance, MultiblockSchemaInfo::new));
     //spotless:on
 
@@ -106,16 +107,19 @@ public class MultiblockSchemaInfo {
         this.userDimensions = new IntArrayList(userDimensions);
         this.userGlobalBlockPreferences = new Object2ObjectOpenHashMap<>(userGlobalBlockPreferences);
 
-        BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns()
+        IBlockPattern pattern = definition.getStructurePatterns()
                 .get(DEFAULT_STRUCTURE).get();
-        for (var entry : blockPreferenceMap.entrySet()) {
-            blockPreferences.put(blockPattern.getPredicates().get(entry.getKey()), entry.getValue());
-        }
 
-        for (var entry : minMaxPreferences.cellSet()) {
-            MultiPredicate pred = blockPattern.getPredicates().get(entry.getRowKey());
-            BasePredicate base = pred.predicates().get(entry.getColumnKey());
-            getMinMaxPreferences().put(pred, base, entry.getValue());
+        if (pattern instanceof BlockPattern blockPattern) {
+            for (var entry : blockPreferenceMap.entrySet()) {
+                blockPreferences.put(blockPattern.getPredicates().get(entry.getKey()), entry.getValue());
+            }
+
+            for (var entry : minMaxPreferences.cellSet()) {
+                MultiPredicate pred = blockPattern.getPredicates().get(entry.getRowKey());
+                BasePredicate base = pred.predicates().get(entry.getColumnKey());
+                getMinMaxPreferences().put(pred, base, entry.getValue());
+            }
         }
     }
 
