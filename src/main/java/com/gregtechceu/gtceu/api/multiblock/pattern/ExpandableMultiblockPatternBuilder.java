@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
-
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;

@@ -6,13 +6,13 @@ import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.PredicateResult;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
-import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntList;

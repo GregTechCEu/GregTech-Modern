@@ -315,7 +315,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             MultiPredicate wallPredicate = states(getCasingState(), getGlassState()).or(getValidFloorBlocks());
             MultiPredicate energyPredicate = autoAbilities(true, false, false)
                     .and(abilities(PartAbility.INPUT_ENERGY)
-                    .setMinGlobalLimited(1).setMaxGlobalLimited(3));
+                            .setMinGlobalLimited(1).setMaxGlobalLimited(3));
 
             MultiPredicate edgePredicate = wallPredicate.and(energyPredicate);
             MultiPredicate facePredicate = wallPredicate.and(energyPredicate)
