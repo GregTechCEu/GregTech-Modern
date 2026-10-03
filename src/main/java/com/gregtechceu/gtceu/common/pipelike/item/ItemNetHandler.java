@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
+import com.gregtechceu.gtceu.api.transfer.item.IBundleInsertable;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
@@ -33,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class ItemNetHandler implements IItemHandlerModifiable {
+public class ItemNetHandler implements IItemHandlerModifiable, IBundleInsertable {
 
     @Getter
     @Setter
@@ -54,6 +55,16 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     @NotNull
     @Override
     public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        return handleInsert(stack, simulate, InsertionMode.SPLIT);
+    }
+
+    @NotNull
+    @Override
+    public ItemStack insertItemBundle(@NotNull ItemStack stack, boolean simulate) {
+        return handleInsert(stack, simulate, InsertionMode.ATOMIC);
+    }
+
+    private ItemStack handleInsert(ItemStack stack, boolean simulate, InsertionMode mode) {
         if (stack.isEmpty()) return stack;
 
         if (network == null || pipe == null || pipe.isRemoved() || pipe.isBlocked(facing)) {
@@ -81,14 +92,41 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         if (routePaths.isEmpty()) return stack;
         List<ItemRoutePath> routePathsCopy = new ArrayList<>(routePaths);
 
-        if (conveyor == null) return distributeHighestPriority(routePathsCopy, stack, simulate);
+        if (conveyor == null) return distributeHighestPriority(routePathsCopy, stack, simulate, mode);
 
-        switch (conveyor.getDistributionMode()) {
-            case INSERT_FIRST -> stack = distributeHighestPriority(routePathsCopy, stack, simulate);
-            case ROUND_ROBIN_GLOBAL -> stack = distributeEqually(routePathsCopy, stack, simulate);
-            case ROUND_ROBIN_PRIO -> stack = distributeEquallyNoRestrictive(stack, simulate);
+        return switch (conveyor.getDistributionMode()) {
+            case INSERT_FIRST -> distributeHighestPriority(routePathsCopy, stack, simulate, mode);
+            case ROUND_ROBIN_GLOBAL -> distributeEqually(routePathsCopy, stack, simulate, mode);
+            case ROUND_ROBIN_PRIO -> distributeEquallyNoRestrictive(stack, simulate, mode);
+        };
+    }
+
+    /**
+     * Distributes items to handlers, attempting to fill handlers with a higher priority first
+     */
+    private ItemStack distributeHighestPriority(List<ItemRoutePath> routePaths, ItemStack stack, boolean simulate,
+                                                InsertionMode mode) {
+        return insertOrdered(routePaths, stack, simulate, mode, false);
+    }
+
+    /// {@code trackFairness} records round-robin bookkeeping for the destination that ends up receiving items,
+    /// so later calls keep rotating fairly.
+    private ItemStack insertOrdered(List<ItemRoutePath> routePaths, ItemStack stack, boolean simulate,
+                                    InsertionMode mode, boolean trackFairness) {
+        for (ItemRoutePath inv : routePaths) {
+            if (mode == InsertionMode.SPLIT) {
+                stack = insertIntoTarget(inv, stack, simulate, false);
+                if (stack.isEmpty()) return ItemStack.EMPTY;
+            } else if (insertIntoTarget(inv, stack, true, false).isEmpty()) {
+                if (!simulate) {
+                    insertIntoTarget(inv, stack, false, false);
+                }
+                if (trackFairness) {
+                    transferTo(inv, simulate, stack);
+                }
+                return ItemStack.EMPTY;
+            }
         }
-
         return stack;
     }
 
@@ -97,26 +135,16 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     /////////////////////////////////////
 
     /**
-     * Distributes items to handlers, attempting to fill handlers with a higher priority first
-     */
-    private ItemStack distributeHighestPriority(List<ItemRoutePath> routePaths, ItemStack stack, boolean simulate) {
-        for (ItemRoutePath inv : routePaths) {
-            stack = insertIntoTarget(inv, stack, simulate, false);
-            if (stack.isEmpty()) return ItemStack.EMPTY;
-        }
-        return stack;
-    }
-
-    /**
      * Distributes items evenly to multiple handlers. Attempts to exclude handlers that are behind Restrictive Pipes,
      * unless no other routes are available.
      * Does not take in a list of routes, pulls a copy of the routes if it needs it
      *
      * @param stack    the {@link ItemStack} to insert
      * @param simulate if true, the insertion is only simulated
+     * @param mode     see {@link InsertionMode}
      * @return any remaining items not inserted
      */
-    private ItemStack distributeEquallyNoRestrictive(ItemStack stack, boolean simulate) {
+    private ItemStack distributeEquallyNoRestrictive(ItemStack stack, boolean simulate, InsertionMode mode) {
         // Round-robin distribute to all non-Restrictive destinations
         List<ItemRoutePath> routePathsNonRestrictedCopy = new ArrayList<>(
                 network.getNetData(pipe.getBlockPos(), facing, ItemRoutePathSet.NONRESTRICTED));
@@ -124,13 +152,13 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         if (routePathsNonRestrictedCopy.isEmpty()) {
             remainsNonRestricted = stack;
         } else {
-            remainsNonRestricted = distributeEqually(routePathsNonRestrictedCopy, stack, simulate);
+            remainsNonRestricted = distributeEqually(routePathsNonRestrictedCopy, stack, simulate, mode);
         }
         // if anything is left, distribute to Restrictive destinations
         if (!remainsNonRestricted.isEmpty()) {
             List<ItemRoutePath> routePathsRestrictiveCopy = new ArrayList<>(
                     network.getNetData(pipe.getBlockPos(), facing, ItemRoutePathSet.RESTRICTED));
-            return distributeEqually(routePathsRestrictiveCopy, remainsNonRestricted, simulate);
+            return distributeEqually(routePathsRestrictiveCopy, remainsNonRestricted, simulate, mode);
         } else {
             return ItemStack.EMPTY;
         }
@@ -142,9 +170,18 @@ public class ItemNetHandler implements IItemHandlerModifiable {
      * @param routePaths the inventories to insert to
      * @param stack      the {@link ItemStack} to insert
      * @param simulate   if true, the insertion is only simulated
+     * @param simulate   if true, the insertion is only simulated
      * @return remainder
      */
-    private ItemStack distributeEqually(List<ItemRoutePath> routePaths, ItemStack stack, boolean simulate) {
+    private ItemStack distributeEqually(List<ItemRoutePath> routePaths, ItemStack stack, boolean simulate,
+                                        InsertionMode mode) {
+        // Since atomic mode cannot split the given itemstack over multiple destinations, we just cycle the destinations
+        // for it
+        if (mode == InsertionMode.ATOMIC) {
+            routePaths.sort(Comparator.comparingInt(inv -> didTransferTo(inv, simulate)));
+            return insertOrdered(routePaths, stack, simulate, InsertionMode.ATOMIC, true);
+        }
+
         List<EnhancedRoundRobinData> transferred = new ArrayList<>();
         IntList steps = new IntArrayList();
         int min = Integer.MAX_VALUE;
@@ -464,6 +501,16 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         for (var entry : pipe.getTransferredGlobalRoundRobin().object2IntEntrySet()) {
             entry.setValue(entry.getIntValue() - amount);
         }
+    }
+
+    private enum InsertionMode {
+        /** Stack being inserted can be split over multiple destinations */
+        SPLIT,
+        /**
+         * The inserted stack should be treated as one logical item, and should not be split over multiple destinations,
+         * or partially inserted
+         */
+        ATOMIC
     }
 
     private static class EnhancedRoundRobinData {

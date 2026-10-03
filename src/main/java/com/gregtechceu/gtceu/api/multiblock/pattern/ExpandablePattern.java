@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.PredicateResult;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import net.minecraft.core.BlockPos;
@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -22,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 public class ExpandablePattern implements IBlockPattern {
 
@@ -41,23 +41,31 @@ public class ExpandablePattern implements IBlockPattern {
         List<IntIntPair> apply();
     }
 
+    public interface PredicateProvider {
+
+        char getPredicateKey(BlockPos pos, List<Integer> list);
+    }
+
     protected final BoundsProvider boundsProvider;
     @Getter
     @Setter
     protected @Nullable BoundsConstraintProvider boundsConstraints = null;
     @Getter
-    protected final BiFunction<BlockPos.MutableBlockPos, List<Integer>, MultiPredicate> predicateProvider;
+    protected final PredicateProvider predicateProvider;
     @Getter
     protected final OriginOffset offset = new OriginOffset();
 
     @Getter
+    private final Char2ObjectMap<@Nullable MultiPredicate> symbolMap;
+    @Getter
     protected final RelativeDirection[] directions;
 
     public ExpandablePattern(BoundsProvider boundsProvider,
-                             BiFunction<BlockPos.MutableBlockPos, List<Integer>, MultiPredicate> predicateProvider,
-                             RelativeDirection[] directions) {
+                             PredicateProvider predicateProvider,
+                             Char2ObjectMap<@Nullable MultiPredicate> symbolMap, RelativeDirection[] directions) {
         this.boundsProvider = boundsProvider;
         this.predicateProvider = predicateProvider;
+        this.symbolMap = symbolMap;
         this.directions = directions;
     }
 
@@ -160,7 +168,10 @@ public class ExpandablePattern implements IBlockPattern {
         Set<MultiPredicate> visited = new HashSet<>();
         for (var pos : BlockPos.betweenClosed(negCorner, posCorner)) {
             BlockPos.MutableBlockPos mPos = pos.mutable();
-            MultiPredicate multiPredicate = predicateProvider.apply(mPos, bounds);
+            char key = predicateProvider.getPredicateKey(mPos, bounds);
+            /* log missing char -> multi predicate? */
+            MultiPredicate multiPredicate = this.symbolMap.get(key);
+            if (multiPredicate == null) continue;
 
             if (visited.add(multiPredicate)) {
                 multiPredicate.resetLogic();
@@ -176,16 +187,17 @@ public class ExpandablePattern implements IBlockPattern {
             if (!multiPredicate.isAny()) patternState.updateCache();
 
             // state check
-            BasePredicate innerPredicate = multiPredicate.getPredicateAtPos(context);
+            PredicateResult result = multiPredicate.getPredicateAtPos(context);
 
             // all predicates failed
-            if (innerPredicate == null) {
+            if (!result.hasMatched()) {
+                multiPredicate.onError(context);
                 context.commitSliceErrors(); // this is actually global errors, not slice
                 return false;
             }
 
             // max count checks
-            if (!innerPredicate.checkMaxCount(context)) {
+            if (!result.testMaxCount(context)) {
                 context.commitSliceErrors(); // this is actually global errors, not slice
                 return false;
             }
