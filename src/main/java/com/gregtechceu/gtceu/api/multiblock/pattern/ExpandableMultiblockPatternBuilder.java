@@ -21,7 +21,7 @@ public class ExpandableMultiblockPatternBuilder {
     @Setter
     protected @Nullable ExpandablePattern.PredicateProvider predicateProvider;
     protected final RelativeDirection[] directions = new RelativeDirection[3];
-    private final Char2ObjectMap<@Nullable MultiPredicate> symbolMap = new Char2ObjectOpenHashMap<>();
+    private final Char2ObjectMap<MultiPredicate> symbolMap = new Char2ObjectOpenHashMap<>();
 
     private ExpandableMultiblockPatternBuilder(RelativeDirection aisleDir, RelativeDirection stringDir,
                                                RelativeDirection charDir) {
