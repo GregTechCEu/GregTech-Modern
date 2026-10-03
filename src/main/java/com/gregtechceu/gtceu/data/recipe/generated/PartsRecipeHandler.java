@@ -503,7 +503,6 @@ public final class PartsRecipeHandler {
         if (material.hasProperty(PropertyKey.GEM) || material.hasProperty(PropertyKey.INGOT)) {
             GTRecipeBuilder builder = LATHE_RECIPES.recipeBuilder("lathe_" + material.getName() + "_to_rod")
                     .inputItems(material.hasProperty(PropertyKey.GEM) ? gem : ingot, material)
-                    .duration((int) Math.max(material.getMass() * 2, 1))
                     .EUt(16);
 
             Material magMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
@@ -513,8 +512,10 @@ public final class PartsRecipeHandler {
             if (ConfigHolder.INSTANCE.recipes.harderRods) {
                 builder.outputItems(rod, magMaterial);
                 builder.outputItems(dustSmall, magMaterial, 2);
+                builder.duration((int) Math.max(material.getMass() / 2L, 1));
             } else {
                 builder.outputItems(rod, magMaterial, 2);
+                builder.duration((int) Math.max(material.getMass(), 1));
             }
             builder.save(provider);
         }
