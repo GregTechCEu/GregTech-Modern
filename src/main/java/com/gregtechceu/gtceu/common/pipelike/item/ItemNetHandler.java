@@ -281,9 +281,13 @@ public class ItemNetHandler implements IItemHandlerModifiable, IBundleInsertable
         for (EnhancedRoundRobinData data : transferred) {
             ItemStack toInsert = stack.copy();
             toInsert.setCount(data.toTransfer);
-            int ins = data.toTransfer - insertIntoTarget(data.routePath, toInsert, simulate, false).getCount();
-            inserted += ins;
-            transferTo(data.routePath, simulate, ins);
+            ItemStack ins = insertIntoTarget(data.routePath, toInsert, simulate, false);
+            int insCount = data.toTransfer - ins.getCount();
+
+            inserted += insCount;
+            if (insCount > 0) {
+                transferTo(data.routePath, simulate, insCount);
+            }
         }
 
         ItemStack remainder = stack.copy();

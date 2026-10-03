@@ -75,6 +75,7 @@
         "LevelMixin",
         "LootDataManagerMixin",
         "LootPoolAccessor",
+        "LootTableAccessor",
         "OreConfigurationMixin",
         "OreVeinifierMixin",
         "PotionBrewingAccessor",
