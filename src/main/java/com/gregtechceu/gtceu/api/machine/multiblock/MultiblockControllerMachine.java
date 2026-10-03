@@ -523,7 +523,8 @@ public class MultiblockControllerMachine extends MetaMachine {
                 }
 
                 if (structureHelper != null) {
-                    structureHelper.populate(new MultiblockSchemaInfo(), resultStructure, pattern, null,
+                    structureHelper.populate(new MultiblockSchemaInfo(this.getDefinition()), resultStructure, pattern,
+                            null,
                             getFrontFacing(), getUpwardsFacing(),
                             isFlipped());
                     Long2ReferenceMap<BlockState> blocks = new Long2ReferenceOpenHashMap<>();

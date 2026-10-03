@@ -16,8 +16,8 @@ import net.minecraft.core.Vec3i;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Map;
@@ -66,15 +66,15 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
     protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
                                                     IBlockPattern pattern,
-                                                    Long2ObjectMap<BlockInfo> userBlockPreferences,
+                                                    Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
         BlockPattern blockPattern = (BlockPattern) pattern;
 
         Vec3i dimensions = getDimensions(this.flattenedBlockPattern);
         Direction sliceDir = blockPattern.getDirections()[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
 
-        for (var blockPreference : userBlockPreferences.long2ObjectEntrySet()) {
-            BlockPos pos = BlockPos.of(blockPreference.getLongKey());
+        for (var blockPreference : userBlockPreferences.object2ObjectEntrySet()) {
+            BlockPos pos = blockPreference.getKey();
             BlockInfo blockInfo = blockPreference.getValue();
             if (pos.getX() >= dimensions.getX() ||
                     pos.getY() >= dimensions.getY() ||

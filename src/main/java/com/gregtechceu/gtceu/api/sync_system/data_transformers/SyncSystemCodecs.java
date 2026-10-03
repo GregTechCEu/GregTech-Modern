@@ -13,7 +13,7 @@ public class SyncSystemCodecs {
         @Override
         public <T> DataResult<Character> read(final DynamicOps<T> ops, final T input) {
             return ops.getNumberValue(input)
-                    .map(n -> (char) n.intValue());
+                    .map(n -> (char) n.shortValue());
         }
 
         @Override
