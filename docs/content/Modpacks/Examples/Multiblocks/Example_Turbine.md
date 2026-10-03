@@ -10,7 +10,7 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
 
 === "Java"
     ```java title="MultiMachines.java"
-    public static final MultiblockMachineDefinition HYPER_GAS_TURBINE = REGISTRATE
+    public static final MachineEntry<MultiblockMachineDefinition> HYPER_GAS_TURBINE = REGISTRATE
             .multiblock("hyper_gas_turbine", (info) -> new LargeTurbineMachine(info, GTValues.LuV)) // The value shows one rotor holder tier above the recommended minimum rotor holder. The tier of rotor holder provides a boost based on the efficiency stat.
             .langValue("Hyper Gas Turbine")
             .rotationState(RotationState.NON_Y_AXIS)
