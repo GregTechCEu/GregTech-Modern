@@ -227,15 +227,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     public static IBlockPattern getPattern(MultiblockMachineDefinition definition) {
         MultiPredicate predicate = getMultiPredicate();
-        return ExpandableMultiblockPatternBuilder
-                .start()
+        return ExpandableMultiblockPatternBuilder.start()
                 .boundsProvider(CentralMonitorMachine::getBounds)
                 .constraintProvider(CentralMonitorMachine::getConstraints)
-                .predicateProvider((pos, bounds) -> {
-                    if (pos.equals(BlockPos.ZERO))
-                        return Predicates.controller(definition);
-                    return predicate;
-                })
+                .where('c', Predicates.controller(definition))
+                .where('s', predicate)
+                .predicateProvider((pos, bounds) -> pos.equals(BlockPos.ZERO) ? 'c' : 's')
                 .build();
     }
 
