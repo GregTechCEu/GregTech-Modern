@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -44,8 +45,8 @@ import java.util.function.Function;
 public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implements IWorkable {
 
     private static final int MIN_RADIUS = 1;
-    private static final int MIN_DEPTH = 2;
-    private static final int MAX_DEPTH = 5;
+    private static final int MIN_DEPTH = 3;
+    private static final int MAX_DEPTH = 6;
     private static final int MAX_RADIUS = 5;
     private final Collection<BlockPos> logPos = new ObjectOpenHashSet<>();
 
@@ -61,6 +62,20 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     @Override
     public void formStructure(@NotNull String substructureName) {
         super.formStructure(substructureName);
+        var pState = patternStates.get(substructureName);
+
+        bounds = boundsFunction().apply(getLevel(), getBlockPos().mutable(), getFrontFacing(), getUpwardsFacing());
+        int d = bounds.get(1);
+        int l = bounds.get(2);
+        int r = bounds.get(3);
+        int f = bounds.get(4);
+        int b = bounds.get(5);
+        if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
+            pState.setError(
+                    new PatternStringError(Component.translatable("gtceu.predicate_error.pile_igniter.too_small")));
+            invalidateStructure();
+            return;
+        }
         hasAir = false;
         forEachFormed(DEFAULT_STRUCTURE, (info, pos) -> {
             if (info.getBlockState().is(BlockTags.LOGS)) {
@@ -89,7 +104,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
                 return new IntArrayList(new int[] { 0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS });
             }
-            return new IntArrayList(new int[] { 0, d, l, r, f, b });
+            return new IntArrayList(new int[] { 0, d + 1, l, r, f, b });
         };
     }
 
@@ -122,8 +137,10 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                     .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
                     .boundsProvider(boundsFunction())
                     .constraintProvider(() -> List.of(IntIntPair.of(0, 0), IntIntPair.of(MIN_DEPTH, MAX_DEPTH),
-                            IntIntPair.of(MIN_RADIUS, MAX_RADIUS), IntIntPair.of(MIN_RADIUS, MAX_RADIUS),
-                            IntIntPair.of(MIN_RADIUS, MAX_RADIUS), IntIntPair.of(MIN_RADIUS, MAX_RADIUS)))
+                            IntIntPair.of(MIN_RADIUS + 1, MAX_RADIUS + 1),
+                            IntIntPair.of(MIN_RADIUS + 1, MAX_RADIUS + 1),
+                            IntIntPair.of(MIN_RADIUS + 1, MAX_RADIUS + 1),
+                            IntIntPair.of(MIN_RADIUS + 1, MAX_RADIUS + 1)))
                     .where('c', Predicates.controller(definition))
                     .where('f', floor)
                     .where('w', walls)
@@ -133,7 +150,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
                         int intersects = 0;
                         boolean topAisle = bp.getX() == b.get(0);
-                        boolean bottomAisle = bp.getX() == -(b.get(1) + 1);
+                        boolean bottomAisle = bp.getX() == -b.get(1);
 
                         if (topAisle || bottomAisle) intersects++;
 
@@ -157,7 +174,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                 .errorFunction(ctx -> {
                     BlockPos p = ctx.pos();
                     return PatternStringError.translatable(
-                            "gtceu.predicate_error.charcoal.walls", p.getX(), p.getY(), p.getZ());
+                            "gtceu.predicate_error.charcoal.walls", p.getX(), p.getY(), p.getZ()).pos(p);
                 })
                 .blockTag(CustomTags.CHARCOAL_PILE_IGNITER_WALLS)
                 .contents(builder -> builder.append(CustomTags.CHARCOAL_PILE_IGNITER_WALLS.location()))
@@ -168,7 +185,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         return Predicates.builder("LogPredicate")
                 .predicate(ctx -> ctx.state().is(BlockTags.LOGS_THAT_BURN))
                 .errorFunction(ctx -> PatternStringError.translatable(
-                        "gtceu.predicate_error.charcoal.logs"))
+                        "gtceu.predicate_error.charcoal.logs").pos(ctx.pos()))
                 .blockTag(BlockTags.LOGS_THAT_BURN)
                 .contents(builder -> builder.append(BlockTags.LOGS_THAT_BURN.location()))
                 .toMultiPredicate();

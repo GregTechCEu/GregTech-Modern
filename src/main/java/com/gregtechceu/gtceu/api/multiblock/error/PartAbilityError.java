@@ -20,7 +20,7 @@ import java.util.Collection;
 public class PartAbilityError extends PatternError {
 
     public static final Codec<PartAbilityError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
+            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::pos),
             Codec.STRING.fieldOf("name").forGetter(PartAbilityError::getPartAbilityName))
             .apply(instance, PartAbilityError::new));
 

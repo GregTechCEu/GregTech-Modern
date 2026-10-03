@@ -36,6 +36,13 @@ public interface SettingsHolder<S extends SettingsHolder<S>> extends Comparable<
         return hasSettings() ? getSettings().previewCount() : -1;
     }
 
+    default int getPreviewOrMinCount() {
+        if (!hasSettings()) return -1;
+        PredicateSettings settings = getSettings();
+        if (settings.previewCount() != -1) return settings.previewCount();
+        return settings.minCount();
+    }
+
     default boolean isRenderFormedDisabled() {
         return hasSettings() && getSettings().disableRenderFormed();
     }

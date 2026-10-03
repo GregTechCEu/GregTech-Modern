@@ -17,12 +17,14 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.drawable.SchemaRenderer;
 import brachy.modularui.widgets.SchemaWidget;
+import com.google.common.collect.HashBasedTable;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
@@ -47,9 +49,15 @@ public class MultiblockSchemaInfo {
     @Setter
     private SchemaRenderer renderer;
     @Getter
-    private final Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
+    @Setter
+    private Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
     @Getter
     private final Long2ObjectMap<BlockInfo> userGlobalBlockPreferences = new Long2ObjectOpenHashMap<>();
+    @Getter
+    protected final Map<MultiPredicate, BlockInfo> blockPreferences = new Object2ObjectOpenHashMap<>();
+    @Getter
+    protected final HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences = HashBasedTable
+            .create();
 
     @Getter
     private final Int2IntMap userSliceRepeats = new Int2IntArrayMap();
@@ -92,7 +100,7 @@ public class MultiblockSchemaInfo {
             }
         }
 
-        this.structureHelper.populate(resultStructure, pattern, this.userGlobalBlockPreferences,
+        this.structureHelper.populate(this, resultStructure, pattern, this.userGlobalBlockPreferences,
                 frontFacing, upFacing, isFlipped);
 
         Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();
@@ -115,12 +123,42 @@ public class MultiblockSchemaInfo {
         }
     }
 
+    public int getMinCount(MultiPredicate predicate, BasePredicate basePredicate) {
+        if (!minMaxPreferences.contains(predicate, basePredicate))
+            return Math.max(predicate.getMinCount(), basePredicate.getMinCount());
+        return minMaxPreferences.get(predicate, basePredicate).leftInt();
+    }
+
+    public int getMaxCount(MultiPredicate predicate, BasePredicate basePredicate) {
+        if (!minMaxPreferences.contains(predicate, basePredicate)) {
+            if (predicate.getMaxCount() == -1) return basePredicate.getMaxCount();
+            if (basePredicate.getMaxCount() == -1) return predicate.getMaxCount();
+            return Math.min(predicate.getMaxCount(), basePredicate.getMaxCount());
+        }
+        return minMaxPreferences.get(predicate, basePredicate).rightInt();
+    }
+
+    public int getMinSliceCount(MultiPredicate predicate, BasePredicate basePredicate) {
+        if (!minMaxPreferences.contains(predicate, basePredicate))
+            return Math.max(predicate.getMinSliceCount(), basePredicate.getMinSliceCount());
+        return minMaxPreferences.get(predicate, basePredicate).leftInt();
+    }
+
+    public int getMaxSliceCount(MultiPredicate predicate, BasePredicate basePredicate) {
+        if (!minMaxPreferences.contains(predicate, basePredicate)) {
+            if (predicate.getMaxSliceCount() == -1) return basePredicate.getMaxSliceCount();
+            if (basePredicate.getMaxSliceCount() == -1) return predicate.getMaxSliceCount();
+            return Math.min(predicate.getMaxSliceCount(), basePredicate.getMaxSliceCount());
+        }
+        return minMaxPreferences.get(predicate, basePredicate).rightInt();
+    }
+
     public void clearUserPreferences() {
         this.userSliceRepeats.clear();
         this.userDimensions.clear();
     }
 
-    public void putPredicatePreference(MultiPredicate predicate, BasePredicate basePredicate, BlockInfo info) {
-        this.structureHelper.getBlockPreferences().put(predicate, basePredicate, info);
+    public void putPredicatePreference(MultiPredicate predicate, BlockInfo info) {
+        this.blockPreferences.put(predicate, info);
     }
 }

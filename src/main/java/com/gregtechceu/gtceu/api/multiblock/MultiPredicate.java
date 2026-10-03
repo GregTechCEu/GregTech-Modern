@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.SettingsHolder;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Blocks;
 
 import dev.latvian.mods.rhino.util.RemapForJS;
 import lombok.Getter;
@@ -517,6 +518,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     public static MultiPredicate air() {
         BasePredicate predicate = new PredicateBuilder("Air")
                 .predicate(ctx -> ctx.state().isAir())
+                .blocks(Blocks.AIR)
                 .build().markImmutable();
         return Logic.OR.makePredicate(List.of(), List.of(predicate), true)
                 .isAir(true).markImmutable();
