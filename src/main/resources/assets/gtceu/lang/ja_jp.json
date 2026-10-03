@@ -6,7 +6,7 @@
   "behavior.portable_scanner.amp_per_sec": "平均（直近1秒）: %s A",
   "behavior.portable_scanner.bedrock_fluid.amount": "チャンク内の液体: %s %s - %s%%",
   "behavior.portable_scanner.bedrock_fluid.amount_unknown": "チャンク内の液体: 不明 - %s%%",
-  "behavior.portable_scanner.bedrock_fluid.nothing": "入っている液体: §6何もない§r",
+  "behavior.portable_scanner.bedrock_fluid.nothing": "チャンク内の液体: §6何もない§r",
   "behavior.portable_scanner.block_hardness": "硬さ: %s / 爆破耐性: %s",
   "behavior.portable_scanner.block_name": "名称: %s / MetaData: %s",
   "behavior.portable_scanner.debug_cpu_load": "CPUの平均ロード時間は ~%sns (%s tickの間集計) 最長ロード時間は %sns。",
