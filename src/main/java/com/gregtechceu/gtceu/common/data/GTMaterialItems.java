@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorItem;
+import com.gregtechceu.gtceu.common.item.datacomponents.ResolvableItemEnchantments;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.TagKey;
@@ -206,6 +207,17 @@ public class GTMaterialItems {
                         p.component(GTDataComponents.RELOCATE_MINED_BLOCKS, Unit.INSTANCE);
                         p.component(GTDataComponents.RELOCATE_MOB_DROPS, Unit.INSTANCE);
                     }
+
+                    // Set tool and material enchantments
+                    if (!toolStats.getDefaultEnchantments().isEmpty() || !toolProperty.getEnchantments().isEmpty()) {
+                        var innateEnchantments = new ResolvableItemEnchantments.Mutable();
+                        toolStats.getDefaultEnchantments().forEach(innateEnchantments::upgrade);
+                        toolProperty.getEnchantments().forEach(innateEnchantments::upgrade);
+                        p.component(GTDataComponents.INNATE_ENCHANTMENTS, innateEnchantments.toImmutable());
+                    } else {
+                        p.component(GTDataComponents.INNATE_ENCHANTMENTS, ResolvableItemEnchantments.EMPTY);
+                    }
+
                     return p;
                 })
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
