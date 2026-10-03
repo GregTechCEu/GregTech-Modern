@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
@@ -74,6 +75,10 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
 
         this.block = Either.right(material);
         return this;
+    }
+
+    public SurfaceIndicatorGenerator surfaceRock(Holder<Material> material) {
+        return surfaceRock(material.value());
     }
 
     public SurfaceIndicatorGenerator block(Block block) {

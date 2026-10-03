@@ -82,10 +82,10 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
 
     public static Material getFrameMaterial(int tier) {
         return switch (tier) {
-            case GTValues.MV -> GTMaterials.Steel;
-            case GTValues.HV -> GTMaterials.Titanium;
-            case GTValues.EV -> GTMaterials.TungstenSteel;
-            default -> GTMaterials.Steel;
+            case GTValues.MV -> GTMaterials.Steel.value();
+            case GTValues.HV -> GTMaterials.Titanium.value();
+            case GTValues.EV -> GTMaterials.TungstenSteel.value();
+            default -> GTMaterials.Steel.value();
         };
     }
 

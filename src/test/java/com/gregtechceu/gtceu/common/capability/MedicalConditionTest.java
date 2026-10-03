@@ -125,7 +125,7 @@ public class MedicalConditionTest {
         // equip rubber gloves
         player.setItemSlot(EquipmentSlot.CHEST, GTItems.RUBBER_GLOVES.asStack());
         // give a bucket of Fluorine
-        player.addItem(new ItemStack(GTMaterials.Fluorine.getBucket()));
+        player.addItem(new ItemStack(GTMaterials.Fluorine.value().getBucket()));
 
         helper.startSequence()
                 // tick the medical condition tracker for 10 seconds

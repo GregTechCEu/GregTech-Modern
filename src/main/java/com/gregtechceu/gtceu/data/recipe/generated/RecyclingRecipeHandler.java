@@ -22,7 +22,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 public final class RecyclingRecipeHandler {
 
-    private static final List<TagPrefix> IGNORE_ARC_SMELTING = Arrays.asList(ingot, gem, nugget);
+    private static final List<Holder<TagPrefix>> IGNORE_ARC_SMELTING = Arrays.asList(ingot, gem, nugget);
 
     private RecyclingRecipeHandler() {}
 
@@ -30,22 +30,21 @@ public final class RecyclingRecipeHandler {
         // registers universal maceration recipes for specified ore prefixes
         GTRegistries.TAG_PREFIXES.holders()
                 .filter(h -> h != null && h.isBound())
-                .map(Holder::value)
-                .filter(TagPrefix::generateRecycling)
+                .filter(h -> h.value().generateRecycling())
                 .forEach(tagPrefix -> {
                     processCrushing(provider, tagPrefix, material);
                 });
     }
 
-    private static void processCrushing(@NotNull RecipeOutput provider, @NotNull TagPrefix prefix,
+    private static void processCrushing(@NotNull RecipeOutput provider, @NotNull Holder<TagPrefix> prefix,
                                         @NotNull Material material) {
         if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
 
         ArrayList<MaterialStack> materialStacks = new ArrayList<>();
-        materialStacks.add(new MaterialStack(material, prefix.getMaterialAmount(material)));
-        materialStacks.addAll(prefix.secondaryMaterials());
+        materialStacks.add(new MaterialStack(material, prefix.value().getMaterialAmount(material)));
+        materialStacks.addAll(prefix.value().secondaryMaterials());
         // only ignore arc smelting for blacklisted prefixes if yielded material is the same as input material
         // if arc smelting gives different material, allow it
         boolean ignoreArcSmelting = IGNORE_ARC_SMELTING.contains(prefix) &&
