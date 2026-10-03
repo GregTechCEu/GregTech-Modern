@@ -80,6 +80,11 @@ public class CompositeFilter<T> extends Filter<T> {
     }
 
     @Override
+    public Filter<T> createCopy() {
+        return new CompositeFilter<>(itemStacks.toList(), filterableType);
+    }
+
+    @Override
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         SlotGroup slotGroup = new SlotGroup("filters", 9);
 

@@ -392,9 +392,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                     SimpleItemFilter prototypeComponent = magnet.get(GTDataComponents.SIMPLE_ITEM_FILTER);
                     SimpleItemFilter copy = null;
                     if (prototypeComponent != null) {
-                        copy = SimpleItemFilter.forItems(prototypeComponent.isIgnoreNbt(),
-                                prototypeComponent.getMatches());
-                        copy.setBlackList(prototypeComponent.isBlackList());
+                        copy = (SimpleItemFilter) prototypeComponent.createCopy();
                     }
                     mockStack.set(GTDataComponents.SIMPLE_ITEM_FILTER, copy);
                 }

@@ -12,6 +12,7 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.apache.commons.lang3.NotImplementedException;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -49,6 +50,15 @@ public class Filters {
         return FILTERS.get(item).filterableType == filterableType;
     }
 
+    @SuppressWarnings("unchecked")
+    @Nullable
+    public static <T> DataComponentType<Filter<T>> getFilterComponentType(Class<T> filterableType, Item item) {
+        if (!FILTERS.containsKey(item)) return null;
+        var entry = FILTERS.get(item);
+        if (entry.filterableType != filterableType) return null;
+        return (DataComponentType<Filter<T>>) entry.dataComponentType.value();
+    }
+
     public static <T> Filter<T> getEmptyFilter() {
         return new Filter<>() {
 
@@ -70,6 +80,11 @@ public class Filters {
             @Override
             public int testAmount(T stack) {
                 return Integer.MAX_VALUE;
+            }
+
+            @Override
+            public Filter<T> createCopy() {
+                return getEmptyFilter();
             }
         };
     }
