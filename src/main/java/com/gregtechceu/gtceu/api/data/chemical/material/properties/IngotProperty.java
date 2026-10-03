@@ -6,6 +6,7 @@ import net.minecraft.core.Holder;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.core.Holder;
 import org.jetbrains.annotations.Nullable;
 
 public class IngotProperty implements IMaterialProperty {

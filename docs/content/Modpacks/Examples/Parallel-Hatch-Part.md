@@ -8,7 +8,7 @@ title: "Custom Parallel Hatch"
 ## Parallel Hatch
 === "Java"
     ```java title="AddonMachines.java"
-        public static final MachineDefinition[] PARALLEL_HATCH = registerTieredMachines(ADDON_REGISTRATE, "custom_parallel_hatch",
+        public static final MachineEntry<MachineDefinition>[] PARALLEL_HATCH = registerTieredMachines(ADDON_REGISTRATE, "custom_parallel_hatch",
                 ParallelHatchPartMachine::new,
                 (tier, builder) -> builder
                         .langValue(switch (tier) {
