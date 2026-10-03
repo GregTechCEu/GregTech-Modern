@@ -491,7 +491,7 @@ public class MiscRecipeLoader {
             VanillaRecipeHelper.addShapedRecipe(provider, "flour_to_dough", new ItemStack(DOUGH.asItem(), 8),
                     "FFF", "FWF", "FFF",
                     'F', CustomTags.WHEAT_GRAINS,
-                    'W', Water.getBucket());
+                    'W', Water.value().getBucket());
 
             MIXER_RECIPES.recipeBuilder("flour_to_dough")
                     .inputItems(CustomTags.WHEAT_GRAINS, 2)
@@ -526,7 +526,7 @@ public class MiscRecipeLoader {
             VanillaRecipeHelper.addShapedRecipe(provider, "flour_to_dough", new ItemStack(DOUGH.asItem(), 4),
                     "FFF", "FWF", "FFF",
                     'F', CustomTags.WHEAT_GRAINS,
-                    'W', Water.getBucket());
+                    'W', Water.value().getBucket());
 
             MIXER_RECIPES.recipeBuilder("flour_to_dough")
                     .inputItems(CustomTags.WHEAT_GRAINS, 4)

@@ -15,7 +15,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.BREWING_RECIPES;
 public class BrewingRecipes {
 
     public static void init(RecipeOutput provider) {
-        for (Material material : new Material[] { Talc, Soapstone, Redstone }) {
+        for (Material material : new Material[] { Talc.value(), Soapstone.value(), Redstone.value() }) {
             BREWING_RECIPES.recipeBuilder("lubricant_from_oil_and_" + material.getName())
                     .inputItems(dust, material)
                     .inputFluids(Oil.getFluid(1000))

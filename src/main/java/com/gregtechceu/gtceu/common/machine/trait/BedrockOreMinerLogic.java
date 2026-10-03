@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.SectionPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 
@@ -79,8 +80,9 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             WeightedMaterial wm = GTUtil.getRandomItem(serverLevel.random, veinMaterials);
             if (wm == null) return null;
             Material material = wm.material();
-            ItemStack stack = ChemicalHelper.get(GTRegistries.TAG_PREFIXES
-                    .getOptional(GTCEu.id(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix)).orElseThrow(),
+            var bedrockOrePrefixKey = ResourceKey.create(GTRegistries.Keys.TAG_PREFIX,
+                    GTCEu.id(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix));
+            ItemStack stack = ChemicalHelper.get(GTRegistries.TAG_PREFIXES.getOrThrow(bedrockOrePrefixKey),
                     material, getOreToProduce());
             // backup 1: crushed; if raw ore doesn't exist
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce());

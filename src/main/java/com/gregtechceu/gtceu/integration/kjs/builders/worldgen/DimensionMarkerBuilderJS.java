@@ -16,14 +16,14 @@ import java.util.function.Supplier;
 
 @Setter
 @Accessors(fluent = true, chain = true)
-public class DimensionMarkerBuilder extends BuilderBase<DimensionMarker> {
+public class DimensionMarkerBuilderJS extends BuilderBase<DimensionMarker> {
 
     private Supplier<Item> iconSupplier;
     private int tier = 0;
     @Nullable
     private Component overrideName;
 
-    public DimensionMarkerBuilder(ResourceLocation id) {
+    public DimensionMarkerBuilderJS(ResourceLocation id) {
         super(id);
     }
 

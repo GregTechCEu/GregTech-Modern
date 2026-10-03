@@ -156,8 +156,8 @@ public class CommonEventListener {
             }
 
             var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
-
             HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+            if (property == null) continue;
 
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.

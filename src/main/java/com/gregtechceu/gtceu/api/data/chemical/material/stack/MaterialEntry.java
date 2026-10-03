@@ -5,17 +5,31 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import com.google.common.base.Preconditions;
+import net.minecraft.core.Holder;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
 public record MaterialEntry(TagPrefix tagPrefix, Material material) {
 
-    public MaterialEntry {
-        Preconditions.checkNotNull(tagPrefix, "MaterialEntry TagPrefix cannot be null!");
-        Preconditions.checkNotNull(material, "MaterialEntry Material cannot be null!");
+    public MaterialEntry(Holder<TagPrefix> tagPrefixHolder, Holder<Material> materialHolder) {
+        this(tagPrefixHolder.value(), materialHolder.value());
+    }
+
+    public MaterialEntry(TagPrefix tagPrefix, Holder<Material> materialHolder) {
+        this(tagPrefix, materialHolder.value());
+    }
+
+    public MaterialEntry(Holder<TagPrefix> tagPrefixHolder, Material material) {
+        this(tagPrefixHolder.value(), material);
+    }
+
+    public MaterialEntry(TagPrefix tagPrefix, Material material) {
+        this.tagPrefix = Objects.requireNonNull(tagPrefix, "MaterialEntry TagPrefix cannot be null!");
+        this.material = Objects.requireNonNull(material, "MaterialEntry Material cannot be null!");
     }
 
     private static final Map<String, MaterialEntry> PARSE_CACHE = new WeakHashMap<>();
