@@ -67,18 +67,20 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
                 blockInfoReader);
         this.blockPreferences = buf.readMap(Char2ObjectArrayMap::new, FriendlyByteBuf::readChar, blockInfoReader);
 
-        Char2ObjectMap<Int2ObjectMap<IntIntPair>> minMaxPreferenceMap = buf.readMap(Char2ObjectArrayMap::new,
-                FriendlyByteBuf::readChar,
-                (b) -> b.readMap(Int2ObjectArrayMap::new, FriendlyByteBuf::readVarInt,
-                        (b1) -> IntIntPair.of(b1.readVarInt(), b1.readVarInt())));
-
         minMaxPreferences = HashBasedTable.create();
-        for (var row : minMaxPreferenceMap.char2ObjectEntrySet()) {
-            var rowKey = row.getCharKey();
-            for (var col : row.getValue().int2ObjectEntrySet()) {
-                minMaxPreferences.put(rowKey, col.getIntKey(), col.getValue());
-            }
-        }
+        /*
+         * Char2ObjectMap<Int2ObjectMap<IntIntPair>> minMaxPreferenceMap = buf.readMap(Char2ObjectArrayMap::new,
+         * FriendlyByteBuf::readChar,
+         * (b) -> b.readMap(Int2ObjectArrayMap::new, FriendlyByteBuf::readVarInt,
+         * (b1) -> IntIntPair.of(b1.readVarInt(), b1.readVarInt())));
+         * 
+         * for (var row : minMaxPreferenceMap.char2ObjectEntrySet()) {
+         * var rowKey = row.getCharKey();
+         * for (var col : row.getValue().int2ObjectEntrySet()) {
+         * minMaxPreferences.put(rowKey, col.getIntKey(), col.getValue());
+         * }
+         * }
+         */
     }
 
     @Override
@@ -92,11 +94,13 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         buf.writeMap(globalPreferences, FriendlyByteBuf::writeBlockPos, blockInfoWriter);
         buf.writeMap(blockPreferences, (b, v) -> b.writeChar(v), blockInfoWriter);
 
-        buf.writeMap(minMaxPreferences.rowMap(), (b, v) -> b.writeChar(v),
-                (b, v) -> b.writeMap(v, FriendlyByteBuf::writeVarInt, (b1, p) -> {
-                    b1.writeVarInt(p.firstInt());
-                    b1.writeVarInt(p.secondInt());
-                }));
+        /*
+         * buf.writeMap(minMaxPreferences.rowMap(), (b, v) -> b.writeChar(v),
+         * (b, v) -> b.writeMap(v, FriendlyByteBuf::writeVarInt, (b1, p) -> {
+         * b1.writeVarInt(p.firstInt());
+         * b1.writeVarInt(p.secondInt());
+         * }));
+         */
     }
 
     @Override
@@ -108,7 +112,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         if (!GTItems.TERMINAL.isIn(held)) return;
 
         var schemaInfo = new MultiblockSchemaInfo(this.machineDefinition, this.sliceRepeats, this.dimensions,
-                this.globalPreferences, this.blockPreferences, this.minMaxPreferences);
+                this.globalPreferences, this.blockPreferences);
         TerminalBehavior.applyUserPreferences(held, schemaInfo);
     }
 }

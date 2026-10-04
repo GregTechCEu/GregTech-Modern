@@ -44,6 +44,7 @@ import brachy.modularui.factory.inventory.InventoryTypes;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
+import com.google.common.collect.HashBasedTable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.Pair;
@@ -247,8 +248,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
 
         GTNetwork.sendToServer(new CPacketTerminalSettings(hand, definition, schemaInfo.getUserSliceRepeats(),
                 schemaInfo.getUserDimensions(), schemaInfo.getUserGlobalBlockPreferences(),
-                schemaInfo.getBlockPreferenceCharMap(),
-                schemaInfo.getMinMaxPreferenceCharTable()));
+                schemaInfo.getBlockPreferences(), HashBasedTable.create()
+        /* schemaInfo.getMinMaxPreferenceCharTable() */));
     }
 
     public static void applyUserPreferences(ItemStack item, MultiblockSchemaInfo schemaInfo) {

@@ -18,6 +18,7 @@ import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Map;
@@ -135,8 +136,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
                     // Attempts to first place the predicate if the minimum (slice) count isn't satisfied, then the
                     // maximum (slice) count
-                    if (tryMinCount(info, resultStructure, predicate, pos, sliceDir, sliceCoord)) continue;
-                    if (tryMaxCount(info, resultStructure, predicate, pos, sliceDir, sliceCoord)) continue;
+                    if (tryMinCount(info, resultStructure, predicate, c, pos, sliceDir, sliceCoord)) continue;
+                    if (tryMaxCount(info, resultStructure, predicate, c, pos, sliceDir, sliceCoord)) continue;
                     // If we arrive here, there's nothing we can place that doesn't overflow a max count!
                     throw new IllegalStateException(
                             "Could not place a block without breaking maxCount requirements for character " + c);
@@ -146,7 +147,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     }
 
     private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                MultiPredicate predicate,
+                                MultiPredicate predicate, @Nullable Character predicateChar,
                                 BlockPos pos, Direction dir, int offset) {
         // TODO rehandle user min count
         // Find first unsatisfied min predicate while also checking type specific logic
@@ -223,7 +224,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
         // check if each child predicate min is satisfied
         for (MultiPredicate child : predicate.children()) {
-            if (tryMinCount(info, resultStructure, child, pos, dir, offset)) return true;
+            if (tryMinCount(info, resultStructure, child, null, pos, dir, offset)) return true;
         }
 
         // check if main predicate min is satisfied
@@ -241,7 +242,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             return false;
         }
 
-        BlockInfo toInsert = info.getBlockPreferences().get(predicate);
+        BlockInfo toInsert = predicateChar != null ? info.getBlockPreferences().get(predicateChar.charValue()) : null;
         if (toInsert == null) {
             // TODO filtering?
             toInsert = predicate.getCandidates().get(0).get(0);
@@ -260,7 +261,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     }
 
     private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                MultiPredicate predicate,
+                                MultiPredicate predicate, @Nullable Character predicateChar,
                                 BlockPos pos, Direction dir, int offset) {
         // check if main predicate max is satisfied
         int maxCount = predicate.getMaxCount();
@@ -340,10 +341,10 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
         // check if each child predicate min is satisfied
         for (MultiPredicate child : predicate.children()) {
-            if (tryMaxCount(info, resultStructure, child, pos, dir, offset)) return true;
+            if (tryMaxCount(info, resultStructure, child, null, pos, dir, offset)) return true;
         }
 
-        BlockInfo toInsert = info.getBlockPreferences().get(predicate);
+        BlockInfo toInsert = predicateChar != null ? info.getBlockPreferences().get(predicateChar.charValue()) : null;
         if (toInsert == null) {
             // TODO filtering?
             toInsert = predicate.getCandidates().get(0).get(0);

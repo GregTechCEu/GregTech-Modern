@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.function.Supplier;
 
-@Mixin(ModularUIEmiRecipe.class)
+@Mixin(value = ModularUIEmiRecipe.class, remap = false)
 public interface ModularUIEmiRecipeAccessor {
 
     @Accessor

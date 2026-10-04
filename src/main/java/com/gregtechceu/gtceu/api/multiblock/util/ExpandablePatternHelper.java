@@ -12,6 +12,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Objects;
@@ -106,15 +107,15 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
 
             // Attempts to first place the predicate if the min (layer) count isn't satisfied, then the
             // max (layer) count
-            if (tryMinCount(info, resultStructure, predicate, mutablePos)) continue;
-            if (tryMaxCount(info, resultStructure, predicate, mutablePos)) continue;
+            if (tryMinCount(info, resultStructure, predicate, key, mutablePos)) continue;
+            if (tryMaxCount(info, resultStructure, predicate, key, mutablePos)) continue;
             // If we arrive here, there's nothing we can place that doesn't overflow a max count!
             throw new IllegalStateException("Could not place a block without breaking maxCount requirements");
         }
     }
 
     private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                MultiPredicate predicate,
+                                MultiPredicate predicate, @Nullable Character predicateKey,
                                 BlockPos pos) {
         for (BasePredicate basePredicate : predicate.predicates()) {
             int minCount = info.getMinCount(predicate, basePredicate);
@@ -124,8 +125,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             if (minCount == -1 || totalAlreadyPopulated >= minCount) continue;
 
             BlockInfo toInsert = null;
-            if (info.getBlockPreferences().containsKey(predicate)) {
-                toInsert = info.getBlockPreferences().get(predicate);
+            if (predicateKey != null && info.getBlockPreferences().containsKey(predicateKey.charValue())) {
+                toInsert = info.getBlockPreferences().get(predicateKey.charValue());
             } else if (!basePredicate.getCandidates().isEmpty()) {
                 toInsert = basePredicate.getCandidates().get(0);
             }
@@ -133,13 +134,13 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             return true;
         }
         for (MultiPredicate child : predicate.children()) {
-            if (tryMinCount(info, resultStructure, child, pos)) return true;
+            if (tryMinCount(info, resultStructure, child, null, pos)) return true;
         }
         return false;
     }
 
     private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                MultiPredicate predicate,
+                                MultiPredicate predicate, @Nullable Character predicateKey,
                                 BlockPos pos) {
         for (BasePredicate basePredicate : predicate.predicates()) {
             int maxCount = info.getMaxCount(predicate, basePredicate);
@@ -149,8 +150,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
 
             BlockInfo toInsert = null;
-            if (info.getBlockPreferences().containsKey(predicate)) {
-                toInsert = info.getBlockPreferences().get(predicate);
+            if (predicateKey != null && info.getBlockPreferences().containsKey(predicateKey.charValue())) {
+                toInsert = info.getBlockPreferences().get(predicateKey.charValue());
             } else if (!basePredicate.getCandidates().isEmpty()) {
                 toInsert = basePredicate.getCandidates().get(0);
             }
@@ -158,7 +159,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             return true;
         }
         for (MultiPredicate child : predicate.children()) {
-            if (tryMaxCount(info, resultStructure, child, pos)) return true;
+            if (tryMaxCount(info, resultStructure, child, null, pos)) return true;
         }
         return false;
     }

@@ -362,6 +362,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     private void createPredicateMenus(Flow predicatesRow, BlockPattern blockPattern) {
         for (var entry : blockPattern.getPredicates().char2ObjectEntrySet()) {
             MultiPredicate predicate = entry.getValue();
+            char key = entry.getCharKey();
             // todo figure out sliders needed for predicate min/max depending on base predicates in the
             // main predicate
             if (predicate.isAny() || predicate.isAir()) {
@@ -395,11 +396,11 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                 if (candidates.isEmpty()) {
                                     return new EmptyWidget();
                                 } else if (candidates.size() > 1) {
-                                    return createInnerPredicateMenu(predicate, basePredicate, candidates);
+                                    return createInnerPredicateMenu(key, predicate, basePredicate, candidates);
                                 } else {
                                     return new ToggleButton()
                                             .value(new BoolValue.Dynamic(() -> false,
-                                                    (b) -> setPredicateDefaultBlock(predicate,
+                                                    (b) -> setPredicateDefaultBlock(key,
                                                             candidates.get(0))))
                                             .size(16)
                                             .tooltip(r -> r.add(
@@ -413,7 +414,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         }
     }
 
-    private ContextMenuButton<?> createInnerPredicateMenu(MultiPredicate predicate, BasePredicate basePredicate,
+    private ContextMenuButton<?> createInnerPredicateMenu(char predicateKey, MultiPredicate predicate,
+                                                          BasePredicate basePredicate,
                                                           List<BlockInfo> candidates) {
         return new ContextMenuButton<>(basePredicate.toString())
                 .size(16)
@@ -432,7 +434,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             return new ToggleButton()
                                     .value(new BoolValue.Dynamic(
                                             () -> false,
-                                            (b) -> setPredicateDefaultBlock(predicate, blockInfo)))
+                                            (b) -> setPredicateDefaultBlock(predicateKey, blockInfo)))
                                     .size(16)
                                     .tooltip(r -> r.add(stackName))
                                     .overlay(new ItemDrawable(
@@ -460,9 +462,9 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     }
 
     /// ==== User Preference UI ======
-    private void setPredicateDefaultBlock(MultiPredicate predicate,
+    private void setPredicateDefaultBlock(char predicate,
                                           BlockInfo blockInfo) {
-        this.multiblockSchemaInfo.putPredicatePreference(predicate, blockInfo);
+        this.multiblockSchemaInfo.getBlockPreferences().put(predicate, blockInfo);
         refreshSchema();
         refreshViewWidget();
     }
