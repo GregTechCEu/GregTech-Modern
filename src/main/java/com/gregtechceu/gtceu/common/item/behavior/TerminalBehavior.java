@@ -80,9 +80,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             return InteractionResult.PASS;
         }
 
-        if (!tag.contains(CONTROLLER_INFO_TAG)) return InteractionResult.PASS;
-        ControllerInfo info = ControllerInfo.CODEC.parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
-                .getOrThrow(false, GTCEu.LOGGER::error);
+        var info = loadControllerInfo(stack);
+        if (info == null) return InteractionResult.PASS;
 
         if (controller.getDefinition() != info.definition()) {
             // TODO: Log errors in chat
@@ -99,10 +98,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         boolean flipped = controller.isFlipped();
 
         if (!level.isClientSide) {
-            if (!tag.contains(SCHEMA_INFO_TAG)) return InteractionResult.PASS;
-            MultiblockSchemaInfo schemaInfo = MultiblockSchemaInfo.CODEC
-                    .parse(NbtOps.INSTANCE, tag.getCompound(SCHEMA_INFO_TAG))
-                    .getOrThrow(false, GTCEu.LOGGER::error);
+            MultiblockSchemaInfo schemaInfo = loadSchemaInfo(stack, controller.getDefinition());
 
             ServerPlayer serverPlayer = (ServerPlayer) player;
             // Partially copy pasted from MultiblockControllerMachine#onUse.
@@ -213,21 +209,10 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
     }
 
     private Optional<ModularPanel<?>> clientPanel(ItemStack item, InteractionHand hand) {
-        CompoundTag tag = item.getOrCreateTag();
+        var controllerInfo = loadControllerInfo(item);
+        if (controllerInfo == null) return Optional.empty();
 
-        if (!tag.contains(CONTROLLER_INFO_TAG)) return Optional.empty();
-        ControllerInfo controllerInfo = ControllerInfo.CODEC
-                .parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
-                .getOrThrow(false, GTCEu.LOGGER::error);
-
-        MultiblockSchemaInfo schemaInfo;
-        if (tag.contains(SCHEMA_INFO_TAG)) {
-            schemaInfo = MultiblockSchemaInfo.CODEC
-                    .parse(NbtOps.INSTANCE, tag.getCompound(SCHEMA_INFO_TAG))
-                    .getOrThrow(false, GTCEu.LOGGER::error);
-        } else {
-            schemaInfo = new MultiblockSchemaInfo(controllerInfo.definition);
-        }
+        MultiblockSchemaInfo schemaInfo = loadSchemaInfo(item, controllerInfo.definition());
 
         MultiblockPreviewWidget previewWidget = new MultiblockPreviewWidget(controllerInfo.definition(), schemaInfo,
                 200, 200)
@@ -258,6 +243,36 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                 .getOrThrow(false, GTCEu.LOGGER::error));
     }
 
+    public MultiblockSchemaInfo loadSchemaInfo(ItemStack stack, MultiblockMachineDefinition definition) {
+        CompoundTag tag = stack.getOrCreateTag();
+        if (tag.contains(SCHEMA_INFO_TAG)) {
+            try {
+                return MultiblockSchemaInfo.CODEC
+                        .parse(NbtOps.INSTANCE, tag.getCompound(SCHEMA_INFO_TAG))
+                        .getOrThrow(false, GTCEu.LOGGER::error);
+            } catch (Exception e) {
+                return new MultiblockSchemaInfo(definition);
+            }
+        } else {
+            return new MultiblockSchemaInfo(definition);
+        }
+    }
+
+    public @Nullable ControllerInfo loadControllerInfo(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        if (tag.contains(CONTROLLER_INFO_TAG)) {
+            try {
+                return ControllerInfo.CODEC
+                        .parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
+                        .getOrThrow(false, GTCEu.LOGGER::error);
+            } catch (Exception e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
         return null;
@@ -268,9 +283,9 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                                 TooltipFlag isAdvanced) {
         CompoundTag tag = stack.getOrCreateTag();
 
-        if (!tag.contains(CONTROLLER_INFO_TAG)) return;
-        ControllerInfo info = ControllerInfo.CODEC.parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
-                .getOrThrow(false, GTCEu.LOGGER::error);
+        var info = loadControllerInfo(stack);
+
+        if (info == null) return;
 
         tooltipComponents.add(Component.translatable("gtceu.top.buffer_bound_pos",
                 info.pos().getX(), info.pos().getY(), info.pos().getZ())

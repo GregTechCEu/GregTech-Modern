@@ -97,6 +97,11 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             char key = predicateProvider.getPredicateKey(mutablePos, userRepeats);
             MultiPredicate predicate = expandablePattern.getSymbolMap().get(key);
 
+            if (predicate == null)
+                throw new IllegalStateException(
+                        "Predicate provider returned character that is not mapped to a predicate: '%s'"
+                                .formatted(key));
+
             // this basically reshuffles the coordinates into absolute form from relative form
             setFromDirection(mutablePos, absolutes[0], pos.getX());
             setFromDirection(mutablePos, absolutes[1], pos.getY());
@@ -104,6 +109,10 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             // translate from the origin to the center
             // mutablePos = mutablePos.move(translation);
             if (resultStructure.containsKey(mutablePos)) continue;
+
+            if (predicate.isAny()) {
+                continue;
+            }
 
             // Attempts to first place the predicate if the min (layer) count isn't satisfied, then the
             // max (layer) count
