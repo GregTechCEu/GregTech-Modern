@@ -2259,6 +2259,7 @@
   "gtceu.assembly_line": "Assembly Line",
   "gtceu.auto_decomp.rotor": "Turbine Rotor",
   "gtceu.auto_decomp.tool": "Non-electric tool",
+  "gtceu.autobuild.ae_blocks": "The following blocks are in AE:",
   "gtceu.autobuild.missing_blocks": "The following blocks are missing:",
   "gtceu.autobuild.placed_blocks": "The following blocks were placed:",
   "gtceu.autobuild.unplaced_blocks": "Could not place some blocks. Obstructions are highlighted in-world.",
