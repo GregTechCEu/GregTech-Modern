@@ -15,6 +15,7 @@ import net.minecraft.core.Vec3i;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
@@ -64,6 +65,10 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         this.basePredicateSliceCount.clear();
     }
 
+    protected Char2ObjectMap<MultiPredicate> getPredicatesFromPattern(IBlockPattern pattern) {
+        return ((BlockPattern) pattern).getPredicates();
+    }
+
     protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
                                                     IBlockPattern pattern,
                                                     Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
@@ -94,7 +99,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     }
 
     protected void populateFromPattern(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                       IBlockPattern pattern,
+                                       IBlockPattern pattern, Char2ObjectMap<MultiPredicate> sortedPredicates,
                                        Direction frontFacing, Direction upFacing, boolean isFlipped) {
         // spotless:off
         // 4. Iterate slice by slice (a slice == one "slice"), then over the other two axes within the slice,
@@ -127,7 +132,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                     if (resultStructure.containsKey(pos)) continue;
 
                     char c = this.flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
-                    MultiPredicate predicate = blockPattern.getPredicates().get(c);
+                    MultiPredicate predicate = sortedPredicates.get(c);
 
                     if (predicate.isAny()) {
                         continue;

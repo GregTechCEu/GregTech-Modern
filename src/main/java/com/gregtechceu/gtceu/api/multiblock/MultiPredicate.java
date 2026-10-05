@@ -298,7 +298,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
      */
 
     @CheckReturnValue
-    protected MultiPredicate deepCopy() {
+    public MultiPredicate deepCopy() {
         List<BasePredicate> copiedPredicates = predicates().stream()
                 .map(BasePredicate::copy)
                 // sort high to low (descending)
@@ -541,7 +541,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         return type.makePredicate(List.of(), predicates, false);
     }
 
-    protected enum Logic {
+    public enum Logic {
 
         OR,
         AND,
