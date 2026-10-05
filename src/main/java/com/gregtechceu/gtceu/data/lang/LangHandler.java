@@ -1066,9 +1066,9 @@ public class LangHandler {
         provider.add("gtceu.machine.wireless_charger.tooltip",
                 "Wirelessly charges EU and FE items carried by you and your team, including equipment.");
         provider.add("gtceu.machine.wireless_charger.range.standard",
-                "§7Standard: %s block range, 1A input, charges each item once per second");
+                "§7Standard: §7%s §7block range, 1A input, charges each item once per second");
         provider.add("gtceu.machine.wireless_charger.range.turbo",
-                "Turbo: %s block range, 4A input, charges each item every 4 ticks");
+                "§7Turbo: §7%s §7block range, 4A input, charges each item every 4 ticks");
         provider.add("gtceu.machine.wireless_charger.toggle",
                 "§7Use a screwdriver to switch between standard and turbo mode");
         provider.add("gtceu.machine.wireless_charger.mode.standard", "Standard charging mode: %s block range");
