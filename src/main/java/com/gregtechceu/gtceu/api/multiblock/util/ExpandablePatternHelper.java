@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 
@@ -79,9 +80,13 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         }
     }
 
+    protected Char2ObjectMap<MultiPredicate> getPredicatesFromPattern(IBlockPattern pattern) {
+        return ((ExpandablePattern) pattern).getSymbolMap();
+    }
+
     @Override
     public void populateFromPattern(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                    IBlockPattern pattern,
+                                    IBlockPattern pattern, Char2ObjectMap<MultiPredicate> sortedPredicates,
                                     Direction frontFacing,
                                     Direction upFacing, boolean isFlipped) {
         ExpandablePattern expandablePattern = (ExpandablePattern) pattern;
@@ -94,7 +99,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         for (BlockPos pos : betweenClosed(corners.bounds())) {
             BlockPos.MutableBlockPos mutablePos = pos.mutable();
             char key = predicateProvider.getPredicateKey(mutablePos, userRepeats);
-            MultiPredicate predicate = expandablePattern.getSymbolMap().get(key);
+            MultiPredicate predicate = sortedPredicates.get(key);
 
             if (predicate == null)
                 throw new IllegalStateException(

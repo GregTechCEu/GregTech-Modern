@@ -12,12 +12,17 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractStructureHelper {
@@ -35,6 +40,8 @@ public abstract class AbstractStructureHelper {
         return new ExpandablePatternHelper(sliceRepeats);
     }
 
+    abstract protected Char2ObjectMap<MultiPredicate> getPredicatesFromPattern(IBlockPattern pattern);
+
     public void populate(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
                          @Nullable Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                          Direction frontFacing, Direction upFacing, boolean isFlipped) {
@@ -44,7 +51,9 @@ public abstract class AbstractStructureHelper {
                     upFacing,
                     isFlipped);
         }
-        populateFromPattern(info, resultStructure, pattern, frontFacing, upFacing, isFlipped);
+        Char2ObjectMap<MultiPredicate> sortedPredicates = sortPredicatesForPreferences(
+                getPredicatesFromPattern(pattern), info.getBlockPreferences());
+        populateFromPattern(info, resultStructure, pattern, sortedPredicates, frontFacing, upFacing, isFlipped);
         fixRotationsAndFacing(resultStructure, frontFacing, upFacing, this.controllerBlock);
     }
 
@@ -58,11 +67,69 @@ public abstract class AbstractStructureHelper {
                                                              boolean isFlipped);
 
     protected abstract void populateFromPattern(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                                IBlockPattern pattern,
+                                                IBlockPattern pattern, Char2ObjectMap<MultiPredicate> sortedPredicates,
                                                 Direction frontFacing, Direction upFacing, boolean isFlipped);
 
     public abstract MultiPredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
                                                        Direction frontFacing, Direction upFacing, boolean isFlipped);
+
+    private Pair<Boolean, MultiPredicate> sortPredicateRecursive(MultiPredicate predicate, BlockInfo preference) {
+        List<BasePredicate> matchingPreds = new ArrayList<>();
+        for (var basePred : predicate.predicates()) {
+            if (basePred.getCandidates().contains(preference)) {
+                matchingPreds.add(basePred);
+            }
+        }
+        int i = 0;
+        if (!matchingPreds.isEmpty()) {
+            List<BasePredicate> sortedPredicates = new ArrayList<>(predicate.predicates());
+            for (var matchingPred : matchingPreds) {
+                sortedPredicates.remove(matchingPred);
+                // Keep track of index so multiple preds that match keep their ordering
+                sortedPredicates.add(i++, matchingPred);
+            }
+            return Pair.of(true,
+                    predicate.getType().makePredicate(predicate.children(), sortedPredicates, predicate.hasAir()));
+        }
+
+        List<MultiPredicate> matchingChildren = new ArrayList<>();
+        for (var child : predicate.children()) {
+            var childMatches = sortPredicateRecursive(child, preference);
+            if (childMatches.getFirst()) matchingChildren.add(childMatches.getSecond());
+        }
+
+        if (!matchingChildren.isEmpty()) {
+            List<MultiPredicate> sortedChildren = new ArrayList<>(predicate.children());
+            for (var matchingChild : matchingChildren) {
+                sortedChildren.remove(matchingChild);
+                // Keep track of index so multiple children that match keep their ordering
+                sortedChildren.add(i++, matchingChild);
+            }
+            return Pair.of(true,
+                    predicate.getType().makePredicate(sortedChildren, predicate.predicates(), predicate.hasAir()));
+        }
+        return Pair.of(false, predicate);
+    }
+
+    private Char2ObjectMap<MultiPredicate> sortPredicatesForPreferences(Char2ObjectMap<MultiPredicate> predicates,
+                                                                        Char2ObjectMap<BlockInfo> preferences) {
+        if (preferences.isEmpty()) return predicates;
+        Char2ObjectMap<MultiPredicate> sortedMap = new Char2ObjectOpenHashMap<>(predicates.size());
+        for (var entry : predicates.char2ObjectEntrySet()) {
+            var charKey = entry.getCharKey();
+            var predicate = entry.getValue().deepCopy();
+            var preference = preferences.get(charKey);
+            // noinspection ConstantConditions - preferences.get returns null when entry isn't present
+            if (preference != null) {
+                var sorted = sortPredicateRecursive(predicate, preference);
+                if (sorted.getFirst()) {
+                    predicate = sorted.getSecond();
+                }
+            }
+            sortedMap.put(charKey, predicate);
+        }
+        return sortedMap;
+    }
 
     // TODO backing map from predicate(base?) -> count
     protected static int countPopulatedGlobal(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate) {
