@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
+import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -188,6 +189,7 @@ public final class ValueTransformers {
         registerCodecTransformer(MachineRenderState.class, MachineRenderState.CODEC, ByteBufCodecs.idMapper(MachineDefinition.RENDER_STATE_REGISTRY));
         registerCodecTransformer(MonitorGroup.class, MonitorGroup.CODEC, MonitorGroup.STREAM_CODEC);
         registerCodecTransformer(ConsumedInputsData.class, ConsumedInputsData.CODEC, ByteBufCodecs.fromCodecWithRegistries(ConsumedInputsData.CODEC));
+        registerCodecTransformer(ICoilType.class, ICoilType.CODEC, ByteBufCodecs.fromCodec(ICoilType.CODEC));
 
         registerRegistryTransformer(Material.class, GTRegistries.MATERIALS);
 
