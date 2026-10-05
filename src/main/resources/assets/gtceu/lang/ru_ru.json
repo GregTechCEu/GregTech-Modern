@@ -6208,5 +6208,6 @@
     "item.gtceu.spoilable_3": "Скоропортящийся 3",
     "item.gtceu.spoilable_4": "Скоропортящийся 4",
     "item.gtceu.spoilable_5": "Скоропортящийся 5",
-    "material.gtceu.null": "Null"
+    "material.gtceu.null": "Null",
+    "gtceu.multiblock.large_combustion_engine.output": "Производит %s EU/т"
 }
