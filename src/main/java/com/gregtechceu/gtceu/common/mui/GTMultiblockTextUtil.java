@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -140,7 +141,7 @@ public class GTMultiblockTextUtil {
                     .withStyle(ChatFormatting.WHITE);
         })
                 .asWidget()
-                .setEnabledIf($ -> isFormed.getBoolValue() && isActive.getBoolValue());
+                .setEnabledIf($ -> isFormed.getBoolValue());
 
         return widget;
     }
@@ -253,16 +254,13 @@ public class GTMultiblockTextUtil {
 
     public static TextWidget<?> addParallelLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         IntSyncValue parallelAmount = syncManager.getOrCreateSyncHandler("parallelAmount", IntSyncValue.class,
-                () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().parallels;
-                }));
+                () -> new IntSyncValue(() -> rlMachine.getParallelHatch()
+                        .map(ParallelHatchPartMachine::getCurrentParallel).orElse(0)));
 
         return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(parallelAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
-            String key = "gtceu.multiblock.parallel";
-            return Component.translatable(key, runs)
+            return Component.translatable("gtceu.multiblock.parallel", runs)
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
                 .setEnabledIf(widget -> parallelAmount.getIntValue() > 1);

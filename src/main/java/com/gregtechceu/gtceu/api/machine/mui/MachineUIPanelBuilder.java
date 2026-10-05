@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.machine.mui;
 
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -83,27 +82,31 @@ public class MachineUIPanelBuilder {
         var attachMain = panel.getMainContents();
 
         if (addDefaultConfigurators) {
-            if (machine instanceof IControllable controllable) {
-                attachRight.child(GTMuiWidgets.createPowerButton(controllable));
-            }
-            if (machine instanceof IVoidable voidable && machine instanceof WorkableMultiblockMachine) {
-                attachRight.child(GTMuiWidgets.createVoidingButton(voidable));
-            }
-            if (machine instanceof IDistinctPart distinctPart) {
-                attachRight.childIf(distinctPart.supportsDistinct(),
-                        () -> GTMuiWidgets.createDistinctnessButton(distinctPart));
-            }
-            if (machine.getDefinition().getRecipeModifier() instanceof RecipeModifierList rml &&
-                    Arrays.stream(rml.getModifiers()).anyMatch(m -> m == GTRecipeModifiers.BATCH_MODE) &&
-                    machine instanceof WorkableElectricMultiblockMachine workableElectric) {
-                attachRight.child(GTMuiWidgets.createBatchModeButton(workableElectric));
-            }
+            if (machine instanceof WorkableMultiblockMachine workableMultiblockMachine) {
+                attachLeft.child(GTMuiWidgets.createPowerButton(workableMultiblockMachine));
 
-            if (machine.getDefinition().getRecipeTypes().length > 1 &&
-                    machine instanceof WorkableElectricMultiblockMachine workableMachine) {
-                attachRight.child(GTMuiWidgets.createRecipeTypeButton(workableMachine, syncManager));
-            }
+                if (machine.getDefinition().getRecipeModifier() instanceof RecipeModifierList rml &&
+                        Arrays.stream(rml.getModifiers()).anyMatch(m -> m == GTRecipeModifiers.BATCH_MODE) &&
+                        machine instanceof WorkableElectricMultiblockMachine workableElectric) {
+                    attachLeft.child(GTMuiWidgets.createBatchModeButton(workableElectric));
+                }
 
+                attachLeft.child(GTMuiWidgets.createVoidingButton(workableMultiblockMachine));
+
+                if (machine.getDefinition().getRecipeTypes().length > 1 &&
+                        machine instanceof WorkableElectricMultiblockMachine workableMachine) {
+                    attachLeft.child(GTMuiWidgets.createRecipeTypeButton(workableMachine, syncManager));
+                }
+
+            } else {
+                if (machine instanceof IControllable controllable) {
+                    attachRight.child(GTMuiWidgets.createPowerButton(controllable));
+                }
+                if (machine instanceof IDistinctPart distinctPart) {
+                    attachRight.childIf(distinctPart.supportsDistinct(),
+                            () -> GTMuiWidgets.createDistinctnessButton(distinctPart));
+                }
+            }
         }
 
         leftConfigurators.accept(attachLeft);
