@@ -17,6 +17,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,13 +44,19 @@ public class CompositeFilter<T> extends Filter<T> {
 
     public CompositeFilter(Class<T> filterableType) {
         this.filterableType = filterableType;
+        this.itemStacks.setFilter(this::isValidFilter);
     }
 
     public CompositeFilter(List<ItemStack> items, Class<T> filterableType) {
         this.filterableType = filterableType;
+        this.itemStacks.setFilter(this::isValidFilter);
         for (int i = 0; i < 9; i++) {
             itemStacks.setStackInSlot(i, items.get(i));
         }
+    }
+
+    private boolean isValidFilter(ItemStack itemStack) {
+        return Filters.isValidFilter(filterableType, itemStack.getItem());
     }
 
     private void onFilterItemChanged(int slot) {
@@ -88,7 +95,20 @@ public class CompositeFilter<T> extends Filter<T> {
 
     public static <T> Codec<CompositeFilter<T>> codec(Class<T> filterableObjectType) {
         return RecordCodecBuilder.create(instance -> instance.group(
-                Codec.list(ItemStack.CODEC).fieldOf("itemStacks").forGetter(v -> v.itemStacks.toList()))
+                Codec.list(ItemStack.OPTIONAL_CODEC).fieldOf("itemStacks").forGetter(v -> v.itemStacks.toList()))
                 .apply(instance, s -> new CompositeFilter<>(s, filterableObjectType)));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof CompositeFilter<?> that)) return false;
+        return filterableType.equals(that.filterableType) &&
+                itemStacks.getStacks().equals(that.itemStacks.getStacks()) &&
+                itemStacks.getFilter().equals(that.itemStacks.getFilter()) && Arrays.equals(filters, that.filters);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(filterableType, itemStacks.getStacks(), itemStacks.getFilter(), Arrays.hashCode(filters));
     }
 }
