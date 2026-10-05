@@ -81,32 +81,28 @@ public class GTMuiWidgets {
     }
 
     public static Flow createTitleBar(Icon icon, String text, int panelWidth, UITexture background) {
-        int borderRadius = 5;
-        int iconSize = 16;
+        int borderRadius = 3;
+        int iconSize = 12;
         int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 3));
         int textTitleWidth = GTCEu.isClientThread() ? TextRenderer.getFont().width(text) : 1;
 
-        int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
-        int textHeightPerRow = GTCEu.isClientThread() ? (int) (Text.renderer.getFontHeight()) : 9;
-        int textHeight = textHeightPerRow * textRows + borderRadius;
+        int textHeight = GTCEu.isClientThread() ? (int) (Text.renderer.getFontHeight()) : 9;
 
         int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + (borderRadius * 4) + textTitleWidth));
 
         return Flow.row()
                 .decoration()
+                .bottomRel(1f)
+                .horizontalCenter()
                 .coverChildrenHeight()
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .width(rowWidth)
-                .top(-(textHeight + borderRadius))
-                .horizontalCenter()
+                .padding(borderRadius, borderRadius, borderRadius, 2)
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
-                .child(icon.size(iconSize)
-                        .asWidget()
-                        .marginLeft(borderRadius))
+                .child(icon.size(iconSize).asWidget().size(12).marginRight(1))
                 .child(Text.str(text)
                         .asWidget()
-                        .margin(borderRadius, borderRadius, borderRadius, 1)
                         .size(Math.min(minPanelWidth, textTitleWidth), textHeight));
     }
 
