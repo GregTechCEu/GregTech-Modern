@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewW
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
@@ -60,6 +61,7 @@ import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerM
 
 public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddInformation {
 
+    public static final String ACCESS_POINT_TAG = "access_pos";
     private static final String CONTROLLER_INFO_TAG = "controller";
     private static final String SCHEMA_INFO_TAG = "schema";
 
@@ -284,14 +286,34 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         CompoundTag tag = stack.getOrCreateTag();
 
         var info = loadControllerInfo(stack);
+        if (info != null) {
+            tooltipComponents.add(Component.translatable("gtceu.terminal.controller_bound",
+                    info.pos().getX(), info.pos().getY(), info.pos().getZ())
+                    .withStyle(ChatFormatting.GOLD));
+            tooltipComponents.add(info.definition().getBlock().getName());
+        }
 
-        if (info == null) return;
+        GlobalPos aeBinding = getLinkedPos(stack);
+        if (aeBinding != null) {
+            tooltipComponents.add(Component.translatable("gtceu.terminal.network_bound", aeBinding.dimension(),
+                    aeBinding.pos().getX(), aeBinding.pos().getY(), aeBinding.pos().getZ())
+                    .withStyle(ChatFormatting.GOLD));
+        }
+    }
 
-        tooltipComponents.add(Component.translatable("gtceu.top.buffer_bound_pos",
-                info.pos().getX(), info.pos().getY(), info.pos().getZ())
-                .withStyle(ChatFormatting.GOLD));
-
-        tooltipComponents.add(info.definition().getBlock().getName());
+    @Nullable
+    public static GlobalPos getLinkedPos(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        if (tag != null && tag.contains(ACCESS_POINT_TAG)) {
+            try {
+                return GlobalPos.CODEC
+                        .parse(NbtOps.INSTANCE, tag.get(ACCESS_POINT_TAG))
+                        .getOrThrow(false, GTCEu.LOGGER::error);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return null;
     }
 
     public record ControllerInfo(MultiblockMachineDefinition definition, BlockPos pos, Direction facing,
