@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +36,7 @@ public abstract class AbstractStructureHelper {
     }
 
     public void populate(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
-                         @Nullable Long2ObjectMap<BlockInfo> userBlockPreferences,
+                         @Nullable Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                          Direction frontFacing, Direction upFacing, boolean isFlipped) {
         setup(pattern, frontFacing, upFacing, isFlipped);
         if (userBlockPreferences != null && !userBlockPreferences.isEmpty()) {
@@ -53,7 +53,7 @@ public abstract class AbstractStructureHelper {
     protected abstract void populateWithUserBlockPreferences(MultiblockSchemaInfo info,
                                                              Map<BlockPos, BlockInfo> resultStructure,
                                                              IBlockPattern pattern,
-                                                             Long2ObjectMap<BlockInfo> userBlockPreferences,
+                                                             Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                                                              Direction frontFacing, Direction upFacing,
                                                              boolean isFlipped);
 

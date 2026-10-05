@@ -16,8 +16,8 @@ import net.minecraft.core.Vec3i;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Map;
@@ -27,10 +27,10 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     private final Int2IntMap sliceRepeats;
     private char[][][] flattenedBlockPattern = new char[0][][];
 
-    private Object2IntOpenHashMap<MultiPredicate> predicateCount = new Object2IntOpenHashMap<>();
-    private Object2IntOpenHashMap<BasePredicate> basePredicateCount = new Object2IntOpenHashMap<>();
-    private Table<MultiPredicate, Integer, Integer> predicateSliceCount = HashBasedTable.create();
-    private Table<BasePredicate, Integer, Integer> basePredicateSliceCount = HashBasedTable.create();
+    private final Object2IntOpenHashMap<MultiPredicate> predicateCount = new Object2IntOpenHashMap<>();
+    private final Object2IntOpenHashMap<BasePredicate> basePredicateCount = new Object2IntOpenHashMap<>();
+    private final Table<MultiPredicate, Integer, Integer> predicateSliceCount = HashBasedTable.create();
+    private final Table<BasePredicate, Integer, Integer> basePredicateSliceCount = HashBasedTable.create();
 
     protected BlockPatternHelper(Int2IntMap sliceRepeats) {
         this.sliceRepeats = sliceRepeats;
@@ -66,15 +66,15 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
     protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
                                                     IBlockPattern pattern,
-                                                    Long2ObjectMap<BlockInfo> userBlockPreferences,
+                                                    Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
         BlockPattern blockPattern = (BlockPattern) pattern;
 
         Vec3i dimensions = getDimensions(this.flattenedBlockPattern);
         Direction sliceDir = blockPattern.getDirections()[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
 
-        for (var blockPreference : userBlockPreferences.long2ObjectEntrySet()) {
-            BlockPos pos = BlockPos.of(blockPreference.getLongKey());
+        for (var blockPreference : userBlockPreferences.object2ObjectEntrySet()) {
+            BlockPos pos = blockPreference.getKey();
             BlockInfo blockInfo = blockPreference.getValue();
             if (pos.getX() >= dimensions.getX() ||
                     pos.getY() >= dimensions.getY() ||
@@ -135,8 +135,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
                     // Attempts to first place the predicate if the minimum (slice) count isn't satisfied, then the
                     // maximum (slice) count
-                    if (tryMinCount(info, resultStructure, predicate, pos, sliceDir, sliceCoord)) continue;
-                    if (tryMaxCount(info, resultStructure, predicate, pos, sliceDir, sliceCoord)) continue;
+                    if (tryMinCount(info, resultStructure, predicate, c, pos, sliceDir, sliceCoord)) continue;
+                    if (tryMaxCount(info, resultStructure, predicate, c, pos, sliceDir, sliceCoord)) continue;
                     // If we arrive here, there's nothing we can place that doesn't overflow a max count!
                     throw new IllegalStateException(
                             "Could not place a block without breaking maxCount requirements for character " + c);
@@ -146,7 +146,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     }
 
     private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                MultiPredicate predicate,
+                                MultiPredicate predicate, char predicateChar,
                                 BlockPos pos, Direction dir, int offset) {
         // TODO rehandle user min count
         // Find first unsatisfied min predicate while also checking type specific logic
@@ -223,7 +223,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
         // check if each child predicate min is satisfied
         for (MultiPredicate child : predicate.children()) {
-            if (tryMinCount(info, resultStructure, child, pos, dir, offset)) return true;
+            if (tryMinCount(info, resultStructure, child, predicateChar, pos, dir, offset)) return true;
         }
 
         // check if main predicate min is satisfied
@@ -241,7 +241,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             return false;
         }
 
-        BlockInfo toInsert = info.getBlockPreferences().get(predicate);
+        BlockInfo toInsert = info.getBlockPreferences().get(predicateChar);
         if (toInsert == null) {
             // TODO filtering?
             toInsert = predicate.getCandidates().get(0).get(0);
@@ -260,7 +260,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     }
 
     private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                MultiPredicate predicate,
+                                MultiPredicate predicate, char predicateChar,
                                 BlockPos pos, Direction dir, int offset) {
         // check if main predicate max is satisfied
         int maxCount = predicate.getMaxCount();
@@ -340,10 +340,10 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
         // check if each child predicate min is satisfied
         for (MultiPredicate child : predicate.children()) {
-            if (tryMaxCount(info, resultStructure, child, pos, dir, offset)) return true;
+            if (tryMaxCount(info, resultStructure, child, predicateChar, pos, dir, offset)) return true;
         }
 
-        BlockInfo toInsert = info.getBlockPreferences().get(predicate);
+        BlockInfo toInsert = info.getBlockPreferences().get(predicateChar);
         if (toInsert == null) {
             // TODO filtering?
             toInsert = predicate.getCandidates().get(0).get(0);

@@ -4,12 +4,18 @@ import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.util.ExtraCodecs;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -17,10 +23,17 @@ public final class GTCodecUtils {
 
     private GTCodecUtils() {}
 
+    // spotless:off
+
     public static final Codec<Long> NON_NEGATIVE_LONG = longRangeWithMessage(0, Long.MAX_VALUE,
             (val) -> "Value must be non-negative: " + val);
     public static final Codec<Long> POSITIVE_LONG = longRangeWithMessage(1, Long.MAX_VALUE,
             (val) -> "Value must be positive: " + val);
+
+
+    public static final Codec<IntIntPair> FAST_UTIL_INT_PAIR_CODEC = pair(Codec.INT, Codec.INT)
+            .xmap(v -> IntIntPair.of(v.getFirst(), v.getSecond()),
+                    v -> com.mojang.datafixers.util.Pair.of(v.firstInt(), v.secondInt()));
 
     public static Codec<Long> longRangeWithMessage(long min, long max, Function<Long, String> errorMessage) {
         return ExtraCodecs.validate(Codec.LONG, (val) -> {
@@ -30,6 +43,42 @@ public final class GTCodecUtils {
                 return DataResult.error(() -> errorMessage.apply(val));
             }
         });
+    }
+
+    public static <F, S> Codec<Pair<F, S>> pair(Codec<F> firstCodec,
+                                                Codec<S> secondCodec) {
+        return RecordCodecBuilder.create((instance) -> instance.group(
+                firstCodec.fieldOf("val1").forGetter(Pair::getFirst),
+                secondCodec.fieldOf("val2").forGetter(Pair::getSecond)
+        ).apply(instance, Pair::of));
+    }
+
+    // Uses a list of pairs internally because the default map codec can't handle non-string keys.
+    public static <K, V> Codec<Map<K, V>> map(Codec<K> keyCodec,
+                                              Codec<V> valueCodec) {
+        return pair(keyCodec, valueCodec).listOf().xmap(list -> {
+            Map<K, V> map = new HashMap<>(list.size());
+            for (var pair : list) {
+                map.put(pair.getFirst(), pair.getSecond());
+            }
+            return map;
+        }, v -> v.entrySet().stream().map(e -> Pair.of(e.getKey(), e.getValue())).toList());
+    }
+
+    public static <R, C, V> Codec<Table<R, C, V>> table(Codec<R> rowCodec, Codec<C> colCodec, Codec<V> valueCodec) {
+        var colMap = GTCodecUtils.map(colCodec, valueCodec);
+        var rowMap = GTCodecUtils.map(rowCodec, colMap);
+
+        return rowMap.xmap(v -> {
+            Table<R, C, V> table = HashBasedTable.create();
+            for (var rowEntry : v.entrySet()) {
+                var row = rowEntry.getKey();
+                for (var entry : rowEntry.getValue().entrySet()) {
+                    table.put(row, entry.getKey(), entry.getValue());
+                }
+            }
+            return table;
+        }, Table::rowMap);
     }
 
     public static Codec<Long> longRange(long min, long max) {
@@ -63,4 +112,6 @@ public final class GTCodecUtils {
                     });
         }
     }
+
+    //spotless:on
 }

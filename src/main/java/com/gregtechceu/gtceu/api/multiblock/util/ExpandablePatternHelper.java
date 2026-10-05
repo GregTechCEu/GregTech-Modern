@@ -11,7 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 
 import java.util.Map;
 import java.util.Objects;
@@ -55,7 +55,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     @Override
     protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
                                                     IBlockPattern pattern,
-                                                    Long2ObjectMap<BlockInfo> userBlockPreferences,
+                                                    Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
         ExpandablePattern expandablePattern = (ExpandablePattern) pattern;
 
@@ -66,8 +66,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         // kinda gross, but it's the least invasive way I guess, maybe look for something better
         BoundingBox bounds = corners.inflatedBy(1);
 
-        for (var entry : userBlockPreferences.long2ObjectEntrySet()) {
-            BlockPos pos = BlockPos.of(entry.getLongKey()); // absolute-space
+        for (var entry : userBlockPreferences.object2ObjectEntrySet()) {
+            BlockPos pos = entry.getKey(); // absolute-space
             // Reverse-transform to relative/pattern space (transpose of orthogonal rotation) to check against bounds
             int relX = getOffsetFromDirection(absolutes[0], pos);
             int relY = getOffsetFromDirection(absolutes[1], pos);
@@ -96,6 +96,11 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             char key = predicateProvider.getPredicateKey(mutablePos, userRepeats);
             MultiPredicate predicate = expandablePattern.getSymbolMap().get(key);
 
+            if (predicate == null)
+                throw new IllegalStateException(
+                        "Predicate provider returned character that is not mapped to a predicate: '%s'"
+                                .formatted(key));
+
             // this basically reshuffles the coordinates into absolute form from relative form
             setFromDirection(mutablePos, absolutes[0], pos.getX());
             setFromDirection(mutablePos, absolutes[1], pos.getY());
@@ -104,17 +109,21 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             // mutablePos = mutablePos.move(translation);
             if (resultStructure.containsKey(mutablePos)) continue;
 
+            if (predicate.isAny()) {
+                continue;
+            }
+
             // Attempts to first place the predicate if the min (layer) count isn't satisfied, then the
             // max (layer) count
-            if (tryMinCount(info, resultStructure, predicate, mutablePos)) continue;
-            if (tryMaxCount(info, resultStructure, predicate, mutablePos)) continue;
+            if (tryMinCount(info, resultStructure, predicate, key, mutablePos)) continue;
+            if (tryMaxCount(info, resultStructure, predicate, key, mutablePos)) continue;
             // If we arrive here, there's nothing we can place that doesn't overflow a max count!
             throw new IllegalStateException("Could not place a block without breaking maxCount requirements");
         }
     }
 
     private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                MultiPredicate predicate,
+                                MultiPredicate predicate, char predicateKey,
                                 BlockPos pos) {
         for (BasePredicate basePredicate : predicate.predicates()) {
             int minCount = info.getMinCount(predicate, basePredicate);
@@ -123,23 +132,23 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
             if (minCount == -1 || totalAlreadyPopulated >= minCount) continue;
 
-            BlockInfo toInsert = null;
-            if (info.getBlockPreferences().containsKey(predicate)) {
-                toInsert = info.getBlockPreferences().get(predicate);
-            } else if (!basePredicate.getCandidates().isEmpty()) {
-                toInsert = basePredicate.getCandidates().get(0);
+            BlockInfo toInsert = info.getBlockPreferences().get(predicateKey);
+            if (toInsert == null) {
+                // TODO filtering?
+                toInsert = predicate.getCandidates().get(0).get(0);
             }
-            if (toInsert != null) resultStructure.put(pos, toInsert);
+
+            resultStructure.put(pos, toInsert);
             return true;
         }
         for (MultiPredicate child : predicate.children()) {
-            if (tryMinCount(info, resultStructure, child, pos)) return true;
+            if (tryMinCount(info, resultStructure, child, predicateKey, pos)) return true;
         }
         return false;
     }
 
     private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                MultiPredicate predicate,
+                                MultiPredicate predicate, char predicateKey,
                                 BlockPos pos) {
         for (BasePredicate basePredicate : predicate.predicates()) {
             int maxCount = info.getMaxCount(predicate, basePredicate);
@@ -148,17 +157,17 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
 
-            BlockInfo toInsert = null;
-            if (info.getBlockPreferences().containsKey(predicate)) {
-                toInsert = info.getBlockPreferences().get(predicate);
-            } else if (!basePredicate.getCandidates().isEmpty()) {
-                toInsert = basePredicate.getCandidates().get(0);
+            BlockInfo toInsert = info.getBlockPreferences().get(predicateKey);
+            if (toInsert == null) {
+                // TODO filtering?
+                toInsert = predicate.getCandidates().get(0).get(0);
             }
-            if (toInsert != null) resultStructure.put(pos, toInsert);
+
+            resultStructure.put(pos, toInsert);
             return true;
         }
         for (MultiPredicate child : predicate.children()) {
-            if (tryMaxCount(info, resultStructure, child, pos)) return true;
+            if (tryMaxCount(info, resultStructure, child, predicateKey, pos)) return true;
         }
         return false;
     }
