@@ -10,6 +10,8 @@ import it.unimi.dsi.fastutil.chars.Char2IntMap;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
+import it.unimi.dsi.fastutil.chars.CharSet;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -52,7 +54,9 @@ public class MultiblockPatternBuilder {
 
     private final List<PatternSlice> slices = new ArrayList<>();
 
-    private final Char2ObjectMap<@Nullable MultiPredicate> symbolMap = new Char2ObjectOpenHashMap<>();
+    private final Char2ObjectMap<MultiPredicate> symbolMap = new Char2ObjectOpenHashMap<>();
+
+    private final CharSet usedChars = new CharOpenHashSet();
 
     private final RelativeDirection[] directions = new RelativeDirection[3];
 
@@ -70,9 +74,7 @@ public class MultiblockPatternBuilder {
         validateSlice(slice);
         for (String s : slice) {
             for (char c : s.toCharArray()) {
-                if (!this.symbolMap.containsKey(c)) {
-                    this.symbolMap.put(c, null);
-                }
+                this.usedChars.add(c);
             }
         }
 
@@ -150,15 +152,17 @@ public class MultiblockPatternBuilder {
     private void checkMissingPredicates() {
         List<Character> list = new ArrayList<>();
 
-        for (var entry : this.symbolMap.char2ObjectEntrySet()) {
-            if (entry.getValue() == null) {
-                list.add(entry.getCharKey());
+        for (char c : this.usedChars) {
+            if (!this.symbolMap.containsKey(c)) {
+                list.add(c);
             }
         }
 
         if (!list.isEmpty()) {
             throw new IllegalStateException("Predicates for character(s) " + COMMA_JOINER.join(list) + " are missing");
         }
+
+        checkNullPredicates(this.symbolMap);
     }
 
     private void checkGlobalConstraints() {
@@ -174,7 +178,6 @@ public class MultiblockPatternBuilder {
         for (var entry : symbolMap.char2ObjectEntrySet()) {
             char symbol = entry.getCharKey();
             MultiPredicate predicate = entry.getValue();
-            if (predicate == null) throw new IllegalArgumentException("Predicate for symbol " + symbol + " was null.");
             int maxCount = -1;
             for (var basePredicate : predicate.expand()) {
                 if (basePredicate.getMaxCount() == -1) {
@@ -220,6 +223,21 @@ public class MultiblockPatternBuilder {
                                     ", found one with " + s.length() + ")");
                 }
             }
+        }
+    }
+
+    @SuppressWarnings("ConstantValue")
+    static void checkNullPredicates(Char2ObjectMap<MultiPredicate> symbolMap) {
+        List<Character> list = new ArrayList<>();
+        for (var entry : symbolMap.char2ObjectEntrySet()) {
+            if (entry.getValue() == null) {
+                list.add(entry.getCharKey());
+            }
+        }
+
+        if (!list.isEmpty()) {
+            throw new IllegalArgumentException("Predicates for character(s) " +
+                    COMMA_JOINER.join(list) + " are null or do not exist");
         }
     }
 }
