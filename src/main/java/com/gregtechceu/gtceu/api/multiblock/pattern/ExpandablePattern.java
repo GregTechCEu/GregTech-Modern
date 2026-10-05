@@ -56,17 +56,22 @@ public class ExpandablePattern implements IBlockPattern {
     protected final OriginOffset offset = new OriginOffset();
 
     @Getter
-    private final Char2ObjectMap<@Nullable MultiPredicate> symbolMap;
+    private final Char2ObjectMap<MultiPredicate> symbolMap;
     @Getter
     protected final RelativeDirection[] directions;
 
     public ExpandablePattern(BoundsProvider boundsProvider,
                              PredicateProvider predicateProvider,
-                             Char2ObjectMap<@Nullable MultiPredicate> symbolMap, RelativeDirection[] directions) {
+                             Char2ObjectMap<MultiPredicate> symbolMap, RelativeDirection[] directions) {
         this.boundsProvider = boundsProvider;
         this.predicateProvider = predicateProvider;
         this.symbolMap = symbolMap;
         this.directions = directions;
+    }
+
+    @Override
+    public Char2ObjectMap<MultiPredicate> getPredicates() {
+        return symbolMap;
     }
 
     @Override

@@ -128,13 +128,11 @@ public class MultiblockSchemaInfo {
 
         Table<Character, Integer, IntIntPair> table = HashBasedTable.create();
 
-        if (pattern instanceof BlockPattern blockPattern) {
-            var predicateInverseMap = HashBiMap.create(blockPattern.getPredicates()).inverse();
-            for (var entry : getMinMaxPreferences().cellSet()) {
-                var row = predicateInverseMap.get(entry.getRowKey());
-                var col = entry.getRowKey().predicates().indexOf(entry.getColumnKey());
-                table.put(row, col, entry.getValue());
-            }
+        var predicateInverseMap = HashBiMap.create(pattern.getPredicates()).inverse();
+        for (var entry : getMinMaxPreferences().cellSet()) {
+            var row = predicateInverseMap.get(entry.getRowKey());
+            var col = entry.getRowKey().predicates().indexOf(entry.getColumnKey());
+            table.put(row, col, entry.getValue());
         }
 
         return table;

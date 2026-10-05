@@ -12,7 +12,6 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Objects;
@@ -124,7 +123,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     }
 
     private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                MultiPredicate predicate, @Nullable Character predicateKey,
+                                MultiPredicate predicate, char predicateKey,
                                 BlockPos pos) {
         for (BasePredicate basePredicate : predicate.predicates()) {
             int minCount = info.getMinCount(predicate, basePredicate);
@@ -133,23 +132,23 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
             if (minCount == -1 || totalAlreadyPopulated >= minCount) continue;
 
-            BlockInfo toInsert = null;
-            if (predicateKey != null && info.getBlockPreferences().containsKey(predicateKey.charValue())) {
-                toInsert = info.getBlockPreferences().get(predicateKey.charValue());
-            } else if (!basePredicate.getCandidates().isEmpty()) {
-                toInsert = basePredicate.getCandidates().get(0);
+            BlockInfo toInsert = info.getBlockPreferences().get(predicateKey);
+            if (toInsert == null) {
+                // TODO filtering?
+                toInsert = predicate.getCandidates().get(0).get(0);
             }
-            if (toInsert != null) resultStructure.put(pos, toInsert);
+
+            resultStructure.put(pos, toInsert);
             return true;
         }
         for (MultiPredicate child : predicate.children()) {
-            if (tryMinCount(info, resultStructure, child, null, pos)) return true;
+            if (tryMinCount(info, resultStructure, child, predicateKey, pos)) return true;
         }
         return false;
     }
 
     private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                MultiPredicate predicate, @Nullable Character predicateKey,
+                                MultiPredicate predicate, char predicateKey,
                                 BlockPos pos) {
         for (BasePredicate basePredicate : predicate.predicates()) {
             int maxCount = info.getMaxCount(predicate, basePredicate);
@@ -158,17 +157,17 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
 
-            BlockInfo toInsert = null;
-            if (predicateKey != null && info.getBlockPreferences().containsKey(predicateKey.charValue())) {
-                toInsert = info.getBlockPreferences().get(predicateKey.charValue());
-            } else if (!basePredicate.getCandidates().isEmpty()) {
-                toInsert = basePredicate.getCandidates().get(0);
+            BlockInfo toInsert = info.getBlockPreferences().get(predicateKey);
+            if (toInsert == null) {
+                // TODO filtering?
+                toInsert = predicate.getCandidates().get(0).get(0);
             }
-            if (toInsert != null) resultStructure.put(pos, toInsert);
+
+            resultStructure.put(pos, toInsert);
             return true;
         }
         for (MultiPredicate child : predicate.children()) {
-            if (tryMaxCount(info, resultStructure, child, null, pos)) return true;
+            if (tryMaxCount(info, resultStructure, child, predicateKey, pos)) return true;
         }
         return false;
     }
