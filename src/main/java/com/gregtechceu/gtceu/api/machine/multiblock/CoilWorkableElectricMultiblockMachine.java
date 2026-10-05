@@ -74,7 +74,7 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        var Texlocation = (CoilBlock.CoilType.values()[coilTier].getTexture());
+        var Texlocation = this.coilType.getTexture();
 
         IDrawable leftTop = new UITexture.Builder()
                 .location(Texlocation)
