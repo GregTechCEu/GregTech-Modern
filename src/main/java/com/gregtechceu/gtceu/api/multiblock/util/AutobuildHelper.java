@@ -110,7 +110,7 @@ public class AutobuildHelper {
             whatWeWant.merge(entry.getValue().getBlock().asItem(), 1, Integer::sum);
         }
 
-        // Step 2. Try to fetch
+        // Step 2. Try to fetch from inventory
         Map<Item, Integer> whatWeHave = new Object2IntArrayMap<>();
         for (var entry : whatWeWant.entrySet()) {
             Item desiredItem = entry.getKey();
@@ -123,6 +123,7 @@ public class AutobuildHelper {
             whatWeHave.put(desiredItem, toDeduct);
         }
 
+        // Step 2a. Calculate remaining items
         Map<Item, Integer> whatWeDontHave = new Object2IntArrayMap<>();
         for (var entry : whatWeWant.entrySet()) {
             Item item1 = entry.getKey();
@@ -132,9 +133,10 @@ public class AutobuildHelper {
             }
         }
 
+        // Step 2b. Try to fetch from AE
         Map<Item, Integer> whatWeHaveAE = new Object2IntArrayMap<>();
         if (GTCEu.Mods.isAE2Loaded()) {
-            whatWeHaveAE = AEWrapper.tryGrid(whatWeDontHave, level, item, player, true);
+            whatWeHaveAE = AEWrapper.tryGrid(whatWeDontHave, level, item, player);
         }
 
         printBlockList(Component.translatable("gtceu.autobuild.ae_blocks").withStyle(ChatFormatting.AQUA), whatWeHaveAE,
@@ -148,7 +150,10 @@ public class AutobuildHelper {
                 .toList()) {
             var blockState = entry.getValue();
             var blocksLeft = whatWeHave.merge(blockState.getBlock().asItem(), -1, Integer::sum);
-            if (blocksLeft < 0) continue;
+            if (blocksLeft < 0) {
+                blocksLeft = whatWeHaveAE.merge(blockState.getBlock().asItem(), -1, Integer::sum);
+                if (blocksLeft < 0) continue;
+            }
             whatWeWant.merge(blockState.getBlock().asItem(), -1, Integer::sum);
             whatWePlaced.merge(blockState.getBlock().asItem(), 1, Integer::sum);
             level.setBlockAndUpdate(BlockPos.of(entry.getLongKey()), blockState);
@@ -223,7 +228,7 @@ public class AutobuildHelper {
         }
 
         public static Map<Item, Integer> tryGrid(Map<Item, Integer> itemMap, Level level, ItemStack stack,
-                                                 Player player, boolean simulate) {
+                                                 Player player) {
             Map<Item, Integer> ret = new Object2IntOpenHashMap<>();
 
             var grid = getLinkedGrid(stack, level, player);
@@ -232,7 +237,7 @@ public class AutobuildHelper {
             MEStorage storage = grid.getStorageService().getInventory();
             for (var entry : itemMap.entrySet()) {
                 int value = (int) storage.extract(AEItemKey.of(entry.getKey()), entry.getValue(),
-                        simulate ? Actionable.SIMULATE : Actionable.MODULATE, IActionSource.ofPlayer(player));
+                        Actionable.MODULATE, IActionSource.ofPlayer(player));
                 if (value > 0) {
                     ret.put(entry.getKey(), value);
                 }
