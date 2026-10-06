@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.utils;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.api.transfer.item.IBundleInsertable;
+import com.gregtechceu.gtceu.api.transfer.item.ITransferAmountLimiter;
 import com.gregtechceu.gtceu.api.transfer.item.IVirtualItemHandler;
 
 import net.minecraft.core.BlockPos;
@@ -348,14 +349,24 @@ public class GTTransferUtils {
         public int totalCount;
     }
 
-    /// Similar to moveInventoryItems, but instead attempts to maintain amount of items per type as provided by
-    /// itemKeepAmountProvider in target inventory.
-    /// Returns the total amount of items transferred.
+    /// Convenience wrapper around main stockInventoryItems overload that takes max transfer amount in items, and
+    /// returns the amount of items that have been transferred
     public static int stockInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory,
                                           int maxTransferAmount, ToIntFunction<ItemStack> itemKeepAmountProvider) {
+        TotalTransferAmountLimiter transferAmountLimiter = new TotalTransferAmountLimiter(maxTransferAmount);
+        stockInventoryItems(sourceInventory, targetInventory, transferAmountLimiter, itemKeepAmountProvider);
+        return maxTransferAmount - transferAmountLimiter.getTotalRemainingTransferAmount();
+    }
+
+    /// Similar to moveInventoryItems, but instead attempts to maintain amount of items per type as provided by
+    /// itemKeepAmountProvider in target inventory.
+    public static void stockInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory,
+                                           ITransferAmountLimiter transferAmountLimiter,
+                                           ToIntFunction<ItemStack> itemKeepAmountProvider) {
         // Delegate to the virtual item handler specific implementation if possible
         if (targetInventory instanceof IVirtualItemHandler virtualItemHandler) {
-            return virtualItemHandler.stockInventoryItems(sourceInventory, maxTransferAmount, itemKeepAmountProvider);
+            virtualItemHandler.stockInventoryItems(sourceInventory, transferAmountLimiter, itemKeepAmountProvider);
+            return;
         }
 
         Predicate<ItemStack> itemStackPredicate = itemStack -> itemKeepAmountProvider.applyAsInt(itemStack) > 0;
@@ -382,16 +393,15 @@ public class GTTransferUtils {
             }
         }
 
-        return moveInventoryItemGroups(sourceInventory, targetInventory, sourceItemAmounts, maxTransferAmount,
+        moveInventoryItemGroups(sourceInventory, targetInventory, sourceItemAmounts, transferAmountLimiter,
                 itemStackPredicate);
     }
 
     /// Moves inventory items between item handlers in specified groups
-    private static int moveInventoryItemGroups(IItemHandler sourceInventory, IItemHandler targetInventory,
-                                               Map<ItemStack, GroupItemInfo> itemInfos, int maxTransferAmount,
-                                               Predicate<ItemStack> itemStackPredicate) {
-        int itemsLeftToTransfer = maxTransferAmount;
-
+    private static void moveInventoryItemGroups(IItemHandler sourceInventory, IItemHandler targetInventory,
+                                                Map<ItemStack, GroupItemInfo> itemInfos,
+                                                ITransferAmountLimiter transferAmountLimiter,
+                                                Predicate<ItemStack> itemStackPredicate) {
         for (int i = 0; i < sourceInventory.getSlots(); i++) {
             ItemStack itemStack = sourceInventory.getStackInSlot(i);
             if (itemStack.isEmpty() || !itemStackPredicate.test(itemStack) || !itemInfos.containsKey(itemStack)) {
@@ -401,7 +411,9 @@ public class GTTransferUtils {
             GroupItemInfo itemInfo = itemInfos.get(itemStack);
 
             ItemStack extractedStack = sourceInventory.extractItem(i,
-                    Math.min(itemInfo.totalCount, itemsLeftToTransfer), true);
+                    Math.min(itemInfo.totalCount, Math.min(transferAmountLimiter.getRemainingTransferAmount(itemStack),
+                            itemStack.getCount())),
+                    true);
 
             ItemStack remainderStack = ItemHandlerHelper.insertItemStacked(targetInventory, extractedStack, true);
             int amountToInsert = extractedStack.getCount() - remainderStack.getCount();
@@ -412,7 +424,7 @@ public class GTTransferUtils {
                 if (!extractedStack.isEmpty()) {
 
                     ItemHandlerHelper.insertItemStacked(targetInventory, extractedStack, false);
-                    itemsLeftToTransfer -= extractedStack.getCount();
+                    transferAmountLimiter.notifyItemTransferred(extractedStack);
                     itemInfo.totalCount -= extractedStack.getCount();
 
                     if (itemInfo.totalCount == 0) {
@@ -421,13 +433,12 @@ public class GTTransferUtils {
                             break;
                         }
                     }
-                    if (itemsLeftToTransfer == 0) {
+                    if (!transferAmountLimiter.canTransferMoreItems()) {
                         break;
                     }
                 }
             }
         }
-        return maxTransferAmount - itemsLeftToTransfer;
     }
 
     /// Groups identical items together and calculates total amount of items per type in inventory

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.pipelike.item.longdistance;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.transfer.item.ITransferAmountLimiter;
 import com.gregtechceu.gtceu.api.transfer.item.IVirtualItemHandler;
 import com.gregtechceu.gtceu.common.machine.storage.LongDistanceEndpointMachine;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -90,9 +91,9 @@ public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
         }
 
         @Override
-        public int stockInventoryItems(IItemHandler sourceInventory, int maxTransferAmount,
-                                       ToIntFunction<ItemStack> itemKeepAmountProvider) {
-            return GTTransferUtils.stockInventoryItems(sourceInventory, delegate, maxTransferAmount,
+        public void stockInventoryItems(IItemHandler sourceInventory, ITransferAmountLimiter transferAmountLimiter,
+                                        ToIntFunction<ItemStack> itemKeepAmountProvider) {
+            GTTransferUtils.stockInventoryItems(sourceInventory, delegate, transferAmountLimiter,
                     itemKeepAmountProvider);
         }
     }

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
+import com.gregtechceu.gtceu.api.transfer.item.ITransferAmountLimiter;
 import com.gregtechceu.gtceu.api.transfer.item.IVirtualItemHandler;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
@@ -65,11 +66,11 @@ public class ItemNetHandler implements IItemHandlerModifiable, IVirtualItemHandl
     }
 
     @Override
-    public int stockInventoryItems(IItemHandler sourceInventory, int maxTransferAmount,
-                                   ToIntFunction<ItemStack> itemKeepAmountProvider) {
+    public void stockInventoryItems(IItemHandler sourceInventory, ITransferAmountLimiter transferAmountLimiter,
+                                    ToIntFunction<ItemStack> itemKeepAmountProvider) {
         if (network == null || pipe == null || pipe.isRemoved() || pipe.isBlocked(facing) ||
                 network.isTransferringItem()) {
-            return 0;
+            return;
         }
 
         try {
@@ -80,19 +81,37 @@ public class ItemNetHandler implements IItemHandlerModifiable, IVirtualItemHandl
             CoverBehavior sourceBlockCover = getCoverOnNeighbour(pipe.getBlockPos(), facing);
 
             // abort if there are two conveyors
-            if (sourcePipeCover instanceof ConveyorCover && sourceBlockCover instanceof ConveyorCover) return 0;
+            if (sourcePipeCover instanceof ConveyorCover && sourceBlockCover instanceof ConveyorCover) return;
 
             List<ItemRoutePath> routePaths = network.getNetData(pipe.getBlockPos(), facing, ItemRoutePathSet.FULL);
 
             // Distribution mode does not matter for stocking - we just loop all route paths and attempt to stock all of
             // them
-            int remainingTransferAmount = maxTransferAmount;
             for (ItemRoutePath routePath : routePaths) {
 
                 // Restrict the maximum transfer amount for the route
-                int routeMaxTransferAmount = checkTransferable(routePath.getProperties().getTransferRate(),
-                        remainingTransferAmount, false);
-                if (routeMaxTransferAmount == 0)
+                ITransferAmountLimiter routeTransferAmountLimiter = new ITransferAmountLimiter() {
+
+                    @Override
+                    public int getRemainingTransferAmount(ItemStack stack) {
+                        return Math.min(checkTransferable(routePath, stack, false),
+                                transferAmountLimiter.getRemainingTransferAmount(stack));
+                    }
+
+                    @Override
+                    public void notifyItemTransferred(ItemStack stack) {
+                        transfer(routePath, stack, ItemStack.EMPTY, false);
+                        transferAmountLimiter.notifyItemTransferred(stack);
+                    }
+
+                    @Override
+                    public boolean canTransferMoreItems() {
+                        return checkAnyTransferable(routePath, false) &&
+                                transferAmountLimiter.canTransferMoreItems();
+                    }
+                };
+
+                if (!routeTransferAmountLimiter.canTransferMoreItems())
                     continue;
 
                 IItemHandler neighbourHandler = routePath.getHandler(network.getLevel());
@@ -103,21 +122,10 @@ public class ItemNetHandler implements IItemHandlerModifiable, IVirtualItemHandl
                         .getCoverAtSide(routePath.getTargetFacing());
 
                 // Wrap the original item amount provider with route-specific filter
-                int transferredItemAmount = GTTransferUtils.stockInventoryItems(sourceInventory, neighbourHandler,
-                        routeMaxTransferAmount, itemStack -> getItemKeepAmountViaRoute(
+                GTTransferUtils.stockInventoryItems(sourceInventory, neighbourHandler,
+                        routeTransferAmountLimiter, itemStack -> getItemKeepAmountViaRoute(
                                 itemStack, destinationPipeCover, routePath, itemKeepAmountProvider));
-
-                if (transferredItemAmount > 0) {
-                    // Account for the transfer in the pipe transfer limit and external max transfer amount
-                    remainingTransferAmount -= transferredItemAmount;
-                    transfer(false, transferredItemAmount);
-
-                    if (remainingTransferAmount <= 0)
-                        break;
-                }
             }
-
-            return maxTransferAmount - remainingTransferAmount;
         } finally {
             network.setTransferringItem(false);
         }
@@ -525,17 +533,24 @@ public class ItemNetHandler implements IItemHandlerModifiable, IVirtualItemHandl
         return this.simulatedTransfers.values().intStream().sum();
     }
 
+    private boolean checkAnyTransferable(ItemRoutePath routePath, boolean simulate) {
+        int max = Math.round(routePath.getProperties().getTransferRate() * Item.MAX_STACK_SIZE);
+        if (simulate) {
+            return max > getTotalSimulatedTransfers();
+        } else {
+            return max > pipe.getTransferredItemCount();
+        }
+    }
+
+    /** @return the amount of items that can be transferred for the given stack on the given route */
     private int checkTransferable(ItemRoutePath routePath, ItemStack stack, boolean simulate) {
         int max = Math.round(routePath.getProperties().getTransferRate() * Item.MAX_STACK_SIZE);
-        int amount = stack.getCount() * (Item.MAX_STACK_SIZE / stack.getMaxStackSize());
-        // ensure items with maxStackSize > 64 aren't free
-        if (!stack.isEmpty()) amount = Math.max(1, amount);
+        int remaining = max - (simulate ? getTotalSimulatedTransfers() : pipe.getTransferredItemCount());
+        if (remaining <= 0) return 0;
 
-        if (simulate) {
-            return Math.max(0, Math.min(max - getTotalSimulatedTransfers(), amount));
-        } else {
-            return Math.max(0, Math.min(max - pipe.getTransferredItemCount(), amount));
-        }
+        int itemWeight = Math.max(1, Item.MAX_STACK_SIZE / stack.getMaxStackSize());
+        // Round up to allow pipes with small transfer limit to pass at least one item
+        return Math.min(stack.getCount(), (remaining + itemWeight - 1) / itemWeight);
     }
 
     private void transfer(ItemRoutePath routePath, ItemStack stack, ItemStack remainder, boolean simulate) {

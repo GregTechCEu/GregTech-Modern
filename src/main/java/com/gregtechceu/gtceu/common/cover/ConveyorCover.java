@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.transfer.item.ITransferAmountLimiter;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
@@ -474,8 +475,8 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         }
 
         @Override
-        public int stockInventoryItems(IItemHandler sourceInventory, int maxTransferAmount,
-                                       ToIntFunction<ItemStack> itemKeepAmountProvider) {
+        public void stockInventoryItems(IItemHandler sourceInventory, ITransferAmountLimiter transferAmountLimiter,
+                                        ToIntFunction<ItemStack> itemKeepAmountProvider) {
             ToIntFunction<ItemStack> wrappedItemKeepAmountProvider = itemStack -> {
                 if (io == IO.OUT) {
                     if (manualIOMode == ManualIOMode.DISABLED) {
@@ -490,7 +491,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                 }
                 return itemKeepAmountProvider.applyAsInt(itemStack);
             };
-            return super.stockInventoryItems(sourceInventory, maxTransferAmount, wrappedItemKeepAmountProvider);
+            super.stockInventoryItems(sourceInventory, transferAmountLimiter, wrappedItemKeepAmountProvider);
         }
     }
 

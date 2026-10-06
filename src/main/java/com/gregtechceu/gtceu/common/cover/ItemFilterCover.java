@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.cover.filter.SmartItemFilter;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.transfer.item.ITransferAmountLimiter;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
@@ -161,8 +162,8 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
         }
 
         @Override
-        public int stockInventoryItems(IItemHandler sourceInventory, int maxTransferAmount,
-                                       ToIntFunction<ItemStack> itemKeepAmountProvider) {
+        public void stockInventoryItems(IItemHandler sourceInventory, ITransferAmountLimiter transferAmountLimiter,
+                                        ToIntFunction<ItemStack> itemKeepAmountProvider) {
             ToIntFunction<ItemStack> wrappedItemKeepAmountProvider = itemStack -> {
                 if (filterMode == FilterMode.FILTER_EXTRACT) {
                     if (allowFlow == ManualIOMode.DISABLED) {
@@ -177,7 +178,7 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
                 }
                 return itemKeepAmountProvider.applyAsInt(itemStack);
             };
-            return super.stockInventoryItems(sourceInventory, maxTransferAmount, wrappedItemKeepAmountProvider);
+            super.stockInventoryItems(sourceInventory, transferAmountLimiter, wrappedItemKeepAmountProvider);
         }
     }
 

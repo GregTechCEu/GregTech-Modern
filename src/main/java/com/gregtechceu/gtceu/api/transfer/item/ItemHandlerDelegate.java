@@ -75,9 +75,8 @@ public abstract class ItemHandlerDelegate implements IItemHandlerModifiable, IVi
     }
 
     @Override
-    public int stockInventoryItems(IItemHandler sourceInventory, int maxTransferAmount,
-                                   ToIntFunction<ItemStack> itemKeepAmountProvider) {
-        return GTTransferUtils.stockInventoryItems(sourceInventory, delegate, maxTransferAmount,
-                itemKeepAmountProvider);
+    public void stockInventoryItems(IItemHandler sourceInventory, ITransferAmountLimiter transferAmountLimiter,
+                                    ToIntFunction<ItemStack> itemKeepAmountProvider) {
+        GTTransferUtils.stockInventoryItems(sourceInventory, delegate, transferAmountLimiter, itemKeepAmountProvider);
     }
 }

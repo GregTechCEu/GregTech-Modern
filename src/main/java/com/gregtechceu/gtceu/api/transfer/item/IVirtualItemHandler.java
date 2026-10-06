@@ -14,6 +14,6 @@ import java.util.function.ToIntFunction;
 public interface IVirtualItemHandler extends IItemHandler, IBundleInsertable {
 
     /// Stocks each inventory represented by this virtual item handler with the given item amounts from source inventory
-    int stockInventoryItems(IItemHandler sourceInventory, int maxTransferAmount,
-                            ToIntFunction<ItemStack> itemKeepAmountProvider);
+    void stockInventoryItems(IItemHandler sourceInventory, ITransferAmountLimiter transferAmountLimiter,
+                             ToIntFunction<ItemStack> itemKeepAmountProvider);
 }
