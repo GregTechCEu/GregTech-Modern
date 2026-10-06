@@ -534,7 +534,6 @@ public class ComponentRecipes {
                 .outputItems(COVER_FLUID_VOIDING_ADVANCED)
                 .duration(100).EUt(VA[LV])
                 .addMaterialInfo(true).save(provider);
-        //Voltage Coils
         // Voltage Coils
         SPOOLING_RECIPES.recipeBuilder("voltage_coil_ulv").duration(200).EUt(VA[ULV])
                 .inputItems(rod, IronMagnetic)
