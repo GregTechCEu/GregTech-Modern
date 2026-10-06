@@ -1,9 +1,5 @@
 repositories {
-    mavenLocal {
-        content {
-            excludeGroup("brachy.modularui")
-        }
-    }
+    mavenLocal()
     mavenCentral()
     // force gradle to download FastUtil and LWJGL from the central maven so we can get source artifacts
     exclusiveContent { // Force
