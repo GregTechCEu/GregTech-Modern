@@ -418,7 +418,7 @@ public class GTRecipeTypes {
             .register();
 
     public static final GTRecipeTypeEntry LATHE_RECIPES = REGISTRATE.recipeType("lathe", ELECTRIC)
-            .setMaxIOSize(1, 2, 0, 0).setEUIO(IO.IN)
+            .setMaxIOSize(1, 2, 1, 0).setEUIO(IO.IN)
             .UI(builder -> builder
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.PIPE_OVERLAY_1)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.PIPE_OVERLAY_2)

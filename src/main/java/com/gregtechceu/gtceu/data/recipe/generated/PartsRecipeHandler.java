@@ -9,10 +9,11 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -455,13 +456,11 @@ public final class PartsRecipeHandler {
                     material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
             if (magMaterial == null) magMaterial = material;
 
-            if (ConfigHolder.INSTANCE.recipes.harderRods) {
-                builder.outputItems(rod, magMaterial);
-                builder.outputItems(dustSmall, magMaterial, 2);
-            } else {
-                builder.outputItems(rod, magMaterial, 2);
-            }
-            builder.save(provider);
+            builder.addData(LatheRecipeLogic.LUBRICATED_ROD,
+                    BuiltInRegistries.ITEM.getKey(ChemicalHelper.get(rod, magMaterial).getItem()).toString())
+                    .outputItems(rod, magMaterial)
+                    .outputItems(dustSmall, magMaterial, 2)
+                    .save(provider);
         }
 
         if (material.hasFlag(GENERATE_BOLT_SCREW)) {
