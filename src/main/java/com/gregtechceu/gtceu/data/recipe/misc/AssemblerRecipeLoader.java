@@ -11,65 +11,11 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.WELDER_RECIPES;
 
 public class AssemblerRecipeLoader {
 
     public static void init(RecipeOutput provider) {
-        // Gearbox-like
-        ASSEMBLER_RECIPES.recipeBuilder("bronze_gearbox_casing")
-                .inputItems(plate, Bronze, 4)
-                .inputItems(gear, Bronze, 2)
-                .inputItems(frameGt, Bronze)
-                .circuitMeta(4)
-                .outputItems(CASING_BRONZE_GEARBOX.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
-                .duration(50).EUt(16).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("steel_gearbox_casing")
-                .inputItems(plate, Steel, 4)
-                .inputItems(gear, Steel, 2)
-                .inputItems(frameGt, Steel)
-                .circuitMeta(4)
-                .outputItems(CASING_STEEL_GEARBOX.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
-                .duration(50).EUt(16).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("stainless_steel_gearbox_casing")
-                .inputItems(plate, StainlessSteel, 4)
-                .inputItems(gear, StainlessSteel, 2)
-                .inputItems(frameGt, StainlessSteel)
-                .circuitMeta(4)
-                .outputItems(CASING_STAINLESS_STEEL_GEARBOX.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
-                .duration(50).EUt(16).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("titanium_gearbox_casing")
-                .inputItems(plate, Titanium, 4)
-                .inputItems(gear, Titanium, 2)
-                .inputItems(frameGt, Titanium)
-                .circuitMeta(4)
-                .outputItems(CASING_TITANIUM_GEARBOX.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
-                .duration(50).EUt(16).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("tungstensteel_gearbox_casing")
-                .inputItems(plate, TungstenSteel, 4)
-                .inputItems(gear, TungstenSteel, 2)
-                .inputItems(frameGt, TungstenSteel)
-                .circuitMeta(4)
-                .outputItems(CASING_TUNGSTENSTEEL_GEARBOX.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
-                .duration(50).EUt(16).save(provider);
-
-        // Other
-        ASSEMBLER_RECIPES.recipeBuilder("stable_titanium_casing")
-                .inputItems(rotor, Titanium, 2)
-                .inputItems(pipeNormalFluid, Titanium, 4)
-                .inputItems(CASING_TITANIUM_STABLE.asStack())
-                .outputItems(CASING_ENGINE_INTAKE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
-                .duration(50).EUt(16).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("stable_tungstensteel_casing")
-                .inputItems(rotor, TungstenSteel, 2)
-                .inputItems(pipeNormalFluid, TungstenSteel, 4)
-                .inputItems(CASING_TUNGSTENSTEEL_ROBUST.asStack())
-                .outputItems(CASING_EXTREME_ENGINE_INTAKE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
-                .duration(50).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("spray_can_empty")
                 .inputItems(dust, Redstone)
