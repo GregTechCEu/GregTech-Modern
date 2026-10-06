@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-import static com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder.checkNullPredicates;
+import static com.gregtechceu.gtceu.api.multiblock.pattern.PatternBuilderUtils.checkNullPredicates;
 
 @Accessors(fluent = true, chain = true)
 public class ExpandableMultiblockPatternBuilder {

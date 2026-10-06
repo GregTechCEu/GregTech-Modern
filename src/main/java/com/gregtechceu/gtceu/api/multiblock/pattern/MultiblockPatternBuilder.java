@@ -19,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.gregtechceu.gtceu.api.multiblock.pattern.PatternBuilderUtils.checkNullPredicates;
+
 /**
  * A builder class for {@link BlockPattern}<br />
  * When the multiblock is placed, its facings are concrete. Then, the {@link RelativeDirection}s passed into
@@ -223,21 +225,6 @@ public class MultiblockPatternBuilder {
                                     ", found one with " + s.length() + ")");
                 }
             }
-        }
-    }
-
-    @SuppressWarnings("ConstantValue")
-    static void checkNullPredicates(Char2ObjectMap<MultiPredicate> symbolMap) {
-        List<Character> list = new ArrayList<>();
-        for (var entry : symbolMap.char2ObjectEntrySet()) {
-            if (entry.getValue() == null) {
-                list.add(entry.getCharKey());
-            }
-        }
-
-        if (!list.isEmpty()) {
-            throw new IllegalArgumentException("Predicates for character(s) " +
-                    COMMA_JOINER.join(list) + " are null or do not exist");
         }
     }
 }
