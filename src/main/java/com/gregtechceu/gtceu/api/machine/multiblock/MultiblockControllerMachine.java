@@ -64,7 +64,7 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     public static final String DEFAULT_STRUCTURE = "main";
 
-    public static final int MULTI_UI_TEXT_PANEL_WIDTH = 172;
+    public static final int MULTI_UI_TEXT_PANEL_WIDTH = 190;
     public static final int MULTI_UI_TEXT_PANEL_HEIGHT = 136;
 
     private final List<MultiblockPartMachine> parts = new ArrayList<>();
