@@ -139,6 +139,10 @@ public final class Material {
         verifyMaterial();
     }
 
+    public MaterialStack asStack(long amount) {
+        return new MaterialStack(this, amount);
+    }
+
     public String getName() {
         return materialInfo.resourceLocation.getPath();
     }
