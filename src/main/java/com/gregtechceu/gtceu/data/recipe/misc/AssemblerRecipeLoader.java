@@ -8,7 +8,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class AssemblerRecipeLoader {
 
@@ -104,71 +104,6 @@ public class AssemblerRecipeLoader {
                 .circuitMeta(2)
                 .inputFluids(Glue.getFluid(10))
                 .outputItems(pipeLargeFluid, TreatedWood)
-                .save(provider);
-
-        // Voltage Coils
-        ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_ulv").duration(200).EUt(VA[ULV])
-                .inputItems(rod, IronMagnetic)
-                .inputItems(wireFine, Lead, 16)
-                .circuitMeta(1)
-                .outputItems(VOLTAGE_COIL_ULV)
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_lv").duration(200).EUt(VA[LV])
-                .inputItems(rod, IronMagnetic)
-                .inputItems(wireFine, Steel, 16)
-                .circuitMeta(1)
-                .outputItems(VOLTAGE_COIL_LV)
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_mv").duration(200).EUt(VA[MV])
-                .inputItems(rod, SteelMagnetic)
-                .inputItems(wireFine, Aluminium, 16)
-                .circuitMeta(1)
-                .outputItems(VOLTAGE_COIL_MV)
-                .addMaterialInfo(true)
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_hv").duration(200).EUt(VA[HV])
-                .inputItems(rod, SteelMagnetic)
-                .inputItems(wireFine, BlackSteel, 16)
-                .circuitMeta(1)
-                .outputItems(VOLTAGE_COIL_HV)
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_ev").duration(200).EUt(VA[EV])
-                .inputItems(rod, NeodymiumMagnetic)
-                .inputItems(wireFine, Platinum, 16)
-                .circuitMeta(1)
-                .outputItems(VOLTAGE_COIL_EV)
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_iv").duration(200).EUt(VA[IV])
-                .inputItems(rod, NeodymiumMagnetic)
-                .inputItems(wireFine, Iridium, 16)
-                .circuitMeta(1)
-                .outputItems(VOLTAGE_COIL_IV)
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_luv").duration(200).EUt(VA[LuV])
-                .inputItems(rod, SamariumMagnetic)
-                .inputItems(wireFine, Osmiridium, 16)
-                .circuitMeta(1)
-                .outputItems(VOLTAGE_COIL_LuV)
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_zpm").duration(200).EUt(VA[ZPM])
-                .inputItems(rod, SamariumMagnetic)
-                .inputItems(wireFine, Europium, 16)
-                .circuitMeta(1)
-                .outputItems(VOLTAGE_COIL_ZPM)
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_uv").duration(200).EUt(VA[UV])
-                .inputItems(rod, SamariumMagnetic)
-                .inputItems(wireFine, Tritanium, 16)
-                .circuitMeta(1)
-                .outputItems(VOLTAGE_COIL_UV)
                 .save(provider);
 
         // Neutron Reflector
