@@ -466,6 +466,7 @@ public final class PartsRecipeHandler {
         WELDER_RECIPES.recipeBuilder("weld_" + material.getName() + "_parts_to_rotor")
                 .inputItems(plate, material, 4)
                 .inputItems(ring, material, 1)
+                .circuitMeta(3)
                 .outputItems(stack.copy())
                 .duration((int) material.getMass() * 4)
                 .EUt(material.getBlastTemperature() >= 2800 ? 256 : 64)
