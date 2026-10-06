@@ -744,6 +744,62 @@ public class GCYMMachines {
                     GTCEu.id("block/multiblock/gcym/large_wiremill"))
             .register();
 
+    public static final MachineEntry<MultiblockMachineDefinition> LARGE_WELDER = REGISTRATE
+            .multiblock("large_welder", WorkableElectricMultiblockMachine::new)
+            .langValue("Large Welder")
+            .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    WELDER_RECIPES.getName()))
+            .rotationState(RotationState.ALL)
+            .recipeType(WELDER_RECIPES)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
+            .appearanceBlock(CASING_CORROSION_PROOF)
+            .pattern(definition -> MultiblockPatternBuilder.start(BACK, UP, LEFT)
+                    .slice("#AADAA#", "#ACCCA#", "#AAAAA#", "#A###A#")
+                    .slice("AAAAAAA", "A#####A", "AB###BA", "#AAAAA#")
+                    .slice("AAAAAAA", "A#####A", "A#####A", "#ACCCA#")
+                    .slice("AAAAAAA", "A#####A", "AB###BA", "#AAAAA#")
+                    .slice("#AAAAA#", "#ACCCA#", "#AAAAA#", "#A###A#")
+                    .where('D', controller(definition))
+                    .where('A', blocks(CASING_CORROSION_PROOF.get()).setMinGlobalLimited(55)
+                            .and(autoAbilities(definition.getRecipeTypes()))
+                            .and(autoAbilities(true, false, true)))
+                    .where('B', blocks(MOLYBDENUM_DISILICIDE_COIL_BLOCK.get()))
+                    .where('C', blocks(CASING_LAMINATED_GLASS.get()))
+                    .where('#', any())
+                    .build())
+            .workableCasingModel(GTCEu.id("block/casings/gcym/corrosion_proof_casing"),
+                    GTCEu.id("block/multiblock/gcym/large_welder"))
+            .register();
+
+    public static final MachineEntry<MultiblockMachineDefinition> LARGE_SPOOLER = REGISTRATE
+            .multiblock("large_spooler", WorkableElectricMultiblockMachine::new)
+            .langValue("Large Spooler")
+            .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    SPOOLING_RECIPES.getName()))
+            .rotationState(RotationState.ALL)
+            .recipeType(SPOOLING_RECIPES)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
+            .appearanceBlock(CASING_HSSE_STURDY)
+            .pattern(definition -> MultiblockPatternBuilder.start(BACK, UP, LEFT)
+                    .slice("##AAA", "##ABA", "##AAA", "#####", "#####", "#####")
+                    .slice("##AAA", "##A#A", "##AAA", "#####", "#####", "#####")
+                    .slice("AAAAA", "ACA#A", "ACAAA", "ACA##", "ACA##", "AAA##")
+                    .slice("AAAAA", "CDA#A", "CDAAA", "CDC##", "CDC##", "AAA##")
+                    .slice("AAAAA", "AAAAA", "AAAAA", "AAA##", "AAA##", "AAA##")
+                    .where('B', controller(definition))
+                    .where('A', blocks(CASING_HSSE_STURDY.get()).setMinGlobalLimited(50)
+                            .and(autoAbilities(definition.getRecipeTypes()))
+                            .and(autoAbilities(true, false, true)))
+                    .where('C', blocks(CASING_LAMINATED_GLASS.get()))
+                    .where('D', blocks(CASING_STEEL_GEARBOX.get()))
+                    .where('#', any())
+                    .build())
+            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_sturdy_hsse"),
+                    GTCEu.id("block/machines/spooling"))
+            .register();
+
     // spotless:off
     public static final MachineEntry<MultiblockMachineDefinition> ROTARY_HEARTH_FURNACE = REGISTRATE
             .multiblock("rotary_hearth_furnace", CoilWorkableElectricMultiblockMachine::new)
