@@ -274,7 +274,6 @@ public class CommonEventListener {
     public static void worldUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
             TaskHandler.onWorldUnLoad(serverLevel);
-            // MultiblockWorldSavedData.getOrCreate(serverLevel).releaseExecutorService();
             ServerCache.instance.invalidateWorld(serverLevel);
         } else if (event.getLevel().isClientSide()) {
             ClientCacheManager.saveCaches(event.getLevel().registryAccess());
@@ -291,18 +290,6 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void serverStopped(ServerStoppedEvent event) {
         ServerCache.instance.clear();
-    }
-
-    @SubscribeEvent
-    public static void serverStopping(ServerStoppingEvent event) {
-        /*
-         * var levels = event.getServer().getAllLevels();
-         * for (var level : levels) {
-         * if (!level.isClientSide()) {
-         * MultiblockWorldSavedData.getOrCreate(level).releaseExecutorService();
-         * }
-         * }
-         */
     }
 
     @SubscribeEvent
