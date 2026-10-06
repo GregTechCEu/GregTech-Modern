@@ -141,6 +141,10 @@ public final class Material implements Comparable<Material> {
         verifyMaterial();
     }
 
+    public MaterialStack asStack(long amount) {
+        return new MaterialStack(this, amount);
+    }
+
     private void registerMaterial() {
         GTRegistries.MATERIALS.register(getResourceLocation(), this);
     }
