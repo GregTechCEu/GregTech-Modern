@@ -463,36 +463,14 @@ public final class PartsRecipeHandler {
                 'S', new MaterialEntry(screw, material),
                 'R', new MaterialEntry(ring, material));
 
-        if (material.hasFluid()) {
-            FluidStack fluidStack = material.getPropertyOrThrow(PropertyKey.FLUID).solidifiesFrom(L * 4);
-            if (!fluidStack.isEmpty()) {
-                FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_rotor")
-                        .notConsumable(GTItems.SHAPE_MOLD_ROTOR)
-                        .inputFluids(fluidStack)
-                        .outputItems(stack.copy())
-                        .duration(120)
-                        .EUt(20)
-                        .save(provider);
-            }
-        }
-
-        EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_rotor")
-                .inputItems(ingot, material, 4)
-                .notConsumable(GTItems.SHAPE_EXTRUDER_ROTOR)
+        WELDER_RECIPES.recipeBuilder("weld_" + material.getName() + "_parts_to_rotor")
+                .inputItems(plate, material, 4)
+                .inputItems(ring, material, 1)
                 .outputItems(stack.copy())
                 .duration((int) material.getMass() * 4)
                 .EUt(material.getBlastTemperature() >= 2800 ? 256 : 64)
                 .save(provider);
 
-        if (material.hasFlag(NO_SMASHING)) {
-            EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_rotor")
-                    .inputItems(dust, material, 4)
-                    .notConsumable(GTItems.SHAPE_EXTRUDER_ROTOR)
-                    .outputItems(stack.copy())
-                    .duration((int) material.getMass() * 4)
-                    .EUt(material.getBlastTemperature() >= 2800 ? 256 : 64)
-                    .save(provider);
-        }
     }
 
     private static void processRod(@NotNull RecipeOutput provider, @NotNull Material material) {
