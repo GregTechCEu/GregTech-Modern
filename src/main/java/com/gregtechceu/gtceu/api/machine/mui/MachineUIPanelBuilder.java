@@ -63,6 +63,9 @@ public class MachineUIPanelBuilder {
      * the machine supports them.
      */
     private boolean addDefaultConfigurators = true;
+
+    private boolean hasEIOWidget = true;
+
     private final MetaMachine machine;
 
     @Getter
@@ -76,7 +79,7 @@ public class MachineUIPanelBuilder {
     }
 
     public MachineUIPanel build(PanelSyncManager syncManager, UISettings settings) {
-        var panel = new MachineUIPanel(machine, settings, attachInventory, addTitleBar, drawGTLogo, gtLogoTexture);
+        var panel = new MachineUIPanel(machine, settings, attachInventory, addTitleBar, drawGTLogo, gtLogoTexture, hasEIOWidget);
 
         var attachLeft = panel.getLeftConfiguratorPanel();
         var attachRight = panel.getRightConfiguratorPanel();
@@ -153,14 +156,6 @@ public class MachineUIPanelBuilder {
                                     FormattingUtil.formatNumbers(steamCapacity.getIntValue())))))
                     .leftRel(0.0f).left(-36).top(4)
                     .excludeAreaInRecipeViewer());
-        }
-
-        for (var cover : machine.getCoverContainer().getCovers()) {
-            attachLeft.child(new ButtonWidget<>()
-                    .overlay(new ItemDrawable(cover.getAttachItem()))
-                    .onMousePressed((context, button) -> {
-                        return true;
-                    }));
         }
 
         return panel;

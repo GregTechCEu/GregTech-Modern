@@ -1,7 +1,12 @@
 package com.gregtechceu.gtceu.api.machine.mui;
 
+import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.value.BoolValue;
+import brachy.modularui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import brachy.modularui.api.drawable.IDrawable;
@@ -14,6 +19,9 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
 
@@ -23,10 +31,16 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
     @Getter
     protected final Flow leftConfiguratorPanel, rightConfiguratorPanel;
     @Getter
+    protected final @Nullable Flow tabTogglePanel;
+    @Getter
     protected final ParentWidget<?> mainContents;
+    @Getter
+    protected final @Nullable MachineInWorldPreviewWidget eioWidget;
+
+    private boolean currentlyDisplayingEIOTab = false;
 
     public MachineUIPanel(MetaMachine machine, UISettings settings, boolean attachPlayerInventory,
-                          boolean addTitleBar, boolean drawGTLogo, UITexture gtLogoTexture) {
+                          boolean addTitleBar, boolean drawGTLogo, UITexture gtLogoTexture, boolean displayEIOWidget) {
         super(machine.getDefinition().getId().getPath());
 
         UITexture themeBackground = null;
@@ -54,6 +68,36 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
                 .setEnabledIf(f -> !f.getChildren().isEmpty())
                 .decoration();
 
+        if (displayEIOWidget) {
+            tabTogglePanel = Flow.col()
+                    .coverChildren()
+                    .rightRel(1.0f)
+                    .padding(4, 2, 4, 4)
+                    .top(4)
+                    .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                    .childPadding(2)
+                    .excludeAreaInRecipeViewer()
+                    .background(themeBackground.getSubArea(0f, 0f, 0.75f, 1.0f))
+                    .child(new ToggleButton()
+                            .value(new BoolValue.Dynamic(
+                                    () -> !currentlyDisplayingEIOTab,
+                                    (b) -> toggleTabDisplay()))
+                            .size(16)
+                            .overlay(new ItemDrawable(machine.getDefinition().getItem())))
+                    .child(new ToggleButton()
+                            .value(new BoolValue.Dynamic(
+                                    () -> currentlyDisplayingEIOTab,
+                                    (b) -> toggleTabDisplay()))
+                            .size(16)
+                            .overlay(GuiTextures.GEAR))
+                    .decoration();
+
+            eioWidget = new MachineInWorldPreviewWidget(machine);
+        } else {
+            tabTogglePanel = null;
+            eioWidget = null;
+        }
+
         rightConfiguratorPanel = Flow.col()
                 .coverChildren()
                 .leftRel(1.0f)
@@ -69,7 +113,8 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
 
         Flow panelContents = Flow.col().coverChildren();
         panelContents.margin(4);
-        mainContents = new ParentWidget<>().coverChildren(DEFAULT_CONTENT_WIDTH, DEFAULT_CONTENT_HEIGHT);
+        mainContents = new ParentWidget<>()
+                .coverChildren(DEFAULT_CONTENT_WIDTH, DEFAULT_CONTENT_HEIGHT);
 
         panelContents.child(mainContents);
 
@@ -86,13 +131,22 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
         }
 
         if (drawGTLogo) {
-            child(new IDrawable.DrawableWidget(gtLogoTexture)
-                    .right(7).bottom(7 + (attachPlayerInventory ? 78 : 0)).decoration());
+            panelContents.child(new IDrawable.DrawableWidget(gtLogoTexture)
+                    .right(7).bottom(7 + (attachPlayerInventory ? 78 : 0)).decoration().setEnabledIf(w -> !currentlyDisplayingEIOTab));
         }
 
         child(leftConfiguratorPanel);
+        if (tabTogglePanel != null) child(tabTogglePanel);
         child(rightConfiguratorPanel);
         child(panelContents);
+        if (eioWidget != null) child(eioWidget);
         coverChildren();
+    }
+
+    private void toggleTabDisplay() {
+        if (eioWidget == null) return;
+        currentlyDisplayingEIOTab = !currentlyDisplayingEIOTab;
+        mainContents.setEnabled(!currentlyDisplayingEIOTab);
+        eioWidget.setEnabled(currentlyDisplayingEIOTab);
     }
 }
