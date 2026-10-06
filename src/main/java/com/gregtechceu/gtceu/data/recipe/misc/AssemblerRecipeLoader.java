@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.config.ConfigHolder;
-
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 
@@ -11,12 +9,10 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.WELDER_RECIPES;
 
 public class AssemblerRecipeLoader {
 
     public static void init(RecipeOutput provider) {
-
         ASSEMBLER_RECIPES.recipeBuilder("spray_can_empty")
                 .inputItems(dust, Redstone)
                 .inputItems(FLUID_CELL)

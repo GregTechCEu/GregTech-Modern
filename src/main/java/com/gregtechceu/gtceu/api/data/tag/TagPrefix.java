@@ -564,7 +564,7 @@ public class TagPrefix {
     public static final TagPrefix rotor = new TagPrefix(GTCEu.id("rotor"))
             .defaultTagPath("rotors/%s")
             .unformattedTagPath("rotors")
-            .materialAmount(GTValues.M * (17/4))
+            .materialAmount(GTValues.M * 17 / 4)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.rotor)
             .unificationEnabled(true)

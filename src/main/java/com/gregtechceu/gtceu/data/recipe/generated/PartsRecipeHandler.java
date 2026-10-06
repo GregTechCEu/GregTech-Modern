@@ -471,7 +471,6 @@ public final class PartsRecipeHandler {
                 .duration((int) material.getMass() * 4)
                 .EUt(material.getBlastTemperature() >= 2800 ? 256 : 64)
                 .save(provider);
-
     }
 
     private static void processRod(@NotNull RecipeOutput provider, @NotNull Material material) {
