@@ -228,9 +228,9 @@ public class GTMachines {
                     .register(),
             ELECTRIC_TIERS);
     public static final MachineEntry<MachineDefinition>[] SPOOLING = registerTieredMachines(REGISTRATE,
-            "spooling",
+            "spooler",
             SimpleTieredMachine::new, (tier, builder) -> builder
-                    .langValue("%s Spooling Machine %s".formatted(VLVH[tier], VLVT[tier]))
+                    .langValue("%s Spooler %s".formatted(VLVH[tier], VLVT[tier]))
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.SPOOLING_RECIPES)
                     .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
