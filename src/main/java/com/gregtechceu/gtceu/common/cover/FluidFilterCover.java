@@ -55,19 +55,6 @@ public class FluidFilterCover extends CoverBehavior implements IMuiCover {
         return super.canAttach() && coverHolder.getFluidHandlerCap(attachedSide, false) != null;
     }
 
-    @Override
-    public void onAttached(ItemStack itemStack, @Nullable ServerPlayer player) {
-        super.onAttached(itemStack, player);
-
-        // Make the component with the filter data on the attached item a fresh copy
-        // Stops the component data potentially interacting with the itemstack used to make the cover
-        var componentType = Filters.getFilterComponentType(FluidStack.class, attachItem.getItem());
-        if (componentType == null) return;
-        Filter<FluidStack> filterComponent = attachItem.get(componentType);
-        if (filterComponent == null) return;
-        attachItem.set(componentType, filterComponent.createCopy());
-    }
-
     public Filter<FluidStack> getFluidFilter() {
         if (fluidFilter == null) {
             fluidFilter = Filters.loadFluidFilter(attachItem);

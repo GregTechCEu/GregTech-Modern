@@ -31,7 +31,16 @@ public class Filters {
     public static <T> Filter<T> loadFilter(Class<T> filterableType, ItemStack stack) {
         var entry = FILTERS.get(stack.getItem());
         if (entry.filterableType != filterableType) return null;
-        Filter<T> filter = (Filter<T>) stack.getOrDefault(entry.dataComponentType.value(), entry.filterFactory.get());
+        Filter<T> filter = (Filter<T>) stack.get(entry.dataComponentType.value());
+
+        // Makes a copy of the filter data component, potentially stopping issues where different filters get
+        // "entangled"
+        if (filter == null) {
+            filter = (Filter<T>) entry.filterFactory.get();
+        } else {
+            filter = filter.createCopy();
+        }
+
         filter.setFilterItemStack(stack);
         filter.setItemWriter(w -> stack.set((DataComponentType<? super Filter<T>>) entry.dataComponentType.value(), w));
         return filter;

@@ -78,19 +78,6 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public void onAttached(ItemStack itemStack, @Nullable ServerPlayer player) {
-        super.onAttached(itemStack, player);
-
-        // Make the component with the filter data on the attached item a fresh copy
-        // Stops the component data potentially interacting with the itemstack used to make the cover
-        var componentType = Filters.getFilterComponentType(ItemStack.class, attachItem.getItem());
-        if (componentType == null) return;
-        Filter<ItemStack> filterComponent = attachItem.get(componentType);
-        if (filterComponent == null) return;
-        attachItem.set(componentType, filterComponent.createCopy());
-    }
-
-    @Override
     public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
                                   UISettings settings) {
         EnumSyncValue<FilterMode> filterMode = new EnumSyncValue<>(FilterMode.class,

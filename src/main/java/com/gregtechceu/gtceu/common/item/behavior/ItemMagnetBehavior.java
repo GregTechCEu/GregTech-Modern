@@ -92,8 +92,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
 
         Map<FilterMode, Filter<ItemStack>> filters = new EnumMap<>(FilterMode.class);
         for (FilterMode mode : FilterMode.values()) {
-            ItemStack stack = mode.getFilter(held);
-            Filter<ItemStack> filter = Filters.loadItemFilter(stack);
+            Filter<ItemStack> filter = mode.loadFilter(held);
             filters.put(mode, filter);
         }
 
@@ -388,14 +387,8 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         public ItemStack getFilter(ItemStack magnet) {
             var mockStack = new ItemStack(item.asItem());
             switch (this) {
-                case SIMPLE -> {
-                    SimpleItemFilter prototypeComponent = magnet.get(GTDataComponents.SIMPLE_ITEM_FILTER);
-                    SimpleItemFilter copy = null;
-                    if (prototypeComponent != null) {
-                        copy = (SimpleItemFilter) prototypeComponent.createCopy();
-                    }
-                    mockStack.set(GTDataComponents.SIMPLE_ITEM_FILTER, copy);
-                }
+                case SIMPLE -> mockStack.set(GTDataComponents.SIMPLE_ITEM_FILTER,
+                        magnet.get(GTDataComponents.SIMPLE_ITEM_FILTER));
                 case TAG -> mockStack.set(GTDataComponents.ITEM_TAG_FILTER,
                         magnet.get(GTDataComponents.ITEM_TAG_FILTER));
             }
