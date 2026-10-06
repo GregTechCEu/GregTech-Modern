@@ -228,8 +228,6 @@ public class GTItems {
     @SuppressWarnings("unchecked")
     public static final ItemEntry<Item>[] SHAPE_EXTRUDERS = new ItemEntry[27];
     public static ItemEntry<Item> SHAPE_EXTRUDER_PLATE;
-    public static ItemEntry<Item> SHAPE_EXTRUDER_ROD;
-    public static ItemEntry<Item> SHAPE_EXTRUDER_BOLT;
     public static ItemEntry<Item> SHAPE_EXTRUDER_RING;
     public static ItemEntry<Item> SHAPE_EXTRUDER_CELL;
     public static ItemEntry<Item> SHAPE_EXTRUDER_INGOT;
@@ -240,7 +238,6 @@ public class GTItems {
     public static ItemEntry<Item> SHAPE_EXTRUDER_PIPE_LARGE;
     public static ItemEntry<Item> SHAPE_EXTRUDER_PIPE_HUGE;
     public static ItemEntry<Item> SHAPE_EXTRUDER_BLOCK;
-    public static ItemEntry<Item> SHAPE_EXTRUDER_GEAR;
     public static ItemEntry<Item> SHAPE_EXTRUDER_BOTTLE;
     public static ItemEntry<Item> SHAPE_EXTRUDER_FOIL;
 

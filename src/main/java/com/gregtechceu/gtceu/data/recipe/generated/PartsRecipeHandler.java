@@ -58,7 +58,6 @@ public final class PartsRecipeHandler {
                 material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
         if (magMaterial == null) magMaterial = material;
         ItemStack boltStack = ChemicalHelper.get(bolt, magMaterial);
-        ItemStack ingotStack = ChemicalHelper.get(ingot, material);
 
         CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_screw_to_bolt")
                 .inputItems(screw, material)
@@ -66,26 +65,6 @@ public final class PartsRecipeHandler {
                 .duration(20)
                 .EUt(24)
                 .save(provider);
-
-        if (!boltStack.isEmpty() && !ingotStack.isEmpty()) {
-            EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_bolt")
-                    .inputItems(ingot, material)
-                    .notConsumable(GTItems.SHAPE_EXTRUDER_BOLT)
-                    .outputItems(boltStack.copyWithCount(8))
-                    .duration(15)
-                    .EUt(VA[MV])
-                    .save(provider);
-
-            if (material.hasFlag(NO_SMASHING)) {
-                EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_bolt")
-                        .inputItems(dust, material)
-                        .notConsumable(GTItems.SHAPE_EXTRUDER_BOLT)
-                        .outputItems(boltStack.copyWithCount(8))
-                        .duration(15)
-                        .EUt(VA[MV])
-                        .save(provider);
-            }
-        }
     }
 
     private static void processScrew(@NotNull RecipeOutput provider, @NotNull Material material) {
