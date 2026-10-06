@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
@@ -138,6 +139,10 @@ public final class Material implements Comparable<Material> {
         this.flags = flags;
         this.properties.setMaterial(this);
         verifyMaterial();
+    }
+
+    public MaterialStack asStack(long amount) {
+        return new MaterialStack(this, amount);
     }
 
     private void registerMaterial() {
@@ -1849,6 +1854,14 @@ public final class Material implements Comparable<Material> {
                     ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack)
                             .toArray(MaterialStack[]::new)) :
                     ImmutableList.copyOf(composition);
+            for (int i = 0; i < materialInfo.componentList.size(); i++) {
+                if (materialInfo.componentList.get(i).isEmpty()) {
+                    GTCEu.LOGGER.error("Material {} has an empty component at index {}: {}",
+                            materialInfo.resourceLocation, i,
+                            compositionSupplier != null && i < compositionSupplier.size() ?
+                                    compositionSupplier.get(i) : composition.get(i));
+                }
+            }
             if (!properties.hasProperty(HAZARD)) {
                 for (MaterialStack materialStack : materialInfo.componentList) {
                     Material material = materialStack.material();
