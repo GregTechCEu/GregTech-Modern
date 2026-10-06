@@ -13,7 +13,6 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 
 import java.util.Map;
-import java.util.Objects;
 
 public class ExpandablePatternHelper extends AbstractStructureHelper {
 
@@ -170,7 +169,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         int relZ = getOffsetFromDirection(absolutes[2], pos);
         char key = expandablePattern.getPredicateProvider().getPredicateKey(new BlockPos(relX, relY, relZ).mutable(),
                 userRepeats);
-        return Objects.requireNonNull(expandablePattern.getSymbolMap().get(key));
+        return expandablePattern.getSymbolMap().get(key);
     }
 
     private static int getOffsetFromDirection(Direction dir, BlockPos pos) {
