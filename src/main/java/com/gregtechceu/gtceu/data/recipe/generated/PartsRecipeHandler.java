@@ -207,9 +207,9 @@ public final class PartsRecipeHandler {
         ItemStack stack = ChemicalHelper.get(prefix, magMaterial);
         if (!isSmall && material.hasProperty(PropertyKey.INGOT)) {
             int voltageMultiplier = getVoltageMultiplier(material);
-            EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_gear")
+            FORMING_PRESS_RECIPES.recipeBuilder("forming_press_" + material.getName() + "_ingot_to_gear")
                     .inputItems(ingot, material, 4)
-                    .notConsumable(GTItems.SHAPE_EXTRUDER_GEAR)
+                    .notConsumable(GTItems.SHAPE_MOLD_GEAR)
                     .outputItems(stack)
                     .duration((int) material.getMass() * 5)
                     .EUt(8L * voltageMultiplier)
@@ -225,26 +225,12 @@ public final class PartsRecipeHandler {
                     .save(provider);
 
             if (material.hasFlag(NO_SMASHING)) {
-                EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_gear")
+                FORMING_PRESS_RECIPES.recipeBuilder("forming_press_" + material.getName() + "_dust_to_gear")
                         .inputItems(dust, material, 4)
-                        .notConsumable(GTItems.SHAPE_EXTRUDER_GEAR)
+                        .notConsumable(GTItems.SHAPE_MOLD_GEAR)
                         .outputItems(stack)
                         .duration((int) material.getMass() * 5)
                         .EUt(8L * voltageMultiplier)
-                        .save(provider);
-            }
-        }
-
-        if (material.hasFluid()) {
-            FluidStack fluidStack = material.getPropertyOrThrow(PropertyKey.FLUID)
-                    .solidifiesFrom(L * (isSmall ? 1 : 4));
-            if (!fluidStack.isEmpty()) {
-                FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_" + prefix.name)
-                        .notConsumable(isSmall ? GTItems.SHAPE_MOLD_GEAR_SMALL : GTItems.SHAPE_MOLD_GEAR)
-                        .inputFluids(fluidStack)
-                        .outputItems(stack)
-                        .duration(isSmall ? 20 : 100)
-                        .EUt(VA[ULV])
                         .save(provider);
             }
         }
@@ -256,9 +242,9 @@ public final class PartsRecipeHandler {
                         " R ", "hPx", " R ", 'R', new MaterialEntry(rod, material), 'P',
                         new MaterialEntry(plate, material));
 
-                EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_small_gear")
+                FORMING_PRESS_RECIPES.recipeBuilder("forming_press_" + material.getName() + "_ingot_to_small_gear")
                         .inputItems(ingot, material)
-                        .notConsumable(GTItems.SHAPE_EXTRUDER_GEAR_SMALL)
+                        .notConsumable(GTItems.SHAPE_MOLD_GEAR_SMALL)
                         .outputItems(stack)
                         .duration((int) material.getMass())
                         .EUt(material.getBlastTemperature() >= 2800 ? 256 : 64)
@@ -273,9 +259,9 @@ public final class PartsRecipeHandler {
                         .save(provider);
 
                 if (material.hasFlag(NO_SMASHING)) {
-                    EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_small_gear")
+                    FORMING_PRESS_RECIPES.recipeBuilder("forming_press_" + material.getName() + "_dust_to_small_gear")
                             .inputItems(dust, material)
-                            .notConsumable(GTItems.SHAPE_EXTRUDER_GEAR_SMALL)
+                            .notConsumable(GTItems.SHAPE_MOLD_GEAR_SMALL)
                             .outputItems(stack)
                             .duration((int) material.getMass())
                             .EUt(material.getBlastTemperature() >= 2800 ? 256 : 64)
