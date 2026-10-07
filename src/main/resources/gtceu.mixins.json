@@ -76,6 +76,7 @@
         "LivingEntityMixin",
         "LootDataManagerMixin",
         "LootPoolAccessor",
+        "LootTableAccessor",
         "OreConfigurationMixin",
         "OreVeinifierMixin",
         "PotionBrewingAccessor",

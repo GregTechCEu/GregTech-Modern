@@ -3,15 +3,15 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
-import net.minecraft.core.BlockPos;
-
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.function.BiFunction;
+
+import static com.gregtechceu.gtceu.api.multiblock.pattern.PatternBuilderUtils.checkNullPredicates;
 
 @Accessors(fluent = true, chain = true)
 public class ExpandableMultiblockPatternBuilder {
@@ -21,8 +21,9 @@ public class ExpandableMultiblockPatternBuilder {
     @Setter
     protected @Nullable ExpandablePattern.BoundsConstraintProvider constraintProvider;
     @Setter
-    protected @Nullable BiFunction<BlockPos.MutableBlockPos, List<Integer>, MultiPredicate> predicateProvider;
+    protected @Nullable ExpandablePattern.PredicateProvider predicateProvider;
     protected final RelativeDirection[] directions = new RelativeDirection[3];
+    private final Char2ObjectMap<MultiPredicate> symbolMap = new Char2ObjectOpenHashMap<>();
 
     private ExpandableMultiblockPatternBuilder(RelativeDirection aisleDir, RelativeDirection stringDir,
                                                RelativeDirection charDir) {
@@ -42,10 +43,16 @@ public class ExpandableMultiblockPatternBuilder {
                 RelativeDirection.RIGHT);
     }
 
+    public ExpandableMultiblockPatternBuilder where(char symbol, MultiPredicate predicate) {
+        this.symbolMap.put(symbol, predicate);
+        return this;
+    }
+
     public ExpandablePattern build() {
         Objects.requireNonNull(boundsProvider, "Bound function is null");
         Objects.requireNonNull(predicateProvider, "Predicate function is null");
-        ExpandablePattern pattern = new ExpandablePattern(boundsProvider, predicateProvider, directions);
+        checkNullPredicates(symbolMap);
+        ExpandablePattern pattern = new ExpandablePattern(boundsProvider, predicateProvider, symbolMap, directions);
         if (constraintProvider != null) {
             pattern.setBoundsConstraints(constraintProvider);
         }

@@ -22,7 +22,6 @@ import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -73,7 +72,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -315,15 +313,14 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public static Function<MultiblockMachineDefinition, IBlockPattern> getPattern() {
         return (definition) -> {
             MultiPredicate wallPredicate = states(getCasingState(), getGlassState()).or(getValidFloorBlocks());
-            MultiPredicate energyPredicate = autoAbilities(true, false, false).and(abilities(PartAbility.INPUT_ENERGY)
-                    .setMinGlobalLimited(1).setMaxGlobalLimited(3));
+            MultiPredicate energyPredicate = autoAbilities(true, false, false)
+                    .and(abilities(PartAbility.INPUT_ENERGY)
+                            .setMinGlobalLimited(1).setMaxGlobalLimited(3));
 
             MultiPredicate edgePredicate = wallPredicate.and(energyPredicate);
             MultiPredicate facePredicate = wallPredicate.and(energyPredicate)
                     .and(doorPredicate().setMaxGlobalLimited(8))
                     .and(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
-            MultiPredicate filterPredicate = cleanroomFilters();
-            MultiPredicate innerPredicate = innerPredicate();
             MultiPredicate verticalEdgePredicate = edgePredicate.and(blocks(getGlassState().getBlock()));
 
             return ExpandableMultiblockPatternBuilder
@@ -332,9 +329,15 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                     .constraintProvider(() -> List.of(IntIntPair.of(0, 0), IntIntPair.of(MIN_DEPTH, MAX_DEPTH),
                             IntIntPair.of(MIN_RADIUS, MAX_RADIUS), IntIntPair.of(MIN_RADIUS, MAX_RADIUS),
                             IntIntPair.of(MIN_RADIUS, MAX_RADIUS), IntIntPair.of(MIN_RADIUS, MAX_RADIUS)))
+                    .where('c', Predicates.controller(definition))
+                    .where('e', edgePredicate)
+                    .where('v', verticalEdgePredicate)
+                    .where('f', cleanroomFilters())
+                    .where('a', facePredicate)
+                    .where('i', innerPredicate())
                     .predicateProvider((bp, b) -> {
                         if (bp.equals(BlockPos.ZERO))
-                            return Predicates.controller(definition);
+                            return 'c';
 
                         int intersections = 0;
                         boolean topAisle = bp.getX() == b.get(0);
@@ -347,14 +350,12 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                         if (bp.getZ() == b.get(4) || bp.getZ() == -b.get(5)) intersections++;
 
                         if (intersections >= 2) {
-                            if (topAisle || bottomAisle) return edgePredicate;
-                            return verticalEdgePredicate;
+                            return topAisle || bottomAisle ? 'e' : 'v';
                         }
                         if (intersections == 1) {
-                            if (topAisle) return filterPredicate;
-                            return facePredicate;
+                            return topAisle ? 'f' : 'a';
                         }
-                        return innerPredicate;
+                        return 'i';
                     })
                     .build();
         };
@@ -377,13 +378,9 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return builder("DoorPredicate")
                 .predicate(ctx -> ctx.state().getBlock() instanceof DoorBlock)
                 // .errorFunction(ctx -> PLACEHOLDER)
-                // spotless:off
-                .candidates(Stream.of(
-                        new BlockInfo(Blocks.IRON_DOOR),
-                        new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()
-                                .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))
-                ))
-                //spotless:on
+                .blocks(Blocks.IRON_DOOR)
+                .states(Blocks.IRON_DOOR.defaultBlockState()
+                        .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))
                 .toMultiPredicate();
     }
 
