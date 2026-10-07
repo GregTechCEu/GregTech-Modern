@@ -48,7 +48,7 @@ public class ModularArmorLang {
                 "Blocks any amount of damage with EU (%s EU per HP, requires any battery module)");
         provider.add("module.gtceu.attack_speed", "Attack Speed Module (%s)");
         provider.add("module.gtceu.attack_speed.description", "Increases attack speed by %s%%");
-        provider.add("module.gtceu.attack_damage", "Attack Speed Module (%s)");
+        provider.add("module.gtceu.attack_damage", "Attack Damage Module (%s)");
         provider.add("module.gtceu.attack_damage.description", "Increases attack damage by %s%%");
         provider.add("module.gtceu.block_reach", "Reach Module (%s)");
         provider.add("module.gtceu.block_reach.description", "Increases block reach by %s blocks");
@@ -88,8 +88,8 @@ public class ModularArmorLang {
         provider.add("module.gtceu.sensor.message", "%s exploded at (%d, %d, %d)");
         provider.add("module.gtceu.sensor.description",
                 "Reports machine explosions (for machines placed by the player)");
-        provider.add("module.gtceu.wireless_charging", "Wireless Charging Module (%s)");
-        provider.add("module.gtceu.wireless_charging.description",
+        provider.add("module.gtceu.wireless_charger", "Wireless Charging Module (%s)");
+        provider.add("module.gtceu.wireless_charger.description",
                 "Allows wireless charging in the range of %s blocks (1A %s max), bind to a charger by right-clicking on it");
         provider.add("module.gtceu.wireless_charging.description.interdimensional",
                 "%s blocks, 1A %s max, interdimensional if an at least %s field generator is present");

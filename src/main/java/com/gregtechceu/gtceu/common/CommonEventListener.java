@@ -103,6 +103,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Either;
 import org.jetbrains.annotations.NotNull;
 
@@ -377,13 +378,16 @@ public class CommonEventListener {
         }
 
         if (entity instanceof Player player && !player.isLocalPlayer()) {
-            for (ItemStack stack : entity.getAllSlots()) {
-                IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
-                if (modularItem == null) continue;
-                modularItem.runForEachModule((m, a) -> {
-                    if (m.isEnabled(a)) m.onInventoryTick(a, player);
-                    m.onTickRaw(a, player, player.level(), player.getOnPos());
-                });
+            var inv = player.getInventory();
+            for (var group : ImmutableList.of(inv.items, inv.armor, inv.offhand)) {
+                for (ItemStack stack : group) {
+                    IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+                    if (modularItem == null) continue;
+                    modularItem.runForEachModule((m, a) -> {
+                        if (m.isEnabled(a)) m.onInventoryTick(a, player);
+                        m.onTickRaw(a, player, player.level(), player.getOnPos());
+                    });
+                }
             }
         }
     }

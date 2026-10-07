@@ -129,25 +129,24 @@ public class ModularItemTest {
         ItemStack armor = makeModularItem(helper);
         IModularItem modular = getModularItem(helper, armor);
 
-        ModuleContext moduleData = modular.attach(GTItemModules.ATTACK_DAMAGE[GTValues.IV].value(), ItemStack.EMPTY,
-                false);
-        if (moduleData == null) {
+        var module = GTItemModules.ATTACK_DAMAGE[GTValues.IV].value();
+        if (modular.attach(module, ItemStack.EMPTY,
+                false) == null) {
             helper.fail("Module was null after attaching");
             return;
         }
-        var module = moduleData.getModule();
         helper.assertTrue(checkAttributeModifierPresent(armor, Attributes.ATTACK_DAMAGE),
                 "modular item did not have damage attribute");
 
-        module.setEnabled(moduleData, false);
+        module.setEnabled(modular.getModuleContextForSlot(0), false);
         helper.assertFalse(checkAttributeModifierPresent(armor, Attributes.ATTACK_DAMAGE),
                 "modular item had damage attribute with disabled module");
 
-        module.setEnabled(moduleData, true);
+        module.setEnabled(modular.getModuleContextForSlot(0), true);
         helper.assertTrue(checkAttributeModifierPresent(armor, Attributes.ATTACK_DAMAGE),
                 "modular item did not have damage attribute with re-enabled module");
 
-        modular.detach(moduleData);
+        modular.detach(0);
         helper.assertFalse(checkAttributeModifierPresent(armor, Attributes.ATTACK_DAMAGE),
                 "modular item had damage attribute with detached module");
         TestUtils.assertEqual(helper, modular.getModuleContextForSlot(0), null,
