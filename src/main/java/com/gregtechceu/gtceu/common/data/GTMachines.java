@@ -467,7 +467,7 @@ public class GTMachines {
                                     FormattingUtil.formatNumbers(V[tier] * 64L)))
                     .workableTieredHullModel(GTCEu.id("block/overlay/machine/wireless_charger"))
                     .register(),
-            GTValues.tiersBetween(LV, OpV));
+            GTMachineUtils.ELECTRIC_TIERS);
 
     public static final MachineEntry<MachineDefinition>[] PUMP = registerTieredMachines(REGISTRATE, "pump",
             PumpMachine::new,
