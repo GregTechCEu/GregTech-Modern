@@ -699,35 +699,35 @@ public class MachineRecipeLoader {
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("coil_cupronickel").EUt(VA[LV]).inputItems(wireGtDouble, Cupronickel, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_cupronickel").EUt(VA[LV]).inputItems(wireGtDouble, Cupronickel, 8)
                 .inputItems(foil, Bronze, 8).inputFluids(TinAlloy, GTValues.L)
                 .outputItems(GTBlocks.COIL_CUPRONICKEL.asStack()).duration(200)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_kanthal").EUt(VA[MV]).inputItems(wireGtDouble, Kanthal, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_kanthal").EUt(VA[MV]).inputItems(wireGtDouble, Kanthal, 8)
                 .inputItems(foil, Aluminium, 8).inputFluids(Copper, GTValues.L)
                 .outputItems(GTBlocks.COIL_KANTHAL.asStack()).duration(300)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_nichrome").EUt(VA[HV]).inputItems(wireGtDouble, Nichrome, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_nichrome").EUt(VA[HV]).inputItems(wireGtDouble, Nichrome, 8)
                 .inputItems(foil, StainlessSteel, 8).inputFluids(Aluminium, GTValues.L)
                 .outputItems(GTBlocks.COIL_NICHROME.asStack()).duration(400)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_rtm_alloy").EUt(VA[EV]).inputItems(wireGtDouble, RTMAlloy, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_rtm_alloy").EUt(VA[EV]).inputItems(wireGtDouble, RTMAlloy, 8)
                 .inputItems(foil, VanadiumSteel, 8).inputFluids(Nichrome, GTValues.L)
                 .outputItems(GTBlocks.COIL_RTMALLOY.asStack()).duration(500)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_hssg").EUt(VA[IV]).inputItems(wireGtDouble, HSSG, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_hssg").EUt(VA[IV]).inputItems(wireGtDouble, HSSG, 8)
                 .inputItems(foil, TungstenCarbide, 8).inputFluids(Tungsten, GTValues.L)
                 .outputItems(GTBlocks.COIL_HSSG.asStack()).duration(600)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_naquadah").EUt(VA[LuV]).inputItems(wireGtDouble, Naquadah, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_naquadah").EUt(VA[LuV]).inputItems(wireGtDouble, Naquadah, 8)
                 .inputItems(foil, Osmium, 8).inputFluids(TungstenSteel, GTValues.L)
                 .outputItems(GTBlocks.COIL_NAQUADAH.asStack()).duration(700)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_trinium").EUt(VA[ZPM]).inputItems(wireGtDouble, Trinium, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_trinium").EUt(VA[ZPM]).inputItems(wireGtDouble, Trinium, 8)
                 .inputItems(foil, NaquadahEnriched, 8).inputFluids(Naquadah, GTValues.L)
                 .outputItems(GTBlocks.COIL_TRINIUM.asStack()).duration(800)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_tritanium").EUt(VA[UV]).inputItems(wireGtDouble, Tritanium, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_tritanium").EUt(VA[UV]).inputItems(wireGtDouble, Tritanium, 8)
                 .inputItems(foil, Naquadria, 8).inputFluids(Trinium, GTValues.L)
                 .outputItems(GTBlocks.COIL_TRITANIUM.asStack()).duration(900)
                 .addMaterialInfo(true, true).save(provider);
