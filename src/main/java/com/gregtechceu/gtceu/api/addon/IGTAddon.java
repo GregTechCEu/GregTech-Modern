@@ -17,16 +17,6 @@ public interface IGTAddon {
      */
     GTRegistrate getRegistrate();
 
-    /**
-     * Call init on your custom VeinGenerator class(es) here
-     */
-    default void registerVeinGenerators() {}
-
-    /**
-     * Call init on your custom IndicatorGenerator class(es) here
-     */
-    default void registerIndicatorGenerators() {}
-
     default void addRecipes(RecipeOutput provider) {}
 
     default void removeRecipes(Consumer<ResourceLocation> consumer) {}

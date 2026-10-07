@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
@@ -32,6 +33,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Accessors(chain = true, fluent = true)
+@SuppressWarnings("unused")
 public class OreVeinDefinitionBuilderJS extends BuilderBase<GTOreDefinition> {
 
     private final InferredProperties inferredProperties = new InferredProperties();
@@ -53,13 +55,13 @@ public class OreVeinDefinitionBuilderJS extends BuilderBase<GTOreDefinition> {
     @Nullable
     private HolderSet<Biome> biomes;
     @Setter
-    private BiomeWeightModifier biomeWeightModifier;
+    private @Nullable BiomeWeightModifier biomeWeightModifier;
 
     @Setter
     @Nullable
     private VeinGenerator veinGenerator;
     @Setter
-    private List<IndicatorGenerator> indicatorGenerators = new ArrayList<>();;
+    private List<IndicatorGenerator> indicatorGenerators = new ArrayList<>();
 
     public OreVeinDefinitionBuilderJS(ResourceLocation id) {
         super(id);
@@ -187,9 +189,8 @@ public class OreVeinDefinitionBuilderJS extends BuilderBase<GTOreDefinition> {
     @RemapForJS("customVeinGenerator")
     public VeinGenerator veinGenerator(ResourceLocation id) {
         if (veinGenerator == null) {
-            // noinspection DataFlowIssue
-            veinGenerator = WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ?
-                    WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id).get() : null;
+            VeinGenerator.VeinGeneratorType<?> type = GTRegistries.VEIN_GENERATORS.get(id);
+            veinGenerator = type == null ? null : type.defaultInstance().get();
         }
         return veinGenerator;
     }

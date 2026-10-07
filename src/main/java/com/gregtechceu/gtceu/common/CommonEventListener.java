@@ -643,6 +643,7 @@ public class CommonEventListener {
         }
     }
 
+    @SubscribeEvent
     public static void addAlloyBlastProperties(PostMaterialEvent event) {
         for (Material material : GTRegistries.MATERIALS) {
             if (!material.hasFlag(MaterialFlags.DISABLE_ALLOY_PROPERTY)) {

@@ -27,10 +27,8 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.NoopIndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator.IndicatorPlacement;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.DikeVeinGenerator;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
@@ -105,6 +103,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
+import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.ClassFilter;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
@@ -113,15 +112,11 @@ import dev.latvian.mods.kubejs.recipe.schema.RecipeFactoryRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
 import dev.latvian.mods.kubejs.registry.RegistryObjectStorage;
-import dev.latvian.mods.kubejs.registry.RegistryType;
 import dev.latvian.mods.kubejs.registry.ServerRegistryRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
-import dev.latvian.mods.kubejs.util.ID;
 import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
-import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.Wrapper;
-import dev.latvian.mods.rhino.type.TypeInfo;
 
 public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
@@ -346,25 +341,23 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
     public void registerTypeWrappers(TypeWrapperRegistry registry) {
         registry.register(GTResourceLocation.class, GTResourceLocation::wrap);
 
-        registry.register(GTRecipeType.class, (Context cx, Object from, TypeInfo target) -> {
-            if (ID.isKey(from)) {
-                // if it's an ID, make it default to the GT namespace
-                GTResourceLocation wrapper = GTResourceLocation.wrap(from);
-                if (wrapper != null) from = wrapper.wrapped();
-            }
+        registry.register(GTRecipeType.class, (RegistryAccessContainer registries, Object o) -> {
+            o = Wrapper.unwrapped(o);
+            if (o instanceof GTRecipeType recipeType) return recipeType;
 
-            // first convert
-            Object o = cx.jsToJava(from, RegistryType.ofKey(Registries.RECIPE_TYPE).type());
-            if (o instanceof GTRecipeType gtType) {
-                return gtType;
-            } else {
-                cx.reportConversionError(from, target);
-                return null;
+            GTResourceLocation wrapper = GTResourceLocation.wrap(o);
+            if (wrapper != null) {
+                var recipeType = registries.access().holderOrThrow(wrapper.asResourceKey(Registries.RECIPE_TYPE))
+                        .value();
+                if (recipeType instanceof GTRecipeType gtRecipeType) return gtRecipeType;
+                throw new KubeRuntimeException("Error getting GTRecipeType: recipe type %s is not a GTRecipeType"
+                        .formatted(wrapper.wrapped()));
             }
+            return null;
         });
+
         registryObjectTypeWrapper(registry, GTRecipeCategory.class, GTRegistries.Keys.RECIPE_CATEGORY);
         registryObjectTypeWrapper(registry, ChanceLogic.class, GTRegistries.Keys.CHANCE_LOGIC);
-
         registryObjectTypeWrapper(registry, Element.class, GTRegistries.Keys.ELEMENT);
         registryObjectTypeWrapper(registry, Material.class, GTRegistries.Keys.MATERIAL);
         registryObjectTypeWrapper(registry, MaterialIconSet.class, GTRegistries.Keys.MATERIAL_ICON_SET);
@@ -373,8 +366,6 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         registryObjectTypeWrapper(registry, IWorldGenLayer.class, GTRegistries.Keys.WORLD_GEN_LAYER);
         registryObjectTypeWrapper(registry, MedicalCondition.class, GTRegistries.Keys.MEDICAL_CONDITION);
 
-        registry.register(MaterialEntry.class, MaterialEntry::of);
-
         registry.register(RecipeCapability.class, (RegistryAccessContainer registries, Object o) -> {
             o = Wrapper.unwrapped(o);
             if (o instanceof RecipeCapability<?> capability) return capability;
@@ -382,6 +373,20 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             if (wrapper == null) return null;
             return GTRegistries.RECIPE_CAPABILITIES.get(wrapper.wrapped());
         });
+
+        registry.register(VeinGenerator.class, (RegistryAccessContainer registries, Object o) -> {
+            o = Wrapper.unwrapped(o);
+            if (o instanceof VeinGenerator veinGenerator) return veinGenerator;
+            GTResourceLocation wrapper = GTResourceLocation.wrap(o);
+            if (wrapper != null) {
+                return registries.access().holderOrThrow(wrapper.asResourceKey(GTRegistries.Keys.VEIN_GENERATOR))
+                        .value().defaultInstance().get();
+            }
+            return null;
+        });
+        registry.registerCodec(IndicatorGenerator.class, IndicatorGenerator.DIRECT_CODEC);
+
+        registry.register(MaterialEntry.class, MaterialEntry::of);
 
         registry.register(MaterialStack.class, o -> {
             o = Wrapper.unwrapped(o);
@@ -401,9 +406,6 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
         registry.registerMapCodec(HeightRangePlacement.class, HeightRangePlacement.CODEC);
         registry.registerCodec(BiomeWeightModifier.class, BiomeWeightModifier.CODEC, BiomeWeightModifier.EMPTY);
-        registry.registerCodec(VeinGenerator.class, VeinGenerator.DIRECT_CODEC, NoopVeinGenerator.INSTANCE);
-        registry.registerCodec(IndicatorGenerator.class, IndicatorGenerator.DIRECT_CODEC,
-                NoopIndicatorGenerator.INSTANCE);
         registry.registerCodec(IndicatorPlacement.class, IndicatorPlacement.CODEC, IndicatorPlacement.SURFACE);
 
         registry.register(IWorldGenLayer.RuleTestSupplier.class, (cx, o, t) -> {

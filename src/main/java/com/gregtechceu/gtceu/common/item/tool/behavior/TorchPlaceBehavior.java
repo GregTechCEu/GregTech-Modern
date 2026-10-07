@@ -62,10 +62,6 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
             return InteractionResult.PASS;
         }
 
-        if (!stack.getOrDefault(GTDataComponents.ACTIVE, false)) {
-            return InteractionResult.PASS;
-        }
-
         ItemStack slotStack;
         if (this.cacheSlotKey) {
             if (cachedTorchSlot < 0) {

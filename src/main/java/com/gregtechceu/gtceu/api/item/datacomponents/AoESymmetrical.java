@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.item.datacomponents;
 
+import net.minecraft.Util;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
@@ -11,29 +12,41 @@ import io.netty.buffer.ByteBuf;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-public record AoESymmetrical(int maxColumn, int maxRow, int maxLayer, int column, int row, int layer) {
+import java.util.List;
 
-    public static final Codec<AoESymmetrical> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max_column").forGetter(AoESymmetrical::maxColumn),
-            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max_row").forGetter(AoESymmetrical::maxRow),
-            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max_layer").forGetter(AoESymmetrical::maxLayer),
+public record AoESymmetrical(int column, int row, int layer) {
+
+    // spotless:off
+    private static final Codec<AoESymmetrical> ARRAY_CODEC = Codec.INT
+            .listOf()
+            .comapFlatMap(list -> Util.fixedSize(list, 3)
+                            .map(l -> new AoESymmetrical(l.get(0), l.get(1), l.get(2))),
+                    aoe -> List.of(aoe.column, aoe.row, aoe.layer)
+            );
+    private static final Codec<AoESymmetrical> NAMED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("additional_columns").forGetter(AoESymmetrical::column),
+            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("additional_rows").forGetter(AoESymmetrical::row),
+            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("additional_layers").forGetter(AoESymmetrical::layer)
+    ).apply(instance, AoESymmetrical::new));
+    private static final Codec<AoESymmetrical> LEGACY_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ExtraCodecs.NON_NEGATIVE_INT.fieldOf("column").forGetter(AoESymmetrical::column),
             ExtraCodecs.NON_NEGATIVE_INT.fieldOf("row").forGetter(AoESymmetrical::row),
-            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("layer").forGetter(AoESymmetrical::layer))
-            .apply(instance, AoESymmetrical::new));
+            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("layer").forGetter(AoESymmetrical::layer)
+    ).apply(instance, AoESymmetrical::new));
+    public static final Codec<AoESymmetrical> CODEC = Codec.withAlternative(NAMED_CODEC, Codec.withAlternative(ARRAY_CODEC, LEGACY_CODEC));
+
     public static final StreamCodec<ByteBuf, AoESymmetrical> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT, AoESymmetrical::maxColumn,
-            ByteBufCodecs.VAR_INT, AoESymmetrical::maxRow,
-            ByteBufCodecs.VAR_INT, AoESymmetrical::maxLayer,
             ByteBufCodecs.VAR_INT, AoESymmetrical::column,
             ByteBufCodecs.VAR_INT, AoESymmetrical::row,
             ByteBufCodecs.VAR_INT, AoESymmetrical::layer,
-            AoESymmetrical::new);
+            AoESymmetrical::new
+    );
+    // spotless:on
 
-    public static final AoESymmetrical ZERO = new AoESymmetrical(0, 0, 0, 0, 0, 0);
+    public static final AoESymmetrical ZERO = new AoESymmetrical(0, 0, 0);
 
     public boolean isZero() {
-        return this == ZERO || (this.maxColumn == 0 && this.maxRow == 0 && this.maxLayer == 0);
+        return this == ZERO || (this.column == 0 && this.row == 0 && this.layer == 0);
     }
 
     public static AoESymmetrical of(int column, int row, int layer) {
@@ -41,11 +54,20 @@ public record AoESymmetrical(int maxColumn, int maxRow, int maxLayer, int column
         Preconditions.checkArgument(row >= 0, "Width cannot be negative.");
         Preconditions.checkArgument(layer >= 0, "Depth cannot be negative.");
         return column == 0 && row == 0 && layer == 0 ? ZERO :
-                new AoESymmetrical(column, row, layer, column, row, layer);
+                new AoESymmetrical(column, row, layer);
     }
 
-    public Mutable toMutable() {
-        return new Mutable(maxColumn, maxRow, maxLayer, column, row, layer);
+    public AoESymmetrical min(AoESymmetrical other) {
+        if (this.isZero() || other.isZero()) return AoESymmetrical.ZERO;
+        if (this.equals(other)) return this;
+
+        return new AoESymmetrical(Math.min(column, other.column),
+                Math.min(row, other.row),
+                Math.min(layer, other.layer));
+    }
+
+    public Mutable toMutable(AoESymmetrical max) {
+        return new Mutable(max.column, max.row, max.layer, this.column, this.row, this.layer);
     }
 
     @Override
@@ -53,20 +75,16 @@ public record AoESymmetrical(int maxColumn, int maxRow, int maxLayer, int column
         if (this == o)
             return true;
         // noinspection PatternVariableHidesField
-        if (!(o instanceof AoESymmetrical(int maxColumn, int maxRow, int maxLayer, int column, int row, int layer))) {
+        if (!(o instanceof AoESymmetrical(int column, int row, int layer))) {
             return false;
         }
 
-        return this.maxColumn == maxColumn && this.maxRow == maxRow && this.maxLayer == maxLayer &&
-                this.column == column && this.row == row && this.layer == layer;
+        return this.column == column && this.row == row && this.layer == layer;
     }
 
     @Override
     public int hashCode() {
-        int result = maxColumn;
-        result = 31 * result + maxRow;
-        result = 31 * result + maxLayer;
-        result = 31 * result + column;
+        int result = column;
         result = 31 * result + row;
         result = 31 * result + layer;
         return result;
@@ -126,7 +144,9 @@ public record AoESymmetrical(int maxColumn, int maxRow, int maxLayer, int column
         }
 
         public AoESymmetrical toImmutable() {
-            return new AoESymmetrical(maxColumn, maxRow, maxLayer, column, row, layer);
+            return new AoESymmetrical(Math.clamp(column, 0, maxColumn),
+                    Math.clamp(row, 0, maxRow),
+                    Math.clamp(layer, 0, maxLayer));
         }
     }
 }
