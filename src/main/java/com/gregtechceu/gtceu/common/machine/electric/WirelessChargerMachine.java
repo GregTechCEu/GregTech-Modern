@@ -76,11 +76,11 @@ public class WirelessChargerMachine extends TieredEnergyMachine {
         Set<UUID> members = new HashSet<>(owner.getMembers());
         members.add(owner.getPlayerUUID());
         long chargeAmount = GTValues.V[getTier()] * (turbo ? 4 : 1);
-        for (var id : members) {
-            var player = level.getServer().getPlayerList().getPlayer(id);
-            if (player == null || player.level() != level || !bounds.intersects(player.getBoundingBox())) continue;
-            players.add(id);
-            if (!previousPlayers.contains(id)) {
+        for (UUID member : members) {
+            Player player = level.getPlayerByUUID(id);
+            if (player == null !bounds.intersects(player.getBoundingBox())) continue;
+            players.add(member);
+            if (!previousPlayers.contains(member)) {
                 player.displayClientMessage(Component.translatable("gtceu.machine.wireless_charger.enter_range"), true);
             }
             chargeInventory(player, chargeAmount);
