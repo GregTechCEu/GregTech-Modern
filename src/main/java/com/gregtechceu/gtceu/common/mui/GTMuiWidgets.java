@@ -28,7 +28,7 @@ import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.text.TextRenderer;
-import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.factory.GuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
@@ -391,7 +391,7 @@ public class GTMuiWidgets {
 
     public static <T> ParentWidget<?> createFilterRow(Flow existingRow,
                                                       FilterHandler<T> filterHandler,
-                                                      SidedPosGuiData data,
+                                                      GuiData data,
                                                       PanelSyncManager syncManager,
                                                       UISettings settings) {
         var filterSlot = filterHandler.getFilterSlot();
@@ -402,8 +402,21 @@ public class GTMuiWidgets {
         ItemSlotSyncHandler filterSlotHandler = new ItemSlotSyncHandler(modSlot);
         syncManager.syncValue("filterSlotHandler", filterSlotHandler);
 
+        ButtonWidget<?> openButton = new ButtonWidget<>();
         IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
-                (sm, sh) -> filterHandler.getFilter().getPanel(data, sm, settings, false));
+                (sm, sh) -> new Dialog<>("filter_popup")
+                        .draggable(false)
+                        .closeOnOutOfBoundsClick(true)
+                        .coverChildrenHeight()
+                        .child(Flow.col()
+                                .coverChildrenHeight()
+                                .child(createFilterPopupHeader(filterHandler.getFilterItem()).marginTop(7))
+                                .child(filterHandler.getFilter().getFilterUI(data, sm, settings)
+                                        .marginTop(4)
+                                        .marginBottom(10)))
+                        .relative(openButton)
+                        .leftRel(0.5f, 0, 0.5f)
+                        .topRel(1.0f, 1, 0.0f));
 
         modSlot.changeListener((oldStack, newStack, client, init) -> {
             if (init || ItemStack.isSameItem(oldStack, newStack)) return;
@@ -411,8 +424,9 @@ public class GTMuiWidgets {
             panelHandler.deleteCachedPanel();
         });
         return existingRow
-                .child(new ItemSlot().syncHandler(filterSlotHandler))
-                .child(new ButtonWidget<>()
+                .child(new ItemSlot().syncHandler(filterSlotHandler)
+                        .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY))
+                .child(openButton
                         .background(GuiTextures.MC_BUTTON)
                         .size(16)
                         .onMousePressed((c, b) -> {
@@ -422,8 +436,18 @@ public class GTMuiWidgets {
                         .setEnabledIf((w) -> !filterSlotHandler.getSlot().getItem().isEmpty()));
     }
 
+    private static Flow createFilterPopupHeader(ItemStack filterItem) {
+        String name = filterItem.getHoverName().getString().replaceAll("§.", "").trim();
+        return Flow.row()
+                .coverChildren()
+                .childPadding(4)
+                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                .child(new ItemDrawable(filterItem).asIcon().size(16).asWidget())
+                .child(Text.str(name).asWidget());
+    }
+
     public static <T> ParentWidget<?> createFilterRow(FilterHandler<T> filterHandler,
-                                                      SidedPosGuiData data,
+                                                      GuiData data,
                                                       PanelSyncManager syncManager,
                                                       UISettings settings) {
         Flow row = Flow.row().coverChildrenHeight().childPadding(2);

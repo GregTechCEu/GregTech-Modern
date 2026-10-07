@@ -9,12 +9,15 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.misc.FilteredFluidTank;
+import com.gregtechceu.gtceu.api.misc.LockableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -31,6 +34,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -45,6 +49,8 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.FluidSlot;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -94,7 +100,12 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
     //////////////////////////////////////
 
     protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
-        return new NotifiableFluidTank(slots, getTankCapacity(initialCapacity, getTier()), io);
+        int tankCapacity = getTankCapacity(initialCapacity, getTier());
+        if (io.support(IO.OUT)) {
+            return slots == 1 ? new LockableFluidTank(slots, tankCapacity, io) :
+                    new FilteredFluidTank(slots, tankCapacity, io);
+        }
+        return new NotifiableFluidTank(slots, tankCapacity, io);
     }
 
     public static int getTankCapacity(int initialCapacity, int tier) {
@@ -250,12 +261,35 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        mainWidget.child(slots == 1 ? createSingleSlotUI(syncManager) : createMultiSlotUI(syncManager));
+        mainWidget.child(slots == 1 ? createSingleSlotUI(syncManager) :
+                createMultiSlotUI(guiData, syncManager, settings));
     }
 
     protected Flow createSingleSlotUI(PanelSyncManager syncManager) {
-        BooleanSyncValue locked = new BooleanSyncValue(this.tank::isLocked, this.tank::setLocked).allowC2S();
-        syncManager.syncValue("locked", locked);
+        Supplier<IWidget> lockedFluidSlotSupplier = null;
+        Supplier<IWidget> lockButtonSupplier = null;
+
+        if (tank instanceof LockableFluidTank lockableFluidTank) {
+            BooleanSyncValue locked = new BooleanSyncValue(lockableFluidTank::isLocked,
+                    lockableFluidTank::setLocked).allowC2S();
+            syncManager.syncValue("locked", locked);
+
+            lockedFluidSlotSupplier = () -> new FluidSlot()
+                    .name("lockedFluid")
+                    .syncHandler(new FluidSlotSyncHandler(lockableFluidTank.getLockedFluid()).phantom(true))
+                    .alwaysShowFull(true)
+                    .tooltip(t -> t.addLine("Locked Fluid"));
+
+            lockButtonSupplier = () -> new ToggleButton()
+                    .syncHandler("locked")
+                    .tooltipDynamic(t -> t.addLine(Component.translatable("gtceu.gui.fluid_lock.tooltip." +
+                            (locked.getBoolValue() ? "enabled" : "disabled"))))
+                    .overlay(false, GTGuiTextures.BUTTON_LOCK)
+                    .overlay(true, GTGuiTextures.BUTTON_LOCK)
+                    .background(GuiTextures.MC_BUTTON)
+                    .background(true, GuiTextures.MC_BUTTON_PRESSED);
+        }
+
         return Flow.col()
                 .width(MachineUIPanel.DEFAULT_CONTENT_WIDTH)
                 .height(MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
@@ -268,37 +302,38 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
                 .child(Flow.row()
                         .childPadding(2)
                         .coverChildren()
-                        .childIf(io.support(IO.OUT), () -> new FluidSlot()
-                                .name("lockedFluid")
-                                .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid()).phantom(true))
-                                .alwaysShowFull(true)
-                                .tooltip(t -> t.addLine("Locked Fluid")))
-                        .childIf(io.support(IO.OUT), () -> new ToggleButton()
-                                .syncHandler("locked")
-                                .tooltipDynamic(t -> t.addLine(Component.translatable("gtceu.gui.fluid_lock.tooltip." +
-                                        (locked.getBoolValue() ? "enabled" : "disabled"))))
-                                .overlay(false, GTGuiTextures.BUTTON_LOCK)
-                                .overlay(true, GTGuiTextures.BUTTON_LOCK)
-                                .background(GuiTextures.MC_BUTTON)
-                                .background(true, GuiTextures.MC_BUTTON_PRESSED)
-
-                        )
+                        .childIf(lockedFluidSlotSupplier != null, lockedFluidSlotSupplier)
+                        .childIf(lockButtonSupplier != null, lockButtonSupplier)
                         .child(new FluidSlot()
                                 .name("regularFluid")
                                 .syncHandler(new FluidSlotSyncHandler(tank.getStorages()[0])
                                         .canFillSlot(io.support(IO.IN)))));
     }
 
-    protected Flow createMultiSlotUI(PanelSyncManager syncManager) {
+    protected Flow createMultiSlotUI(PosGuiData guiData, PanelSyncManager syncManager, UISettings settings) {
         var slotsWidget = GTMuiMachineUtil.createSlotGroupFromInventory(
                 syncManager,
                 tank, "fluid_inv",
                 slots, 'F', GTMuiMachineUtil.createSquareMatrix(slots, 'F'));
 
+        Supplier<IWidget> filterWidgetSupplier = null;
+        if (tank instanceof FilteredFluidTank filteredFluidTank) {
+            filterWidgetSupplier = () -> GTMuiWidgets.createFilterRow(
+                    Flow.row().width(9 * 18).coverChildrenHeight().childPadding(2),
+                    filteredFluidTank.getFilterHandler(), guiData, syncManager, settings);
+        }
+
         return Flow.col()
                 .width(MachineUIPanel.DEFAULT_CONTENT_WIDTH)
                 .height(MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
-                .mainAxisAlignment(Alignment.MainAxis.CENTER)
-                .child(slotsWidget);
+                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                .childPadding(2)
+                .child(Flow.col()
+                        .expanded()
+                        .widthRel(1f)
+                        .mainAxisAlignment(Alignment.MainAxis.CENTER)
+                        .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                        .child(slotsWidget))
+                .childIf(filterWidgetSupplier != null, filterWidgetSupplier);
     }
 }
