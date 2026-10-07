@@ -79,7 +79,7 @@ public class MachineUIPanelBuilder {
     }
 
     public MachineUIPanel build(PanelSyncManager syncManager, UISettings settings) {
-        var panel = new MachineUIPanel(machine, settings, attachInventory, addTitleBar, drawGTLogo, gtLogoTexture, hasEIOWidget);
+        var panel = new MachineUIPanel(machine, syncManager, settings, attachInventory, addTitleBar, drawGTLogo, gtLogoTexture, hasEIOWidget);
 
         var attachLeft = panel.getLeftConfiguratorPanel();
         var attachRight = panel.getRightConfiguratorPanel();

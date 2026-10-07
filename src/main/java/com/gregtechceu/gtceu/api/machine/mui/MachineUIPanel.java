@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.mui;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -39,7 +40,7 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
 
     private boolean currentlyDisplayingEIOTab = false;
 
-    public MachineUIPanel(MetaMachine machine, UISettings settings, boolean attachPlayerInventory,
+    public MachineUIPanel(MetaMachine machine, PanelSyncManager syncManager, UISettings settings, boolean attachPlayerInventory,
                           boolean addTitleBar, boolean drawGTLogo, UITexture gtLogoTexture, boolean displayEIOWidget) {
         super(machine.getDefinition().getId().getPath());
 
@@ -49,6 +50,7 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
                     .getPanelTheme()
                     .theme().getBackground();
         }
+
         if (themeBackground == null) {
             themeBackground = (UITexture) ThemeAPI.INSTANCE.getTheme(settings.getTheme()).getPanelTheme()
                     .theme().getBackground();
@@ -92,7 +94,7 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
                             .overlay(GuiTextures.GEAR))
                     .decoration();
 
-            eioWidget = new MachineInWorldPreviewWidget(machine);
+            eioWidget = new MachineInWorldPreviewWidget(machine, syncManager);
         } else {
             tabTogglePanel = null;
             eioWidget = null;
@@ -139,7 +141,6 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
         if (tabTogglePanel != null) child(tabTogglePanel);
         child(rightConfiguratorPanel);
         child(panelContents);
-        if (eioWidget != null) child(eioWidget);
         coverChildren();
     }
 
