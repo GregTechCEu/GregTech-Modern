@@ -117,6 +117,18 @@ public class GTRecipeTypes {
             .setSound(GTSoundEntries.ASSEMBLER)
             .register();
 
+    public static final GTRecipeTypeEntry WELDER_RECIPES = REGISTRATE.recipeType("welder", ELECTRIC)
+            .setMaxIOSize(4, 1, 1, 0)
+            .setEUIO(IO.IN)
+            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER)
+                    .setMachineLayoutGridBuilder(ItemRecipeCapability.CAP, IO.IN,
+                            (machine, l) -> {
+                                int slots = l.getRecipeType().getMaxInputs(ItemRecipeCapability.CAP);
+                                return GTMuiWidgets.createGrid(slots, (int) Mth.sqrt(slots), false, 's');
+                            }))
+            .setSound(GTSoundEntries.ELECTROLYZER)
+            .register();
+
     public static final GTRecipeTypeEntry AUTOCLAVE_RECIPES = REGISTRATE.recipeType("autoclave", ELECTRIC)
             .setMaxIOSize(2, 2, 1, 1)
             .setEUIO(IO.IN)
