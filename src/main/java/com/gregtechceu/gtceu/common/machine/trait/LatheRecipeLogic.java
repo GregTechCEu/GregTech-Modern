@@ -75,7 +75,7 @@ public class LatheRecipeLogic extends RecipeLogic {
         }
         var wet = match.recipeType.recipeBuilder(match.id)
                 .inputFluids(GTMaterials.Lubricant, LUBRICANT_AMOUNT)
-                .outputItems(BuiltInRegistries.ITEM.get(rodId), 2).build();
+                .outputItems(BuiltInRegistries.ITEM.get(rodId), 2).buildRawRecipe();
         // Handle before modifiers so lube is handled properly, eg. 2 parallel = 50mb lube.
         var prepared = match.copy();
         prepared.inputs.putAll(wet.inputs);

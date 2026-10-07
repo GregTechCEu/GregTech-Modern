@@ -748,7 +748,7 @@ public class GCYMMachines {
             .langValue("Large Welder")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
-                    WELDER_RECIPES.getName()))
+                    Component.translatable("gtceu.welder")))
             .rotationState(RotationState.ALL)
             .recipeType(WELDER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
@@ -777,7 +777,7 @@ public class GCYMMachines {
             .langValue("Large Spooler")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
-                    SPOOLING_RECIPES.getName()))
+                    Component.translatable("gtceu.spooling")))
             .rotationState(RotationState.ALL)
             .recipeType(SPOOLING_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
