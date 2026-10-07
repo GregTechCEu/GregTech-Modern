@@ -463,14 +463,16 @@ public final class PartsRecipeHandler {
                 'S', new MaterialEntry(screw, material),
                 'R', new MaterialEntry(ring, material));
 
-        WELDER_RECIPES.recipeBuilder("weld_" + material.getName() + "_parts_to_rotor")
-                .inputItems(plate, material, 4)
-                .inputItems(ring, material, 1)
-                .circuitMeta(3)
-                .outputItems(stack.copy())
-                .duration((int) material.getMass() * 4)
-                .EUt(material.getBlastTemperature() >= 2800 ? 256 : 64)
-                .save(provider);
+        if (material.shouldGenerateRecipesFor(plate) && material.shouldGenerateRecipesFor(ring)) {
+            WELDER_RECIPES.recipeBuilder("weld_" + material.getName() + "_parts_to_rotor")
+                    .inputItems(plate, material, 4)
+                    .inputItems(ring, material, 1)
+                    .circuitMeta(3)
+                    .outputItems(stack.copy())
+                    .duration((int) material.getMass() * 4)
+                    .EUt(material.getBlastTemperature() >= 2800 ? 256 : 64)
+                    .save(provider);
+        }
     }
 
     private static void processRod(@NotNull RecipeOutput provider, @NotNull Material material) {
