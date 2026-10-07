@@ -46,7 +46,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import com.google.common.math.IntMath;
@@ -664,14 +663,6 @@ public class GTMachines {
             .allowExtendedFacing(true)
             .tooltipBuilder((stack, list) -> {
                 CREATIVE_TOOLTIPS.accept(stack, list);
-                var storage = stack.get(GTDataComponents.LARGE_FLUID_CONTENT);
-                if (storage != null) {
-                    FluidStack f = storage.stored();
-                    var creativeInfo = stack.get(GTDataComponents.CREATIVE_MACHINE_INFO);
-                    int perCycle = creativeInfo != null ? creativeInfo.outputPerCycle() : 1;
-                    list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", f.getHoverName(),
-                            FormattingUtil.formatNumbers(perCycle)));
-                }
             })
             .model(createBasicMachineModel(GTCEu.id("block/machine/template/quantum/creative_container"))
                     .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createQuantumTankRender)))
