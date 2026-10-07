@@ -113,15 +113,11 @@ public abstract class ItemModule {
      * @return name displayed in the modules UI
      */
     public Component getDisplayName(ModuleContext moduleContext) {
-        List<Component> list = new ArrayList<>();
-        appendHoverText(moduleContext, null, list, TooltipFlag.NORMAL);
-        return list.isEmpty() ? Component.empty() : list.get(0);
+        return Component.translatable(getLanguageKey());
     }
 
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
-                                TooltipFlag isAdvanced) {
-        tooltips.add(Component.translatable(getLanguageKey()));
-    }
+    public void appendHoverText(ModuleContext moduleContext, @Nullable Level level, List<Component> tooltips,
+                                TooltipFlag isAdvanced) {}
 
     public boolean useEnergyInInventory(ModuleContext moduleContext, LivingEntity entity) {
         return true;

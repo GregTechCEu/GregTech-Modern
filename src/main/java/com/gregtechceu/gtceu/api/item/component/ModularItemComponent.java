@@ -129,22 +129,23 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                 if (slot == null) continue;
                 ModuleContext moduleData = modularItem.getModuleContextForSlot(slotI);
                 if (moduleData != null) {
-                    int prevIndex = tooltipComponents.size();
-                    moduleData.getModule().appendHoverText(moduleData, level, tooltipComponents, isAdvanced);
-                    if (tooltipComponents.size() > prevIndex) {
-                        tooltipComponents.set(prevIndex, Component.literal(" - ")
-                                .append(slot.getDisplayName())
-                                .append(Component.literal(": "))
-                                .append(tooltipComponents.get(prevIndex)));
-                        for (int i = prevIndex + 1; i < tooltipComponents.size(); i++) {
-                            tooltipComponents.set(i, Component.literal("    ").append(tooltipComponents.get(i)));
-                        }
-                    }
+                    tooltipComponents.add(Component.literal(" - ")
+                            .append(slot.getDisplayName())
+                            .append(Component.literal(": "))
+                            .append(moduleData.getModule().getDisplayName(moduleData)));
+
+                    List<Component> moduleTooltips = new ArrayList<>();
+                    moduleData.getModule().appendHoverText(moduleData, level, moduleTooltips, isAdvanced);
+
+                    moduleTooltips.stream()
+                            .map(c -> Component.literal("    ").append(c))
+                            .forEach(tooltipComponents::add);
                 } else {
                     tooltipComponents.add(Component.literal(" - ")
                             .append(slot.getDisplayName())
                             .append(Component.literal(": "))
-                            .append(Component.translatable("gui.gtceu.item_module.empty_module_slot").withStyle(ChatFormatting.GRAY)));
+                            .append(Component.translatable("gui.gtceu.item_module.empty_module_slot")
+                                    .withStyle(ChatFormatting.GRAY)));
                 }
             }
         }
