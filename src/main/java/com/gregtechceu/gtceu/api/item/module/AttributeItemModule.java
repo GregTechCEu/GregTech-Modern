@@ -62,6 +62,10 @@ public abstract class AttributeItemModule extends ItemModule {
         moduleContext.setData(data.withModifierUUID(attributeModifier.getId()));
     }
 
+    protected boolean attributeAttached(ModuleContext moduleContext) {
+        return moduleContext.getData(AttributeModuleData.class).modifierUUID != null;
+    }
+
     private void detachAttribute(ModuleContext moduleContext) {
         var data = moduleContext.getData(AttributeModuleData.class);
 
@@ -153,6 +157,26 @@ public abstract class AttributeItemModule extends ItemModule {
     public abstract double getMaxAttributeAmount();
 
     public abstract AttributeModifier getAttributeModifier(ModuleContext moduleContext);
+
+    /**
+     * Called each tick while the item module is equipped, to determine if the attribute should be active.
+     */
+    public boolean keepAttributeActive(ModuleContext moduleContext, LivingEntity entity) {
+        return true;
+    }
+
+    @Override
+    public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
+        var currentlyAttached = attributeAttached(moduleContext);
+        var shouldKeepAttached = keepAttributeActive(moduleContext, entity);
+        if (shouldKeepAttached && !currentlyAttached) attachAttribute(moduleContext);
+        if (!shouldKeepAttached && currentlyAttached) detachAttribute(moduleContext);
+    }
+
+    @Override
+    public void onUnequip(ModuleContext moduleContext, LivingEntity entity) {
+        if (!attributeAttached(moduleContext)) attributeAttached(moduleContext);
+    }
 
     public static class AttributeModuleData extends ModuleData {
 
