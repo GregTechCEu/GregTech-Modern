@@ -704,7 +704,7 @@ public class MetaTileEntityMachineRecipeLoader {
                     .inputItems(ELECTRIC_PUMP_IV)
                     .inputItems(AEItems.SPEED_CARD.asItem(), 4)
                     .inputItems(AEItems.CAPACITY_CARD.asItem(), 2)
-                    .inputItems(GTTags.Items.IV_CIRCUITS, 1)
+                    .inputItems(GTTags.Items.CIRCUITS_IV, 1)
                     .inputFluids(SolderingAlloy, L * 2)
                     .outputItems(GTAEMachines.ME_PATTERN_BUFFER)
                     .circuitMeta(1)
