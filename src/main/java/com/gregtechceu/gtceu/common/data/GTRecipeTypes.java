@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.gui.RecipeUIModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
+import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.*;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
@@ -117,6 +118,25 @@ public class GTRecipeTypes {
             .setSound(GTSoundEntries.ASSEMBLER)
             .register();
 
+    public static final GTRecipeTypeEntry SPOOLING_RECIPES = REGISTRATE.recipeType("spooling", ELECTRIC)
+            .setMaxIOSize(3, 1, 1, 0)
+            .setEUIO(IO.IN)
+            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER))
+            .setSound(GTSoundEntries.COMPRESSOR)
+            .register();
+
+    public static final GTRecipeTypeEntry WELDER_RECIPES = REGISTRATE.recipeType("welder", ELECTRIC)
+            .setMaxIOSize(4, 1, 1, 0)
+            .setEUIO(IO.IN)
+            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER)
+                    .setMachineLayoutGridBuilder(ItemRecipeCapability.CAP, IO.IN,
+                            (machine, l) -> {
+                                int slots = l.getRecipeType().getMaxInputs(ItemRecipeCapability.CAP);
+                                return GTMuiWidgets.createGrid(slots, (int) Mth.sqrt(slots), false, 's');
+                            }))
+            .setSound(GTSoundEntries.ELECTROLYZER)
+            .register();
+
     public static final GTRecipeTypeEntry AUTOCLAVE_RECIPES = REGISTRATE.recipeType("autoclave", ELECTRIC)
             .setMaxIOSize(2, 2, 1, 1)
             .setEUIO(IO.IN)
@@ -190,7 +210,7 @@ public class GTRecipeTypes {
             .register();
 
     public static final GTRecipeTypeEntry CENTRIFUGE_RECIPES = REGISTRATE.recipeType("centrifuge", ELECTRIC)
-            .setMaxIOSize(2, 6, 1, 6)
+            .setMaxIOSize(2, 6, 2, 6)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(5))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_EXTRACT)
@@ -399,7 +419,8 @@ public class GTRecipeTypes {
             .register();
 
     public static final GTRecipeTypeEntry LATHE_RECIPES = REGISTRATE.recipeType("lathe", ELECTRIC)
-            .setMaxIOSize(1, 2, 0, 0).setEUIO(IO.IN)
+            .addCustomRecipeLogic(LatheRecipeLogic.REPRESENTATIVE_RECIPES)
+            .setMaxIOSize(1, 2, 1, 0).setEUIO(IO.IN)
             .UI(builder -> builder
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.PIPE_OVERLAY_1)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.PIPE_OVERLAY_2)

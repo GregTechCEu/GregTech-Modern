@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Range;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class SmartItemFilter extends Filter<ItemStack> {
@@ -145,6 +146,19 @@ public class SmartItemFilter extends Filter<ItemStack> {
                 return;
             }
         }
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SmartItemFilter that)) return false;
+
+        return filterMode == that.filterMode;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(filterMode);
     }
 
     @MethodsReturnNonnullByDefault

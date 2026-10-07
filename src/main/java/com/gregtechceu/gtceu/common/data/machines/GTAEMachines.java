@@ -9,9 +9,7 @@ import com.gregtechceu.gtceu.integration.ae2.machine.*;
 
 import net.minecraft.network.chat.Component;
 
-import static com.gregtechceu.gtceu.api.GTValues.EV;
-import static com.gregtechceu.gtceu.api.GTValues.IV;
-import static com.gregtechceu.gtceu.api.GTValues.LuV;
+import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 @SuppressWarnings("unused")
@@ -20,7 +18,7 @@ public class GTAEMachines {
     public final static MachineEntry<MachineDefinition> ITEM_IMPORT_BUS_ME = REGISTRATE
             .machine("me_input_bus", MEInputBusPartMachine::new)
             .langValue("ME Input Bus")
-            .tier(EV)
+            .tier(HV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_ITEMS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_bus"))
@@ -34,7 +32,7 @@ public class GTAEMachines {
     public final static MachineEntry<MachineDefinition> STOCKING_IMPORT_BUS_ME = REGISTRATE
             .machine("me_stocking_input_bus", MEStockingBusPartMachine::new)
             .langValue("ME Stocking Input Bus")
-            .tier(IV)
+            .tier(EV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_ITEMS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_bus"))
@@ -50,7 +48,7 @@ public class GTAEMachines {
     public final static MachineEntry<MachineDefinition> ITEM_EXPORT_BUS_ME = REGISTRATE
             .machine("me_output_bus", MEOutputBusPartMachine::new)
             .langValue("ME Output Bus")
-            .tier(EV)
+            .tier(HV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.EXPORT_ITEMS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_output_bus"))
@@ -64,7 +62,7 @@ public class GTAEMachines {
     public final static MachineEntry<MachineDefinition> FLUID_IMPORT_HATCH_ME = REGISTRATE
             .machine("me_input_hatch", MEInputHatchPartMachine::new)
             .langValue("ME Input Hatch")
-            .tier(EV)
+            .tier(HV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_FLUIDS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_hatch"))
@@ -78,7 +76,7 @@ public class GTAEMachines {
     public final static MachineEntry<MachineDefinition> STOCKING_IMPORT_HATCH_ME = REGISTRATE
             .machine("me_stocking_input_hatch", MEStockingHatchPartMachine::new)
             .langValue("ME Stocking Input Hatch")
-            .tier(IV)
+            .tier(EV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_FLUIDS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_hatch"))
@@ -94,7 +92,7 @@ public class GTAEMachines {
     public final static MachineEntry<MachineDefinition> FLUID_EXPORT_HATCH_ME = REGISTRATE
             .machine("me_output_hatch", MEOutputHatchPartMachine::new)
             .langValue("ME Output Hatch")
-            .tier(EV)
+            .tier(HV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.EXPORT_FLUIDS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_output_hatch"))
@@ -106,7 +104,7 @@ public class GTAEMachines {
             .register();
     public static final MachineEntry<MachineDefinition> ME_PATTERN_BUFFER = REGISTRATE
             .machine("me_pattern_buffer", MEPatternBufferPartMachine::new)
-            .tier(LuV)
+            .tier(IV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS)
             .rotationState(RotationState.ALL)

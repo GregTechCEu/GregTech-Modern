@@ -163,7 +163,8 @@ public class Predicates {
 
     @SafeVarargs
     public static MultiPredicate machines(MachineEntry<MachineDefinition>... definitions) {
-        return machines(Arrays.stream(definitions).map(Holder::value).toArray(MachineDefinition[]::new));
+        return machines(Arrays.stream(definitions).filter(Objects::nonNull).map(Holder::value)
+                .toArray(MachineDefinition[]::new));
     }
 
     public static MultiPredicate machines(@Nullable MachineDefinition... definitions) {
