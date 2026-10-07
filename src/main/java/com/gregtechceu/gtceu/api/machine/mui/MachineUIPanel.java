@@ -7,7 +7,6 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import brachy.modularui.api.drawable.IDrawable;
@@ -22,13 +21,12 @@ import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
 
     public static final int DEFAULT_CONTENT_WIDTH = 169;
     public static final int DEFAULT_CONTENT_HEIGHT = 77;
 
+    private final MetaMachine machine;
     @Getter
     protected final Flow leftConfiguratorPanel, rightConfiguratorPanel;
     @Getter
@@ -43,6 +41,7 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
     public MachineUIPanel(MetaMachine machine, PanelSyncManager syncManager, UISettings settings, boolean attachPlayerInventory,
                           boolean addTitleBar, boolean drawGTLogo, UITexture gtLogoTexture, boolean displayEIOWidget) {
         super(machine.getDefinition().getId().getPath());
+        this.machine = machine;
 
         UITexture themeBackground = null;
         if (!machine.getDefinition().getThemeId().equals(ThemeAPI.DEFAULT_ID)) {
@@ -57,68 +56,24 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
         }
 
         if (themeBackground == null) themeBackground = GTGuiTextures.BACKGROUND;
-        leftConfiguratorPanel = Flow.col()
-                .coverChildren()
-                .rightRel(1.0f)
-                .reverseLayout(true)
-                .padding(4, 2, 4, 4)
-                .bottom(16)
-                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                .childPadding(2)
-                .excludeAreaInRecipeViewer()
-                .background(themeBackground.getSubArea(0f, 0f, 0.75f, 1.0f))
-                .setEnabledIf(f -> !f.getChildren().isEmpty())
-                .decoration();
+
+        leftConfiguratorPanel = createLeftConfiguratorPanel(themeBackground);
+        rightConfiguratorPanel = createRightConfiguratorBackground(themeBackground);
 
         if (displayEIOWidget) {
-            tabTogglePanel = Flow.col()
-                    .coverChildren()
-                    .rightRel(1.0f)
-                    .padding(4, 2, 4, 4)
-                    .top(4)
-                    .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                    .childPadding(2)
-                    .excludeAreaInRecipeViewer()
-                    .background(themeBackground.getSubArea(0f, 0f, 0.75f, 1.0f))
-                    .child(new ToggleButton()
-                            .value(new BoolValue.Dynamic(
-                                    () -> !currentlyDisplayingEIOTab,
-                                    (b) -> toggleTabDisplay()))
-                            .size(16)
-                            .overlay(new ItemDrawable(machine.getDefinition().getItem())))
-                    .child(new ToggleButton()
-                            .value(new BoolValue.Dynamic(
-                                    () -> currentlyDisplayingEIOTab,
-                                    (b) -> toggleTabDisplay()))
-                            .size(16)
-                            .overlay(GuiTextures.GEAR))
-                    .decoration();
-
-            eioWidget = new MachineInWorldPreviewWidget(machine, syncManager);
+            tabTogglePanel = createTabButtonPanel(themeBackground);
+            eioWidget = new MachineInWorldPreviewWidget(machine, syncManager).disabled();
         } else {
             tabTogglePanel = null;
             eioWidget = null;
         }
 
-        rightConfiguratorPanel = Flow.col()
-                .coverChildren()
-                .leftRel(1.0f)
-                .reverseLayout(true)
-                .padding(2, 4, 4, 4)
-                .bottom(16)
-                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                .childPadding(2)
-                .excludeAreaInRecipeViewer()
-                .background(themeBackground.getSubArea(0.25f, 0f, 1.0f, 1.0f))
-                .setEnabledIf(f -> !f.getChildren().isEmpty())
-                .decoration();
-
-        Flow panelContents = Flow.col().coverChildren();
+        Flow panelContents = Flow.col().coverChildren().collapseDisabledChildren();
         panelContents.margin(4);
         mainContents = new ParentWidget<>()
                 .coverChildren(DEFAULT_CONTENT_WIDTH, DEFAULT_CONTENT_HEIGHT);
 
-        panelContents.child(mainContents);
+        panelContents.child(eioWidget).child(mainContents);
 
         if (attachPlayerInventory) {
             panelContents.childPadding(2);
@@ -137,11 +92,11 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
                     .right(7).bottom(7 + (attachPlayerInventory ? 78 : 0)).decoration().setEnabledIf(w -> !currentlyDisplayingEIOTab));
         }
 
+        coverChildren();
         child(leftConfiguratorPanel);
         if (tabTogglePanel != null) child(tabTogglePanel);
         child(rightConfiguratorPanel);
         child(panelContents);
-        coverChildren();
     }
 
     private void toggleTabDisplay() {
@@ -149,5 +104,60 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
         currentlyDisplayingEIOTab = !currentlyDisplayingEIOTab;
         mainContents.setEnabled(!currentlyDisplayingEIOTab);
         eioWidget.setEnabled(currentlyDisplayingEIOTab);
+    }
+
+    private Flow createTabButtonPanel(UITexture themeBackground) {
+        return Flow.col()
+                .coverChildren()
+                .rightRel(1.0f)
+                .padding(4, 2, 4, 4)
+                .top(4)
+                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                .childPadding(2)
+                .excludeAreaInRecipeViewer()
+                .background(themeBackground.getSubArea(0f, 0f, 0.75f, 1.0f))
+                .child(new ToggleButton()
+                        .value(new BoolValue.Dynamic(
+                                () -> !currentlyDisplayingEIOTab,
+                                (b) -> toggleTabDisplay()))
+                        .size(16)
+                        .overlay(new ItemDrawable(machine.getDefinition().getItem())))
+                .child(new ToggleButton()
+                        .value(new BoolValue.Dynamic(
+                                () -> currentlyDisplayingEIOTab,
+                                (b) -> toggleTabDisplay()))
+                        .size(16)
+                        .overlay(GuiTextures.GEAR))
+                .decoration();
+    }
+
+    private Flow createLeftConfiguratorPanel(UITexture themeBackground) {
+        return Flow.col()
+                .coverChildren()
+                .rightRel(1.0f)
+                .reverseLayout(true)
+                .padding(4, 2, 4, 4)
+                .bottom(16)
+                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                .childPadding(2)
+                .excludeAreaInRecipeViewer()
+                .background(themeBackground.getSubArea(0f, 0f, 0.75f, 1.0f))
+                .setEnabledIf(f -> !f.getChildren().isEmpty())
+                .decoration();
+    }
+
+    private Flow createRightConfiguratorBackground(UITexture themeBackground) {
+        return Flow.col()
+                .coverChildren()
+                .leftRel(1.0f)
+                .reverseLayout(true)
+                .padding(2, 4, 4, 4)
+                .bottom(16)
+                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                .childPadding(2)
+                .excludeAreaInRecipeViewer()
+                .background(themeBackground.getSubArea(0.25f, 0f, 1.0f, 1.0f))
+                .setEnabledIf(f -> !f.getChildren().isEmpty())
+                .decoration();
     }
 }
