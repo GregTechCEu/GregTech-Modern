@@ -2,11 +2,14 @@ package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -14,12 +17,37 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.List;
 
 public class LatheRecipeLogic extends RecipeLogic {
 
     // Non-Rod recipes retain normal lathe behavior.
     public static final String LUBRICATED_ROD = "lubricated_rod";
     public static final int LUBRICANT_AMOUNT = 25;
+
+    public static final GTRecipeType.ICustomRecipeLogic REPRESENTATIVE_RECIPES = new GTRecipeType.ICustomRecipeLogic() {
+
+        @Override
+        public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
+            // Recipe selection remains in the machine logic
+            return null;
+        }
+
+        @Override
+        public void buildRepresentativeRecipes() {
+            var type = GTRecipeTypes.LATHE_RECIPES.value();
+            for (var category : type.getCategories()) {
+                for (var recipe : List.copyOf(type.getRecipesInCategory(category))) {
+                    // Both viewers may use this hook, don't actually generate recipeDB entries for synth representative recipes.
+                    if (recipe.id.getPath().startsWith("/")) continue;
+                    var lubricated = createLubricatedRecipe(recipe);
+                    if (lubricated == null) continue;
+                    lubricated.id = recipe.id.withPrefix("/").withSuffix("_lubricated");
+                    type.addToCategoryMap(category, lubricated);
+                }
+            }
+        }
+    };
 
     private static boolean isLubricatedRod(GTRecipe recipe) {
         return recipe != null && recipe.data.contains(LUBRICATED_ROD);
@@ -36,7 +64,7 @@ public class LatheRecipeLogic extends RecipeLogic {
         return super.checkMatchedRecipeAvailable(prepared);
     }
 
-    /** Creates XEI recipe display for lubricated recipes without adding more to the db. */
+    /** Creates the lubricated variant shared by XEI's and logic. */
     public static @Nullable GTRecipe createLubricatedRecipe(GTRecipe match) {
         if (!isLubricatedRod(match)) return null;
 

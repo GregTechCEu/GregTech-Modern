@@ -2,12 +2,10 @@ package com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.GTEMIPlugin;
 
 import net.minecraft.Util;
@@ -47,26 +45,18 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
                 continue;
             }
             EmiRecipeCategory emiCategory = CATEGORIES.apply(category);
-            type.getRecipesInCategory(category)
-                    .forEach(recipe -> registerDisplay(registry, recipe, emiCategory));
+            type.getRecipesInCategory(category).stream()
+                    .map(recipe -> new GTEmiRecipe(recipe, emiCategory))
+                    .forEach(registry::addRecipe);
         }
         // run subcategories
         for (var subCategory : subCategories) {
             if (!subCategory.shouldRegisterDisplays()) continue;
             var type = subCategory.getRecipeType();
             EmiRecipeCategory emiCategory = CATEGORIES.apply(subCategory);
-            type.getRecipesInCategory(subCategory)
-                    .forEach(recipe -> registerDisplay(registry, recipe, emiCategory));
-        }
-    }
-
-    private static void registerDisplay(EmiRegistry registry, GTRecipe recipe, EmiRecipeCategory category) {
-        registry.addRecipe(new GTEmiRecipe(recipe, category));
-        var lubricated = LatheRecipeLogic.createLubricatedRecipe(recipe);
-        if (lubricated != null) {
-            // EMI synthetic recipes require the leading slash, otherwise logs will flood heavily.
-            lubricated.id = recipe.id.withPrefix("/").withSuffix("_lubricated");
-            registry.addRecipe(new GTEmiRecipe(lubricated, category));
+            type.getRecipesInCategory(subCategory).stream()
+                    .map(recipe -> new GTEmiRecipe(recipe, emiCategory))
+                    .forEach(registry::addRecipe);
         }
     }
 
