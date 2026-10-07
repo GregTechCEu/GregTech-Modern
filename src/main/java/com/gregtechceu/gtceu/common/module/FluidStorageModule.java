@@ -17,6 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
@@ -33,6 +34,12 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
     @Override
     public Capability<IFluidHandlerItem> getCapability() {
         return ForgeCapabilities.FLUID_HANDLER_ITEM;
+    }
+
+    @Override
+    public void applyInitialCapabilityData(IFluidHandlerItem newCap, ModuleContext context) {
+        var moduleItemData = context.getData().getModuleItem().getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve();
+        moduleItemData.ifPresent(data -> newCap.fill(data.getFluidInTank(0), IFluidHandler.FluidAction.EXECUTE));
     }
 
     @Override
