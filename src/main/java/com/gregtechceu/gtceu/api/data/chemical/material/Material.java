@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
+import com.gregtechceu.gtceu.data.lang.LangGenerationHandler;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -38,6 +39,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -160,6 +162,11 @@ public final class Material implements Comparable<Material> {
     @ApiStatus.Internal
     public String getDefaultTranslation() {
         return materialInfo.overriddenName != null ? materialInfo.overriddenName : toEnglishName(getName());
+    }
+
+    @ApiStatus.Internal
+    public Map<TagPrefix, String> getLangOverrides() {
+        return materialInfo.langOverrides;
     }
 
     public String getModid() {
@@ -1844,6 +1851,15 @@ public final class Material implements Comparable<Material> {
         }
 
         /**
+         * A custom English lang value which overrides the default tag prefix lang for this material.
+         * Generated during your addon's datagen with key {@code item.<mod_id>.<item_id>}
+         */
+        public Builder langOverride(TagPrefix prefix, String englishLang) {
+            materialInfo.langOverrides.put(prefix, englishLang);
+            return this;
+        }
+
+        /**
          * Verify the passed information and finalize the Material.
          *
          * @return The finalized Material.
@@ -1888,6 +1904,17 @@ public final class Material implements Comparable<Material> {
             if (ignoredTagPrefixes != null) {
                 ignoredTagPrefixes.forEach(p -> p.setIgnored(mat));
             }
+
+            LangGenerationHandler.forNamespace(id.getNamespace()).add(provider -> {
+                provider.add(mat.getUnlocalizedName(), mat.getDefaultTranslation());
+
+                for (var entry : mat.getLangOverrides().entrySet()) {
+                    var key = String.format("item.%s.%s", mat.getResourceLocation().getNamespace(),
+                            entry.getKey().idPattern().formatted(mat.getResourceLocation().getPath()));
+                    provider.add(key, entry.getValue());
+                }
+            });
+
             return mat;
         }
 
@@ -1914,6 +1941,10 @@ public final class Material implements Comparable<Material> {
         @Setter
         @Getter
         private String overriddenName;
+
+        @Setter
+        @Getter
+        private Map<TagPrefix, String> langOverrides = new Object2ObjectOpenHashMap<>();
 
         /**
          * The colors of this Material.

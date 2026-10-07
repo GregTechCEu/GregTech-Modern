@@ -5,17 +5,15 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -94,43 +92,30 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                     MutableComponent text;
 
                     if (isSteam) {
-                        text = Component.translatable("gtceu.jade.fluid_use", FormattingUtil.formatNumbers(EUt))
+                        text = FormattingUtil.prepend("common.gtceu.mb_per_tick", FormattingUtil.formatNumbers(EUt))
                                 .withStyle(ChatFormatting.GREEN);
                     } else {
                         var voltage = recipeInfo.getLong("voltage");
-                        var tier = GTUtil.getTierByVoltage(voltage);
                         float minAmperage = (float) EUt / voltage;
 
-                        text = Component
-                                .translatable("gtceu.jade.amperage_use",
-                                        FormattingUtil.formatNumber2Places(minAmperage))
-                                .withStyle(ChatFormatting.RED)
-                                .append(Component.translatable("gtceu.jade.at").withStyle(ChatFormatting.GREEN));
-                        if (tier < GTValues.TIER_COUNT) {
-                            text = text.append(Component.literal(GTValues.VNF[tier])
-                                    .withStyle(style -> style.withColor(GTValues.VC[tier])));
-                        } else {
-                            int speed = Mth.clamp(tier - GTValues.TIER_COUNT - 1, 0, GTValues.TIER_COUNT);
-                            text = text.append(Component.literal("MAX")
-                                    .withStyle(style -> style.withColor(TooltipHelper.rainbowColor(speed)))
-                                    .append(Component.literal("+")
-                                            .withStyle(style -> style.withColor(GTValues.VC[speed]))
-                                            .append(FormattingUtil.formatNumbers(speed))));
+                        text = FormattingUtil.formattedEUt(minAmperage, voltage, true);
 
-                        }
-                        text.append(Component.translatable("gtceu.universal.padded_parentheses",
-                                (Component.translatable("gtceu.recipe.eu.total",
-                                        FormattingUtil.formatNumbers(EUt))))
-                                .withStyle(ChatFormatting.WHITE));
+                        text.append(FormattingUtil.wrap(FormattingUtil.prepend("common.gtceu.eu_per_tick",
+                                FormattingUtil.formatNumbers(EUt))
+                                .withStyle(ChatFormatting.WHITE), " (", ") "));
                     }
 
                     if (isInput) {
-                        tooltip.add(Component.translatable("gtceu.top.energy_consumption").append(" ").append(text));
+                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption")
+                                .append(CommonComponents.SPACE)
+                                .append(text));
                     } else {
-                        tooltip.add(Component.translatable("gtceu.top.energy_production").append(" ").append(text));
+                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption")
+                                .append(CommonComponents.SPACE)
+                                .append(text));
                         long generatorPower = recipeInfo.getLong("generatorPower");
                         if (generatorPower > 0 && generatorPower < EUt) {
-                            tooltip.add(Component.translatable("gtceu.jade.generator.too_small")
+                            tooltip.add(Component.translatable("integration.gtceu.jade.generator.output_too_small")
                                     .withStyle(ChatFormatting.RED));
                         }
                     }
@@ -140,8 +125,8 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
             Component reason = Component.Serializer.fromJson(capData.getString("FailureReason"));
             if (reason != null) {
                 tooltip.add(capData.getBoolean("Waiting") ?
-                        Component.translatable("gtceu.recipe_logic.recipe_waiting").withStyle(ChatFormatting.YELLOW) :
-                        Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
+                        Component.translatable("gui.gtceu.recipe.recipe_waiting").withStyle(ChatFormatting.YELLOW) :
+                        Component.translatable("gui.gtceu.recipe.setup_fail").withStyle(ChatFormatting.RED));
                 tooltip.add(reason);
             }
         }

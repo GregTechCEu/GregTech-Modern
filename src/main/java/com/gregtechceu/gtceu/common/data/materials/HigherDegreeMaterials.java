@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class HigherDegreeMaterials {
@@ -65,6 +66,9 @@ public class HigherDegreeMaterials {
                 .buildAndRegister();
 
         GraniticMineralSand = new Material.Builder(GTCEu.id("granitic_mineral_sand"))
+                .langOverride(dust, "Granitic Mineral Sand")
+                .langOverride(dustSmall, "Small Pile of Granitic Mineral Sand")
+                .langOverride(dustTiny, "Tiny Pile of Granitic Mineral Sand")
                 .dust(1).ore()
                 .color(0xd69077).secondaryColor(0x71352c).iconSet(SAND)
                 .components(Magnetite, 1, Deepslate, 1)
@@ -79,6 +83,9 @@ public class HigherDegreeMaterials {
                 .buildAndRegister();
 
         GarnetSand = new Material.Builder(GTCEu.id("garnet_sand"))
+                .langOverride(dust, "Garnet Sand")
+                .langOverride(dustSmall, "Small Pile of Garnet Sand")
+                .langOverride(dustTiny, "Tiny Pile of Garnet Sand")
                 .dust(1).ore()
                 .color(0xcc4c25).secondaryColor(0x510b04).iconSet(SAND)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
@@ -110,6 +117,9 @@ public class HigherDegreeMaterials {
                 .buildAndRegister();
 
         BasalticMineralSand = new Material.Builder(GTCEu.id("basaltic_mineral_sand"))
+                .langOverride(dust, "Basaltic Mineral Sand")
+                .langOverride(dustSmall, "Small Pile of Basaltic Mineral Sand")
+                .langOverride(dustTiny, "Tiny Pile of Basaltic Mineral Sand")
                 .dust(1).ore()
                 .color(0x5c5c5c).secondaryColor(0x283228).iconSet(SAND)
                 .components(Magnetite, 1, Basalt, 1)
@@ -144,6 +154,9 @@ public class HigherDegreeMaterials {
                 .buildAndRegister();
 
         IridiumMetalResidue = new Material.Builder(GTCEu.id("iridium_metal_residue"))
+                .langOverride(dust, "Iridium Metal Residue")
+                .langOverride(dustSmall, "Small Pile of Iridium Metal Residue")
+                .langOverride(dustTiny, "Tiny Pile of Iridium Metal Residue")
                 .dust()
                 .color(0x484a5e).secondaryColor(0x3e1c38).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)

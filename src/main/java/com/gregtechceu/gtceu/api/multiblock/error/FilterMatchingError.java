@@ -20,7 +20,7 @@ public class FilterMatchingError extends MismatchError<CleanroomType> {
 
     @Override
     protected String langKey() {
-        return "gtceu.pattern_error.mismatch_filters";
+        return "multiblock.gtceu.pattern_error.mismatch_filters";
     }
 
     @Override

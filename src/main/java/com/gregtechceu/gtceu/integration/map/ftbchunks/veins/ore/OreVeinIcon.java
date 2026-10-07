@@ -88,9 +88,10 @@ public class OreVeinIcon implements MapIcon {
     private void openContextMenu(LargeMapScreen screen) {
         MutableComponent title = getName().copy();
         if (veinMetadata.depleted()) {
-            title.append(" (").append(Component.translatable("gtceu.minimap.ore_vein.depleted")).append(")");
+            title.append(" (").append(Component.translatable("minimap.gtceu.ore_vein.depleted")).append(")");
         }
-        ContextMenuItem markDepleted = new ContextMenuItem(Component.translatable("button.gtceu.mark_as_depleted.name"),
+        ContextMenuItem markDepleted = new ContextMenuItem(
+                Component.translatable("gtceu.map.button.mark_as_depleted.name"),
                 Icons.REMOVE,
                 b -> veinMetadata.depleted(!veinMetadata.depleted()));
 
@@ -100,7 +101,7 @@ public class OreVeinIcon implements MapIcon {
             waypointIcon = waypointIcon.withColor(color);
         }
         ContextMenuItem toggleWaypoint = new ContextMenuItem(
-                Component.translatable("button.gtceu.toggle_waypoint.name"),
+                Component.translatable("gtceu.map.button.toggle_waypoint.name"),
                 waypointIcon,
                 b -> toggleWaypoint(screen));
 

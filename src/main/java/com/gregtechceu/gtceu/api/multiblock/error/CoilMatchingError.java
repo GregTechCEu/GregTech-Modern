@@ -20,7 +20,7 @@ public class CoilMatchingError extends MismatchError<ICoilType> {
 
     @Override
     protected String langKey() {
-        return "gtceu.pattern_error.mismatch_coils";
+        return "multiblock.gtceu.pattern_error.mismatch_coils";
     }
 
     @Override

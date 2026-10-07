@@ -13,7 +13,7 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     public final static CWURecipeCapability CAP = new CWURecipeCapability();
 
     protected CWURecipeCapability() {
-        super(GTCEu.id("cwu"), 0xFFEEEE00, false, 3, SerializerInteger.INSTANCE);
+        super(GTCEu.id("cwu"), "Computation Work Units", 0xFFEEEE00, false, 3, SerializerInteger.INSTANCE);
     }
 
     @Override

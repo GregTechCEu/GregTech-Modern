@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.data.medicalcondition;
 import com.gregtechceu.gtceu.api.data.damagesource.DamageTypeData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
+import com.gregtechceu.gtceu.data.lang.LangGenerationHandler;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.misc.AirScrubberRecipes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -20,6 +21,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -58,6 +60,9 @@ public class MedicalCondition {
     @NotNull
     public Consumer<GTRecipeBuilder> recipeModifier = builder -> {};
 
+    private String lang;
+    private @Nullable String affectedLang = null;
+
     public MedicalCondition(ResourceLocation id, int color,
                             int maxProgression, IdleProgressionType progressionType, float progressionRate,
                             boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
@@ -80,6 +85,22 @@ public class MedicalCondition {
         this.idleProgressionType = progressionType;
         this.idleProgressionRate = progressionRate;
         this.canBePermanent = canBePermanent;
+
+        LangGenerationHandler.forNamespace(id.getNamespace()).add(provider -> {
+            provider.add(getTranslationKey(), lang);
+            if (affectedLang != null) provider.add(getTranslationKey() + AFFECTED_SUFFIX, affectedLang);
+        });
+    }
+
+    public MedicalCondition lang(String lang) {
+        this.lang = lang;
+        return this;
+    }
+
+    public MedicalCondition lang(String lang, String affectedLang) {
+        this.lang = lang;
+        this.affectedLang = affectedLang;
+        return this;
     }
 
     public DamageSource getDamageSource(MedicalConditionTracker tracker) {

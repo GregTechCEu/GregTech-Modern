@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.ItemStack;
@@ -80,19 +81,20 @@ public interface CapabilityContentBuilder {
 
             if (innerContent instanceof IntProviderIngredient ingredient) {
                 IntProvider countProvider = ingredient.getCountProvider();
-                tooltip.add(Component.translatable("gtceu.gui.content.count_range",
+                tooltip.add(Component.translatable("gui.gtceu.recipe_content.count_range",
                         countProvider.getMinValue(), countProvider.getMaxValue())
                         .withStyle(ChatFormatting.GOLD));
             } else if (innerContent instanceof SizedIngredient sizedIngredient &&
                     sizedIngredient.getInner() instanceof IntProviderIngredient ingredient) {
 
                         IntProvider countProvider = ingredient.getCountProvider();
-                        tooltip.add(Component.translatable("gtceu.gui.content.count_range",
+                        tooltip.add(Component.translatable("gui.gtceu.recipe_content.count_range",
                                 countProvider.getMinValue(), countProvider.getMaxValue())
                                 .withStyle(ChatFormatting.GOLD));
                     }
             if (perTick) {
-                tooltip.add(Component.translatable("gtceu.gui.content.per_tick"));
+                tooltip.add(
+                        Component.translatable("gui.gtceu.recipe_content.per_tick").withStyle(ChatFormatting.GREEN));
             }
         });
     };
@@ -115,12 +117,13 @@ public interface CapabilityContentBuilder {
         recipeViewerSlotWidget.tooltipBuilder((tooltip) -> {
             if (ingredient instanceof IRangedIngredient provider) {
                 IntProvider countProvider = provider.getCountProvider();
-                tooltip.addLine(Component.translatable("gtceu.gui.content.fluid_range",
+                tooltip.addLine(Component.translatable("gui.gtceu.recipe_content.fluid_range",
                         countProvider.getMinValue(), countProvider.getMaxValue())
                         .withStyle(ChatFormatting.GOLD));
             }
             if (perTick) {
-                tooltip.addLine(Component.translatable("gtceu.gui.content.per_tick"));
+                tooltip.addLine(
+                        Component.translatable("gui.gtceu.recipe_content.per_tick").withStyle(ChatFormatting.GREEN));
             }
         });
 
@@ -144,13 +147,14 @@ public interface CapabilityContentBuilder {
             if (CWURecipeCapability.CAP.isTickSlot(0, IO.IN, recipe)) {
                 int cwu = recipe.getTickInputContents(CWURecipeCapability.CAP).stream().map(Content::content)
                         .mapToInt(CWURecipeCapability.CAP::of).sum();
-                var text = Text.lang("gtceu.recipe.computation_per_tick", FormattingUtil.formatNumbers(cwu));
+                var text = Text.lang("gui.gtceu.recipe.computation_per_tick", FormattingUtil.formatNumbers(cwu));
 
                 if (existingCompTickWidget != null) ((TextWidget<?>) existingCompTickWidget).value(text);
                 else flow.child(text.asWidget().name("comp_tick"));
             }
             if (recipe.data.getBoolean("duration_is_total_cwu")) {
-                var text = Text.lang("gtceu.recipe.total_computation", FormattingUtil.formatNumbers(recipe.duration));
+                var text = Text.lang("gui.gtceu.recipe.total_computation",
+                        FormattingUtil.formatNumbers(recipe.duration));
 
                 if (existingCompTotal != null) ((TextWidget<?>) existingCompTotal).value(text);
                 else flow.child(text.asWidget().name("comp_total"));
@@ -178,10 +182,10 @@ public interface CapabilityContentBuilder {
                     recipe.tickInputs.containsKey(CWURecipeCapability.CAP)) {
                 int minimumCWUt = Math.max(recipe.tickInputs.get(CWURecipeCapability.CAP).stream()
                         .map(Content::content).mapToInt(CWURecipeCapability.CAP::of).sum(), 1);
-                maxEu = Text.lang("gtceu.recipe.max_eu",
+                maxEu = Text.lang("gui.gtceu.recipe.max_eu",
                         FormattingUtil.formatNumbers(eu.getTotalEU() / minimumCWUt));
             } else {
-                maxEu = Text.lang("gtceu.recipe.total",
+                maxEu = Text.lang("gui.gtceu.recipe.total",
                         FormattingUtil.formatNumbers(eu.getTotalEU() * recipe.duration));
             }
 
@@ -189,13 +193,15 @@ public interface CapabilityContentBuilder {
             else flow.child(maxEu.asWidget().name("max_eu"));
 
             var euText = Text
-                    .lang(io == IO.IN ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted",
-                            FormattingUtil.formatNumber2Places(minAmperage), GTValues.VN[minVoltageTier])
+                    .lang(io == IO.IN ? "gui.gtceu.recipe.eu" : "gui.gtceu.recipe.eu_inverted")
+                    .append(CommonComponents.SPACE)
+                    .append(FormattingUtil.formattedEUt(minAmperage, eu.voltage(), false))
                     .withStyle(ChatFormatting.UNDERLINE);
 
             RichTooltip tooltip = new RichTooltip();
-            tooltip.addLine(Text.lang("gtceu.recipe.eu.total", FormattingUtil.formatNumbers(eu.getTotalEU()))
-                    .withStyle(ChatFormatting.UNDERLINE));
+            tooltip.addLine(
+                    FormattingUtil.prepend("common.gtceu.eu_per_tick", FormattingUtil.formatNumbers(eu.getTotalEU()))
+                            .withStyle(ChatFormatting.UNDERLINE));
 
             if (euWidget != null) ((TextWidget<?>) euWidget).value(euText).tooltip(tooltip);
             else flow.child(euText.asWidget().tooltip(tooltip).marginBottom(1).name("eu"));

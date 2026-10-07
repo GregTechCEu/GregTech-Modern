@@ -37,12 +37,12 @@ public class TransformerBlockProvider extends MachineInfoProvider<TransformerMac
         int voltage = data.getInt("baseVoltage");
         int amp = data.getInt("baseAmp");
         if (transformUp) {
-            tooltip.add(Component.translatable("gtceu.top.transform_up",
+            tooltip.add(Component.translatable("integration.gtceu.jade.transform_up",
                     (GTValues.VNF[voltage] + " §r(" + amp * 4 + "A) -> " + GTValues.VNF[voltage + 1] + " §r(" +
                             amp +
                             "A)")));
         } else {
-            tooltip.add(Component.translatable("gtceu.top.transform_down",
+            tooltip.add(Component.translatable("integration.gtceu.jade.transform_down",
                     (GTValues.VNF[voltage + 1] + " §r(" + amp + "A) -> " + GTValues.VNF[voltage] + " §r(" +
                             amp * 4 +
                             "A)")));
@@ -52,12 +52,14 @@ public class TransformerBlockProvider extends MachineInfoProvider<TransformerMac
                 Direction.from3DDataValue(data.getInt("side"))) {
             tooltip.add(
                     Component.translatable(
-                            (transformUp ? "gtceu.top.transform_output" : "gtceu.top.transform_input"),
+                            (transformUp ? "integration.gtceu.jade.transform_output" :
+                                    "integration.gtceu.jade.transform_input"),
                             (GTValues.VNF[voltage + 1] + " §r(" + amp + "A)")));
         } else {
             tooltip.add(
                     Component.translatable(
-                            (transformUp ? "gtceu.top.transform_input" : "gtceu.top.transform_output"),
+                            (transformUp ? "integration.gtceu.jade.transform_input" :
+                                    "integration.gtceu.jade.transform_output"),
                             (GTValues.VNF[voltage] + " §r(" + amp * 4 + "A)")));
         }
     }

@@ -68,20 +68,20 @@ public record AntidoteBehavior(Set<MedicalCondition> types, int removePercent)
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) return;
 
         if (GTUtil.isShiftDown()) {
-            tooltipComponents.add(Component.translatable("tooltip.gtceu.antidote.description_shift"));
+            tooltipComponents.add(Component.translatable("antidote.gtceu.description_shift"));
             for (var type : types) {
                 tooltipComponents.add(type.getAffectedName());
             }
             if (removePercent == -1) {
                 tooltipComponents
-                        .add(Component.translatable("tooltip.gtceu.antidote.description.effect_removed.all"));
+                        .add(Component.translatable("antidote.gtceu.description.effect_removed.all"));
             } else {
                 tooltipComponents
-                        .add(Component.translatable("tooltip.gtceu.antidote.description.effect_removed",
+                        .add(Component.translatable("antidote.gtceu.description.effect_removed",
                                 removePercent));
             }
             return;
         }
-        tooltipComponents.add(Component.translatable("tooltip.gtceu.antidote.description"));
+        tooltipComponents.add(Component.translatable("antidote.gtceu.description"));
     }
 }

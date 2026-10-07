@@ -170,7 +170,7 @@ public class SmartItemFilter extends Filter<ItemStack> {
         }
 
         public String getTooltip() {
-            return "cover.item_smart_filter.filtering_mode." + localeName;
+            return "cover.gtceu.smart_item_filter.filtering_mode." + localeName;
         }
 
         public static UITexture[] getTextures() {

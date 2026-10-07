@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 public enum FluidState {
 
-    LIQUID("gtceu.fluid.state_liquid", CustomTags.LIQUID_FLUIDS),
-    GAS("gtceu.fluid.state_gas", Tags.Fluids.GASEOUS),
-    PLASMA("gtceu.fluid.state_plasma", CustomTags.PLASMA_FLUIDS),
+    LIQUID("material.gtceu.fluid_state.liquid", CustomTags.LIQUID_FLUIDS),
+    GAS("material.gtceu.fluid_state.gas", Tags.Fluids.GASEOUS),
+    PLASMA("material.gtceu.fluid_state.plasma", CustomTags.PLASMA_FLUIDS),
     ;
 
     @Getter

@@ -106,12 +106,12 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
         WireProperties wireProperties = createProperties(defaultBlockState(), stack);
         int tier = GTUtil.getTierByVoltage(wireProperties.getVoltage());
         if (wireProperties.isSuperconductor())
-            tooltip.add(Component.translatable("gtceu.cable.superconductor", GTValues.VN[tier]));
-        tooltip.add(Component.translatable("gtceu.cable.voltage",
+            tooltip.add(Component.translatable("tooltip.gtceu.cable.superconductor", GTValues.VN[tier]));
+        tooltip.add(Component.translatable("tooltip.gtceu.cable.voltage",
                 FormattingUtil.formatNumbers(wireProperties.getVoltage()), GTValues.VNF[tier]));
-        tooltip.add(Component.translatable("gtceu.cable.amperage",
+        tooltip.add(Component.translatable("tooltip.gtceu.cable.amperage",
                 FormattingUtil.formatNumbers(wireProperties.getAmperage())));
-        tooltip.add(Component.translatable("gtceu.cable.loss_per_block",
+        tooltip.add(Component.translatable("tooltip.gtceu.cable.loss_per_block",
                 FormattingUtil.formatNumbers(wireProperties.getLossPerBlock())));
     }
 

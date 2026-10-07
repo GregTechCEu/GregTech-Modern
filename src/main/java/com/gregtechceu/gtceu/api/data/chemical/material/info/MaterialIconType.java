@@ -12,6 +12,7 @@ import com.google.common.base.CaseFormat;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -306,7 +307,7 @@ public record MaterialIconType(String name) {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return this.name;
     }
 }

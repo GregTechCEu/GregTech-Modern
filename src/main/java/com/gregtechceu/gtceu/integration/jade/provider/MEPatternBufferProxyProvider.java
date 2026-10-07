@@ -46,12 +46,13 @@ public class MEPatternBufferProxyProvider extends MachineInfoProvider<MEPatternB
                               BlockEntity blockEntity, IPluginConfig config) {
         if (!data.getBoolean("formed")) return;
         if (!data.getBoolean("bound")) {
-            tooltip.add(Component.translatable("gtceu.top.buffer_not_bound").withStyle(ChatFormatting.RED));
+            tooltip.add(Component.translatable("integration.gtceu.jade.pattern_buffer.not_bound")
+                    .withStyle(ChatFormatting.RED));
             return;
         }
 
         int[] pos = data.getIntArray("pos");
-        tooltip.add(Component.translatable("gtceu.top.buffer_bound_pos", pos[0], pos[1], pos[2])
+        tooltip.add(Component.translatable("integration.gtceu.jade.pattern_buffer.bound_to_pos", pos[0], pos[1], pos[2])
                 .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
 
         MEPatternBufferProvider.readBufferTag(tooltip, data);

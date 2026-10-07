@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeAdditionHandler;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.data.lang.LangGenerationHandler;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -14,6 +15,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -41,6 +43,11 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             RecipeCapability.COMPARATOR);
     public final Object2IntSortedMap<RecipeCapability<?>> maxOutputs = new Object2IntAVLTreeMap<>(
             RecipeCapability.COMPARATOR);
+
+    @Getter
+    @Setter
+    private String langValue;
+
     @Setter
     private GTRecipeBuilder recipeBuilder;
     @Setter
@@ -55,7 +62,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     protected SoundEntry sound;
     @Getter
-    protected List<Function<CompoundTag, String>> dataInfos = new ArrayList<>();
+    protected List<Function<CompoundTag, Component>> dataInfos = new ArrayList<>();
     @Getter
     @Setter
     protected boolean isScanner;
@@ -101,6 +108,11 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         }
         this.proxyRecipes = map;
         this.uiLayout = new GTRecipeTypeUILayout.Builder(this).build();
+
+        langValue = FormattingUtil.toEnglishName(registryName.getPath());
+
+        LangGenerationHandler.forNamespace(registryName.getNamespace())
+                .add(v -> v.add(registryName.toLanguageKey("recipe_type"), langValue));
     }
 
     public GTRecipeType setMaxIOSize(int maxItemInputs, int maxItemOutputs, int maxFluidInputs, int maxFluidOutputs) {
@@ -161,6 +173,14 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Override
     public String toString() {
         return registryName.toString();
+    }
+
+    public String getLanguageKey() {
+        return this.registryName.toLanguageKey("recipe_type");
+    }
+
+    public Component getTranslation() {
+        return Component.translatable(getLanguageKey());
     }
 
     public @NotNull Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder, Predicate<GTRecipe> canHandle) {

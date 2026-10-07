@@ -89,7 +89,7 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
             return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide);
         }
         if (!player.isCreative() && !drainEnergy(heldItem, true)) {
-            player.sendSystemMessage(Component.translatable("behavior.prospector.not_enough_energy"));
+            player.sendSystemMessage(Component.translatable("item.gtceu.behavior.prospector.not_enough_energy"));
             return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide);
         }
         return IItemUIHolder.super.use(item, level, player, usedHand);
@@ -98,8 +98,8 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        tooltipComponents.add(Component.translatable("behavior.prospector.tooltip.radius", this.radius));
-        tooltipComponents.add(Component.translatable("behavior.prospector.tooltip.modes"));
+        tooltipComponents.add(Component.translatable("item.prospector.tooltip.radius", this.radius));
+        tooltipComponents.add(Component.translatable("item.prospector.tooltip.modes"));
         for (ProspectorMode<?> mode : this.modes) {
             tooltipComponents.add(Component.literal(" -")
                     .append(Component.translatable(mode.unlocalizedName))
