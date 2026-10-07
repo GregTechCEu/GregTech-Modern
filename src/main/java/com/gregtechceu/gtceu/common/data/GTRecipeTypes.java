@@ -117,7 +117,19 @@ public class GTRecipeTypes {
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER))
             .setSound(GTSoundEntries.ASSEMBLER);
 
-    public final static GTRecipeType AUTOCLAVE_RECIPES = register("autoclave", ELECTRIC).setMaxIOSize(2, 2, 1, 1)
+    public static final GTRecipeType WELDER_RECIPES = register("welder", ELECTRIC)
+            .setMaxIOSize(4, 1, 1, 0)
+            .setEUIO(IO.IN)
+            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER)
+                    .setMachineLayoutGridBuilder(ItemRecipeCapability.CAP, IO.IN,
+                            (machine, l) -> {
+                                int slots = l.getRecipeType().getMaxInputs(ItemRecipeCapability.CAP);
+                                return GTMuiWidgets.createGrid(slots, (int) Mth.sqrt(slots), false, 's');
+                            }))
+            .setSound(GTSoundEntries.ELECTROLYZER);
+
+    public static final GTRecipeType AUTOCLAVE_RECIPES = register("autoclave", ELECTRIC)
+            .setMaxIOSize(2, 2, 1, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_CRYSTALLIZATION)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.DUST_OVERLAY)

@@ -563,9 +563,9 @@ public final class MaterialRecipeHandler {
                     "SSS", isWoodenFrame ? "SsS" : "SwS", "SSS",
                     'S', new MaterialEntry(rod, material));
 
-            ASSEMBLER_RECIPES.recipeBuilder("assemble_" + material.getName() + "_frame")
+            WELDER_RECIPES.recipeBuilder("weld_" + material.getName() + "_frame")
                     .inputItems(rod, material, 4)
-                    .circuitMeta(4)
+                    .circuitMeta(2)
                     .outputItems(frameGt, material)
                     .EUt(VA[ULV]).duration(64)
                     .save(provider);
