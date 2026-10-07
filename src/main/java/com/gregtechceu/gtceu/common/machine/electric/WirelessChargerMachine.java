@@ -66,9 +66,9 @@ public class WirelessChargerMachine extends TieredEnergyMachine {
             previousPlayers.clear();
             return;
         }
-        var owner = getOwner();
-        var level = getLevel();
-        if (owner == null || level == null || level.getServer() == null) return;
+        MachineOwner owner = getOwner();
+        Level level = getLevel();
+        if (owner == null || level == null || level.isClientSide) return;
 
         int range = getRange(getTier(), turbo);
         var bounds = new AABB(getBlockPos()).inflate(range);
