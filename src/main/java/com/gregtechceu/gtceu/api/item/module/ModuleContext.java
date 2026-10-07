@@ -23,6 +23,7 @@ public class ModuleContext {
      * The persistent data for this module.<br>
      * The data object must be immutable.
      */
+    @Getter
     private ModuleData data;
 
     public ModuleContext(ItemStack appliedTo, IModularItem modularItem, ModuleData data) {
@@ -33,14 +34,6 @@ public class ModuleContext {
 
     public ItemModule getModule() {
         return getData().getModule();
-    }
-
-    public ItemStack getModuleItem() {
-        return getData().getModuleItem();
-    }
-
-    public ModuleData getData() {
-        return data;
     }
 
     public <T extends ModuleData> T getData(Class<T> dataClass) {

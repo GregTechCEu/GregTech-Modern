@@ -44,6 +44,12 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
     }
 
     @Override
+    public void applyInitialCapabilityData(IElectricItem newCap, ModuleContext context) {
+        var moduleItemData = context.getData().getModuleItem().getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM);
+        if (moduleItemData != null) newCap.charge(moduleItemData.getCharge(), newCap.getTier(), true, false);
+    }
+
+    @Override
     public @Nullable IElectricItem createCapabilityForStack(ModuleContext context, ItemStack stack) {
         var batteryItem = context.getData().getModuleItem().getItem();
         if (!(batteryItem instanceof IComponentItem componentItem)) return null;

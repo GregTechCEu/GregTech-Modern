@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.module;
 
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.ThermalFluidStats;
@@ -19,6 +20,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +36,12 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
     @Override
     public ItemCapability<IFluidHandlerItem, @Nullable Void> getCapability() {
         return Capabilities.FluidHandler.ITEM;
+    }
+
+    @Override
+    public void applyInitialCapabilityData(IFluidHandlerItem newCap, ModuleContext context) {
+        var moduleItemData = context.getData().getModuleItem().getCapability(Capabilities.FluidHandler.ITEM);
+        if (moduleItemData != null) newCap.fill(moduleItemData.getFluidInTank(0), IFluidHandler.FluidAction.EXECUTE);
     }
 
     @Override
@@ -62,12 +70,13 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
     public Component getInfo() {
         return Component.translatable(getDescriptionLanguageKey());
     }
+
     @Override
     public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
         tooltips.add(Component.translatable(getLanguageKey(),
-                moduleContext.getModuleItem().getHoverName()));
+                moduleContext.getData().getModuleItem().getHoverName()));
         IFluidHandlerItem fluidHandler = moduleContext.getAppliedTo().getCapability(Capabilities.FluidHandler.ITEM);
         if (fluidHandler != null) {
             FluidStack fluid = fluidHandler.getFluidInTank(0);
