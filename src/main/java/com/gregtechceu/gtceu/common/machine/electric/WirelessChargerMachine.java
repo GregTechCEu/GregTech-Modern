@@ -105,10 +105,12 @@ public class WirelessChargerMachine extends TieredEnergyMachine {
                 }
             });
         }
-        var inventory = player.getInventory();
-        for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
-            chargeItem(inventory.getItem(slot), chargeAmount);
-        }
+        // charge all slots including armor
+        player.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(inventory -> {
+            for (int slot = 0; slot < inventory.getSlots(); slot++) {
+                chargeItem(inventory.getStackInSlot(slot), chargeAmount);
+            }
+        });
     }
 
     private void chargeItem(ItemStack stack, long chargeAmount) {
