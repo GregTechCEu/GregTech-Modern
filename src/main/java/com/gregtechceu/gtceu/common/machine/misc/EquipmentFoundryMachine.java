@@ -157,7 +157,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
             if (modularItem == null) return;
             for (int i = 0; i < MAX_MODIFIER_SLOTS; i++) {
                 var data = modularItem.getModuleContextForSlot(i);
-                moduleSlots.setStackInSlot(i, data == null ? ItemStack.EMPTY : data.getData().getModuleItem());
+                moduleSlots.setStackInSlotNoCallback(i, data == null ? ItemStack.EMPTY : data.getData().getModuleItem());
             }
         }
     }
@@ -185,8 +185,6 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
                 recipe.value().applyToItem(equipmentItem, newModule, slot);
             }
         }
-
-        moduleSlots.getStackInSlot(slot);
     }
 
     @Override
