@@ -140,7 +140,8 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
                 this.HUD.newString(result);
             }
             if (data.contains("hover")) {
-                Component status = (data.getBoolean("hover") ? Component.translatable("hud.gtceu.armor.status.enabled") :
+                Component status = (data.getBoolean("hover") ?
+                        Component.translatable("hud.gtceu.armor.status.enabled") :
                         Component.translatable("hud.gtceu.armor.status.disabled"));
                 Component result = Component.translatable("hud.gtceu.armor.hover_mode", status);
                 this.HUD.newString(result);

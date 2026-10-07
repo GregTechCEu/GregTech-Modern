@@ -12,10 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-
-import java.util.List;
 
 public class CreativeFlightModule extends ItemModule implements ITieredItemModule {
 
@@ -66,10 +62,8 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
-                                TooltipFlag isAdvanced) {
-        super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
-        tooltips.add(Component.translatable(getLanguageKey()).withStyle(ChatFormatting.LIGHT_PURPLE));
+    public Component getDisplayName(ModuleContext moduleContext) {
+        return Component.translatable(getLanguageKey()).withStyle(ChatFormatting.LIGHT_PURPLE);
     }
 
     @Override

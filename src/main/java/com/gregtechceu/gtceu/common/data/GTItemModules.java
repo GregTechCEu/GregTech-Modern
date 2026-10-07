@@ -53,8 +53,8 @@ public class GTItemModules {
     }
 
     public static <T extends ItemModule & ITieredItemModule> ItemModule[] registerTiered(ResourceLocation id,
-                                                    BiFunction<ResourceLocation, Integer, T> constructor,
-                                                    int... tiers) {
+                                                                                         BiFunction<ResourceLocation, Integer, T> constructor,
+                                                                                         int... tiers) {
         if (tiers.length == 0) tiers = GTValues.tiersBetween(GTValues.LV, GTValues.OpV);
 
         ItemModule[] result = new ItemModule[GTValues.TIER_COUNT];

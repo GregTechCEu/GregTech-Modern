@@ -71,13 +71,6 @@ public class ModularItemStack implements IModularItem {
     }
 
     @Override
-    public void detach(ModuleContext data) {
-        for (var entry : getData().moduleMap().int2ObjectEntrySet()) {
-            if (entry.getValue() == data.getData()) detach(entry.getIntKey());
-        }
-    }
-
-    @Override
     public void detach(int slot) {
         var current = getData().getModuleDataForSlot(slot);
         if (current == null) return;

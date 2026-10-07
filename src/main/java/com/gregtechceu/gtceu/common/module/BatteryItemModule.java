@@ -20,16 +20,13 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -47,8 +44,10 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
 
     @Override
     public void applyInitialCapabilityData(IElectricItem newCap, ModuleContext context) {
-        var moduleItemData = context.getData().getModuleItem().getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve();
-        moduleItemData.ifPresent(iElectricItem -> newCap.charge(iElectricItem.getCharge(), newCap.getTier(), true, false));
+        var moduleItemData = context.getData().getModuleItem().getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM)
+                .resolve();
+        moduleItemData
+                .ifPresent(iElectricItem -> newCap.charge(iElectricItem.getCharge(), newCap.getTier(), true, false));
     }
 
     @Override
@@ -91,7 +90,6 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
         if (electricItem != null)
             electricItem.inventoryTick(moduleContext.getAppliedTo(), player.level(), player, 0, false);
     }
-
 
     @Override
     public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,

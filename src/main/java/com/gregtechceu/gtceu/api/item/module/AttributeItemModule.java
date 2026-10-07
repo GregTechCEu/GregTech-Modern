@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.item.module;
 
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -18,11 +17,9 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 public abstract class AttributeItemModule extends ItemModule {
@@ -47,9 +44,7 @@ public abstract class AttributeItemModule extends ItemModule {
     }
 
     private void attachAttribute(ModuleContext moduleContext) {
-        var data = moduleContext.getData(AttributeModuleData.class);
-
-        if (data.getModifierUUID() != null) return;
+        if (attributeAttached(moduleContext)) return;
 
         EquipmentSlot slot = LivingEntity.getEquipmentSlotForItem(moduleContext.getAppliedTo());
 
@@ -57,19 +52,24 @@ public abstract class AttributeItemModule extends ItemModule {
                 getAttributeModifier(moduleContext));
 
         moduleContext.getAppliedTo().addAttributeModifier(getAttribute(moduleContext), attributeModifier, slot);
-
-        moduleContext.setData(moduleContext.getData(AttributeModuleData.class));
-        moduleContext.setData(data.withModifierUUID(attributeModifier.getId()));
     }
 
     protected boolean attributeAttached(ModuleContext moduleContext) {
-        return moduleContext.getData(AttributeModuleData.class).modifierUUID != null;
+        ListTag listTag = moduleContext.getAppliedTo().getOrCreateTag().getList("AttributeModifiers",
+                Tag.TAG_COMPOUND);
+        for (Tag tag : listTag) {
+            if (tag instanceof CompoundTag compoundTag) {
+                AttributeModifier attributeModifier = AttributeModifier.load(compoundTag);
+                if (attributeModifier != null &&
+                        attributeModifier.getId().equals(getAttributeModifier(moduleContext).getId()))
+                    return true;
+            }
+        }
+        return false;
     }
 
     private void detachAttribute(ModuleContext moduleContext) {
-        var data = moduleContext.getData(AttributeModuleData.class);
-
-        UUID uuid = data.getModifierUUID();
+        UUID uuid = getAttributeModifier(moduleContext).getId();
         ListTag listTag = moduleContext.getAppliedTo().getOrCreateTag().getList("AttributeModifiers",
                 Tag.TAG_COMPOUND);
         Iterator<Tag> it = listTag.iterator();
@@ -77,10 +77,11 @@ public abstract class AttributeItemModule extends ItemModule {
             Tag tag = it.next();
             if (tag instanceof CompoundTag compoundTag) {
                 AttributeModifier attributeModifier = AttributeModifier.load(compoundTag);
-                if (attributeModifier != null && attributeModifier.getId().equals(uuid)) it.remove();
+                if (attributeModifier != null && attributeModifier.getId().equals(uuid)) {
+                    it.remove();
+                } ;
             }
         }
-        moduleContext.setData(data.withModifierUUID(null));
     }
 
     protected double getNeutralModifier(ModuleContext moduleContext) {
@@ -181,72 +182,49 @@ public abstract class AttributeItemModule extends ItemModule {
     public static class AttributeModuleData extends ModuleData {
 
         // spotless:off
-        public static final Codec<AttributeModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(instance.group(
-                UUIDUtil.CODEC.optionalFieldOf("modifier_uuid").forGetter(AttributeModuleData::getModifierUUIDOptional),
+        public static final Codec<AttributeModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(
                 Codec.DOUBLE.fieldOf("modifier_amount").forGetter(AttributeModuleData::getModifierAmount)
-        )).apply(instance, AttributeModuleData::new));
+        ).apply(instance, AttributeModuleData::new));
         //spotless:on
-
-        @Getter
-        private final @Nullable UUID modifierUUID;
 
         @Getter
         private final double modifierAmount;
 
-        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         public AttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
-                                   Optional<UUID> modifierUUID, double modifierAmount) {
+                                   double modifierAmount) {
             super(slot, module, moduleItem, enabled);
-            this.modifierUUID = modifierUUID.orElse(null);
-            this.modifierAmount = modifierAmount;
-        }
-
-        public AttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
-                                   @Nullable UUID modifierUUID, double modifierAmount) {
-            super(slot, module, moduleItem, enabled);
-            this.modifierUUID = modifierUUID;
             this.modifierAmount = modifierAmount;
         }
 
         public AttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, double modifierAmount) {
             super(slot, module, moduleItem, true);
-            this.modifierUUID = null;
             this.modifierAmount = modifierAmount;
         }
 
-        public Optional<UUID> getModifierUUIDOptional() {
-            return Optional.ofNullable(modifierUUID);
-        }
-
-        public AttributeModuleData withModifierUUID(@Nullable UUID modifierUUID) {
-            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierUUID, modifierAmount);
-        }
-
         public AttributeModuleData withModifierAmount(double modifierAmount) {
-            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierUUID, modifierAmount);
+            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount);
         }
 
         @Override
         public ModuleData withEnabled(boolean enabled) {
-            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierUUID, modifierAmount);
+            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount);
         }
 
         @Override
         public ModuleData copy() {
-            return new AttributeModuleData(slot, module, moduleItem.copy(), enabled, modifierUUID,
+            return new AttributeModuleData(slot, module, moduleItem.copy(), enabled,
                     modifierAmount);
         }
 
         @Override
         public boolean equals(Object obj) {
             if (!(obj instanceof AttributeModuleData other)) return false;
-            return super.equals(obj) && modifierAmount == other.modifierAmount &&
-                    Objects.equals(modifierUUID, other.modifierUUID);
+            return super.equals(obj) && modifierAmount == other.modifierAmount;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(slot, module, moduleItem, enabled, modifierUUID, modifierAmount);
+            return Objects.hash(slot, module, moduleItem, enabled, modifierAmount);
         }
     }
 }

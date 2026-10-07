@@ -1,14 +1,12 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.ThermalFluidStats;
 import com.gregtechceu.gtceu.api.item.module.CapabilityProviderItemModule;
-import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
-
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -19,8 +17,8 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -38,7 +36,8 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
 
     @Override
     public void applyInitialCapabilityData(IFluidHandlerItem newCap, ModuleContext context) {
-        var moduleItemData = context.getData().getModuleItem().getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve();
+        var moduleItemData = context.getData().getModuleItem().getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM)
+                .resolve();
         moduleItemData.ifPresent(data -> newCap.fill(data.getFluidInTank(0), IFluidHandler.FluidAction.EXECUTE));
     }
 
@@ -46,7 +45,7 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
     public @Nullable IFluidHandlerItem createCapabilityForStack(ModuleContext context, ItemStack stack) {
         if (!(stack.getItem() instanceof IComponentItem componentItem)) return null;
         ThermalFluidStats thermalStats = null;
-        for (var component: componentItem.getComponents()) {
+        for (var component : componentItem.getComponents()) {
             if (component instanceof ThermalFluidStats stats) {
                 thermalStats = stats;
                 break;
@@ -68,13 +67,15 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
     public Component getInfo() {
         return Component.translatable(getDescriptionLanguageKey());
     }
+
     @Override
     public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
         tooltips.add(Component.translatable(getLanguageKey(),
                 moduleContext.getData().getModuleItem().getHoverName()));
-        IFluidHandlerItem fluidHandler = moduleContext.getAppliedTo().getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
+        IFluidHandlerItem fluidHandler = moduleContext.getAppliedTo()
+                .getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
         if (fluidHandler != null) {
             FluidStack fluid = fluidHandler.getFluidInTank(0);
             int capacity = fluidHandler.getTankCapacity(0);

@@ -6,14 +6,11 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.util.List;
 import java.util.Locale;
 
 public abstract class TieredAttributeItemModule extends AttributeItemModule implements ITieredItemModule {
@@ -30,7 +27,6 @@ public abstract class TieredAttributeItemModule extends AttributeItemModule impl
         super(id);
         this.tier = tier;
         this.baseLocation = getId().withPath(p -> p.replaceFirst(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_", ""));
-
     }
 
     @Override
