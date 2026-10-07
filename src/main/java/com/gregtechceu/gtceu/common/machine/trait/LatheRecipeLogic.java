@@ -38,7 +38,8 @@ public class LatheRecipeLogic extends RecipeLogic {
             var type = GTRecipeTypes.LATHE_RECIPES.value();
             for (var category : type.getCategories()) {
                 for (var recipe : List.copyOf(type.getRecipesInCategory(category))) {
-                    // Both viewers may use this hook, don't actually generate recipeDB entries for synth representative recipes.
+                    // Both viewers may use this hook, don't actually generate recipeDB entries for synth representative
+                    // recipes.
                     if (recipe.id.getPath().startsWith("/")) continue;
                     var lubricated = createLubricatedRecipe(recipe);
                     if (lubricated == null) continue;
