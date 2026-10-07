@@ -42,7 +42,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     public final static ItemRecipeCapability CAP = new ItemRecipeCapability();
 
     protected ItemRecipeCapability() {
-        super(GTCEu.id("item"), 0xFFD96106, true, 0, SerializerIngredient.INSTANCE);
+        super(GTCEu.id("item"), "Item", 0xFFD96106, true, 0, SerializerIngredient.INSTANCE);
     }
 
     @Override

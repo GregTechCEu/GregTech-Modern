@@ -26,9 +26,9 @@ public class IntegrationLang {
         provider.add("recipeviewer.gtceu.category.programmed_circuit", "Programmed Circuit Page");
 
         provider.add("recipeviewer.gtceu.category.ore_processing", "Ore Processing Diagram");
-        provider.add("recipeviewer.gtceu.category.ore_veins", "Ore Vein Diagram");
-        provider.add("recipeviewer.gtceu.category.bedrock_fluids", "Bedrock Fluid Diagram");
-        provider.add("recipeviewer.gtceu.category.bedrock_ores", "Bedrock Ore Diagram");
+        provider.add("recipeviewer.gtceu.category.ore_veins", "Ore Veins");
+        provider.add("recipeviewer.gtceu.category.bedrock_fluids", "Bedrock Fluids");
+        provider.add("recipeviewer.gtceu.category.bedrock_ores", "Bedrock Ores");
 
         // Ore Veins
 
@@ -77,7 +77,6 @@ public class IntegrationLang {
 
     /** Jade */
     private static void initJadeLang(GTLangProvider provider) {
-        provider.add("integration.gtceu.top.working_disabled", "Working Disabled");
         provider.add("integration.gtceu.jade.energy_consumption", "Using");
         provider.add("integration.gtceu.jade.energy_production", "Producing");
 
@@ -128,7 +127,6 @@ public class IntegrationLang {
         provider.add("integration.gtceu.jade.cable.voltage", "Voltage: ");
         provider.add("integration.gtceu.jade.cable.amperage", "Amperage: ");
         provider.add("integration.gtceu.jade.cable.overloaded", "Cable Overloaded!");
-        provider.add("integration.gtceu.top.cable_overloaded", "§4OVERHEATING: %s%%§r");
         // Machine Mode Provider
         provider.add("integration.gtceu.jade.machine_mode", "Machine Mode: ");
 
@@ -146,18 +144,8 @@ public class IntegrationLang {
         provider.add("integration.gtceu.jade.progress_tick", "%s / %s t");
 
         provider.add("integration.gtceu.jade.cleaned_this_second", "Cleaned hazard: %s/s");
-        provider.add("integration.gtceu.jade.fluid_use", "%s mB/t");
-        provider.add("integration.gtceu.jade.amperage_use", "%s A");
-        provider.add("integration.gtceu.jade.at", " @ ");
         provider.add("integration.gtceu.jade.remaining_charge_time", "Until charged: %s");
         provider.add("integration.gtceu.jade.remaining_discharge_time", "Until empty: %s");
-        provider.add("integration.gtceu.jade.changes_eu_sec", "%s EU/s");
-        provider.add("integration.gtceu.jade.changes_eu_tick", "%s EU/t");
-        provider.add("integration.gtceu.jade.seconds", "%s seconds");
-        provider.add("integration.gtceu.jade.minutes", "%s minutes");
-        provider.add("integration.gtceu.jade.hours", "%s hours");
-        provider.add("integration.gtceu.jade.days", "%s days");
-        provider.add("integration.gtceu.jade.years", "%s years");
 
         provider.add("integration.gtceu.jade.ldp_endpoint.is_formed", "Pipeline Formed");
         provider.add("integration.gtceu.jade.ldp_endpoint.not_formed", "Pipeline Incomplete");
@@ -165,15 +153,6 @@ public class IntegrationLang {
         provider.add("integration.gtceu.jade.ldp_endpoint.output_direction", "Output Direction: %s");
 
         provider.add("integration.gtceu.jade.generator.output_too_small", "Energy Output too small!");
-
-        provider.add("integration.gtceu.top.primitive_pump_production", "Production: %s mB/s");
-        provider.add("integration.gtceu.top.filter.label", "Filter:");
-        provider.add("integration.gtceu.top.link_cover.color", "Color:");
-        provider.add("integration.gtceu.top.mode.export", "Exporting");
-        provider.add("integration.gtceu.top.mode.import", "Importing");
-        provider.add("integration.gtceu.top.unit.items", "Items");
-        provider.add("integration.gtceu.top.unit.fluid_milibuckets", "L");
-        provider.add("integration.gtceu.top.unit.fluid_buckets", "kL");
 
         // Plugin Names
         provider.add("config.jade.plugin_gtceu.controllable_provider", "[GTCEu] Controllable");

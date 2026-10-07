@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.common.mui.GTByteBufAdapters;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -34,6 +35,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
@@ -694,8 +696,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
             // Coolant Required
             if (getMaxCoolantDemand() > 0) {
-                data = Component.translatable("common.gtceu.millibuckets", getMaxCoolantDemand())
-                        .withStyle(ChatFormatting.YELLOW).append(" ");
+                data = FormattingUtil.prepend("common.gtceu.millibucket", getMaxCoolantDemand())
+                        .withStyle(ChatFormatting.YELLOW).append(CommonComponents.SPACE);
                 Component coolantName = Component.translatable("gtceu.multiblock.hpca.info_coolant_name")
                         .withStyle(ChatFormatting.YELLOW);
                 data.append(coolantName);

@@ -24,6 +24,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -399,19 +400,19 @@ public class GTUtil {
     }
 
     public static String getStringRemainTime(long time, long threshold) {
-        String s = Component.translatable("integration.gtceu.jade.seconds", time % 60).getString();
+        String s = Component.translatable("common.gtceu.seconds", time % 60).getString();
         time /= 60;
         if (time > 0) {
-            s = Component.translatable("integration.gtceu.jade.minutes", time % 60).getString() + " " + s;
+            s = Component.translatable("gui.minutes", time % 60).getString() + " " + s;
             time /= 60;
             if (time > 0) {
-                s = Component.translatable("integration.gtceu.jade.hours", time % 60).getString() + " " + s;
+                s = Component.translatable("gui.hours", time % 60).getString() + " " + s;
                 time /= 60;
                 if (time > 0) {
-                    s = Component.translatable("integration.gtceu.jade.days", time % 24).getString() + " " + s;
+                    s = Component.translatable("gui.days", time % 24).getString() + " " + s;
                     time /= 24;
                     if (time > 0) {
-                        s = Component.translatable("integration.gtceu.jade.years", formatLongNumber(time, threshold))
+                        s = Component.translatable("common.gtceu.years", formatLongNumber(time, threshold))
                                 .getString() +
                                 " " + s;
                     }
@@ -577,13 +578,17 @@ public class GTUtil {
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD)) return;
 
         if (GTUtil.isShiftDown()) {
-            tooltipComponents.add(Component.translatable("medical_condition.gtceu.tooltip.description_shift"));
+            tooltipComponents.add(Component.translatable("medical_condition.gtceu.tooltip.description").append(":")
+                    .withStyle(ChatFormatting.BOLD, ChatFormatting.RED));
             tooltipComponents.add(material.getProperty(HAZARD).condition.getTranslatableName());
             tooltipComponents.add(Component.translatable("hazard_trigger.gtceu"));
             tooltipComponents.add(material.getProperty(HAZARD).hazardTrigger.getTranslatableName());
             return;
         }
-        tooltipComponents.add(Component.translatable("medical_condition.gtceu.tooltip.description"));
+        tooltipComponents.add(
+                Component.translatable("medical_condition.gtceu.tooltip.description").append(CommonComponents.SPACE)
+                        .withStyle(ChatFormatting.BOLD, ChatFormatting.RED)
+                        .append(Component.translatable("common.gtceu.tooltip.hold_shift")));
     }
 
     public static CompoundTag saveItemStack(ItemStack itemStack, CompoundTag compoundTag) {

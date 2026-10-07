@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeAdditionHandler;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.data.lang.LangGenerationHandler;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -42,6 +43,11 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             RecipeCapability.COMPARATOR);
     public final Object2IntSortedMap<RecipeCapability<?>> maxOutputs = new Object2IntAVLTreeMap<>(
             RecipeCapability.COMPARATOR);
+
+    @Getter
+    @Setter
+    private String langValue;
+
     @Setter
     private GTRecipeBuilder recipeBuilder;
     @Setter
@@ -102,6 +108,11 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         }
         this.proxyRecipes = map;
         this.uiLayout = new GTRecipeTypeUILayout.Builder(this).build();
+
+        langValue = FormattingUtil.toEnglishName(registryName.getPath());
+
+        LangGenerationHandler.forNamespace(registryName.getNamespace())
+                .add(v -> v.add(registryName.toLanguageKey("recipe_type"), langValue));
     }
 
     public GTRecipeType setMaxIOSize(int maxItemInputs, int maxItemOutputs, int maxFluidInputs, int maxFluidOutputs) {
