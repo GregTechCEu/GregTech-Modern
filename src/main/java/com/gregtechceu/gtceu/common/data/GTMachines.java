@@ -32,6 +32,7 @@ import com.gregtechceu.gtceu.common.machine.steam.SteamMinerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolarBoiler;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.*;
+import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
@@ -293,7 +294,7 @@ public class GTMachines {
     public static final MachineDefinition[] FORMING_PRESS = new SimpleMachineBuilder(REGISTRATE, "forming_press",
             GTRecipeTypes.FORMING_PRESS_RECIPES).register();
     public static final MachineDefinition[] LATHE = new SimpleMachineBuilder(REGISTRATE, "lathe",
-            GTRecipeTypes.LATHE_RECIPES)
+            GTRecipeTypes.LATHE_RECIPES).recipeLogic(LatheRecipeLogic::new)
             .register();
     public static final MachineDefinition[] SCANNER = new SimpleMachineBuilder(REGISTRATE, "scanner",
             GTRecipeTypes.SCANNER_RECIPES)

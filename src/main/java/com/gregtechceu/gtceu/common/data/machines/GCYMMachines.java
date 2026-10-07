@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.machine.GTMachineInstanceFactories;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.DistillationTowerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
+import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -568,7 +569,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_CUTTER = REGISTRATE
-            .multiblock("large_cutter", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_cutter", info -> new WorkableElectricMultiblockMachine(info, new LatheRecipeLogic()))
             .langValue("Large Cutting Saw")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
@@ -742,7 +743,7 @@ public class GCYMMachines {
                     GTCEu.id("block/multiblock/gcym/large_wiremill"))
             .register();
 
-    public static final MachineEntry<MultiblockMachineDefinition> LARGE_WELDER = REGISTRATE
+    public static final MultiblockMachineDefinition LARGE_WELDER = REGISTRATE
             .multiblock("large_welder", WorkableElectricMultiblockMachine::new)
             .langValue("Large Welder")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
@@ -771,7 +772,7 @@ public class GCYMMachines {
                     GTCEu.id("block/multiblock/gcym/large_welder"))
             .register();
 
-    public static final MachineEntry<MultiblockMachineDefinition> LARGE_SPOOLER = REGISTRATE
+    public static final MultiblockMachineDefinition LARGE_SPOOLER = REGISTRATE
             .multiblock("large_spooler", WorkableElectricMultiblockMachine::new)
             .langValue("Large Spooler")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))

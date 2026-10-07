@@ -9,11 +9,12 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -62,34 +63,12 @@ public final class PartsRecipeHandler {
 
         ItemStack boltStack = ChemicalHelper.get(bolt, magMaterial);
 
-        ItemStack ingotStack = ChemicalHelper.get(ingot, material);
-
         CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_screw_to_bolt")
                 .inputItems(screw, material)
                 .outputItems(boltStack)
                 .duration(20)
                 .EUt(24)
                 .save(provider);
-
-        if (!boltStack.isEmpty() && !ingotStack.isEmpty()) {
-            EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_bolt")
-                    .inputItems(ingot, material)
-                    .notConsumable(GTItems.SHAPE_EXTRUDER_BOLT)
-                    .outputItems(boltStack.copyWithCount(8))
-                    .duration(15)
-                    .EUt(VA[MV])
-                    .save(provider);
-
-            if (material.hasFlag(NO_SMASHING)) {
-                EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_bolt")
-                        .inputItems(dust, material)
-                        .notConsumable(GTItems.SHAPE_EXTRUDER_BOLT)
-                        .outputItems(boltStack.copyWithCount(8))
-                        .duration(15)
-                        .EUt(VA[MV])
-                        .save(provider);
-            }
-        }
     }
 
     private static void processScrew(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
@@ -213,9 +192,9 @@ public final class PartsRecipeHandler {
 
         if (!isSmall && material.hasProperty(PropertyKey.INGOT)) {
             int voltageMultiplier = getVoltageMultiplier(material);
-            EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_gear")
+            FORMING_PRESS_RECIPES.recipeBuilder("forming_press_" + material.getName() + "_ingot_to_gear")
                     .inputItems(ingot, material, 4)
-                    .notConsumable(GTItems.SHAPE_EXTRUDER_GEAR)
+                    .notConsumable(GTItems.SHAPE_MOLD_GEAR)
                     .outputItems(stack)
                     .duration((int) material.getMass() * 5)
                     .EUt(8L * voltageMultiplier)
@@ -231,26 +210,12 @@ public final class PartsRecipeHandler {
                     .save(provider);
 
             if (material.hasFlag(NO_SMASHING)) {
-                EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_gear")
+                FORMING_PRESS_RECIPES.recipeBuilder("forming_press_" + material.getName() + "_dust_to_gear")
                         .inputItems(dust, material, 4)
-                        .notConsumable(GTItems.SHAPE_EXTRUDER_GEAR)
+                        .notConsumable(GTItems.SHAPE_MOLD_GEAR)
                         .outputItems(stack)
                         .duration((int) material.getMass() * 5)
                         .EUt(8L * voltageMultiplier)
-                        .save(provider);
-            }
-        }
-
-        if (material.hasFluid()) {
-            FluidStack fluidStack = material.getPropertyOrThrow(PropertyKey.FLUID)
-                    .solidifiesFrom(L * (isSmall ? 1 : 4));
-            if (!fluidStack.isEmpty()) {
-                FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_" + prefix.name)
-                        .notConsumable(isSmall ? GTItems.SHAPE_MOLD_GEAR_SMALL : GTItems.SHAPE_MOLD_GEAR)
-                        .inputFluids(fluidStack)
-                        .outputItems(stack)
-                        .duration(isSmall ? 20 : 100)
-                        .EUt(VA[ULV])
                         .save(provider);
             }
         }
@@ -262,9 +227,9 @@ public final class PartsRecipeHandler {
                         " R ", "hPx", " R ", 'R', new MaterialEntry(rod, material), 'P',
                         new MaterialEntry(plate, material));
 
-                EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_small_gear")
+                FORMING_PRESS_RECIPES.recipeBuilder("forming_press_" + material.getName() + "_ingot_to_small_gear")
                         .inputItems(ingot, material)
-                        .notConsumable(GTItems.SHAPE_EXTRUDER_GEAR_SMALL)
+                        .notConsumable(GTItems.SHAPE_MOLD_GEAR_SMALL)
                         .outputItems(stack)
                         .duration((int) material.getMass())
                         .EUt(material.getBlastTemperature() >= 2800 ? 256 : 64)
@@ -279,9 +244,9 @@ public final class PartsRecipeHandler {
                         .save(provider);
 
                 if (material.hasFlag(NO_SMASHING)) {
-                    EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_dust_to_small_gear")
+                    FORMING_PRESS_RECIPES.recipeBuilder("forming_press_" + material.getName() + "_dust_to_small_gear")
                             .inputItems(dust, material)
-                            .notConsumable(GTItems.SHAPE_EXTRUDER_GEAR_SMALL)
+                            .notConsumable(GTItems.SHAPE_MOLD_GEAR_SMALL)
                             .outputItems(stack)
                             .duration((int) material.getMass())
                             .EUt(material.getBlastTemperature() >= 2800 ? 256 : 64)
@@ -497,13 +462,11 @@ public final class PartsRecipeHandler {
                     material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
             if (materialOutput == null) materialOutput = material;
 
-            if (ConfigHolder.INSTANCE.recipes.harderRods) {
-                builder.outputItems(rod, materialOutput);
-                builder.outputItems(dustSmall, materialOutput, 2);
-            } else {
-                builder.outputItems(rod, materialOutput, 2);
-            }
-            builder.save(provider);
+            builder.addData(LatheRecipeLogic.LUBRICATED_ROD,
+                    BuiltInRegistries.ITEM.getKey(ChemicalHelper.get(rod, materialOutput).getItem()).toString())
+                    .outputItems(rod, materialOutput)
+                    .outputItems(dustSmall, materialOutput, 2)
+                    .save(provider);
         }
 
         if (material.hasFlag(GENERATE_BOLT_SCREW)) {
