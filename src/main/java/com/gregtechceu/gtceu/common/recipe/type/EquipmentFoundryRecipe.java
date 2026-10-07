@@ -65,6 +65,9 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
             if (ingredient == null || module == null) continue;
             entries.add(new TierEntry(ingredient, module));
         }
+        if (entries.isEmpty()) {
+            throw new IllegalArgumentException("Equipment foundry recipe must have at least one entry");
+        }
 
         this.id = id;
         this.equipment = equipment;

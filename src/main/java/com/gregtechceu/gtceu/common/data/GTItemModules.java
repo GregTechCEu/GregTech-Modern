@@ -52,22 +52,20 @@ public class GTItemModules {
         return module;
     }
 
-    public static TieredItemModule[] registerTiered(ResourceLocation id,
-                                                    BiFunction<ResourceLocation, Integer, TieredItemModule> constructor,
+    public static <T extends ItemModule & ITieredItemModule> ItemModule[] registerTiered(ResourceLocation id,
+                                                    BiFunction<ResourceLocation, Integer, T> constructor,
                                                     int... tiers) {
-        TieredItemModule[] result = new TieredItemModule[GTValues.TIER_COUNT];
+        if (tiers.length == 0) tiers = GTValues.tiersBetween(GTValues.LV, GTValues.OpV);
+
+        ItemModule[] result = new ItemModule[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             ResourceLocation resourceLocation = id.withPrefix(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_");
-            result[tier] = constructor.apply(resourceLocation, tier);
-            result[tier].setOtherTierModules(result);
+            var module = constructor.apply(resourceLocation, tier);
+            module.setOtherTierModules(result);
+            result[tier] = module;
             GTRegistries.ITEM_MODULES.register(resourceLocation, result[tier]);
         }
         return result;
-    }
-
-    public static TieredItemModule[] registerTiered(ResourceLocation id,
-                                                    BiFunction<ResourceLocation, Integer, TieredItemModule> constructor) {
-        return registerTiered(id, constructor, GTValues.tiersBetween(GTValues.LV, GTValues.OpV));
     }
 
     public static void init() {}
