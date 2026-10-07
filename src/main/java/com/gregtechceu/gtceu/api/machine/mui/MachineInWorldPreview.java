@@ -51,12 +51,11 @@ public class MachineInWorldPreview extends ModularPanel<MachineInWorldPreview> {
 
             @Override
             public BlockPos getOrigin() {
-                return BlockPos.ZERO;
+                return machine.getBlockPos().below(1).east(1);
             }
         };
 
-
-        this.schemaRenderer = new SchemaRenderer(schema);
+        this.schemaRenderer = schema.createRenderer();
 
         this.schemaWidget = new SchemaWidget(schemaRenderer).size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
                 .background(GuiTextures.DISPLAY);
