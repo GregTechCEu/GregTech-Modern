@@ -150,6 +150,14 @@ public class GCYMRecipes {
                 "MKM", 'Z', CustomTags.IV_CIRCUITS, 'W', WIREMILL[IV].asStack(), 'P',
                 new MaterialEntry(plate, HSLASteel), 'S', new MaterialEntry(spring, HSLASteel), 'M',
                 ELECTRIC_MOTOR_IV.asStack(), 'K', new MaterialEntry(cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_welder", LARGE_WELDER.asStack(), "PZP", "CWC",
+                "MKM", 'Z', CustomTags.IV_CIRCUITS, 'W', WELDER[IV].asStack(), 'P',
+                new MaterialEntry(plate, HSLASteel), 'C', MOLYBDENUM_DISILICIDE_COIL_BLOCK.asStack(), 'M',
+                ELECTRIC_PISTON_IV.asStack(), 'K', new MaterialEntry(cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_spooler", LARGE_SPOOLER.asStack(), "PZP", "SWS",
+                "MKM", 'Z', CustomTags.IV_CIRCUITS, 'W', SPOOLING[IV].asStack(), 'P',
+                new MaterialEntry(plate, HSLASteel), 'S', new MaterialEntry(spring, HSLASteel), 'M',
+                ELECTRIC_MOTOR_IV.asStack(), 'K', new MaterialEntry(cableGtSingle, Platinum));
     }
 
     private static void registerPartsRecipes(Consumer<FinishedRecipe> provider) {
