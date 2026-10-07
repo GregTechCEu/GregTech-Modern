@@ -83,19 +83,19 @@ public class MachineUIPanelBuilder {
 
         if (addDefaultConfigurators) {
             if (machine instanceof WorkableMultiblockMachine workableMultiblockMachine) {
-                attachLeft.child(GTMuiWidgets.createPowerButton(workableMultiblockMachine));
+                attachRight.child(GTMuiWidgets.createPowerButton(workableMultiblockMachine));
 
                 if (machine.getDefinition().getRecipeModifier() instanceof RecipeModifierList rml &&
                         Arrays.stream(rml.getModifiers()).anyMatch(m -> m == GTRecipeModifiers.BATCH_MODE) &&
                         machine instanceof WorkableElectricMultiblockMachine workableElectric) {
-                    attachLeft.child(GTMuiWidgets.createBatchModeButton(workableElectric));
+                    attachRight.child(GTMuiWidgets.createBatchModeButton(workableElectric));
                 }
 
-                attachLeft.child(GTMuiWidgets.createVoidingButton(workableMultiblockMachine));
+                attachRight.child(GTMuiWidgets.createVoidingButton(workableMultiblockMachine));
 
                 if (machine.getDefinition().getRecipeTypes().length > 1 &&
                         machine instanceof WorkableElectricMultiblockMachine workableMachine) {
-                    attachLeft.child(GTMuiWidgets.createRecipeTypeButton(workableMachine, syncManager));
+                    attachRight.child(GTMuiWidgets.createRecipeTypeButton(workableMachine, syncManager));
                 }
 
             } else {
