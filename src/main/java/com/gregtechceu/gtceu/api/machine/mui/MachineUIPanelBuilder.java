@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.mui;
 
+import brachy.modularui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
@@ -74,8 +75,8 @@ public class MachineUIPanelBuilder {
         this.machine = machine;
     }
 
-    public MachineUIPanel build(PanelSyncManager syncManager, UISettings settings) {
-        var panel = new MachineUIPanel(machine, settings, attachInventory, addTitleBar, drawGTLogo, gtLogoTexture);
+    public MachineUIPanel build(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panel = new MachineUIPanel(machine, data, settings, attachInventory, addTitleBar, drawGTLogo, gtLogoTexture);
 
         var attachLeft = panel.getLeftConfiguratorPanel();
         var attachRight = panel.getRightConfiguratorPanel();
