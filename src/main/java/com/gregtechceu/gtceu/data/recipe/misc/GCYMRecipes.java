@@ -23,8 +23,7 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.CASING_TEMPERED_GLASS;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MIXER_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.machines.GCYMMachines.*;
 import static com.gregtechceu.gtceu.data.tags.GTTags.*;
 
@@ -150,6 +149,14 @@ public class GCYMRecipes {
                 "MKM", 'Z', Items.CIRCUITS_IV, 'W', WIREMILL[IV].asStack(), 'P',
                 new MaterialEntry(plate, HSLASteel), 'S', new MaterialEntry(spring, HSLASteel), 'M',
                 ELECTRIC_MOTOR_IV.asStack(), 'K', new MaterialEntry(cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_welder", LARGE_WELDER.asStack(), "PZP", "CWC",
+                "MKM", 'Z', CustomTags.IV_CIRCUITS, 'W', WELDER[IV].asStack(), 'P',
+                new MaterialEntry(plate, HSLASteel), 'C', MOLYBDENUM_DISILICIDE_COIL_BLOCK.asStack(), 'M',
+                ELECTRIC_PISTON_IV.asStack(), 'K', new MaterialEntry(cableGtSingle, Platinum));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "large_spooler", LARGE_SPOOLER.asStack(), "PZP", "SWS",
+                "MKM", 'Z', CustomTags.IV_CIRCUITS, 'W', SPOOLING[IV].asStack(), 'P',
+                new MaterialEntry(plate, HSLASteel), 'S', new MaterialEntry(spring, HSLASteel), 'M',
+                ELECTRIC_MOTOR_IV.asStack(), 'K', new MaterialEntry(cableGtSingle, Platinum));
     }
 
     private static void registerPartsRecipes(Consumer<FinishedRecipe> provider) {
@@ -213,7 +220,7 @@ public class GCYMRecipes {
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("mds_coil_block")
+        SPOOLING_RECIPES.recipeBuilder("mds_coil_block")
                 .inputItems(ring, MolybdenumDisilicide, 32)
                 .inputItems(foil, Graphene, 16)
                 .inputFluids(HSLASteel, L)

@@ -1841,7 +1841,6 @@
   "config.gtceu.option.harderBrickRecipes": "harderBrickRecipes",
   "config.gtceu.option.harderCharcoalRecipe": "harderCharcoalRecipe",
   "config.gtceu.option.harderCircuitRecipes": "harderCircuitRecipes",
-  "config.gtceu.option.harderRods": "harderRods",
   "config.gtceu.option.harmlessActiveTransformers": "harmlessActiveTransformers",
   "config.gtceu.option.hazardsEnabled": "hazardsEnabled",
   "config.gtceu.option.hideFacadesInRecipeViewer": "hideFacadesInRecipeViewer",
