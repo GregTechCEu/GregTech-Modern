@@ -167,10 +167,10 @@ public class ModularItemTest {
         modular.attach(GTItemModules.CREATIVE_FLIGHT.value(), ItemStack.EMPTY, false);
         attachFullBattery(armor);
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        helper.assertFalse(player.getAbilities().mayfly, "default survival player had ability to fly");
-        player.getInventory().setItem(0, armor);
+        helper.assertFalse(player.mayFly(), "default survival player had ability to fly");
+        player.setItemSlot(EquipmentSlot.CHEST, armor);
         player.tick();
-        helper.assertTrue(player.getAbilities().mayfly, "player could not fly with creative flight module");
+        helper.assertTrue(player.mayFly(), "player could not fly with creative flight module");
         helper.succeed();
     }
 
