@@ -210,7 +210,7 @@ public class GTRecipeTypes {
             .register();
 
     public static final GTRecipeTypeEntry CENTRIFUGE_RECIPES = REGISTRATE.recipeType("centrifuge", ELECTRIC)
-            .setMaxIOSize(2, 6, 1, 6)
+            .setMaxIOSize(2, 6, 2, 6)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(5))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_EXTRACT)
