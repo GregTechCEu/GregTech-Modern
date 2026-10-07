@@ -117,17 +117,17 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                 if (slot == null) continue;
                 ModuleContext moduleData = modularItem.getModuleContextForSlot(slotI);
                 if (moduleData != null) {
-                    int prevIndex = tooltipComponents.size();
-                    moduleData.getModule().appendHoverText(moduleData, context, tooltipComponents, isAdvanced);
-                    if (tooltipComponents.size() > prevIndex) {
-                        tooltipComponents.set(prevIndex, Component.literal(" - ")
+                    tooltipComponents.add(Component.literal(" - ")
                                 .append(slot.getDisplayName())
                                 .append(Component.literal(": "))
-                                .append(tooltipComponents.get(prevIndex)));
-                        for (int i = prevIndex + 1; i < tooltipComponents.size(); i++) {
-                            tooltipComponents.set(i, Component.literal("    ").append(tooltipComponents.get(i)));
-                        }
-                    }
+                                .append(moduleData.getModule().getDisplayName(moduleData)));
+
+                    List<Component> moduleTooltips = new ArrayList<>();
+                    moduleData.getModule().appendHoverText(moduleData, context, moduleTooltips, isAdvanced);
+
+                    moduleTooltips.stream()
+                            .map(c -> Component.literal("    ").append(c))
+                            .forEach(tooltipComponents::add);
                 } else {
                     tooltipComponents.add(Component.literal(" - ")
                             .append(slot.getDisplayName())

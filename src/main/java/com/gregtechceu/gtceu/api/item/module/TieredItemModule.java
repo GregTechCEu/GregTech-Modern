@@ -16,6 +16,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 
 public abstract class TieredItemModule extends ItemModule implements ITieredItemModule {
 
@@ -25,9 +26,12 @@ public abstract class TieredItemModule extends ItemModule implements ITieredItem
     @Setter(onMethod_ = @ApiStatus.Internal)
     private @Nullable Holder<ItemModule>[] otherTierModules;
 
+    private final ResourceLocation baseLocation;
+
     public TieredItemModule(ResourceLocation id, int tier) {
         super(id);
         this.tier = tier;
+        this.baseLocation = getId().withPath(p -> p.replaceFirst(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_", ""));
     }
 
     @Override
@@ -42,10 +46,18 @@ public abstract class TieredItemModule extends ItemModule implements ITieredItem
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
-                                TooltipFlag isAdvanced) {
-        super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
-        tooltips.add(Component.translatable(getId().toLanguageKey("module"),
-                GTValues.VNF[getTier()]));
+    public String getLanguageKey() {
+        return baseLocation.toLanguageKey("module");
+    }
+
+    @Override
+    public String getDescriptionLanguageKey() {
+        return baseLocation.toLanguageKey("module", "description");
+    }
+
+    @Override
+    public Component getDisplayName(ModuleContext moduleContext) {
+        return Component.translatable(getLanguageKey(),
+                GTValues.VNF[getTier()]);
     }
 }
