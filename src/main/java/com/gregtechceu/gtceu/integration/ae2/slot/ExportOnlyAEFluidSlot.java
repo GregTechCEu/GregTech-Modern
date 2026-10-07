@@ -57,6 +57,13 @@ public class ExportOnlyAEFluidSlot extends ExportOnlyAESlot implements IFluidHan
         return FluidStack.EMPTY;
     }
 
+    public FluidStack getFluidConfig() {
+        if (this.config != null && this.config.what() instanceof AEFluidKey fluidKey) {
+            return fluidKey.toStack(GTMath.saturatedCast(this.config.amount()));
+        }
+        return FluidStack.EMPTY;
+    }
+
     @Override
     public boolean isFluidValid(FluidStack stack) {
         return false;

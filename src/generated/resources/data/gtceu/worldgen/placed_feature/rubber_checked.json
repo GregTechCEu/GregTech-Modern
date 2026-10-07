@@ -2,7 +2,7 @@
   "feature": "gtceu:rubber_tree",
   "placement": [
     {
-      "type": "gtceu:biome_placement",
+      "type": "gtceu:biome_dependent",
       "modifiers": [
         {
           "added_weight": 50,

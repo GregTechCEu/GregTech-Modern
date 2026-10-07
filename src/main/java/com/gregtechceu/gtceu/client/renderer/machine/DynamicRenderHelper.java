@@ -83,6 +83,10 @@ public class DynamicRenderHelper {
         return new FusionRingRender();
     }
 
+    public static DynamicRender<?, ?> createAssemblyLineRender() {
+        return new AssemblyLineRender();
+    }
+
     public static DynamicRender<?, ?> createQuantumChestRender() {
         return new QuantumChestItemRender();
     }

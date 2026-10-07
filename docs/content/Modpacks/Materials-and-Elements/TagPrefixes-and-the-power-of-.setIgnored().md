@@ -56,13 +56,24 @@ You will need to directly pass an `ItemLike` from a Java class for `.setIgnored(
 
 A more illustrative example, using some Applied Energistics 2 items:
 
-```js title="setignored_usage_example.js"
-GTCEuStartupEvents.materialModification(event => { // (1)
-    TagPrefix.gemChipped.setIgnored(GTMaterialRegistry.getMaterial("fluix_crystal")) // (2)
-    TagPrefix.rock.setIgnored(GTMaterialRegistry.getMaterial("sky_stone"), AEBlocks.SKY_STONE_BLOCK) // (3)
-    TagPrefix.ingot.removeIgnored(GTMaterials.Iron) // (4)
-})
-```
+=== "Java"
+    ```java title="CommonEventListeners.java"
+    @SubscribeEvent
+    public static void materialModification(PostMaterialEvent event) {
+        TagPrefix.gemChipped.setIgnored(GTMaterials.get("fluix_crystal"));// (2)
+        TagPrefix.rock.setIgnored(GTMaterials.get("sky_stone"), AEBlocks.SKY_STONE_BLOCK); // (3)
+        TagPrefix.ingot.removeIgnored(GTMaterials.Iron);// (4)
+    }
+    ```
+=== "JavaScript"
+
+    ```js title="setignored_usage_example.js"
+    GTCEuStartupEvents.materialModification(event => { // (1)
+        TagPrefix.gemChipped.setIgnored(GTMaterials.get("fluix_crystal")) // (2)
+        TagPrefix.rock.setIgnored(GTMaterials.get("sky_stone"), AEBlocks.SKY_STONE_BLOCK) // (3)
+        TagPrefix.ingot.removeIgnored(GTMaterials.Iron) // (4)
+    })
+    ```
 
 1. This event has no methods such as `event.create()`, as it is not intended to be used to create anything, only tweak
    pre-existing Material associations. In fact, this event has no accessible methods whatsoever.
@@ -90,11 +101,11 @@ Assure that the material is registered with a liquid before attempting to replac
 !!! note "This may differ!"
     Depending on the way your fluid is registered you may need to change how you pass the `Fluid` argument, check how it is registered in the mod you are working with.
 
-```java title="ExampleMaterials.java"
-public static void register() {
-    GLUGG_BRINE = new Material.Builder(MyMod.id("glugg_brine"))
-        .liquid(new FluidBuilder()).buildAndRegister();
-
-    GTFluids.handleNonMaterialFluids(GLUGG_BRINE, () -> PVFluidRegistry.BRINE_FLUID_SOURCE.get());
-}
-```
+    ```java title="ExampleMaterials.java"
+    public static void register() {
+        GLUGG_BRINE = new Material.Builder(MyMod.id("glugg_brine"))
+            .liquid(new FluidBuilder()).buildAndRegister();
+    
+        GTFluids.handleNonMaterialFluids(GLUGG_BRINE, () -> PVFluidRegistry.BRINE_FLUID_SOURCE.get());
+    }
+    ```

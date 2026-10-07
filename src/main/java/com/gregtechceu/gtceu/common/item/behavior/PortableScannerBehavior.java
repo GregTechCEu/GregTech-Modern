@@ -318,13 +318,14 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 }
 
                 // Recipe logic for EU production/consumption
-                RecipeLogic recipeLogic = machine.getTrait(RecipeLogic.TYPE);
+                RecipeLogic recipeLogic = machine.getTrait(RecipeLogic.class);
                 if (recipeLogic != null) {
-                    GTRecipe recipe = recipeLogic.getLastRecipe();
-                    if (recipeLogic.getStatus().equals(RecipeLogic.Status.WAITING)) {
+                    GTRecipe recipe = recipeLogic.getLastUnrolledRecipe();
+                    if (recipeLogic.getStatus().equals(RecipeLogic.Status.WAITING) &&
+                            recipeLogic.getBestFailureReason() != null) {
                         list.add(Component.translatable("item.gtceu.behavior.portable_scanner.divider"));
                         list.add(Component.translatable("gtceu.multiblock.waiting"));
-                        list.addAll(recipeLogic.getWaitingReasons());
+                        list.add(recipeLogic.getBestFailureReason());
                     } else if (recipe != null) {
                         list.add(Component.translatable("item.gtceu.behavior.portable_scanner.divider"));
                         var EUt = RecipeHelper.getRealEUtWithIO(recipe);
@@ -472,11 +473,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
             list.add(Component.translatable("item.gtceu.behavior.portable_scanner.divider"));
             list.add(Component.literal("Save data"));
-            nbtFormat(list, syncBlockEntity.getSyncDataHolder().serializeNBT(false));
-
-            list.add(Component.translatable("item.gtceu.behavior.portable_scanner.divider"));
-            list.add(Component.literal("Update packet"));
-            nbtFormat(list, syncBlockEntity.getSyncDataHolder().serializeNBT(true, true));
+            nbtFormat(list, syncBlockEntity.getSyncDataHolder().serializeNBT(level.registryAccess()));
         }
 
         return energyCost;

@@ -27,7 +27,7 @@ public class Element {
      */
     @Getter
     @Setter
-    private long halfLifeSeconds;
+    private double halfLifeSeconds;
     /**
      * String representing the Elements this element decays to. Separated by an '&' Character
      */
@@ -57,7 +57,7 @@ public class Element {
         return protons + neutrons;
     }
 
-    public Element(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name, String symbol,
+    public Element(long protons, long neutrons, double halfLifeSeconds, String decayTo, String name, String symbol,
                    boolean isIsotope) {
         this.protons = protons;
         this.neutrons = neutrons;

@@ -22,6 +22,6 @@ public class DefaultTerrainRenderPassesMixin {
         // don't bother checking if bloom can be loaded here; Embeddium won't load with OptiFine installed and shaders
         // aren't loaded when this class is loaded.
         // This mixin is also only applied if bloom safe mode is disabled.
-        ALL = ArrayUtils.add(ALL, GTEmbeddiumCompat.BLOOM_RENDER_PASS);
+        ALL = ArrayUtils.add(ALL, GTEmbeddiumCompat.getBloomRenderPass());
     }
 }

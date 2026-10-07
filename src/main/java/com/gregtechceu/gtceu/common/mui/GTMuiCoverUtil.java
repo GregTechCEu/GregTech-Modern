@@ -65,10 +65,10 @@ public class GTMuiCoverUtil {
 
     public static void addTransferModeRow(Flow column, EnumSyncValue<TransferMode> value) {
         Component[] transferModeDesc = {
-                Component.translatable("cover.gtceu.robot_arm_transfer_mode.description.0"),
-                Component.translatable("cover.gtceu.robot_arm_transfer_mode.description.1"),
-                Component.translatable("cover.gtceu.robot_arm_transfer_mode.description.2"),
-                Component.translatable("cover.gtceu.robot_arm_transfer_mode.description.3"),
+                Component.translatable("cover.gtceu.robot_arm.transfer_mode.description.0"),
+                Component.translatable("cover.gtceu.robot_arm.transfer_mode.description.1"),
+                Component.translatable("cover.gtceu.robot_arm.transfer_mode.description.2"),
+                Component.translatable("cover.gtceu.robot_arm.transfer_mode.description.3"),
         };
         column.child(new GTMuiWidgets.EnumRowBuilder<>(TransferMode.class)
                 .value(value)

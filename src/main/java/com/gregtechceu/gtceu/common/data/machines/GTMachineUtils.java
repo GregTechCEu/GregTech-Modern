@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -22,12 +23,10 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
@@ -575,7 +574,7 @@ public class GTMachineUtils {
                         .slice("CCC", "CSC", "CCC")
                         .where('S', controller(blocks(definition.get())))
                         .where('C', blocks(casing.get())
-                                .or(blocks(valve.get()).setMaxGlobalLimited(2, 0)))
+                                .and(blocks(valve.get()).setMaxGlobalLimited(2, 0)))
                         .where('#', air())
                         .build())
                 .appearanceBlock(casing);
@@ -633,15 +632,15 @@ public class GTMachineUtils {
                         controller.getBlockPos().below().getY() == part.getBlockPos().getY() ?
                                          fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern((definition) -> {
-                    PatternPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
-                            .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1)
-                                    .setPreviewCount(1))
-                            .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1)
-                                    .setPreviewCount(1))
-                            .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1));
+                    MultiPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
+                            .and(Predicates.abilities(PartAbility.IMPORT_FLUIDS)
+                                    .setMinGlobalLimited(1, 1))
+                            .and(Predicates.abilities(PartAbility.IMPORT_ITEMS)
+                                    .setMaxGlobalLimited(1, 1))
+                            .and(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1));
 
                     if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
-                        fireboxPred = fireboxPred.or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1));
+                        fireboxPred = fireboxPred.and(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1));
                     }
 
                     return MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
@@ -652,13 +651,13 @@ public class GTMachineUtils {
                             .where('P', blocks(pipe.get()))
                             .where('X', fireboxPred)
                             .where('C', blocks(casing.get()).setMinGlobalLimited(20)
-                                    .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMinGlobalLimited(1)
-                                            .setPreviewCount(1)))
+                                    .and(Predicates.abilities(PartAbility.EXPORT_FLUIDS)
+                                            .setMinGlobalLimited(1, 1)))
                             .build();
                 })
                 .recoveryItems(
                         () -> new ItemLike[] {
-                                GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get()})
+                                ChemicalHelper.getItemOrThrow(TagPrefix.dustTiny, GTMaterials.Ash)})
                 .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
                 .model(createWorkableCasingMachineModel(texture,
                         GTCEu.id("block/multiblock/generator/large_%s_boiler".formatted(name)))
@@ -695,23 +694,23 @@ public class GTMachineUtils {
                         .where('X', blocks(casing.get()))
                         .where('G', blocks(gear.get()))
                         .where('C', blocks(casing.get()).setMinGlobalLimited(3)
-                                .or(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
-                                .or(autoAbilities(true, true, false)))
+                                .and(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
+                                .and(autoAbilities(true, true, false)))
                         .where('D',
                                 ability(PartAbility.OUTPUT_ENERGY,
                                         IntStream.of(ULV, LV, MV, HV, EV, IV, LuV, ZPM, UV, UHV)
                                                 .filter(t -> t >= tier)
                                                 .toArray())
-                                        .addTooltips(Component.translatable("multiblock.gtceu.predicate.count.limit.1",
-                                                GTValues.VN[tier])))
+                                        .addTooltips(Component.translatable(
+                                                "gtceu.multiblock.pattern.error.limited.1", GTValues.VN[tier])))
                         .where('A',
                                 blocks(intake.get())
-                                        .addTooltips(Component.translatable("multiblock.gtceu.pattern.clear_amount_1")))
+                                        .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_1")))
                         .where('Y', controller(blocks(definition.getBlock())))
                         .build())
                 .recoveryItems(
                         () -> new ItemLike[] {
-                                GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
+                                ChemicalHelper.getItemOrThrow(TagPrefix.dustTiny, GTMaterials.Ash) })
                 .workableCasingModel(casingTexture, overlayModel)
                 .tooltips(
                         Component.translatable("common.gtceu.tooltip.base_production_eut", V[tier]),
@@ -756,14 +755,14 @@ public class GTMachineUtils {
                         .where('G', blocks(gear.get()))
                         .where('C', blocks(casing.get()))
                         .where('R', rotorHolder(tier).setExactLimit(1)
-                                .or(abilities(PartAbility.OUTPUT_ENERGY).setExactLimit(1)))
+                                .and(abilities(PartAbility.OUTPUT_ENERGY).setExactLimit(1)))
                         .where('H', blocks(casing.get())
-                                .or(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
-                                .or(autoAbilities(true, needsMuffler, false)))
+                                .and(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
+                                .and(autoAbilities(true, needsMuffler, false)))
                         .build())
                 .recoveryItems(
                         () -> new ItemLike[] {
-                                GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
+                                ChemicalHelper.getItemOrThrow(TagPrefix.dustTiny, GTMaterials.Ash) })
                 .workableCasingModel(casingTexture, overlayModel)
                 .tooltips(
                         Component.translatable("common.gtceu.tooltip.base_production_eut", V[tier] * 2),
@@ -771,23 +770,21 @@ public class GTMachineUtils {
                 .register();
     }
 
-    private static PatternPredicate rotorHolder(int tier) {
-        return new PatternPredicate(new BasePredicate((worldState) -> {
-            if (MetaMachine.getMachine(worldState.getLevel(),
-                    worldState.getPos().immutable()) instanceof RotorHolderPartMachine rotorHolder &&
-                    worldState.getLevel()
-                            .getBlockState(worldState.getPos().immutable()
-                                    .relative(rotorHolder.getFrontFacing()))
-                            .isAir()) {
-                return null;
-            }
-            return new PartAbilityError(worldState.getBlockPos(), PartAbility.ROTOR_HOLDER);
-        }, PartAbility.ROTOR_HOLDER.getAllBlocks().stream()
-                .map(BlockInfo::fromBlock)
-                .toList()))
-                .addTooltips(Component.translatable("multiblock.gtceu.pattern.clear_amount_3"))
-                .addTooltips(Component.translatable("multiblock.gtceu.predicate.count.limit.1",
-                        VN[tier]));
+    private static MultiPredicate rotorHolder(int tier) {
+        return builder("RotorHolder")
+                .predicate(ctx -> {
+                    if (MetaMachine.getMachine(ctx.level(), ctx.pos()) instanceof RotorHolderPartMachine rotorHolder) {
+                        return ctx.level().getBlockState(ctx.pos().relative(rotorHolder.getFrontFacing())).isAir();
+                    }
+                    return false;
+                })
+                .errorFunction(ctx -> new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER))
+                .blocks(PartAbility.ROTOR_HOLDER.getAllBlocks())
+                .contents(builder -> builder.append(PartAbility.ROTOR_HOLDER.getName()))
+                .toMultiPredicate()
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
+                // todo lang: must be of tier %s
+                .addTooltips(Component.literal("Can only be of tier: %s".formatted(VN[tier])));
     }
 
     // Tooltips
@@ -886,7 +883,7 @@ public class GTMachineUtils {
         /**
          * Adds English language tooltips to this machine item. Lang keys for these tooltips will be generated during
          * your addon's datagen.
-         * 
+         *
          * @param lang The English language string to add.
          */
         public SimpleMachineBuilder tooltipLang(String lang) {
@@ -897,7 +894,7 @@ public class GTMachineUtils {
         /**
          * Adds English language tooltips to this machine item. Lang keys for these tooltips will be generated during
          * your addon's datagen.
-         * 
+         *
          * @param lang  The English language string to add.
          * @param tiers The machine tiers which this language string should be applied to
          */
@@ -923,13 +920,12 @@ public class GTMachineUtils {
                         } else {
                             builder.recipeModifier(GTRecipeModifiers.OC_NON_PERFECT);
                         }
-
                         builder
                                 .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
                                 .rotationState(RotationState.NON_Y_AXIS)
                                 .recipeType(recipeType)
                                 .workableTieredHullModel(
-                                        new ResourceLocation(registrate.getModid(), "block/machines/" + name))
+                                        registrate.makeResourceLocation("block/machines/" + name))
                                 .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                         tankScalingFunction.applyAsInt(tier), true))
                                 .ui(panelFactory);

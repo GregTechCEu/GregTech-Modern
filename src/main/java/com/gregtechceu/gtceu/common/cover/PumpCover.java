@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.*;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
-import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
-import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -55,7 +53,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, IControllable {
 
     // .5b 2b 8b
-    public static final Int2IntFunction PUMP_SCALING = tier -> 64 * (int) Math.pow(4, Math.min(tier - 1, GTValues.IV));
+    public static final Int2IntFunction PUMP_SCALING = tier -> 64 * (int) Math.pow(4, Math.min(tier, GTValues.LuV) - 1);
 
     public final int tier;
     public final int maxFluidTransferRate;
@@ -85,7 +83,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
 
     @SaveField
     @SyncToClient
-    protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
+    protected final FilterHandler<FluidStack> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
 
     public PumpCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
@@ -98,7 +96,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
         this.mBLeftToTransferLastSecond = transferRate * 20;
 
         subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
-        filterHandler = FilterHandlers.fluid(this)
+        filterHandler = new FilterHandler<>(this, FluidStack.class)
                 .onFilterLoaded(f -> configureFilter())
                 .onFilterUpdated(f -> configureFilter())
                 .onFilterRemoved(this::configureFilter);

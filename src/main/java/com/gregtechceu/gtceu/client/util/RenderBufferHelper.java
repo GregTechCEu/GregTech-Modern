@@ -149,7 +149,7 @@ public class RenderBufferHelper {
         renderSide(buf, stack, topRight2, topRight, bottomRight2, bottomRight, colorARGB);
         renderSide(buf, stack, topLeft2, topRight2, bottomLeft2, bottomRight2, colorARGB);
         renderSide(buf, stack, topLeft, topLeft2, bottomLeft, bottomLeft2, colorARGB);
-        renderSide(buf, stack, topLeft2, topRight2, topLeft, topRight, colorARGB);
+        renderSide(buf, stack, topRight2, topLeft2, topRight, topLeft, colorARGB);
         renderSide(buf, stack, bottomLeft2, bottomRight2, bottomLeft, bottomRight, colorARGB);
     }
 

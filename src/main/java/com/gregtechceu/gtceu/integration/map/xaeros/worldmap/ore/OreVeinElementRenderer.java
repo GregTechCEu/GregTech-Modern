@@ -26,7 +26,7 @@ import xaero.map.graphics.renderer.multitexture.MultiTextureRenderTypeRendererPr
 public class OreVeinElementRenderer extends
                                     MapElementRenderer<OreVeinElement, OreVeinElementContext, OreVeinElementRenderer> {
 
-    protected static final ResourceLocation STONE = new ResourceLocation("block/stone");
+    protected static final ResourceLocation STONE = ResourceLocation.withDefaultNamespace("block/stone");
 
     protected OreVeinElementRenderer(OreVeinElementContext context,
                                      MapElementRenderProvider<OreVeinElement, OreVeinElementContext> provider,

@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
@@ -158,7 +157,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         if (batteries.isEmpty()) {
             // only empty batteries found in the structure
             pState.setError(new PatternStringError(
-                    Component.translatable("multiblock.gtceu.pattern_error.power_substation.missing_batteries")));
+                    Component.translatable("gtceu.predicate_error.power_substation.missing_batteries")));
             invalidateStructure();
             return;
         }
@@ -223,19 +222,19 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         long fillTime;
         if (duration.getSeconds() <= 180) {
             fillTime = duration.getSeconds();
-            key = "common.gtceu.seconds";
+            key = "gtceu.multiblock.power_substation.time_seconds";
         } else if (duration.toMinutes() <= 180) {
             fillTime = duration.toMinutes();
-            key = "gui.minutes";
+            key = "gtceu.multiblock.power_substation.time_minutes";
         } else if (duration.toHours() <= 72) {
             fillTime = duration.toHours();
-            key = "gui.hours";
+            key = "gtceu.multiblock.power_substation.time_hours";
         } else if (duration.toDays() <= 730) { // 2 years
             fillTime = duration.toDays();
-            key = "gui.days";
+            key = "gtceu.multiblock.power_substation.time_days";
         } else if (duration.toDays() / 365 < 1_000_000) {
             fillTime = duration.toDays() / 365;
-            key = "common.gtceu.years";
+            key = "gtceu.multiblock.power_substation.time_years";
         } else {
             return Component.translatable("gtceu.multiblock.power_substation.time_forever");
         }
@@ -438,14 +437,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     public static class PowerStationEnergyBank extends MachineTrait implements INBTSerializable<CompoundTag> {
 
-        public static final MachineTraitType<PowerStationEnergyBank> TYPE = new MachineTraitType<>(
-                PowerStationEnergyBank.class);
-
-        @Override
-        public MachineTraitType<PowerStationEnergyBank> getTraitType() {
-            return TYPE;
-        }
-
         private static final String NBT_SIZE = "Size";
         private static final String NBT_STORED = "Stored";
         private static final String NBT_MAX = "Max";
@@ -468,6 +459,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 maximums[i] = batteries.get(i).getCapacity();
             }
             capacity = summarize(maximums);
+            index = 0;
         }
 
         public void deserializeNBT(CompoundTag storageTag) {
@@ -482,6 +474,10 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 maximums[i] = subtag.getLong(NBT_MAX);
             }
             capacity = summarize(maximums);
+            index = 0;
+            for (int i = 0; i < size; i++) {
+                if (storage[i] > 0) index = i;
+            }
         }
 
         public CompoundTag serializeNBT() {

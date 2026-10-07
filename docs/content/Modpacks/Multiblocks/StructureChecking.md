@@ -14,7 +14,7 @@ The `MultiblockControllerMachine` class has a specific ordering in how it checks
 3. The `PatternState` is added to the `MultiblockWorldSaveData` for `BlockState` listening
 
 
-In `checkStructurePattern`, the pattern will use its iteration method and ensure every `PatternPredicate` succeeds, for each block position that matches the predicate, that block's information will be put in the `PatternState`'s cache for future use, like retrieving multi parts for recipe logic handler collection. When a predicate fails, it puts the failure reason(s) into the `PatternState` and stops the match iteration early.
+In `checkStructurePattern`, the pattern will use its iteration method and ensure every `MultiPredicate` succeeds, for each block position that matches the predicate, that block's information will be put in the `PatternState`'s cache for future use, like retrieving multi parts for recipe logic handler collection. When a predicate fails, it puts the failure reason(s) into the `PatternState` and stops the match iteration early.
 
 In `formStructure`, every `IMultiPart` found in the `PatternState` cache is attached to that specific controller.
 

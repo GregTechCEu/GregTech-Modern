@@ -1,59 +1,35 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
-import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import com.google.common.base.Preconditions;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
-public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material material) {
+public record MaterialEntry(TagPrefix tagPrefix, Material material) {
 
     public MaterialEntry {
-        Preconditions.checkNotNull(tagPrefix, "MaterialEntry TagPrefix cannot be null!");
-        Preconditions.checkNotNull(material, "MaterialEntry Material cannot be null!");
+        Objects.requireNonNull(tagPrefix, "MaterialEntry cannot have null TagPrefix");
+        Objects.requireNonNull(material, "MaterialEntry cannot have null Material");
     }
-
-    public static final MaterialEntry NULL_ENTRY = new MaterialEntry(TagPrefix.NULL_PREFIX, GTMaterials.NULL);
 
     private static final Map<String, MaterialEntry> PARSE_CACHE = new WeakHashMap<>();
-
-    public MaterialEntry(TagPrefix tagPrefix) {
-        this(tagPrefix, GTMaterials.NULL);
-    }
-
-    public boolean isEmpty() {
-        return this == NULL_ENTRY || material() == GTMaterials.NULL || tagPrefix().isEmpty();
-    }
 
     public boolean isIgnored() {
         return tagPrefix().isIgnored(material());
     }
 
     public long getMaterialAmount() {
-        if (!tagPrefix.isEmpty()) {
-            if (!material.isNull()) {
-                return tagPrefix.getMaterialAmount(material);
-            }
-            return tagPrefix.materialAmount();
-        }
-        if (!material.isNull()) {
-            return GTValues.M;
-        } else {
-            return 0;
-        }
+        return tagPrefix.getMaterialAmount(material);
     }
 
     @Override
     public String toString() {
-        if (tagPrefix.isEmpty()) {
-            return material.getResourceLocation().toString();
-        }
         var tags = tagPrefix.getItemTags(material);
         if (tags.isEmpty()) {
             return tagPrefix.name + "/" + material.getName();
@@ -70,9 +46,11 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
 
             var values = str.split(":", 2);
             if (values.length > 1) {
-                var prefix = TagPrefix.get(values[0]);
+                var prefix = GTRegistries.TAG_PREFIXES.get(GTCEu.id(values[0]));
                 if (prefix == null) throw new IllegalArgumentException("Invalid TagPrefix: " + values[0]);
-                cached = new MaterialEntry(prefix, GTMaterials.get(values[1]));
+                var material = GTRegistries.MATERIALS.get(values[1]);
+                if (material == null) throw new IllegalArgumentException("Invalid Material: " + values[1]);
+                cached = new MaterialEntry(prefix, material);
                 PARSE_CACHE.put(str, cached);
                 return cached;
             }

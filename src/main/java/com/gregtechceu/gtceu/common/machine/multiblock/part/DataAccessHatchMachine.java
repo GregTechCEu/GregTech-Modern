@@ -88,7 +88,8 @@ public class DataAccessHatchMachine extends TieredPartMachine
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        var grid = GTMuiMachineUtil.createSlotGroupFromInventory(importItems, "data_inventory", getInventorySize(), 'I',
+        var grid = GTMuiMachineUtil.createSlotGroupFromInventory(importItems.storage, "data_inventory",
+                getInventorySize(), 'I',
                 i -> i.background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY), syncManager,
                 GTMuiMachineUtil.createSquareMatrix(importItems.getSlots(), 'I'));
 

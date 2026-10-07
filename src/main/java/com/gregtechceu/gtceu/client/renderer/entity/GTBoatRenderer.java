@@ -27,7 +27,7 @@ public class GTBoatRenderer extends BoatRenderer {
     public GTBoatRenderer(EntityRendererProvider.Context context, boolean chestBoat) {
         super(context, chestBoat);
         boats = Stream.of(GTBoat.BoatType.values()).collect(ImmutableMap.toImmutableMap(k -> k,
-                (m) -> Pair.of(new ResourceLocation(GTCEu.MOD_ID,
+                (m) -> Pair.of(GTCEu.id(
                         getTextureLocation(m, chestBoat)), createBoatModel(context, m, chestBoat))));
     }
 
@@ -51,10 +51,10 @@ public class GTBoatRenderer extends BoatRenderer {
     }
 
     public static ModelLayerLocation getChestBoatModelName(GTBoat.BoatType type) {
-        return new ModelLayerLocation(new ResourceLocation(GTCEu.MOD_ID, "chest_boat/" + type.getName()), "main");
+        return new ModelLayerLocation(GTCEu.id("chest_boat/" + type.getName()), "main");
     }
 
     public static ModelLayerLocation getBoatModelName(GTBoat.BoatType type) {
-        return new ModelLayerLocation(new ResourceLocation(GTCEu.MOD_ID, "boat/" + type.getName()), "main");
+        return new ModelLayerLocation(GTCEu.id("boat/" + type.getName()), "main");
     }
 }

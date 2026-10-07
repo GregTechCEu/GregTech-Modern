@@ -95,9 +95,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.MissingMappingsEvent;
 
+import com.mojang.datafixers.util.Either;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -167,18 +169,22 @@ public class CommonEventListener {
 
         for (int i = 0; i < inventory.getSlots(); ++i) {
             ItemStack stack = inventory.getStackInSlot(i);
-            MaterialEntry entry = HazardProperty.getValidHazardMaterial(stack);
-            if (entry.material().isNull()) {
+            Either<Material, MaterialEntry> hazardMaterial = HazardProperty.getValidHazardMaterial(stack);
+            if (hazardMaterial == null) {
                 continue;
             }
-            HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
+
+            var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
+
+            HazardProperty property = material.getProperty(PropertyKey.HAZARD);
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
                 property.hazardTrigger.protectionType().damageEquipment(player, 1);
                 // don't progress this material condition if entity is protected
                 continue;
             }
-            tracker.progressRelatedCondition(entry, stack.getCount());
+            hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, stack.getCount()));
+            hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, stack.getCount()));
         }
     }
 
@@ -216,13 +222,17 @@ public class CommonEventListener {
             return;
         }
 
-        MaterialEntry entry = HazardProperty.getValidHazardMaterial(usedItem);
-        if (entry.material().isNull()) {
+        var hazardMaterial = HazardProperty.getValidHazardMaterial(usedItem);
+        if (hazardMaterial == null) {
             return;
         }
-        HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
+
+        var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
+
+        HazardProperty property = material.getProperty(PropertyKey.HAZARD);
         if (property.hazardTrigger == HazardProperty.HazardTrigger.CONSUMPTION) {
-            tracker.progressRelatedCondition(entry, 1);
+            hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, 1));
+            hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, 1));
         }
     }
 
@@ -564,7 +574,7 @@ public class CommonEventListener {
 
                 GTToolType type = GTToolType.getTypes().get(typeString);
                 Material material = GTMaterials.get(matString);
-                if (type == null || material.isNull()) {
+                if (type == null || material == null) {
                     mapping.warn();
                     return;
                 }
@@ -660,7 +670,7 @@ public class CommonEventListener {
             }
         });
 
-        for (TagPrefix prefix : TagPrefix.values()) {
+        for (TagPrefix prefix : GTRegistries.TAG_PREFIXES) {
             String first = prefix.invertedName ? toLowerCaseUnderscore(prefix.name) : "(.+?)";
             String last = prefix.invertedName ? "(.+?)" : toLowerCaseUnderscore(prefix.name);
             Pattern idPattern = Pattern.compile(first + "_" + last);
@@ -677,16 +687,14 @@ public class CommonEventListener {
             event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
                 Matcher matcher = idPattern.matcher(mapping.getKey().getPath());
                 if (matcher.matches()) {
-                    BlockEntry<? extends Block> block = GTMaterialBlocks.MATERIAL_BLOCKS.get(prefix,
-                            GTRegistries.MATERIALS.get(GTCEu.id(matcher.group(1))));
+                    Material material = GTRegistries.MATERIALS.get(GTCEu.id(matcher.group(1)));
+                    if (material == null) return;
+                    BlockEntry<? extends Block> block = GTMaterialBlocks.MATERIAL_BLOCKS.get(prefix, material);
                     if (block != null && block.isPresent()) {
                         mapping.remap(block.asItem());
                     } else {
-                        ItemEntry<? extends Item> item = GTMaterialItems.MATERIAL_ITEMS.get(prefix,
-                                GTRegistries.MATERIALS.get(GTCEu.id(matcher.group(1))));
-                        if (item != null && item.isPresent()) {
-                            mapping.remap(item.asItem());
-                        }
+                        ItemEntry<? extends Item> item = GTMaterialItems.MATERIAL_ITEMS.get(prefix, material);
+                        if (item != null && item.isPresent()) mapping.remap(item.asItem());
                     }
                 }
             });

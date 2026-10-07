@@ -132,7 +132,7 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
     public final static BonkRecipeCapability CAP = new BonkRecipeCapability();
 
     protected BonkRecipeCapability() {
-        super(new ResourceLocation("MOD_ID", "bonk"), 0x777777, false, 5, BonkIngredient.Serializer.INSTANCE);
+        super(ResourceLocation.fromNamespaceAndPath("MOD_ID", "bonk"), 0x777777, false, 5, BonkIngredient.Serializer.INSTANCE);
     }
 
     @Override
@@ -163,7 +163,7 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
 
     @Override
     public List<NotifiableBonkHandler> getCapabilityHandlers(MetaMachine machine) {
-        return machine.getTraits(NotifiableBonkHandler.TYPE);
+        return machine.getTraits(NotifiableBonkHandler.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -177,8 +177,6 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
 ```java title="NotifiableBonkHandler"
 public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngredient>
         implements ICapabilityTrait {
-
-    public static final MachineTraitType<NotifiableBonkHandler> TYPE = new MachineTraitType<>(NotifiableBonkHandler.class);
     
     @Getter
     public final IO handlerIO;
@@ -196,11 +194,6 @@ public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngr
         super();
         this.handlerIO = handlerIO;
         this.capabilityIO = capabilityIO;
-    }
-
-    @Override
-    public MachineTraitType<NotifiableBonkHandler> getTraitType() {
-        return TYPE;
     }
 
     public boolean addBonk(int bonkToAdd, boolean simulate){
@@ -305,18 +298,18 @@ public class BonkMachines {
             .pattern(definition -> {
                 var casing = blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(10);
                 var abilities = Predicates.autoAbilities(definition.getRecipeTypes())
-                        .or(Predicates.autoAbilities(true, false, false))
-                        .or(Predicates.abilities(BonkPartAbilities.BONK_HATCH));
-                return FactoryBlockPattern.start()
-                        .aisle("XXX", "XCX", "XXX")
-                        .aisle("XCX", "CPC", "XCX")
-                        .aisle("XXX", "XSX", "XXX")
+                        .and(Predicates.autoAbilities(true, false, false))
+                        .and(Predicates.abilities(BonkPartAbilities.BONK_HATCH));
+                return MultiblockPatternBuilder.start()
+                        .slice("XXX", "XSX", "XXX")
+                        .slice("XCX", "CPC", "XCX")
+                        .slice("XXX", "XCX", "XXX")
                         .where('S', Predicates.controller(blocks(definition.getBlock())))
-                        .where('X', casing.or(abilities))
+                        .where('X', casing.and(abilities))
                         .where('P', blocks(CASING_POLYTETRAFLUOROETHYLENE_PIPE.get()))
                         .where('C', Predicates.heatingCoils().setExactLimit(1)
-                                .or(abilities)
-                                .or(casing))
+                                .and(abilities)
+                                .and(casing))
                         .build();
             })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"),
@@ -338,7 +331,7 @@ public class BonkPartAbilities {
 ## Creating the RecipeType
 ```java title="BonkRecipeTypes.java"
 public class BonkRecipeTypes {
-    public static final GTRecipeType LARGE_BONK_RECIPES = register("large_bonk_reactor", MULTIBLOCK)
+    public static final GTRecipeType LARGE_BONK_RECIPES = register(AddonMod.id("large_bonk_reactor"), MULTIBLOCK)
             .setMaxIOSize(3, 3, 5, 4)
             .setMaxSize(IO.IN, BonkRecipeCapability.CAP, 1)
             .setEUIO(IO.IN);

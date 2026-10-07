@@ -707,7 +707,7 @@ public class GTMachines {
                     .tooltips(
                             Component.translatable("machine.gtceu.item_collector.tooltip"),
                             Component.translatable("machine.gtceu.item_collector.gui.collect_range",
-                                    IntMath.pow(2, tier + 2), IntMath.pow(2, tier + 2)),
+                                    2 * IntMath.pow(2, tier + 2) + 1, 2 * IntMath.pow(2, tier + 2) + 1),
                             Component.translatable("common.gtceu.tooltip.voltage_in",
                                     FormattingUtil.formatNumbers(GTValues.V[tier]),
                                     GTValues.VNF[tier]),

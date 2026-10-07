@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.common.block.ItemPipeBlock;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
+import com.gregtechceu.gtceu.common.pipelike.item.ItemRoutePath;
 import com.gregtechceu.gtceu.utils.FacingPos;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -15,6 +16,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,7 +25,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -41,9 +43,11 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
     @Getter
     private final EnumMap<Direction, ItemNetHandler> handlers = new EnumMap<>(Direction.class);
     @Getter
-    private final Object2IntMap<FacingPos> transferred = new Object2IntOpenHashMap<>();
+    private final Object2IntOpenHashMap<FacingPos> transferredGlobalRoundRobin = new Object2IntOpenHashMap<>();
+    @Getter
+    private ItemNetHandler defaultHandler;
 
-    private int transferredItems = 0;
+    private final Object2IntOpenHashMap<ItemRoutePath> transferredItems = new Object2IntOpenHashMap<>();
     private long timer = 0;
 
     public ItemPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
@@ -113,8 +117,10 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
                 getBlockState().getBlock() instanceof ItemPipeBlock itemPipeBlock) {
             ItemPipeNet currentItemPipeNet = this.currentItemPipeNet.get();
             if (currentItemPipeNet != null && currentItemPipeNet.isValid() &&
-                    currentItemPipeNet.containsNode(getBlockPos()))
+                    currentItemPipeNet.containsNode(getBlockPos())) {
                 return currentItemPipeNet; // return current net if it is still valid
+            }
+
             currentItemPipeNet = itemPipeBlock.getWorldPipeNet(serverLevel).getNetFromPos(getBlockPos());
             if (currentItemPipeNet != null) {
                 this.currentItemPipeNet = new WeakReference<>(currentItemPipeNet);
@@ -122,10 +128,6 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
             }
         }
         return this.currentItemPipeNet.get();
-    }
-
-    public void resetTransferred() {
-        transferred.clear();
     }
 
     /**
@@ -145,19 +147,21 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
         long currentTime = getLevelTime();
         long dif = currentTime - this.timer;
         if (dif >= 20 || dif < 0) {
-            this.transferredItems = 0;
+            Object2IntMaps.fastForEach(this.transferredItems, entry -> {
+                int rate = Math.round(entry.getKey().getProperties().getTransferRate() * Item.MAX_STACK_SIZE);
+                entry.setValue(entry.getIntValue() - rate);
+            });
             this.timer = currentTime;
         }
     }
 
-    public void addTransferredItems(int amount) {
-        updateTransferredState();
-        this.transferredItems += amount;
-    }
-
-    public int getTransferredItems() {
+    public Object2IntOpenHashMap<ItemRoutePath> getTransferredItems() {
         updateTransferredState();
         return this.transferredItems;
+    }
+
+    public int getTransferredItemCount() {
+        return this.getTransferredItems().values().intStream().sum();
     }
 
     @Override

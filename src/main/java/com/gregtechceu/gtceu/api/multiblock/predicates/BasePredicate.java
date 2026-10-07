@@ -1,152 +1,137 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
-import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
-import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
-import com.gregtechceu.gtceu.common.item.behavior.TerminalBehavior;
-import com.gregtechceu.gtceu.data.lang.LangUtil;
-import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
-import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraft.world.item.ItemStack;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
-public class BasePredicate {
+public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
+
+    private boolean mutable = true;
 
     @Getter
-    public List<BlockInfo> candidates;
-    public Function<CurrentBlockInfo, @Nullable PatternError> errorPredicate;
-    public @Nullable List<Component> tooltips;
-    public int priority = 0;
-    public int minCount = -1;
-    public int maxCount = -1;
-    public int minSliceCount = -1;
-    public int maxSliceCount = -1;
-    public int previewCount = -1;
-    public boolean disableRenderFormed = false;
-    public @Nullable String nbtParser;
+    protected PredicateSettings settings = PredicateSettings.create();
 
-    protected String debugName;
+    @Getter
+    private final List<Component> additionalTooltips = new ArrayList<>();
 
-    public BasePredicate() {
-        this.debugName = "Unknown";
-        this.errorPredicate = $ -> null;
-        this.candidates = Collections.emptyList();
+    /// the main testing method
+    public abstract boolean test(PredicateContext ctx);
+
+    public abstract void onError(PredicateContext ctx);
+
+    /// @param root the top-most multi predicate for this multi predicate
+    /// @return a list of components to be displayed while hovering over a block in the Multiblock Preview
+    public abstract List<Component> getRecipeViewerTooltips(MultiPredicate root);
+
+    /// test against global max count
+    public boolean testGlobalMax(PredicateContext ctx) {
+        return TestType.GLOBAL_MAX.testWithError(this, ctx);
     }
 
-    /**
-     * @param errorPredicate The predicate function for being a valid block state or tile entity in a pattern
-     * @param candidates     The qualifying blocks or item stacks valid in this predicate based on information from
-     *                       either the
-     *                       {@link TerminalBehavior#use(Item, Level, Player, InteractionHand)
-     *                       Terminal Auto-Builder},
-     *                       {@link PatternPreviewRenderer#draw(PoseStack, MultiBufferSource.BufferSource, Camera, RenderLevelStageEvent.Stage, float)
-     *                       In-world Preview} or
-     *                       {@link MultiblockPreviewWidget#MultiblockPreviewWidget(MultiblockMachineDefinition, MultiblockSchemaInfo, int, int)
-     *                       XEI Preview}
-     */
-    public BasePredicate(Function<CurrentBlockInfo, @Nullable PatternError> errorPredicate,
-                         @Nullable List<BlockInfo> candidates) {
-        this("Unknown", errorPredicate, candidates);
+    /// test against slice max count
+    public boolean testSliceMax(PredicateContext ctx) {
+        return TestType.SLICE_MAX.testWithError(this, ctx);
     }
 
-    public BasePredicate(String debugName, Function<CurrentBlockInfo, @Nullable PatternError> errorPredicate,
-                         @Nullable List<BlockInfo> candidates) {
-        this.debugName = debugName;
-        this.errorPredicate = errorPredicate;
-        this.candidates = candidates != null ? candidates : Collections.emptyList();
+    /// test against global min count
+    public boolean testGlobalMin(PredicateContext ctx) {
+        return TestType.GLOBAL_MIN.testWithError(this, ctx);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public List<Component> getTooltips(@Nullable PatternPredicate predicates) {
-        List<Component> result = new ArrayList<>();
-        if (tooltips != null) {
-            result.addAll(tooltips);
+    /// test against slice min count
+    public boolean testSliceMin(PredicateContext ctx) {
+        return TestType.SLICE_MIN.testWithError(this, ctx);
+    }
+
+    public abstract List<BlockInfo> getCandidates();
+
+    public List<ItemStack> getCandidateStacks() {
+        return getCandidates().stream()
+                .filter(BlockInfo::nonAir)
+                .map(BlockInfo::getItemStackForm)
+                .toList();
+    }
+
+    public Optional<BlockInfo> getFirstCandidate() {
+        return Optional.of(getCandidates())
+                .filter(c -> !c.isEmpty())
+                .map(c -> c.get(0));
+    }
+
+    /// the type of this predicate
+    public abstract String getTypeName();
+
+    /// the contents of this predicate
+    protected void appendContents(StringBuilder builder) {}
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder(getTypeName());
+        builder.append('{');
+        appendContents(builder);
+        builder.append('}');
+        return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BasePredicate predicate)) return false;
+        List<BlockInfo> thisCandidates = this.getCandidates();
+        List<BlockInfo> thatCandidates = predicate.getCandidates();
+        if (thisCandidates.size() != thatCandidates.size()) return false;
+        for (int i = 0; i < thisCandidates.size(); i++) {
+            if (!Objects.equals(thisCandidates.get(i), thatCandidates.get(i))) return false;
         }
-        if (minCount == maxCount && maxCount != -1) {
-            result.add(Component.translatable("multiblock.gtceu.predicate.count.exact", minCount));
-        } else if (minCount != maxCount && minCount != -1 && maxCount != -1) {
-            result.add(Component.translatable("multiblock.gtceu.predicate.count.range", minCount, maxCount));
-        } else {
-            if (minCount != -1) {
-                result.add(LangUtil.getFromMultiLang("multiblock.gtceu.predicate.count.limit", 1, minCount));
-            }
-            if (maxCount != -1) {
-                result.add(LangUtil.getFromMultiLang("multiblock.gtceu.predicate.count.limit", 0, maxCount));
-            }
-        }
-        if (predicates == null) return result;
-        if (predicates.isSingle()) {
-            result.add(Component.translatable("multiblock.gtceu.predicate.single"));
-        }
-        if (predicates.hasAir()) {
-            result.add(Component.translatable("multiblock.gtceu.pattern.replaceable_air"));
-        }
-        return result;
+        return true;
     }
 
-    public @Nullable PatternError testRaw(CurrentBlockInfo currBlock) {
-        return errorPredicate.apply(currBlock);
+    @HideFromJS
+    @ApiStatus.Internal
+    public BasePredicate markImmutable() {
+        this.mutable = false;
+        return this;
     }
 
-    public @Nullable PatternError testLimited(CurrentBlockInfo currBlock,
-                                              Object2IntMap<BasePredicate> globalCache,
-                                              @Nullable Object2IntMap<BasePredicate> layerCache) {
-        PatternError error = testGlobal(currBlock, globalCache, layerCache);
-        if (error != null) return error;
-        return testLayer(currBlock, layerCache);
+    @Override
+    public boolean hasSettings() {
+        return true;
     }
 
-    public @Nullable PatternError testGlobal(CurrentBlockInfo currentBlock,
-                                             Object2IntMap<BasePredicate> globalCache,
-                                             @Nullable Object2IntMap<BasePredicate> layerCache) {
-        PatternError error = errorPredicate.apply(currentBlock);
-        globalCache.mergeInt(this, (error == null ? 1 : 0), Integer::sum);
-        if ((minCount == -1 && maxCount == -1) || error != null || layerCache == null) return error;
+    public abstract BasePredicate copy();
 
-        int count = globalCache.getInt(this);
-        if (maxCount == -1 || count <= maxCount) return null;
-
-        return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_COUNT, count);
+    protected void copyTo(BasePredicate other) {
+        other.setSettings(this.settings.copy());
+        other.additionalTooltips.addAll(this.additionalTooltips);
     }
 
-    public @Nullable PatternError testLayer(CurrentBlockInfo currBlock,
-                                            @Nullable Object2IntMap<BasePredicate> layerCache) {
-        PatternError error = errorPredicate.apply(currBlock);
-        if (layerCache == null) return error;
+    // COPY AND MUTATE
 
-        layerCache.mergeInt(this, (error == null ? 1 : 0), Integer::sum);
-        if ((minSliceCount == -1 && maxSliceCount == -1) || error != null) return error;
-
-        if (maxSliceCount != -1 && layerCache.getInt(this) > maxSliceCount) {
-            return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_LAYER_COUNT,
-                    layerCache.getInt(this));
-        }
-
-        return null;
+    @Override
+    public BasePredicate withSettings(UnaryOperator<PredicateSettings> configurator) {
+        BasePredicate copy = copy();
+        copy.updateSettings(configurator);
+        return copy;
     }
 
-    public String getPredicateName() {
-        return debugName;
+    // MUTATE ONLY
+
+    @Override
+    public void setSettings(PredicateSettings settings) {
+        if (mutable) this.settings = settings;
+    }
+
+    public void addTooltips(Component tooltip) {
+        if (mutable) this.additionalTooltips.add(tooltip);
     }
 }

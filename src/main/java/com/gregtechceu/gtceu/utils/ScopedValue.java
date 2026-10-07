@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.utils;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -14,19 +12,23 @@ public abstract class ScopedValue implements AutoCloseable {
      * 
      * @param <T> The type of the object.
      */
-    @RequiredArgsConstructor
     public static final class Object<T> extends ScopedValue {
 
-        private final @Nullable T initialValue;
-
-        /**
-         * Current value in this scope
-         */
-        @Getter
-        private @Nullable T value;
+        private final ThreadLocal<@Nullable T> value;
 
         public Object() {
             this(null);
+        }
+
+        public Object(@Nullable T initialValue) {
+            this.value = ThreadLocal.withInitial(() -> initialValue);
+        }
+
+        /**
+         * {@return Current value in this scope}
+         */
+        public @Nullable T getValue() {
+            return this.value.get();
         }
 
         /**
@@ -35,29 +37,40 @@ public abstract class ScopedValue implements AutoCloseable {
          * @return this
          */
         public Object<T> with(T value) {
-            this.value = value;
+            this.value.set(value);
             return this;
         }
 
         @Override
         public void close() {
-            this.value = this.initialValue;
+            this.value.remove();
         }
     }
 
     /**
      * Scoped boolean value. Resets to {@link #initialValue} when exiting scope.
      */
-    @RequiredArgsConstructor
     public static final class Boolean extends ScopedValue {
 
         private final boolean initialValue;
 
+        private final ThreadLocal<java.lang.Boolean> value;
+
+        public Boolean() {
+            this(false);
+        }
+
+        public Boolean(boolean initialValue) {
+            this.initialValue = initialValue;
+            this.value = ThreadLocal.withInitial(() -> this.initialValue);
+        }
+
         /**
-         * Current value in this scope
+         * {@return Current value in this scope}
          */
-        @Getter
-        private boolean active;
+        public boolean isActive() {
+            return this.value.get();
+        }
 
         /**
          * Set {@code current} to {@code value} within this scope.
@@ -65,7 +78,7 @@ public abstract class ScopedValue implements AutoCloseable {
          * @return this
          */
         public Boolean with(boolean value) {
-            this.active = value;
+            this.value.set(value);
             return this;
         }
 
@@ -74,13 +87,13 @@ public abstract class ScopedValue implements AutoCloseable {
          * 
          * @return this
          */
-        public Boolean active() {
+        public Boolean setActive() {
             return with(!this.initialValue);
         }
 
         @Override
         public void close() {
-            this.active = this.initialValue;
+            this.value.remove();
         }
     }
 }

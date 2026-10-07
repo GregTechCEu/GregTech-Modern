@@ -15,4 +15,6 @@ public enum VoidingMode {
         this.tooltip = tooltip;
         this.maxStackSize = maxStackSize;
     }
+
+    public static final int MAX_SIZE_STACK = 1024;
 }

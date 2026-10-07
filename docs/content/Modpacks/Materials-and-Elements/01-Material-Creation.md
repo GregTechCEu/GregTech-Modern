@@ -62,6 +62,16 @@ You can change the properties of the material by adding any combination of the f
 
 ## Creating an Ingot
 
+=== "Java"
+    ```java title="AddonMaterials.java"
+    public static Material ANDESITE_ALLOY = new Material.Builder(
+            ADDON_MOD.id("andesite_alloy"))
+            .ingot()
+            .components("1x andesite", "1x iron")
+            .color(0xFF0000).secondaryColor(0x840707).iconSet(MaterialIconSet.DULL)
+            .flags(MaterialFlags.GENERATE_PLATE, MaterialFlags.GENERATE_GEAR, MaterialFlags.GENERATE_SMALL_GEAR)
+            .buildAndRegister();
+    ```
 === "JavaScript"
     ```js title="ingot.js"
     GTCEuStartupEvents.registry('gtceu:material', event => {
@@ -72,22 +82,17 @@ You can change the properties of the material by adding any combination of the f
             .flags(GTMaterialFlags.GENERATE_PLATE, GTMaterialFlags.GENERATE_GEAR, GTMaterialFlags.GENERATE_SMALL_GEAR)
     })
     ```
-=== "Java"
-    ```java title="Ingot.java"
-    public static Material ANDESITE_ALLOY;
-    public static void register() {
-        ANDESITE_ALLOY = new Material.Builder(
-                your_mod_id.id("andesite_alloy"))
-                .ingot()
-                .components("1x andesite", "1x iron")
-                .color(0xFF0000).secondaryColor(0x840707).iconSet(GTMaterialIconSet.DULL)
-                .flags(MaterialFlags.GENERATE_PLATE, MaterialFlags.GENERATE_GEAR, MaterialFlags.GENERATE_SMALL_GEAR)
-                .buildAndRegister();
-        }
-    ```
 
 ## Creating a Dust
 
+=== "Java"
+    ```java title="AddonMaterials.java"
+    public static Material MYSTERIOUS_DUST = new Material.Builder(
+            ADDON_MOD.id("mysterious_dust"))
+            .dust() // The harvest level and burn time can be specified in the brackets. Example: `.dust(2, 4000)`
+            .color(0x7D2DDB)
+            .buildAndRegister();
+    ```
 === "JavaScript"
     ```js title="dust.js"
     GTCEuStartupEvents.registry('gtceu:material', event => {
@@ -97,20 +102,19 @@ You can change the properties of the material by adding any combination of the f
     })
     ```
 
-=== "Java"
-    ```java title="Dust.java"
-    public static Material MYSTERIOUS_DUST;
-    public static void register() {
-        MYSTERIOUS_DUST = new Material.Builder(
-            your_mod_id.id("mysterious_dust"))
-            .dust() // The harvest level and burn time can be specified in the brackets. Example: `.dust(2, 4000)`
-            .color(0x7D2DDB)
-            .buildAndRegister();
-    }
-    ```
-
 ## Creating a Gem
 
+=== "Java"
+    ```java title="Gem.java"
+    public static Material PURPLE_COAL = new Material.Builder(
+            ADDON_MOD.id("purple_coal"))
+            .gem(2, 4000)
+            .element(GTElements.C)
+            .ore(2, 3)
+            .color(0x7D2DDB).iconSet(MaterialIconSet.LIGNITE)
+            .buildAndRegister();
+    
+    ```
 === "JavaScript"
     ```js title="gem.js"
     GTCEuStartupEvents.registry('gtceu:material', event => {
@@ -123,42 +127,24 @@ You can change the properties of the material by adding any combination of the f
     })
     ```
 
-=== "Java"
-    ```java title="Gem.java"
-    public static Material PURPLE_COAL;
-    public static void register() {
-        PURPLE_COAL = new Material.Builder(
-            your_mod_id.id("purple_coal"))
-            .gem(2, 4000)
-            .element(GTElements.C)
-            .ore(2, 3) 
-            .color(0x7D2DDB).iconSet(GTMaterialIconSet.LIGNITE)
-            .buildAndRegister();
-        }
-    ```
-
 ## Creating a Fluid
-
-=== "JavaScript"
-    ```js title="fluid.js"
-    // const $FluidBuilder = Java.loadClass('com.gregtechceu.gtceu.api.fluids.FluidBuilder'); Uncomment if you want to use the Fluid Builder.
-    GTCEuStartupEvents.registry('gtceu:material', event => {
-        event.create('mysterious_ooze')
-          .fluid() // Or .liquid(Int Temperature)
-          .color(0x500bbf)
-    })
-    ```
 
 === "Java"
     ```java title="Fluid.java"
-    public static Material MYSTERIOUS_OOZE;
-    public static void register() {
-        MYSTERIOUS_OOZE = new Material.Builder(
+    public static Material MYSTERIOUS_OOZE = new Material.Builder(
             your_mod_id.id("mysterious_ooze"))
             .fluid() // Or .liquid(Int Temperature)
             .color(0x500bbf)
             .buildAndRegister();
-        }
+    ```
+=== "JavaScript"
+    ```js title="fluid.js"
+        // const $FluidBuilder = Java.loadClass('com.gregtechceu.gtceu.api.fluids.FluidBuilder'); Uncomment if you want to use the Fluid Builder.
+        GTCEuStartupEvents.registry('gtceu:material', event => {
+            event.create('mysterious_ooze')
+              .fluid() // Or .liquid(Int Temperature)
+              .color(0x500bbf)
+        })
     ```
 
 !!! note

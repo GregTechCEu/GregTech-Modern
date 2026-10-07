@@ -124,7 +124,7 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
                 set.forEach(fluid -> {
                     fluidTagList.add(new FluidStack(fluid.value(), 1));
                 });
-                row.child(RecipeViewerSlotWidget.create()
+                row.child(RecipeViewerSlotWidget.create(FluidStack.class)
                         .marginLeft(2)
                         .recipeSlotRole(RecipeSlotRole.CATALYST)
                         .value(fluidTagList));
@@ -173,11 +173,11 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
         if (recipe != null && recipe.data.contains("fluidA") && recipe.data.contains("fluidB")) {
             this.resolvedFluids.clear();
 
-            Fluid fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
+            Fluid fluidA = BuiltInRegistries.FLUID.get(ResourceLocation.parse(recipe.data.getString("fluidA")));
             if (!fluidA.defaultFluidState().isEmpty()) {
                 this.resolvedFluids.add(HolderSet.direct(fluidA.builtInRegistryHolder()));
             }
-            Fluid fluidB = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
+            Fluid fluidB = BuiltInRegistries.FLUID.get(ResourceLocation.parse(recipe.data.getString("fluidB")));
             if (!fluidB.defaultFluidState().isEmpty()) {
                 this.resolvedFluids.add(HolderSet.direct(fluidB.builtInRegistryHolder()));
             }

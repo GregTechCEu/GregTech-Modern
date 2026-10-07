@@ -83,7 +83,7 @@ public class BedrockOreVeinSavedData extends SavedData {
      * @param chunkZ Z coordinate of desired chunk
      * @return The OreVeinWorldEntry corresponding with the given chunk
      */
-    public OreVeinWorldEntry getOreVeinWorldEntry(int chunkX, int chunkZ) {
+    public @Nullable OreVeinWorldEntry getOreVeinWorldEntry(int chunkX, int chunkZ) {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         if (!veinOres.containsKey(pos)) {
             int minDistance = ConfigHolder.INSTANCE.worldgen.oreVeins.bedrockOreDistance;

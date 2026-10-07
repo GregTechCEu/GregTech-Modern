@@ -1,19 +1,24 @@
 package com.gregtechceu.gtceu.api.sync_system.managed;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
@@ -48,7 +53,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @Override
     protected final void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.merge(getSyncDataHolder().serializeNBT(false));
+        tag.merge(getSyncDataHolder().serializeNBT(getHolderLookup()));
     }
 
     /**
@@ -63,26 +68,22 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @MustBeInvokedByOverriders
     public void load(CompoundTag tag) {
         super.load(tag);
-        getSyncDataHolder().deserializeNBT(tag, false);
-    }
-
-    /**
-     * Loads BE data from client update packet
-     */
-    @MustBeInvokedByOverriders
-    public void clientLoad(CompoundTag tag) {
-        getSyncDataHolder().deserializeNBT(tag, true);
+        getSyncDataHolder().deserializeNBT(getHolderLookup(), tag);
     }
 
     @Override
     public final void handleUpdateTag(CompoundTag tag) {
-        this.clientLoad(tag);
+        byte[] data = tag.getByteArray("data");
+        getSyncDataHolder().readClientPacket(getHolderLookup(), new FriendlyByteBuf(Unpooled.wrappedBuffer(data)));
     }
 
     @Override
     public final void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         CompoundTag tag = pkt.getTag();
-        if (tag != null) clientLoad(tag);
+        if (tag != null) {
+            byte[] data = tag.getByteArray("data");
+            getSyncDataHolder().readClientPacket(getHolderLookup(), new FriendlyByteBuf(Unpooled.wrappedBuffer(data)));
+        }
     }
 
     /**
@@ -90,10 +91,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @Override
     public CompoundTag getUpdateTag() {
-        CompoundTag tag = new CompoundTag();
-        getSyncDataHolder().resyncAllFields();
-        tag.merge(getSyncDataHolder().serializeNBT(true, true));
-        return tag;
+        return writeClientPacket(true);
     }
 
     /**
@@ -101,7 +99,23 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this, b -> getSyncDataHolder().serializeNBT(true));
+        return ClientboundBlockEntityDataPacket.create(this, b -> writeClientPacket(false));
+    }
+
+    private CompoundTag writeClientPacket(boolean fullSync) {
+        var stream = new FriendlyByteBuf(Unpooled.buffer());
+        if (fullSync) getSyncDataHolder().resyncAllFields();
+        getSyncDataHolder().writeClientPacket(getHolderLookup(), stream);
+
+        stream.capacity(stream.readableBytes());
+        CompoundTag data = new CompoundTag();
+        data.putByteArray("data", stream.array());
+        return data;
+    }
+
+    private HolderLookup.Provider getHolderLookup() {
+        Level level = getLevel();
+        return level == null ? GTRegistries.builtinRegistry() : level.registryAccess();
     }
 
     @Override

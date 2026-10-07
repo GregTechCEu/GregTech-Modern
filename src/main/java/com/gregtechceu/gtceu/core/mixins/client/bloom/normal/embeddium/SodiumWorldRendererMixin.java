@@ -30,7 +30,7 @@ public class SodiumWorldRendererMixin {
         if (!BloomShaderManager.isBloomActive()) return;
 
         if (renderLayer == GTRenderTypes.bloom()) {
-            this.renderSectionManager.renderLayer(matrices, GTEmbeddiumCompat.BLOOM_RENDER_PASS, x, y, z);
+            this.renderSectionManager.renderLayer(matrices, GTEmbeddiumCompat.getBloomRenderPass(), x, y, z);
         }
     }
 }

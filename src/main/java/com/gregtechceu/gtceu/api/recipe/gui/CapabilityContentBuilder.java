@@ -16,6 +16,8 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
@@ -48,9 +50,12 @@ public interface CapabilityContentBuilder {
     void buildWidgetContent(IWidget widget, Content content, IO io, boolean perTick,
                             GTRecipeType recipeType, GTRecipe recipe, int chanceTier, int recipeTier);
 
+    @SuppressWarnings("unchecked")
     CapabilityContentBuilder ITEM = (widget, content, io, perTick,
                                      recipeType, recipe, chanceTier, recipeTier) -> {
-        if (!(widget instanceof RecipeViewerSlotWidget<?> recipeViewerSlotWidget)) return;
+        if (!(widget instanceof RecipeViewerSlotWidget<?, ?> recipeViewerSlot)) return;
+
+        RecipeViewerSlotWidget<ItemStack, ?> recipeViewerSlotWidget = (RecipeViewerSlotWidget<ItemStack, ?>) recipeViewerSlot;
 
         float chance = (float) content.chance() / content.maxChance();
         var innerContent = ItemRecipeCapability.CAP.of(content.content());
@@ -92,9 +97,12 @@ public interface CapabilityContentBuilder {
         });
     };
 
+    @SuppressWarnings("unchecked")
     CapabilityContentBuilder FLUID = (widget, content, io, perTick,
                                       recipeType, recipe, chanceTier, recipeTier) -> {
-        if (!(widget instanceof RecipeViewerSlotWidget<?> recipeViewerSlotWidget)) return;
+        if (!(widget instanceof RecipeViewerSlotWidget<?, ?> recipeViewerSlot)) return;
+
+        RecipeViewerSlotWidget<FluidStack, ?> recipeViewerSlotWidget = (RecipeViewerSlotWidget<FluidStack, ?>) recipeViewerSlot;
 
         float chance = (float) content.chance() / content.maxChance();
         FluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content());

@@ -5,9 +5,9 @@ Multiblocks are MetaMachines that, for the sake of structure checking, are compo
 
 There are two main forms of `IBlockPattern` in base GT Modern, `BlockPattern` and `ExpandablePattern`.
 
-BlockPatterns are a list of slices which are comprised of a list of strings and a mapping of each character to some `PatternPredicate`.
+BlockPatterns are a list of slices which are comprised of a list of strings and a mapping of each character to some `MultiPredicate`.
 
-ExpandablePatterns are a pattern that checks in some axis aligned cuboid around the pattern's origin and for each block in the bounds runs a `Predicate<PatternPredicate>`.
+ExpandablePatterns are a pattern that checks in some axis aligned cuboid around the pattern's origin and for each block in the bounds runs a `Predicate<MultiPredicate>`.
 
 When creating a `PatternDefinition` for either a `BlockPattern` or `ExpandablePattern` in a `MultiblockMachineDefinition`, you need to define the iteration directionality and the origin of the pattern. The pattern `OriginOffset` is where each block in the pattern should be relative to (usually where the controller appears in the pattern).
 
@@ -25,7 +25,7 @@ public static MultiblockMachineDefinition MY_MACHINE = REGISTRATE
                 .slice("XSXX", "CCCC", "CCCC", "XXXX") // (7)
                 .where('S', Predicates.controller(definition)) // (4)
                 .where('X', Predicates.blocks(GTBlocks.CASING_INVAR_HEATPROOF)
-                        .or(Predicates.autoAbilities(GTRecipeTypes.ASSEMBLER_RECIPES))) // (5)
+                        .and(Predicates.autoAbilities(GTRecipeTypes.ASSEMBLER_RECIPES))) // (5)
                 .where('M', Predicates.autoAbilities(false, true, false))
                 .where('A', Predicates.blockTag(CustomTags.CLEANROOM_FLOORS)) // (6)
                 .build())
@@ -38,9 +38,9 @@ public static MultiblockMachineDefinition MY_MACHINE = REGISTRATE
 
 3. A slice with an optional amount of repeats allowed, first value is min allowed(can be zero to make the whole slice optional), second is max allowed.
 
-4. `.where(char, PatternPredicate)` is how the block info to predicate evaluation mapping happens.
+4. `.where(char, MultiPredicate)` is how the block info to predicate evaluation mapping happens.
 
-5. An example complex PatternPredicate.
+5. An example complex MultiPredicate.
 
 6. This char mapping will throw an exception as 'A' does not appear in the pattern slices.
 

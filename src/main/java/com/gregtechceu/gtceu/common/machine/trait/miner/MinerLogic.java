@@ -61,7 +61,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private final int maximumRadius;
     @Getter
     public ItemStack pickaxeTool;
+    @SaveField
     private final LinkedList<BlockPos> blocksToMine = new LinkedList<>();
+    @SaveField
     private int blocksToMineOriginalCount = 0;
     @Getter
     @SaveField
@@ -160,9 +162,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         super.onMachineLoad();
 
         this.inputItemHandler = new ItemRecipeHandler(IO.IN,
-                getRLMachine().getRecipeType().getMaxInputs(ItemRecipeCapability.CAP));
+                getRLMachine().getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), getMachine());
         this.outputItemHandler = new ItemRecipeHandler(IO.OUT,
-                getRLMachine().getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP));
+                getRLMachine().getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), getMachine());
 
         RecipeHandlerList inHandlers = RecipeHandlerList.of(IO.IN, inputItemHandler, new IgnoreEnergyRecipeHandler());
         RecipeHandlerList outHandlers = RecipeHandlerList.of(IO.OUT, outputItemHandler);
@@ -394,23 +396,25 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
             break;
         }
 
-        if (recipe != null) {
-            long eut = recipe.getInputEUt().getTotalEU();
-            if (GTUtil.getTierByVoltage(eut) <= getVoltageTier()) {
-                if (RecipeHelper.handleRecipeIO(this, recipe, IO.OUT, this.chanceCaches).isSuccess()) {
-                    blockDrops.clear();
-                    var result = new ArrayList<ItemStack>();
-                    for (int i = 0; i < outputItemHandler.storage.getSlots(); ++i) {
-                        var stack = outputItemHandler.storage.getStackInSlot(i);
-                        if (stack.isEmpty()) continue;
-                        result.add(stack);
-                    }
-                    dropPostProcessing(blockDrops, result, blockState, builder);
-                    return true;
-                }
-            }
+        if (recipe == null) {
+            return false;
         }
-        return false;
+        long eut = recipe.getInputEUt().getTotalEU();
+        if (GTUtil.getTierByVoltage(eut) > getVoltageTier()) {
+            return false;
+        }
+        if (!RecipeHelper.handleRecipeIO(this, recipe, IO.OUT, this.chanceCaches).isSuccess()) {
+            return false;
+        }
+        blockDrops.clear();
+        var result = new ArrayList<ItemStack>();
+        for (int i = 0; i < outputItemHandler.storage.getSlots(); ++i) {
+            var stack = outputItemHandler.storage.getStackInSlot(i);
+            if (stack.isEmpty()) continue;
+            result.add(stack);
+        }
+        dropPostProcessing(blockDrops, result, blockState, builder);
+        return true;
     }
 
     protected void dropPostProcessing(NonNullList<ItemStack> blockDrops, List<ItemStack> outputs, BlockState blockState,

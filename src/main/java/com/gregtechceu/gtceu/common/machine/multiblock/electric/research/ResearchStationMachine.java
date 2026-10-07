@@ -27,6 +27,7 @@ import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,9 +41,9 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                                     implements IOpticalComputationReceiver {
 
     @Getter
-    private IOpticalComputationProvider computationProvider;
+    private @Nullable IOpticalComputationProvider computationProvider;
     @Getter
-    private ObjectHolderMachine objectHolder;
+    private @Nullable ObjectHolderMachine objectHolder;
 
     public ResearchStationMachine(BlockEntityCreationInfo info) {
         super(info, new ResearchStationRecipeLogic());
@@ -62,7 +63,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
             if (part instanceof ObjectHolderMachine holder) {
                 if (holder.getFrontFacing() != getFrontFacing().getOpposite()) {
                     pState.setError(new PatternStringError(
-                            Component.translatable("multiblock.gtceu.pattern_error.object_holder.direction")));
+                            Component.translatable("gtceu.predicate_error.object_holder.direction")));
                     invalidateStructure(substructureName);
                     return;
                 }
@@ -77,13 +78,13 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         // should never happen, but would rather do this than have an obscure NPE
         if (computationProvider == null) {
             pState.setError(new PatternStringError(
-                    Component.translatable("multiblock.gtceu.pattern_error.research.missing_computation")));
+                    Component.translatable("gtceu.predicate_error.research.missing_computation")));
             invalidateStructure(substructureName);
         }
 
         if (objectHolder == null) {
             pState.setError(new PatternStringError(
-                    Component.translatable("multiblock.gtceu.pattern_error.research.missing_object_holder")));
+                    Component.translatable("gtceu.predicate_error.research.missing_object_holder")));
             invalidateStructure(substructureName);
         }
     }
@@ -101,8 +102,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         }
         if (objHolder != null && objHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
             patternState.setError(
-                    new PatternStringError(
-                            Component.translatable("multiblock.gtceu.pattern_error.object_holder.direction")));
+                    new PatternStringError(Component.translatable("gtceu.predicate_error.object_holder.direction")));
             invalidateStructure(name);
         }
         return patternState;
@@ -135,6 +135,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         widgets.add(GTMultiblockTextUtil.addOutputLines(this, syncManager));
         // .addComputationUsageExactLine(computationProvider.getMaxCWUt()) // TODO: (Onion)
         widgets.add(GTMultiblockTextUtil.addProgressLinePercentOnly(this, syncManager));
+        widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
         return widgets;
     }
 

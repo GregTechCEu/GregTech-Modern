@@ -101,8 +101,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 } else {
                     BlockPos p = part.getBlockPos();
                     pState.setError(new PatternStringError(Component.translatable(
-                            "multiblock.gtceu.pattern_error.distillery.unexpected_hatch", p.getX(), p.getY(),
-                            p.getZ())));
+                            "gtceu.predicate_error.distillery.unexpected_hatch", p.getX(), p.getY(), p.getZ())));
                     // GTCEu.LOGGER.error(
                     // "The Distillation Tower at {} has a fluid export hatch with an unexpected Y position",
                     // getBlockPos());
@@ -112,8 +111,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             }
         } else {
             pState.setError(
-                    new PatternStringError(
-                            Component.translatable("multiblock.gtceu.pattern_error.distillery.missing_outputs")));
+                    new PatternStringError(Component.translatable("gtceu.predicate_error.distillery.missing_outputs")));
             invalidateStructure(substructureName);
         }
     }
@@ -142,7 +140,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 .map(Content::content)
                 .map(FluidRecipeCapability.CAP::of)
                 .filter(i -> !i.isEmpty())
-                .mapToInt((i -> i instanceof IRangedIngredient ? ((IRangedIngredient) i).getMaxRoll() : i.getAmount()))
+                .mapToInt((i -> i instanceof IRangedIngredient ranged ? ranged.getMaxRoll() : i.getAmount()))
                 .max()
                 .orElse(0);
 
@@ -168,7 +166,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 recipe.outputChanceLogics,
                 recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
                 recipe.ingredientActions,
-                recipe.data, recipe.duration, recipe.recipeCategory, recipe.groupColor);
+                recipe.data, recipe.duration, recipe.recipeCategory, recipe.groupColor, recipe.keepSpoilingProgress);
     }
 
     public static class DistillationTowerLogic extends RecipeLogic {

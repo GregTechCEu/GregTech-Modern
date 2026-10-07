@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -699,6 +700,18 @@ public class GTRecipeTypes {
     public static final GTRecipeType DUMMY_RECIPES = register("dummy", DUMMY)
             .setXEIVisible(false);
 
+    public static GTRecipeType register(ResourceLocation id, String group, RecipeType<?>... proxyRecipes) {
+        var recipeType = new GTRecipeType(id, group, proxyRecipes);
+        GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, recipeType.registryName, recipeType);
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.registryName, new GTRecipeSerializer());
+        GTRegistries.RECIPE_TYPES.register(recipeType.registryName, recipeType);
+        return recipeType;
+    }
+
+    /**
+     * @deprecated Use {@link #register(ResourceLocation, String, RecipeType[])} instead.
+     */
+    @Deprecated(since = "8.0.0", forRemoval = true)
     public static GTRecipeType register(String name, String group, RecipeType<?>... proxyRecipes) {
         var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);
         GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, recipeType.registryName, recipeType);

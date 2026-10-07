@@ -20,7 +20,7 @@ import snownee.jade.api.config.IPluginConfig;
 public class ExhaustVentBlockProvider extends MachineTraitProvider<ExhaustVentMachineTrait, CompoundTag> {
 
     public ExhaustVentBlockProvider() {
-        super(GTCEu.id("exhaust_vent_info"), ExhaustVentMachineTrait.TYPE);
+        super(GTCEu.id("exhaust_vent_info"), ExhaustVentMachineTrait.class);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class ExhaustVentBlockProvider extends MachineTraitProvider<ExhaustVentMa
             if (!compoundTag.getBoolean("ventBlocked")) return;
 
             if (blockAccessor.showDetails()) {
-                var block = BuiltInRegistries.BLOCK.get(new ResourceLocation(compoundTag.getString("ventBlock")))
+                var block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(compoundTag.getString("ventBlock")))
                         .asItem().getDefaultInstance();
                 iTooltip.append(iTooltip.getElementHelper().smallItem(block));
             }

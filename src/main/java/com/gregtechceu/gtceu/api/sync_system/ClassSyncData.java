@@ -8,8 +8,7 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,11 +41,11 @@ public final class ClassSyncData {
     }
 
     @Getter
-    private final List<FieldSyncData> managedFields = new ObjectArrayList<>();
+    private final Map<String, FieldSyncData> managedFields = new Object2ObjectOpenHashMap<>();
     @Getter
-    private final Set<FieldSyncData> clientSyncFields = new ObjectOpenHashSet<>();
+    private final Map<String, FieldSyncData> clientSyncFields = new Object2ObjectOpenHashMap<>();
     @Getter
-    private final Set<FieldSyncData> serverSaveFields = new ObjectOpenHashSet<>();
+    private final Map<String, FieldSyncData> serverSaveFields = new Object2ObjectOpenHashMap<>();
     @Getter
     private @Nullable Supplier<?> clientsideConstructor = null;
 
@@ -109,17 +108,17 @@ public final class ClassSyncData {
 
             FieldSyncData syncData = new FieldSyncData(field, handle, ValueTransformers.get(field.getGenericType()),
                     changeListeners.getOrDefault(field.getName(), List.of()));
-            managedFields.add(syncData);
-            if (hasClientSync) clientSyncFields.add(syncData);
-            if (hasSaveField) serverSaveFields.add(syncData);
+            managedFields.put(field.getName(), syncData);
+            if (hasClientSync) clientSyncFields.put(field.getName(), syncData);
+            if (hasSaveField) serverSaveFields.put(field.getName(), syncData);
         }
 
         Class<?> parent = clazz.getSuperclass();
         if (ISyncManaged.class.isAssignableFrom(parent)) {
             ClassSyncData parentHandles = CACHE.get(parent);
-            managedFields.addAll(parentHandles.managedFields);
-            clientSyncFields.addAll(parentHandles.clientSyncFields);
-            serverSaveFields.addAll(parentHandles.serverSaveFields);
+            managedFields.putAll(parentHandles.managedFields);
+            clientSyncFields.putAll(parentHandles.clientSyncFields);
+            serverSaveFields.putAll(parentHandles.serverSaveFields);
         }
     }
 
@@ -131,9 +130,8 @@ public final class ClassSyncData {
      * @param transformer The custom value transformer
      */
     public void setCustomTransformerForField(String fieldName, ValueTransformer<?> transformer) {
-        managedFields.stream().filter(f -> Objects.equals(f.fieldName, fieldName))
-                .findFirst()
-                .ifPresent(fieldData -> fieldData.setTransformer(transformer));
+        Objects.requireNonNull(managedFields.get(fieldName), "Unknown save/sync field: " + fieldName)
+                .setTransformer(transformer);
     }
 
     /**

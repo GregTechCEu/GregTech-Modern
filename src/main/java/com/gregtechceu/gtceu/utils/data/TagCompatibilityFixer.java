@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.utils.data;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
 import com.gregtechceu.gtceu.common.machine.trait.ProgrammableCircuitSlotTrait;
@@ -19,7 +19,7 @@ import java.util.Objects;
 public final class TagCompatibilityFixer {
 
     public static void putTraitTag(MetaMachine machine, CompoundTag machineTag,
-                                   MachineTraitType<?> type, String defaultName,
+                                   Class<? extends MachineTrait> type, String defaultName,
                                    CompoundTag data) {
         var traits = machine.getTraits(type);
 
@@ -47,7 +47,7 @@ public final class TagCompatibilityFixer {
             var newTag = new CompoundTag();
             newTag.put("storage", Objects.requireNonNull(tag.get("chargerInventory")));
 
-            putTraitTag(machine, tag, BatterySlotTrait.TYPE, "batterySlot", newTag);
+            putTraitTag(machine, tag, BatterySlotTrait.class, "batterySlot", newTag);
         }
     }
 
@@ -55,7 +55,7 @@ public final class TagCompatibilityFixer {
         if (tag.contains("circuitInventory")) {
             var oldData = tag.getCompound("circuitInventory");
 
-            putTraitTag(machine, tag, ProgrammableCircuitSlotTrait.TYPE, "circuitSlot", oldData);
+            putTraitTag(machine, tag, ProgrammableCircuitSlotTrait.class, "circuitSlot", oldData);
         }
     }
 
@@ -74,7 +74,7 @@ public final class TagCompatibilityFixer {
         if (allowInputItems != null) outputTag.put("allowItemInputFromOutputSide", allowInputItems);
         if (allowInputFluids != null) outputTag.put("allowFluidInputFromOutputSide", allowInputFluids);
 
-        putTraitTag(machine, machineTag, AutoOutputTrait.TYPE, "autoOutput", outputTag);
+        putTraitTag(machine, machineTag, AutoOutputTrait.class, "autoOutput", outputTag);
     }
 
     public static Direction fixUpwardsFacing(Direction frontfacing, Direction upwardsFacing) {

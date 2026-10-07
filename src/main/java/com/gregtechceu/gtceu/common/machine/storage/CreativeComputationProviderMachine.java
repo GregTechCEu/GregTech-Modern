@@ -107,6 +107,9 @@ public class CreativeComputationProviderMachine extends MetaMachine
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
+        var lastRequestedSyncCWU = new IntSyncValue(() -> this.lastRequestedCWUt, x -> {});
+        syncManager.syncValue("lastRequestedCWU", lastRequestedSyncCWU);
+
         mainWidget
                 .child(Flow.column()
                         .padding(10)
@@ -118,14 +121,16 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                 .child(new TextWidget<>(Text.lang("gtceu.creative.computation.max_usage")))
                                 .child(new TextFieldWidget()
                                         .setNumbers(0, Integer.MAX_VALUE)
-                                        .value(new IntSyncValue(() -> maxCWUt, (v) -> maxCWUt = v))))
+                                        .value(new IntSyncValue(() -> maxCWUt, (v) -> maxCWUt = v).allowC2S())))
                         .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
                                 .leftRel(0)
                                 .childPadding(5)
                                 .coverChildren()
-                                .child(new TextWidget<>(Text.lang("gtceu.creative.computation.average",
-                                        lastRequestedCWUt)))));
+                                .child(
+                                        Text.dynamic(() -> Text.lang("gtceu.creative.computation.average",
+                                                lastRequestedSyncCWU.getIntValue()))
+                                                .asWidget())));
     }
 }

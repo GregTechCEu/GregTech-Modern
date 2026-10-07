@@ -30,7 +30,7 @@ public class BiomeTagCondition extends RecipeCondition<BiomeTagCondition> {
 
     public final static BiomeTagCondition INSTANCE = new BiomeTagCondition();
     @Getter
-    private TagKey<Biome> biome = TagKey.create(Registries.BIOME, new ResourceLocation("dummy"));
+    private TagKey<Biome> biome = TagKey.create(Registries.BIOME, ResourceLocation.withDefaultNamespace("dummy"));
 
     public BiomeTagCondition(boolean isReverse, TagKey<Biome> biome) {
         super(isReverse);

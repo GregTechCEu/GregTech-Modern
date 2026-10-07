@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.machine.trait.notifiable;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -14,9 +13,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class NotifiableLaserContainer extends NotifiableEnergyContainer implements ILaserContainer {
-
-    public static final MachineTraitType<NotifiableLaserContainer> TYPE = new MachineTraitType<>(
-            NotifiableLaserContainer.class);
 
     public NotifiableLaserContainer(long maxCapacity, long maxInputVoltage, long maxInputAmperage,
                                     long maxOutputVoltage, long maxOutputAmperage) {
@@ -31,11 +27,6 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
     public static NotifiableLaserContainer receiverContainer(long maxCapacity,
                                                              long maxInputVoltage, long maxInputAmperage) {
         return new NotifiableLaserContainer(maxCapacity, maxInputVoltage, maxInputAmperage, 0L, 0L);
-    }
-
-    @Override
-    public MachineTraitType<NotifiableLaserContainer> getTraitType() {
-        return TYPE;
     }
 
     @Override
