@@ -118,9 +118,9 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                 ModuleContext moduleData = modularItem.getModuleContextForSlot(slotI);
                 if (moduleData != null) {
                     tooltipComponents.add(Component.literal(" - ")
-                                .append(slot.getDisplayName())
-                                .append(Component.literal(": "))
-                                .append(moduleData.getModule().getDisplayName(moduleData)));
+                            .append(slot.getDisplayName())
+                            .append(Component.literal(": "))
+                            .append(moduleData.getModule().getDisplayName(moduleData)));
 
                     List<Component> moduleTooltips = new ArrayList<>();
                     moduleData.getModule().appendHoverText(moduleData, context, moduleTooltips, isAdvanced);

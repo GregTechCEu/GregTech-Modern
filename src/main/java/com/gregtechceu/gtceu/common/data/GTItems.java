@@ -815,24 +815,24 @@ public class GTItems {
             CONVEYOR_MODULE_UXV, CONVEYOR_MODULE_OpV, null
     };
 
-    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_LV = registerFieldGenerator(GTValues.LV);
-    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_MV = registerFieldGenerator(GTValues.MV);
-    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_HV = registerFieldGenerator(GTValues.HV);
-    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_EV = registerFieldGenerator(GTValues.EV);
-    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_IV = registerFieldGenerator(GTValues.IV);
-    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_LuV = registerFieldGenerator(GTValues.LuV);
-    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_ZPM = registerFieldGenerator(GTValues.ZPM);
-    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_UV = registerFieldGenerator(GTValues.UV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_LV = registerElectricPiston(GTValues.LV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_MV = registerElectricPiston(GTValues.MV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_HV = registerElectricPiston(GTValues.HV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_EV = registerElectricPiston(GTValues.EV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_IV = registerElectricPiston(GTValues.IV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_LuV = registerElectricPiston(GTValues.LuV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_ZPM = registerElectricPiston(GTValues.ZPM);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_UV = registerElectricPiston(GTValues.UV);
     public static ItemEntry<ComponentItem> ELECTRIC_PISTON_UHV = GTCEuAPI.isHighTier() ?
-            registerFieldGenerator(GTValues.UHV) : null;
+            registerElectricPiston(GTValues.UHV) : null;
     public static ItemEntry<ComponentItem> ELECTRIC_PISTON_UEV = GTCEuAPI.isHighTier() ?
-            registerFieldGenerator(GTValues.UEV) : null;
+            registerElectricPiston(GTValues.UEV) : null;
     public static ItemEntry<ComponentItem> ELECTRIC_PISTON_UIV = GTCEuAPI.isHighTier() ?
-            registerFieldGenerator(GTValues.UIV) : null;
+            registerElectricPiston(GTValues.UIV) : null;
     public static ItemEntry<ComponentItem> ELECTRIC_PISTON_UXV = GTCEuAPI.isHighTier() ?
-            registerFieldGenerator(GTValues.UXV) : null;
+            registerElectricPiston(GTValues.UXV) : null;
     public static ItemEntry<ComponentItem> ELECTRIC_PISTON_OpV = GTCEuAPI.isHighTier() ?
-            registerFieldGenerator(GTValues.OpV) : null;
+            registerElectricPiston(GTValues.OpV) : null;
 
     private static ItemEntry<ComponentItem> registerElectricPiston(int tier) {
         var builder = REGISTRATE
@@ -889,24 +889,24 @@ public class GTItems {
             ROBOT_ARM_ZPM, ROBOT_ARM_UV, ROBOT_ARM_UHV, ROBOT_ARM_UEV, ROBOT_ARM_UIV, ROBOT_ARM_UXV, ROBOT_ARM_OpV, null
     };
 
-    public static ItemEntry<ComponentItem> FIELD_GENERATOR_LV = registerElectricPiston(GTValues.LV);
-    public static ItemEntry<ComponentItem> FIELD_GENERATOR_MV = registerElectricPiston(GTValues.MV);
-    public static ItemEntry<ComponentItem> FIELD_GENERATOR_HV = registerElectricPiston(GTValues.HV);
-    public static ItemEntry<ComponentItem> FIELD_GENERATOR_EV = registerElectricPiston(GTValues.EV);
-    public static ItemEntry<ComponentItem> FIELD_GENERATOR_IV = registerElectricPiston(GTValues.IV);
-    public static ItemEntry<ComponentItem> FIELD_GENERATOR_LuV = registerElectricPiston(GTValues.LuV);
-    public static ItemEntry<ComponentItem> FIELD_GENERATOR_ZPM = registerElectricPiston(GTValues.ZPM);
-    public static ItemEntry<ComponentItem> FIELD_GENERATOR_UV = registerElectricPiston(GTValues.UV);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_LV = registerFieldGenerator(GTValues.LV);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_MV = registerFieldGenerator(GTValues.MV);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_HV = registerFieldGenerator(GTValues.HV);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_EV = registerFieldGenerator(GTValues.EV);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_IV = registerFieldGenerator(GTValues.IV);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_LuV = registerFieldGenerator(GTValues.LuV);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_ZPM = registerFieldGenerator(GTValues.ZPM);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_UV = registerFieldGenerator(GTValues.UV);
     public static ItemEntry<ComponentItem> FIELD_GENERATOR_UHV = GTCEuAPI.isHighTier() ?
-            registerElectricPiston(GTValues.UHV) : null;
+            registerFieldGenerator(GTValues.UHV) : null;
     public static ItemEntry<ComponentItem> FIELD_GENERATOR_UEV = GTCEuAPI.isHighTier() ?
-            registerElectricPiston(GTValues.UEV) : null;
+            registerFieldGenerator(GTValues.UEV) : null;
     public static ItemEntry<ComponentItem> FIELD_GENERATOR_UIV = GTCEuAPI.isHighTier() ?
-            registerElectricPiston(GTValues.UIV) : null;
+            registerFieldGenerator(GTValues.UIV) : null;
     public static ItemEntry<ComponentItem> FIELD_GENERATOR_UXV = GTCEuAPI.isHighTier() ?
-            registerElectricPiston(GTValues.UXV) : null;
+            registerFieldGenerator(GTValues.UXV) : null;
     public static ItemEntry<ComponentItem> FIELD_GENERATOR_OpV = GTCEuAPI.isHighTier() ?
-            registerElectricPiston(GTValues.OpV) : null;
+            registerFieldGenerator(GTValues.OpV) : null;
 
     private static ItemEntry<ComponentItem> registerFieldGenerator(int tier) {
         var builder = REGISTRATE

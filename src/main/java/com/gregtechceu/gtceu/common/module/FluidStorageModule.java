@@ -1,16 +1,13 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.api.capability.GTCapability;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.ThermalFluidStats;
 import com.gregtechceu.gtceu.api.item.module.CapabilityProviderItemModule;
-import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
-
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -18,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.ItemCapability;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -48,7 +44,7 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
     public @Nullable IFluidHandlerItem createCapabilityForStack(ModuleContext context, ItemStack stack) {
         if (!(stack.getItem() instanceof IComponentItem componentItem)) return null;
         ThermalFluidStats thermalStats = null;
-        for (var component: componentItem.getComponents()) {
+        for (var component : componentItem.getComponents()) {
             if (component instanceof ThermalFluidStats stats) {
                 thermalStats = stats;
                 break;
