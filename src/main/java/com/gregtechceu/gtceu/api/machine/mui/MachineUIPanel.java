@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.mui;
 
+import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.drawable.GuiTextures;
-import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.ToggleButton;
@@ -33,10 +33,8 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
     protected final @Nullable Flow tabTogglePanel;
     @Getter
     protected final ParentWidget<?> mainContents;
-    @Getter
-    protected final @Nullable MachineInWorldPreviewWidget eioWidget;
 
-    private boolean currentlyDisplayingEIOTab = false;
+    protected final @Nullable IPanelHandler previewWidgetPanelHandler;
 
     public MachineUIPanel(MetaMachine machine, PanelSyncManager syncManager, UISettings settings, boolean attachPlayerInventory,
                           boolean addTitleBar, boolean drawGTLogo, UITexture gtLogoTexture, boolean displayEIOWidget) {
@@ -62,10 +60,11 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
 
         if (displayEIOWidget) {
             tabTogglePanel = createTabButtonPanel(themeBackground);
-            eioWidget = new MachineInWorldPreviewWidget(machine, syncManager).disabled();
+            previewWidgetPanelHandler = syncManager.syncedPanel("world_preview_panel", true,
+                    (psm, sync) -> new MachineInWorldPreview(machine, psm));
         } else {
             tabTogglePanel = null;
-            eioWidget = null;
+            previewWidgetPanelHandler = null;
         }
 
         Flow panelContents = Flow.col().coverChildren().collapseDisabledChildren();
@@ -73,7 +72,7 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
         mainContents = new ParentWidget<>()
                 .coverChildren(DEFAULT_CONTENT_WIDTH, DEFAULT_CONTENT_HEIGHT);
 
-        panelContents.child(eioWidget).child(mainContents);
+        panelContents.child(mainContents);
 
         if (attachPlayerInventory) {
             panelContents.childPadding(2);
@@ -89,7 +88,7 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
 
         if (drawGTLogo) {
             panelContents.child(new IDrawable.DrawableWidget(gtLogoTexture)
-                    .right(7).bottom(7 + (attachPlayerInventory ? 78 : 0)).decoration().setEnabledIf(w -> !currentlyDisplayingEIOTab));
+                    .right(7).bottom(7 + (attachPlayerInventory ? 78 : 0)).decoration());
         }
 
         coverChildren();
@@ -97,13 +96,6 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
         if (tabTogglePanel != null) child(tabTogglePanel);
         child(rightConfiguratorPanel);
         child(panelContents);
-    }
-
-    private void toggleTabDisplay() {
-        if (eioWidget == null) return;
-        currentlyDisplayingEIOTab = !currentlyDisplayingEIOTab;
-        mainContents.setEnabled(!currentlyDisplayingEIOTab);
-        eioWidget.setEnabled(currentlyDisplayingEIOTab);
     }
 
     private Flow createTabButtonPanel(UITexture themeBackground) {
@@ -118,14 +110,10 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
                 .background(themeBackground.getSubArea(0f, 0f, 0.75f, 1.0f))
                 .child(new ToggleButton()
                         .value(new BoolValue.Dynamic(
-                                () -> !currentlyDisplayingEIOTab,
-                                (b) -> toggleTabDisplay()))
-                        .size(16)
-                        .overlay(new ItemDrawable(machine.getDefinition().getItem())))
-                .child(new ToggleButton()
-                        .value(new BoolValue.Dynamic(
-                                () -> currentlyDisplayingEIOTab,
-                                (b) -> toggleTabDisplay()))
+                                () -> previewWidgetPanelHandler != null && previewWidgetPanelHandler.isPanelOpen(),
+                                (b) -> {
+                                    if (previewWidgetPanelHandler != null) previewWidgetPanelHandler.togglePanel();
+                                }))
                         .size(16)
                         .overlay(GuiTextures.GEAR))
                 .decoration();
