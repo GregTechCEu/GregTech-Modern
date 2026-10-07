@@ -223,7 +223,17 @@ public class GTMachines {
                     .workableTieredHullModel(GTCEu.id("block/machines/welder"))
                     .register(),
             ELECTRIC_TIERS);
-
+    public static final MachineDefinition[] SPOOLING = registerTieredMachines(REGISTRATE,
+            "spooler",
+            SimpleTieredMachine::new, (tier, builder) -> builder
+                    .langValue("%s Spooler %s".formatted(VLVH[tier], VLVT[tier]))
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(GTRecipeTypes.SPOOLING_RECIPES)
+                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
+                    .workableTieredHullModel(GTCEu.id("block/machines/spooling"))
+                    .register(),
+            ELECTRIC_TIERS);
     public static final MachineDefinition[] AUTOCLAVE = new SimpleMachineBuilder(REGISTRATE, "autoclave",
             GTRecipeTypes.AUTOCLAVE_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)

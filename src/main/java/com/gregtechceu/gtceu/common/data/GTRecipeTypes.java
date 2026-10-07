@@ -117,6 +117,12 @@ public class GTRecipeTypes {
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER))
             .setSound(GTSoundEntries.ASSEMBLER);
 
+    public static final GTRecipeType SPOOLING_RECIPES = register("spooling", ELECTRIC)
+            .setMaxIOSize(3, 1, 1, 0)
+            .setEUIO(IO.IN)
+            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER))
+            .setSound(GTSoundEntries.COMPRESSOR);
+
     public static final GTRecipeType WELDER_RECIPES = register("welder", ELECTRIC)
             .setMaxIOSize(4, 1, 1, 0)
             .setEUIO(IO.IN)
