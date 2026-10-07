@@ -189,41 +189,30 @@ public class CraftingRecipeLoader {
 
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_bottle", SHAPE_EXTRUDER_BOTTLE.asStack(),
                 "  x", " S ", "   ", 'S', SHAPE_EXTRUDER_RING.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_gear", SHAPE_EXTRUDER_GEAR.asStack(), "x  ",
-                " S ", "   ", 'S', SHAPE_EXTRUDER_RING.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_block", SHAPE_EXTRUDER_BLOCK.asStack(),
                 "x  ", " S ", "   ", 'S', SHAPE_EXTRUDER_INGOT.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_pipe_huge",
-                SHAPE_EXTRUDER_PIPE_HUGE.asStack(), "   ", " S ", "  x", 'S', SHAPE_EXTRUDER_BOLT.asStack());
+                SHAPE_EXTRUDER_PIPE_HUGE.asStack(), "   ", "S x", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_pipe_large",
-                SHAPE_EXTRUDER_PIPE_LARGE.asStack(), "   ", " Sx", "   ", 'S', SHAPE_EXTRUDER_BOLT.asStack());
+                SHAPE_EXTRUDER_PIPE_LARGE.asStack(), "   ", " S ", "x  ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_pipe_normal",
-                SHAPE_EXTRUDER_PIPE_NORMAL.asStack(), "  x", " S ", "   ", 'S', SHAPE_EXTRUDER_BOLT.asStack());
+                SHAPE_EXTRUDER_PIPE_NORMAL.asStack(), "   ", "xS ", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_pipe_small",
-                SHAPE_EXTRUDER_PIPE_SMALL.asStack(), " x ", " S ", "   ", 'S', SHAPE_EXTRUDER_BOLT.asStack());
+                SHAPE_EXTRUDER_PIPE_SMALL.asStack(), "   ", " Sx", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_pipe_tiny",
-                SHAPE_EXTRUDER_PIPE_TINY.asStack(), "x  ", " S ", "   ", 'S', SHAPE_EXTRUDER_BOLT.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_wire", SHAPE_EXTRUDER_WIRE.asStack(), " x ",
-                " S ", "   ", 'S', SHAPE_EXTRUDER_ROD.asStack());
+                SHAPE_EXTRUDER_PIPE_TINY.asStack(), "  x", " S ", "   ", 'S', SHAPE_EMPTY.asStack());
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_wire",
+                SHAPE_EXTRUDER_WIRE.asStack(), " x ", " S ", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_ingot", SHAPE_EXTRUDER_INGOT.asStack(),
                 "x  ", " S ", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_cell", SHAPE_EXTRUDER_CELL.asStack(), "   ",
                 " Sx", "   ", 'S', SHAPE_EXTRUDER_RING.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_ring", SHAPE_EXTRUDER_RING.asStack(), "   ",
                 " S ", " x ", 'S', SHAPE_EMPTY.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_bolt", SHAPE_EXTRUDER_BOLT.asStack(), "x  ",
-                " S ", "   ", 'S', SHAPE_EXTRUDER_ROD.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_rod", SHAPE_EXTRUDER_ROD.asStack(), "   ",
-                " Sx", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_plate", SHAPE_EXTRUDER_PLATE.asStack(),
                 "x  ", " S ", "   ", 'S', SHAPE_EXTRUDER_FOIL.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_gear_small",
-                SHAPE_EXTRUDER_GEAR_SMALL.asStack(), " x ", " S ", "   ", 'S', SHAPE_EXTRUDER_RING.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_foil", SHAPE_EXTRUDER_FOIL.asStack(), "   ",
                 " S ", "  x", 'S', SHAPE_EMPTY.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_rotor", SHAPE_EXTRUDER_ROTOR.asStack(),
-                "   ", " S ", "x  ", 'S', SHAPE_EMPTY.asStack());
-
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_pill", SHAPE_MOLD_PILL.asStack(), "  h",
                 "  S", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_rotor", SHAPE_MOLD_ROTOR.asStack(), "  h",

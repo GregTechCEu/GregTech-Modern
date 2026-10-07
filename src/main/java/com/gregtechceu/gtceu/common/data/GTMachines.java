@@ -34,6 +34,7 @@ import com.gregtechceu.gtceu.common.machine.steam.SteamMinerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolarBoiler;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.*;
+import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
@@ -217,6 +218,28 @@ public class GTMachines {
             .tankScalingFunction(hvCappedTankSizeFunction)
             .hasPollutionDebuff(true)
             .register();
+    public static final MachineEntry<MachineDefinition>[] WELDER = registerTieredMachines(REGISTRATE,
+            "welder",
+            SimpleTieredMachine::new, (tier, builder) -> builder
+                    .langValue("%s Welder %s".formatted(VLVH[tier], VLVT[tier]))
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(GTRecipeTypes.WELDER_RECIPES)
+                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
+                    .workableTieredHullModel(GTCEu.id("block/machines/welder"))
+                    .register(),
+            ELECTRIC_TIERS);
+    public static final MachineEntry<MachineDefinition>[] SPOOLING = registerTieredMachines(REGISTRATE,
+            "spooler",
+            SimpleTieredMachine::new, (tier, builder) -> builder
+                    .langValue("%s Spooler %s".formatted(VLVH[tier], VLVT[tier]))
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(GTRecipeTypes.SPOOLING_RECIPES)
+                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
+                    .workableTieredHullModel(GTCEu.id("block/machines/spooling"))
+                    .register(),
+            ELECTRIC_TIERS);
     public static final MachineEntry<MachineDefinition>[] AUTOCLAVE = new SimpleMachineBuilder(REGISTRATE, "autoclave",
             GTRecipeTypes.AUTOCLAVE_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
@@ -287,7 +310,7 @@ public class GTMachines {
             "forming_press",
             GTRecipeTypes.FORMING_PRESS_RECIPES).register();
     public static final MachineEntry<MachineDefinition>[] LATHE = new SimpleMachineBuilder(REGISTRATE, "lathe",
-            GTRecipeTypes.LATHE_RECIPES)
+            GTRecipeTypes.LATHE_RECIPES).recipeLogic(LatheRecipeLogic::new)
             .register();
     public static final MachineEntry<MachineDefinition>[] SCANNER = new SimpleMachineBuilder(REGISTRATE, "scanner",
             GTRecipeTypes.SCANNER_RECIPES)
