@@ -327,15 +327,6 @@ public final class MaterialRecipeHandler {
                     ChemicalHelper.get(rod, magMaterial),
                     "f ", " X",
                     'X', new MaterialEntry(ingot, material));
-            if (!material.hasFlag(NO_WORKING)) {
-                EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_to_rod")
-                        .inputItems(ingot, material)
-                        .notConsumable(GTItems.SHAPE_EXTRUDER_ROD)
-                        .outputItems(rod, magMaterial, 2)
-                        .duration((int) material.getMass() * 2)
-                        .EUt(6L * getVoltageMultiplier(material))
-                        .save(provider);
-            }
         }
 
         if (material.hasFluid()) {

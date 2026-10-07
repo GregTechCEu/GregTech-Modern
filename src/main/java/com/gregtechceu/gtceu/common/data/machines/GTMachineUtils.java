@@ -802,6 +802,8 @@ public class GTMachineUtils {
         @Setter
         private Int2IntFunction tankScalingFunction = defaultTankSizeFunction;
         @Setter
+        private Supplier<RecipeLogic> recipeLogic = RecipeLogic::new;
+        @Setter
         private boolean hasPollutionDebuff = false;
         @Setter
         private PanelFactory panelFactory = null;
@@ -824,7 +826,8 @@ public class GTMachineUtils {
                 panelFactory = GTSingleblockMachinePanels.GENERAL_MACHINE;
             }
             return registerTieredMachines(registrate, name,
-                    (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> {
+                    (holder, tier) -> new SimpleTieredMachine(holder, tier, recipeLogic.get(), tankScalingFunction),
+                    (tier, builder) -> {
                         if (hasPollutionDebuff) {
                             builder.recipeModifiers(GTRecipeModifiers.ENVIRONMENT_REQUIREMENT
                                     .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 100 * tier),

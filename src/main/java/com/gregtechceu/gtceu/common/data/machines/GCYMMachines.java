@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.common.machine.GTMachineInstanceFactories;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.DistillationTowerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
+import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -570,7 +571,7 @@ public class GCYMMachines {
             .register();
 
     public static final MachineEntry<MultiblockMachineDefinition> LARGE_CUTTER = REGISTRATE
-            .multiblock("large_cutter", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_cutter", info -> new WorkableElectricMultiblockMachine(info, new LatheRecipeLogic()))
             .langValue("Large Cutting Saw")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
