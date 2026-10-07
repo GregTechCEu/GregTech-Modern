@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
@@ -105,10 +106,12 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                     }
 
                     if (isInput) {
-                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption").append(" ")
+                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption")
+                                .append(CommonComponents.SPACE)
                                 .append(text));
                     } else {
-                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption").append(" ")
+                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption")
+                                .append(CommonComponents.SPACE)
                                 .append(text));
                         long generatorPower = recipeInfo.getLong("generatorPower");
                         if (generatorPower > 0 && generatorPower < EUt) {

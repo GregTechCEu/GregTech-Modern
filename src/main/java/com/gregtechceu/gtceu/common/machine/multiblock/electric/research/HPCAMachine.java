@@ -35,6 +35,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
@@ -696,7 +697,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             // Coolant Required
             if (getMaxCoolantDemand() > 0) {
                 data = FormattingUtil.prepend("common.gtceu.millibucket", getMaxCoolantDemand())
-                        .withStyle(ChatFormatting.YELLOW).append(" ");
+                        .withStyle(ChatFormatting.YELLOW).append(CommonComponents.SPACE);
                 Component coolantName = Component.translatable("gtceu.multiblock.hpca.info_coolant_name")
                         .withStyle(ChatFormatting.YELLOW);
                 data.append(coolantName);

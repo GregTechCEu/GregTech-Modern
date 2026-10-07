@@ -24,6 +24,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -584,9 +585,10 @@ public class GTUtil {
             tooltipComponents.add(material.getProperty(HAZARD).hazardTrigger.getTranslatableName());
             return;
         }
-        tooltipComponents.add(Component.translatable("medical_condition.gtceu.tooltip.description").append(" ")
-                .withStyle(ChatFormatting.BOLD, ChatFormatting.RED)
-                .append(Component.translatable("common.gtceu.tooltip.hold_shift")));
+        tooltipComponents.add(
+                Component.translatable("medical_condition.gtceu.tooltip.description").append(CommonComponents.SPACE)
+                        .withStyle(ChatFormatting.BOLD, ChatFormatting.RED)
+                        .append(Component.translatable("common.gtceu.tooltip.hold_shift")));
     }
 
     public static CompoundTag saveItemStack(ItemStack itemStack, CompoundTag compoundTag) {

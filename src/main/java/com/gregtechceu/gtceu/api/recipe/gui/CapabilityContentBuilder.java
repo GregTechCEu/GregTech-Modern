@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.ItemStack;
@@ -193,7 +194,7 @@ public interface CapabilityContentBuilder {
 
             var euText = Text
                     .lang(io == IO.IN ? "gui.gtceu.recipe.eu" : "gui.gtceu.recipe.eu_inverted")
-                    .append(" ")
+                    .append(CommonComponents.SPACE)
                     .append(FormattingUtil.formattedEUt(minAmperage, eu.voltage(), false))
                     .withStyle(ChatFormatting.UNDERLINE);
 
