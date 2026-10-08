@@ -9,14 +9,12 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import lombok.Getter;
@@ -43,10 +41,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
                                        // while creating tanks.
     private @Nullable Boolean isEmpty;
 
-    @SaveField
-    @SyncToClient
-    @Getter
-    protected final CustomFluidTank lockedFluid = new CustomFluidTank(FluidType.BUCKET_VOLUME);
     @Getter
     protected Predicate<FluidStack> filter = f -> true;
 
@@ -59,7 +53,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
             this.storages[i] = new CustomFluidTank(capacity);
             this.storages[i].setOnContentsChanged(this::onContentsChanged);
         }
-        this.lockedFluid.setOnContentsChanged(this::onLockedFluidChanged);
     }
 
     public NotifiableFluidTank(List<CustomFluidTank> storages, IO io, IO capabilityIO) {
@@ -73,7 +66,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
         if (io == IO.IN) {
             this.allowSameFluids = true;
         }
-        this.lockedFluid.setOnContentsChanged(this::onLockedFluidChanged);
     }
 
     public NotifiableFluidTank(int slots, int capacity, IO io) {
@@ -88,27 +80,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
         isEmpty = null;
         syncDataHolder.markClientSyncFieldDirty("storages");
         notifyListeners();
-    }
-
-    protected void onLockedFluidChanged() {
-        syncDataHolder.markClientSyncFieldDirty("lockedFluid");
-        FluidStack newFluid = this.lockedFluid.getFluid();
-        if (newFluid.isEmpty()) {
-            this.setFilter(stack -> true);
-            this.onContentsChanged();
-            return;
-        }
-        for (int tank = 0; tank < this.getTanks(); tank++) {
-            FluidStack fluid = this.getFluidInTank(tank);
-            if (fluid.isEmpty()) continue;
-            if (!FluidStack.isSameFluidSameComponents(fluid, newFluid)) {
-                // Fluid in a tank that doesn't equal the new locked fluid
-                this.lockedFluid.setFluid(FluidStack.EMPTY);
-                return;
-            }
-        }
-        this.setFilter(stack -> FluidStack.isSameFluidSameComponents(stack, newFluid));
-        this.onContentsChanged();
     }
 
     @Override
@@ -250,39 +221,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
         }
 
         return left;
-    }
-
-    @Override
-    public boolean test(SizedFluidIngredient ingredient) {
-        return !this.isLocked() || ingredient.ingredient().test(this.lockedFluid.getFluid());
-    }
-
-    @Override
-    public int getPriority() {
-        return !isLocked() || lockedFluid.getFluid().isEmpty() ? super.getPriority() :
-                IFilteredHandler.HIGH - getTanks();
-    }
-
-    public boolean isLocked() {
-        return !lockedFluid.getFluid().isEmpty();
-    }
-
-    public void setLocked(boolean locked) {
-        setLocked(locked, storages[0].getFluid());
-    }
-
-    public void setLocked(boolean locked, FluidStack fluidStack) {
-        if (this.isLocked() == locked) return;
-        if (locked && !fluidStack.isEmpty()) {
-            this.lockedFluid.setFluid(fluidStack.copy());
-            this.lockedFluid.getFluid().setAmount(1);
-            setFilter(stack -> FluidStack.isSameFluidSameComponents(stack, this.lockedFluid.getFluid()));
-        } else {
-            this.lockedFluid.setFluid(FluidStack.EMPTY);
-            setFilter(stack -> true);
-        }
-        syncDataHolder.markClientSyncFieldDirty("lockedFluid");
-        onContentsChanged();
     }
 
     public NotifiableFluidTank setFilter(Predicate<FluidStack> filter) {
@@ -474,13 +412,5 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
             if (maxDrain <= 0) break;
         }
         return totalDrained == null ? FluidStack.EMPTY : totalDrained;
-    }
-
-    @Override
-    public void onMachineLoad() {
-        super.onMachineLoad();
-        if (this.isLocked()) {
-            setFilter(stack -> FluidStack.isSameFluidSameComponents(stack, this.lockedFluid.getFluid()));
-        }
     }
 }

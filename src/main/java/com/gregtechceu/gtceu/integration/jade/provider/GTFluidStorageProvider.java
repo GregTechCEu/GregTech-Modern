@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.misc.LockableFluidTank;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
@@ -104,15 +105,19 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<CompoundT
                 }
             }
             return list.isEmpty() ? Collections.emptyList() : List.of(new ViewGroup<>(list));
-        } else if (accessor.getTarget() instanceof FluidHatchPartMachine hatch) {
-            if (hatch.tank.getTanks() == 1 && hatch.tank.getFluidInTank(0).isEmpty() && hatch.tank.isLocked()) {
-                FluidStack stored = hatch.tank.getLockedFluid().getFluid();
-                CompoundTag tag = FluidView.writeDefault(JadeForgeUtils.fromFluidStack(stored.copyWithAmount(1000)),
-                        hatch.tank.getTankCapacity(0));
-                tag.putBoolean("special", true);
-                return List.of(new ViewGroup<>(List.of(tag)));
-            }
-        }
+        } else if (accessor.getTarget() instanceof FluidHatchPartMachine hatch &&
+                hatch.tank instanceof LockableFluidTank lockableFluidTank) {
+                    if (hatch.tank.getTanks() == 1 && hatch.tank.getFluidInTank(0).isEmpty() &&
+                            lockableFluidTank.isLocked()) {
+                        FluidStack stored = lockableFluidTank.getLockedFluid().getFluid();
+                        CompoundTag tag = FluidView.writeDefault(
+                                JadeForgeUtils.fromFluidStack(stored.copyWithAmount(1000)),
+                                hatch.tank.getTankCapacity(0));
+                        tag.putBoolean("special", true);
+                        tag.putLong("amount", 0L);
+                        return List.of(new ViewGroup<>(List.of(tag)));
+                    }
+                }
 
         return FluidStorageProvider.Extension.INSTANCE.getGroups(accessor);
     }
