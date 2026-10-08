@@ -25,7 +25,6 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     }
 
     @Override
-    public void onArmorTick(Level world, Player player, @NotNull ItemStack stack) {
+    public void onArmorTick(Level world, Player player, ItemStack stack) {
         GTArmor.Mutable data = stack.getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY).toMutable();
         byte toggleTimer = data.toggleTimer();
         boolean hoverMode = data.hover();
@@ -69,7 +68,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     }
 
     @Override
-    public boolean canUseEnergy(@NotNull ItemStack stack, int amount) {
+    public boolean canUseEnergy(ItemStack stack, int amount) {
         IElectricItem container = getIElectricItem(stack);
         if (container == null)
             return false;
@@ -77,7 +76,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     }
 
     @Override
-    public void drainEnergy(@NotNull ItemStack stack, int amount) {
+    public void drainEnergy(ItemStack stack, int amount) {
         IElectricItem container = getIElectricItem(stack);
         if (container == null)
             return;
@@ -85,7 +84,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     }
 
     @Override
-    public boolean hasEnergy(@NotNull ItemStack stack) {
+    public boolean hasEnergy(ItemStack stack) {
         IElectricItem container = getIElectricItem(stack);
         if (container == null)
             return false;
@@ -93,7 +92,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     }
 
     @Nullable
-    private static IElectricItem getIElectricItem(@NotNull ItemStack stack) {
+    private static IElectricItem getIElectricItem(ItemStack stack) {
         return GTCapabilityHelper.getElectricItem(stack);
     }
 

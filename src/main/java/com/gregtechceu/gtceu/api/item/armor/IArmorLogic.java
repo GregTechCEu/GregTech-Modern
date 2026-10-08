@@ -15,8 +15,6 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -60,18 +58,7 @@ public interface IArmorLogic {
         return Collections.emptyList();
     }
 
-    default boolean isValidArmor(ItemStack itemStack, Entity entity, EquipmentSlot equipmentSlot) {
-        return getArmorType().getSlot() == equipmentSlot;
-    }
-
     default void onArmorTick(Level world, Player player, ItemStack itemStack) {}
-
-    @OnlyIn(Dist.CLIENT)
-    default void renderHelmetOverlay(ItemStack itemStack, Player player, float partialTicks) {}
-
-    default int getArmorLayersAmount(ItemStack itemStack) {
-        return 1;
-    }
 
     default int getArmorLayerColor(ItemStack itemStack, int layerIndex) {
         return 0xFFFFFF;

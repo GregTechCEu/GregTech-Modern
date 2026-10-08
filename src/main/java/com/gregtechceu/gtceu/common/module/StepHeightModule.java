@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredAttributeItemModule;
-
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
+
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

@@ -157,7 +157,7 @@ public class CommonEventListener {
             var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
 
             HazardProperty property = material.getProperty(PropertyKey.HAZARD);
-
+            if (property == null) continue;
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
                 property.hazardTrigger.protectionType().damageEquipment(player, 1);
@@ -346,9 +346,6 @@ public class CommonEventListener {
             if (player.fallDistance < 3.2f)
                 return;
 
-            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-            ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-
             // todo emergency hover
             /*
              * if (boots.getItem() instanceof ArmorComponentItem armor) {
@@ -396,19 +393,6 @@ public class CommonEventListener {
     }
 
     @SubscribeEvent
-    public static void onEquipmentChange(LivingEquipmentChangeEvent event) {
-        if (!event.getSlot().isArmor()) return;
-        if (!(event.getEntity() instanceof Player player)) return;
-
-        if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor) {
-            armor.getArmorLogic().onUnequip(player);
-        }
-        if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor) {
-            armor.getArmorLogic().onEquip(player);
-        }
-    }
-
-    @SubscribeEvent
     public static void onEntityEquipmentChange(LivingEquipmentChangeEvent event) {
         if (!event.getSlot().isArmor()) return;
 
@@ -417,10 +401,12 @@ public class CommonEventListener {
         final ItemStack current = event.getTo();
 
         if (entity instanceof Player player) {
-            if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor) {
+            if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() != null) {
                 armor.getArmorLogic().onUnequip(player);
             }
-            if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor) {
+            if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() != null) {
                 armor.getArmorLogic().onEquip(player);
             }
         }
@@ -658,10 +644,10 @@ public class CommonEventListener {
             }
         }
         // Alloy Blast Overriding
-        GTMaterials.NiobiumNitride.getProperty(PropertyKey.ALLOY_BLAST)
+        GTMaterials.NiobiumNitride.getPropertyOrThrow(PropertyKey.ALLOY_BLAST)
                 .setRecipeProducer(new CustomAlloyBlastRecipeProducer(1, 11, -1));
 
-        GTMaterials.IndiumTinBariumTitaniumCuprate.getProperty(PropertyKey.ALLOY_BLAST)
+        GTMaterials.IndiumTinBariumTitaniumCuprate.getPropertyOrThrow(PropertyKey.ALLOY_BLAST)
                 .setRecipeProducer(new CustomAlloyBlastRecipeProducer(-1, -1, 16));
     }
 
