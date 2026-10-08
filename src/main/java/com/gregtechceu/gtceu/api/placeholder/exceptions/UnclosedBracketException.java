@@ -5,6 +5,6 @@ import net.minecraft.network.chat.Component;
 public class UnclosedBracketException extends PlaceholderException {
 
     public UnclosedBracketException() {
-        super(Component.translatable("gtceu.computer_monitor_cover.error.unclosed_bracket").getString());
+        super(Component.translatable("gui.gtceu.cover.computer_monitor.error.unclosed_bracket").getString());
     }
 }

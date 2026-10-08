@@ -5,6 +5,6 @@ import net.minecraft.network.chat.Component;
 public class InvalidArgsException extends PlaceholderException {
 
     public InvalidArgsException() {
-        super(Component.translatable("gtceu.computer_monitor_cover.error.invalid_args").getString());
+        super(Component.translatable("gui.gtceu.cover.computer_monitor.error.invalid_args").getString());
     }
 }

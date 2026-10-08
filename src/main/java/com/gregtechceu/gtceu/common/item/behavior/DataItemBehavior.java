@@ -72,11 +72,11 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                                 TooltipFlag isAdvanced) {
         if (stack.getOrCreateTag().contains("boundPlayerName")) {
             MutableComponent name = Component.Serializer.fromJson(stack.getOrCreateTag().getString("boundPlayerName"));
-            tooltipComponents.add(Component.translatable("gtceu.tooltip.player_bind", name));
+            tooltipComponents.add(Component.translatable("tooltip.gtceu.player_bind", name));
         }
         if (stack.getOrCreateTag().contains("targetX")) {
             tooltipComponents.add(Component.translatable(
-                    "gtceu.tooltip.wireless_transmitter_bind",
+                    "tooltip.gtceu.wireless_transmitter_bind",
                     Component.literal("" + stack.getOrCreateTag().getInt("targetX")).withStyle(ChatFormatting.GOLD),
                     Component.literal("" + stack.getOrCreateTag().getInt("targetY")).withStyle(ChatFormatting.GOLD),
                     Component.literal("" + stack.getOrCreateTag().getInt("targetZ")).withStyle(ChatFormatting.GOLD),
@@ -84,11 +84,11 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                     Component.literal(stack.getOrCreateTag().getString("dim")).withStyle(ChatFormatting.GREEN)));
         }
         if (stack.getOrCreateTag().contains("computer_monitor_cover_config")) {
-            tooltipComponents.add(Component.translatable("gtceu.tooltip.computer_monitor_config"));
+            tooltipComponents.add(Component.translatable("tooltip.gtceu.computer_monitor_config"));
         }
         if (stack.getOrCreateTag().contains("computer_monitor_cover_data")) {
             tooltipComponents.add(
-                    Component.translatable("gtceu.tooltip.computer_monitor_data",
+                    Component.translatable("tooltip.gtceu.computer_monitor_data",
                             GTStringUtils.toComponent(
                                     stack.getOrCreateTag().getList("computer_monitor_cover_data", Tag.TAG_STRING))));
         }

@@ -179,6 +179,8 @@ public class IntegrationLang {
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
         provider.add("config.jade.plugin_gtceu.energy_converter_provider", "[GTCEu] Energy Converter Mode");
         provider.add("config.jade.plugin_gtceu.ldp_endpoint", "[GTCEu] Long Distance Pipeline Endpoint Info");
+        provider.add("config.jade.plugin_gtceu.diode_provider", "[GTCEu] Diode Info");
+        provider.add("config.jade.plugin_gtceu.programmed_circuit_info", "[GTCEu] Programmed Circuit Info");
     }
 
     private static void initMinimapLang(GTLangProvider provider) {
