@@ -7,13 +7,13 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 
 import java.util.Map;
@@ -28,6 +28,12 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
 
     protected ExpandablePatternHelper(IntList userRepeats) {
         this.userRepeats = userRepeats;
+    }
+
+    @Override
+    protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {
+        this.predicateCount.clear();
+        this.basePredicateCount.clear();
     }
 
     private static CornerData getCorners(IntList bounds,
@@ -132,15 +138,9 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         }
     }
 
-    @Override
-    protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {
-        this.predicateCount.clear();
-        this.basePredicateCount.clear();
-    }
-
     private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                MultiPredicate predicate, char predicateChar,
-                                BlockPos pos) {
+                                MultiPredicate predicate, char predicateKey, BlockPos pos) {
+        // Find first unsatisfied min predicate while also checking type specific logic
         BasePredicate baseNotSatisfied = null;
         if (predicate.isAnd() || predicate.isOr()) {
             for (BasePredicate basePredicate : predicate.predicates()) {
@@ -148,9 +148,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
                 if (baseMinCount == 0) continue;
 
                 int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
-                boolean baseGlobalMinMet = baseMinCount == -1 || baseTotalAlreadyPopulated >= baseMinCount;
-
-                if (!baseGlobalMinMet) {
+                if (baseMinCount != -1 && baseTotalAlreadyPopulated < baseMinCount) {
                     baseNotSatisfied = basePredicate;
                     break;
                 }
@@ -158,10 +156,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         } else if (predicate.isXor()) {
             // For XOR, only one can be true. If we find any condition already satisfied, return false
             int predTotalAlreadyPopulated = predicateCount.getInt(predicate);
-
             int predMinCount = predicate.getPreviewOrMinCount();
-            boolean predGlobalMinMet = predTotalAlreadyPopulated >= predMinCount;
-            if (predMinCount != -1 && predGlobalMinMet) return false;
+            if (predMinCount != -1 && predTotalAlreadyPopulated >= predMinCount) return false;
 
             for (BasePredicate basePredicate : predicate.predicates()) {
                 // Same goes for the basePredicates, any satisfied basePredicate with mins returns false
@@ -169,14 +165,10 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
                 if (baseMinCount == 0) return false;
 
                 int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
-                boolean baseGlobalMinMet = baseTotalAlreadyPopulated >= baseMinCount;
-
                 // If there is a limit, and it's been met, return
-                if (baseMinCount != -1 && baseGlobalMinMet) return false;
-
+                if (baseMinCount != -1 && baseTotalAlreadyPopulated >= baseMinCount) return false;
                 // If there is a limit, and it hasn't been met, we have a predicate that needs blocks
-                // noinspection ConstantConditions
-                if ((baseMinCount != -1 && !baseGlobalMinMet)) {
+                if (baseMinCount != -1) {
                     baseNotSatisfied = basePredicate;
                     break;
                 }
@@ -199,7 +191,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
 
         // check if each child predicate min is satisfied
         for (MultiPredicate child : predicate.children()) {
-            if (tryMinCount(info, resultStructure, child, predicateChar, pos)) return true;
+            if (tryMinCount(info, resultStructure, child, predicateKey, pos)) return true;
         }
 
         // check if main predicate min is satisfied
@@ -207,13 +199,11 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         if (minCount == 0) return false;
 
         int totalAlreadyPopulated = predicateCount.getInt(predicate);
-
-        boolean globalMinMet = minCount == -1 || totalAlreadyPopulated >= minCount;
-        if (globalMinMet) {
+        if (minCount == -1 || totalAlreadyPopulated >= minCount) {
             return false;
         }
 
-        BlockInfo toInsert = info.getBlockPreferences().get(predicateChar);
+        BlockInfo toInsert = info.getBlockPreferences().get(predicateKey);
         if (toInsert == null) {
             // TODO filtering?
             toInsert = predicate.getCandidates().get(0).get(0);
@@ -230,17 +220,13 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     }
 
     private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                MultiPredicate predicate, char predicateChar,
-                                BlockPos pos) {
+                                MultiPredicate predicate, char predicateKey, BlockPos pos) {
         // check if main predicate max is satisfied
         int maxCount = predicate.getMaxCount();
         if (maxCount == 0) return false;
 
         int totalAlreadyPopulated = predicateCount.getInt(predicate);
-
-        boolean globalMaxMet = maxCount != -1 && totalAlreadyPopulated >= maxCount;
-
-        if (globalMaxMet) {
+        if (maxCount != -1 && totalAlreadyPopulated >= maxCount) {
             return false;
         }
 
@@ -252,31 +238,23 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
                 if (baseMaxCount == 0) continue;
 
                 int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
-                boolean baseGlobalMaxMet = baseMaxCount != -1 && baseTotalAlreadyPopulated >= baseMaxCount;
-
-                if (!baseGlobalMaxMet) {
+                if (baseMaxCount == -1 || baseTotalAlreadyPopulated < baseMaxCount) {
                     baseNotSatisfied = basePredicate;
                     break;
                 }
             }
         } else if (predicate.isXor()) {
             for (BasePredicate basePredicate : predicate.predicates()) {
-                // Any satisfied basePredicate with mins and maxs satisfied returns false
+                // Any satisfied basePredicate with maxs satisfied returns false
                 int baseMaxCount = basePredicate.getMaxCount();
                 if (baseMaxCount == 0) return false;
 
                 int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
-                boolean baseGlobalMaxMet = baseTotalAlreadyPopulated >= baseMaxCount;
-
                 // If there is a limit, and it's been met, return
-                if (baseMaxCount != -1 && baseGlobalMaxMet) return false;
-
+                if (baseMaxCount != -1 && baseTotalAlreadyPopulated >= baseMaxCount) return false;
                 // If there is no limit, or there is one that hasn't been met, we have a predicate that allows blocks
-                // noinspection ConstantConditions
-                if ((baseMaxCount == -1 || !baseGlobalMaxMet)) {
-                    baseNotSatisfied = basePredicate;
-                    break;
-                }
+                baseNotSatisfied = basePredicate;
+                break;
             }
         }
 
@@ -294,12 +272,12 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             return true;
         }
 
-        // check if each child predicate min is satisfied
+        // check if each child predicate max is satisfied
         for (MultiPredicate child : predicate.children()) {
-            if (tryMaxCount(info, resultStructure, child, predicateChar, pos)) return true;
+            if (tryMaxCount(info, resultStructure, child, predicateKey, pos)) return true;
         }
 
-        BlockInfo toInsert = info.getBlockPreferences().get(predicateChar);
+        BlockInfo toInsert = info.getBlockPreferences().get(predicateKey);
         if (toInsert == null) {
             // TODO filtering?
             toInsert = predicate.getCandidates().get(0).get(0);
