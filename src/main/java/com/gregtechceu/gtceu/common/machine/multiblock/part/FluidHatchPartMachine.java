@@ -102,10 +102,14 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
     protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         int tankCapacity = getTankCapacity(initialCapacity, getTier());
         if (io.support(IO.OUT)) {
-            return slots == 1 ? new LockableFluidTank(slots, tankCapacity, io) :
-                    new FilteredFluidTank(slots, tankCapacity, io);
+            return hasMultipleTanks() ? new FilteredFluidTank(slots, tankCapacity, io) :
+                    new LockableFluidTank(slots, tankCapacity, io);
         }
         return new NotifiableFluidTank(slots, tankCapacity, io);
+    }
+
+    public boolean hasMultipleTanks() {
+        return slots > 1;
     }
 
     public static int getTankCapacity(int initialCapacity, int tier) {
@@ -261,8 +265,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        mainWidget.child(slots == 1 ? createSingleSlotUI(syncManager) :
-                createMultiSlotUI(guiData, syncManager, settings));
+        mainWidget.child(hasMultipleTanks() ? createMultiSlotUI(guiData, syncManager, settings) :
+                createSingleSlotUI(syncManager));
     }
 
     protected Flow createSingleSlotUI(PanelSyncManager syncManager) {
