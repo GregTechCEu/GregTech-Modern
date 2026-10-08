@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +25,7 @@ public class ComputerRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("basic_data_access_hatch")
                 .inputItems(ITEM_IMPORT_BUS[HV])
                 .inputItems(TOOL_DATA_STICK, 4)
-                .inputItems(CustomTags.HV_CIRCUITS, 4)
+                .inputItems(GTTags.Items.CIRCUITS_HV, 4)
                 .outputItems(BASIC_DATA_ACCESS_HATCH)
                 .inputFluids(Polyethylene, L * 2)
                 .cleanroom(CleanroomType.CLEANROOM)
@@ -35,7 +35,7 @@ public class ComputerRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("data_access_hatch")
                 .inputItems(ITEM_IMPORT_BUS[EV])
                 .inputItems(TOOL_DATA_STICK, 4)
-                .inputItems(CustomTags.EV_CIRCUITS, 4)
+                .inputItems(GTTags.Items.CIRCUITS_EV, 4)
                 .outputItems(DATA_ACCESS_HATCH)
                 .inputFluids(Polytetrafluoroethylene, L * 2)
                 .cleanroom(CleanroomType.CLEANROOM)
@@ -45,7 +45,7 @@ public class ComputerRecipes {
         ASSEMBLY_LINE_RECIPES.recipeBuilder("advanced_data_access_hatch")
                 .inputItems(ITEM_IMPORT_BUS[LuV])
                 .inputItems(TOOL_DATA_ORB, 4)
-                .inputItems(CustomTags.ZPM_CIRCUITS, 4)
+                .inputItems(GTTags.Items.CIRCUITS_ZPM, 4)
                 .outputItems(ADVANCED_DATA_ACCESS_HATCH)
                 .inputFluids(SolderingAlloy, L * 4)
                 .inputFluids(Polybenzimidazole, L * 4)
@@ -67,7 +67,7 @@ public class ComputerRecipes {
                 .inputItems(PLASTIC_CIRCUIT_BOARD)
                 .inputItems(foil, Steel, 4)
                 .inputItems(wireFine, RedAlloy, 4)
-                .inputItems(CustomTags.MV_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_MV)
                 .inputFluids(SolderingAlloy, L)
                 .outputItems(TEXT_MODULE)
                 .duration(1000).EUt(VA[MV])
@@ -77,7 +77,7 @@ public class ComputerRecipes {
                 .inputItems(PLASTIC_CIRCUIT_BOARD)
                 .inputItems(foil, Electrum, 4)
                 .inputItems(wireFine, Silver, 4)
-                .inputItems(CustomTags.MV_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_MV)
                 .inputFluids(SolderingAlloy, L)
                 .outputItems(IMAGE_MODULE)
                 .duration(1000).EUt(VA[MV])
@@ -94,7 +94,7 @@ public class ComputerRecipes {
                 .addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("advanced_monitor_casing")
                 .inputItems(MONITOR)
-                .inputItems(CustomTags.HV_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_HV)
                 .inputItems(plate, StainlessSteel, 4)
                 .inputFluids(SolderingAlloy, L)
                 .outputItems(ADVANCED_MONITOR, 1)
@@ -104,7 +104,7 @@ public class ComputerRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("high_power_casing")
                 .inputItems(frameGt, Iridium)
                 .inputItems(plate, Iridium, 6)
-                .inputItems(CustomTags.IV_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_IV)
                 .inputItems(wireFine, Cobalt, 16)
                 .inputItems(wireFine, Copper, 16)
                 .inputItems(wireGtSingle, NiobiumTitanium, 2)
@@ -116,7 +116,7 @@ public class ComputerRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("computer_casing")
                 .inputItems(frameGt, Iridium)
                 .inputItems(plate, Iridium, 6)
-                .inputItems(CustomTags.LuV_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_LuV)
                 .inputItems(wireFine, Cobalt, 32)
                 .inputItems(wireFine, Copper, 32)
                 .inputItems(wireGtSingle, VanadiumGallium, 2)
@@ -127,7 +127,7 @@ public class ComputerRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("advanced_computer_casing")
                 .inputItems(COMPUTER_CASING.asStack())
-                .inputItems(CustomTags.ZPM_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_ZPM)
                 .inputItems(wireFine, Cobalt, 64)
                 .inputItems(wireFine, Electrum, 64)
                 .inputItems(wireGtSingle, IndiumTinBariumTitaniumCuprate, 4)
@@ -158,7 +158,7 @@ public class ComputerRecipes {
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("data_bank")
                 .inputItems(COMPUTER_CASING.asStack())
-                .inputItems(CustomTags.LuV_CIRCUITS, 8)
+                .inputItems(GTTags.Items.CIRCUITS_LuV, 8)
                 .inputItems(TOOL_DATA_ORB)
                 .inputItems(wireFine, Cobalt, 64)
                 .inputItems(wireFine, Copper, 64)
@@ -177,7 +177,7 @@ public class ComputerRecipes {
         ASSEMBLY_LINE_RECIPES.recipeBuilder("research_station")
                 .inputItems(DATA_BANK)
                 .inputItems(SENSOR_LuV, 8)
-                .inputItems(CustomTags.ZPM_CIRCUITS, 8)
+                .inputItems(GTTags.Items.CIRCUITS_ZPM, 8)
                 .inputItems(FIELD_GENERATOR_LuV, 2)
                 .inputItems(ELECTRIC_MOTOR_ZPM, 2)
                 .inputItems(wireGtDouble, UraniumRhodiumDinaquadide, 32)
@@ -196,7 +196,7 @@ public class ComputerRecipes {
         ASSEMBLY_LINE_RECIPES.recipeBuilder("object_holder")
                 .inputItems(ITEM_IMPORT_BUS[ZPM])
                 .inputItems(EMITTER_LuV, 8)
-                .inputItems(CustomTags.ZPM_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_ZPM)
                 .inputItems(ROBOT_ARM_ZPM, 2)
                 .inputItems(ELECTRIC_MOTOR_ZPM, 2)
                 .inputItems(wireGtDouble, UraniumRhodiumDinaquadide, 16)
@@ -215,7 +215,7 @@ public class ComputerRecipes {
                 .inputItems(COMPUTER_CASING.asStack())
                 .inputItems(EMITTER_ZPM, 4)
                 .inputItems(SENSOR_ZPM, 4)
-                .inputItems(CustomTags.UV_CIRCUITS, 4)
+                .inputItems(GTTags.Items.CIRCUITS_UV, 4)
                 .inputItems(wireGtDouble, EnrichedNaquadahTriniumEuropiumDuranide, 32)
                 .inputItems(foil, Tritanium, 64)
                 .inputItems(foil, Tritanium, 64)
@@ -232,7 +232,7 @@ public class ComputerRecipes {
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("high_performance_computing_array")
                 .inputItems(DATA_BANK)
-                .inputItems(CustomTags.ZPM_CIRCUITS, 4)
+                .inputItems(GTTags.Items.CIRCUITS_ZPM, 4)
                 .inputItems(FIELD_GENERATOR_LuV, 8)
                 .inputItems(TOOL_DATA_ORB)
                 .inputItems(COVER_SCREEN)
@@ -251,7 +251,7 @@ public class ComputerRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("hpca_empty_component")
                 .inputItems(COMPUTER_CASING.asStack())
-                .inputItems(CustomTags.IV_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_IV)
                 .inputItems(TOOL_DATA_STICK)
                 .outputItems(HPCA_EMPTY_COMPONENT)
                 .inputFluids(PCBCoolant, 1000)
@@ -282,7 +282,7 @@ public class ComputerRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("hpca_bridge_component")
                 .inputItems(ADVANCED_COMPUTER_CASING.asStack())
-                .inputItems(CustomTags.UV_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_UV)
                 .inputItems(EMITTER_ZPM)
                 .inputItems(OPTICAL_PIPES[0].asStack(2))
                 .outputItems(HPCA_BRIDGE_COMPONENT)
@@ -293,7 +293,7 @@ public class ComputerRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("hpca_computation_component")
                 .inputItems(HPCA_EMPTY_COMPONENT)
-                .inputItems(CustomTags.ZPM_CIRCUITS, 4)
+                .inputItems(GTTags.Items.CIRCUITS_ZPM, 4)
                 .inputItems(FIELD_GENERATOR_LuV)
                 .outputItems(HPCA_COMPUTATION_COMPONENT)
                 .inputFluids(PCBCoolant, 1000)
@@ -303,7 +303,7 @@ public class ComputerRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("hpca_advanced_computation_component")
                 .inputItems(HPCA_COMPUTATION_COMPONENT)
-                .inputItems(CustomTags.UV_CIRCUITS, 4)
+                .inputItems(GTTags.Items.CIRCUITS_UV, 4)
                 .inputItems(FIELD_GENERATOR_ZPM)
                 .outputItems(HPCA_ADVANCED_COMPUTATION_COMPONENT)
                 .inputFluids(PCBCoolant, 1000)
@@ -314,7 +314,7 @@ public class ComputerRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("data_receiver_hatch")
                 .inputItems(COMPUTER_CASING.asStack())
                 .inputItems(ITEM_IMPORT_BUS[LuV])
-                .inputItems(CustomTags.LuV_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_LuV)
                 .inputItems(SENSOR_IV)
                 .inputItems(OPTICAL_PIPES[0].asStack(2))
                 .inputFluids(Polybenzimidazole, L * 2)
@@ -326,7 +326,7 @@ public class ComputerRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("data_transmitter_hatch")
                 .inputItems(COMPUTER_CASING.asStack())
                 .inputItems(ITEM_EXPORT_BUS[LuV])
-                .inputItems(CustomTags.LuV_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_LuV)
                 .inputItems(EMITTER_IV)
                 .inputItems(OPTICAL_PIPES[0].asStack(2))
                 .inputFluids(Polybenzimidazole, L * 2)
@@ -337,7 +337,7 @@ public class ComputerRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("computation_receiver_hatch")
                 .inputItems(DATA_HATCH_RECEIVER)
-                .inputItems(CustomTags.ZPM_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_ZPM)
                 .inputItems(SENSOR_LuV)
                 .inputFluids(Polybenzimidazole, L * 2)
                 .outputItems(COMPUTATION_HATCH_RECEIVER)
@@ -347,7 +347,7 @@ public class ComputerRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("computation_transmitter_hatch")
                 .inputItems(DATA_HATCH_TRANSMITTER)
-                .inputItems(CustomTags.ZPM_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_ZPM)
                 .inputItems(EMITTER_LuV)
                 .inputFluids(Polybenzimidazole, L * 2)
                 .outputItems(COMPUTATION_HATCH_TRANSMITTER)
@@ -357,7 +357,7 @@ public class ComputerRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("active_transformer")
                 .inputItems(POWER_TRANSFORMER[LuV])
-                .inputItems(CustomTags.LuV_CIRCUITS, 2)
+                .inputItems(GTTags.Items.CIRCUITS_LuV, 2)
                 .inputItems(wireGtSingle, IndiumTinBariumTitaniumCuprate, 8)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputFluids(PCBCoolant, 1000)

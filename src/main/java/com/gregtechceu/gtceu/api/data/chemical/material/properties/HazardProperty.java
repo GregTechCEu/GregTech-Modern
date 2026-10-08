@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
@@ -120,7 +120,7 @@ public class HazardProperty implements IMaterialProperty {
                 ItemStack armor = livingEntity.getItemBySlot(equipmentType.getSlot());
                 if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
                         armorItem.getArmorLogic().isPPE()) ||
-                        armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
+                        armor.getTags().anyMatch(tag -> tag.equals(GTTags.Items.PPE_ARMOR)))) {
                     correctArmorItems.add(equipmentType);
                 }
             }
@@ -139,7 +139,7 @@ public class HazardProperty implements IMaterialProperty {
                 ItemStack armor = result.stack();
                 if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
                         armorItem.getArmorLogic().isPPE()) ||
-                        armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
+                        armor.getTags().anyMatch(tag -> tag.equals(GTTags.Items.PPE_ARMOR)))) {
                     correctCurios.add(result.slotContext().identifier());
                 }
             }
@@ -153,7 +153,7 @@ public class HazardProperty implements IMaterialProperty {
                     ItemStack armor = player.getItemBySlot(type.getSlot());
                     if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
                             armorItem.getArmorLogic().isPPE()) ||
-                            armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
+                            armor.getTags().anyMatch(tag -> tag.equals(GTTags.Items.PPE_ARMOR)))) {
                         armor.hurtAndBreak(amount, player, p -> p.broadcastBreakEvent(type.getSlot()));
                     }
                 }
@@ -169,7 +169,7 @@ public class HazardProperty implements IMaterialProperty {
                                     ItemStack armor = stackHandler.getStackInSlot(i);
                                     if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
                                             armorItem.getArmorLogic().isPPE()) ||
-                                            armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
+                                            armor.getTags().anyMatch(tag -> tag.equals(GTTags.Items.PPE_ARMOR)))) {
                                         armor.hurtAndBreak(amount, player, p -> {});
                                     }
                                 }
