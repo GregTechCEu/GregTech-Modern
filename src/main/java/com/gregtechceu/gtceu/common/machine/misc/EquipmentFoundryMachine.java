@@ -109,6 +109,8 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
                             .singletonSlotGroup()));
         }
 
+        updateModuleSlotBackgrounds(moduleSlots, equipmentSlot.getStackInSlot(0));
+
         main.child(new ItemSlot()
                 .left(10)
                 .top(28)
@@ -117,17 +119,8 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
                 .slot(new ModularSlot(equipmentSlot, 0)
                         .singletonSlotGroup()
                         .changeListener((oldStack, newStack, client, init) -> {
-                            if (ItemStack.isSameItem(oldStack, newStack)) return;
-                            var modular = GTCapabilityHelper.getModularItem(newStack);
-                            if (modular == null) {
-                                moduleSlots.forEach(Widget::background);
-                                return;
-                            } ;
-                            List<ItemModuleSlot> slots = modular.getSlots();
-                            for (int i = 0; i < slots.size() && i < moduleSlots.size(); i++) {
-                                ItemSlot slotWidget = moduleSlots.get(i);
-                                slotWidget.background(slots.get(i).getSlotTexture());
-                            }
+                            if (!ItemStack.isSameItem(oldStack, newStack))
+                                updateModuleSlotBackgrounds(moduleSlots, newStack);
                         })))
                 .child(new Grid()
                         .background()
@@ -138,6 +131,19 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
                         .gridOf(5, moduleSlots));
 
         mainWidget.child(main);
+    }
+
+    private void updateModuleSlotBackgrounds(List<ItemSlot> moduleSlots, ItemStack stack) {
+        var modular = GTCapabilityHelper.getModularItem(stack);
+        if (modular == null) {
+            moduleSlots.forEach(Widget::background);
+            return;
+        }
+        List<ItemModuleSlot> slots = modular.getSlots();
+        for (int i = 0; i < slots.size() && i < moduleSlots.size(); i++) {
+            ItemSlot slotWidget = moduleSlots.get(i);
+            slotWidget.background(slots.get(i).getSlotTexture());
+        }
     }
 
     public boolean isModifierSlotBlocked(int slot) {
@@ -158,7 +164,8 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
             if (modularItem == null) return;
             for (int i = 0; i < MAX_MODIFIER_SLOTS; i++) {
                 var data = modularItem.getModuleContextForSlot(i);
-                moduleSlots.setStackInSlotNoCallback(i, data == null ? ItemStack.EMPTY : data.getData().getModuleItem());
+                moduleSlots.setStackInSlotNoCallback(i,
+                        data == null ? ItemStack.EMPTY : data.getData().getModuleItem());
             }
         }
     }

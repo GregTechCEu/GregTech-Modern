@@ -1883,7 +1883,7 @@ public class GTItems {
                     (p) -> new ModularArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.BOOTS, p))
             .lang("NanoMuscle™ Suite Boots")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
-            .tag(Tags.Items.ARMORS_BOOTS, CustomTags.STEP_BOOTS)
+            .tag(Tags.Items.ARMORS_BOOTS)
             .onRegister(attach(new ModularItemComponent(4, GTValues.EV)))
             .register();
     public static ItemEntry<ModularArmorItem> NANO_HELMET = REGISTRATE
@@ -1974,7 +1974,7 @@ public class GTItems {
                     (p) -> new ModularArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.BOOTS, p))
             .lang("QuarkTech™ Suite Boots")
             .properties(p -> p.rarity(Rarity.RARE))
-            .tag(Tags.Items.ARMORS_BOOTS, CustomTags.PPE_ARMOR, CustomTags.STEP_BOOTS)
+            .tag(Tags.Items.ARMORS_BOOTS, CustomTags.PPE_ARMOR)
             .onRegister(attach(new ModularItemComponent(8, GTValues.MAX)))
             .register();
     public static ItemEntry<ModularArmorItem> QUANTUM_HELMET = REGISTRATE

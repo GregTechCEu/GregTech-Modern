@@ -14,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
-import org.jetbrains.annotations.Nullable;
 
 public class JetpackModule extends ArmorLogicItemModule implements ITieredItemModule {
 
@@ -33,7 +32,7 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
     }
 
     @Override
-    protected @Nullable IArmorLogic getArmorLogic(ModuleContext moduleContext) {
+    protected IArmorLogic getArmorLogic(ModuleContext moduleContext) {
         return JETPACK;
     }
 

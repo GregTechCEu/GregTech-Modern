@@ -77,7 +77,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
         data.putByte("toggleTimer", toggleTimer);
     }
 
-    public static void disableNightVision(@NotNull Level world, Player player, boolean sendMsg) {
+    public static void disableNightVision(Level world, Player player, boolean sendMsg) {
         if (!world.isClientSide) {
             player.removeEffect(MobEffects.NIGHT_VISION);
             if (sendMsg)

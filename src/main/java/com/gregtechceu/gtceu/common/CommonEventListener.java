@@ -334,19 +334,22 @@ public class CommonEventListener {
             ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 
-            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor) {
-                armor.getArmorLogic().damageArmor(player, boots, player.damageSources().fall(),
-                        (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
-                player.fallDistance = 0;
-                event.setCanceled(true);
-            } else if (chest.getItem() instanceof ArmorComponentItem armor &&
-                    armor.getArmorLogic() instanceof IJetpack jetpack &&
-                    jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
-                    player.fallDistance >= player.getHealth() + 3.2f) {
-                        IJetpack.performEHover(chest, player);
-                        player.fallDistance = 0;
-                        event.setCanceled(true);
-                    }
+            // todo emergency hover
+            /*
+             * if (boots.getItem() instanceof ArmorComponentItem armor) {
+             * armor.getArmorLogic().damageArmor(player, boots,
+             * (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
+             * player.fallDistance = 0;
+             * event.setCanceled(true);
+             * } else if (chest.getItem() instanceof ArmorComponentItem armor &&
+             * armor.getArmorLogic() instanceof IJetpack jetpack &&
+             * jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
+             * player.fallDistance >= player.getHealth() + 3.2f) {
+             * IJetpack.performEHover(chest, player);
+             * player.fallDistance = 0;
+             * event.setCanceled(true);
+             * }
+             */
         }
     }
 
@@ -406,21 +409,6 @@ public class CommonEventListener {
                         new AttributeModifier(BlockAttributes.BLOCK_SPEED_BOOST, "GT Block Speed Boost",
                                 speedBoost, AttributeModifier.Operation.MULTIPLY_BASE));
             }
-        }
-    }
-
-    @SubscribeEvent
-    public static void stepAssistHandler(LivingEvent.LivingTickEvent event) {
-        float MAGIC_STEP_HEIGHT = 1.0023f;
-        LivingEntity entity = event.getEntity();
-        CompoundTag tag = entity.getItemBySlot(EquipmentSlot.FEET).getOrCreateTag();
-        if (!entity.isCrouching() && entity.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS) &&
-                (!tag.contains("stepAssist") || tag.getBoolean("stepAssist"))) {
-            if (entity.getStepHeight() < MAGIC_STEP_HEIGHT) {
-                entity.setMaxUpStep(MAGIC_STEP_HEIGHT);
-            }
-        } else if (entity.getStepHeight() == MAGIC_STEP_HEIGHT) {
-            entity.setMaxUpStep(0.6f);
         }
     }
 
