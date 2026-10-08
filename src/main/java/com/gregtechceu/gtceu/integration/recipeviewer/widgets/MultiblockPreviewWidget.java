@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
-import brachy.modularui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
@@ -35,6 +34,7 @@ import brachy.modularui.drawable.SchemaRenderer;
 import brachy.modularui.drawable.schema.BlockHighlight;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
 import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
+import brachy.modularui.screen.viewport.ModularGuiContext;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;

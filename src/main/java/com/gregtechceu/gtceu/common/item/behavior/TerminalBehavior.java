@@ -233,20 +233,27 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                                      MultiblockPreviewWidget previewWidget) {
         MultiblockSchemaInfo schemaInfo = previewWidget.getMultiblockSchemaInfo();
 
-        if(previewWidget.isClearPreferences()) {
-
-        }
-
         GTNetwork.sendToServer(new CPacketTerminalSettings(hand, definition, schemaInfo.getUserSliceRepeats(),
                 schemaInfo.getUserDimensions(), schemaInfo.getUserGlobalBlockPreferences(),
                 schemaInfo.getBlockPreferences(), HashBasedTable.create()
-        /* schemaInfo.getMinMaxPreferenceCharTable() */));
+                /* schemaInfo.getMinMaxPreferenceCharTable() */, previewWidget.isClearPreferences()));
     }
 
-    public static void applyUserPreferences(ItemStack item, MultiblockSchemaInfo schemaInfo) {
+    public static void applyUserPreferences(ItemStack item, MultiblockSchemaInfo schemaInfo,
+                                            boolean isClearPreferences) {
         CompoundTag tag = item.getOrCreateTag();
-        tag.put(SCHEMA_INFO_TAG, MultiblockSchemaInfo.CODEC.encodeStart(NbtOps.INSTANCE, schemaInfo)
-                .getOrThrow(false, GTCEu.LOGGER::error));
+        if (isClearPreferences) {
+            var controllerInfo = ControllerInfo.CODEC
+                    .parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
+                    .getOrThrow(false, GTCEu.LOGGER::error);
+            tag.put(SCHEMA_INFO_TAG,
+                    MultiblockSchemaInfo.CODEC
+                            .encodeStart(NbtOps.INSTANCE, new MultiblockSchemaInfo(controllerInfo.definition))
+                            .getOrThrow(false, GTCEu.LOGGER::error));
+        } else {
+            tag.put(SCHEMA_INFO_TAG, MultiblockSchemaInfo.CODEC.encodeStart(NbtOps.INSTANCE, schemaInfo)
+                    .getOrThrow(false, GTCEu.LOGGER::error));
+        }
     }
 
     public MultiblockSchemaInfo loadSchemaInfo(ItemStack stack, MultiblockMachineDefinition definition) {

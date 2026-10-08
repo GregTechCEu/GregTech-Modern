@@ -33,12 +33,14 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
     private final Object2ObjectMap<BlockPos, BlockInfo> globalPreferences;
     private final Char2ObjectMap<BlockInfo> blockPreferences;
     private final Table<Character, Integer, IntIntPair> minMaxPreferences;
+    boolean isClearPreferences;
 
     public CPacketTerminalSettings(InteractionHand hand, MultiblockMachineDefinition def, Int2IntMap sliceRepeats,
                                    IntList dimensions,
                                    Object2ObjectMap<BlockPos, BlockInfo> globalPreferences,
                                    Char2ObjectMap<BlockInfo> blockPreferences,
-                                   Table<Character, Integer, IntIntPair> minMaxPreferences) {
+                                   Table<Character, Integer, IntIntPair> minMaxPreferences,
+                                   boolean isClearPreferences) {
         this.hand = hand;
         this.machineDefinition = def;
         this.sliceRepeats = sliceRepeats;
@@ -46,6 +48,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         this.globalPreferences = globalPreferences;
         this.blockPreferences = blockPreferences;
         this.minMaxPreferences = minMaxPreferences;
+        this.isClearPreferences = isClearPreferences;
     }
 
     private static final FriendlyByteBuf.Reader<BlockInfo> blockInfoReader = (b) -> BlockInfo
@@ -81,6 +84,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
          * }
          * }
          */
+        this.isClearPreferences = buf.readBoolean();
     }
 
     @Override
@@ -101,6 +105,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
          * b1.writeVarInt(p.secondInt());
          * }));
          */
+        buf.writeBoolean(this.isClearPreferences);
     }
 
     @Override
@@ -113,6 +118,6 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
 
         var schemaInfo = new MultiblockSchemaInfo(this.machineDefinition, this.sliceRepeats, this.dimensions,
                 this.globalPreferences, this.blockPreferences);
-        TerminalBehavior.applyUserPreferences(held, schemaInfo);
+        TerminalBehavior.applyUserPreferences(held, schemaInfo, this.isClearPreferences);
     }
 }
