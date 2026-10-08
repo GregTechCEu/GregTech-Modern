@@ -97,7 +97,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
             if (stack.getOrCreateTag().contains("pos", Tag.TAG_INT_ARRAY) && stack.hasTag()) {
                 int[] posArray = stack.getOrCreateTag().getIntArray("pos");
                 tooltipComponents.add(Component.translatable(
-                        "gtceu.tooltip.proxy_bind",
+                        "gui.gtceu.machine.pattern_buffer.proxy_bind",
                         Component.literal("" + posArray[0]).withStyle(ChatFormatting.LIGHT_PURPLE),
                         Component.literal("" + posArray[1]).withStyle(ChatFormatting.LIGHT_PURPLE),
                         Component.literal("" + posArray[2]).withStyle(ChatFormatting.LIGHT_PURPLE)));

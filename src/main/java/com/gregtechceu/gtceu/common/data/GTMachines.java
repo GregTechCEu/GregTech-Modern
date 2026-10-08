@@ -739,10 +739,10 @@ public class GTMachines {
             LV, MV, HV);
 
     public static final BiConsumer<ItemStack, List<Component>> CREATIVE_TOOLTIPS = (stack, list) -> list.add(
-            Component.translatable("gtceu.creative_tooltip.1")
-                    .append(Component.translatable("gtceu.creative_tooltip.2")
+            Component.translatable("gui.gtceu.machine.creative_tooltip.1")
+                    .append(Component.translatable("gui.gtceu.machine.creative_tooltip.2")
                             .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))
-                    .append(Component.translatable("gtceu.creative_tooltip.3")));
+                    .append(Component.translatable("gui.gtceu.machine.creative_tooltip.3")));
 
     public static final MachineDefinition CREATIVE_ENERGY = REGISTRATE
             .machine("creative_energy", CreativeEnergyContainerMachine::new)

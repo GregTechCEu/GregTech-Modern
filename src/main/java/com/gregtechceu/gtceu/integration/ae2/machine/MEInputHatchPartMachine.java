@@ -133,8 +133,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
         var flow = Flow.col().coverChildren();
 
         flow.child(Text.dynamic(() -> isOnlineValue.getBoolValue() ?
-                Component.translatable("gtceu.gui.me_network.online") :
-                Component.translatable("gtceu.gui.me_network.offline"))
+                Component.translatable("gui.gtceu.machine.me_part.network.online") :
+                Component.translatable("gui.gtceu.machine.me_part.network.offline"))
                 .asWidget().marginTop(2).marginBottom(4));
         flow.child(new AEConfigWidget(aeFluidHandler, CONFIG_SIZE, true)
                 .syncManager(syncManager)

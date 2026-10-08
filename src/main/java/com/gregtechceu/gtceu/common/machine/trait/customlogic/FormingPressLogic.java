@@ -117,11 +117,11 @@ public enum FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
     @Override
     public void buildRepresentativeRecipes() {
         ItemStack press = GTItems.SHAPE_MOLD_NAME.asStack();
-        press.setHoverName(Component.translatable("gtceu.forming_press.naming.press"));
+        press.setHoverName(Component.translatable("gui.gtceu.machine.forming_press.naming.press"));
         ItemStack toName = new ItemStack(Items.NAME_TAG);
-        toName.setHoverName(Component.translatable("gtceu.forming_press.naming.to_name"));
+        toName.setHoverName(Component.translatable("gui.gtceu.machine.forming_press.naming.to_name"));
         ItemStack named = new ItemStack(Items.NAME_TAG);
-        named.setHoverName(Component.translatable("gtceu.forming_press.naming.named"));
+        named.setHoverName(Component.translatable("gui.gtceu.machine.forming_press.naming.named"));
         GTRecipe recipe = GTRecipeTypes.FORMING_PRESS_RECIPES.recipeBuilder("name_item")
                 .notConsumable(press)
                 .inputItems(toName)

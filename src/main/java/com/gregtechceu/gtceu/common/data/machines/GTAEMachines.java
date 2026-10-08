@@ -53,6 +53,7 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.EXPORT_ITEMS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_output_bus"))
+            .tooltipLang()
             .tooltips(
                     Component.translatable("gtceu.machine.item_bus.export.tooltip"),
                     Component.translatable("gtceu.machine.me.item_export.tooltip"),

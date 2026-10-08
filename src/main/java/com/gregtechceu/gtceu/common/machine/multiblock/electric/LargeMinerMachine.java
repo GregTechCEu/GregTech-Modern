@@ -312,14 +312,14 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     // textList.add(Component.translatable("machine.gtceu.miner.silk_touch")
     // .append(ComponentPanelWidget.withButton(Component.literal("[")
     // .append(getRecipeLogic().isSilkTouchMode() ?
-    // Component.translatable("gtceu.creative.activity.on") :
-    // Component.translatable("gtceu.creative.activity.off"))
+    // Component.translatable("gui.gtceu.machine.creative.activity.on") :
+    // Component.translatable("gui.gtceu.machine.creative.activity.off"))
     // .append(Component.literal("]")), "silk_touch")));
     // textList.add(Component.translatable("machine.gtceu.miner.chunk_mode")
     // .append(ComponentPanelWidget.withButton(Component.literal("[")
     // .append(getRecipeLogic().isChunkMode() ?
-    // Component.translatable("gtceu.creative.activity.on") :
-    // Component.translatable("gtceu.creative.activity.off"))
+    // Component.translatable("gui.gtceu.machine.creative.activity.on") :
+    // Component.translatable("gui.gtceu.machine.creative.activity.off"))
     // .append(Component.literal("]")), "chunk_mode")));
     // if (getRecipeLogic().isChunkMode()) {
     // textList.add(Component.translatable("machine.gtceu.miner.working_area_chunks", workingAreaChunks,
