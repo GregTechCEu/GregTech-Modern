@@ -39,16 +39,18 @@ public abstract class Filter<T> implements Predicate<T> {
     }
 
     /**
+     * @param popoutHandler The IPanelHandler associated with the panel if this is opened as a popout
+     *
      * @return Filter panel when opened by itself (including the player inventory)
      */
     public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings,
-                                    boolean showPlayerInventory, @Nullable IPanelHandler panelHandler) {
+                                    boolean showPlayerInventory, @Nullable IPanelHandler popoutHandler) {
         ButtonWidget<?> closeButton = null;
-        if (panelHandler != null) {
+        if (popoutHandler != null) {
             closeButton = new ButtonWidget<>()
                     .overlay(GTGuiTextures.CLOSE_ICON)
                     .onMousePressed((c, b) -> {
-                        panelHandler.togglePanel();
+                        popoutHandler.togglePanel();
                         return true;
                     }).size(16);
         }
