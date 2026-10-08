@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
+import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.*;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
@@ -117,7 +118,25 @@ public class GTRecipeTypes {
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER))
             .setSound(GTSoundEntries.ASSEMBLER);
 
-    public final static GTRecipeType AUTOCLAVE_RECIPES = register("autoclave", ELECTRIC).setMaxIOSize(2, 2, 1, 1)
+    public static final GTRecipeType SPOOLING_RECIPES = register("spooling", ELECTRIC)
+            .setMaxIOSize(3, 1, 1, 0)
+            .setEUIO(IO.IN)
+            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER))
+            .setSound(GTSoundEntries.COMPRESSOR);
+
+    public static final GTRecipeType WELDER_RECIPES = register("welder", ELECTRIC)
+            .setMaxIOSize(4, 1, 1, 0)
+            .setEUIO(IO.IN)
+            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER)
+                    .setMachineLayoutGridBuilder(ItemRecipeCapability.CAP, IO.IN,
+                            (machine, l) -> {
+                                int slots = l.getRecipeType().getMaxInputs(ItemRecipeCapability.CAP);
+                                return GTMuiWidgets.createGrid(slots, (int) Mth.sqrt(slots), false, 's');
+                            }))
+            .setSound(GTSoundEntries.ELECTROLYZER);
+
+    public static final GTRecipeType AUTOCLAVE_RECIPES = register("autoclave", ELECTRIC)
+            .setMaxIOSize(2, 2, 1, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_CRYSTALLIZATION)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.DUST_OVERLAY)
@@ -179,7 +198,7 @@ public class GTRecipeTypes {
             .addCustomRecipeLogic(CannerLogic.INSTANCE)
             .setSound(GTSoundEntries.BATH);
 
-    public final static GTRecipeType CENTRIFUGE_RECIPES = register("centrifuge", ELECTRIC).setMaxIOSize(2, 6, 1, 6)
+    public final static GTRecipeType CENTRIFUGE_RECIPES = register("centrifuge", ELECTRIC).setMaxIOSize(2, 6, 2, 6)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(5))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_EXTRACT)
@@ -363,7 +382,9 @@ public class GTRecipeTypes {
             .addCustomRecipeLogic(FormingPressLogic.INSTANCE)
             .setSound(GTSoundEntries.COMPRESSOR);
 
-    public final static GTRecipeType LATHE_RECIPES = register("lathe", ELECTRIC).setMaxIOSize(1, 2, 0, 0).setEUIO(IO.IN)
+    public static final GTRecipeType LATHE_RECIPES = register("lathe", ELECTRIC)
+            .addCustomRecipeLogic(LatheRecipeLogic.REPRESENTATIVE_RECIPES)
+            .setMaxIOSize(1, 2, 1, 0).setEUIO(IO.IN)
             .UI(builder -> builder
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.PIPE_OVERLAY_1)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.PIPE_OVERLAY_2)
