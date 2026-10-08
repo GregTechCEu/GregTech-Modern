@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -20,6 +22,9 @@ import java.util.Objects;
 public class ExpandablePatternHelper extends AbstractStructureHelper {
 
     private final IntList userRepeats;
+
+    private final Object2IntOpenHashMap<MultiPredicate> predicateCount = new Object2IntOpenHashMap<>();
+    private final Object2IntOpenHashMap<BasePredicate> basePredicateCount = new Object2IntOpenHashMap<>();
 
     protected ExpandablePatternHelper(IntList userRepeats) {
         this.userRepeats = userRepeats;
@@ -127,54 +132,187 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         }
     }
 
+    @Override
+    protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {
+        this.predicateCount.clear();
+        this.basePredicateCount.clear();
+    }
+
     private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                MultiPredicate predicate, char predicateKey,
+                                MultiPredicate predicate, char predicateChar,
                                 BlockPos pos) {
-        for (BasePredicate basePredicate : predicate.predicates()) {
-            int minCount = info.getMinCount(predicate, basePredicate);
-            if (minCount == 0) continue;
+        BasePredicate baseNotSatisfied = null;
+        if (predicate.isAnd() || predicate.isOr()) {
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                int baseMinCount = basePredicate.getPreviewOrMinCount();
+                if (baseMinCount == 0) continue;
 
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            if (minCount == -1 || totalAlreadyPopulated >= minCount) continue;
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                boolean baseGlobalMinMet = baseMinCount == -1 || baseTotalAlreadyPopulated >= baseMinCount;
 
-            BlockInfo toInsert = info.getBlockPreferences().get(predicateKey);
-            if (toInsert == null) {
-                // TODO filtering?
-                toInsert = predicate.getCandidates().get(0).get(0);
+                if (!baseGlobalMinMet) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
             }
+        } else if (predicate.isXor()) {
+            // For XOR, only one can be true. If we find any condition already satisfied, return false
+            int predTotalAlreadyPopulated = predicateCount.getInt(predicate);
 
+            int predMinCount = predicate.getPreviewOrMinCount();
+            boolean predGlobalMinMet = predTotalAlreadyPopulated >= predMinCount;
+            if (predMinCount != -1 && predGlobalMinMet) return false;
+
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                // Same goes for the basePredicates, any satisfied basePredicate with mins returns false
+                int baseMinCount = basePredicate.getPreviewOrMinCount();
+                if (baseMinCount == 0) return false;
+
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                boolean baseGlobalMinMet = baseTotalAlreadyPopulated >= baseMinCount;
+
+                // If there is a limit, and it's been met, return
+                if (baseMinCount != -1 && baseGlobalMinMet) return false;
+
+                // If there is a limit, and it hasn't been met, we have a predicate that needs blocks
+                // noinspection ConstantConditions
+                if ((baseMinCount != -1 && !baseGlobalMinMet)) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
+            }
+        }
+
+        if (baseNotSatisfied != null) {
+            BasePredicate finalBaseNotSatisfied = baseNotSatisfied;
+            BlockInfo toInsert = baseNotSatisfied.getFirstCandidate().orElseGet(() -> {
+                GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", finalBaseNotSatisfied);
+                return BlockInfo.EMPTY;
+            });
             resultStructure.put(pos, toInsert);
+            if (this.controllerBlock == null && predicate.isController()) {
+                this.controllerBlock = toInsert.getBlockState().getBlock();
+            }
+            basePredicateCount.merge(baseNotSatisfied, 1, Integer::sum);
             return true;
         }
+
+        // check if each child predicate min is satisfied
         for (MultiPredicate child : predicate.children()) {
-            if (tryMinCount(info, resultStructure, child, predicateKey, pos)) return true;
+            if (tryMinCount(info, resultStructure, child, predicateChar, pos)) return true;
         }
-        return false;
+
+        // check if main predicate min is satisfied
+        int minCount = predicate.getPreviewOrMinCount();
+        if (minCount == 0) return false;
+
+        int totalAlreadyPopulated = predicateCount.getInt(predicate);
+
+        boolean globalMinMet = minCount == -1 || totalAlreadyPopulated >= minCount;
+        if (globalMinMet) {
+            return false;
+        }
+
+        BlockInfo toInsert = info.getBlockPreferences().get(predicateChar);
+        if (toInsert == null) {
+            // TODO filtering?
+            toInsert = predicate.getCandidates().get(0).get(0);
+        }
+        resultStructure.put(pos, toInsert);
+        if (this.controllerBlock == null && predicate.isController()) {
+            this.controllerBlock = toInsert.getBlockState().getBlock();
+        }
+        predicateCount.merge(predicate, 1, Integer::sum);
+        for (var child : predicate.children()) {
+            predicateCount.merge(child, 1, Integer::sum);
+        }
+        return true;
     }
 
     private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                MultiPredicate predicate, char predicateKey,
+                                MultiPredicate predicate, char predicateChar,
                                 BlockPos pos) {
-        for (BasePredicate basePredicate : predicate.predicates()) {
-            int maxCount = info.getMaxCount(predicate, basePredicate);
-            if (maxCount == 0) continue;
+        // check if main predicate max is satisfied
+        int maxCount = predicate.getMaxCount();
+        if (maxCount == 0) return false;
 
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
+        int totalAlreadyPopulated = predicateCount.getInt(predicate);
 
-            BlockInfo toInsert = info.getBlockPreferences().get(predicateKey);
-            if (toInsert == null) {
-                // TODO filtering?
-                toInsert = predicate.getCandidates().get(0).get(0);
+        boolean globalMaxMet = maxCount != -1 && totalAlreadyPopulated >= maxCount;
+
+        if (globalMaxMet) {
+            return false;
+        }
+
+        // check if each base predicate max is satisfied
+        BasePredicate baseNotSatisfied = null;
+        if (predicate.isAnd() || predicate.isOr()) {
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                int baseMaxCount = basePredicate.getMaxCount();
+                if (baseMaxCount == 0) continue;
+
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                boolean baseGlobalMaxMet = baseMaxCount != -1 && baseTotalAlreadyPopulated >= baseMaxCount;
+
+                if (!baseGlobalMaxMet) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
             }
+        } else if (predicate.isXor()) {
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                // Any satisfied basePredicate with mins and maxs satisfied returns false
+                int baseMaxCount = basePredicate.getMaxCount();
+                if (baseMaxCount == 0) return false;
 
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                boolean baseGlobalMaxMet = baseTotalAlreadyPopulated >= baseMaxCount;
+
+                // If there is a limit, and it's been met, return
+                if (baseMaxCount != -1 && baseGlobalMaxMet) return false;
+
+                // If there is no limit, or there is one that hasn't been met, we have a predicate that allows blocks
+                // noinspection ConstantConditions
+                if ((baseMaxCount == -1 || !baseGlobalMaxMet)) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
+            }
+        }
+
+        if (baseNotSatisfied != null) {
+            basePredicateCount.merge(baseNotSatisfied, 1, Integer::sum);
+            BasePredicate finalBaseNotSatisfied = baseNotSatisfied;
+            BlockInfo toInsert = baseNotSatisfied.getFirstCandidate().orElseGet(() -> {
+                GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", finalBaseNotSatisfied);
+                return BlockInfo.EMPTY;
+            });
             resultStructure.put(pos, toInsert);
+            if (this.controllerBlock == null && predicate.isController()) {
+                this.controllerBlock = toInsert.getBlockState().getBlock();
+            }
             return true;
         }
+
+        // check if each child predicate min is satisfied
         for (MultiPredicate child : predicate.children()) {
-            if (tryMaxCount(info, resultStructure, child, predicateKey, pos)) return true;
+            if (tryMaxCount(info, resultStructure, child, predicateChar, pos)) return true;
         }
-        return false;
+
+        BlockInfo toInsert = info.getBlockPreferences().get(predicateChar);
+        if (toInsert == null) {
+            // TODO filtering?
+            toInsert = predicate.getCandidates().get(0).get(0);
+        }
+        resultStructure.put(pos, toInsert);
+        if (this.controllerBlock == null && predicate.isController()) {
+            this.controllerBlock = toInsert.getBlockState().getBlock();
+        }
+        predicateCount.merge(predicate, 1, Integer::sum);
+        for (var child : predicate.children()) {
+            predicateCount.merge(child, 1, Integer::sum);
+        }
+        return true;
     }
 
     @Override
