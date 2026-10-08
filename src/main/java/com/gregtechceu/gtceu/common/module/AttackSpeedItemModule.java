@@ -18,7 +18,7 @@ public class AttackSpeedItemModule extends TieredAttributeItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable(getDescriptionLanguageKey(), getTier() * 100 / 16d);
+        return Component.translatable(getDescriptionLanguageKey(), ((double) getTier() / 2) * 100 / 16d);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class AttackSpeedItemModule extends TieredAttributeItemModule {
 
     @Override
     public double getMaxAttributeAmount() {
-        return 1 + getTier() / 16d;
+        return 1 + ((double) getTier() / 2) / 16d;
     }
 
     @Override

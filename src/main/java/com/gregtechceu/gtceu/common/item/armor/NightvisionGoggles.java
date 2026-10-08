@@ -23,8 +23,6 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 public class NightvisionGoggles extends ArmorLogicSuite {
@@ -34,7 +32,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
     }
 
     @Override
-    public void onArmorTick(Level level, @NotNull Player player, @NotNull ItemStack stack) {
+    public void onArmorTick(Level level, Player player, ItemStack stack) {
         IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
         if (item == null) {
             return;
@@ -84,7 +82,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
         stack.set(GTDataComponents.ARMOR_DATA, data.toImmutable());
     }
 
-    public static void disableNightVision(@NotNull Level world, Player player, boolean sendMsg) {
+    public static void disableNightVision(Level world, Player player, boolean sendMsg) {
         if (!world.isClientSide) {
             player.removeEffect(MobEffects.NIGHT_VISION);
             if (sendMsg)

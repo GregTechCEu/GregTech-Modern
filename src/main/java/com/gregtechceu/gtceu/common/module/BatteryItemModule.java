@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.module.*;
@@ -12,7 +13,6 @@ import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -100,48 +100,19 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
     }
 
     @Override
-    public void drawHUD(ModuleContext moduleContext, GuiGraphics graphics) {
+    public void drawHUD(ModuleContext moduleContext, ArmorUtils.ModularHUD hud, GuiGraphics graphics) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return;
         Equipable equipable = Equipable.get(moduleContext.getAppliedTo());
         Component displayName = moduleContext.getData().getModuleItem().getHoverName();
-        int x = 10, y;
         switch (equipable.getEquipmentSlot()) {
-            case HEAD -> {
-                y = 20;
-                graphics.drawString(
-                        Minecraft.getInstance().font,
-                        Component.translatable("module.gtceu.battery.hud.helmet", displayName),
-                        x, y, 0xFFFFFF);
-            }
-            case CHEST -> {
-                y = 40;
-                graphics.drawString(
-                        Minecraft.getInstance().font,
-                        Component.translatable("module.gtceu.battery.hud.chestplate", displayName),
-                        x, y, 0xFFFFFF);
-            }
-            case LEGS -> {
-                y = 60;
-                graphics.drawString(
-                        Minecraft.getInstance().font,
-                        Component.translatable("module.gtceu.battery.hud.leggings", displayName),
-                        x, y, 0xFFFFFF);
-            }
-            case FEET -> {
-                y = 80;
-                graphics.drawString(
-                        Minecraft.getInstance().font,
-                        Component.translatable("module.gtceu.battery.hud.boots", displayName),
-                        x, y, 0xFFFFFF);
-            }
-            default -> y = 100;
+            case HEAD -> hud.newLine(Component.translatable("module.gtceu.battery.hud.helmet", displayName));
+            case CHEST -> hud.newLine(Component.translatable("module.gtceu.battery.hud.chestplate", displayName));
+            case LEGS -> hud.newLine(Component.translatable("module.gtceu.battery.hud.leggings", displayName));
+            case FEET -> hud.newLine(Component.translatable("module.gtceu.battery.hud.boots", displayName));
         }
-        graphics.drawString(
-                Minecraft.getInstance().font,
-                Component.translatable("module.gtceu.battery.hud.info", electricItem.getCharge(),
-                        electricItem.getMaxCharge()),
-                x, y + 10, 0xFFFFFF);
+        hud.newLine(Component.translatable("module.gtceu.battery.hud.info", electricItem.getCharge(),
+                electricItem.getMaxCharge()));
     }
 
     @Override

@@ -32,15 +32,8 @@ import java.util.List;
 
 public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
-    @OnlyIn(Dist.CLIENT)
-    protected ArmorUtils.ModularHUD HUD;
-
     public Jetpack(int energyPerUse, long capacity, int tier) {
         super(energyPerUse, capacity, tier, ArmorItem.Type.CHESTPLATE);
-        if (GTCEu.isClientSide() && this.shouldDrawHUD()) {
-            // noinspection NewExpressionSideOnly
-            HUD = new ArmorUtils.ModularHUD();
-        }
     }
 
     @Override
@@ -120,24 +113,22 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void drawHUD(ItemStack item, GuiGraphics guiGraphics) {
-        addCapacityHUD(item, this.HUD);
+    public void drawHUD(ItemStack item, ArmorUtils.ModularHUD hud, GuiGraphics guiGraphics) {
+        addCapacityHUD(item, hud);
         GTArmor data = item.get(GTDataComponents.ARMOR_DATA);
         if (data != null) {
             Component status = data.enabled() ?
                     Component.translatable("hud.gtceu.armor.status.enabled") :
                     Component.translatable("hud.gtceu.armor.status.disabled");
             Component result = Component.translatable("hud.gtceu.armor.engine_enabled", status);
-            this.HUD.newString(result);
+            hud.newLine(result);
 
             status = data.hover() ?
                     Component.translatable("hud.gtceu.armor.status.enabled") :
                     Component.translatable("hud.gtceu.armor.status.disabled");
             result = Component.translatable("hud.gtceu.armor.hover_mode", status);
-            this.HUD.newString(result);
+            hud.newLine(result);
         }
-        this.HUD.draw(guiGraphics);
-        this.HUD.reset();
     }
 
     @Override

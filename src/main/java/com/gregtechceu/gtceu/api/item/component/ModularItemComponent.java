@@ -6,10 +6,13 @@ import com.gregtechceu.gtceu.api.item.capability.ModularItemStack;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -111,6 +114,29 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                             SyncedKeyMappings.MODULAR_ITEM_GUI.getKeyMapping().getKey().getDisplayName())
                     .withStyle(ChatFormatting.GRAY));
             List<ItemModuleSlot> slots = modularItem.getSlots();
+
+            if (!GTUtil.isShiftDown()) {
+
+                MutableComponent moduleComponent = Component.translatable("gui.gtceu.modules")
+                        .append(CommonComponents.SPACE);
+                List<Component> moduleNames = new ArrayList<>();
+                for (int slotI = 0; slotI < slots.size(); slotI++) {
+                    ItemModuleSlot slot = slots.get(slotI);
+                    if (slot == null) continue;
+                    ModuleContext moduleData = modularItem.getModuleContextForSlot(slotI);
+                    if (moduleData != null) moduleNames.add(moduleData.getModule().getDisplayName(moduleData));
+                }
+
+                for (int i = 0; i < moduleNames.size(); i++) {
+                    moduleComponent.append(moduleNames.get(i));
+                    if (i != moduleNames.size() - 1) moduleComponent.append(", ");
+                }
+
+                if (!moduleNames.isEmpty()) tooltipComponents.add(moduleComponent);
+                tooltipComponents.add(Component.translatable("gtceu.tooltip.hold_shift"));
+                return;
+            }
+
             if (!slots.isEmpty()) tooltipComponents.add(Component.translatable("gui.gtceu.module_slots"));
             for (int slotI = 0; slotI < slots.size(); slotI++) {
                 ItemModuleSlot slot = slots.get(slotI);

@@ -349,19 +349,22 @@ public class CommonEventListener {
             ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 
-            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor) {
-                armor.getArmorLogic().damageArmor(player, boots,
-                        (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
-                player.fallDistance = 0;
-                event.setCanceled(true);
-            } else if (chest.getItem() instanceof ArmorComponentItem armor &&
-                    armor.getArmorLogic() instanceof IJetpack jetpack &&
-                    jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
-                    player.fallDistance >= player.getHealth() + 3.2f) {
-                        IJetpack.performEHover(chest, player);
-                        player.fallDistance = 0;
-                        event.setCanceled(true);
-                    }
+            // todo emergency hover
+            /*
+             * if (boots.getItem() instanceof ArmorComponentItem armor) {
+             * armor.getArmorLogic().damageArmor(player, boots,
+             * (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
+             * player.fallDistance = 0;
+             * event.setCanceled(true);
+             * } else if (chest.getItem() instanceof ArmorComponentItem armor &&
+             * armor.getArmorLogic() instanceof IJetpack jetpack &&
+             * jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
+             * player.fallDistance >= player.getHealth() + 3.2f) {
+             * IJetpack.performEHover(chest, player);
+             * player.fallDistance = 0;
+             * event.setCanceled(true);
+             * }
+             */
         }
     }
 

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.item.module;
 
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
 
@@ -56,9 +57,9 @@ public abstract class ArmorLogicItemModule extends ItemModule implements IHUDPro
     }
 
     @Override
-    public void drawHUD(ModuleContext moduleContext, GuiGraphics graphics) {
+    public void drawHUD(ModuleContext moduleContext, ArmorUtils.ModularHUD hud, GuiGraphics graphics) {
         if (getArmorLogic(moduleContext) instanceof IItemHUDProvider provider) {
-            IItemHUDProvider.tryDrawHud(provider, moduleContext.getAppliedTo(), graphics);
+            IItemHUDProvider.tryDrawHud(provider, moduleContext.getAppliedTo(), hud, graphics);
         }
     }
 }

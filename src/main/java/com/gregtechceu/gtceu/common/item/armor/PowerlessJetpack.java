@@ -39,7 +39,6 @@ import it.unimi.dsi.fastutil.objects.AbstractObject2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -53,13 +52,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     private SizedFluidIngredient previousFuel = SerializerFluidIngredient.EMPTY;
     private int burnTimer = 0;
 
-    @OnlyIn(Dist.CLIENT)
-    private ArmorUtils.@UnknownNullability ModularHUD HUD;
-
-    public PowerlessJetpack() {
-        if (GTCEu.isClientSide())
-            HUD = new ArmorUtils.ModularHUD();
-    }
+    public PowerlessJetpack() {}
 
     @Override
     public void onArmorTick(Level world, Player player, @NotNull ItemStack stack) {
@@ -129,13 +122,13 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void drawHUD(@NotNull ItemStack item, GuiGraphics guiGraphics) {
+    public void drawHUD(@NotNull ItemStack item, ArmorUtils.ModularHUD hud, GuiGraphics guiGraphics) {
         IFluidHandler tank = FluidUtil.getFluidHandler(item).orElse(null);
         if (tank != null) {
             if (tank.getFluidInTank(0).getAmount() == 0) return;
             String formated = String.format("%.1f",
                     (tank.getFluidInTank(0).getAmount() * 100.0F / tank.getTankCapacity(0)));
-            this.HUD.newString(Component.translatable("hud.gtceu.armor.fuel_lvl", formated + "%"));
+            hud.newLine(Component.translatable("hud.gtceu.armor.fuel_lvl", formated + "%"));
             GTArmor data = item.get(GTDataComponents.ARMOR_DATA);
 
             if (data != null) {
@@ -143,17 +136,15 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                         Component.translatable("hud.gtceu.armor.status.enabled") :
                         Component.translatable("hud.gtceu.armor.status.disabled");
                 Component result = Component.translatable("hud.gtceu.armor.engine_enabled", status);
-                this.HUD.newString(result);
+                hud.newLine(result);
 
                 status = data.hover() ?
                         Component.translatable("hud.gtceu.armor.status.enabled") :
                         Component.translatable("hud.gtceu.armor.status.disabled");
                 result = Component.translatable("hud.gtceu.armor.hover_mode", status);
-                this.HUD.newString(result);
+                hud.newLine(result);
             }
         }
-        this.HUD.draw(guiGraphics);
-        this.HUD.reset();
     }
 
     @Override

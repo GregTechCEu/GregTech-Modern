@@ -36,6 +36,7 @@ public class ModularArmorLang {
         provider.add("gui.gtceu.module_slot.universal", "Universal");
         provider.add("gui.gtceu.module_slot.tiered", "Tiered (%s)");
         provider.add("gui.gtceu.module_slots", "Module slots:");
+        provider.add("gui.gtceu.modules", "Modules:");
 
         // Module names/descriptions
 
