@@ -175,6 +175,7 @@ public class CommonEventListener {
             var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
 
             HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+            if (property == null) continue;
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
                 property.hazardTrigger.protectionType().damageEquipment(player, 1);
@@ -330,9 +331,6 @@ public class CommonEventListener {
             if (player.fallDistance < 3.2f)
                 return;
 
-            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-            ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-
             // todo emergency hover
             /*
              * if (boots.getItem() instanceof ArmorComponentItem armor) {
@@ -416,6 +414,17 @@ public class CommonEventListener {
         final LivingEntity entity = event.getEntity();
         final ItemStack old = event.getFrom();
         final ItemStack current = event.getTo();
+
+        if (entity instanceof Player player) {
+            if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() != null) {
+                armor.getArmorLogic().onUnequip(player);
+            }
+            if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() != null) {
+                armor.getArmorLogic().onEquip(player);
+            }
+        }
 
         if (ItemStack.matches(old, current)) {
             return;

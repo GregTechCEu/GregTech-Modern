@@ -12,6 +12,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -179,6 +180,12 @@ public abstract class ItemModule {
         return settings
                 .bool(Text.lang("gui.gtceu.item_module.enabled"), () -> isEnabled(moduleContext),
                         b -> setEnabled(moduleContext, b));
+    }
+
+    // Allows a custom armour texture to be used.
+    public @Nullable ResourceLocation getArmorTexture(ModuleContext context, Entity entity, EquipmentSlot slot,
+                                                      String type) {
+        return null;
     }
 
     @Override
