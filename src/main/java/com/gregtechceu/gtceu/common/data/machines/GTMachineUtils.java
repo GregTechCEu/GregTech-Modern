@@ -70,7 +70,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.SimpleFluidContent;
 
 import brachy.modularui.api.drawable.Text;
 import it.unimi.dsi.fastutil.Pair;
@@ -740,20 +739,26 @@ public class GTMachineUtils {
     }
 
     public static BiConsumer<ItemStack, List<Component>> TANK_TOOLTIPS = (stack, list) -> {
-        FluidStack stored;
-        long storedAmount = 0;
-
         var largeContent = stack.get(GTDataComponents.LARGE_FLUID_CONTENT);
         if (largeContent != null) {
-            stored = largeContent.stored();
-            storedAmount = largeContent.amount();
-        } else {
-            stored = stack.getOrDefault(GTDataComponents.FLUID_CONTENT, SimpleFluidContent.EMPTY).copy();
+            FluidStack stored = largeContent.stored();
+            long storedAmount = largeContent.amount();
+
+            if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
+            list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", stored.getHoverName(),
+                    FormattingUtil.formatNumbers(storedAmount)));
         }
 
-        if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
-        list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", stored.getHoverName(),
-                FormattingUtil.formatNumbers(storedAmount)));
+        var fluidContent = stack.get(GTDataComponents.FLUID_CONTENT);
+        if (fluidContent != null) {
+            FluidStack fluidStack = fluidContent.copy();
+            long storedAmount = fluidStack.getAmount();
+
+            if (storedAmount == 0 && !fluidStack.isEmpty()) storedAmount = fluidStack.getAmount();
+            list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", fluidStack.getHoverName(),
+                    FormattingUtil.formatNumbers(storedAmount)));
+        }
+
     };
 
     public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
@@ -802,6 +807,8 @@ public class GTMachineUtils {
         @Setter
         private Int2IntFunction tankScalingFunction = defaultTankSizeFunction;
         @Setter
+        private Supplier<RecipeLogic> recipeLogic = RecipeLogic::new;
+        @Setter
         private boolean hasPollutionDebuff = false;
         @Setter
         private PanelFactory panelFactory = null;
@@ -824,7 +831,8 @@ public class GTMachineUtils {
                 panelFactory = GTSingleblockMachinePanels.GENERAL_MACHINE;
             }
             return registerTieredMachines(registrate, name,
-                    (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> {
+                    (holder, tier) -> new SimpleTieredMachine(holder, tier, recipeLogic.get(), tankScalingFunction),
+                    (tier, builder) -> {
                         if (hasPollutionDebuff) {
                             builder.recipeModifiers(GTRecipeModifiers.ENVIRONMENT_REQUIREMENT
                                     .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 100 * tier),

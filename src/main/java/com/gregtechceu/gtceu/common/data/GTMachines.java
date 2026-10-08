@@ -33,6 +33,7 @@ import com.gregtechceu.gtceu.common.machine.steam.SteamMinerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolarBoiler;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.*;
+import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
@@ -45,7 +46,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import com.google.common.math.IntMath;
@@ -216,6 +216,28 @@ public class GTMachines {
             .tankScalingFunction(hvCappedTankSizeFunction)
             .hasPollutionDebuff(true)
             .register();
+    public static final MachineEntry<MachineDefinition>[] WELDER = registerTieredMachines(REGISTRATE,
+            "welder",
+            SimpleTieredMachine::new, (tier, builder) -> builder
+                    .langValue("%s Welder %s".formatted(VLVH[tier], VLVT[tier]))
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(GTRecipeTypes.WELDER_RECIPES)
+                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
+                    .workableTieredHullModel(GTCEu.id("block/machines/welder"))
+                    .register(),
+            ELECTRIC_TIERS);
+    public static final MachineEntry<MachineDefinition>[] SPOOLING = registerTieredMachines(REGISTRATE,
+            "spooler",
+            SimpleTieredMachine::new, (tier, builder) -> builder
+                    .langValue("%s Spooler %s".formatted(VLVH[tier], VLVT[tier]))
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(GTRecipeTypes.SPOOLING_RECIPES)
+                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
+                    .workableTieredHullModel(GTCEu.id("block/machines/spooling"))
+                    .register(),
+            ELECTRIC_TIERS);
     public static final MachineEntry<MachineDefinition>[] AUTOCLAVE = new SimpleMachineBuilder(REGISTRATE, "autoclave",
             GTRecipeTypes.AUTOCLAVE_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
@@ -286,7 +308,7 @@ public class GTMachines {
             "forming_press",
             GTRecipeTypes.FORMING_PRESS_RECIPES).register();
     public static final MachineEntry<MachineDefinition>[] LATHE = new SimpleMachineBuilder(REGISTRATE, "lathe",
-            GTRecipeTypes.LATHE_RECIPES)
+            GTRecipeTypes.LATHE_RECIPES).recipeLogic(LatheRecipeLogic::new)
             .register();
     public static final MachineEntry<MachineDefinition>[] SCANNER = new SimpleMachineBuilder(REGISTRATE, "scanner",
             GTRecipeTypes.SCANNER_RECIPES)
@@ -641,14 +663,6 @@ public class GTMachines {
             .allowExtendedFacing(true)
             .tooltipBuilder((stack, list) -> {
                 CREATIVE_TOOLTIPS.accept(stack, list);
-                var storage = stack.get(GTDataComponents.LARGE_FLUID_CONTENT);
-                if (storage != null) {
-                    FluidStack f = storage.stored();
-                    var creativeInfo = stack.get(GTDataComponents.CREATIVE_MACHINE_INFO);
-                    int perCycle = creativeInfo != null ? creativeInfo.outputPerCycle() : 1;
-                    list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", f.getHoverName(),
-                            FormattingUtil.formatNumbers(perCycle)));
-                }
             })
             .model(createBasicMachineModel(GTCEu.id("block/machine/template/quantum/creative_container"))
                     .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createQuantumTankRender)))
