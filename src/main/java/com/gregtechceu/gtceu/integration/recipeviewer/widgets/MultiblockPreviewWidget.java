@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
+import brachy.modularui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
@@ -89,9 +90,11 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
     @Setter
     private @Nullable Runnable onSchemaRefresh;
+    @Getter
+    private boolean clearPreferences = false;
 
     public MultiblockPreviewWidget(MultiblockMachineDefinition definition, MultiblockSchemaInfo schemaInfo, int width,
-                                   int height) {
+                                   int height, boolean terminal) {
         this.multiblockDefinition = definition;
         if (!GTCEu.isClientThread()) return;
         this.frontFacing = definition.getRotationState().defaultDirection;
@@ -201,7 +204,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
         this.coverChildren()
                 .padding(7)
-                .child(new ButtonWidget<>()
+                .childIf(terminal, () -> new ButtonWidget<>()
                         .tooltip(r -> r.addLine(Component.literal("Press to display preview in world!")))
                         .rightRel(1.0f)
                         .onMousePressed((c, b) -> {
@@ -299,7 +302,15 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                         .coverChildrenWidth()
                                         .heightRel(1f)
                                         .name("parts_view")
-                                        .clientOnlyHandler(partsHandler))));
+                                        .clientOnlyHandler(partsHandler))))
+                .childIf(terminal, () -> new ButtonWidget<>()
+                        .right(5)
+                        .onMousePressed((guiContext, button) -> {
+                            clearPreferences = true;
+                            ((ModularGuiContext) guiContext).getScreen().getMainPanel().closeIfOpen();
+
+                            return true;
+                        }));
     }
 
     private ContextMenuButton<?> createSelectedBlockMenu(MultiPredicate predicate) {

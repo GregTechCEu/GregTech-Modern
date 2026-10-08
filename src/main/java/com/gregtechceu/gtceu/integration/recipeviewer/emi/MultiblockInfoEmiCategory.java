@@ -47,7 +47,7 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
         private final MultiblockMachineDefinition definition;
 
         public MultiblockInfoEmiWrapper(MultiblockMachineDefinition definition) {
-            super(definition.getId(), () -> new MultiblockPreviewWidget(definition, null, 200, 180));
+            super(definition.getId(), () -> new MultiblockPreviewWidget(definition, null, 200, 180, false));
             this.definition = definition;
         }
 

@@ -43,7 +43,7 @@ public class MultiblockInfoJeiCategory extends ModularUIJeiCategory<MultiblockMa
     private final IDrawable icon;
 
     public MultiblockInfoJeiCategory(IJeiHelpers helpers) {
-        super(v -> new MultiblockPreviewWidget(v, null, 200, 180), MachineDefinition::getId);
+        super(v -> new MultiblockPreviewWidget(v, null, 200, 180, false), MachineDefinition::getId);
         IGuiHelper guiHelper = helpers.getGuiHelper();
         this.icon = guiHelper.createDrawableItemStack(GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack());
     }

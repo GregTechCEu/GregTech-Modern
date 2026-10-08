@@ -217,7 +217,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         MultiblockSchemaInfo schemaInfo = loadSchemaInfo(item, controllerInfo.definition());
 
         MultiblockPreviewWidget previewWidget = new MultiblockPreviewWidget(controllerInfo.definition(), schemaInfo,
-                200, 200)
+                200, 200, true)
                 .setControllerPos(controllerInfo.pos())
                 .setFrontFacing(controllerInfo.facing()).setUpFacing(controllerInfo.upFace())
                 .setFlipped(controllerInfo.flipped());
@@ -232,6 +232,10 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
     private void writeMultiblockInfo(MultiblockMachineDefinition definition, InteractionHand hand,
                                      MultiblockPreviewWidget previewWidget) {
         MultiblockSchemaInfo schemaInfo = previewWidget.getMultiblockSchemaInfo();
+
+        if(previewWidget.isClearPreferences()) {
+
+        }
 
         GTNetwork.sendToServer(new CPacketTerminalSettings(hand, definition, schemaInfo.getUserSliceRepeats(),
                 schemaInfo.getUserDimensions(), schemaInfo.getUserGlobalBlockPreferences(),
