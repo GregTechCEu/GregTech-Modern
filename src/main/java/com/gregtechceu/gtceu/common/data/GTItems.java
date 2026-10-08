@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
-import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
@@ -1862,35 +1861,35 @@ public class GTItems {
             .tag(ItemTags.HEAD_ARMOR)
             .register();
 
-    public static ItemEntry<ModularArmorItem> NANO_CHESTPLATE = REGISTRATE
+    public static ItemEntry<NanoMuscleArmorItem> NANO_CHESTPLATE = REGISTRATE
             .item("nanomuscle_chestplate",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.CHESTPLATE, p))
+                    (p) -> new NanoMuscleArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.CHESTPLATE, p))
             .lang("NanoMuscle™ Suite Chestplate")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .transform(addArmorClientExtensions())
             .tag(ItemTags.CHEST_ARMOR)
             .onRegister(attach(new ModularItemComponent(4, GTValues.EV)))
             .register();
-    public static ItemEntry<ModularArmorItem> NANO_LEGGINGS = REGISTRATE
+    public static ItemEntry<NanoMuscleArmorItem> NANO_LEGGINGS = REGISTRATE
             .item("nanomuscle_leggings",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.LEGGINGS, p))
+                    (p) -> new NanoMuscleArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.LEGGINGS, p))
             .lang("NanoMuscle™ Suite Leggings")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .transform(addArmorClientExtensions())
             .tag(ItemTags.LEG_ARMOR)
             .onRegister(attach(new ModularItemComponent(4, GTValues.EV)))
             .register();
-    public static ItemEntry<ModularArmorItem> NANO_BOOTS = REGISTRATE
+    public static ItemEntry<NanoMuscleArmorItem> NANO_BOOTS = REGISTRATE
             .item("nanomuscle_boots",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.BOOTS, p))
+                    (p) -> new NanoMuscleArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.BOOTS, p))
             .lang("NanoMuscle™ Suite Boots")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .tag(ItemTags.FOOT_ARMOR)
             .onRegister(attach(new ModularItemComponent(4, GTValues.EV)))
             .register();
-    public static ItemEntry<ModularArmorItem> NANO_HELMET = REGISTRATE
+    public static ItemEntry<NanoMuscleArmorItem> NANO_HELMET = REGISTRATE
             .item("nanomuscle_helmet",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.HELMET, p))
+                    (p) -> new NanoMuscleArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.HELMET, p))
             .lang("NanoMuscle™ Suite Helmet")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .transform(addArmorClientExtensions())
@@ -1965,9 +1964,9 @@ public class GTItems {
             .tag(CustomTags.PPE_ARMOR)
             .register();
 
-    public static ItemEntry<ModularArmorItem> QUANTUM_CHESTPLATE = REGISTRATE
+    public static ItemEntry<QuarkTechArmorItem> QUANTUM_CHESTPLATE = REGISTRATE
             .item("quarktech_chestplate",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.CHESTPLATE, p))
+                    (p) -> new QuarkTechArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.CHESTPLATE, p))
             .lang("QuarkTech™ Suite Chestplate")
             .properties(p -> p.rarity(Rarity.RARE))
             .transform(addArmorClientExtensions())
@@ -1976,9 +1975,9 @@ public class GTItems {
             .tag(CustomTags.PPE_ARMOR)
             .onRegister(attach(new ModularItemComponent(8, GTValues.MAX)))
             .register();
-    public static ItemEntry<ModularArmorItem> QUANTUM_LEGGINGS = REGISTRATE
+    public static ItemEntry<QuarkTechArmorItem> QUANTUM_LEGGINGS = REGISTRATE
             .item("quarktech_leggings",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.LEGGINGS, p))
+                    (p) -> new QuarkTechArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.LEGGINGS, p))
             .lang("QuarkTech™ Suite Leggings")
             .properties(p -> p.rarity(Rarity.RARE))
             .transform(addArmorClientExtensions())
@@ -1986,9 +1985,9 @@ public class GTItems {
             .tag(CustomTags.PPE_ARMOR)
             .onRegister(attach(new ModularItemComponent(8, GTValues.MAX)))
             .register();
-    public static ItemEntry<ModularArmorItem> QUANTUM_BOOTS = REGISTRATE
+    public static ItemEntry<QuarkTechArmorItem> QUANTUM_BOOTS = REGISTRATE
             .item("quarktech_boots",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.BOOTS, p))
+                    (p) -> new QuarkTechArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.BOOTS, p))
             .lang("QuarkTech™ Suite Boots")
             .properties(p -> p.rarity(Rarity.RARE))
             .transform(addArmorClientExtensions())
@@ -1996,9 +1995,9 @@ public class GTItems {
             .tag(CustomTags.PPE_ARMOR)
             .onRegister(attach(new ModularItemComponent(8, GTValues.MAX)))
             .register();
-    public static ItemEntry<ModularArmorItem> QUANTUM_HELMET = REGISTRATE
+    public static ItemEntry<QuarkTechArmorItem> QUANTUM_HELMET = REGISTRATE
             .item("quarktech_helmet",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.HELMET, p))
+                    (p) -> new QuarkTechArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.HELMET, p))
             .lang("QuarkTech™ Suite Helmet")
             .properties(p -> p.rarity(Rarity.RARE))
             .transform(addArmorClientExtensions())
@@ -2016,6 +2015,7 @@ public class GTItems {
             .tag(ItemTags.CHEST_ARMOR)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .register();
+
     public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK = REGISTRATE
             .item("electric_jetpack",
                     (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
@@ -2043,9 +2043,10 @@ public class GTItems {
             .transform(addArmorClientExtensions())
             .tag(ItemTags.CHEST_ARMOR)
             .register();
-    public static ItemEntry<ModularArmorItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE
+
+    public static ItemEntry<NanoMuscleArmorItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE
             .item("advanced_nanomuscle_chestplate",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.ADVANCED_NANO_MUSCLE, ArmorItem.Type.CHESTPLATE, p))
+                    (p) -> new NanoMuscleArmorItem(GTArmorMaterials.ADVANCED_NANO_MUSCLE, ArmorItem.Type.CHESTPLATE, p))
             .lang("Advanced NanoMuscle™ Suite Chestplate")
             .properties(p -> p.rarity(Rarity.RARE))
             .transform(addArmorClientExtensions())
@@ -2053,9 +2054,9 @@ public class GTItems {
             .tag(CustomTags.PPE_ARMOR)
             .onRegister(attach(new ModularItemComponent(5, GTValues.EV)))
             .register();
-    public static ItemEntry<ModularArmorItem> QUANTUM_CHESTPLATE_ADVANCED = REGISTRATE
+    public static ItemEntry<QuarkTechArmorItem> QUANTUM_CHESTPLATE_ADVANCED = REGISTRATE
             .item("advanced_quarktech_chestplate",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.ADVANCED_QUARK_TECH, ArmorItem.Type.CHESTPLATE, p))
+                    (p) -> new QuarkTechArmorItem(GTArmorMaterials.ADVANCED_QUARK_TECH, ArmorItem.Type.CHESTPLATE, p))
             .lang("Advanced QuarkTech™ Suite Chestplate")
             .properties(p -> p.rarity(Rarity.EPIC))
             .transform(addArmorClientExtensions())

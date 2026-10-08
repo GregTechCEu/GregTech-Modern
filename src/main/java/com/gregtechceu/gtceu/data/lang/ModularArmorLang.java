@@ -57,7 +57,7 @@ public class ModularArmorLang {
         provider.add("module.gtceu.movement_speed.description", "Increases all movement speed by %s%%");
         provider.add("module.gtceu.sneak_speed", "Sneak Speed Module (%s)");
         provider.add("module.gtceu.sneak_speed.description", "Increases sneaking speed by %s%%");
-        provider.add("module.gtceu.step_height", "Step Height Module (%s)");
+        provider.add("module.gtceu.step_height", "Step Assist Module (%s)");
         provider.add("module.gtceu.step_height.description", "Increases step height by %s blocks");
         provider.add("module.gtceu.swim_speed", "Swim Speed Module (%s)");
         provider.add("module.gtceu.swim_speed.description", "Increases swim speed by %s%%");
