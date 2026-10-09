@@ -200,11 +200,11 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
 
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
 
-        widgets.add(Text.lang("gtceu.multiblock.work_paused")
+        widgets.add(Text.lang("gui.gtceu.machine.work_paused")
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !workingEnabled.getBoolValue()));
 
-        widgets.add(Text.lang("gtceu.multiblock.running")
+        widgets.add(Text.lang("gui.gtceu.machine.running")
                 .asWidget()
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
@@ -244,7 +244,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() &&
                         active.getBoolValue() && !ConfigHolder.INSTANCE.machines.harmlessActiveTransformers));
 
-        widgets.add(Text.lang("gtceu.multiblock.idling")
+        widgets.add(Text.lang("gui.gtceu.machine.idling")
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() &&
                         !active.getBoolValue()));

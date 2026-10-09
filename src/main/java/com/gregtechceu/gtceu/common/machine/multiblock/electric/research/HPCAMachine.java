@@ -266,7 +266,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         List<IWidget> widgets = new ArrayList<>();
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
-                () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
+                () -> Component.translatable("gui.gtceu.machine.running").withStyle(ChatFormatting.GREEN),
                 () -> Component.translatable("gui.gtceu.machine.hpca.error_power").withStyle(ChatFormatting.RED)));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager));
         widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
@@ -315,8 +315,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     // .setWorkingStatus(true, hpcaHandler.getAllocatedCWUt() > 0) // transform into two-state system for
     // // display
     // .setWorkingStatusKeys(
-    // "gtceu.multiblock.idling",
-    // "gtceu.multiblock.idling",
+    // "gui.gtceu.machine.idling",
+    // "gui.gtceu.machine.idling",
     // "gui.gtceu.machine.data_bank.working")
     // .addCustom(tl -> {
     // if (isFormed()) {

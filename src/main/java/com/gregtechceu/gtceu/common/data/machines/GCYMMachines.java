@@ -273,7 +273,7 @@ public class GCYMMachines {
             .multiblock("large_assembler", WorkableElectricMultiblockMachine::new)
             .langValue("Large Assembling Factory")
             .tooltips(Component.translatable("gui.gtceu.supports_parallel"))
-            .tooltips(Component.translatable("gtceu.multiblock.exact_hatch_1.tooltip"))
+            .tooltips(Component.translatable("gui.gtceu.machine.single_energy_hatch_only.tooltip"))
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(ASSEMBLER_RECIPES))
             .conditionalTooltip(GTMachineUtils.defaultEnvironmentRequirement(),
                     ConfigHolder.INSTANCE.gameplay.environmentalHazards)
@@ -305,7 +305,7 @@ public class GCYMMachines {
             .langValue("Large Circuit Assembling Facility")
             .tooltips(Component.translatable("gui.gtceu.supports_parallel"))
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(CIRCUIT_ASSEMBLER_RECIPES))
-            .tooltips(Component.translatable("gtceu.multiblock.exact_hatch_1.tooltip"))
+            .tooltips(Component.translatable("gui.gtceu.machine.single_energy_hatch_only.tooltip"))
             .conditionalTooltip(GTMachineUtils.defaultEnvironmentRequirement(),
                     ConfigHolder.INSTANCE.gameplay.environmentalHazards)
             .rotationState(RotationState.ALL)

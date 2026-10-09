@@ -365,8 +365,6 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.large_turbine.efficiency_tooltip",
                 "Each Rotor Holder above %s§7 adds §f10%% efficiency and multiplies EU/t by 2§7.");
         provider.add("gui.gtceu.machine.large_turbine.fuel_needed", "Consumes %s per %s ticks");
-        provider.add("gtceu.multiblock.large_turbine.description",
-                "Large Turbines are multiblocks that generate power from steam, gases, and plasma by having them spin the turbine's rotor. Energy output is based on rotor efficiency and current speed of turbine. Gearbox casings are used in the center of the structure.");
 
         // Fusion Reactor
         provider.add("machine.gtceu.fusion_reactor.capacity", "§7Maximum Energy Storage: §e%sM EU");
@@ -378,7 +376,7 @@ public class MachineLang {
                 "The Fusion Reactor MK 1 is a large multiblock structure used for fusing elements into heavier ones. It can only use LuV, ZPM, and UV Energy Hatches. For every Hatch it has, its buffer increases by 10M EU, and has a maximum of 160M.");
         provider.add("machine.gtceu.zpm_fusion_reactor.description",
                 "The Fusion Reactor MK 2 is a large multiblock structure used for fusing elements into heavier ones. It can only use ZPM and UV Energy Hatches. For every Hatch it has, its buffer increases by 20M EU, and has a maximum of 320M.");
-        provider.add("gtceu.multiblock.uv_fusion_reactor.description",
+        provider.add("machine.gtceu.uv_fusion_reactor.description",
                 "The Fusion Reactor MK 3 is a large multiblock structure used for fusing elements into heavier ones. It can only use UV Energy Hatches. For every Hatch it has, its buffer increases by 40M EU, and has a maximum of 640M.");
 
         // Fluid Drilling Rig
@@ -1029,53 +1027,51 @@ public class MachineLang {
 
     public static void generateMultiblockKeys(GTLangProvider provider) {
         // Recipe Logic
-        provider.add("gtceu.multiblock.work_paused", "Work Paused.");
-        provider.add("gtceu.multiblock.running", "Running perfectly.");
-        provider.add("gtceu.multiblock.idling", "Idling.");
+        provider.add("gui.gtceu.machine.work_paused", "Work Paused.");
+        provider.add("gui.gtceu.machine.running", "Running perfectly.");
+        provider.add("gui.gtceu.machine.idling", "Idling.");
         
         // Energy Requirement
-        provider.add("gtceu.multiblock.not_enough_energy", "WARNING: Machine needs more energy.");
-        provider.add("gtceu.multiblock.not_enough_energy_output", "WARNING: Energy Dynamo Tier Too Low!");
+        provider.add("gui.gtceu.machine.low_energy", "WARNING: Machine needs more energy.");
+        provider.add("gui.gtceu.machine.low_energy_output", "WARNING: Energy Dynamo Tier Too Low!");
 
         // Recipe Progress
-        provider.add("gtceu.multiblock.waiting", "WARNING: Machine is waiting.");
-        provider.add("gtceu.multiblock.progress_percent", "Progress: %s%%");
-        provider.add("gtceu.multiblock.progress", "Progress: %ss / %ss (%s%%)");
+        provider.add("gui.gtceu.machine.waiting", "WARNING: Machine is waiting.");
+        provider.add("gui.gtceu.machine.progress_percent", "Progress: %s%%");
+        provider.add("gui.gtceu.machine.progress", "Progress: %ss / %ss (%s%%)");
 
         // Recipe Outputs
-        provider.add("gtceu.multiblock.output_line.0", "%s x §e%s§r (%ss/ea)");
-        provider.add("gtceu.multiblock.output_line.1", "%s x §e%s§r (%s/s)");
-        provider.add("gtceu.multiblock.output_line.2", "%s ≈ §e%s§r (%ss/ea)");
-        provider.add("gtceu.multiblock.output_line.3", "%s ≈ §e%s§r (%s/s)");
+        provider.add("gui.gtceu.machine.output_line.0", "%s x §e%s§r (%ss/ea)");
+        provider.add("gui.gtceu.machine.output_line.1", "%s x §e%s§r (%s/s)");
+        provider.add("gui.gtceu.machine.output_line.2", "%s ≈ §e%s§r (%ss/ea)");
+        provider.add("gui.gtceu.machine.output_line.3", "%s ≈ §e%s§r (%s/s)");
 
         // Structure Validation
-        provider.add("gtceu.multiblock.invalid_structure", "Invalid structure.");
-        provider.add("gtceu.multiblock.invalid_structure.tooltip",
+        provider.add("gui.gtceu.machine.invalid_structure", "Invalid structure.");
+        provider.add("gui.gtceu.machine.invalid_structure.tooltip",
                 "This block is a controller of the multiblock structure. For building help, see structure template in JEI.");
-        provider.add("gtceu.multiblock.validation_failed", "Invalid amount of inputs/outputs.");
 
         // Pattern Preview
-        provider.add("gtceu.multiblock.title", "Multiblock Pattern");
 
         // Hatch Limitation - Mostly for GCYM Multiblocks that are Hardcoded into GTCEU
-        provider.add("gtceu.multiblock.exact_hatch_1.tooltip", "§fAccepts Exactly §6One §fEnergy Hatch.");
+        provider.add("gui.gtceu.machine.single_energy_hatch_only.tooltip", "§fAccepts Exactly §6One §fEnergy Hatch.");
 
         // Recipe Tier
-        provider.add("gtceu.multiblock.max_recipe_tier", "Max Recipe Tier: %s");
-        provider.add("gtceu.multiblock.max_recipe_tier_hover", "The maximum tier of recipes that can be run");
+        provider.add("gui.gtceu.machine.max_recipe_tier", "Max Recipe Tier: %s");
+        provider.add("gui.gtceu.machine.max_recipe_tier_hover", "The maximum tier of recipes that can be run");
 
         // Energy Consumption/Generation
-        provider.add("gtceu.multiblock.max_energy_per_tick", "Max EU/t: §a%s (%s§r)");
-        provider.add("gtceu.multiblock.max_energy_per_tick_hover",
+        provider.add("gui.gtceu.machine.max_eut", "Max EU/t: §a%s (%s§r)");
+        provider.add("gui.gtceu.machine.max_eut_hover",
                 "The maximum EU/t available for running recipes or overclocking");
-        provider.add("gtceu.multiblock.max_energy_per_tick_amps", "Max EU/t: %s (%sA %s)");
-        provider.add("gtceu.multiblock.energy_consumption", "Energy Usage: %s EU/t (%s)");
-        provider.add("gtceu.multiblock.generation_eu", "Outputting: §a%s EU/t");
+        provider.add("gui.gtceu.machine.max_eut_amps", "Max EU/t: %s (%sA %s)");
+        provider.add("gui.gtceu.machine.energy_consumption", "Energy Usage: %s EU/t (%s)");
+        provider.add("gui.gtceu.machine.energy_generation", "Outputting: §a%s EU/t");
 
         // Maintenence
-        provider.add("gtceu.multiblock.universal.no_problems", "No Maintenance Problems!");
-        provider.add("gtceu.multiblock.universal.has_problems", "Has Maintenance Problems!");
-        provider.add("gtceu.multiblock.universal.has_problems_header",
+        provider.add("gui.gtceu.machine.maintenance.no_problems", "No Maintenance Problems!");
+        provider.add("gui.gtceu.machine.maintenance.has_problems", "Has Maintenance Problems!");
+        provider.add("gui.gtceu.machine.maintenance.has_problems_header",
                 "Fix the following issues in a Maintenance Hatch:");
         provider.add("gui.gtceu.maintenance.problem.wrench", "§7Pipe is loose. (§aWrench§7)");
         provider.add("gui.gtceu.maintenance.problem.screwdriver", "§7Screws are loose. (§aScrewdriver§7)");
@@ -1085,16 +1081,16 @@ public class MachineLang {
         provider.add("gui.gtceu.maintenance.problem.crowbar", "§7That doesn't belong there. (§aCrowbar§7)");
 
         // Muffler
-        provider.add("gtceu.multiblock.universal.muffler_obstructed", "Muffler Hatch is Obstructed!");
-        provider.add("gtceu.multiblock.universal.muffler_obstructed.tooltip",
+        provider.add("gui.gtceu.machine.muffler_obstructed", "Muffler Hatch is Obstructed!");
+        provider.add("gui.gtceu.machine.muffler_obstructed.tooltip",
                 "Muffler Hatch must have a block of airspace in front of it.");
 
         // Rotor
-        provider.add("gtceu.multiblock.universal.rotor_obstructed", "Rotor is Obstructed!");
+        provider.add("gui.gtceu.machine.rotor_obstructed", "Rotor is Obstructed!");
 
         // Distinctness
-        provider.add("gtceu.multiblock.universal.distinct", "Distinct Buses:");
-        provider.add("gtceu.multiblock.universal.distinct.info",
+        provider.add("gui.gtceu.machine.distinct", "Distinct Buses:");
+        provider.add("gui.gtceu.machine.distinct.info",
                 "If enabled, each Item Input Bus will be treated as fully distinct from each other for recipe lookup. Useful for things like Programmed Circuits, Extruder Shapes, etc.");
 
         // Batching
@@ -1115,9 +1111,5 @@ public class MachineLang {
         provider.add("gui.gtceu.available_recipe_types_2.tooltip", "Available Recipe Types: %s, %s");
         provider.add("gui.gtceu.available_recipe_types_3.tooltip", "Available Recipe Types: %s, %s, %s");
         provider.add("gui.gtceu.available_recipe_types_4.tooltip", "Available Recipe Types: %s, %s, %s, %s");
-
-        // XEI Categories
-        provider.add("gtceu.auto_decomp.rotor", "Turbine Rotor");
-        provider.add("gtceu.auto_decomp.tool", "Non-electric tool");
     }
 }

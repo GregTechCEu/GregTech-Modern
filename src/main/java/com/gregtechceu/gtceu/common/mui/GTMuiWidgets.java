@@ -177,7 +177,7 @@ public class GTMuiWidgets {
     public static ToggleButton createDistinctnessButton(IDistinctPart distinct) {
         return createToggleButton(distinct::isDistinct, distinct::setDistinct, GTGuiTextures.BUTTON_DISTINCT[0],
                 GTGuiTextures.BUTTON_DISTINCT[1],
-                "gtceu.multiblock.universal.distinct");
+                "gui.gtceu.machine.distinct");
     }
 
     public static ToggleButton createBatchModeButton(WorkableElectricMultiblockMachine workableElectricMultiblockMachine) {

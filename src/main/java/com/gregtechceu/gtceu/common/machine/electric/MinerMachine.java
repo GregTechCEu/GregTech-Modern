@@ -170,7 +170,7 @@ public class MinerMachine extends WorkableTieredMachine
                 .child(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.large_miner.working")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))).asWidget()
                         .setEnabledIf(w -> getRecipeLogic().isWorking()))
-                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.work_paused")).asWidget()
+                .child(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.work_paused")).asWidget()
                         .setEnabledIf(w -> !isWorkingEnabled()))
                 .child(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.large_miner.invfull")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))).asWidget()

@@ -56,7 +56,7 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
     // int energyContainer = getEnergyTier();
     // long maxVoltage = GTValues.V[energyContainer];
     // String voltageName = GTValues.VNF[energyContainer];
-    // textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));
+    // textList.add(Component.translatable("gui.gtceu.machine.max_eut", maxVoltage, voltageName));
     //
     // if (getRecipeLogic().getVeinFluid() != null) {
     // // Fluid name
@@ -79,9 +79,9 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
     // .withStyle(ChatFormatting.GRAY));
     // }
     // } else {
-    // Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
+    // Component tooltip = Component.translatable("gui.gtceu.machine.invalid_structure.tooltip")
     // .withStyle(ChatFormatting.GRAY);
-    // textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
+    // textList.add(Component.translatable("gui.gtceu.machine.invalid_structure")
     // .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
     // .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
     // }

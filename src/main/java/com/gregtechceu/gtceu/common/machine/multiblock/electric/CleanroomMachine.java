@@ -467,7 +467,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
         widgets.add(Text.dynamic(() -> {
             String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage.getLongValue())];
-            return Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage.getLongValue(),
+            return Component.translatable("gui.gtceu.machine.max_eut", maxVoltage.getLongValue(),
                     voltageName);
         })
                 .asWidget()
@@ -483,19 +483,19 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !cleanroomTypeIsNull.getBoolValue()));
 
-        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.work_paused"))
+        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.work_paused"))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !workingEnabled.getBoolValue()));
 
         widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
 
-        widgets.add(Text.lang("gtceu.multiblock.idling")
+        widgets.add(Text.lang("gui.gtceu.machine.idling")
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() &&
                         !active.getBoolValue()));
 
         widgets.add(Text
-                .of(Component.translatable("gtceu.multiblock.waiting")
+                .of(Component.translatable("gui.gtceu.machine.waiting")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && waiting.getBoolValue()));

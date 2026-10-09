@@ -336,17 +336,17 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
 
         // Generic machine lines
-        widgets.add(Text.lang("gtceu.multiblock.work_paused")
+        widgets.add(Text.lang("gui.gtceu.machine.work_paused")
                 .asWidget()
                 .setEnabledIf((widget) -> !power.getBoolValue()));
-        widgets.add(Text.lang("gtceu.multiblock.running")
+        widgets.add(Text.lang("gui.gtceu.machine.running")
                 .asWidget()
                 .setEnabledIf((widget) -> active.getBoolValue()));
-        widgets.add(Text.lang("gtceu.multiblock.idling")
+        widgets.add(Text.lang("gui.gtceu.machine.idling")
                 .asWidget()
                 .setEnabledIf((widget) -> !active.getBoolValue() && power.getBoolValue()));
         widgets.add(Text
-                .of(Component.translatable("gtceu.multiblock.waiting")
+                .of(Component.translatable("gui.gtceu.machine.waiting")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)))
                 .asWidget()
                 .setEnabledIf((widget) -> waiting.getBoolValue()));
