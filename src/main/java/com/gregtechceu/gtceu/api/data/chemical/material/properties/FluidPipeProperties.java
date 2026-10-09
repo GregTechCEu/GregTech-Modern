@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.capability.IPropertyFluidFilter;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -102,7 +102,7 @@ public class FluidPipeProperties implements IMaterialProperty, IPropertyFluidFil
     }
 
     @Override
-    public boolean canContain(@NotNull FluidState state) {
+    public boolean canContain(@NotNull MaterialFluidState state) {
         return switch (state) {
             case LIQUID -> true;
             case GAS -> gasProof;

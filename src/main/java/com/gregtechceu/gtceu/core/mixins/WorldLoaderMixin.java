@@ -20,8 +20,7 @@ public class WorldLoaderMixin {
 
     @Inject(method = "load",
             at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/server/ReloadableServerResources;loadResources(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/core/LayeredRegistryAccess;Lnet/minecraft/world/flag/FeatureFlagSet;Lnet/minecraft/commands/Commands$CommandSelection;ILjava/util/concurrent/Executor;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;",
-                     shift = At.Shift.BEFORE))
+                     target = "Lnet/minecraft/server/ReloadableServerResources;loadResources(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/core/LayeredRegistryAccess;Lnet/minecraft/world/flag/FeatureFlagSet;Lnet/minecraft/commands/Commands$CommandSelection;ILjava/util/concurrent/Executor;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
     private static <D, R> void gtceu$postKJSVeinEvents(CallbackInfoReturnable<CompletableFuture<R>> cir,
                                                        @Local(ordinal = 1) LayeredRegistryAccess<RegistryLayer> layered) {
         MixinHelpers.postKJSVeinEvents(layered.compositeAccess());
