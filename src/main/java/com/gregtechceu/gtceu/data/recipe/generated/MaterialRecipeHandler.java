@@ -39,7 +39,7 @@ public final class MaterialRecipeHandler {
     private MaterialRecipeHandler() {}
 
     static void prepareCastingRecipe(GTRecipeBuilder builder, Material material, int amount) {
-        if (!material.hasProperty(PropertyKey.ALLOY_BLAST) || !ingotHot.doGenerateItem(material)) return;
+        if (!material.requiresMetalFreezing()) return;
 
         builder.recipeType(VACUUM_RECIPES).category(VACUUM_RECIPES.getCategory())
                 .EUt(VA[MV]);

@@ -496,6 +496,10 @@ public final class Material implements Comparable<Material> {
         return totalMass / totalAmount;
     }
 
+    public boolean requiresMetalFreezing() {
+        return hasProperty(PropertyKey.ALLOY_BLAST) && TagPrefix.ingotHot.doGenerateItem(this);
+    }
+
     public int getBlastTemperature() {
         BlastProperty prop = properties.getProperty(PropertyKey.BLAST);
         return prop == null ? 0 : prop.getBlastTemperature();
