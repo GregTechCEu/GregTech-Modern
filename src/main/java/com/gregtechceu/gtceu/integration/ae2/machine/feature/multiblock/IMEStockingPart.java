@@ -112,7 +112,8 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
                                     })
                                     .overlay(new ItemDrawable(GTItems.TOOL_DATA_STICK.asItem()).asIcon().size(16))
                                     .tooltip(new RichTooltip()
-                                            .addLine(Text.lang("gui.gtceu.machine.me_part.network.stocking_settings"))));
+                                            .addLine(
+                                                    Text.lang("gui.gtceu.machine.me_part.network.stocking_settings"))));
 
                 });
     }

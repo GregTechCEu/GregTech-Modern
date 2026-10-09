@@ -678,12 +678,12 @@ public class GTMultiMachines {
                     .tooltips(
                             Component.translatable("gtceu.machine.large_miner.%s.tooltip"
                                     .formatted(VN[tier].toLowerCase(Locale.ROOT))),
-                            Component.translatable("gtceu.machine.miner.multi.description"))
+                            Component.translatable("gui.gtceu.machine.miner.multi.description"))
                     .tooltipBuilder((stack, tooltip) -> {
                         int workingAreaChunks = (2 * tier - 5);
-                        tooltip.add(Component.translatable("gtceu.machine.miner.multi.modes"));
-                        tooltip.add(Component.translatable("gtceu.machine.miner.multi.production"));
-                        tooltip.add(Component.translatable("gtceu.machine.miner.fluid_usage", 8 - (tier - 5),
+                        tooltip.add(Component.translatable("gui.gtceu.machine.miner.multi.modes"));
+                        tooltip.add(Component.translatable("gui.gtceu.machine.miner.multi.production"));
+                        tooltip.add(Component.translatable("gui.gtceu.machine.miner.fluid_usage", 8 - (tier - 5),
                                 DrillingFluid.getLocalizedName()));
                         tooltip.add(Component.translatable("machine.gtceu.miner.working_area_chunks",
                                 workingAreaChunks, workingAreaChunks));

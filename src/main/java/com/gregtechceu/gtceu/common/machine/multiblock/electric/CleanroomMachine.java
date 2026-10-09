@@ -500,15 +500,15 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && waiting.getBoolValue()));
 
-        widgets.add(Text.of(Component.translatable("gtceu.multiblock.cleanroom.clean_state"))
+        widgets.add(Text.of(Component.translatable("gui.gtceu.machine.cleanroom.clean_state"))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && cleanroomProviderTraitIsActive.getBoolValue()));
-        widgets.add(Text.of(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"))
+        widgets.add(Text.of(Component.translatable("gui.gtceu.machine.cleanroom.dirty_state"))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !cleanroomProviderTraitIsActive.getBoolValue()));
 
         widgets.add(Text.dynamic(
-                () -> Component.translatable("gtceu.multiblock.cleanroom.clean_amount", cleanAmount.getIntValue()))
+                () -> Component.translatable("gui.gtceu.machine.cleanroom.clean_amount", cleanAmount.getIntValue()))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));
 
@@ -545,8 +545,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
                 mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
             return Collections.singletonList(Component.translatable(
-                    cleanroomProviderTrait.isActive() ? "gtceu.multiblock.cleanroom.clean_state" :
-                            "gtceu.multiblock.cleanroom.dirty_state"));
+                    cleanroomProviderTrait.isActive() ? "gui.gtceu.machine.cleanroom.clean_state" :
+                            "gui.gtceu.machine.cleanroom.dirty_state"));
         }
         return new ArrayList<>();
     }

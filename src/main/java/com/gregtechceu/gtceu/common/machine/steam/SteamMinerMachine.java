@@ -171,33 +171,36 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
                                 getRecipeLogic().getCustomProgressLine().copy().withStyle(ChatFormatting.WHITE)))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component.translatable("gtceu.machine.miner.x", startX.getIntValue(), mineX.getIntValue())
+                        () -> Component
+                                .translatable("gui.gtceu.machine.miner.x", startX.getIntValue(), mineX.getIntValue())
                                 .withStyle(ChatFormatting.WHITE))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component.translatable("gtceu.machine.miner.y", startY.getIntValue(), mineY.getIntValue())
+                        () -> Component
+                                .translatable("gui.gtceu.machine.miner.y", startY.getIntValue(), mineY.getIntValue())
                                 .withStyle(ChatFormatting.WHITE))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component.translatable("gtceu.machine.miner.z", startZ.getIntValue(), mineZ.getIntValue())
+                        () -> Component
+                                .translatable("gui.gtceu.machine.miner.z", startZ.getIntValue(), mineZ.getIntValue())
                                 .withStyle(ChatFormatting.WHITE))
                         .asWidget())
                 .child(Text
                         .dynamic(() -> Component.translatable("machine.gtceu.miner.working_area",
                                 workingArea.getIntValue(), workingArea.getIntValue()).withStyle(ChatFormatting.WHITE))
                         .asWidget())
-                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.done")
+                .child(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.large_miner.done")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))).asWidget()
                         .setEnabledIf(w -> getRecipeLogic().isDone()))
-                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.working")
+                .child(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.large_miner.working")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))).asWidget()
                         .setEnabledIf(w -> getRecipeLogic().isWorking()))
                 .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.work_paused")).asWidget()
                         .setEnabledIf(w -> !isWorkingEnabled()))
-                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.invfull")
+                .child(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.large_miner.invfull")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))).asWidget()
                         .setEnabledIf(w -> getRecipeLogic().isInventoryFull()))
-                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.needspower")
+                .child(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.large_miner.needspower")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))).asWidget()
                         .setEnabledIf(w -> !drainInput(true)));
 

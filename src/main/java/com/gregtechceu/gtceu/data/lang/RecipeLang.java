@@ -55,11 +55,11 @@ public class RecipeLang {
     }
 
     private static void generateModifierKeys(RegistrateLangProvider provider) {
-        provider.add("recipe_modifier.gtceu.default_fail", "Recipe Modifier Fail");
-        provider.add("recipe_modifier.gtceu.insufficient_voltage", "Voltage Tier Too Low");
-        provider.add("recipe_modifier.gtceu.insufficient_eu_to_start_fusion",
+        provider.add("gui.gtceu.recipe_modifier.default_fail", "Recipe Modifier Fail");
+        provider.add("gui.gtceu.recipe_modifier.insufficient_voltage", "Voltage Tier Too Low");
+        provider.add("gui.gtceu.recipe_modifier.insufficient_eu_to_start_fusion",
                 "Insufficient Energy to Initiate Fusion Reaction");
-        provider.add("recipe_modifier.gtceu.coil_temperature_too_low", "Coil Temperature Too Low");
+        provider.add("gui.gtceu.recipe_modifier.coil_temperature_too_low", "Coil Temperature Too Low");
     }
 
     private static void generateRecipeConditions(GTLangProvider provider) {

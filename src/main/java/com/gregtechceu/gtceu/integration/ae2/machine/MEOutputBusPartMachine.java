@@ -117,7 +117,8 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
                 .widgetProvider((sm, value) -> {
                     var col = Flow.col().leftRel(0.5f).coverChildrenHeight();
                     var list = value.getValue();
-                    if (list.isEmpty()) return col.child(Text.lang("gui.gtceu.machine.me_output.waiting_list_empty").asWidget());
+                    if (list.isEmpty())
+                        return col.child(Text.lang("gui.gtceu.machine.me_output.waiting_list_empty").asWidget());
                     col.child(Text.lang("gui.gtceu.machine.me_output.waiting_list").asWidget().margin(0, 2));
                     col.child(new ScrollPreservingGrid(savedScroll)
                             .size(167, 67)

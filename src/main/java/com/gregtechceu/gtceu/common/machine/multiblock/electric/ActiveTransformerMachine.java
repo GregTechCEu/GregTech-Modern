@@ -210,7 +210,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
         widgets.add(Text.dynamic(() -> Component
-                .translatable("gtceu.multiblock.active_transformer.max_input",
+                .translatable("gui.gtceu.machine.active_transformer.max_input",
                         FormattingUtil.formatNumbers(
                                 Math.abs(inputVoltage.getLongValue() * inputAmperage.getLongValue()))))
                 .asWidget()
@@ -218,7 +218,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
         widgets.add(Text.dynamic(() -> Component
-                .translatable("gtceu.multiblock.active_transformer.max_output",
+                .translatable("gui.gtceu.machine.active_transformer.max_output",
                         FormattingUtil.formatNumbers(
                                 Math.abs(outputVoltage.getLongValue() * outputAmperage.getLongValue()))))
                 .asWidget()
@@ -226,20 +226,20 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
         widgets.add(Text.dynamic(() -> Component
-                .translatable("gtceu.multiblock.active_transformer.average_in",
+                .translatable("gui.gtceu.machine.active_transformer.average_in",
                         FormattingUtil.formatNumbers(Math.abs(inputPerSec.getLongValue() / 20))))
                 .asWidget()
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
         widgets.add(Text.dynamic(() -> Component
-                .translatable("gtceu.multiblock.active_transformer.average_out",
+                .translatable("gui.gtceu.machine.active_transformer.average_out",
                         FormattingUtil.formatNumbers(Math.abs(outputPerSec.getLongValue() / 20))))
                 .asWidget()
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
-        widgets.add(Text.lang("gtceu.multiblock.active_transformer.danger_enabled")
+        widgets.add(Text.lang("gui.gtceu.machine.active_transformer.danger_enabled")
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() &&
                         active.getBoolValue() && !ConfigHolder.INSTANCE.machines.harmlessActiveTransformers));

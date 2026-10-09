@@ -268,13 +268,16 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 () -> new IntSyncValue(() -> getRecipeLogic().getMaxProgress()));
 
         widgets.add(Text
-                .dynamic(() -> Component.translatable("gtceu.machine.miner.x", x.getLongValue(), startX.getLongValue()))
+                .dynamic(() -> Component.translatable("gui.gtceu.machine.miner.x", x.getLongValue(),
+                        startX.getLongValue()))
                 .asWidget());
         widgets.add(Text
-                .dynamic(() -> Component.translatable("gtceu.machine.miner.y", y.getLongValue(), startY.getLongValue()))
+                .dynamic(() -> Component.translatable("gui.gtceu.machine.miner.y", y.getLongValue(),
+                        startY.getLongValue()))
                 .asWidget());
         widgets.add(Text
-                .dynamic(() -> Component.translatable("gtceu.machine.miner.z", z.getLongValue(), startZ.getLongValue()))
+                .dynamic(() -> Component.translatable("gui.gtceu.machine.miner.z", z.getLongValue(),
+                        startZ.getLongValue()))
                 .asWidget());
         widgets.add(Text.dynamic(() -> {
             if (chunk.getBoolValue()) {
@@ -284,11 +287,11 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
             return Component.translatable("gtceu.universal.tooltip.working_area", workingArea.getIntValue(),
                     workingArea.getIntValue());
         }).asWidget());
-        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.done")
+        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.large_miner.done")
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)))
                 .asWidget()
                 .setEnabledIf((w) -> done.getBoolValue()));
-        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.machine.miner.progress",
+        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.miner.progress",
                 mineProgress.getIntValue(), totalMine.getIntValue())).asWidget());
 
         return widgets;
@@ -303,11 +306,11 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     // if (this.isFormed()) {
     // int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
     // int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-    // textList.add(Component.translatable("gtceu.machine.miner.startx",
+    // textList.add(Component.translatable("gui.gtceu.machine.miner.startx",
     // getRecipeLogic().getX() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getX()));
-    // textList.add(Component.translatable("gtceu.machine.miner.starty",
+    // textList.add(Component.translatable("gui.gtceu.machine.miner.starty",
     // getRecipeLogic().getY() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getY()));
-    // textList.add(Component.translatable("gtceu.machine.miner.startz",
+    // textList.add(Component.translatable("gui.gtceu.machine.miner.startz",
     // getRecipeLogic().getZ() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getZ()));
     // textList.add(Component.translatable("machine.gtceu.miner.silk_touch")
     // .append(ComponentPanelWidget.withButton(Component.literal("[")
@@ -328,7 +331,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     // textList.add(Component.translatable("machine.gtceu.miner.working_area", workingArea, workingArea));
     // }
     // if (getRecipeLogic().isDone()) {
-    // textList.add(Component.translatable("gtceu.multiblock.large_miner.done")
+    // textList.add(Component.translatable("gui.gtceu.machine.large_miner.done")
     // .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
     // }
     // }
@@ -378,7 +381,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
             }
             getRecipeLogic().resetArea(true);
         } else {
-            context.getPlayer().sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
+            context.getPlayer().sendSystemMessage(Component.translatable("gui.gtceu.machine.large_miner.errorradius"));
         }
         return InteractionResult.SUCCESS;
     }

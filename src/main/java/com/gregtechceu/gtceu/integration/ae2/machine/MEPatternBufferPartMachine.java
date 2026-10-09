@@ -637,7 +637,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                     SlotGroup sharedItemSlotGroup = new SlotGroup("shared_item_slots", 3, false);
 
                     return PopupPanel.createPopupPanel("shared_items_panel", 80, 86)
-                            .child(Text.lang("gui.gtceu.machine.pattern_buffer.shared_inventory.title").asWidget().margin(4))
+                            .child(Text.lang("gui.gtceu.machine.pattern_buffer.shared_inventory.title").asWidget()
+                                    .margin(4))
                             .child(new Grid()
                                     .name("shared_item_grid")
                                     .top(26)

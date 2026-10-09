@@ -61,6 +61,11 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
     @Getter
     public final MachineDefinition definition;
 
+    @Override
+    public String getDescriptionId() {
+        return definition.getDescriptionId();
+    }
+
     public MetaMachineBlock(Properties properties, MachineDefinition definition) {
         super(properties);
         this.definition = definition;
@@ -191,11 +196,6 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
-        String mainKey = definition.getId().toLanguageKey("machine", "tooltip");
-        if (LangUtil.hasSingleOrMultiLang(mainKey)) {
-            var langs = LangUtil.getSingleOrMultiLang(mainKey);
-            tooltip.addAll(List.of(langs));
-        }
         definition.getTooltipBuilder().accept(stack, tooltip);
     }
 

@@ -26,7 +26,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHa
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalDataHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.*;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.LangUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -56,7 +55,11 @@ public class GTResearchMachines {
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.RESEARCH_STATION_RECIPES)
             .appearanceBlock(ADVANCED_COMPUTER_CASING)
-            .tooltips(LangUtil.getMultiLang("gtceu.machine.research_station.tooltip"))
+            .tooltipLang(
+                    "More than just a Multiblock Scanner",
+                    "Used to scan onto §fData Orbs§7 and §fData Modules§7.",
+                    "Requires §fComputation§7 to work.",
+                    "Providing more Computation allows the recipe to run faster.")
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("XXX", "VVV", "PPP", "PPP", "PPP", "VVV", "XXX")
                     .slice("XXX", "VAV", "AAA", "AAA", "AAA", "VAV", "XXX")
@@ -130,6 +133,10 @@ public class GTResearchMachines {
             .rotationState(RotationState.NON_Y_AXIS)
             .appearanceBlock(COMPUTER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+            .tooltipLang("Ethernet Hub",
+                    "Used to route and distribute §fComputation§7.",
+                    "Can combine any number of Computation §fReceivers§7 into any number of Computation §fTransmitters§7.",
+                    "Uses §f%s EU/t§7 per Computation Data Hatch.")
             .tooltips(Component.translatable("gtceu.machine.network_switch.tooltip.0"),
                     Component.translatable("gtceu.machine.network_switch.tooltip.1"),
                     Component.translatable("gtceu.machine.network_switch.tooltip.2"),
@@ -159,7 +166,9 @@ public class GTResearchMachines {
             // good API addition for packdevs
             .appearanceBlock(COMPUTER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-            .tooltips(LangUtil.getMultiLang("gtceu.machine.high_performance_computation_array.tooltip"))
+            .tooltipLang("Just your average Supercomputer",
+                    "Used to generate §fComputation§7 (and heat).",
+                    "Requires HPCA components to generate §fCWU/t§7 (Compute Work Units).")
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("AA", "CC", "CC", "CC", "AA")
                     .slice("VA", "XV", "XV", "XV", "VA")
