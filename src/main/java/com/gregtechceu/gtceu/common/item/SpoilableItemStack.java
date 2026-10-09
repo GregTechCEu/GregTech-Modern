@@ -51,14 +51,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     public static final String SPOIL_CONTEXT_KEY = "spoilContext";
     public static final String FROZEN_TICKS_KEY = "frozenRemainingTicks";
     public static final String CREATION_TICK_KEY = "creationTick";
-    /**
-     * Consider frozen and non-frozen spoilables equal. This is done to allow filtering by ticks remaining until
-     * spoiled.<br>
-     * If you want the player to have frozen stacks in their inventory, set this to {@code false} to prevent players
-     * from
-     * entirely bypassing the spoilage system.
-     */
-    public static boolean FROZEN_EQUALITY = true;
+
     @Getter
     private final ItemStack stack;
 
@@ -263,8 +256,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     /**
      * This method averages the spoil progress of the two stacks (or, more
-     * accurately, their {@link ISpoilableItem#getCreationTick()}). If {@link SpoilableItemStack#FROZEN_EQUALITY}
-     * is {@code true}, this method will ignore the frozen/not frozen status of stacks.
+     * accurately, their {@link ISpoilableItem#getCreationTick()}).
      *
      * @implNote This implementation may lead to spoil progress averaging in situations other
      *           than stack merging, though I don't think this will lead to any big user-facing bugs.
@@ -287,6 +279,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
                 this.setCreationTick(average);
                 spoilable.setCreationTick(average);
             }
+            spoilable.setSpoilContext(this.spoilContext);
         }
     }
 

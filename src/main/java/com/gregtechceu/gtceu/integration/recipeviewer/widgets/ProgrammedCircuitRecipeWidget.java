@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 
+import net.minecraft.world.item.ItemStack;
+
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
 import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
 import brachy.modularui.widget.ParentWidget;
@@ -15,7 +17,7 @@ public class ProgrammedCircuitRecipeWidget extends ParentWidget<ProgrammedCircui
 
         Grid circuits = new Grid()
                 .coverChildren()
-                .gridOfSizeWidth(32, 8, (x, y, i) -> RecipeViewerSlotWidget.create()
+                .gridOfSizeWidth(32, 8, (x, y, i) -> RecipeViewerSlotWidget.create(ItemStack.class)
                         .recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
                         .value(IntCircuitBehaviour.stack(i + 1)));
 

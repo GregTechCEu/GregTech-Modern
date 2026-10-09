@@ -124,7 +124,7 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
                 set.forEach(fluid -> {
                     fluidTagList.add(new FluidStack(fluid.value(), 1));
                 });
-                row.child(RecipeViewerSlotWidget.create()
+                row.child(RecipeViewerSlotWidget.create(FluidStack.class)
                         .marginLeft(2)
                         .recipeSlotRole(RecipeSlotRole.CATALYST)
                         .value(fluidTagList));

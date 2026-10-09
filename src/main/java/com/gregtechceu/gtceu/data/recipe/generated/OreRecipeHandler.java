@@ -19,6 +19,8 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.IntersectionIngredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +29,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.HIGH_SIFTER_OUTPUT;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
@@ -57,13 +58,13 @@ public final class OreRecipeHandler {
 
     private static void processMetalSmelting(@NotNull Consumer<FinishedRecipe> provider, @NotNull OreProperty property,
                                              @NotNull TagPrefix prefix, @NotNull Material material) {
-        Material smeltingResult = property.getDirectSmeltResult().isNull() ? material : property.getDirectSmeltResult();
+        Material smeltingResult = property.getDirectSmeltResult() == null ? material : property.getDirectSmeltResult();
         if (smeltingResult.hasProperty(PropertyKey.INGOT)) {
             ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
 
             if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingResult) && !prefix.isIgnored(material)) {
                 String name = "smelt_" + prefix.name + "_" + material.getName() + "_to_ingot";
-                TagKey<Item> tag = ChemicalHelper.getTag(prefix, material);
+                TagKey<Item> tag = ChemicalHelper.getTagOrThrow(prefix, material);
 
                 VanillaRecipeHelper.addSmeltingRecipe(provider, name, tag, ingotStack, 0.5f);
                 VanillaRecipeHelper.addBlastingRecipe(provider, name, tag, ingotStack, 0.5f);
@@ -77,7 +78,12 @@ public final class OreRecipeHandler {
             return;
         }
 
-        var inputStack = ChemicalHelper.get(orePrefix, material);
+        // we assume the tag prefix is a properly defined ore tag prefix here
+        Ingredient input = IntersectionIngredient.of(
+                Ingredient.of(ChemicalHelper.getTagOrThrow(orePrefix, material)),
+                // Hardcoded index to the "ores_in_ground/<stone type>" parent tag.
+                // Not a great solution by any means, but it'll do for now
+                Ingredient.of(orePrefix.getItemParentTags().get(0)));
 
         Material byproductMaterial = property.getOreByProduct(0, material);
         ItemStack byproductStack = ChemicalHelper.get(gem, byproductMaterial);
@@ -85,7 +91,7 @@ public final class OreRecipeHandler {
             byproductStack = ChemicalHelper.get(dust, byproductMaterial);
         }
 
-        Material smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
+        Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
                 property.getDirectSmeltResult();
         ItemStack ingotStack;
         if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
@@ -107,7 +113,7 @@ public final class OreRecipeHandler {
             int crushedCount = property.getOreMultiplier() * oreTypeMultiplier;
             GTRecipeBuilder builder = FORGE_HAMMER_RECIPES
                     .recipeBuilder("hammer_" + prefixString + material.getName() + "_ore_to_crushed_ore")
-                    .inputItems(inputStack)
+                    .inputItems(input)
                     .EUt(16)
                     .duration(10)
                     .category(GTRecipeCategories.ORE_FORGING);
@@ -120,7 +126,7 @@ public final class OreRecipeHandler {
 
             builder = MACERATOR_RECIPES
                     .recipeBuilder("macerate_" + prefixString + material.getName() + "_ore_to_crushed_ore")
-                    .inputItems(inputStack)
+                    .inputItems(input)
                     .outputItems(crushedStack.copyWithCount(crushedCount * 2))
                     .chancedOutput(byproductStack, 1400)
                     .EUt(2)
@@ -141,11 +147,11 @@ public final class OreRecipeHandler {
         if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingMaterial) && !orePrefix.isIgnored(material)) {
             float xp = Math.round(((1 + oreTypeMultiplier * 0.5f) * 0.5f - 0.05f) * 10f) / 10f;
             VanillaRecipeHelper.addSmeltingRecipe(provider,
-                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot", inputStack,
-                    ingotStack, xp);
+                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
+                    input, ingotStack, xp);
             VanillaRecipeHelper.addBlastingRecipe(provider,
-                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot", inputStack,
-                    ingotStack, xp);
+                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
+                    input, ingotStack, xp);
         }
     }
 
@@ -161,7 +167,7 @@ public final class OreRecipeHandler {
             byproductStack = ChemicalHelper.get(dust, byproductMaterial);
         }
 
-        Material smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
+        Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
                 property.getDirectSmeltResult();
         ItemStack ingotStack;
         if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
@@ -208,7 +214,7 @@ public final class OreRecipeHandler {
             float xp = Math.round(((1 + 0.5f) * 0.5f - 0.05f) * 10f) / 10f;
             VanillaRecipeHelper.addSmeltingRecipe(provider,
                     "smelt_raw_" + material.getName() + "_ore_to_ingot",
-                    ChemicalHelper.getTag(rawOre, material),
+                    ChemicalHelper.getTagOrThrow(rawOre, material),
                     ingotStack, xp);
             VanillaRecipeHelper.addBlastingRecipe(provider,
                     "smelt_raw_" + material.getName() + "_ore_to_ingot",
@@ -220,10 +226,10 @@ public final class OreRecipeHandler {
             VanillaRecipeHelper.addShapedRecipe(provider, "compress_" + material.getName() + "_to_ore_block",
                     ChemicalHelper.get(rawOreBlock, material),
                     "BBB", "BBB", "BBB",
-                    'B', ChemicalHelper.getTag(rawOre, material));
+                    'B', ChemicalHelper.getTagOrThrow(rawOre, material));
             VanillaRecipeHelper.addShapelessRecipe(provider, "decompress_" + material.getName() + "_from_ore_block",
                     ChemicalHelper.get(rawOre, material, 9),
-                    ChemicalHelper.getTag(rawOreBlock, material));
+                    ChemicalHelper.getTagOrThrow(rawOreBlock, material));
         }
 
         COMPRESSOR_RECIPES.recipeBuilder("compress_" + material.getName() + "_to_raw_ore_block")
@@ -302,7 +308,7 @@ public final class OreRecipeHandler {
                 .outputItems(TagPrefix.dust, GTMaterials.Stone)
                 .save(provider);
 
-        if (!property.getWashedIn().first().isNull()) {
+        if (property.hasWashedInFluid()) {
             Material washingByproduct = property.getOreByProduct(3, material);
             ObjectIntPair<Material> washedInTuple = property.getWashedIn();
             CHEMICAL_BATH_RECIPES.recipeBuilder("bathe_" + material.getName() + "_crushed_ore_to_purified_ore")
@@ -401,7 +407,7 @@ public final class OreRecipeHandler {
             ItemStack flawedStack = ChemicalHelper.get(gemFlawed, material);
             ItemStack chippedStack = ChemicalHelper.get(gemChipped, material);
 
-            if (material.hasFlag(HIGH_SIFTER_OUTPUT)) {
+            if (material.hasFlag(MaterialFlags.HIGH_SIFTER_OUTPUT)) {
                 GTRecipeBuilder builder = SIFTER_RECIPES
                         .recipeBuilder("sift_" + material.getName() + "_purified_ore_to_gems")
                         .inputItems(crushedPurified, material)

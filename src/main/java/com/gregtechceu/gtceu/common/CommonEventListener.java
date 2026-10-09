@@ -66,6 +66,7 @@ import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.*;
@@ -77,7 +78,6 @@ import net.minecraftforge.event.level.ChunkWatchEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -149,18 +149,22 @@ public class CommonEventListener {
 
         for (int i = 0; i < inventory.getSlots(); ++i) {
             ItemStack stack = inventory.getStackInSlot(i);
-            MaterialEntry entry = HazardProperty.getValidHazardMaterial(stack);
-            if (entry.material().isNull()) {
+            Either<Material, MaterialEntry> hazardMaterial = HazardProperty.getValidHazardMaterial(stack);
+            if (hazardMaterial == null) {
                 continue;
             }
-            HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
+
+            var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
+
+            HazardProperty property = material.getProperty(PropertyKey.HAZARD);
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
                 property.hazardTrigger.protectionType().damageEquipment(player, 1);
                 // don't progress this material condition if entity is protected
                 continue;
             }
-            tracker.progressRelatedCondition(entry, stack.getCount());
+            hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, stack.getCount()));
+            hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, stack.getCount()));
         }
     }
 
@@ -198,13 +202,17 @@ public class CommonEventListener {
             return;
         }
 
-        MaterialEntry entry = HazardProperty.getValidHazardMaterial(usedItem);
-        if (entry.material().isNull()) {
+        var hazardMaterial = HazardProperty.getValidHazardMaterial(usedItem);
+        if (hazardMaterial == null) {
             return;
         }
-        HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
+
+        var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
+
+        HazardProperty property = material.getProperty(PropertyKey.HAZARD);
         if (property.hazardTrigger == HazardProperty.HazardTrigger.CONSUMPTION) {
-            tracker.progressRelatedCondition(entry, 1);
+            hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, 1));
+            hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, 1));
         }
     }
 
@@ -265,7 +273,6 @@ public class CommonEventListener {
     public static void worldUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
             TaskHandler.onWorldUnLoad(serverLevel);
-            // MultiblockWorldSavedData.getOrCreate(serverLevel).releaseExecutorService();
             ServerCache.instance.invalidateWorld(serverLevel);
         } else if (event.getLevel().isClientSide()) {
             ClientCacheManager.saveCaches();
@@ -282,18 +289,6 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void serverStopped(ServerStoppedEvent event) {
         ServerCache.instance.clear();
-    }
-
-    @SubscribeEvent
-    public static void serverStopping(ServerStoppingEvent event) {
-        /*
-         * var levels = event.getServer().getAllLevels();
-         * for (var level : levels) {
-         * if (!level.isClientSide()) {
-         * MultiblockWorldSavedData.getOrCreate(level).releaseExecutorService();
-         * }
-         * }
-         */
     }
 
     @SubscribeEvent

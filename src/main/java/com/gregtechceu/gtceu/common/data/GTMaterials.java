@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
@@ -15,7 +14,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -275,15 +274,13 @@ public class GTMaterials {
         rod.modifyMaterialAmount(Bone, 5);
     }
 
-    @NotNull
+    /**
+     * @deprecated Use {@code GTRegistries.MATERIALS.get} instead
+     */
+    @Nullable
+    @Deprecated
     public static Material get(String name) {
-        var mat = GTRegistries.MATERIALS.get(name);
-        // material could be null here due to the registry grabbing a material that isn't in the map
-        if (mat == null) {
-            GTCEu.LOGGER.warn("{} is not a known Material", name);
-            return GTMaterials.NULL;
-        }
-        return mat;
+        return GTRegistries.MATERIALS.get(name);
     }
 
     private static void excludeAllGems(Material material, ItemLike... items) {
@@ -311,9 +308,6 @@ public class GTMaterials {
         EXT2_METAL.addAll(EXT_METAL);
         EXT2_METAL.addAll(Arrays.asList(GENERATE_LONG_ROD, GENERATE_BOLT_SCREW));
     }
-
-    // Addon Devs: Don't you dare modify this material
-    public static final Material NULL = new Material.Builder(GTCEu.id("null")).buildAndRegister();
 
     /**
      * Direct Elements
@@ -903,6 +897,9 @@ public class GTMaterials {
     public static Material BauxiteSludge;
     public static Material DecalcifiedBauxiteSludge;
     public static Material BauxiteSlag;
+    public static Material RareEarthSludgeMixture;
+    public static Material LightRareEarthSludge;
+    public static Material HeavyRareEarthSludge;
 
     /**
      * Second Degree Compounds

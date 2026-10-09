@@ -53,15 +53,15 @@ public class SpoilableBehaviourTest {
         LCR_RECIPE_TYPE.getAdditionHandler().beginStaging();
         LCR_RECIPE_TYPE.getAdditionHandler().addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_spoilage_transfers"))
-                .inputItems(new ItemStack(Items.JIGSAW))
-                .outputItems(new ItemStack(Items.STRUCTURE_BLOCK))
+                .inputItems(new ItemStack(GTItems.SPOILABLE_4))
+                .outputItems(new ItemStack(GTItems.SPOILABLE_2))
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(20)
                 .buildRawRecipe());
         LCR_RECIPE_TYPE.getAdditionHandler().addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_spoilage_doesnt_transfer"))
-                .inputItems(new ItemStack(Items.APPLE))
-                .outputItems(new ItemStack(Items.STRUCTURE_BLOCK))
+                .inputItems(new ItemStack(GTItems.SPOILABLE_1.get()))
+                .outputItems(new ItemStack(GTItems.SPOILABLE_2))
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(20)
                 .keepSpoilingProgress(false)
@@ -89,13 +89,13 @@ public class SpoilableBehaviourTest {
         TestUtils.succeedAfterTest(helper);
         helper.setBlock(1, 1, 1, Blocks.CHEST);
         IItemHandler itemHandler = TestUtils.getItemHandler(helper, new BlockPos(1, 1, 1));
-        itemHandler.insertItem(0, Items.JIGSAW.getDefaultInstance().copyWithCount(23), false);
+        itemHandler.insertItem(0, GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(23), false);
         TestUtils.getItemHandler(helper, new BlockPos(1, 1, 1));
         helper.runAtTickTime(9, () -> {
             ItemStack stack = TestUtils.getItemHandler(helper, new BlockPos(1, 1, 1)).getStackInSlot(0);
             helper.assertTrue(TestUtils.isItemStackEqual(
-                    Items.JIGSAW.getDefaultInstance().copyWithCount(23),
-                    stack), "jigsaw spoiled 1 tick earlier");
+                    GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(23),
+                    stack), "item spoiled 1 tick earlier");
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
             TestUtils.assertNotNull(helper, spoilable, "spoilable was null when shouldn't have");
             helper.assertTrue(spoilable.shouldSpoil(), "shouldSpoil returned false on spoilable item");
@@ -105,9 +105,9 @@ public class SpoilableBehaviourTest {
                     "spoilable didn't return correct total tick amount");
         });
         helper.runAtTickTime(10, () -> helper.assertTrue(TestUtils.isItemStackEqual(
-                Items.DIRT.getDefaultInstance().copyWithCount(23),
+                GTItems.SPOILABLE_5.get().getDefaultInstance().copyWithCount(23),
                 TestUtils.getItemHandler(helper, new BlockPos(1, 1, 1)).getStackInSlot(0)),
-                "jigsaw didn't spoil when should have"));
+                "item didn't spoil when should have"));
     }
 
     @GameTest(template = "empty_5x5", batch = "spoilageTests")
@@ -115,7 +115,7 @@ public class SpoilableBehaviourTest {
         TestUtils.succeedAfterTest(helper);
         helper.setBlock(1, 1, 1, Blocks.CHEST);
         IItemHandler itemHandler = TestUtils.getItemHandler(helper, new BlockPos(1, 1, 1));
-        ItemStack in = Items.APPLE.getDefaultInstance().copyWithCount(41);
+        ItemStack in = GTItems.SPOILABLE_1.get().getDefaultInstance().copyWithCount(41);
         SpoilUtils.update(in, new SpoilContext(
                 helper.getLevel(),
                 helper.absolutePos(new BlockPos(1, 1, 1)))
@@ -123,9 +123,9 @@ public class SpoilableBehaviourTest {
                 .withSlot(0));
         itemHandler.insertItem(0, in, false);
         helper.runAtTickTime(70, () -> helper.assertTrue(TestUtils.isItemStackEqual(
-                Items.DIRT.getDefaultInstance().copyWithCount(41),
+                GTItems.SPOILABLE_5.get().getDefaultInstance().copyWithCount(41),
                 itemHandler.getStackInSlot(0)),
-                "apple didn't spoil recursively (apple -> structure block -> structure void -> jigsaw -> dirt), got " +
+                "item didn't spoil recursively (expected spoilable 1 -> 2 -> ... -> 5), got " +
                         itemHandler.getStackInSlot(0) + " instead"));
     }
 
@@ -133,12 +133,12 @@ public class SpoilableBehaviourTest {
     public static void itemSpoilsInCrate(GameTestHelper helper) {
         TestUtils.succeedAfterTest(helper);
         CrateMachine crate = (CrateMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1), GTMachines.STEEL_CRATE);
-        crate.inventory.insertItem(0, Items.JIGSAW.getDefaultInstance().copyWithCount(23), false);
+        crate.inventory.insertItem(0, GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(23), false);
         helper.runAtTickTime(9, () -> {
             ItemStack stack = crate.inventory.getStackInSlot(0);
             helper.assertTrue(TestUtils.isItemStackEqual(
-                    Items.JIGSAW.getDefaultInstance().copyWithCount(23),
-                    stack), "jigsaw spoiled 1 tick earlier");
+                    GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(23),
+                    stack), "item spoiled 1 tick earlier");
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
             TestUtils.assertNotNull(helper, spoilable, "spoilable was null when shouldn't have");
             helper.assertTrue(spoilable.shouldSpoil(), "shouldSpoil returned false on spoilable item");
@@ -148,15 +148,15 @@ public class SpoilableBehaviourTest {
                     "spoilable didn't return correct total tick amount");
         });
         helper.runAtTickTime(10, () -> helper.assertTrue(TestUtils.isItemStackEqual(
-                Items.DIRT.getDefaultInstance().copyWithCount(23),
-                crate.inventory.getStackInSlot(0)), "jigsaw didn't spoil when should have"));
+                GTItems.SPOILABLE_5.get().getDefaultInstance().copyWithCount(23),
+                crate.inventory.getStackInSlot(0)), "item didn't spoil when should have"));
     }
 
     @GameTest(template = "empty", batch = "spoilageTests")
     public static void spoilageFreeze(GameTestHelper helper) {
         TestUtils.succeedAfterTest(helper);
         CrateMachine crate = (CrateMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1), GTMachines.STEEL_CRATE);
-        crate.inventory.insertItem(0, Items.JIGSAW.getDefaultInstance().copyWithCount(23), false);
+        crate.inventory.insertItem(0, GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(23), false);
         helper.runAtTickTime(4, () -> {
             ItemStack stack = crate.inventory.getStackInSlot(0);
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
@@ -185,7 +185,7 @@ public class SpoilableBehaviourTest {
     public static void entitySpoilage(GameTestHelper helper) {
         TestUtils.succeedAfterTest(helper);
         CrateMachine crate = (CrateMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1), GTMachines.STEEL_CRATE);
-        crate.inventory.insertItem(0, Items.EGG.getDefaultInstance().copyWithCount(2), false);
+        crate.inventory.insertItem(0, GTItems.ENTITY_SPOILABLE.get().getDefaultInstance().copyWithCount(2), false);
         helper.runAtTickTime(10, () -> {
             TestUtils.assertEqual(helper, crate.inventory.getStackInSlot(0),
                     Items.DRAGON_EGG.getDefaultInstance().copyWithCount(6));
@@ -199,7 +199,7 @@ public class SpoilableBehaviourTest {
     public static void spoilageTransfersInRecipe(GameTestHelper helper) {
         TestUtils.succeedAfterTest(helper);
         BusHolder busHolder = getBussesAndForm(helper);
-        ItemStack input = new ItemStack(Items.JIGSAW);
+        ItemStack input = new ItemStack(GTItems.SPOILABLE_4);
         SpoilUtils.update(input, new SpoilContext());
         Objects.requireNonNull(GTCapabilityHelper.getSpoilable(input)).setTicksUntilSpoiled(8);
         busHolder.inputBus1.getInventory().setStackInSlot(0, input);
@@ -207,9 +207,9 @@ public class SpoilableBehaviourTest {
             ItemStack stack = busHolder.outputBus1.getInventory().getStackInSlot(0);
             helper.assertTrue(TestUtils.isItemStackEqual(
                     stack,
-                    new ItemStack(Items.STRUCTURE_BLOCK)),
+                    new ItemStack(GTItems.SPOILABLE_2)),
                     "incorrect recipe output (%s != %s)".formatted(stack.toString(),
-                            new ItemStack(Items.STRUCTURE_BLOCK).toString()));
+                            new ItemStack(GTItems.SPOILABLE_2).toString()));
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
             TestUtils.assertNotNull(helper, spoilable, "recipe output was not spoilable");
             TestUtils.assertBetween(helper, spoilable.getTicksUntilSpoiled(), 26, 30,
@@ -221,7 +221,7 @@ public class SpoilableBehaviourTest {
     public static void spoilageDoesntTransferInRecipe(GameTestHelper helper) {
         TestUtils.succeedAfterTest(helper);
         BusHolder busHolder = getBussesAndForm(helper);
-        ItemStack input = new ItemStack(Items.APPLE);
+        ItemStack input = new ItemStack(GTItems.SPOILABLE_1.get());
         SpoilUtils.update(input, new SpoilContext());
         Objects.requireNonNull(GTCapabilityHelper.getSpoilable(input)).setTicksUntilSpoiled(8);
         busHolder.inputBus1.getInventory().setStackInSlot(0, input);
@@ -229,9 +229,9 @@ public class SpoilableBehaviourTest {
             ItemStack stack = busHolder.outputBus1.getInventory().getStackInSlot(0);
             helper.assertTrue(TestUtils.isItemStackEqual(
                     stack,
-                    new ItemStack(Items.STRUCTURE_BLOCK)),
+                    new ItemStack(GTItems.SPOILABLE_2)),
                     "incorrect recipe output (%s != %s)".formatted(stack.toString(),
-                            new ItemStack(Items.STRUCTURE_BLOCK).toString()));
+                            new ItemStack(GTItems.SPOILABLE_2).toString()));
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
             TestUtils.assertNotNull(helper, spoilable, "recipe output was not spoilable");
             TestUtils.assertEqual(helper, spoilable.getTicksUntilSpoiled(), 40,
@@ -242,23 +242,23 @@ public class SpoilableBehaviourTest {
     @GameTest(template = "empty_5x5", batch = "spoilageTests")
     public static void droppedItemSpoils(GameTestHelper helper) {
         TestUtils.succeedAfterTest(helper);
-        ItemEntity item = helper.spawnItem(Items.JIGSAW, new BlockPos(1, 1, 1));
+        ItemEntity item = helper.spawnItem(GTItems.SPOILABLE_4.asItem(), new BlockPos(1, 1, 1));
         helper.runAtTickTime(10, () -> helper.assertTrue(TestUtils.isItemStackEqual(
                 item.getItem(),
-                Items.DIRT.getDefaultInstance()), "item didn't spoil when dropped"));
+                GTItems.SPOILABLE_5.get().getDefaultInstance()), "item didn't spoil when dropped"));
     }
 
     @GameTest(template = "empty_5x5", batch = "spoilageTests")
     public static void itemSpoilsInInventory(GameTestHelper helper) {
         TestUtils.succeedAfterTest(helper);
         Player player = helper.makeMockPlayer();
-        player.getInventory().setItem(0, Items.JIGSAW.getDefaultInstance());
+        player.getInventory().setItem(0, GTItems.SPOILABLE_4.get().getDefaultInstance());
         player.tick();
         helper.runAtTickTime(10, () -> helper.assertTrue(TestUtils.isItemStackEqual(
                 player.getInventory().getItem(0),
-                Items.DIRT.getDefaultInstance()),
+                GTItems.SPOILABLE_5.get().getDefaultInstance()),
                 "item didn't spoil in a player inventory (%s != %s)".formatted(player.getInventory().getItem(0),
-                        Items.DIRT.getDefaultInstance())));
+                        GTItems.SPOILABLE_5.get().getDefaultInstance())));
     }
 
     @GameTest(template = "empty_5x5", batch = "spoilageTests")
@@ -270,16 +270,16 @@ public class SpoilableBehaviourTest {
                 GTMachines.STEEL_CRATE);
         ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate1, GTItems.CONVEYOR_MODULE_HV.asStack(),
                 Direction.UP);
-        ItemStack filter = SimpleItemFilter.forItems(true, Items.STRUCTURE_BLOCK.getDefaultInstance())
+        ItemStack filter = SimpleItemFilter.forItems(true, GTItems.SPOILABLE_2.get().getDefaultInstance())
                 .getFilterItemStack();
         cover.setWorkingEnabled(false);
         cover.getFilterHandler().setFilterItem(filter);
-        crate1.inventory.setStackInSlot(0, Items.STRUCTURE_BLOCK.getDefaultInstance());
+        crate1.inventory.setStackInSlot(0, GTItems.SPOILABLE_2.get().getDefaultInstance());
         helper.runAtTickTime(10, () -> cover.setWorkingEnabled(true));
         helper.runAtTickTime(20, () -> {
             ItemStack stack = crate2.inventory.getStackInSlot(0);
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
-            helper.assertTrue(TestUtils.isItemStackEqual(stack, Items.STRUCTURE_BLOCK.getDefaultInstance()),
+            helper.assertTrue(TestUtils.isItemStackEqual(stack, GTItems.SPOILABLE_2.get().getDefaultInstance()),
                     "wrong item");
             TestUtils.assertNotNull(helper, spoilable, "spoilable was null");
             TestUtils.assertEqual(helper, 20, spoilable.getTicksUntilSpoiled(), "wrong ticks until spoiled");
@@ -289,8 +289,8 @@ public class SpoilableBehaviourTest {
     @GameTest(template = "empty_5x5", batch = "spoilageTests")
     public static void spoilableMerging(GameTestHelper helper) {
         TestUtils.succeedAfterTest(helper);
-        ItemStack stack1 = Items.JIGSAW.getDefaultInstance().copyWithCount(9);
-        ItemStack stack2 = Items.JIGSAW.getDefaultInstance().copyWithCount(5);
+        ItemStack stack1 = GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(9);
+        ItemStack stack2 = GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(5);
         SpoilUtils.update(stack1, new SpoilContext());
         SpoilUtils.update(stack2, new SpoilContext());
         ISpoilableItem spoilable1 = GTCapabilityHelper.getSpoilable(stack1);
