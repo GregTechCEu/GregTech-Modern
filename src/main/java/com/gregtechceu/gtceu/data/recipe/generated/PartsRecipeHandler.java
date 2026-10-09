@@ -465,7 +465,7 @@ public final class PartsRecipeHandler {
             if (materialOutput == null) materialOutput = material;
 
             builder.addData(LatheRecipeLogic.LUBRICATED_ROD,
-                    BuiltInRegistries.ITEM.getKey(ChemicalHelper.get(rod, materialOutput).getItem()).toString())
+                    BuiltInRegistries.ITEM.getKey(ChemicalHelper.getItemOrThrow(rod, materialOutput)).toString())
                     .outputItems(rod, materialOutput)
                     .outputItems(dustSmall, materialOutput, 2)
                     .save(provider);
