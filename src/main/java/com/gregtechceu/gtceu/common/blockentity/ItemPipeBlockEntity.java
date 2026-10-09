@@ -129,7 +129,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
             var it = this.transferredItems.object2IntEntrySet().fastIterator();
             while (it.hasNext()) {
                 var entry = it.next();
-                int rate = Math.round(entry.getKey().getProperties().getTransferRate() * Item.MAX_STACK_SIZE);
+                int rate = Math.round(entry.getKey().getProperties().getTransferRate() * Item.DEFAULT_MAX_STACK_SIZE);
                 int remaining = entry.getIntValue() - rate;
                 if (remaining <= 0) it.remove();
                 else entry.setValue(remaining);
