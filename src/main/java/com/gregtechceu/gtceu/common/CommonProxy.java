@@ -208,6 +208,7 @@ public class CommonProxy {
 
         GTCreativeModeTabs.init();
         GTAttachmentTypes.init(modBus);
+        GTGlobalLootModifiers.init(modBus);
 
         FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
