@@ -334,11 +334,6 @@ public class GTMachines {
                     .langValue("%s Macerator %s".formatted(VLVH[tier], VLVT[tier]))
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
-                    .addOutputLimit(ItemRecipeCapability.CAP, switch (tier) {
-                        case 1, 2 -> 1;
-                        case 3 -> 3;
-                        default -> 4;
-                    })
                     .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
                     .workableTieredHullModel(GTCEu.id("block/machines/macerator"))
