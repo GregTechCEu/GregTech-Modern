@@ -7,7 +7,6 @@
 /.gradle/
 /output/
 /bin/
-/libs/
 
 .classpath
 */.factorypath
