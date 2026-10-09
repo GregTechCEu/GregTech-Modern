@@ -606,6 +606,11 @@ public class GTMultiMachines {
                     .rotationState(RotationState.ALL)
                     .langValue("%s Fluid Drilling Rig %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(DUMMY_RECIPES)
+                    .tooltipLang(switch (tier) {
+                        case MV -> "Oil Extraction Pump";
+                        case HV -> "Does not perform Fracking";
+                        default -> "Well Drainer";
+                    })
                     .tooltips(
                             Component.translatable("gtceu.machine.fluid_drilling_rig.description"),
                             Component.translatable("gtceu.machine.fluid_drilling_rig.depletion",
@@ -675,6 +680,11 @@ public class GTMultiMachines {
                                     return models;
                                 });
                             }))
+                    .tooltipLang(switch (tier) {
+                        case EV -> "Digging Ore instead of You";
+                        case IV -> "Biome Excavator";
+                        default -> "Terrestrial Harvester";
+                    })
                     .tooltips(
                             Component.translatable("gtceu.machine.large_miner.%s.tooltip"
                                     .formatted(VN[tier].toLowerCase(Locale.ROOT))),
@@ -698,27 +708,36 @@ public class GTMultiMachines {
             .rotationState(RotationState.NONE)
             .recipeType(DUMMY_RECIPES)
             .appearanceBlock(PLASTCRETE)
-            .tooltips(Component.translatable("gtceu.machine.cleanroom.tooltip.0"),
-                    Component.translatable("gtceu.machine.cleanroom.tooltip.1"),
-                    Component.translatable("gtceu.machine.cleanroom.tooltip.2"),
-                    Component.translatable("gtceu.machine.cleanroom.tooltip.3"))
+            .tooltipLang("Place machines inside to run cleanroom recipes.",
+                    "Uses §f30 EU/t§7 when dirty, §f4 EU/t§7 when clean.",
+                    "Overclocking increases cleaning per cycle.",
+                    "§bSize: §f5x5x5 to 15x15x15",
+                    "Requires §fFilter Casings §7in the ceiling, excluding the edges.",
+                    "Accepts up to §f4 Doors§7! Remains clean when the door is open.",
+                    "Generators, Mufflers, Drills, and Primitive Machines are too dirty for the cleanroom!",
+                    "Send power through §fHulls §7or §fDiodes §7in the walls.")
+            .addDefaultTooltips(false)
+            .tooltips(Component.translatable("machine.gtceu.cleanroom.tooltip.0"),
+                    Component.translatable("machine.gtceu.cleanroom.tooltip.1"),
+                    Component.translatable("machine.gtceu.cleanroom.tooltip.2"),
+                    Component.translatable("machine.gtceu.cleanroom.tooltip.3"))
             .tooltipBuilder((stack, tooltip) -> {
                 if (GTUtil.isCtrlDown()) {
                     tooltip.add(Component.empty());
-                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.4"));
-                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.5"));
-                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.6"));
-                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.7"));
-                    // tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.8"));
+                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.4"));
+                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.5"));
+                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.6"));
+                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.7"));
+                    // tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.8"));
                     if (GTCEu.Mods.isAE2Loaded()) {
                         tooltip.add(
                                 Component.translatable(AEConfig.instance().getChannelMode() == ChannelMode.INFINITE ?
-                                        "gtceu.machine.cleanroom.tooltip.ae2.no_channels" :
-                                        "gtceu.machine.cleanroom.tooltip.ae2.channels"));
+                                        "machine.gtceu.cleanroom.tooltip.ae2.no_channels" :
+                                        "machine.gtceu.cleanroom.tooltip.ae2.channels"));
                     }
                     tooltip.add(Component.empty());
                 } else {
-                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.hold_ctrl"));
+                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.hold_ctrl"));
                 }
             })
             .pattern(CleanroomMachine.getPattern())
@@ -797,17 +816,25 @@ public class GTMultiMachines {
             .multiblock("power_substation", PowerSubstationMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-            .tooltips(Component.translatable("gtceu.machine.power_substation.tooltip.0"),
-                    Component.translatable("gtceu.machine.power_substation.tooltip.1"),
-                    Component.translatable("gtceu.machine.power_substation.tooltip.2",
+            .tooltipLang("The heart of a centralized power grid",
+                    "§fCapacitors§7 do not need to be all the same tier.",
+                    "Allows up to §f%d Capacitor Layers§7.",
+                    "Loses energy equal to §f1%%§7 of total capacity every §f24 hours§7.",
+                    "Capped at §f%d kEU/t§7 passive loss per Capacitor Block.",
+                    "Can use",
+                    " Laser Hatches§7.")
+            .addDefaultTooltips(false)
+            .tooltips(Component.translatable("machine.gtceu.power_substation.tooltip.0"),
+                    Component.translatable("machine.gtceu.power_substation.tooltip.1"),
+                    Component.translatable("machine.gtceu.power_substation.tooltip.2",
                             PowerSubstationMachine.MAX_BATTERY_LAYERS),
-                    Component.translatable("gtceu.machine.power_substation.tooltip.3"),
-                    Component.translatable("gtceu.machine.power_substation.tooltip.4",
+                    Component.translatable("machine.gtceu.power_substation.tooltip.3"),
+                    Component.translatable("machine.gtceu.power_substation.tooltip.4",
                             PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE / 1000))
             .tooltipBuilder(
                     (stack,
-                     components) -> components.add(Component.translatable("gtceu.machine.power_substation.tooltip.5")
-                             .append(Component.translatable("gtceu.machine.power_substation.tooltip.6")
+                     components) -> components.add(Component.translatable("machine.gtceu.power_substation.tooltip.5")
+                             .append(Component.translatable("machine.gtceu.power_substation.tooltip.6")
                                      .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))))
             .appearanceBlock(CASING_PALLADIUM_SUBSTATION)
             .pattern(definition -> MultiblockPatternBuilder.start(UP, BACK, RIGHT)

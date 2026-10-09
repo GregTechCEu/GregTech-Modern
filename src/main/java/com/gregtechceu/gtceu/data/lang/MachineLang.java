@@ -204,10 +204,6 @@ public class MachineLang {
         provider.add("machine.gtceu.miner.tooltip", "§7Mines ores below the Miner! Starts as §f%sx%s §7area");
         provider.add("machine.gtceu.miner.per_block", "§7takes §f%ds §7per Block");
 
-        provider.add("machine.gtceu.ev_large_miner.tooltip", "Digging Ore instead of You");
-        provider.add("machine.gtceu.iv_large_miner.tooltip", "Biome Excavator");
-        provider.add("machine.gtceu.luv_large_miner.tooltip", "Terrestrial Harvester");
-
         provider.add("gui.gtceu.machine.miner.multi.modes", "Has Silk Touch and Chunk Aligned Modes.");
         provider.add("gui.gtceu.machine.miner.multi.production",
                 "Produces §f3x§7 more crushed ore than a §fMacerator§7.");
@@ -397,10 +393,6 @@ public class MachineLang {
                 "The Fusion Reactor MK 3 is a large multiblock structure used for fusing elements into heavier ones. It can only use UV Energy Hatches. For every Hatch it has, its buffer increases by 40M EU, and has a maximum of 640M.");
 
         // Fluid Drilling Rig
-        provider.add("machine.gtceu.mv_fluid_drilling_rig.tooltip", "Oil Extraction Pump");
-        provider.add("machine.gtceu.hv_fluid_drilling_rig.tooltip", "Does not perform Fracking");
-        provider.add("machine.gtceu.ev_fluid_drilling_rig.tooltip", "Well Drainer");
-
         provider.add("gtceu.machine.fluid_drilling_rig.description",
                 "§7Drills fluids from veins under bedrock.");
         provider.add("gtceu.machine.fluid_drilling_rig.production",
@@ -422,15 +414,6 @@ public class MachineLang {
         provider.add("gtceu.multiblock.ore_rig.ore_amount", "Drilling Rate: %s");
 
         // Cleanroom
-        provider.addMultiLang("gtceu.machine.cleanroom.tooltip",
-                "Place machines inside to run cleanroom recipes.",
-                "Uses §f30 EU/t§7 when dirty, §f4 EU/t§7 when clean.",
-                "Overclocking increases cleaning per cycle.",
-                "§bSize: §f5x5x5 to 15x15x15",
-                "Requires §fFilter Casings §7in the ceiling, excluding the edges.",
-                "Accepts up to §f4 Doors§7! Remains clean when the door is open.",
-                "Generators, Mufflers, Drills, and Primitive Machines are too dirty for the cleanroom!",
-                "Send power through §fHulls §7or §fDiodes §7in the walls.");
         provider.add("gtceu.machine.cleanroom.tooltip.hold_ctrl",
                 "Hold CTRL to show additional Structure Information");
         provider.add("gtceu.machine.cleanroom.tooltip.ae2.channels",
@@ -442,14 +425,6 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.cleanroom.clean_amount", "Cleanliness: §a%s%%");
 
         // Power Substation
-        provider.addMultiLang("gtceu.machine.power_substation.tooltip",
-                "The heart of a centralized power grid",
-                "§fCapacitors§7 do not need to be all the same tier.",
-                "Allows up to §f%d Capacitor Layers§7.",
-                "Loses energy equal to §f1%%§7 of total capacity every §f24 hours§7.",
-                "Capped at §f%d kEU/t§7 passive loss per Capacitor Block.",
-                "Can use",
-                " Laser Hatches§7.");
         provider.add("gui.gtceu.machine.power_substation.stored", "§7Stored: %s §7EU");
         provider.add("gui.gtceu.machine.power_substation.capacity", "§7Capacity: %s §7EU");
         provider.add("gui.gtceu.machine.power_substation.passive_drain", "§7Passive Drain: %s §7EU/t");
