@@ -270,7 +270,7 @@ public class GTMachineUtils {
                         .model(createTransformerModel(baseAmp))
                         .langValue("%s %sTransformer".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
                                 langName.isEmpty() ? "" : langName + " "))
-                        .tooltips(Component.translatable("machine.gtceu.transformer.description"),
+                        .tooltips(Component.translatable("machine.gtceu.transformer.tooltip"),
                                 Component.translatable("machine.gtceu.transformer.tooltip_tool_usage"),
                                 Component.translatable("machine.gtceu.transformer.tooltip_transform_down",
                                         baseAmp, FormattingUtil.formatNumbers(GTValues.V[tier + 1]),
@@ -872,7 +872,7 @@ public class GTMachineUtils {
 
     public static Component getAvailableRecipeMapTooltip(GTRecipeType... recipeTypes) {
         if (recipeTypes != null) {
-            String key = "machine.gtceu.available_recipe_map_" + recipeTypes.length + ".tooltip";
+            String key = "gui.gtceu.available_recipe_types_" + recipeTypes.length + ".tooltip";
             return Component.translatable(key, Arrays.stream(recipeTypes)
                     .map(recipeType -> Component.translatable(recipeType.getCategory().getLanguageKey()))
                     .toArray());

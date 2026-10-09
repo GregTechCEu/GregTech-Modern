@@ -20,9 +20,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.*;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -208,17 +206,15 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 .child(new ToggleButton()
                         .value(silk)
                         .overlay(new ItemDrawable(Items.FEATHER))
-                        .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.universal.tooltip.silk_touch")
-                                .append(Component.translatable(
-                                        "cover.voiding.label." + (silk.getBoolValue() ? "enabled" : "disabled")))))
+                        .tooltipDynamic(r -> r.addLine(Component.translatable("machine.gtceu.miner.silk_touch")
+                                .append(LangUtil.enabledBooleanKey("common.gtceu", chunk.getBoolValue()))))
                         .tooltipAutoUpdate(true))
                 .child(new ToggleButton()
                         .value(chunk)
                         .overlay(false, GTGuiTextures.BUTTON_CHUNK_ALIGN[0])
                         .overlay(true, GTGuiTextures.BUTTON_CHUNK_ALIGN[1])
-                        .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.universal.tooltip.chunk_mode")
-                                .append(Component.translatable(
-                                        "cover.voiding.label." + (chunk.getBoolValue() ? "enabled" : "disabled")))))
+                        .tooltipDynamic(r -> r.addLine(Component.translatable("machine.gtceu.miner.chunk_mode")
+                                .append(LangUtil.enabledBooleanKey("common.gtceu", chunk.getBoolValue()))))
                         .tooltipAutoUpdate(true));
 
         return machinePanel;
@@ -281,10 +277,10 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 .asWidget());
         widgets.add(Text.dynamic(() -> {
             if (chunk.getBoolValue()) {
-                return Component.translatable("gtceu.universal.tooltip.working_area_chunks",
+                return Component.translatable("machine.gtceu.miner.working_area_chunks",
                         workingArea.getIntValue() * 2 / CHUNK_LENGTH, workingArea.getIntValue() * 2 / CHUNK_LENGTH);
             }
-            return Component.translatable("gtceu.universal.tooltip.working_area", workingArea.getIntValue(),
+            return Component.translatable("machine.gtceu.miner.working_area", workingArea.getIntValue(),
                     workingArea.getIntValue());
         }).asWidget());
         widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.large_miner.done")
@@ -300,54 +296,6 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
-    // @Override
-    // public void addDisplayText(List<Component> textList) {
-    // super.addDisplayText(textList);
-    // if (this.isFormed()) {
-    // int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
-    // int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-    // textList.add(Component.translatable("gui.gtceu.machine.miner.startx",
-    // getRecipeLogic().getX() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getX()));
-    // textList.add(Component.translatable("gui.gtceu.machine.miner.starty",
-    // getRecipeLogic().getY() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getY()));
-    // textList.add(Component.translatable("gui.gtceu.machine.miner.startz",
-    // getRecipeLogic().getZ() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getZ()));
-    // textList.add(Component.translatable("machine.gtceu.miner.silk_touch")
-    // .append(ComponentPanelWidget.withButton(Component.literal("[")
-    // .append(getRecipeLogic().isSilkTouchMode() ?
-    // Component.translatable("gui.gtceu.machine.creative.activity.on") :
-    // Component.translatable("gui.gtceu.machine.creative.activity.off"))
-    // .append(Component.literal("]")), "silk_touch")));
-    // textList.add(Component.translatable("machine.gtceu.miner.chunk_mode")
-    // .append(ComponentPanelWidget.withButton(Component.literal("[")
-    // .append(getRecipeLogic().isChunkMode() ?
-    // Component.translatable("gui.gtceu.machine.creative.activity.on") :
-    // Component.translatable("gui.gtceu.machine.creative.activity.off"))
-    // .append(Component.literal("]")), "chunk_mode")));
-    // if (getRecipeLogic().isChunkMode()) {
-    // textList.add(Component.translatable("machine.gtceu.miner.working_area_chunks", workingAreaChunks,
-    // workingAreaChunks));
-    // } else {
-    // textList.add(Component.translatable("machine.gtceu.miner.working_area", workingArea, workingArea));
-    // }
-    // if (getRecipeLogic().isDone()) {
-    // textList.add(Component.translatable("gui.gtceu.machine.large_miner.done")
-    // .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
-    // }
-    // }
-    // }
-    //
-    // @Override
-    // public void handleDisplayClick(String componentData, ClickData clickData) {
-    // if (!clickData.isRemote) {
-    // if (componentData.equals("chunk_mode")) {
-    // getRecipeLogic().setChunkMode(!getRecipeLogic().isChunkMode());
-    // }
-    // if (componentData.equals("silk_touch")) {
-    // getRecipeLogic().setSilkTouchMode(!getRecipeLogic().isSilkTouchMode());
-    // }
-    // }
-    // }
 
     //////////////////////////////////////
     // ******* Interaction *******//

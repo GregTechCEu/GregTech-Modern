@@ -162,4 +162,8 @@ public class LangUtil {
     public static MutableComponent getFromMultiLang(String key, int index, Object... args) {
         return Component.translatable(getSubKey(key, index), args);
     }
+
+    public static MutableComponent enabledBooleanKey(String baseKey, boolean bool) {
+        return Component.translatable(bool ? baseKey + "enabled" : baseKey + "disabled");
+    }
 }

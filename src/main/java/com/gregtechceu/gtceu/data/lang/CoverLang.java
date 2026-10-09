@@ -18,13 +18,13 @@ public class CoverLang {
         provider.add("cover.gtceu.filter.mode.filter_extract", "Filter Extract");
         provider.add("cover.gtceu.filter.mode.filter_both", "Filter Insert/Extract");
 
-        provider.add("gtceu.ender_item_link_cover.title", "Ender Item Link");
-        provider.add("gtceu.ender_item_link_cover.tooltip",
-                "┬º7Transports ┬ºfItems┬º7 with a ┬ºfWireless ┬ºdEnder┬ºf Connection┬º7 as ┬ºfCover┬º7.");
-        provider.add("gtceu.ender_redstone_link_cover.title", "Ender Redstone Link");
-        provider.add("gtceu.ender_redstone_link_cover.label", "Redstone power: %d");
-        provider.add("gtceu.ender_redstone_link_cover.tooltip",
-                "┬º7Transmits ┬ºfRedstone signals┬º7 with a ┬ºfWireless ┬ºdEnder┬ºf Connection┬º7 as ┬ºfCover┬º7.");
+        provider.add("cover.gtceu.ender_item_link.title", "Ender Item Link");
+        provider.add("cover.gtceu.ender_item_link.tooltip",
+                "§7Transports §fItems§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
+        provider.add("cover.gtceu.ender_redstone_link.title", "Ender Redstone Link");
+        provider.add("cover.gtceu.ender_redstone_link.label", "Redstone power: %d");
+        provider.add("cover.gtceu.ender_redstone_link.tooltip",
+                "§7Transmits §fRedstone signals§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
 
         // Tag filter
         provider.addMultiline("gui.gtceu.cover.tag_filter.info",

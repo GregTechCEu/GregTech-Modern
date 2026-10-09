@@ -27,79 +27,76 @@ public class MachineLang {
         provider.add("machine.gtceu.muffle.off", "Sound Muffling: Disabled");
         provider.add("machine.gtceu.perfect_oc", "Does not lose energy efficiency when overclocked.");
 
-        provider.add("gtceu.gui.fluid_auto_output.tooltip.enabled", "Fluid Auto-Output Enabled");
-        provider.add("gtceu.gui.fluid_auto_output.tooltip.disabled", "Fluid Auto-Output Disabled");
-        provider.add("gtceu.gui.fluid_auto_input.tooltip.enabled", "Fluid Auto-Input Enabled");
-        provider.add("gtceu.gui.fluid_auto_input.tooltip.disabled", "Fluid Auto-Input Disabled");
+        provider.add("gui.gtceu.auto_output.fluid.tooltip.enabled", "Fluid Auto-Output Enabled");
+        provider.add("gui.gtceu.auto_output.fluid.tooltip.disabled", "Fluid Auto-Output Disabled");
+        provider.add("gui.gtceu.auto_input.fluid.tooltip.enabled", "Fluid Auto-Input Enabled");
+        provider.add("gui.gtceu.auto_input.fluid.tooltip.disabled", "Fluid Auto-Input Disabled");
 
-        provider.add("gtceu.gui.item_auto_output.tooltip.enabled", "Item Auto-Output Enabled");
-        provider.add("gtceu.gui.item_auto_output.tooltip.disabled", "Item Auto-Output Disabled");
-        provider.add("gtceu.gui.item_auto_input.tooltip.enabled", "Item Auto-Input Enabled");
-        provider.add("gtceu.gui.item_auto_input.tooltip.disabled", "Item Auto-Input Disabled");
+        provider.add("gui.gtceu.auto_output.item.tooltip.enabled", "Item Auto-Output Enabled");
+        provider.add("gui.gtceu.auto_output.item.tooltip.disabled", "Item Auto-Output Disabled");
+        provider.add("gui.gtceu.auto_input.item.tooltip.enabled", "Item Auto-Input Enabled");
+        provider.add("gui.gtceu.auto_input.item.tooltip.disabled", "Item Auto-Input Disabled");
 
-        provider.addMultiline("gtceu.gui.charger_slot.tooltip",
+        provider.addMultiline("gui.gtceu.charger_slot.tooltip",
                 "§fCharger Slot§r\n§7Draws power from %s batteries§r\n§7Charges %s tools and batteries");
-        provider.addMultiline("gtceu.gui.configurator_slot.tooltip",
+        provider.addMultiline("gui.gtceu.configurator_slot.tooltip",
                 "§fConfigurator Slot§r\n§7Place a §6Programmed Circuit§7 in this slot to\n§7change its configured value.\n§7Hold §6Shift§7 when clicking buttons to change by §65.\n§aA Programmed Circuit in this slot is also valid for recipe inputs.§r");
 
-        provider.add("gtceu.gui.fluid_lock.tooltip.enabled", "Fluid Locking Enabled");
-        provider.add("gtceu.gui.fluid_lock.tooltip.disabled", "Fluid Locking Disabled");
+        provider.add("gui.gtceu.fluid_locking.enabled", "Fluid Locking Enabled");
+        provider.add("gui.gtceu.fluid_locking.disabled", "Fluid Locking Disabled");
 
-        provider.add("gtceu.gui.fluid_voiding_partial.tooltip.enabled", "Fluid Voiding Enabled");
-        provider.add("gtceu.gui.fluid_voiding_partial.tooltip.disabled", "Fluid Voiding Disabled");
+        provider.add("gui.gtceu.fluid_voiding.enabled", "Fluid Voiding Enabled");
+        provider.add("gui.gtceu.fluid_voiding.disabled", "Fluid Voiding Disabled");
 
-        provider.add("gtceu.gui.item_lock.tooltip.enabled", "Item Locking Enabled");
-        provider.add("gtceu.gui.item_lock.tooltip.disabled", "Item Locking Disabled");
+        provider.add("gui.gtceu.item_locking.enabled", "Item Locking Enabled");
+        provider.add("gui.gtceu.item_locking.disabled", "Item Locking Disabled");
 
-        provider.add("gtceu.gui.item_voiding_partial.tooltip.enabled", "Item Voiding Enabled");
-        provider.add("gtceu.gui.item_voiding_partial.tooltip.disabled", "Item Voiding Disabled");
+        provider.add("gui.gtceu.item_voiding.enabled", "Item Voiding Enabled");
+        provider.add("gui.gtceu.item_voiding.disabled", "Item Voiding Disabled");
 
         // EIO style gui
-        provider.add("gtceu.gui.cover_setting.title", "Cover Settings");
-        provider.add("gtceu.gui.output_setting.title", "Output Settings");
-        provider.add("gtceu.gui.circuit.title", "Circuit Settings");
-        provider.addMultiLang("gtceu.gui.output_setting.tooltips", "left-click to tune the item auto output",
+
+        provider.add("gui.gtceu.cover_settings", "Cover Settings");
+        provider.add("gui.gtceu.output_settings", "Output Settings");
+        provider.add("gui.gtceu.circuit_settings", "Circuit Settings");
+        provider.addMultiLang("gui.gtceu.output_settings_tune.tooltips", "left-click to tune the item auto output",
                 "right-click to tune the fluid auto output.");
-        provider.add("gtceu.gui.item_auto_output.allow_input.enabled",
-                "allow items input from the output side");
-        provider.add("gtceu.gui.item_auto_output.allow_input.disabled",
-                "disable items input from the output side");
-        provider.add("gtceu.gui.item_auto_output.enabled", "Item Auto Output: §aEnabled");
-        provider.add("gtceu.gui.item_auto_output.disabled", "Item Auto Output: §cDisabled");
-        provider.addMultiLang("gtceu.gui.item_auto_output.unselected",
+        provider.add("gui.gtceu.auto_output.item.allow_input.enabled",
+                "Allow items input from the output side.");
+        provider.add("gui.gtceu.auto_output.item.allow_input.disabled",
+                "Disable items input from the output side.");
+        provider.add("gui.gtceu.auto_output.item.enabled", "Item Auto Output: §aEnabled");
+        provider.add("gui.gtceu.auto_output.item.disabled", "Item Auto Output: §cDisabled");
+        provider.addMultiLang("gui.gtceu.auto_output.item.unselected",
                 """
                         Item Auto Output
                         §7Select a side of the machine to configure its output.
                         """);
-        provider.addMultiLang("gtceu.gui.item_auto_output.other_direction",
+        provider.addMultiLang("gui.gtceu.auto_output.item.other_direction",
                 """
                         Item Auto Output: §6Other Direction
                         §7The machine's item output is set to another direction.
                         §7Click to move the output to the currently selected side.
                         """);
-        provider.add("gtceu.gui.fluid_auto_output.allow_input.enabled",
-                "allow fluids input from the output side");
-        provider.add("gtceu.gui.fluid_auto_output.allow_input.disabled",
-                "disable fluids input from the output side");
-        provider.add("gtceu.gui.fluid_auto_output.enabled", "Fluid Auto Output: §aEnabled");
-        provider.add("gtceu.gui.fluid_auto_output.disabled", "Fluid Auto Output: §cDisabled");
-        provider.addMultiLang("gtceu.gui.fluid_auto_output.unselected",
+        provider.add("gui.gtceu.auto_output.fluid.allow_input.enabled",
+                "Allow fluids input from the output side.");
+        provider.add("gui.gtceu.auto_output.fluid.allow_input.disabled",
+                "Disable fluids input from the output side.");
+        provider.add("gui.gftceu.auto_output.fluid.enabled", "Fluid Auto Output: §aEnabled");
+        provider.add("gui.gtceu.auto_output.fluid.disabled", "Fluid Auto Output: §cDisabled");
+        provider.addMultiLang("gui.gtceu.auto_output.fluid.unselected",
                 """
                         Fluid Auto Output
                         §7Select a side of the machine to configure its output.
                         """);
-        provider.addMultiLang("gtceu.gui.fluid_auto_output.other_direction",
+        provider.addMultiLang("gui.gtceu.auto_output.fluid.other_direction",
                 """
                         Fluid Auto Output: §6Other Direction
                         §7The machine's fluid output is set to another direction.
                         §7Click to move the output to the currently selected side.
                         """);
-        provider.add("gtceu.gui.directional_setting.title", "Directional Setting");
-        provider.add("gtceu.gui.directional_setting.tab_tooltip", "Change Directional Setting");
-
-        // Overclocking Widget
-        provider.add("gtceu.gui.overclock.title", "Overclock Tier");
-        provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
+        provider.add("gui.gtceu.directional_setting.title", "Directional Setting");
+        provider.add("gui.gtceu.directional_setting.tab_tooltip", "Change Directional Setting");
     }
 
     /**
@@ -117,7 +114,7 @@ public class MachineLang {
                 "§7You just need §5I§dm§4a§cg§ei§an§ba§3t§7i§1o§5n§7 to use this");
 
         // Transformer
-        provider.add("machine.gtceu.transformer.description", "§7Transforms Energy between voltage tiers");
+        provider.add("machine.gtceu.transformer.tooltip", "§7Transforms Energy between voltage tiers");
         provider.add("machine.gtceu.transformer.tooltip_tool_usage",
                 "§7Starts as §fTransform Down§7, use Screwdriver to change");
         provider.add("machine.gtceu.transformer.tooltip_transform_down",
@@ -181,27 +178,29 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.forming_press.naming.named", "§oNamed Item");
 
         // Scanner
-        provider.add("gtceu.scanner.copy_stick_from", "§oStick to Copy");
-        provider.add("gtceu.scanner.copy_stick_empty", "§oEmpty Stick");
-        provider.add("gtceu.scanner.copy_stick_to", "§oCopy of Stick");
+        provider.add("gui.gtceu.machine.scanner.copy_stick_from", "§oStick to Copy");
+        provider.add("gui.gtceu.machine.scanner.copy_stick_empty", "§oEmpty Stick");
+        provider.add("gui.gtceu.machine.scanner.copy_stick_to", "§oCopy of Stick");
 
         /// Miners (& Large Miners)
 
-        provider.addMultiline("gtceu.gui.silktouch.enabled",
+        provider.addMultiline("gui.gtceu.machine.miner.silk_touch.enabled",
                 "Silk Touch Enabled: Click to Disable.\n§7Switching requires an idle machine.");
-        provider.addMultiline("gtceu.gui.silktouch.disabled",
+        provider.addMultiline("gui.gtceu.machine.miner.silk_touch.disabled",
                 "Silk Touch Disabled: Click to Enable.\n§7Switching requires an idle machine.");
-        provider.addMultiline("gtceu.gui.chunkmode.enabled",
+        provider.addMultiline("gui.gtceu.machine.miner.chunk_mode.enabled",
                 "Chunk Mode Enabled: Click to Disable.\n§7Switching requires an idle machine.");
-        provider.addMultiline("gtceu.gui.chunkmode.disabled",
+        provider.addMultiline("gui.gtceu.machine.miner.chunk_mode.disabled",
                 "Chunk Mode Disabled: Click to Enable.\n§7Switching requires an idle machine.");
+
         provider.add("machine.gtceu.miner.working_area", "§bWorking Area: §f%dx%d");
-        provider.add("machine.gtceu.miner.chunk_mode", "Chunk Mode: ");
-        provider.add("machine.gtceu.miner.silk_touch", "Silk Touch: ");
+        provider.add("machine.gtceu.miner.chunk_mode", "Chunk Mode");
+        provider.add("machine.gtceu.miner.silk_touch", "Silk Touch Mode");
         provider.add("machine.gtceu.miner.working_area_chunks", "§bWorking Area: §f%dx%d Chunks");
         provider.add("machine.gtceu.miner.working_area_max", "§bMax Working Area: §f%dx%d");
         provider.add("machine.gtceu.miner.working_area_chunks_max", "§bMax Working Area: §f%dx%d Chunks");
         provider.add("machine.gtceu.miner.tooltip", "§7Mines ores below the Miner! Starts as §f%sx%s §7area");
+
         provider.add("machine.gtceu.miner.per_block", "§7takes §f%ds §7per Block");
 
         provider.add("gui.gtceu.machine.miner.multi.modes", "Has Silk Touch and Chunk Aligned Modes.");
@@ -213,8 +212,6 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.miner.x", "sX: %d, mX: %d");
         provider.add("gui.gtceu.machine.miner.y", "sY: %d, mY: %d");
         provider.add("gui.gtceu.machine.miner.z", "sZ: %d, mZ: %d");
-        provider.add("gui.gtceu.machine.miner.radius", "Radius: %d");
-        provider.add("gui.gtceu.machine.miner.chunkradius", "Chunk Radius: %d");
         provider.add("gui.gtceu.machine.miner.progress", "Progress: %d/%d");
         provider.add("gui.gtceu.machine.large_miner.done", "Done!");
         provider.add("gui.gtceu.machine.large_miner.working", "Working...");
@@ -222,7 +219,6 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.large_miner.needspower", "Needs Power!");
         provider.add("gui.gtceu.machine.large_miner.vent", "Venting Blocked!");
         provider.add("gui.gtceu.machine.large_miner.steam", "Needs Steam!");
-        provider.add("gui.gtceu.machine.large_miner.radius", "Radius: §a%d§r Blocks");
         provider.add("gui.gtceu.machine.large_miner.errorradius", "§cCannot change radius while working!");
         provider.add("gui.gtceu.machine.large_miner.needsfluid", "Needs Drilling Fluid");
 
@@ -584,19 +580,19 @@ public class MachineLang {
                 "Auto-Pull Disabled");
 
         // ME Adv Stocking
-        provider.add("gtceu.gui.title.adv_stocking_config.min_item_count",
+        provider.add("gui.gtceu.machine.me.stocking_adv.min_item_count_title",
                 "Min. Item Count");
-        provider.add("gtceu.gui.title.adv_stocking_config.min_fluid_count",
+        provider.add("gui.gtceu.machine.me.stocking_adv.min_fluid_count_title",
                 "Min. Fluid Count");
-        provider.add("gtceu.gui.adv_stocking_config.min_item_count",
+        provider.add("gui.gtceu.machine.me.stocking_adv.min_item_count",
                 "Minimum Item Stack Size for Automated Pulling");
-        provider.add("gtceu.gui.adv_stocking_config.min_fluid_count",
+        provider.add("gui.gtceu.machine.me.stocking_adv.min_fluid_count",
                 "Minimum Fluid Stack Size for Automated Pulling");
-        provider.add("gtceu.gui.title.adv_stocking_config.ticks_per_cycle",
+        provider.add("gui.gtceu.machine.me.stocking_adv.ticks_per_cycle_title",
                 "Ticks Per Cycle");
-        provider.add("gtceu.gui.adv_stocking_config.ticks_per_cycle",
+        provider.add("gui.gtceu.machine.me.stocking_adv.ticks_per_cycle",
                 "Delay between item list updates");
-        provider.add("gtceu.gui.adv_stocking_config.title",
+        provider.add("gui.gtceu.machine.me.stocking_adv.title",
                 "Configure Automatic Stocking");
 
         // ME Data Stick Behavior
@@ -1126,13 +1122,13 @@ public class MachineLang {
         provider.add("gtceu.multiblock.multiple_recipemaps_recipes.tooltip", "Machine Modes: §e%s§r");
         provider.add("gtceu.multiblock.multiple_recipemaps.switch_message",
                 "The machine must be off to switch modes!");
-        provider.add("gtceu.gui.machinemode.title", "Active Machine Mode");
-        provider.add("gtceu.gui.machinemode", "Active Machine Mode: %s");
-        provider.add("gtceu.gui.machinemode.tab_tooltip", "Change active Machine Mode");
-        provider.add("machine.gtceu.available_recipe_map_1.tooltip", "Available Recipe Types: %s");
-        provider.add("machine.gtceu.available_recipe_map_2.tooltip", "Available Recipe Types: %s, %s");
-        provider.add("machine.gtceu.available_recipe_map_3.tooltip", "Available Recipe Types: %s, %s, %s");
-        provider.add("machine.gtceu.available_recipe_map_4.tooltip", "Available Recipe Types: %s, %s, %s, %s");
+        provider.add("gui.gtceu.active_machine_mode.title", "Active Machine Mode");
+        provider.add("gui.gtceu.active_machine_mode", "Active Machine Mode: %s");
+        provider.add("gui.gtceu.active_machine_mode.tab_tooltip", "Change active Machine Mode");
+        provider.add("gui.gtceu.available_recipe_types_1.tooltip", "Available Recipe Types: %s");
+        provider.add("gui.gtceu.available_recipe_types_2.tooltip", "Available Recipe Types: %s, %s");
+        provider.add("gui.gtceu.available_recipe_types_3.tooltip", "Available Recipe Types: %s, %s, %s");
+        provider.add("gui.gtceu.available_recipe_types_4.tooltip", "Available Recipe Types: %s, %s, %s, %s");
 
         // Computation
         provider.add("gtceu.multiblock.computation.max", "Max CWU/t: %s");

@@ -187,12 +187,12 @@ public class GTMuiWidgets {
 
     public static ToggleButton createAutoOutputItemButton(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::isAutoOutputItems, autoOutput::setAllowAutoOutputItems,
-                GTGuiTextures.BUTTON_ITEM_OUTPUT, "gtceu.gui.item_auto_output");
+                GTGuiTextures.BUTTON_ITEM_OUTPUT, "gui.gtceu.auto_output.item");
     }
 
     public static ToggleButton createAutoOutputFluidButton(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::isAutoOutputFluids, autoOutput::setAllowAutoOutputFluids,
-                GTGuiTextures.BUTTON_FLUID_OUTPUT, "gtceu.gui.fluid_auto_output");
+                GTGuiTextures.BUTTON_FLUID_OUTPUT, "gui.gtceu.auto_output.fluid");
     }
 
     public static ToggleButton createInputFromOutputItem(AutoOutputTrait autoOutput) {
@@ -219,7 +219,7 @@ public class GTMuiWidgets {
                 })
                 .backgroundOverlay(GTGuiTextures.PROGRESS_MIXER[0])
                 .size(18)
-                .tooltip((tooltip) -> tooltip.add(Component.translatable("gtceu.gui.machinemode.tab_tooltip")))
+                .tooltip((tooltip) -> tooltip.add(Component.translatable("gui.gtceu.active_machine_mode.tab_tooltip")))
                 .setEnabledIf((W) -> workableMultiblock.getRecipeTypes().length > 0);
     }
 

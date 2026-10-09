@@ -457,12 +457,12 @@ public class GTMultiblockTextUtil {
         // No need to sync the rlMachine.getRecipeTypes().length > 1 condition because the recipe type array is the same
         // on client side.
         return Text
-                .dynamic(() -> Component.translatable("gtceu.gui.machinemode",
+                .dynamic(() -> Component.translatable("gui.gtceu.active_machine_mode",
                         Component.literal(recipeTypeName.getStringValue())
                                 .withStyle(ChatFormatting.GOLD))
                         .withStyle(ChatFormatting.GRAY))
                 .asWidget()
-                .tooltip((tooltip) -> tooltip.add(Component.translatable("gtceu.gui.machinemode.title")))
+                .tooltip((tooltip) -> tooltip.add(Component.translatable("gui.gtceu.active_machine_mode.title")))
                 .setEnabledIf((w) -> rlMachine.getRecipeTypes().length > 1);
     }
 
