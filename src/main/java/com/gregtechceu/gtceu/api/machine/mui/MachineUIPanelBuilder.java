@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.mui;
 
-import brachy.modularui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
@@ -19,6 +18,7 @@ import net.minecraft.network.chat.Component;
 
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.sync.DoubleSyncValue;
@@ -76,7 +76,8 @@ public class MachineUIPanelBuilder {
     }
 
     public MachineUIPanel build(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var panel = new MachineUIPanel(machine, data, settings, attachInventory, addTitleBar, drawGTLogo, gtLogoTexture);
+        var panel = new MachineUIPanel(machine, data, settings, attachInventory, addTitleBar, drawGTLogo,
+                gtLogoTexture);
 
         var attachLeft = panel.getLeftConfiguratorPanel();
         var attachRight = panel.getRightConfiguratorPanel();

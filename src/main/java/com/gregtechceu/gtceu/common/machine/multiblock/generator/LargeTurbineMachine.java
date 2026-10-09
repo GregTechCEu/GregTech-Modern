@@ -1,11 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.generator;
 
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.value.sync.BooleanSyncValue;
-import brachy.modularui.value.sync.IntSyncValue;
-import brachy.modularui.value.sync.LongSyncValue;
-import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -20,19 +14,26 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
-
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
-
-import lombok.Getter;
 import net.minecraft.network.chat.Component;
+
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.LongSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -129,7 +130,6 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     // ******* GUI ********//
     //////////////////////////////////////
 
-
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
         List<IWidget> widgets = new ArrayList<>();
@@ -157,22 +157,27 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         widgets.add(Text.lang("gtceu.multiblock.turbine.no_rotor").withStyle(ChatFormatting.RED)
                 .asWidget().setEnabledIf(v -> !hasRotor.getBoolValue()));
 
-        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_speed", FormattingUtil.formatNumbers(rotorSpeed.getIntValue()),
+        widgets.add(Text
+                .dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_speed",
+                        FormattingUtil.formatNumbers(rotorSpeed.getIntValue()),
                         FormattingUtil.formatNumbers(maxRotorSpeed.getIntValue())))
                 .asWidget().setEnabledIf(v -> hasRotor.getBoolValue()));
-        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.efficiency", efficiency.getIntValue()))
+        widgets.add(Text
+                .dynamic(() -> Component.translatable("gtceu.multiblock.turbine.efficiency", efficiency.getIntValue()))
                 .asWidget().setEnabledIf(v -> hasRotor.getBoolValue()));
 
-        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.energy_per_tick", FormattingUtil.formatNumbers(euOutput.getLongValue()),
+        widgets.add(Text
+                .dynamic(() -> Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
+                        FormattingUtil.formatNumbers(euOutput.getLongValue()),
                         FormattingUtil.formatNumbers(maxOutput.getLongValue())))
                 .asWidget().setEnabledIf(v -> isActive()));
 
         widgets.add(Text.dynamic(() -> {
-            var comp = Component.translatable("gtceu.multiblock.turbine.rotor_durability", rotorDurability.getIntValue());
+            var comp = Component.translatable("gtceu.multiblock.turbine.rotor_durability",
+                    rotorDurability.getIntValue());
             if (rotorDurability.getIntValue() <= MIN_DURABILITY_TO_WARN) comp.withStyle(ChatFormatting.RED);
             return comp;
         }).asWidget().setEnabledIf(v -> hasRotor.getBoolValue()));
-
 
         return widgets;
     }

@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.api.machine.mui;
 
-import brachy.modularui.factory.PosGuiData;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
+import net.minecraft.network.chat.Component;
+
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
@@ -15,9 +17,6 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
-import net.minecraft.locale.Language;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.TooltipFlag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,13 +73,11 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
                 .setEnabledIf(f -> !f.getChildren().isEmpty())
                 .decoration();
 
-
-
         child(Flow.col()
                 .coverChildren()
                 .leftRel(1.0f)
                 .reverseLayout(true)
-                .padding(2,  0, 0,0)
+                .padding(2, 0, 0, 0)
                 .top(2)
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .childPadding(2)
@@ -122,5 +119,4 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
         child(panelContents);
         coverChildren();
     }
-
 }

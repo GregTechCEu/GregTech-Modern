@@ -1,12 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.drawable.Icon;
-import brachy.modularui.utils.serialization.network.ByteBufAdapters;
-import brachy.modularui.value.sync.*;
-import brachy.modularui.widgets.ListWidget;
-import brachy.modularui.widgets.dynamic.DynamicWidget;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
@@ -19,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.machine.trait.BedrockOreMinerLogic;
 import com.gregtechceu.gtceu.common.machine.trait.FluidDrillLogic;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -31,12 +23,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.utils.serialization.network.ByteBufAdapters;
+import brachy.modularui.value.sync.*;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -73,13 +70,13 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
         GenericSyncValue<Component> veinMaterial = GenericSyncValue.builder(Component.class)
                 .adapter(ByteBufAdapters.COMPONENT)
                 .getter(() -> {
-                            if (getRecipeLogic().getVeinFluid() != null) {
-                                return getRecipeLogic().getVeinFluid().getFluidType()
-                                        .getDescription().copy().withStyle(ChatFormatting.GREEN);
-                            } else {
-                                return Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area")
-                                        .withStyle(ChatFormatting.RED);
-                            }
+                    if (getRecipeLogic().getVeinFluid() != null) {
+                        return getRecipeLogic().getVeinFluid().getFluidType()
+                                .getDescription().copy().withStyle(ChatFormatting.GREEN);
+                    } else {
+                        return Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area")
+                                .withStyle(ChatFormatting.RED);
+                    }
                 }).build();
 
         syncManager.syncValue("veinMaterial", veinMaterial);
@@ -89,12 +86,15 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
 
         widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.ore_rig.ore_amount",
-                        Component.literal(FormattingUtil.formatNumbers(
-                                fluidAmount.getIntValue() * 20L / FluidDrillLogic.MAX_PROGRESS) + "/s").withStyle(ChatFormatting.BLUE)))
-                .asWidget().setEnabledIf($ -> isFormed())
-        );
+                Component.literal(FormattingUtil.formatNumbers(
+                        fluidAmount.getIntValue() * 20L / FluidDrillLogic.MAX_PROGRESS) + "/s")
+                        .withStyle(ChatFormatting.BLUE)))
+                .asWidget().setEnabledIf($ -> isFormed()));
 
-        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.fluid_rig.drilled_fluid", veinMaterial.getValue())).asWidget()
+        widgets.add(Text
+                .dynamic(() -> Component.translatable("gtceu.multiblock.fluid_rig.drilled_fluid",
+                        veinMaterial.getValue()))
+                .asWidget()
                 .setEnabledIf($ -> isFormed()));
 
         return widgets;

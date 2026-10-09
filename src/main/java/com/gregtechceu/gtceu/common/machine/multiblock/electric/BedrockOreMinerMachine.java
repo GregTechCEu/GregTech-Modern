@@ -1,13 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.drawable.Icon;
-import brachy.modularui.utils.serialization.network.ByteBufAdapters;
-import brachy.modularui.value.sync.*;
-import brachy.modularui.widgets.ListWidget;
-import brachy.modularui.widgets.TextWidget;
-import brachy.modularui.widgets.dynamic.DynamicWidget;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
@@ -31,11 +23,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.Icon;
+import brachy.modularui.utils.serialization.network.ByteBufAdapters;
+import brachy.modularui.value.sync.*;
+import brachy.modularui.widgets.ListWidget;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import lombok.Getter;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -70,25 +70,29 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
                 .getter(() -> {
                     var materials = getRecipeLogic().getVeinMaterials();
                     if (materials == null) return List.of();
-                    return materials.stream().map(m -> (Component)m.material().getLocalizedName().withStyle(ChatFormatting.GREEN)).toList();
+                    return materials.stream()
+                            .map(m -> (Component) m.material().getLocalizedName().withStyle(ChatFormatting.GREEN))
+                            .toList();
                 })
                 .build();
 
-
-        DynamicLinkedSyncHandler<GenericListSyncHandler<Component>> materialListWidgetHandler = new DynamicLinkedSyncHandler<>(veinMaterialList)
+        DynamicLinkedSyncHandler<GenericListSyncHandler<Component>> materialListWidgetHandler = new DynamicLinkedSyncHandler<>(
+                veinMaterialList)
                 .widgetProvider((psm, list) -> {
-                  var listWidget = new ListWidget<>()
-                          .widthRel(1)
-                          .childSeparator(Icon.EMPTY_2PX);
-                  var values = list.getValue();
-                  if (values.isEmpty()) {
-                      listWidget.child(Text.lang("gtceu.multiblock.ore_rig.drilled_ore_entry", Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area")
-                              .withStyle(ChatFormatting.RED)).asWidget());
-                  }
-                  for (var value: values) {
-                      listWidget.child(Text.lang("gtceu.multiblock.ore_rig.drilled_ore_entry", value).asWidget());
-                  }
-                  return listWidget;
+                    var listWidget = new ListWidget<>()
+                            .widthRel(1)
+                            .childSeparator(Icon.EMPTY_2PX);
+                    var values = list.getValue();
+                    if (values.isEmpty()) {
+                        listWidget.child(Text.lang("gtceu.multiblock.ore_rig.drilled_ore_entry",
+                                Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area")
+                                        .withStyle(ChatFormatting.RED))
+                                .asWidget());
+                    }
+                    for (var value : values) {
+                        listWidget.child(Text.lang("gtceu.multiblock.ore_rig.drilled_ore_entry", value).asWidget());
+                    }
+                    return listWidget;
                 });
 
         IntSyncValue oreAmount = new IntSyncValue(() -> getRecipeLogic().getOreToProduce());
@@ -100,10 +104,10 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
 
         widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.ore_rig.ore_amount",
-                        Component.literal(FormattingUtil.formatNumbers(
-                        getRecipeLogic().getOreToProduce() * 20L / BedrockOreMinerLogic.MAX_PROGRESS) + "/s").withStyle(ChatFormatting.BLUE)))
-                .asWidget()
-        );
+                Component.literal(FormattingUtil.formatNumbers(
+                        getRecipeLogic().getOreToProduce() * 20L / BedrockOreMinerLogic.MAX_PROGRESS) + "/s")
+                        .withStyle(ChatFormatting.BLUE)))
+                .asWidget());
 
         widgets.add(Text.lang("gtceu.multiblock.ore_rig.drilled_ores_list").asWidget());
 
