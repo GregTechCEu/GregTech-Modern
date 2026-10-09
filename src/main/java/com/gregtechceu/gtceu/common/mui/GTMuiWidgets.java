@@ -28,7 +28,7 @@ import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.text.TextRenderer;
-import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.factory.GuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
@@ -390,7 +390,7 @@ public class GTMuiWidgets {
 
     public static <T> ParentWidget<?> createFilterRow(Flow existingRow,
                                                       FilterHandler<T> filterHandler,
-                                                      SidedPosGuiData data,
+                                                      GuiData data,
                                                       PanelSyncManager syncManager,
                                                       UISettings settings) {
         var filterSlot = filterHandler.getFilterSlot();
@@ -410,7 +410,8 @@ public class GTMuiWidgets {
             panelHandler.deleteCachedPanel();
         });
         return existingRow
-                .child(new ItemSlot().syncHandler(filterSlotHandler))
+                .child(new ItemSlot().syncHandler(filterSlotHandler)
+                        .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY))
                 .child(new ButtonWidget<>()
                         .background(GuiTextures.MC_BUTTON)
                         .size(16)
@@ -422,7 +423,7 @@ public class GTMuiWidgets {
     }
 
     public static <T> ParentWidget<?> createFilterRow(FilterHandler<T> filterHandler,
-                                                      SidedPosGuiData data,
+                                                      GuiData data,
                                                       PanelSyncManager syncManager,
                                                       UISettings settings) {
         Flow row = Flow.row().coverChildrenHeight().childPadding(2);
