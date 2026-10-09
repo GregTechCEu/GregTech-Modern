@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import com.mojang.datafixers.DataFixUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -47,7 +48,7 @@ public class GTCEu {
      * <li>20: 8.0.1-SNAPSHOT+HASH2</li>
      * </ul>
      */
-    public static final int GT_DATA_VERSION = 10;
+    public static final int GT_DATA_VERSION = DataFixUtils.makeKey(1, 5);
 
     public GTCEu() {
         GTCEu.init();

@@ -456,7 +456,7 @@ public class V0 extends AutomaticNamespacedSchema {
         return map;
     }
 
-    protected static void registerSimpleMachine(Schema schema, Map<String, Supplier<TypeTemplate>> map, String name, int... tiers) {
+    private static void registerSimpleMachine(Schema schema, Map<String, Supplier<TypeTemplate>> map, String name, int... tiers) {
         registerForTiers(schema, map, name, () -> optionalFields(
                 "importItems", notifiableItemHandler(schema),
                 "exportItems", notifiableItemHandler(schema),

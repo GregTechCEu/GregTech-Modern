@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.common.data.datafixer.GTReferences;
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraftforge.fml.loading.LoadingModList;
 
-import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
 
@@ -19,15 +18,14 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.datafixer.types.ExtraDSL.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.ALL_TIERS;
 import static com.gregtechceu.gtceu.common.datafixer.schemas.V0.*;
 import static com.mojang.datafixers.DSL.*;
 
-public class V4 extends AutomaticNamespacedSchema {
+public class V1_3 extends AutomaticNamespacedSchema {
 
-    public V4(int versionKey, Schema parent) {
+    public V1_3(int versionKey, Schema parent) {
         super(versionKey, parent, GTCEu.MOD_ID);
     }
 
@@ -47,15 +45,6 @@ public class V4 extends AutomaticNamespacedSchema {
                 "waterTank", notifiableFluidTank(schema),
                 steamMachine.get()
         );
-        registerSteamMachine(schema, map, "steam_solid_boiler", () -> optionalFields(
-                "fuelHandler", notifiableItemHandler(schema),
-                "ashHandler", notifiableItemHandler(schema),
-                steamBoiler.get()
-        ));
-        registerSteamMachine(schema, map, "steam_liquid_boiler", () -> optionalFields(
-                "fuelTank", notifiableFluidTank(schema),
-                steamBoiler.get()
-        ));
         registerSteamMachine(schema, map, "steam_solar_boiler", steamBoiler);
         registerSimpleSteamMachine(schema, map, "extractor");
         registerSimpleSteamMachine(schema, map, "steam_macerator");
@@ -73,7 +62,7 @@ public class V4 extends AutomaticNamespacedSchema {
         // endregion
 
         // region simple
-        registerForTiers(schema, map, "machine_hull", DSL::remainder, ALL_TIERS);
+        registerForTiers(schema, map, "machine_hull", traitHolder, ALL_TIERS);
         registerSimpleMachine(schema, map, "electric_furnace", ELECTRIC_TIERS);
         registerSimpleMachine(schema, map, "alloy_smelter", ELECTRIC_TIERS);
         registerSimpleMachine(schema, map, "arc_furnace", ELECTRIC_TIERS);
@@ -119,15 +108,15 @@ public class V4 extends AutomaticNamespacedSchema {
 
         // region electric
         final int[] transformerTiers = GTValues.tiersBetween(ULV, GTCEuAPI.isHighTier() ? OpV : UV);
-        registerForTiers(schema, map, "transformer_1a", DSL::remainder, transformerTiers);
-        registerForTiers(schema, map, "transformer_2a", DSL::remainder, transformerTiers);
-        registerForTiers(schema, map, "transformer_4a", DSL::remainder, transformerTiers);
-        registerForTiers(schema, map, "transformer_16a", DSL::remainder, transformerTiers);
+        registerForTiers(schema, map, "transformer_1a", traitHolder, transformerTiers);
+        registerForTiers(schema, map, "transformer_2a", traitHolder, transformerTiers);
+        registerForTiers(schema, map, "transformer_4a", traitHolder, transformerTiers);
+        registerForTiers(schema, map, "transformer_16a", traitHolder, transformerTiers);
 
-        registerForTiers(schema, map, "1a_energy_converter", DSL::remainder, ALL_TIERS);
-        registerForTiers(schema, map, "4a_energy_converter", DSL::remainder, ALL_TIERS);
-        registerForTiers(schema, map, "8a_energy_converter", DSL::remainder, ALL_TIERS);
-        registerForTiers(schema, map, "16a_energy_converter", DSL::remainder, ALL_TIERS);
+        registerForTiers(schema, map, "1a_energy_converter", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "4a_energy_converter", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "8a_energy_converter", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "16a_energy_converter", traitHolder, ALL_TIERS);
 
         schema.register(map, "long_distance_item_pipeline_endpoint", traitHolder);
         schema.register(map, "long_distance_fluid_pipeline_endpoint", traitHolder);
@@ -158,7 +147,7 @@ public class V4 extends AutomaticNamespacedSchema {
                 traitHolder(schema)
         ), LV, MV, HV, EV);
         registerSimpleMachine(schema, map, "miner", LV, MV, HV);
-        registerForTiers(schema, map, "world_accelerator", DSL::remainder, LV, MV, HV, EV, IV, LuV, ZPM, UV);
+        registerForTiers(schema, map, "world_accelerator", traitHolder, LV, MV, HV, EV, IV, LuV, ZPM, UV);
         registerForTiers(schema, map, "item_collector", () -> optionalFields(
                 "output", notifiableItemHandler(schema),
                 "chargerInventory", itemHandler(schema),
@@ -237,14 +226,14 @@ public class V4 extends AutomaticNamespacedSchema {
         registerForTiers(schema, map, "output_hatch_4x", fluidHatch, ALL_TIERS);
         registerForTiers(schema, map, "output_hatch_9x", fluidHatch, ALL_TIERS);
 
-        registerForTiers(schema, map, "energy_input_hatch", DSL::remainder, ALL_TIERS);
-        registerForTiers(schema, map, "energy_output_hatch", DSL::remainder, ALL_TIERS);
-        registerForTiers(schema, map, "energy_input_hatch_4a", DSL::remainder, ALL_TIERS);
-        registerForTiers(schema, map, "energy_output_hatch_4a", DSL::remainder, ALL_TIERS);
-        registerForTiers(schema, map, "energy_input_hatch_16a", DSL::remainder, ALL_TIERS);
-        registerForTiers(schema, map, "energy_output_hatch_16a", DSL::remainder, ALL_TIERS);
-        registerForTiers(schema, map, "substation_input_hatch_64a", DSL::remainder, ALL_TIERS);
-        registerForTiers(schema, map, "substation_output_hatch_64a", DSL::remainder, ALL_TIERS);
+        registerForTiers(schema, map, "energy_input_hatch", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "energy_output_hatch", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "energy_input_hatch_4a", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "energy_output_hatch_4a", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "energy_input_hatch_16a", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "energy_output_hatch_16a", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "substation_input_hatch_64a", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "substation_output_hatch_64a", traitHolder, ALL_TIERS);
 
         registerForTiers(schema, map, "muffler_hatch", itemStorage, ELECTRIC_TIERS);
 
@@ -272,18 +261,18 @@ public class V4 extends AutomaticNamespacedSchema {
         registerForTiers(schema, map, "dual_input_hatch", dualHatch, DUAL_HATCH_TIERS);
         registerForTiers(schema, map, "dual_output_hatch", dualHatch, DUAL_HATCH_TIERS);
 
-        registerForTiers(schema, map, "diode", DSL::remainder, ELECTRIC_TIERS);
+        registerForTiers(schema, map, "diode", traitHolder, ELECTRIC_TIERS);
         registerForTiers(schema, map, "rotor_holder", () -> optionalFields(
                 "rotorMaterial", GTReferences.MATERIAL_NAME.in(schema),
                 itemStorage.get()
         ), GTValues.tiersBetween(HV, GTCEuAPI.isHighTier() ? OpV : UV));
 
-        registerForTiers(schema, map, "256a_laser_target_hatch", DSL::remainder, HIGH_TIERS);
-        registerForTiers(schema, map, "256a_laser_source_hatch", DSL::remainder, HIGH_TIERS);
-        registerForTiers(schema, map, "1024a_laser_target_hatch", DSL::remainder, HIGH_TIERS);
-        registerForTiers(schema, map, "1024a_laser_source_hatch", DSL::remainder, HIGH_TIERS);
-        registerForTiers(schema, map, "4096a_laser_target_hatch", DSL::remainder, HIGH_TIERS);
-        registerForTiers(schema, map, "4096a_laser_source_hatch", DSL::remainder, HIGH_TIERS);
+        registerForTiers(schema, map, "256a_laser_target_hatch", traitHolder, HIGH_TIERS);
+        registerForTiers(schema, map, "256a_laser_source_hatch", traitHolder, HIGH_TIERS);
+        registerForTiers(schema, map, "1024a_laser_target_hatch", traitHolder, HIGH_TIERS);
+        registerForTiers(schema, map, "1024a_laser_source_hatch", traitHolder, HIGH_TIERS);
+        registerForTiers(schema, map, "4096a_laser_target_hatch", traitHolder, HIGH_TIERS);
+        registerForTiers(schema, map, "4096a_laser_source_hatch", traitHolder, HIGH_TIERS);
 
         schema.register(map, "monitor", traitHolder);
         schema.register(map, "advanced_monitor", traitHolder);
@@ -317,9 +306,9 @@ public class V4 extends AutomaticNamespacedSchema {
         schema.register(map, "primitive_pump", traitHolder);
         schema.register(map, "steam_grinder", traitHolder);
         schema.register(map, "steam_oven", traitHolder);
-        registerForTiers(schema, map, "fusion_reactor", DSL::remainder, LuV, ZPM, UV);
-        registerForTiers(schema, map, "fluid_drilling_rig", DSL::remainder, MV, HV, EV);
-        registerForTiers(schema, map, "large_miner", DSL::remainder, EV, IV, LuV);
+        registerForTiers(schema, map, "fusion_reactor", traitHolder, LuV, ZPM, UV);
+        registerForTiers(schema, map, "fluid_drilling_rig", traitHolder, MV, HV, EV);
+        registerForTiers(schema, map, "large_miner", traitHolder, EV, IV, LuV);
         schema.register(map, "cleanroom", traitHolder);
         schema.register(map, "large_combustion_engine", traitHolder);
         schema.register(map, "extreme_combustion_engine", traitHolder);
@@ -328,7 +317,7 @@ public class V4 extends AutomaticNamespacedSchema {
         schema.register(map, "plasma_large_turbine", traitHolder);
         schema.register(map, "active_transformer", traitHolder);
         schema.register(map, "power_substation", traitHolder);
-        registerForTiers(schema, map, "bedrock_ore_miner", DSL::remainder, MV, HV, EV);
+        registerForTiers(schema, map, "bedrock_ore_miner", traitHolder, MV, HV, EV);
         schema.register(map, "wooden_tank_valve", traitHolder);
         schema.register(map, "wooden_multiblock_tank", traitHolder);
         schema.register(map, "bronze_tank_valve", traitHolder);
@@ -339,7 +328,7 @@ public class V4 extends AutomaticNamespacedSchema {
         schema.register(map, "central_monitor", traitHolder);
 
         // region GCYM
-        registerForTiers(schema, map, "parallel_hatch", DSL::remainder, IV, LuV, ZPM, UV);
+        registerForTiers(schema, map, "parallel_hatch", traitHolder, IV, LuV, ZPM, UV);
         schema.register(map, "large_maceration_tower", traitHolder);
         schema.register(map, "large_chemical_bath", traitHolder);
         schema.register(map, "large_centrifuge", traitHolder);
@@ -424,7 +413,7 @@ public class V4 extends AutomaticNamespacedSchema {
         for (MachineDefinition definition : GTRegistries.MACHINES) {
             String id = definition.getId().toString();
             if (!map.containsKey(id)) {
-                schema.register(map, id, () -> traitHolder(schema));
+                schema.register(map, id, traitHolder);
             }
         }
 
