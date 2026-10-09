@@ -185,7 +185,7 @@ public class AutobuildHelper {
             boolean first = true;
             for (var entry : blockList.entrySet()) {
                 if (entry.getValue() <= 0) continue;
-                if (!first) toPrint = toPrint.append(", ");
+                if (!first) toPrint = toPrint.append(",\n");
                 toPrint = toPrint.append(entry.getValue() + "x ").append(entry.getKey().getDescription());
                 first = false;
             }

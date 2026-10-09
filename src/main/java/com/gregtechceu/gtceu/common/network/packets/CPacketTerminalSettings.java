@@ -33,6 +33,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
     private final Object2ObjectMap<BlockPos, BlockInfo> globalPreferences;
     private final Char2ObjectMap<BlockInfo> blockPreferences;
     private final Table<Character, Integer, IntIntPair> minMaxPreferences;
+    boolean isClearMulti;
     boolean isClearPreferences;
 
     public CPacketTerminalSettings(InteractionHand hand, MultiblockMachineDefinition def, Int2IntMap sliceRepeats,
@@ -40,6 +41,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
                                    Object2ObjectMap<BlockPos, BlockInfo> globalPreferences,
                                    Char2ObjectMap<BlockInfo> blockPreferences,
                                    Table<Character, Integer, IntIntPair> minMaxPreferences,
+                                   boolean isClearMulti,
                                    boolean isClearPreferences) {
         this.hand = hand;
         this.machineDefinition = def;
@@ -48,6 +50,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         this.globalPreferences = globalPreferences;
         this.blockPreferences = blockPreferences;
         this.minMaxPreferences = minMaxPreferences;
+        this.isClearMulti = isClearMulti;
         this.isClearPreferences = isClearPreferences;
     }
 
@@ -84,6 +87,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
          * }
          * }
          */
+        this.isClearMulti = buf.readBoolean();
         this.isClearPreferences = buf.readBoolean();
     }
 
@@ -105,6 +109,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
          * b1.writeVarInt(p.secondInt());
          * }));
          */
+        buf.writeBoolean(this.isClearMulti);
         buf.writeBoolean(this.isClearPreferences);
     }
 
@@ -118,6 +123,6 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
 
         var schemaInfo = new MultiblockSchemaInfo(this.machineDefinition, this.sliceRepeats, this.dimensions,
                 this.globalPreferences, this.blockPreferences);
-        TerminalBehavior.applyUserPreferences(held, schemaInfo, this.isClearPreferences);
+        TerminalBehavior.applyUserPreferences(held, schemaInfo, this.isClearMulti, this.isClearPreferences);
     }
 }

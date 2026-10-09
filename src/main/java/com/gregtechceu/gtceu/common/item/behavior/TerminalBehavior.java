@@ -236,13 +236,17 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         GTNetwork.sendToServer(new CPacketTerminalSettings(hand, definition, schemaInfo.getUserSliceRepeats(),
                 schemaInfo.getUserDimensions(), schemaInfo.getUserGlobalBlockPreferences(),
                 schemaInfo.getBlockPreferences(), HashBasedTable.create()
-                /* schemaInfo.getMinMaxPreferenceCharTable() */, previewWidget.isClearPreferences()));
+                /* schemaInfo.getMinMaxPreferenceCharTable() */, previewWidget.isClearMulti(),
+                previewWidget.isClearPreferences()));
     }
 
     public static void applyUserPreferences(ItemStack item, MultiblockSchemaInfo schemaInfo,
+                                            boolean isClearMulti,
                                             boolean isClearPreferences) {
         CompoundTag tag = item.getOrCreateTag();
-        if (isClearPreferences) {
+        if (isClearMulti) {
+            tag.remove(CONTROLLER_INFO_TAG);
+        } else if (isClearPreferences) {
             var controllerInfo = ControllerInfo.CODEC
                     .parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
                     .getOrThrow(false, GTCEu.LOGGER::error);

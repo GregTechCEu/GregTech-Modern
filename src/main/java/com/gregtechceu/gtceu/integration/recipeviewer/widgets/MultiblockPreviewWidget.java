@@ -10,7 +10,12 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTDimensionMarkers;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
@@ -18,6 +23,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -27,10 +33,7 @@ import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.IIcon;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IGuiAction;
-import brachy.modularui.drawable.DynamicDrawable;
-import brachy.modularui.drawable.Icon;
-import brachy.modularui.drawable.ItemDrawable;
-import brachy.modularui.drawable.SchemaRenderer;
+import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.schema.BlockHighlight;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
 import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
@@ -39,6 +42,7 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.IntValue;
+import brachy.modularui.value.StringValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widget.ParentWidget;
@@ -91,6 +95,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     @Setter
     private @Nullable Runnable onSchemaRefresh;
     @Getter
+    private boolean clearMulti = false;
+    @Getter
     private boolean clearPreferences = false;
 
     public MultiblockPreviewWidget(MultiblockMachineDefinition definition, MultiblockSchemaInfo schemaInfo, int width,
@@ -125,7 +131,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 .name("wrapping_parts_col")
                 // NOTE wrapped flows require a fixed size in their axis, relative/coverChildren does not work
                 .wrap()
-                .coverChildrenWidth(20)
+                .coverChildrenWidth(26)
+                .childPadding(1)
                 .height(height)
                 .children(this.multiblockSchemaInfo.getBlockCounts()
                         .reference2IntEntrySet()
@@ -138,9 +145,10 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                     .value(stack)
                                     .background(IDrawable.EMPTY)
                                     .size(16)
-                                    .margin(1)
+                                    // .margin(1)
                                     .tooltip(r -> r.addFromItem(stack));
-                        }));
+                        })
+                .horizontalCenter());
 
         this.selectedBlockHandler.widgetProvider(() -> {
             ItemStack selected = this.selectionInfo.stack();
@@ -170,6 +178,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 this.multiblockSchemaInfo.getMapSchema().getCenter());
         PredicateContext context = new PredicateContext(null);
         SchemaWidget schema = this.multiblockSchemaInfo.getRenderer().asWidget()
+                .background(GTGuiTextures.BACKGROUND_INVERSE)
                 .listenGuiAction(setBlockOnClick)
                 .tooltipDynamic(text -> {
                     BlockHitResult hit = this.multiblockSchemaInfo.getRenderer().lastRayTrace();
@@ -205,6 +214,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         this.coverChildren()
                 .padding(7)
                 .childIf(terminal, () -> new ButtonWidget<>()
+                        .overlay(new ItemDrawable(GTDimensionMarkers.OVERWORLD.getIcon()).asIcon().size(16))
                         .tooltip(r -> r.addLine(Component.literal("Press to display preview in world!")))
                         .rightRel(1.0f)
                         .onMousePressed((c, b) -> {
@@ -221,8 +231,9 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         }))
                 // todo serialize these values as part of the schema nbt
                 .child(new ToggleButton()
+                        .overlay(GTGuiTextures.PROGRESS_MIXER[1].asIcon().size(16))
                         .tooltip(r -> r.addLine(Component.literal("Press to flip structure")))
-                        .left(25)
+                        .left(26)
                         .value(new BoolValue.Dynamic(() -> isFlipped, v -> {
                             setFlipped(!isFlipped);
                             refreshSchema();
@@ -232,6 +243,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .overlay(new DynamicDrawable(() -> Text.dynamic(
                                 () -> Component.literal(yLevel == Integer.MAX_VALUE ? "A" : String.valueOf(yLevel)))
                                 .asIcon()))
+                        .tooltip(r -> r.addLine(Component.literal("Layer Selection")))
                         .left(45)
                         .onMousePressed((c, b) -> {
                             var bounds = multiblockSchemaInfo.getMapSchema().getBounds();
@@ -293,24 +305,38 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                 .name("schema_widgets")
                                 .crossAxisAlignment(Alignment.CrossAxis.START)
                                 .coverChildren()
+                                .childPadding(2)
                                 .child(new DynamicWidget<>()
                                         .name("selected_block")
                                         .coverChildren(20)
                                         .clientOnlyHandler(this.selectedBlockHandler))
                                 .child(this.multiblockSchemaInfo.getMultiSchema())
                                 .child(new DynamicWidget<>()
+                                        .background(GTGuiTextures.BACKGROUND)
                                         .coverChildrenWidth()
                                         .heightRel(1f)
                                         .name("parts_view")
                                         .clientOnlyHandler(partsHandler))))
                 .childIf(terminal, () -> new ButtonWidget<>()
                         .right(5)
+                        .overlay(new DrawableStack(new ItemDrawable(GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack()),
+                                new ItemDrawable(Items.BARRIER)))
+                        .onMousePressed((guiContext, button) -> {
+                            clearMulti = true;
+                            ((ModularGuiContext) guiContext).getScreen().getMainPanel().closeIfOpen();
+                            return true;
+                        })
+                        .tooltip(r -> r.addLine(Component.translatable("gtceu.terminal.clear_multi"))))
+                .childIf(terminal, () -> new ButtonWidget<>()
+                        .right(24)
+                        .overlay(new DrawableStack(new ItemDrawable(GTBlocks.COIL_CUPRONICKEL),
+                                new ItemDrawable(Items.BARRIER)))
                         .onMousePressed((guiContext, button) -> {
                             clearPreferences = true;
                             ((ModularGuiContext) guiContext).getScreen().getMainPanel().closeIfOpen();
-
                             return true;
-                        }));
+                        })
+                        .tooltip(r -> r.addLine(Component.translatable("gtceu.terminal.clear_preference"))));
     }
 
     private ContextMenuButton<?> createSelectedBlockMenu(MultiPredicate predicate) {
@@ -383,7 +409,15 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             if (predicate.getCandidates().size() == 1 && predicate.getCandidates().get(0).size() == 1) {
                 continue;
             } else {
-                overlay = Text.str(String.valueOf(entry.getCharKey())).asIcon().size(8).center();
+                overlay = new DynamicDrawable(() -> {
+                    BlockInfo info = multiblockSchemaInfo.getBlockPreferences().get(entry.getCharKey());
+                    return new ItemDrawable(info == null ?
+                            entry.getValue().getCandidates().get(0).get(0).getItemStackForm() :
+                            info.getItemStackForm())
+                            .asIcon()
+                            .size(16);
+                });
+                // overlay = Text.str(String.valueOf(entry.getCharKey())).asIcon().size(8).center();
             }
 
             var menu = new ContextMenuButton<>(String.valueOf(entry.getCharKey()))
@@ -492,6 +526,11 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             return;
         }
         List<IntIntPair> constraints = pattern.getBoundsConstraints().apply();
+        Flow topRow = Flow.row()
+                .coverChildren();
+        Flow bottomRow = Flow.row()
+                .coverChildren();
+
         for (int i = 0; i < constraints.size(); i++) {
             IntIntPair value = constraints.get(i);
             if (value.leftInt() != value.rightInt()) {
@@ -517,7 +556,11 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                     }
                 };
 
-                parent.child(textField);
+                textField.tooltip(r -> r.addLine(Component.literal(RelativeDirection.values()[index].name())))
+                        .value(new StringValue.Dynamic(() -> String.valueOf(syncValue.getIntValue()), $ -> {}));
+
+                (i < 3 ? topRow : bottomRow).child(textField.width(20));
+                // parent.child(textField);
 
                 /*
                  * parent.child(new SliderWidget()
@@ -537,6 +580,9 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                  */
             }
         }
+
+        parent.child(topRow);
+        parent.child(bottomRow);
     }
 
     private void createSliceSliders(Flow col, BlockPattern blockPattern) {
@@ -574,7 +620,10 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                     }
                 };
 
-                col.child(textField.width(30).setNumbers(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats()));
+                textField
+                        .value(new StringValue.Dynamic(() -> String.valueOf(syncValue.getIntValue()), $ -> {}));
+
+                col.child(textField.width(20).setNumbers(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats()));
                 /*
                  * col.child(new SliderWidget()
                  * .background(GTGuiTextures.FLUID_SLOT)
