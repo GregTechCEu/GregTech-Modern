@@ -135,7 +135,7 @@ public class MachineUIPanelBuilder {
                     .child(background.asWidget()
                             .size(32, 32)
                             .tooltipAutoUpdate(true)
-                            .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.multiblock.steam.steam_stored",
+                            .tooltipDynamic(r -> r.addLine(Component.translatable("gui.gtceu.machine.steam.steam_stored",
                                     FormattingUtil.formatNumbers(steamAmount.getIntValue()),
                                     FormattingUtil.formatNumbers(steamCapacity.getIntValue())))))
                     .child(new SteamDialWidget(steamProgress)
@@ -148,7 +148,7 @@ public class MachineUIPanelBuilder {
                             .left(16)
                             .top(16)
                             .tooltipAutoUpdate(true)
-                            .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.multiblock.steam.steam_stored",
+                            .tooltipDynamic(r -> r.addLine(Component.translatable("gui.gtceu.machine.steam.steam_stored",
                                     FormattingUtil.formatNumbers(steamAmount.getIntValue()),
                                     FormattingUtil.formatNumbers(steamCapacity.getIntValue())))))
                     .leftRel(0.0f).left(-36).top(4)

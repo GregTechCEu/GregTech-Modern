@@ -261,7 +261,7 @@ public class GTMultiblockTextUtil {
         return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(parallelAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
-            String key = "gtceu.multiblock.parallel";
+            String key = "gui.gtceu.recipe.running_parallel";
             return Component.translatable(key, runs)
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
@@ -280,7 +280,7 @@ public class GTMultiblockTextUtil {
         return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(batchAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
-            String key = "gtceu.multiblock.batch_enabled";
+            String key = "gui.gtceu.recipe.batch_parallel";
             return Component.translatable(key, runs)
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
@@ -298,7 +298,7 @@ public class GTMultiblockTextUtil {
         return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(subtickAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
-            String key = "gtceu.multiblock.subtick_parallels";
+            String key = "gui.gtceu.recipe.subtick_parallel";
             return Component.translatable(key, runs)
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
@@ -315,7 +315,7 @@ public class GTMultiblockTextUtil {
         return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(totalRunAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
-            String key = "gtceu.multiblock.total_runs";
+            String key = "gui.gtceu.recipe.total_parallel";
             return Component.translatable(key, runs)
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
@@ -339,7 +339,7 @@ public class GTMultiblockTextUtil {
                 () -> new BooleanSyncValue(() -> steamRH != null));
 
         return Text
-                .dynamic(() -> Component.translatable("gtceu.multiblock.steam.steam_stored",
+                .dynamic(() -> Component.translatable("gui.gtceu.machine.steam.steam_stored",
                         FormattingUtil.formatNumbers(steamAmount.getIntValue()),
                         FormattingUtil.formatNumbers(steamCapacity.getIntValue())).withStyle(ChatFormatting.WHITE))
                 .asWidget()

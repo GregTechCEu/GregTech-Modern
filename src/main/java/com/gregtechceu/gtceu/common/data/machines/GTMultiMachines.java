@@ -179,7 +179,7 @@ public class GTMultiMachines {
                         () -> new IntSyncValue(() -> coilMachine.getTier()));
 
                 return Collections.singletonList(Text
-                        .dynamic(() -> Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
+                        .dynamic(() -> Component.translatable("gui.gtceu.machine.electric_blast_furnace.max_temp",
                                 Component.literal(
                                         FormattingUtil.formatNumbers(coilTemperature.getIntValue() +
                                                 100L * Math.max(0, machineTier.getIntValue() - GTValues.MV)) + "K")
@@ -271,7 +271,7 @@ public class GTMultiMachines {
                         () -> new IntSyncValue(() -> coilMachine.getCoilTier()));
 
                 return Collections.singletonList(Text
-                        .dynamic(() -> Component.translatable("gtceu.multiblock.pyrolyse_oven.speed",
+                        .dynamic(() -> Component.translatable("gui.gtceu.machine.pyrolyse_oven.processing_speed",
                                 coilTier.getIntValue() == 0 ? 75 : 50 * (coilTier.getIntValue() + 1)))
                         .asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
             })
@@ -312,10 +312,10 @@ public class GTMultiMachines {
                         () -> new IntSyncValue(() -> coilMachine.getCoilType().getEnergyDiscount()));
 
                 return List.of(
-                        Text.dynamic(() -> Component.translatable("gtceu.multiblock.multi_furnace.heating_coil_level",
+                        Text.dynamic(() -> Component.translatable("gui.gtceu.machine.multi_smelter.heating_coil_level",
                                 coilLevel.getIntValue())).asWidget().setEnabledIf(w -> isFormed.getBoolValue()),
                         Text.dynamic(
-                                () -> Component.translatable("gtceu.multiblock.multi_furnace.heating_coil_discount",
+                                () -> Component.translatable("gui.gtceu.machine.multi_smelter.heating_coil_discount",
                                         energyDiscount.getIntValue()))
                                 .asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
             })
@@ -350,7 +350,7 @@ public class GTMultiMachines {
                         () -> new IntSyncValue(() -> coilMachine.getCoilTier()));
 
                 return Collections.singletonList(Text
-                        .dynamic(() -> Component.translatable("gtceu.multiblock.cracking_unit.energy",
+                        .dynamic(() -> Component.translatable("gui.gtceu.machine.cracking_unit.energy",
                                 100 - 10 * coilTier.getIntValue()))
                         .asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
             })
@@ -556,10 +556,10 @@ public class GTMultiMachines {
                     .recipeModifiers(DEFAULT_ENVIRONMENT_REQUIREMENT,
                             FusionReactorMachine::recipeModifier, BATCH_MODE)
                     .tooltips(
-                            Component.translatable("gtceu.machine.fusion_reactor.capacity",
+                            Component.translatable("machine.gtceu.fusion_reactor.capacity",
                                     FusionReactorMachine.calculateEnergyStorageFactor(tier, 16) / 1000000L),
-                            Component.translatable("gtceu.machine.fusion_reactor.overclocking"),
-                            Component.translatable("gtceu.machine.%s_fusion_reactor.description"
+                            Component.translatable("machine.gtceu.fusion_reactor.overclocking"),
+                            Component.translatable("machine.gtceu.%s_fusion_reactor.description"
                                     .formatted(VN[tier].toLowerCase(Locale.ROOT))))
                     .appearanceBlock(() -> FusionReactorMachine.getCasingState(tier))
                     .pattern((definition) -> {
@@ -612,12 +612,12 @@ public class GTMultiMachines {
                         default -> "Well Drainer";
                     })
                     .tooltips(
-                            Component.translatable("gtceu.machine.fluid_drilling_rig.description"),
-                            Component.translatable("gtceu.machine.fluid_drilling_rig.depletion",
+                            Component.translatable("machine.gtceu.fluid_drilling_rig.description"),
+                            Component.translatable("machine.gtceu.fluid_drilling_rig.depletion",
                                     FormattingUtil.formatNumbers(100.0 / FluidDrillMachine.getDepletionChance(tier))),
                             Component.translatable("common.gtceu.tooltip.energy_tier_range", GTValues.VNF[tier],
                                     GTValues.VNF[tier + 1]),
-                            Component.translatable("gtceu.machine.fluid_drilling_rig.production",
+                            Component.translatable("machine.gtceu.fluid_drilling_rig.production",
                                     FluidDrillMachine.getRigMultiplier(tier),
                                     FormattingUtil.formatNumbers(FluidDrillMachine.getRigMultiplier(tier) * 1.5)))
                     .appearanceBlock(() -> FluidDrillMachine.getCasingState(tier))
@@ -686,7 +686,7 @@ public class GTMultiMachines {
                         default -> "Terrestrial Harvester";
                     })
                     .tooltips(
-                            Component.translatable("gtceu.machine.large_miner.%s.tooltip"
+                            Component.translatable("machine.gtceu.large_miner.%s.tooltip"
                                     .formatted(VN[tier].toLowerCase(Locale.ROOT))),
                             Component.translatable("gui.gtceu.machine.miner.multi.description"))
                     .tooltipBuilder((stack, tooltip) -> {
@@ -792,12 +792,12 @@ public class GTMultiMachines {
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .appearanceBlock(HIGH_POWER_CASING)
-            .tooltips(Component.translatable("gtceu.machine.active_transformer.tooltip.0"),
-                    Component.translatable("gtceu.machine.active_transformer.tooltip.1"))
+            .tooltips(Component.translatable("machine.gtceu.active_transformer.tooltip.0"),
+                    Component.translatable("machine.gtceu.active_transformer.tooltip.1"))
             .tooltipBuilder(
                     (stack,
-                     components) -> components.add(Component.translatable("gtceu.machine.active_transformer.tooltip.2")
-                             .append(Component.translatable("gtceu.machine.active_transformer.tooltip.3")
+                     components) -> components.add(Component.translatable("machine.gtceu.active_transformer.tooltip.2")
+                             .append(Component.translatable("machine.gtceu.active_transformer.tooltip.3")
                                      .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))))
             .pattern((definition) -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("XXX", "XXX", "XXX")
@@ -882,13 +882,13 @@ public class GTMultiMachines {
                     .langValue("%s Bedrock Ore Miner %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(DUMMY_RECIPES)
                     .tooltips(
-                            Component.translatable("gtceu.machine.bedrock_ore_miner.description"),
-                            Component.translatable("gtceu.machine.bedrock_ore_miner.depletion",
+                            Component.translatable("machine.gtceu.bedrock_ore_miner.description"),
+                            Component.translatable("machine.gtceu.bedrock_ore_miner.depletion",
                                     FormattingUtil.formatNumbers(
                                             100.0 / BedrockOreMinerMachine.getDepletionChance(tier))),
                             Component.translatable("common.gtceu.tooltip.energy_tier_range",
                                     GTValues.VNF[tier], GTValues.VNF[tier + 1]),
-                            Component.translatable("gtceu.machine.bedrock_ore_miner.production",
+                            Component.translatable("machine.gtceu.bedrock_ore_miner.production",
                                     BedrockOreMinerMachine.getRigMultiplier(tier),
                                     FormattingUtil.formatNumbers(
                                             BedrockOreMinerMachine.getRigMultiplier(tier) * 1.5)))

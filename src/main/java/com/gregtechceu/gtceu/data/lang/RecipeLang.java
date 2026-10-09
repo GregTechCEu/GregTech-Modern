@@ -33,6 +33,13 @@ public class RecipeLang {
         provider.addMultiLang("gui.gtceu.recipe.oc", "Min: %s", "Left click to increase the OC",
                 "Right click to decrease the OC", "Middle click to reset the OC",
                 "Hold Shift to change by Perfect OC");
+
+        // Parallel
+        provider.add("gui.gtceu.recipe.running_parallel", "Performing up to %d Recipes in Parallel");
+        provider.add("gui.gtceu.recipe.total_parallel", "Performing %d Recipes at once");
+        provider.add("gui.gtceu.recipe.running_parallel.exact", "- %dx from Parallels");
+        provider.add("gui.gtceu.recipe.batch_parallel", "- %dx from Batching");
+        provider.add("gui.gtceu.recipe.subtick_parallel", "- %dx from Overclocking");
     }
 
     public static void generateChanceLang(RegistrateLangProvider provider) {

@@ -57,12 +57,12 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
     //
     // if (getRecipeLogic().getVeinMaterials() != null) {
     // // Ore names
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ores_list")
+    // textList.add(Component.translatable("gui.gtceu.machine.bedrock_miner.drilled_ores_list")
     // .withStyle(ChatFormatting.GREEN));
     // List<WeightedMaterial> drilledOres = getRecipeLogic().getVeinMaterials();
     // for (var entry : drilledOres) {
     // Component fluidInfo = entry.material().getLocalizedName().withStyle(ChatFormatting.GREEN);
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ore_entry", fluidInfo)
+    // textList.add(Component.translatable("gui.gtceu.machine.bedrock_miner.drilled_ore_entry", fluidInfo)
     // .withStyle(ChatFormatting.GRAY));
     // }
     //
@@ -70,14 +70,14 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
     // Component amountInfo = Component.literal(FormattingUtil.formatNumbers(
     // getRecipeLogic().getOreToProduce() * 20L / BedrockOreMinerLogic.MAX_PROGRESS) +
     // "/s").withStyle(ChatFormatting.BLUE);
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.ore_amount", amountInfo)
+    // textList.add(Component.translatable("gui.gtceu.machine.bedrock_miner.ore_amount", amountInfo)
     // .withStyle(ChatFormatting.GRAY));
     // } else {
-    // Component noOre = Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area")
+    // Component noOre = Component.translatable("gui.gtceu.machine.fluid_rig.no_fluid_in_area")
     // .withStyle(ChatFormatting.RED);
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ores_list")
+    // textList.add(Component.translatable("gui.gtceu.machine.bedrock_miner.drilled_ores_list")
     // .withStyle(ChatFormatting.GREEN));
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ore_entry", noOre)
+    // textList.add(Component.translatable("gui.gtceu.machine.bedrock_miner.drilled_ore_entry", noOre)
     // .withStyle(ChatFormatting.GRAY));
     // }
     // } else {

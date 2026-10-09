@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import com.demonwav.mcdev.annotations.Translatable;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -111,7 +112,7 @@ public class GTMuiWidgets {
     }
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture texture,
-                                                  String langKey) {
+                                                  @Translatable(suffix = ".enabled") String langKey) {
         var value = new BooleanSyncValue(getter, setter).allowC2S();
         return new ToggleButton()
                 .value(value)
@@ -122,7 +123,7 @@ public class GTMuiWidgets {
     }
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture background,
-                                                  UITexture selectedBackground, String langKey) {
+                                                  UITexture selectedBackground, @Translatable(suffix = ".enabled") String langKey) {
         var value = new BooleanSyncValue(getter, setter).allowC2S();
         return new ToggleButton()
                 .value(value)
@@ -182,7 +183,7 @@ public class GTMuiWidgets {
     public static ToggleButton createBatchModeButton(WorkableElectricMultiblockMachine workableElectricMultiblockMachine) {
         return createToggleButton(workableElectricMultiblockMachine::isBatchEnabled,
                 workableElectricMultiblockMachine::setBatchEnabled,
-                GTGuiTextures.BUTTON_BATCH[0], GTGuiTextures.BUTTON_BATCH[1], "gtceu.machine.batching");
+                GTGuiTextures.BUTTON_BATCH[0], GTGuiTextures.BUTTON_BATCH[1], "machine.gtceu.batching");
     }
 
     public static ToggleButton createAutoOutputItemButton(AutoOutputTrait autoOutput) {

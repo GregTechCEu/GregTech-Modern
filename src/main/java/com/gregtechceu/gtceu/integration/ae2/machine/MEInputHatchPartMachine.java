@@ -194,8 +194,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
             CompoundTag tag = new CompoundTag();
             tag.put("MEInputHatch", writeConfigToTag());
             dataStick.setTag(tag);
-            dataStick.setHoverName(Component.translatable("gtceu.machine.me.fluid_import.data_stick.name"));
-            player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_copy_settings"));
+            dataStick.setHoverName(Component.translatable("machine.gtceu.me.fluid_import.data_stick.name"));
+            player.sendSystemMessage(Component.translatable("machine.gtceu.me.import_copy_settings"));
         }
         return InteractionResult.SUCCESS;
     }
@@ -210,7 +210,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
         if (!isRemote()) {
             readConfigFromTag(tag.getCompound("MEInputHatch"));
             this.updateTankSubscription();
-            player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_paste_settings"));
+            player.sendSystemMessage(Component.translatable("machine.gtceu.me.import_paste_settings"));
         }
         return InteractionResult.sidedSuccess(isRemote());
     }

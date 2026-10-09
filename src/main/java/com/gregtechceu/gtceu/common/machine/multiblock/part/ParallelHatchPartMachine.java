@@ -135,7 +135,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
                         })
                         .marginLeft(4)
                         .verticalCenter())
-                .child(Text.lang("gtceu.machine.parallel_hatch.parallel_ui")
+                .child(Text.lang("machine.gtceu.parallel_hatch.parallel_ui")
                         .asWidget()
                         .marginLeft(4)
                         .marginRight(4)

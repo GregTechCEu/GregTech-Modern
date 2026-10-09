@@ -237,7 +237,7 @@ public class GTMachineUtils {
                             .colorOverlayTieredHullModel(ioOverlay, pipeOverlay, emissiveOverlay)
                             .abilities(abilities)
                             .modelProperty(IS_FORMED, false)
-                            .tooltips(Component.translatable("gtceu.machine." + tooltip + ".tooltip"))
+                            .tooltips(Component.translatable("machine.gtceu." + tooltip + ".tooltip"))
                             .allowCoverOnFront(true);
 
                     if (slots == 1) {
@@ -436,8 +436,8 @@ public class GTMachineUtils {
                         .langValue(VNF[tier] + "§r " + FormattingUtil.formatNumbers(amperage) + "§eA§r Laser " +
                                 FormattingUtil.toEnglishName(name) + " Hatch")
                         .rotationState(RotationState.ALL)
-                        .tooltips(Component.translatable("gtceu.machine.laser_hatch." + name + ".tooltip"),
-                                Component.translatable("gtceu.machine.laser_hatch.both.tooltip"),
+                        .tooltips(Component.translatable("machine.gtceu.laser_hatch." + name + ".tooltip"),
+                                Component.translatable("machine.gtceu.laser_hatch.both.tooltip"),
                                 Component.translatable("common.gtceu.tooltip.voltage_" + (io == IN ? "in" : "out"),
                                         FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
                                 Component.translatable("common.gtceu.tooltip.amperage_in", amperage),
@@ -515,7 +515,7 @@ public class GTMachineUtils {
                             .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createQuantumTankRender)))
                     .hasBER(true)
                     .tooltipBuilder(TANK_TOOLTIPS)
-                    .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
+                    .tooltips(Component.translatable("machine.gtceu.quantum_tank.tooltip"),
                             Component.translatable("common.gtceu.tooltip.fluid_storage_capacity",
                                     FormattingUtil.formatNumbers(maxAmount)))
                     .tier(tier)
@@ -539,7 +539,7 @@ public class GTMachineUtils {
                                         b -> b.addDynamicRenderer(DynamicRenderHelper::createQuantumChestRender)))
                         .hasBER(true)
                         .tooltipBuilder(CHEST_TOOLTIPS)
-                        .tooltips(Component.translatable("gtceu.machine.quantum_chest.tooltip"),
+                        .tooltips(Component.translatable("machine.gtceu.quantum_chest.tooltip"),
                                 Component.translatable("common.gtceu.tooltip.item_storage_total",
                                         FormattingUtil.formatNumbers(tier == MAX ? Long.MAX_VALUE :
                                                 4_000_000 * (long) Math.pow(2, tier - 1))))
@@ -562,7 +562,7 @@ public class GTMachineUtils {
                 .multiblock(name, holder -> new MultiblockTankMachine(holder, capacity, filter))
                 .langValue(displayName)
                 .tooltips(
-                        Component.translatable("gtceu.machine.multiblock.tank.tooltip"),
+                        Component.translatable("machine.gtceu.multiblock.tank.tooltip"),
                         Component.translatable("common.gtceu.tooltip.fluid_storage_capacity", capacity),
                         (filter != null) ? Component.translatable("gtceu.fluid_pipe.max_temperature",
                                 FormattingUtil.formatTemperature(filter.getMaxFluidTemperature())) : null)
@@ -588,7 +588,7 @@ public class GTMachineUtils {
         MachineBuilder<MachineDefinition, ?, ?> builder = registrate
                 .machine(name, holder -> new TankValvePartMachine(holder, isMetal))
                 .langValue(displayName)
-                .tooltips(Component.translatable("gtceu.machine.tank_valve.tooltip"),
+                .tooltips(Component.translatable("machine.gtceu.tank_valve.tooltip"),
                         Component.translatable("multiblock.gtceu.part_sharing.disabled"))
                 .rotationState(RotationState.ALL);
         rendererSetup.accept(builder, GTCEu.id("block/multiblock/tank_valve"));
@@ -663,11 +663,11 @@ public class GTMachineUtils {
                         GTCEu.id("block/multiblock/generator/large_%s_boiler".formatted(name)))
                         .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper.makeBoilerPartRender(firebox, casing))))
                 .tooltips(
-                        Component.translatable("gtceu.multiblock.large_boiler.max_temperature", maxTemperature + 274,
+                        Component.translatable("gui.gtceu.machine.large_boiler.max_temperature", maxTemperature + 274,
                                 maxTemperature),
-                        Component.translatable("gtceu.multiblock.large_boiler.heat_time_tooltip",
+                        Component.translatable("gui.gtceu.machine.large_boiler.heat_time_tooltip",
                                 maxTemperature / heatSpeed / 20),
-                        Component.translatable("gtceu.multiblock.large_boiler.explosion_tooltip")
+                        Component.translatable("gui.gtceu.machine.large_boiler.explosion_tooltip")
                                 .withStyle(ChatFormatting.DARK_RED))
                 .register();
         // spotless:on
@@ -718,9 +718,9 @@ public class GTMachineUtils {
                         Component.translatable("common.gtceu.tooltip.uses_per_hour_lubricant",
                                 FluidType.BUCKET_VOLUME),
                         tier > EV ?
-                                Component.translatable("gtceu.machine.large_combustion_engine.tooltip.boost_extreme",
+                                Component.translatable("machine.gtceu.large_combustion_engine.tooltip.boost_extreme",
                                         V[tier] * 4) :
-                                Component.translatable("gtceu.machine.large_combustion_engine.tooltip.boost_regular",
+                                Component.translatable("machine.gtceu.large_combustion_engine.tooltip.boost_regular",
                                         V[tier] * 3))
                 .register();
     }
@@ -792,7 +792,7 @@ public class GTMachineUtils {
                 .workableCasingModel(casingTexture, overlayModel)
                 .tooltips(
                         Component.translatable("common.gtceu.tooltip.base_production_eut", V[tier] * 2),
-                        Component.translatable("gtceu.multiblock.turbine.efficiency_tooltip", VNF[tier]));
+                        Component.translatable("gui.gtceu.machine.large_turbine.efficiency_tooltip", VNF[tier]));
         if (langName != null) multi.langValue(langName);
         return multi.register();
     }
@@ -817,7 +817,7 @@ public class GTMachineUtils {
     // Tooltips
     public static Component explosion() {
         if (ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion)
-            return Component.translatable("machine.gtceu.tooltip.terrain_resist");
+            return Component.translatable("gui.gtceu.machine.terrain_resist");
         return null;
     }
 

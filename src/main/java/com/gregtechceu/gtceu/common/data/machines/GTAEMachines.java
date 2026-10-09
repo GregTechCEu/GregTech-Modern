@@ -24,9 +24,9 @@ public class GTAEMachines {
             .abilities(PartAbility.IMPORT_ITEMS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_bus"))
             .tooltips(
-                    Component.translatable("gtceu.machine.item_bus.import.tooltip"),
-                    Component.translatable("gtceu.machine.me.item_import.tooltip"),
-                    Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
+                    Component.translatable("machine.gtceu.item_bus.import.tooltip"),
+                    Component.translatable("machine.gtceu.me.item_import.tooltip"),
+                    Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
                     Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
 
@@ -38,11 +38,11 @@ public class GTAEMachines {
             .abilities(PartAbility.IMPORT_ITEMS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_bus"))
             .tooltips(
-                    Component.translatable("gtceu.machine.item_bus.import.tooltip"),
-                    Component.translatable("gtceu.machine.me.stocking_item.tooltip.0"),
-                    Component.translatable("gtceu.machine.me_import_item_hatch.configs.tooltip"),
-                    Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
-                    Component.translatable("gtceu.machine.me.stocking_item.tooltip.1"),
+                    Component.translatable("machine.gtceu.item_bus.import.tooltip"),
+                    Component.translatable("machine.gtceu.me.stocking_item.tooltip.0"),
+                    Component.translatable("machine.gtceu.me_import_item_hatch.configs.tooltip"),
+                    Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
+                    Component.translatable("machine.gtceu.me.stocking_item.tooltip.1"),
                     Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
 
@@ -55,9 +55,9 @@ public class GTAEMachines {
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_output_bus"))
             .tooltipLang()
             .tooltips(
-                    Component.translatable("gtceu.machine.item_bus.export.tooltip"),
-                    Component.translatable("gtceu.machine.me.item_export.tooltip"),
-                    Component.translatable("gtceu.machine.me.export.tooltip"),
+                    Component.translatable("machine.gtceu.item_bus.export.tooltip"),
+                    Component.translatable("machine.gtceu.me.item_export.tooltip"),
+                    Component.translatable("machine.gtceu.me.export.tooltip"),
                     Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
 
@@ -69,9 +69,9 @@ public class GTAEMachines {
             .abilities(PartAbility.IMPORT_FLUIDS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_hatch"))
             .tooltips(
-                    Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"),
-                    Component.translatable("gtceu.machine.me.fluid_import.tooltip"),
-                    Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
+                    Component.translatable("machine.gtceu.fluid_hatch.import.tooltip"),
+                    Component.translatable("machine.gtceu.me.fluid_import.tooltip"),
+                    Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
                     Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
 
@@ -83,11 +83,11 @@ public class GTAEMachines {
             .abilities(PartAbility.IMPORT_FLUIDS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_hatch"))
             .tooltips(
-                    Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"),
-                    Component.translatable("gtceu.machine.me.stocking_fluid.tooltip.0"),
-                    Component.translatable("gtceu.machine.me_import_fluid_hatch.configs.tooltip"),
-                    Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
-                    Component.translatable("gtceu.machine.me.stocking_fluid.tooltip.1"),
+                    Component.translatable("machine.gtceu.fluid_hatch.import.tooltip"),
+                    Component.translatable("machine.gtceu.me.stocking_fluid.tooltip.0"),
+                    Component.translatable("machine.gtceu.me_import_fluid_hatch.configs.tooltip"),
+                    Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
+                    Component.translatable("machine.gtceu.me.stocking_fluid.tooltip.1"),
                     Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
 
@@ -99,9 +99,9 @@ public class GTAEMachines {
             .abilities(PartAbility.EXPORT_FLUIDS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_output_hatch"))
             .tooltips(
-                    Component.translatable("gtceu.machine.fluid_hatch.export.tooltip"),
-                    Component.translatable("gtceu.machine.me.fluid_export.tooltip"),
-                    Component.translatable("gtceu.machine.me.export.tooltip"),
+                    Component.translatable("machine.gtceu.fluid_hatch.export.tooltip"),
+                    Component.translatable("machine.gtceu.me.fluid_export.tooltip"),
+                    Component.translatable("machine.gtceu.me.export.tooltip"),
                     Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
     public static final MachineDefinition ME_PATTERN_BUFFER = REGISTRATE

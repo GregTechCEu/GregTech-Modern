@@ -208,8 +208,8 @@ public class MEInputBusPartMachine extends MEBusPartMachine
             CompoundTag tag = new CompoundTag();
             tag.put("MEInputBus", writeConfigToTag());
             dataStick.setTag(tag);
-            dataStick.setHoverName(Component.translatable("gtceu.machine.me.item_import.data_stick.name"));
-            player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_copy_settings"));
+            dataStick.setHoverName(Component.translatable("machine.gtceu.me.item_import.data_stick.name"));
+            player.sendSystemMessage(Component.translatable("machine.gtceu.me.import_copy_settings"));
         }
         return InteractionResult.SUCCESS;
     }
@@ -224,7 +224,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
         if (!isRemote()) {
             readConfigFromTag(tag.getCompound("MEInputBus"));
             this.updateInventorySubscription();
-            player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_paste_settings"));
+            player.sendSystemMessage(Component.translatable("machine.gtceu.me.import_paste_settings"));
         }
         return InteractionResult.sidedSuccess(isRemote());
     }

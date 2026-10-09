@@ -145,10 +145,10 @@ public class GTResearchMachines {
                     "Can combine any number of Computation §fReceivers§7 into any number of Computation §fTransmitters§7.",
                     "Uses §f%s EU/t§7 per Computation Data Hatch.")
             .addDefaultTooltips(false)
-            .tooltips(Component.translatable("gtceu.machine.network_switch.tooltip.0"),
-                    Component.translatable("gtceu.machine.network_switch.tooltip.1"),
-                    Component.translatable("gtceu.machine.network_switch.tooltip.2"),
-                    Component.translatable("gtceu.machine.network_switch.tooltip.3",
+            .tooltips(Component.translatable("machine.gtceu.network_switch.tooltip.0"),
+                    Component.translatable("machine.gtceu.network_switch.tooltip.1"),
+                    Component.translatable("machine.gtceu.network_switch.tooltip.2"),
+                    Component.translatable("machine.gtceu.network_switch.tooltip.3",
                             FormattingUtil.formatNumbers(NetworkSwitchMachine.EUT_PER_HATCH)))
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("XXX", "XXX", "XXX")
@@ -235,8 +235,8 @@ public class GTResearchMachines {
             .tier(HV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS)
-            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
-                    Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", 4),
+            .tooltips(Component.translatable("machine.gtceu.data_access_hatch.tooltip.0"),
+                    Component.translatable("machine.gtceu.data_access_hatch.tooltip.1", 4),
                     Component.translatable("multiblock.gtceu.part_sharing.disabled"))
             .overlayTieredHullModel("data_access_hatch")
             .register();
@@ -247,8 +247,8 @@ public class GTResearchMachines {
             .tier(EV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS)
-            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
-                    Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", 9),
+            .tooltips(Component.translatable("machine.gtceu.data_access_hatch.tooltip.0"),
+                    Component.translatable("machine.gtceu.data_access_hatch.tooltip.1", 9),
                     Component.translatable("multiblock.gtceu.part_sharing.disabled"))
             .overlayTieredHullModel("data_access_hatch")
             .register();
@@ -259,8 +259,8 @@ public class GTResearchMachines {
             .tier(LuV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS)
-            .tooltips(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"),
-                    Component.translatable("gtceu.machine.data_access_hatch.tooltip.1", 16),
+            .tooltips(Component.translatable("machine.gtceu.data_access_hatch.tooltip.0"),
+                    Component.translatable("machine.gtceu.data_access_hatch.tooltip.1", 16),
                     Component.translatable("multiblock.gtceu.part_sharing.disabled"))
             .overlayTieredHullModel("data_access_hatch")
             .register();
@@ -273,7 +273,7 @@ public class GTResearchMachines {
             .abilities(PartAbility.DATA_ACCESS)
             .modelProperty(IS_FORMED, false)
             .tooltipBuilder((s, list) -> {
-                list.add(Component.translatable("gtceu.machine.data_access_hatch.tooltip.0"));
+                list.add(Component.translatable("machine.gtceu.data_access_hatch.tooltip.0"));
                 CREATIVE_TOOLTIPS.accept(s, list);
                 list.add(Component.translatable("multiblock.gtceu.part_sharing.enabled"));
             })

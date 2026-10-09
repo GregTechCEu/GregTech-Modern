@@ -63,19 +63,19 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
     // Fluid drilledFluid = getRecipeLogic().getVeinFluid();
     // Component fluidInfo = drilledFluid.getFluidType().getDescription().copy()
     // .withStyle(ChatFormatting.GREEN);
-    // textList.add(Component.translatable("gtceu.multiblock.fluid_rig.drilled_fluid", fluidInfo)
+    // textList.add(Component.translatable("gui.gtceu.machine.fluid_rig.drilled_fluid", fluidInfo)
     // .withStyle(ChatFormatting.GRAY));
     //
     // // Fluid amount
     // Component amountInfo = Component.literal(FormattingUtil.formatNumbers(
     // getRecipeLogic().getFluidToProduce() * 20L / FluidDrillLogic.MAX_PROGRESS) +
     // " mB/s").withStyle(ChatFormatting.BLUE);
-    // textList.add(Component.translatable("gtceu.multiblock.fluid_rig.fluid_amount", amountInfo)
+    // textList.add(Component.translatable("gui.gtceu.machine.fluid_rig.fluid_amount", amountInfo)
     // .withStyle(ChatFormatting.GRAY));
     // } else {
-    // Component noFluid = Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area")
+    // Component noFluid = Component.translatable("gui.gtceu.machine.fluid_rig.no_fluid_in_area")
     // .withStyle(ChatFormatting.RED);
-    // textList.add(Component.translatable("gtceu.multiblock.fluid_rig.drilled_fluid", noFluid)
+    // textList.add(Component.translatable("gui.gtceu.machine.fluid_rig.drilled_fluid", noFluid)
     // .withStyle(ChatFormatting.GRAY));
     // }
     // } else {
