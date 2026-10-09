@@ -148,19 +148,26 @@ public class GTDataFixers {
 
         // separator
 
-        // Schema v10 = builder.addSchema(10, SAME_NAMESPACED);
-        // createMaterialRenameFix(builder, v10, "Rename uranium to uranium_238",
+        Schema v1_5 = builder.addSchema(1, 5, SAME_NAMESPACED);
+        // createMaterialRenameFix(builder, v1_5, "Rename uranium to uranium_238",
         // createRenamer(Pattern.compile("gtceu:(.*)?uranium"), "gtceu:$1uranium_238"));
-        // createMaterialRenameFix(builder, v10, "Rename uranium_235 to uranium",
+        // createMaterialRenameFix(builder, v1_5, "Rename uranium_235 to uranium",
         // createRenamer(Pattern.compile("gtceu:(.*)uranium_235"), "gtceu:$1uranium"));
-        // createMaterialRenameFix(builder, v10, "Fix Red Granite name",
-        // createRenamer(Pattern.compile("gtceu:(.*)granite_red"), "gtceu:$1red_granite"));
-        //
-        // createMaterialRenameFix(builder, v10, "Rename Oil Variants",
-        // createRenamer(OilVariantsRenameFix.RENAMED_ITEM_IDS));
-        //
-        // createBlockItemRenameFix(builder, v1, "Rename Palladium Substation Casing",
-        // createRenamer("gtceu:palladium_substation", "gtceu:palladium_substation_casing"));
+        createMaterialRenameFix(builder, v1_5, "Fix Red Granite name",
+                createRenamer(Pattern.compile("gtceu:(.*)granite_red"), "gtceu:$1red_granite"));
+        createMaterialRenameFix(builder, v1_5, "Fix Oil variant names",
+                createRenamer(OilVariantsRenameFix.RENAMED_IDS));
+
+        createBlockItemRenameFix(builder, v1_5, "Fix Palladium Substation Casing name",
+                createRenamer("gtceu:palladium_substation", "gtceu:palladium_substation_casing"));
+        createBlockItemRenameFix(builder, v1_5, "Fix Assembly Control Casing name",
+                createRenamer("gtceu:assembly_line_casing", "gtceu:assembly_control_casing"));
+        createBlockItemRenameFix(builder, v1_5, "Fix Magnalium Turbine Casing name",
+                createRenamer("gtceu:steel_turbine_casing", "gtceu:magnalium_turbine_casing"));
+        createBlockItemRenameFix(builder, v1_5, "Fix Bricked Bronze Casing name",
+                createRenamer("gtceu:bronze_brick_casing", "gtceu:bricked_bronze_casing"));
+        createBlockItemRenameFix(builder, v1_5, "Fix Bricked Wrought Iron Casing name",
+                createRenamer("gtceu:steel_brick_casing", "gtceu:bricked_wrought_iron_casing"));
     }
 
     private static void createBlockItemRenameFix(DataFixerBuilder builder, Schema schema, String name,

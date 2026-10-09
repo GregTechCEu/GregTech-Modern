@@ -243,7 +243,7 @@ public class GTBlocks {
             GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
     public static final BlockEntry<Block> CASING_HSSE_STURDY = createCasingBlock("sturdy_machine_casing",
             GTCEu.id("block/casings/solid/machine_casing_sturdy_hsse"));
-    public static final BlockEntry<Block> CASING_PALLADIUM_SUBSTATION = createCasingBlock("palladium_substation",
+    public static final BlockEntry<Block> CASING_PALLADIUM_SUBSTATION = createCasingBlock("palladium_substation_casing",
             GTCEu.id("block/casings/solid/machine_casing_palladium_substation"));
     public static final BlockEntry<GlassBlock> CASING_TEMPERED_GLASS = createGlassCasingBlock("tempered_glass",
             GTCEu.id("block/casings/transparent/tempered_glass"), () -> RenderType::translucent);
@@ -277,14 +277,14 @@ public class GTBlocks {
     }
 
     // Assembly Line
-    public static final BlockEntry<Block> CASING_GRATE = createCasingBlock("assembly_line_grating",
+    public static final BlockEntry<Block> CASING_ASSEMBLY_GRATE = createCasingBlock("assembly_line_grating",
             GTCEu.id("block/casings/pipe/machine_casing_grate"));
-    public static final BlockEntry<Block> CASING_ASSEMBLY_CONTROL = createCasingBlock("assembly_line_casing",
+    public static final BlockEntry<Block> CASING_ASSEMBLY_CONTROL = createCasingBlock("assembly_control_casing",
             GTCEu.id("block/casings/mechanic/machine_casing_assembly_control"));
     public static final BlockEntry<GlassBlock> CASING_LAMINATED_GLASS = createGlassCasingBlock("laminated_glass",
             GTCEu.id("block/casings/transparent/laminated_glass"), () -> RenderType::cutoutMipped);
-    public static final BlockEntry<ActiveBlock> CASING_ASSEMBLY_LINE = createActiveCasing("assembly_line_unit",
-            "block/variant/assembly_line");
+    public static final BlockEntry<ActiveBlock> CASING_ASSEMBLY_UNIT = createActiveCasing("assembly_line_unit",
+            "block/variant/assembly_line_unit");
 
     // Gear Boxes
     public static final BlockEntry<Block> CASING_BRONZE_GEARBOX = createCasingBlock("bronze_gearbox",
@@ -299,7 +299,7 @@ public class GTBlocks {
             GTCEu.id("block/casings/gearbox/machine_casing_gearbox_tungstensteel"));
 
     // Turbine Casings
-    public static final BlockEntry<Block> CASING_STEEL_TURBINE = createCasingBlock("steel_turbine_casing",
+    public static final BlockEntry<Block> CASING_MAGNALIUM_TURBINE = createCasingBlock("magnalium_turbine_casing",
             GTCEu.id("block/casings/mechanic/machine_casing_turbine_steel"));
     public static final BlockEntry<Block> CASING_TITANIUM_TURBINE = createCasingBlock("titanium_turbine_casing",
             GTCEu.id("block/casings/mechanic/machine_casing_turbine_titanium"));
@@ -370,9 +370,9 @@ public class GTBlocks {
     public static final BlockEntry<Block> HERMETIC_CASING_UHV = createHermeticCasing(UHV);
 
     public static final BlockEntry<Block> BRONZE_HULL = createSteamCasing("bronze_machine_casing", "bronze");
-    public static final BlockEntry<Block> BRONZE_BRICKS_HULL = createSteamCasing("bronze_brick_casing", "bricked_bronze");
+    public static final BlockEntry<Block> BRONZE_BRICKS_HULL = createSteamCasing("bricked_bronze_casing", "bricked_bronze");
     public static final BlockEntry<Block> STEEL_HULL = createSteamCasing("steel_machine_casing", "steel");
-    public static final BlockEntry<Block> STEEL_BRICKS_HULL = createSteamCasing("steel_brick_casing", "bricked_steel");
+    public static final BlockEntry<Block> STEEL_BRICKS_HULL = createSteamCasing("bricked_wrought_iron_casing", "bricked_steel");
 
     // Heating Coils
     public static final BlockEntry<CoilBlock> COIL_CUPRONICKEL = createCoilBlock(CoilBlock.CoilType.CUPRONICKEL);

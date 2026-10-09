@@ -50,13 +50,13 @@ public class SeparationRecipes {
         CENTRIFUGE_RECIPES.recipeBuilder("oilsands_ore_separation")
                 .inputItems(ore, Oilsands)
                 .chancedOutput(new ItemStack(Blocks.SAND), 7500)
-                .outputFluids(OilHeavy.getFluid(2000))
+                .outputFluids(HeavyOil.getFluid(2000))
                 .duration(200).EUt(30).save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("oilsands_dust_separation")
                 .inputItems(dust, Oilsands)
                 .chancedOutput(new ItemStack(Blocks.SAND), 7500)
-                .outputFluids(OilHeavy.getFluid(2000))
+                .outputFluids(HeavyOil.getFluid(2000))
                 .duration(200).EUt(30).save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("nether_wart_separation").duration(144).EUt(5)

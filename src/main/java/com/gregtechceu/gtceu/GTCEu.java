@@ -48,7 +48,7 @@ public class GTCEu {
      * <li>20: 8.0.1-SNAPSHOT+HASH2</li>
      * </ul>
      */
-    public static final int GT_DATA_VERSION = DataFixUtils.makeKey(1, 4);
+    public static final int GT_DATA_VERSION = DataFixUtils.makeKey(1, 5);
 
     public GTCEu() {
         GTCEu.init();
