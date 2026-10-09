@@ -38,6 +38,20 @@ public final class MaterialRecipeHandler {
 
     private MaterialRecipeHandler() {}
 
+    static void prepareCastingRecipe(GTRecipeBuilder builder, Material material, int amount) {
+        if (!material.hasProperty(PropertyKey.ALLOY_BLAST) || !ingotHot.doGenerateItem(material)) return;
+
+        builder.recipeType(VACUUM_RECIPES).category(VACUUM_RECIPES.getCategory())
+                .EUt(VA[MV]);
+        if (material.getBlastTemperature() >= 5000) {
+            // Round input up and recovery down, never undercut coolants!
+            int liquidHelium = (int) ((500L * amount + L - 1) / L);
+            int helium = (int) (250L * amount / L);
+            builder.inputFluids(GTMaterials.Helium.getFluid(FluidStorageKeys.LIQUID, liquidHelium));
+            if (helium > 0) builder.outputFluids(GTMaterials.Helium.getFluid(helium));
+        }
+    }
+
     public static void run(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
         processIngot(provider, material);
         processNugget(provider, material);
@@ -336,6 +350,8 @@ public final class MaterialRecipeHandler {
                         .inputFluids(stack)
                         .outputItems(ingot, material)
                         .duration(20).EUt(VA[ULV])
+                        .onSave((builder, output) -> MaterialRecipeHandler.prepareCastingRecipe(builder, material,
+                                stack.getAmount()))
                         .save(provider);
             }
         }
@@ -521,6 +537,8 @@ public final class MaterialRecipeHandler {
                             .outputItems(nugget, material, 9)
                             .duration(20)
                             .EUt(VA[ULV])
+                            .onSave((builder, output) -> MaterialRecipeHandler.prepareCastingRecipe(builder, material,
+                                    stack.getAmount()))
                             .save(provider);
                 }
             }
@@ -582,6 +600,8 @@ public final class MaterialRecipeHandler {
                         .inputFluids(stack)
                         .outputItems(blockStack)
                         .duration(180).EUt(VA[ULV])
+                        .onSave((builder, output) -> MaterialRecipeHandler.prepareCastingRecipe(builder, material,
+                                stack.getAmount()))
                         .save(provider);
             }
         }
