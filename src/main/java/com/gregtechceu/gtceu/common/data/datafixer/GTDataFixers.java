@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data.datafixer;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.datafixer.DataFixHelper;
 import com.gregtechceu.gtceu.api.datafixer.LazyDataFixer;
+import com.gregtechceu.gtceu.api.datafixer.fixes.FluidRenameFix;
 import com.gregtechceu.gtceu.api.datafixer.fixes.MaterialRenameFix;
 import com.gregtechceu.gtceu.common.datafixer.fixes.*;
 import com.gregtechceu.gtceu.common.datafixer.schemas.*;
@@ -140,6 +141,13 @@ public class GTDataFixers {
 
         // separator
 
+        Schema v1_4 = builder.addSchema(1, 4, V1_4::new);
+        // Migrate GT's Molten fluids, ignore addons to allow them to fail loudly
+        createBlockItemFluidRenameFix(builder, v1_4, "Remove molten fluids",
+                createRenamer(Pattern.compile("gtceu:molten_"), "gtceu:"));
+
+        // separator
+
         // Schema v10 = builder.addSchema(10, SAME_NAMESPACED);
         // createMaterialRenameFix(builder, v10, "Rename uranium to uranium_238",
         // createRenamer(Pattern.compile("gtceu:(.*)?uranium"), "gtceu:$1uranium_238"));
@@ -162,9 +170,15 @@ public class GTDataFixers {
         builder.addFixer(BlockRenameFix.create(schema, name, renamer));
     }
 
+    private static void createBlockItemFluidRenameFix(DataFixerBuilder builder, Schema schema, String name,
+                                                 UnaryOperator<String> renamer) {
+        createBlockItemRenameFix(builder, schema, name, renamer);
+        builder.addFixer(FluidRenameFix.create(schema, name + " for fluid", renamer));
+    }
+
     private static void createMaterialRenameFix(DataFixerBuilder builder, Schema schema, String name,
                                                 UnaryOperator<String> renamer) {
-        createBlockItemRenameFix(builder, schema, name, renamer);
+        createBlockItemFluidRenameFix(builder, schema, name, renamer);
         builder.addFixer(MaterialRenameFix.create(schema, name + " for material", renamer));
     }
 
