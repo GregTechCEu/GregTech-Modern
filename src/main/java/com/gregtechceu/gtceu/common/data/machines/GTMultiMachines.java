@@ -742,7 +742,7 @@ public class GTMultiMachines {
             GTCEu.id("block/multiblock/generator/extreme_combustion_engine"));
 
     public static final MultiblockMachineDefinition LARGE_STEAM_TURBINE = registerLargeTurbine(REGISTRATE,
-            "steam_large_turbine",
+            "steam_large_turbine", "Large Steam Turbine",
             HV,
             GTRecipeTypes.STEAM_TURBINE_FUELS,
             CASING_STEEL_TURBINE, CASING_STEEL_GEARBOX,
@@ -751,7 +751,7 @@ public class GTMultiMachines {
             false);
 
     public static final MultiblockMachineDefinition LARGE_GAS_TURBINE = registerLargeTurbine(REGISTRATE,
-            "gas_large_turbine",
+            "gas_large_turbine", "Large Gas Turbine",
             EV,
             GTRecipeTypes.GAS_TURBINE_FUELS,
             CASING_STAINLESS_TURBINE, CASING_STAINLESS_STEEL_GEARBOX,
@@ -760,7 +760,7 @@ public class GTMultiMachines {
             true);
 
     public static final MultiblockMachineDefinition LARGE_PLASMA_TURBINE = registerLargeTurbine(REGISTRATE,
-            "plasma_large_turbine",
+            "plasma_large_turbine", "Large Plasma Turbine",
             IV,
             GTRecipeTypes.PLASMA_GENERATOR_FUELS,
             CASING_TUNGSTENSTEEL_TURBINE, CASING_TUNGSTENSTEEL_GEARBOX,

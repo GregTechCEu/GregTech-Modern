@@ -731,7 +731,19 @@ public class GTMachineUtils {
                                                                    Supplier<? extends Block> gear,
                                                                    ResourceLocation casingTexture,
                                                                    ResourceLocation overlayModel) {
-        return registerLargeTurbine(registrate, name, tier, recipeType, casing, gear, casingTexture, overlayModel,
+        return registerLargeTurbine(registrate, name, null, tier, recipeType, casing, gear, casingTexture, overlayModel,
+                true);
+    }
+
+    public static MultiblockMachineDefinition registerLargeTurbine(GTRegistrate registrate,
+                                                                   String name, String langName, int tier,
+                                                                   GTRecipeType recipeType,
+                                                                   Supplier<? extends Block> casing,
+                                                                   Supplier<? extends Block> gear,
+                                                                   ResourceLocation casingTexture,
+                                                                   ResourceLocation overlayModel) {
+        return registerLargeTurbine(registrate, name, langName, tier, recipeType, casing, gear, casingTexture,
+                overlayModel,
                 true);
     }
 
@@ -742,8 +754,21 @@ public class GTMachineUtils {
                                                                    ResourceLocation casingTexture,
                                                                    ResourceLocation overlayModel,
                                                                    boolean needsMuffler) {
-        return registrate.multiblock(name, holder -> new LargeTurbineMachine(holder, tier))
+        return registerLargeTurbine(registrate, name, null, tier, recipeType, casing, gear, casingTexture, overlayModel,
+                needsMuffler);
+    }
+
+    public static MultiblockMachineDefinition registerLargeTurbine(GTRegistrate registrate,
+                                                                   String name, @Nullable String langName, int tier,
+                                                                   GTRecipeType recipeType,
+                                                                   Supplier<? extends Block> casing,
+                                                                   Supplier<? extends Block> gear,
+                                                                   ResourceLocation casingTexture,
+                                                                   ResourceLocation overlayModel,
+                                                                   boolean needsMuffler) {
+        var multi = registrate.multiblock(name, holder -> new LargeTurbineMachine(holder, tier))
                 .rotationState(RotationState.ALL)
+                .langValue(langName)
                 .recipeType(recipeType)
                 .generator(true)
                 .recipeModifier(LargeTurbineMachine::recipeModifier, true)
@@ -767,8 +792,9 @@ public class GTMachineUtils {
                 .workableCasingModel(casingTexture, overlayModel)
                 .tooltips(
                         Component.translatable("common.gtceu.tooltip.base_production_eut", V[tier] * 2),
-                        Component.translatable("gtceu.multiblock.turbine.efficiency_tooltip", VNF[tier]))
-                .register();
+                        Component.translatable("gtceu.multiblock.turbine.efficiency_tooltip", VNF[tier]));
+        if (langName != null) multi.langValue(langName);
+        return multi.register();
     }
 
     private static MultiPredicate rotorHolder(int tier) {

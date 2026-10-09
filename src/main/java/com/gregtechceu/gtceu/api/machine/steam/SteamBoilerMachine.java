@@ -346,7 +346,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                         .value(tempPercentage)
                         .tooltipAutoUpdate(true)
                         .tooltipBuilder((r) -> r.addLine(Text
-                                .lang("gtceu.fluid.temperature", getCurrentTemperature())))));
+                                .lang("material.gtceu.fluid_property.temperature", getCurrentTemperature())))));
     }
 
     //////////////////////////////////////

@@ -241,6 +241,10 @@ public class MachineLang {
 
         /// Creative Machines
 
+        provider.add("gui.gtceu.machine.creative_tooltip.1", "§7You just need");
+        provider.add("gui.gtceu.machine.creative_tooltip.2", " Creative Mode");
+        provider.add("gui.gtceu.machine.creative_tooltip.3", "§7 to use this");
+
         provider.add("machine.gtceu.quantum_chest.tooltip", "§7Better than Storage Drawers");
         provider.add("machine.gtceu.quantum_chest.items_stored", "Item Amount:");
         provider.add("machine.gtceu.quantum_tank.tooltip", "§7Compact place to store all your fluids");
@@ -260,7 +264,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.creative.activity.off", "Not active");
 
         /// Fisher
-        provider.addMultiline("gtceu.gui.fisher_mode.tooltip",
+        provider.addMultiline("gui.gtceu.machine.fisher.fisher_mode",
                 "Toggle junk items\nOff costs 2 string per operation");
 
         /// Drums
@@ -268,18 +272,18 @@ public class MachineLang {
         provider.add("machine.gtceu.drum.disable_output", "Will not drain Fluid");
 
         // Long Distance Pipeline
-        provider.addMultiLang("gtceu.machine.endpoint.tooltip",
+        provider.addMultiLang("machine.gtceu.long_distance_pipe.tooltip",
                 "Connect with §fLong Distance Pipe§7 blocks to create a pipeline.",
                 "Pipelines must have exactly §f1 Input§7 and §f1 Output§7 endpoint.",
                 "Only pipeline endpoints need to be §fchunk-loaded§7.");
-        provider.add("block.gtceu.long_distance_item_pipeline_no_network", "No network found");
-        provider.add("block.gtceu.long_distance_item_pipeline_input_endpoint", "Input Endpoint");
-        provider.add("block.gtceu.long_distance_item_pipeline_output_endpoint", "Output Endpoint");
-        provider.add("block.gtceu.long_distance_item_pipeline_network_header", "Network:");
-        provider.add("block.gtceu.long_distance_item_pipeline_pipe_count", " - Pipes: %s");
-        provider.add("block.gtceu.long_distance_item_pipeline_input_pos", " - Input: %s");
-        provider.add("block.gtceu.long_distance_item_pipeline_output_pos", " - Output: %s");
-        provider.add("gtceu.machine.endpoint.tooltip.min_length", "§bMinimum Endpoint Distance: §f%d Blocks");
+        provider.add("gui.gtceu.machine.ldpl.no_network", "No network found");
+        provider.add("gui.gtceu.machine.ldpl.input_endpoint", "Input Endpoint");
+        provider.add("gui.gtceu.machine.ldpl.output_endpoint", "Output Endpoint");
+        provider.add("gui.gtceu.machine.ldpl.network_header", "Network:");
+        provider.add("gui.gtceu.machine.ldpl.pipe_count", " - Pipes: %s");
+        provider.add("gui.gtceu.machine.ldpl.input_pos", " - Input: %s");
+        provider.add("gui.gtceu.machine.ldpl.output_pos", " - Output: %s");
+        provider.add("machine.gtceu.long_distance_pipe.tooltip.min_length", "§bMinimum Endpoint Distance: §f%d Blocks");
     }
 
     private static void generateCustomMultiblockLang(GTLangProvider provider) {
@@ -362,9 +366,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.large_combustion_engine.obstructed", "Engine Intakes Obstructed.");
 
         // Turbines
-        provider.add("block.gtceu.steam_large_turbine", "Large Steam Turbine");
-        provider.add("block.gtceu.gas_large_turbine", "Large Gas Turbine");
-        provider.add("block.gtceu.plasma_large_turbine", "Large Plasma Turbine");
+
         provider.add("machine.gtceu.steam_large_turbine.tooltip", "Do not put your Head in it");
         provider.add("machine.gtceu.gas_large_turbine.tooltip", "Not a Jet Engine");
         provider.add("machine.gtceu.plasma_large_turbine.tooltip", "Plasma Energy Siphon");
@@ -478,30 +480,10 @@ public class MachineLang {
                 "The Research Station is a multiblock structure used for researching much more complex Assembly Line Research Data. Any Research requiring a Data Orb or Data Module must be scanned in the Research Station. Requires Compute Work Units (CWU/t) to research recipes, which is supplied by High Performance Computing Arrays (HPCAs).");
         provider.add("gtceu.machine.research_station.researching", "Researching.");
 
-        // Network Switch
-        provider.addMultiLang("gtceu.machine.network_switch.tooltip",
-                "Ethernet Hub",
-                "Used to route and distribute §fComputation§7.",
-                "Can combine any number of Computation §fReceivers§7 into any number of Computation §fTransmitters§7.",
-                "Uses §f%s EU/t§7 per Computation Data Hatch.");
-        provider.add("gtceu.multiblock.network_switch.description",
-                "The Network Switch is a multiblock structure used for distributing Computation from many sources to many destinations. It can accept any number of Computation Data Reception or Transmission Hatches. It is necessary for Research Data which requires much higher Computation, as the Research Station can only accept one Computation Data Reception Hatch. HPCAs must have a Bridge Component for the Network Switch to be able to access their Computation.");
-
         // Data Bank
-        provider.addMultiLang("gtceu.machine.data_bank.tooltip",
-                "Your Personal NAS",
-                "Bulk Data Storage. Transfer with Optical Cables.",
-                "Data Banks can be chained together.",
-                "Uses §f%s EU/t§7 per Data/Optical Hatch normally.",
-                "Uses §f%s EU/t§7 per Data/Optical Hatch when chained.");
-        provider.add("gtceu.multiblock.data_bank.description",
-                "The Data Bank is a multiblock structure used for sharing Assembly Line Research Data between multiple Assembly Lines. Additionally, it enables Assembly Lines to read more complex research data on Data Modules.");
-
         provider.add("gtceu.multiblock.data_bank.providing", "Providing data.");
 
         // HPCA
-        provider.add("gtceu.multiblock.hpca.description",
-                "The High Performance Computing Array (HPCA) is a multiblock structure used for creating Compute Work Units (CWU/t) for more complex Assembly Line Research Data. The structure has a flexible 3x3 area which can be filled in any way with HPCA components. Different components can provide different amounts of Computation, Cooling, as well as Energy Cost, Coolant Cost, and Heat Production. When used with a Bridge Component, the HPCA can connect to Network Switches for combining and routing Computation from multiple sources to one or more destinations.");
         provider.add("gtceu.multiblock.hpca.computation", "Providing: %s");
         provider.add("gtceu.multiblock.hpca.energy", "Using: %s / %s EU/t (%s)");
         provider.add("gtceu.multiblock.hpca.temperature", "Temperature: %s");
@@ -531,7 +513,6 @@ public class MachineLang {
         provider.add("gtceu.machine.tank_valve.tooltip",
                 "Use to fill and drain multiblock tanks. Auto outputs when facing down.");
         provider.add("gtceu.machine.fluid_tank.max_multiblock", "Max Multiblock Size: %dx%dx%d");
-        provider.add("gtceu.machine.fluid_tank.fluid", "Contains %s L of %s");
     }
 
     private static void generateCustomMultiblockPartLang(GTLangProvider provider) {
@@ -566,11 +547,7 @@ public class MachineLang {
         // Parallel Hatch
         provider.add("gtceu.machine.parallel_hatch.display", "Adjust the maximum parallel of the multiblock");
         provider.add("gtceu.multiblock.parallelizable.tooltip", "Can parallelize with Parallel Control Hatches.");
-        provider.add("gtceu.machine.parallel_hatch_mk5.tooltip", "Allows to run up to 4 recipes in parallel.");
-        provider.add("gtceu.machine.parallel_hatch_mk6.tooltip", "Allows to run up to 16 recipes in parallel.");
-        provider.add("gtceu.machine.parallel_hatch_mk7.tooltip", "Allows to run up to 64 recipes in parallel.");
-        provider.add("gtceu.machine.parallel_hatch_mk8.tooltip",
-                "Allows to run up to 256 recipes in parallel.");
+        provider.add("machine.gtceu.parallel_hatch.tooltip", "Allows to run up to %s recipes in parallel.");
 
         // Item/Fluid Hatches
         provider.add("gtceu.machine.item_bus.import.tooltip", "Item Input for Multiblocks");
@@ -690,18 +667,18 @@ public class MachineLang {
                 "Computation Data Input for Multiblocks");
 
         // HPCA Parts
-        provider.add("gtceu.machine.hpca.component_general.upkeep_eut", "§eUpkeep Energy: §f%d EU/t");
-        provider.add("gtceu.machine.hpca.component_general.max_eut", "§6Max Energy: §f%d EU/t");
-        provider.add("gtceu.machine.hpca.component_type.cooler_passive", "§bCooler Type: §fPassive");
-        provider.add("gtceu.machine.hpca.component_type.cooler_active", "§bCooler Type: §fActive");
-        provider.add("gtceu.machine.hpca.component_type.cooler_cooling", "§aProvides: §f%d Cooling");
-        provider.add("gtceu.machine.hpca.component_type.cooler_active_coolant",
+        provider.add("machine.gtceu.hpca_component.tooltip.upkeep_eut", "§eUpkeep Energy: §f%d EU/t");
+        provider.add("machine.gtceu.hpca_component.tooltip.max_eut", "§6Max Energy: §f%d EU/t");
+        provider.add("machine.gtceu.hpca_component.tooltip.cooler_passive", "§bCooler Type: §fPassive");
+        provider.add("machine.gtceu.hpca_component.tooltip.cooler_active", "§bCooler Type: §fActive");
+        provider.add("machine.gtceu.hpca_component.tooltip.cooler_cooling", "§aProvides: §f%d Cooling");
+        provider.add("machine.gtceu.hpca_component.tooltip.cooler_active_coolant",
                 "§cRequires up to: §f%d mB/t %s");
-        provider.add("gtceu.machine.hpca.component_type.computation_cwut", "§9Computation: §f%d CWU/t");
-        provider.add("gtceu.machine.hpca.component_type.computation_cooling", "§cRequires up to: §f%d Cooling");
-        provider.add("gtceu.machine.hpca.component_type.bridge",
+        provider.add("machine.gtceu.hpca_component.tooltip.computation_cwut", "§9Computation: §f%d CWU/t");
+        provider.add("machine.gtceu.hpca_component.tooltip.computation_cooling", "§cRequires up to: §f%d Cooling");
+        provider.add("machine.gtceu.hpca_component.tooltip.bridge",
                 "Allows §fHPCA§7 to connect to §fNetwork Switches§7");
-        provider.add("gtceu.machine.hpca.component_type.damaged", "Can be damaged by HPCA overheating!");
+        provider.add("machine.gtceu.hpca_component.tooltip.damaged", "Can be damaged by HPCA overheating!");
 
         provider.add("gtceu.machine.hpca.empty_component.tooltip", "Just for filling space");
         provider.add("gtceu.machine.hpca.heat_sink_component.tooltip", "Free cooling! Is anything free?");
@@ -1088,11 +1065,6 @@ public class MachineLang {
         provider.add("gtceu.multiblock.work_paused", "Work Paused.");
         provider.add("gtceu.multiblock.running", "Running perfectly.");
         provider.add("gtceu.multiblock.idling", "Idling.");
-
-        // Creative Mode
-        provider.add("gui.gtceu.machine.creative_tooltip.1", "§7You just need");
-        provider.add("gui.gtceu.machine.creative_tooltip.2", " Creative Mode");
-        provider.add("gui.gtceu.machine.creative_tooltip.3", "§7 to use this");
 
         // Researching
         provider.add("gtceu.multiblock.research_station.researching", "§6Researching.");

@@ -73,7 +73,8 @@ public class GCYMMachines {
                             .andThen((ctx, prov, model) -> {
                                 model.addReplaceableTextures("bottom", "top", "side");
                             }))
-                    .tooltips(Component.translatable("gtceu.machine.parallel_hatch_mk" + tier + ".tooltip"),
+                    .tooltips(Component.translatable("machine.gtceu.parallel_hatch.tooltip",
+                            ParallelHatchPartMachine.getMaxParallel(tier)),
                             Component.translatable("multiblock.gtceu.part_sharing.disabled"))
                     .register(),
             IV, LuV, ZPM, UV);

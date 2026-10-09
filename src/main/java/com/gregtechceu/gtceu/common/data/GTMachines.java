@@ -549,10 +549,10 @@ public class GTMachines {
             .tier(LV)
             .modelProperty(IS_FORMED, false)
             .overlayTieredHullModel("long_distance_item_pipeline_endpoint")
-            .tooltips(LangUtil.getMultiLang("gtceu.machine.endpoint.tooltip"))
+            .tooltips(LangUtil.getMultiLang("machine.gtceu.long_distance_pipe.tooltip"))
             .tooltipBuilder((stack, tooltip) -> {
                 if (ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance > 0) {
-                    tooltip.add(Component.translatable("gtceu.machine.endpoint.tooltip.min_length",
+                    tooltip.add(Component.translatable("machine.gtceu.long_distance_pipe.tooltip.min_length",
                             ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance));
                 }
             })
@@ -565,12 +565,10 @@ public class GTMachines {
             .tier(LV)
             .modelProperty(IS_FORMED, false)
             .overlayTieredHullModel("long_distance_fluid_pipeline_endpoint")
-            .tooltips(Component.translatable("gtceu.machine.endpoint.tooltip.0"),
-                    Component.translatable("gtceu.machine.endpoint.tooltip.1"),
-                    Component.translatable("gtceu.machine.endpoint.tooltip.2"))
+            .tooltips(LangUtil.getMultiLang("machine.gtceu.long_distance_pipe.tooltip"))
             .tooltipBuilder((stack, tooltip) -> {
                 if (ConfigHolder.INSTANCE.machines.ldFluidPipeMinDistance > 0) {
-                    tooltip.add(Component.translatable("gtceu.machine.endpoint.tooltip.min_length",
+                    tooltip.add(Component.translatable("machine.gtceu.long_distance_pipe.tooltip.min_length",
                             ConfigHolder.INSTANCE.machines.ldFluidPipeMinDistance));
                 }
             })
