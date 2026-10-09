@@ -7,10 +7,11 @@ import net.minecraft.world.item.ItemStack;
 import brachy.modularui.factory.GuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.PhantomItemSlotSyncHandler;
 import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
-import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.PhantomItemSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -56,7 +57,15 @@ public class CompositeFilter<T> extends Filter<T> {
     }
 
     private boolean isValidFilter(ItemStack itemStack) {
-        return Filters.isValidFilter(filterableType, itemStack.getItem());
+        if (!Filters.isValidFilter(filterableType, itemStack.getItem())) {
+            return false;
+        }
+        Filter<T> tFilter = Filters.loadFilter(filterableType, itemStack);
+        int depth = 0;
+        if (tFilter instanceof CompositeFilter<T> composite) {
+            depth = composite.calculateDepth();
+        }
+        return depth <= getMaxDepth();
     }
 
     private void onFilterItemChanged(int slot) {
@@ -68,6 +77,23 @@ public class CompositeFilter<T> extends Filter<T> {
         }
 
         updateAndSaveFilter();
+    }
+
+    /**
+     * @return the maximum amount you can nest composite filters
+     */
+    protected int getMaxDepth() {
+        return 0;
+    }
+
+    protected int calculateDepth() {
+        int depth = 1;
+        for (Filter<T> filter : filters) {
+            if (filter instanceof CompositeFilter<T> composite) {
+                depth = Math.max(depth, composite.calculateDepth() + 1);
+            }
+        }
+        return depth;
     }
 
     @Override
@@ -90,8 +116,9 @@ public class CompositeFilter<T> extends Filter<T> {
 
         Grid filterGrid = new Grid()
                 .coverChildren()
-                .gridOfSizeWidth(9, 3, (x, y, i) -> new ItemSlot()
-                        .slot(SyncHandlers.itemSlot(itemStacks, i).slotGroup(slotGroup)));
+                .gridOfSizeWidth(9, 3, (x, y, i) -> new PhantomItemSlot()
+                        .syncHandler(new PhantomItemSlotSyncHandler(
+                                SyncHandlers.itemSlot(itemStacks, i).slotGroup(slotGroup))));
 
         return Flow.row()
                 .coverChildrenHeight()
