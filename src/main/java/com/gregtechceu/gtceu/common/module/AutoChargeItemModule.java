@@ -91,7 +91,7 @@ public class AutoChargeItemModule extends TieredItemModule {
         }
         interdimensionalTier = Math.min(interdimensionalTier, getTier());
         if (machine.getLevel() != player.level() && interdimensionalTier < GTValues.IV) return 0;
-        if (interdimensionalTier < GTValues.IV && machine.getBlockPos().distSqr(player.blockPosition()) > getRange())
+        if (interdimensionalTier < GTValues.IV && machine.getBlockPos().distSqr(player.blockPosition()) > Math.pow(getRange(), 2))
             return 0;
         return Math.min(energy, GTValues.V[machine.getLevel() == player.level() ? getTier() : interdimensionalTier]);
     }
