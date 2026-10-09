@@ -33,6 +33,13 @@ public class RecipeLang {
         provider.addMultiLang("gui.gtceu.recipe.oc", "Min: %s", "Left click to increase the OC",
                 "Right click to decrease the OC", "Middle click to reset the OC",
                 "Hold Shift to change by Perfect OC");
+
+        // Parallel
+        provider.add("gui.gtceu.recipe.running_parallel", "Performing up to %d Recipes in Parallel");
+        provider.add("gui.gtceu.recipe.total_parallel", "Performing %d Recipes at once");
+        provider.add("gui.gtceu.recipe.running_parallel.exact", "- %dx from Parallels");
+        provider.add("gui.gtceu.recipe.batch_parallel", "- %dx from Batching");
+        provider.add("gui.gtceu.recipe.subtick_parallel", "- %dx from Overclocking");
     }
 
     public static void generateChanceLang(RegistrateLangProvider provider) {
@@ -55,11 +62,11 @@ public class RecipeLang {
     }
 
     private static void generateModifierKeys(RegistrateLangProvider provider) {
-        provider.add("recipe_modifier.gtceu.default_fail", "Recipe Modifier Fail");
-        provider.add("recipe_modifier.gtceu.insufficient_voltage", "Voltage Tier Too Low");
-        provider.add("recipe_modifier.gtceu.insufficient_eu_to_start_fusion",
+        provider.add("gui.gtceu.recipe_modifier.default_fail", "Recipe Modifier Fail");
+        provider.add("gui.gtceu.recipe_modifier.insufficient_voltage", "Voltage Tier Too Low");
+        provider.add("gui.gtceu.recipe_modifier.insufficient_eu_to_start_fusion",
                 "Insufficient Energy to Initiate Fusion Reaction");
-        provider.add("recipe_modifier.gtceu.coil_temperature_too_low", "Coil Temperature Too Low");
+        provider.add("gui.gtceu.recipe_modifier.coil_temperature_too_low", "Coil Temperature Too Low");
     }
 
     private static void generateRecipeConditions(GTLangProvider provider) {

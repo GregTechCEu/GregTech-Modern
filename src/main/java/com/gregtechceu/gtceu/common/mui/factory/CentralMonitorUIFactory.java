@@ -140,7 +140,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .widthRel(1)
                         .padding(2)
                         .child(Flow.row()
-                                .child(new TextWidget<>(Text.lang("gtceu.central_monitor.gui.monitor_groups"))
+                                .child(new TextWidget<>(Text.lang("gui.gtceu.central_monitor.monitor_groups"))
                                         .verticalCenter())
                                 .child(new ButtonWidget<>()
                                         .overlay(GuiTextures.HELP)
@@ -207,7 +207,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         "slot_number_dialog_" + id,
                                         new TextFieldWidget().setNumbers(1, component.getDataItems().getSlots()),
                                         w -> Integer.parseInt(w.getText()),
-                                        Text.lang("gtceu.central_monitor.gui.data_slot")).resultConsumer(slot -> {
+                                        Text.lang("gui.gtceu.central_monitor.data_slot")).resultConsumer(slot -> {
                                             group.setDataSlot(slot - 1);
                                             groupSync.setValue(groups, true, false);
                                         }).draggable(true).size(160, 80));
@@ -264,10 +264,10 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 .excludeAreaInRecipeViewer()
                 .child(Flow.column()
                         .padding(10)
-                        .child(new TextWidget<>(Text.lang("gtceu.central_monitor.gui.group_editor")))
+                        .child(new TextWidget<>(Text.lang("gui.gtceu.central_monitor.group_editor")))
                         .child(Flow.row()
                                 .height(20)
-                                .child(new TextWidget<>(Text.lang("gtceu.central_monitor.gui.group_name"))
+                                .child(new TextWidget<>(Text.lang("gui.gtceu.central_monitor.group_name"))
                                         .paddingRight(4))
                                 .child(new TextFieldWidget()
                                         .value(SyncHandlers.string(group::getName, s -> {
@@ -285,7 +285,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                 .child(new ButtonWidget<>()
                                         .overlay(GuiTextures.EDIT)
                                         .setEnabledIf(w -> !group.getItemStackHandler().getStackInSlot(0).isEmpty())
-                                        .addTooltipLine(Text.lang("gtceu.gui.central_monitor.module_editor_button"))
+                                        .addTooltipLine(Text.lang("gui.gtceu.central_monitor.module_editor_button"))
                                         .onMousePressed((context, button) -> {
                                             if (moduleEditor != null && !moduleChanged.getValue())
                                                 moduleEditor.openPanel();
@@ -302,7 +302,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 .resizeableOnDrag(true)
                 .child(Flow.column()
                         .margin(5)
-                        .child(new TextWidget<>(Text.lang("gtceu.gui.central_monitor.help")))
+                        .child(new TextWidget<>(Text.lang("gui.gtceu.central_monitor.help")))
                         .child(Flow.row()
                                 .marginTop(10)
                                 .height(40)
@@ -314,13 +314,13 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .padding(11)
                                         .background(new BorderDrawable(0xFF888888, 1))
                                         .disableHoverBackground())
-                                .child(new TextWidget<>(Text.lang("gtceu.gui.central_monitor.in_group"))
+                                .child(new TextWidget<>(Text.lang("gui.gtceu.central_monitor.in_group"))
                                         .widthRel(.5f)
                                         .heightRel(1)
                                         .padding(5)
                                         .background(new BorderDrawable(0xFF888888, 1))
                                         .disableHoverBackground())
-                                .child(new TextWidget<>(Text.lang("gtceu.gui.central_monitor.left_click"))
+                                .child(new TextWidget<>(Text.lang("gui.gtceu.central_monitor.left_click"))
                                         .padding(5)
                                         .widthRelOffset(.5f, -40)
                                         .heightRel(1)
@@ -335,13 +335,13 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .padding(11)
                                         .background(new BorderDrawable(0xFF888888, 1))
                                         .disableHoverBackground())
-                                .child(new TextWidget<>(Text.lang("gtceu.gui.central_monitor.target"))
+                                .child(new TextWidget<>(Text.lang("gui.gtceu.central_monitor.target"))
                                         .widthRel(.5f)
                                         .heightRel(1)
                                         .padding(5)
                                         .background(new BorderDrawable(0xFF888888, 1))
                                         .disableHoverBackground())
-                                .child(new TextWidget<>(Text.lang("gtceu.gui.central_monitor.right_click"))
+                                .child(new TextWidget<>(Text.lang("gui.gtceu.central_monitor.right_click"))
                                         .padding(5)
                                         .widthRelOffset(.5f, -40)
                                         .heightRel(1)
@@ -357,7 +357,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .padding(11)
                                         .background(new BorderDrawable(0xFF888888, 1))
                                         .disableHoverBackground())
-                                .child(new TextWidget<>(Text.lang("gtceu.gui.central_monitor.in_group_and_target"))
+                                .child(new TextWidget<>(Text.lang("gui.gtceu.central_monitor.in_group_and_target"))
                                         .widthRelOffset(1, -40)
                                         .heightRel(1)
                                         .padding(5)
@@ -372,7 +372,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .padding(11)
                                         .background(new BorderDrawable(0xFF888888, 1))
                                         .disableHoverBackground())
-                                .child(new TextWidget<>(Text.lang("gtceu.gui.central_monitor.data_hatch_target"))
+                                .child(new TextWidget<>(Text.lang("gui.gtceu.central_monitor.data_hatch_target"))
                                         .widthRelOffset(1, -40)
                                         .heightRel(1)
                                         .padding(5)
@@ -395,7 +395,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
     }
 
     private String getNewGroupName(IValue<List<MonitorGroup>> groupSync) {
-        return Component.translatable("gtceu.gui.central_monitor.group_default_name", groupSync.getValue().size() + 1)
+        return Component.translatable("gui.gtceu.central_monitor.group_default_name", groupSync.getValue().size() + 1)
                 .getString();
     }
 }

@@ -52,7 +52,7 @@ public class ParallelProvider extends MachineInfoProvider<MetaMachine, CompoundT
             if (!data.getBoolean("exact") && parallel > 1) {
                 Component parallels = Component.literal(FormattingUtil.formatNumbers(parallel))
                         .withStyle(ChatFormatting.DARK_PURPLE);
-                String key = "gtceu.multiblock.parallel";
+                String key = "gui.gtceu.recipe.running_parallel";
                 tooltip.add(Component.translatable(key, parallels));
             } else {
                 int batch = data.getInt("batch");
@@ -61,25 +61,25 @@ public class ParallelProvider extends MachineInfoProvider<MetaMachine, CompoundT
                 if (totalRuns == 1) return;
                 Component runs = Component.literal(FormattingUtil.formatNumbers(totalRuns))
                         .withStyle(ChatFormatting.DARK_PURPLE);
-                String key = "gtceu.multiblock.total_runs";
+                String key = "gui.gtceu.recipe.total_parallel";
                 tooltip.add(Component.translatable(key, runs));
 
                 if (parallel > 1) {
                     Component parallels = Component.literal(FormattingUtil.formatNumbers(parallel))
                             .withStyle(ChatFormatting.DARK_PURPLE);
-                    String keyParallel = "gtceu.multiblock.parallel.exact";
+                    String keyParallel = "gui.gtceu.recipe.running_parallel.exact";
                     tooltip.add(Component.translatable(keyParallel, parallels));
                 }
                 if (batch > 1) {
                     Component batches = Component.literal(FormattingUtil.formatNumbers(batch))
                             .withStyle(ChatFormatting.DARK_PURPLE);
-                    String keyBatch = "gtceu.multiblock.batch_enabled";
+                    String keyBatch = "gui.gtceu.recipe.batch_parallel";
                     tooltip.add(Component.translatable(keyBatch, batches));
                 }
                 if (subtickParallel > 1) {
                     Component subticks = Component.literal(FormattingUtil.formatNumbers(subtickParallel))
                             .withStyle(ChatFormatting.DARK_PURPLE);
-                    String keySubtick = "gtceu.multiblock.subtick_parallels";
+                    String keySubtick = "gui.gtceu.recipe.subtick_parallel";
                     tooltip.add(Component.translatable(keySubtick, subticks));
                 }
             }

@@ -128,7 +128,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         List<IWidget> widgets = new ArrayList<>();
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
-                () -> Component.translatable("gtceu.multiblock.research_station.researching")
+                () -> Component.translatable("gui.gtceu.machine.research_station.researching")
                         .withStyle(ChatFormatting.GREEN)));
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));

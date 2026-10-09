@@ -193,7 +193,7 @@ public class GTMachines {
                     .abilities(PartAbility.PASSTHROUGH_HATCH)
                     .modelProperty(IS_FORMED, false)
                     .langValue("%s §fMachine Hull".formatted(VNF[tier]))
-                    .tooltips(Component.translatable("gtceu.machine.hull.tooltip"))
+                    .tooltips(Component.translatable("machine.gtceu.hull.tooltip"))
                     .register(),
             ALL_TIERS);
 
@@ -549,10 +549,10 @@ public class GTMachines {
             .tier(LV)
             .modelProperty(IS_FORMED, false)
             .overlayTieredHullModel("long_distance_item_pipeline_endpoint")
-            .tooltips(LangUtil.getMultiLang("gtceu.machine.endpoint.tooltip"))
+            .tooltips(LangUtil.getMultiLang("machine.gtceu.long_distance_pipe.tooltip"))
             .tooltipBuilder((stack, tooltip) -> {
                 if (ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance > 0) {
-                    tooltip.add(Component.translatable("gtceu.machine.endpoint.tooltip.min_length",
+                    tooltip.add(Component.translatable("machine.gtceu.long_distance_pipe.tooltip.min_length",
                             ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance));
                 }
             })
@@ -565,12 +565,10 @@ public class GTMachines {
             .tier(LV)
             .modelProperty(IS_FORMED, false)
             .overlayTieredHullModel("long_distance_fluid_pipeline_endpoint")
-            .tooltips(Component.translatable("gtceu.machine.endpoint.tooltip.0"),
-                    Component.translatable("gtceu.machine.endpoint.tooltip.1"),
-                    Component.translatable("gtceu.machine.endpoint.tooltip.2"))
+            .tooltips(LangUtil.getMultiLang("machine.gtceu.long_distance_pipe.tooltip"))
             .tooltipBuilder((stack, tooltip) -> {
                 if (ConfigHolder.INSTANCE.machines.ldFluidPipeMinDistance > 0) {
-                    tooltip.add(Component.translatable("gtceu.machine.endpoint.tooltip.min_length",
+                    tooltip.add(Component.translatable("machine.gtceu.long_distance_pipe.tooltip.min_length",
                             ConfigHolder.INSTANCE.machines.ldFluidPipeMinDistance));
                 }
             })
@@ -739,10 +737,10 @@ public class GTMachines {
             LV, MV, HV);
 
     public static final BiConsumer<ItemStack, List<Component>> CREATIVE_TOOLTIPS = (stack, list) -> list.add(
-            Component.translatable("gtceu.creative_tooltip.1")
-                    .append(Component.translatable("gtceu.creative_tooltip.2")
+            Component.translatable("gui.gtceu.machine.creative_tooltip.1")
+                    .append(Component.translatable("gui.gtceu.machine.creative_tooltip.2")
                             .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))
-                    .append(Component.translatable("gtceu.creative_tooltip.3")));
+                    .append(Component.translatable("gui.gtceu.machine.creative_tooltip.3")));
 
     public static final MachineDefinition CREATIVE_ENERGY = REGISTRATE
             .machine("creative_energy", CreativeEnergyContainerMachine::new)
@@ -851,7 +849,7 @@ public class GTMachines {
                     .abilities(PartAbility.IMPORT_ITEMS)
                     .modelProperty(IS_FORMED, false)
                     .colorOverlayTieredHullModel(OVERLAY_ITEM_HATCH_INPUT, "overlay_pipe", "overlay_pipe_in_emissive")
-                    .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
+                    .tooltips(Component.translatable("machine.gtceu.item_bus.import.tooltip"),
                             Component.translatable("common.gtceu.tooltip.item_storage_capacity",
                                     (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))))
                     .allowCoverOnFront(true)
@@ -866,7 +864,7 @@ public class GTMachines {
                     .abilities(PartAbility.EXPORT_ITEMS)
                     .modelProperty(IS_FORMED, false)
                     .colorOverlayTieredHullModel(OVERLAY_ITEM_HATCH_OUTPUT, "overlay_pipe", "overlay_pipe_out_emissive")
-                    .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
+                    .tooltips(Component.translatable("machine.gtceu.item_bus.export.tooltip"),
                             Component.translatable("common.gtceu.tooltip.item_storage_capacity",
                                     (1 + Math.min(9, tier)) * (1 + Math.min(9, tier))))
                     .allowCoverOnFront(true)
@@ -923,7 +921,7 @@ public class GTMachines {
                             Component.translatable("common.gtceu.tooltip.energy_storage_capacity",
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 2))),
-                            Component.translatable("gtceu.machine.energy_hatch.input.tooltip"))
+                            Component.translatable("machine.gtceu.energy_hatch.input.tooltip"))
                     .overlayTieredHullModel("energy_input_hatch")
                     .register(),
             ALL_TIERS);
@@ -942,7 +940,7 @@ public class GTMachines {
                             Component.translatable("common.gtceu.tooltip.energy_storage_capacity",
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 2))),
-                            Component.translatable("gtceu.machine.energy_hatch.output.tooltip"))
+                            Component.translatable("machine.gtceu.energy_hatch.output.tooltip"))
                     .overlayTieredHullModel("energy_output_hatch")
                     .register(),
             ALL_TIERS);
@@ -961,7 +959,7 @@ public class GTMachines {
                             Component.translatable("common.gtceu.tooltip.energy_storage_capacity",
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 4))),
-                            Component.translatable("gtceu.machine.energy_hatch.input_hi_amp.tooltip"))
+                            Component.translatable("machine.gtceu.energy_hatch.input_hi_amp.tooltip"))
                     .overlayTieredHullModel("energy_input_hatch_4a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
@@ -980,7 +978,7 @@ public class GTMachines {
                             Component.translatable("common.gtceu.tooltip.energy_storage_capacity",
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 4))),
-                            Component.translatable("gtceu.machine.energy_hatch.output_hi_amp.tooltip"))
+                            Component.translatable("machine.gtceu.energy_hatch.output_hi_amp.tooltip"))
                     .overlayTieredHullModel("energy_output_hatch_4a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
@@ -999,7 +997,7 @@ public class GTMachines {
                             Component.translatable("common.gtceu.tooltip.energy_storage_capacity",
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 16))),
-                            Component.translatable("gtceu.machine.energy_hatch.input_hi_amp.tooltip"))
+                            Component.translatable("machine.gtceu.energy_hatch.input_hi_amp.tooltip"))
                     .overlayTieredHullModel("energy_input_hatch_16a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
@@ -1018,7 +1016,7 @@ public class GTMachines {
                             Component.translatable("common.gtceu.tooltip.energy_storage_capacity",
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 16))),
-                            Component.translatable("gtceu.machine.energy_hatch.output_hi_amp.tooltip"))
+                            Component.translatable("machine.gtceu.energy_hatch.output_hi_amp.tooltip"))
                     .overlayTieredHullModel("energy_output_hatch_16a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
@@ -1037,7 +1035,7 @@ public class GTMachines {
                             Component.translatable("common.gtceu.tooltip.energy_storage_capacity",
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 64))),
-                            Component.translatable("gtceu.machine.substation_hatch.input.tooltip"))
+                            Component.translatable("machine.gtceu.substation_hatch.input.tooltip"))
                     .overlayTieredHullModel("energy_input_hatch_64a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
@@ -1056,7 +1054,7 @@ public class GTMachines {
                             Component.translatable("common.gtceu.tooltip.energy_storage_capacity",
                                     FormattingUtil
                                             .formatNumbers(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 64))),
-                            Component.translatable("gtceu.machine.substation_hatch.output.tooltip"))
+                            Component.translatable("machine.gtceu.substation_hatch.output.tooltip"))
                     .overlayTieredHullModel("energy_output_hatch_64a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
@@ -1069,10 +1067,10 @@ public class GTMachines {
                     .abilities(PartAbility.MUFFLER)
                     .modelProperty(IS_FORMED, false)
                     .overlayTieredHullModel("muffler_hatch")
-                    .tooltips(LangUtil.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 0),
-                            Component.translatable("gtceu.muffler.recovery_tooltip", Math.max(1, tier * 10)),
+                    .tooltips(LangUtil.getFromMultiLang("machine.gtceu.muffler_hatch.tooltip", 0),
+                            Component.translatable("gui.gtceu.machine.muffler.recovery_chance", Math.max(1, tier * 10)),
                             Component.translatable("multiblock.gtceu.part_sharing.enabled"),
-                            LangUtil.getFromMultiLang("gtceu.machine.muffler_hatch.tooltip", 1)
+                            LangUtil.getFromMultiLang("machine.gtceu.muffler_hatch.tooltip", 1)
                                     .withStyle(ChatFormatting.DARK_RED))
                     .register(),
             ELECTRIC_TIERS);
@@ -1085,7 +1083,7 @@ public class GTMachines {
             .colorOverlaySteamHullModel(OVERLAY_ITEM_HATCH_INPUT, "overlay_pipe", "overlay_pipe_in_emissive")
             .themeId(GTGuiTheme.BRONZE.getId())
             .langValue("Steam Input Bus")
-            .tooltips(Component.translatable("gtceu.machine.item_bus.import.tooltip"),
+            .tooltips(Component.translatable("machine.gtceu.item_bus.import.tooltip"),
                     Component.translatable("machine.gtceu.steam_bus.tooltip"),
                     Component.translatable("common.gtceu.tooltip.item_storage_capacity", 4))
             .allowCoverOnFront(true)
@@ -1099,7 +1097,7 @@ public class GTMachines {
             .colorOverlaySteamHullModel(OVERLAY_ITEM_HATCH_OUTPUT, "overlay_pipe", "overlay_pipe_out_emissive")
             .themeId(GTGuiTheme.BRONZE.getId())
             .langValue("Steam Output Bus")
-            .tooltips(Component.translatable("gtceu.machine.item_bus.export.tooltip"),
+            .tooltips(Component.translatable("machine.gtceu.item_bus.export.tooltip"),
                     Component.translatable("machine.gtceu.steam_bus.tooltip"),
                     Component.translatable("common.gtceu.tooltip.item_storage_capacity", 4))
             .allowCoverOnFront(true)
@@ -1114,7 +1112,7 @@ public class GTMachines {
             .themeId(GTGuiTheme.BRONZE.getId())
             .tooltips(Component.translatable("common.gtceu.tooltip.fluid_storage_capacity",
                     SteamHatchPartMachine.INITIAL_TANK_CAPACITY),
-                    Component.translatable("gtceu.machine.steam.steam_hatch.tooltip"))
+                    Component.translatable("machine.gtceu.steam.steam_hatch.tooltip"))
             .allowCoverOnFront(true)
             .register();
 
@@ -1177,8 +1175,8 @@ public class GTMachines {
             .abilities(PartAbility.MAINTENANCE)
             .modelProperty(IS_FORMED, false)
             .tooltips(Component.translatable("multiblock.gtceu.part_sharing.disabled"),
-                    Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.0"),
-                    Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.1"))
+                    Component.translatable("machine.gtceu.maintenance_hatch_cleanroom_auto.tooltip.0"),
+                    Component.translatable("machine.gtceu.maintenance_hatch_cleanroom_auto.tooltip.1"))
             .tooltipBuilder((stack, tooltips) -> {
                 tooltips.add(Component.literal("  ").append(Component
                         .translatable(CleanroomType.CLEANROOM.getTranslationKey()).withStyle(ChatFormatting.GREEN)));
@@ -1254,7 +1252,7 @@ public class GTMachines {
                     .modelProperty(IS_FORMED, false)
                     .overlayTieredHullModel("dual_input_hatch")
                     .tooltips(
-                            Component.translatable("gtceu.machine.dual_hatch.import.tooltip"),
+                            Component.translatable("machine.gtceu.dual_hatch.import.tooltip"),
                             Component.translatable(
                                     "common.gtceu.tooltip.item_storage_capacity",
                                     (int) Math.pow((tier - 4), 2)),
@@ -1277,7 +1275,7 @@ public class GTMachines {
                     .modelProperty(IS_FORMED, false)
                     .overlayTieredHullModel("dual_output_hatch")
                     .tooltips(
-                            Component.translatable("gtceu.machine.dual_hatch.export.tooltip"),
+                            Component.translatable("machine.gtceu.dual_hatch.export.tooltip"),
                             Component.translatable(
                                     "common.gtceu.tooltip.item_storage_capacity",
                                     (int) Math.pow((tier - 4), 2)),
@@ -1320,8 +1318,8 @@ public class GTMachines {
                     .modelProperty(IS_ROTOR_SPINNING, false)
                     .modelProperty(IS_EMISSIVE_ROTOR, false)
                     .model(createRotorHolderModel())
-                    .tooltips(LangUtil.getFromMultiLang("gtceu.machine.rotor_holder.tooltip", 0),
-                            LangUtil.getFromMultiLang("gtceu.machine.rotor_holder.tooltip", 1),
+                    .tooltips(LangUtil.getFromMultiLang("machine.gtceu.rotor_holder.tooltip", 0),
+                            LangUtil.getFromMultiLang("machine.gtceu.rotor_holder.tooltip", 1),
                             Component.translatable("multiblock.gtceu.part_sharing.disabled"))
                     .register(),
             GTValues.tiersBetween(HV, GTCEuAPI.isHighTier() ? OpV : UV));

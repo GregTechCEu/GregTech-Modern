@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import com.demonwav.mcdev.annotations.Translatable;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -111,7 +112,7 @@ public class GTMuiWidgets {
     }
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture texture,
-                                                  String langKey) {
+                                                  @Translatable(suffix = ".enabled") String langKey) {
         var value = new BooleanSyncValue(getter, setter).allowC2S();
         return new ToggleButton()
                 .value(value)
@@ -122,7 +123,7 @@ public class GTMuiWidgets {
     }
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture background,
-                                                  UITexture selectedBackground, String langKey) {
+                                                  UITexture selectedBackground, @Translatable(suffix = ".enabled") String langKey) {
         var value = new BooleanSyncValue(getter, setter).allowC2S();
         return new ToggleButton()
                 .value(value)
@@ -176,23 +177,23 @@ public class GTMuiWidgets {
     public static ToggleButton createDistinctnessButton(IDistinctPart distinct) {
         return createToggleButton(distinct::isDistinct, distinct::setDistinct, GTGuiTextures.BUTTON_DISTINCT[0],
                 GTGuiTextures.BUTTON_DISTINCT[1],
-                "gtceu.multiblock.universal.distinct");
+                "gui.gtceu.machine.distinct");
     }
 
     public static ToggleButton createBatchModeButton(WorkableElectricMultiblockMachine workableElectricMultiblockMachine) {
         return createToggleButton(workableElectricMultiblockMachine::isBatchEnabled,
                 workableElectricMultiblockMachine::setBatchEnabled,
-                GTGuiTextures.BUTTON_BATCH[0], GTGuiTextures.BUTTON_BATCH[1], "gtceu.machine.batching");
+                GTGuiTextures.BUTTON_BATCH[0], GTGuiTextures.BUTTON_BATCH[1], "machine.gtceu.batching");
     }
 
     public static ToggleButton createAutoOutputItemButton(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::isAutoOutputItems, autoOutput::setAllowAutoOutputItems,
-                GTGuiTextures.BUTTON_ITEM_OUTPUT, "gtceu.gui.item_auto_output");
+                GTGuiTextures.BUTTON_ITEM_OUTPUT, "gui.gtceu.auto_output.item");
     }
 
     public static ToggleButton createAutoOutputFluidButton(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::isAutoOutputFluids, autoOutput::setAllowAutoOutputFluids,
-                GTGuiTextures.BUTTON_FLUID_OUTPUT, "gtceu.gui.fluid_auto_output");
+                GTGuiTextures.BUTTON_FLUID_OUTPUT, "gui.gtceu.auto_output.fluid");
     }
 
     public static ToggleButton createInputFromOutputItem(AutoOutputTrait autoOutput) {
@@ -219,7 +220,7 @@ public class GTMuiWidgets {
                 })
                 .backgroundOverlay(GTGuiTextures.PROGRESS_MIXER[0])
                 .size(18)
-                .tooltip((tooltip) -> tooltip.add(Component.translatable("gtceu.gui.machinemode.tab_tooltip")))
+                .tooltip((tooltip) -> tooltip.add(Component.translatable("gui.gtceu.active_machine_mode.tab_tooltip")))
                 .setEnabledIf((W) -> workableMultiblock.getRecipeTypes().length > 0);
     }
 

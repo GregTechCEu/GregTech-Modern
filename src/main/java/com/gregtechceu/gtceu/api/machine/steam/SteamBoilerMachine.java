@@ -346,7 +346,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                         .value(tempPercentage)
                         .tooltipAutoUpdate(true)
                         .tooltipBuilder((r) -> r.addLine(Text
-                                .lang("gtceu.fluid.temperature", getCurrentTemperature())))));
+                                .lang("material.gtceu.fluid_property.temperature", getCurrentTemperature())))));
     }
 
     //////////////////////////////////////
@@ -386,7 +386,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
                 mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
-            return Collections.singletonList(Component.translatable("machine.gtceu.boiler.heat_info",
+            return Collections.singletonList(Component.translatable("gui.gtceu.machine.boiler.heat",
                     FormattingUtil.formatNumbers((int) (getTemperaturePercent() * 100))));
         }
         return new ArrayList<>();

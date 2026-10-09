@@ -5,6 +5,6 @@ import net.minecraft.network.chat.Component;
 public class UnknownPlaceholderException extends PlaceholderException {
 
     public UnknownPlaceholderException(String name) {
-        super(Component.translatable("gtceu.computer_monitor_cover.error.no_placeholder", name).getString());
+        super(Component.translatable("gui.gtceu.cover.computer_monitor.error.no_placeholder", name).getString());
     }
 }

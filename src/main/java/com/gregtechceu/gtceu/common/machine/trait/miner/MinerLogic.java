@@ -686,7 +686,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     @Nullable
     @Override
     public Component getCustomProgressLine() {
-        return Component.translatable("gtceu.machine.miner.progress", blocksToMineOriginalCount - blocksToMine.size(),
+        return Component.translatable("gui.gtceu.machine.miner.progress",
+                blocksToMineOriginalCount - blocksToMine.size(),
                 blocksToMineOriginalCount);
     }
 }

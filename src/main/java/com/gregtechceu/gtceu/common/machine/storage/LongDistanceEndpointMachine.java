@@ -216,22 +216,22 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
                 mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
             LongDistanceNetwork network = LongDistanceNetwork.get(getLevel(), getBlockPos());
             if (network == null) {
-                textComponents.add(Component.translatable("block.gtceu.long_distance_item_pipeline_no_network"));
+                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.no_network"));
             } else {
-                textComponents.add(Component.translatable("block.gtceu.long_distance_item_pipeline_network_header"));
-                textComponents.add(Component.translatable("block.gtceu.long_distance_item_pipeline_pipe_count",
+                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.network_header"));
+                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.pipe_count",
                         FormattingUtil.formatNumbers(network.getTotalSize())));
                 ILDEndpoint in = network.getActiveInputIndex(), out = network.getActiveOutputIndex();
-                textComponents.add(Component.translatable("block.gtceu.long_distance_item_pipeline_input_pos",
+                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.input_pos",
                         Component.literal(in == null ? "none" : in.getBlockPos().toString())));
-                textComponents.add(Component.translatable("block.gtceu.long_distance_item_pipeline_output_pos",
+                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.output_pos",
                         Component.literal(out == null ? "none" : out.getBlockPos().toString())));
             }
             if (isInput()) {
-                textComponents.add(Component.translatable("block.gtceu.long_distance_item_pipeline_input_endpoint"));
+                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.input_endpoint"));
             }
             if (isOutput()) {
-                textComponents.add(Component.translatable("block.gtceu.long_distance_item_pipeline_output_endpoint"));
+                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.output_endpoint"));
             }
         }
 

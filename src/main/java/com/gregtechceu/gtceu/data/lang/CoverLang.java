@@ -18,8 +18,16 @@ public class CoverLang {
         provider.add("cover.gtceu.filter.mode.filter_extract", "Filter Extract");
         provider.add("cover.gtceu.filter.mode.filter_both", "Filter Insert/Extract");
 
+        provider.add("cover.gtceu.ender_item_link.title", "Ender Item Link");
+        provider.add("cover.gtceu.ender_item_link.tooltip",
+                "§7Transports §fItems§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
+        provider.add("cover.gtceu.ender_redstone_link.title", "Ender Redstone Link");
+        provider.add("cover.gtceu.ender_redstone_link.label", "Redstone power: %d");
+        provider.add("cover.gtceu.ender_redstone_link.tooltip",
+                "§7Transmits §fRedstone signals§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
+
         // Tag filter
-        provider.addMultiline("cover.gtceu.tag_filter.info",
+        provider.addMultiline("gui.gtceu.cover.tag_filter.info",
                 """
                         §bAccepts complex expressions
                         §6a & b§r = AND
@@ -33,10 +41,10 @@ public class CoverLang {
                         The 'forge:' namespace is assumed if one isn't provided.
                         §bExample: §6*dusts/gold | (gtceu:circuits & !*lv)
                         This matches all gold dusts or all circuits except LV ones""");
-        provider.add("cover.gtceu.test_slot.info",
+        provider.add("gui.gtceu.cover.filter.test_slot",
                 "Insert a item to test if it matches the filter expression");
-        provider.add("cover.gtceu.tag_filter.matches", "Item matches");
-        provider.add("cover.gtceu.tag_filter.matches_not", "Item does not match");
+        provider.add("gui.gtceu.cover.filter.test_slot.match", "Item matches");
+        provider.add("gui.gtceu.cover.filter.test_slot.no_match", "Item does not match");
 
         // Smart filter
         provider.add("cover.gtceu.smart_item_filter.filtering_mode.electrolyzer", "Electrolyzer");

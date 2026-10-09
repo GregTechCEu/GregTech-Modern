@@ -38,8 +38,12 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
 
     public ParallelHatchPartMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
-        this.maxParallel = (int) Math.pow(4, tier - GTValues.EV);
+        this.maxParallel = getMaxParallel(tier);
         this.currentParallel = maxParallel;
+    }
+
+    public static int getMaxParallel(int tier) {
+        return (int) Math.pow(4, tier - GTValues.EV);
     }
 
     public void setCurrentParallel(int parallelAmount) {
@@ -131,7 +135,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
                         })
                         .marginLeft(4)
                         .verticalCenter())
-                .child(Text.lang("gtceu.machine.parallel_hatch.parallel_ui")
+                .child(Text.lang("machine.gtceu.parallel_hatch.parallel_ui")
                         .asWidget()
                         .marginLeft(4)
                         .marginRight(4)

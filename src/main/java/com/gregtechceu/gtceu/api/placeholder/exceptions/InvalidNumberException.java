@@ -5,6 +5,6 @@ import net.minecraft.network.chat.Component;
 public class InvalidNumberException extends PlaceholderException {
 
     public InvalidNumberException(String number) {
-        super(Component.translatable("gtceu.computer_monitor_cover.error.invalid_number", number).getString());
+        super(Component.translatable("gui.gtceu.cover.computer_monitor.error.invalid_number", number).getString());
     }
 }
