@@ -576,6 +576,41 @@ public class CommonEventListener {
             }
         });
         event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
+
+            if (mapping.getKey().equals(GTCEu.id("nanomuscle_helmet"))) {
+                mapping.remap(GTItems.NANO_HELMET.get());
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("nanomuscle_chestplate"))) {
+                mapping.remap(GTItems.NANO_CHESTPLATE.get());
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("nanomuscle_leggings"))) {
+                mapping.remap(GTItems.NANO_LEGGINGS.get());
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("nanomuscle_boots"))) {
+                mapping.remap(GTItems.NANO_BOOTS.get());
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("quarktech_helmet"))) {
+                mapping.remap(GTItems.QUANTUM_HELMET.get());
+
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("quarktech_chestplate"))) {
+                mapping.remap(GTItems.QUANTUM_CHESTPLATE.get());
+
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("quarktech_leggings"))) {
+                mapping.remap(GTItems.QUANTUM_LEGGINGS.get());
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("quarktech_boots"))) {
+                mapping.remap(GTItems.QUANTUM_BOOTS.get());
+            }
+
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
                 mapping.remap(GTBlocks.COIL_RTMALLOY.get().asItem());
             }
@@ -584,9 +619,6 @@ public class CommonEventListener {
             }
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_fluid_cell"))) {
                 mapping.remap(GTItems.FLUID_CELL_LARGE_TUNGSTEN_STEEL.get().asItem());
-            }
-            if (mapping.getKey().equals(GTCEu.id("avanced_nanomuscle_chestplate"))) {
-                mapping.remap(GTItems.NANO_CHESTPLATE_ADVANCED.get());
             }
             String path = mapping.getKey().getPath();
             if (path.matches("[lhi]v_.+_wirecutter")) {

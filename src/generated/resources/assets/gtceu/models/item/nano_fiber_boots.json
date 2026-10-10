@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "gtceu:item/quarktech_helmet"
+    "layer0": "gtceu:item/nano_fiber_boots"
   }
 }

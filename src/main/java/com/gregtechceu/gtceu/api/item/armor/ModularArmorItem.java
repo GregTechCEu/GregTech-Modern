@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -16,8 +17,19 @@ import org.jetbrains.annotations.Nullable;
 @Accessors(chain = true)
 public class ModularArmorItem extends ArmorComponentItem implements IComponentItem {
 
+    public static final String NETHERITE_PLATED_TAG = "netherite_plated";
+
     public ModularArmorItem(ArmorMaterial material, Type type, Properties properties) {
         super(material, type, properties);
+    }
+
+    @Override
+    public Component getName(ItemStack stack) {
+        Component name = super.getName(stack);
+        if (stack.hasTag() && stack.getOrCreateTag().contains(NETHERITE_PLATED_TAG)) {
+            return Component.translatable("item.gtceu.netherite_plated", name);
+        }
+        return name;
     }
 
     @Override

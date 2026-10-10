@@ -125,7 +125,7 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
 
     @Override
     public ItemStack getResultItem(RegistryAccess registryAccess) {
-        return GTItems.QUANTUM_CHESTPLATE_ADVANCED.asStack();
+        return GTItems.QUANTUM_CHESTPLATE.asStack();
     }
 
     @Override
