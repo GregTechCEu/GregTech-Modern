@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.PropertyFluidFilter;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -158,7 +159,7 @@ public class GTMultiMachines {
                     .build())
             .recoveryItems(
                     () -> new ItemLike[] {
-                            GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
+                            ChemicalHelper.getItemOrThrow(TagPrefix.dustTiny, GTMaterials.Ash) })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
                     GTCEu.id("block/multiblock/electric_blast_furnace"))
             .tooltips(Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.0"),
@@ -291,7 +292,7 @@ public class GTMultiMachines {
                     .build())
             .recoveryItems(
                     () -> new ItemLike[] {
-                            GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
+                            ChemicalHelper.getItemOrThrow(TagPrefix.dustTiny, GTMaterials.Ash) })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
                     GTCEu.id("block/multiblock/multi_furnace"))
             .additionalDisplay((controller, syncManager) -> {
@@ -572,7 +573,7 @@ public class GTMultiMachines {
                                 .where('G', blocks(FUSION_GLASS.get()).or(casing))
                                 .where('E', casing.and(
                                         blocks(PartAbility.INPUT_ENERGY.getBlockRange(tier, UV).toArray(Block[]::new))
-                                                .setMinGlobalLimited(1).setPreviewCount(16)))
+                                                .setMinGlobalLimited(1, 16)))
                                 .where('C', casing)
                                 .where('K', blocks(FusionReactorMachine.getCoilState(tier)))
                                 .where('O', casing.or(abilities(PartAbility.EXPORT_FLUIDS)))
@@ -637,8 +638,8 @@ public class GTMultiMachines {
                             .where('X', blocks(LargeMinerMachine.getCasingState(tier))
                                     .and(abilities(PartAbility.EXPORT_ITEMS).setExactLimit(1).setPreviewCount(1))
                                     .and(abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1).setPreviewCount(1))
-                                    .and(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
-                                            .setMaxGlobalLimited(2).setPreviewCount(1)))
+                                    .and(abilities(PartAbility.INPUT_ENERGY).setGlobalMinMax(1, 2)
+                                            .setPreviewCount(1)))
                             .where('C', blocks(LargeMinerMachine.getCasingState(tier)))
                             .where('F', frames(LargeMinerMachine.getMaterial(tier)))
                             .where('#', any())

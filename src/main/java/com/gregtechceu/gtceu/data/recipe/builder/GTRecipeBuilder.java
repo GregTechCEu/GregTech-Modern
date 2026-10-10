@@ -432,11 +432,14 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(MaterialEntry input, int count) {
-        return inputItems(input.tagPrefix(), input.material(), count);
+        TagPrefix tagPrefix = input.tagPrefix();
+        Material material = input.material();
+        return inputItems(tagPrefix, material, count);
     }
 
-    public GTRecipeBuilder inputItems(TagPrefix tagPrefix, @NotNull Material material, int count) {
-        if (tagPrefix.isEmpty() || material.isNull()) {
+    @SuppressWarnings("ConstantValue")
+    public GTRecipeBuilder inputItems(TagPrefix tagPrefix, Material material, int count) {
+        if (tagPrefix == null || material == null) {
             GTCEu.LOGGER.error(
                     "Tried to set input item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
                     id, tagPrefix, material, count);
@@ -580,22 +583,23 @@ public class GTRecipeBuilder {
         return outputItems(new ItemStack(input.get().asItem(), amount));
     }
 
-    public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material) {
-        return outputItems(orePrefix, material, 1);
+    public GTRecipeBuilder outputItems(TagPrefix tagPrefix, Material material) {
+        return outputItems(tagPrefix, material, 1);
     }
 
-    public GTRecipeBuilder outputItems(TagPrefix orePrefix, @NotNull Material material, int count) {
-        if (orePrefix.isEmpty() || material.isNull()) {
+    public GTRecipeBuilder outputItems(TagPrefix tagPrefix, Material material, int count) {
+        // noinspection ConstantValue
+        if (tagPrefix == null || material == null) {
             GTCEu.LOGGER.error(
                     "Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
-                    id, orePrefix, material, count);
+                    id, tagPrefix, material, count);
             return this;
         }
-        var item = ChemicalHelper.get(orePrefix, material, count);
+        var item = ChemicalHelper.get(tagPrefix, material, count);
         if (item.isEmpty()) {
             GTCEu.LOGGER.error(
                     "Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
-                    id, orePrefix, material, count);
+                    id, tagPrefix, material, count);
             return this;
         }
         return outputItems(item);
@@ -961,7 +965,7 @@ public class GTRecipeBuilder {
             return this;
         }
         var matStack = ChemicalHelper.getMaterial(input.getFluid());
-        if (!matStack.isNull() && chance != 0 && chance == maxChance) {
+        if (matStack != null && chance != 0 && chance == maxChance) {
             tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
         }
         return input(FluidRecipeCapability.CAP, FluidIngredient.of(
@@ -977,7 +981,7 @@ public class GTRecipeBuilder {
                 return this;
             } else {
                 var matStack = ChemicalHelper.getMaterial(fluid.getFluid());
-                if (!matStack.isNull()) {
+                if (matStack != null) {
                     if (chance == maxChance && chance != 0) {
                         tempFluidStacks.add(new MaterialStack(matStack, fluid.getAmount() * GTValues.M / GTValues.L));
                     }

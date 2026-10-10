@@ -77,7 +77,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             WeightedMaterial wm = GTUtil.getRandomItem(serverLevel.random, veinMaterials);
             if (wm == null) return null;
             Material material = wm.material();
-            if (material.isNull()) return null;
+            if (material == null) return null;
             ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix),
                     material, getOreToProduce());
             // backup 1: crushed; if raw ore doesn't exist

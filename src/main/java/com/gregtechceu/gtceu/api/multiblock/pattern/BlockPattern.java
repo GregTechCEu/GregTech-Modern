@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.PredicateResult;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import net.minecraft.core.BlockPos;
@@ -214,16 +214,17 @@ public class BlockPattern implements IBlockPattern {
                 if (!multiPredicate.isAny()) patternState.updateCache();
 
                 // state check
-                BasePredicate innerPredicate = multiPredicate.getPredicateAtPos(context);
+                PredicateResult result = multiPredicate.getPredicateAtPos(context);
 
                 // all predicates failed
-                if (innerPredicate == null) {
+                if (!result.hasMatched()) {
+                    multiPredicate.onError(context);
                     // errors get committed in BasicSliceStrategy
                     return false;
                 }
 
                 // max count checks
-                if (!innerPredicate.checkMaxCount(context)) {
+                if (!result.testMaxCount(context)) {
                     // errors get committed in BasicSliceStrategy
                     return false;
                 }

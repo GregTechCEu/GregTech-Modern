@@ -6,7 +6,8 @@ mixinExtras = "0.5.0-rc.3"
 jei = "15.20.0.115"
 rei = "12.1.785"
 emi = "1.1.24+1.20.1"
-ae2 = "15.0.18"
+ae2 = "15.4.10"
+guideme = "20.1.14"
 mui = "3.3.1-SNAPSHOT"
 kubejs = "2001.6.5-build.16"
 rhino = "2001.2.3-build.10"
@@ -42,7 +43,6 @@ journeyMap = "5789363"
 resourcefullib = "5659871"
 argonauts = "5263580"
 heracles = "5406935"
-ae2wtlib = "5217955"
 spark = "4738952"
 observable = "5643037"
 gamestages = "15.0.2"
@@ -65,6 +65,7 @@ rei-forge           = { module = "me.shedaniel:RoughlyEnoughItems-forge", versio
 emi                 = { module = "dev.emi:emi-forge", version.ref = "emi" }
 
 ae2                 = { module = "appeng:appliedenergistics2-forge", version.ref = "ae2" }
+guideme             = { module = "org.appliedenergistics:guideme", version.ref = "guideme" }
 create              = { module = "com.simibubi.create:create-1.20.1", version.ref = "create"}
 ponder              = { module = "net.createmod.ponder:Ponder-Forge-1.20.1", version.ref = "ponder"}
 flywheel-forge-api  = { module = "dev.engine-room.flywheel:flywheel-forge-api-1.20.1", version.ref = "flywheel"}
@@ -101,7 +102,6 @@ journeymap-forge    = { module = "curse.maven:journeymap-32274", version.ref = "
 resourcefullib      = { module = "curse.maven:resourceful-lib-570073", version.ref = "resourcefullib" }
 argonauts           = { module = "curse.maven:argonauts-845833", version.ref = "argonauts" }
 heracles            = { module = "curse.maven:heracles-845831", version.ref = "heracles" }
-ae2wtlib            = { module = "curse.maven:ae2wtlib-459929", version.ref = "ae2wtlib" }
 spark               = { module = "curse.maven:spark-361579", version.ref = "spark" }
 observable          = { module = "curse.maven:observable-509575", version.ref = "observable" }
 gamestages          = { module = "net.darkhax.gamestages:GameStages-Forge-1.20.1", version.ref = "gamestages" }

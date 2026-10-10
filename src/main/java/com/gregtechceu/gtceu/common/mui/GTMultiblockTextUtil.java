@@ -539,13 +539,13 @@ public class GTMultiblockTextUtil {
                     for (var output : recipe.getOutputContents(ItemRecipeCapability.CAP)) {
                         var widget = createItemLineForOutput(output, recipe);
                         if (widget.isEmpty()) continue;
-                        list.child(widget.get().width(187 - 3 - 3 - 2 - 2));
+                        list.child(widget.get());
                     }
 
                     for (var output : recipe.getOutputContents(FluidRecipeCapability.CAP)) {
                         var widget = createFluidLineForOutput(output, recipe);
                         if (widget.isEmpty()) continue;
-                        list.child(widget.get().width(187 - 3 - 3 - 2 - 2));
+                        list.child(widget.get());
                     }
 
                     return list;
@@ -583,7 +583,7 @@ public class GTMultiblockTextUtil {
         } else {
             var stacks = ItemRecipeCapability.CAP.of(itemOutput.content()).getItems();
             if (stacks.length == 0) return Optional.empty();
-            stack = stacks[0];
+            stack = stacks[0].copy();
             count = stack.getCount();
             countD *= count;
             if (itemOutput.chance() < itemOutput.maxChance()) {
@@ -598,7 +598,7 @@ public class GTMultiblockTextUtil {
             String key = "gtceu.multiblock.output_line." + (rounded ? "2" : "0");
             return Optional.of(
                     Flow.row()
-                            .coverChildren()
+                            .coverChildrenHeight()
                             .childPadding(2)
                             .child(new ItemDrawable(stack).asWidget()
                                     .size(16)
@@ -612,7 +612,7 @@ public class GTMultiblockTextUtil {
             String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
             return Optional.of(
                     Flow.row()
-                            .coverChildren()
+                            .coverChildrenHeight()
                             .childPadding(2)
                             .child(new ItemDrawable(stack).asWidget()
                                     .size(16)
@@ -651,7 +651,7 @@ public class GTMultiblockTextUtil {
         } else {
             var stacks = FluidRecipeCapability.CAP.of(fluidOutput.content()).getStacks();
             if (stacks.length == 0) return Optional.empty();
-            stack = stacks[0];
+            stack = stacks[0].copy();
             amount = stack.getAmount();
             amountD *= amount;
             if (fluidOutput.chance() < fluidOutput.maxChance()) {
@@ -666,7 +666,7 @@ public class GTMultiblockTextUtil {
             String key = "gtceu.multiblock.output_line." + (rounded ? "2" : "0");
             return Optional.of(
                     Flow.row()
-                            .coverChildren()
+                            .coverChildrenHeight()
                             .childPadding(2)
                             .child(new FluidDrawable(stack).asWidget()
                                     .size(16)
@@ -680,7 +680,7 @@ public class GTMultiblockTextUtil {
             String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
             return Optional.of(
                     Flow.row()
-                            .coverChildren()
+                            .coverChildrenHeight()
                             .childPadding(2)
                             .child(new FluidDrawable(stack).asWidget()
                                     .size(16)

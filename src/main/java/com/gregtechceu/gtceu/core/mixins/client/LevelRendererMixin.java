@@ -171,7 +171,7 @@ public abstract class LevelRendererMixin {
 
         // spotless:off
         MaterialEntry materialEntry = ChemicalHelper.getMaterialEntry(state.getBlock());
-        if (rendererCfg.coloredMaterialBlockOutline && !materialEntry.isEmpty()) {
+        if (rendererCfg.coloredMaterialBlockOutline && materialEntry != null) {
             renderColoredOutline = true;
             rgb = materialEntry.material().getMaterialRGB();
         } else if (rendererCfg.coloredTieredMachineOutline) {
@@ -184,7 +184,7 @@ public abstract class LevelRendererMixin {
                 }
         } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipe) {
             renderColoredOutline = true;
-            if (!pipe.getFrameMaterial().isNull()) {
+            if (pipe.getFrameMaterial() != null) {
                 rgb = pipe.getFrameMaterial().getMaterialRGB();
             } else if (pipe instanceof CableBlockEntity cable) {
                 rgb = GTValues.VCM[GTUtil.getTierByVoltage(cable.getNodeData().getVoltage())];

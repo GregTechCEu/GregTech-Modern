@@ -214,16 +214,6 @@ public class SeparationRecipes {
                 .chancedOutput(dust, Tantalite, 125)
                 .save(provider);
 
-        CENTRIFUGE_RECIPES.recipeBuilder("rare_earth_separation").duration(64).EUt(20)
-                .inputItems(dust, RareEarth)
-                .chancedOutput(dustSmall, Cadmium, 3500)
-                .chancedOutput(dustSmall, Neodymium, 4500)
-                .chancedOutput(dustSmall, Samarium, 3500)
-                .chancedOutput(dustSmall, Cerium, 5500)
-                .chancedOutput(dustSmall, Yttrium, 3500)
-                .chancedOutput(dustSmall, Lanthanum, 2500)
-                .save(provider);
-
         CENTRIFUGE_RECIPES.recipeBuilder("red_sand_separation").duration(50).EUt(VA[LV])
                 .inputItems(Blocks.RED_SAND.asItem())
                 .chancedOutput(dust, Iron, 5000)
