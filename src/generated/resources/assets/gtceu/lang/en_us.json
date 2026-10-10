@@ -4061,6 +4061,7 @@
   "gui.gtceu.item_module.hp": "HP:",
   "gui.gtceu.item_module.jump_boost": "Boost:",
   "gui.gtceu.item_module.power": "Power:",
+  "gui.gtceu.max_module_tier": "Max Module Tier: %s",
   "gui.gtceu.module_slot.tiered": "Tiered (%s)",
   "gui.gtceu.module_slot.universal": "Universal",
   "gui.gtceu.module_slots": "Module slots:",
