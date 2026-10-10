@@ -74,6 +74,7 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -1859,6 +1860,38 @@ public class GTItems {
                                     ConfigHolder.INSTANCE.tools.voltageTierNightVision, ArmorItem.Type.HELMET)))
             .lang("Nightvision Goggles")
             .tag(Tags.Items.ARMORS_HELMETS)
+            .register();
+
+    public static ItemEntry<HydraulicArmorItem> HYDRAULIC_HELMET = REGISTRATE.item("hydraulic_helmet",
+            p -> new HydraulicArmorItem(GTArmorMaterials.HYDRAULIC, ArmorItem.Type.HELMET, p))
+            .lang("Hydraulic Suite Helmet")
+            .properties(p -> p.rarity(Rarity.UNCOMMON))
+            .tag(Tags.Items.ARMORS_HELMETS)
+            .onRegister(attach(new ModularItemComponent(IntList.of(GTValues.MV, GTValues.LV, GTValues.LV))))
+            .register();
+
+    public static ItemEntry<HydraulicArmorItem> HYDRAULIC_CHESTPLATE = REGISTRATE.item("hydraulic_chestplate",
+            p -> new HydraulicArmorItem(GTArmorMaterials.HYDRAULIC, ArmorItem.Type.CHESTPLATE, p))
+            .lang("Hydraulic Chestplate")
+            .properties(p -> p.rarity(Rarity.UNCOMMON))
+            .tag(Tags.Items.ARMORS_CHESTPLATES)
+            .onRegister(attach(new ModularItemComponent(IntList.of(GTValues.MV, GTValues.LV, GTValues.LV))))
+            .register();
+
+    public static ItemEntry<HydraulicArmorItem> HYDRAULIC_LEGGINGS = REGISTRATE.item("hydraulic_leggings",
+            p -> new HydraulicArmorItem(GTArmorMaterials.HYDRAULIC, ArmorItem.Type.LEGGINGS, p))
+            .lang("Hydraulic Leggings")
+            .properties(p -> p.rarity(Rarity.UNCOMMON))
+            .tag(Tags.Items.ARMORS_LEGGINGS)
+            .onRegister(attach(new ModularItemComponent(IntList.of(GTValues.MV, GTValues.LV, GTValues.LV))))
+            .register();
+
+    public static ItemEntry<HydraulicArmorItem> HYDRAULIC_BOOTS = REGISTRATE.item("hydraulic_boots",
+            p -> new HydraulicArmorItem(GTArmorMaterials.HYDRAULIC, ArmorItem.Type.BOOTS, p))
+            .lang("Hydraulic Boots")
+            .properties(p -> p.rarity(Rarity.UNCOMMON))
+            .tag(Tags.Items.ARMORS_BOOTS)
+            .onRegister(attach(new ModularItemComponent(IntList.of(GTValues.MV, GTValues.LV, GTValues.LV))))
             .register();
 
     public static ItemEntry<NanoMuscleArmorItem> NANO_CHESTPLATE = REGISTRATE

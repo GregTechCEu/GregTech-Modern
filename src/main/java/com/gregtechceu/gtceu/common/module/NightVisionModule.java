@@ -3,12 +3,14 @@ package com.gregtechceu.gtceu.common.module;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.api.item.module.IHUDProviderItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.data.lang.LangUtils;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -23,7 +25,7 @@ import lombok.Getter;
 
 import java.util.Objects;
 
-public class NightVisionModule extends ItemModule {
+public class NightVisionModule extends ItemModule implements IHUDProviderItemModule {
 
     public NightVisionModule(ResourceLocation id) {
         super(id);
@@ -94,6 +96,16 @@ public class NightVisionModule extends ItemModule {
         var newData = new NightVisionModuleData(data.getSlot(), data.getModule(), data.getModuleItem(),
                 data.isEnabled(), nightVision, toggleTimer, nightVisionTimer);
         moduleContext.setData(newData);
+    }
+
+    @Override
+    public void drawHUD(ModuleContext moduleContext, ArmorUtils.ModularHUD hud, GuiGraphics graphics) {
+        var data = moduleContext.getData(NightVisionModuleData.class);
+        if (data.isNightVision()) {
+            hud.newLine(Component.translatable("armor.gtceu.night_vision.enabled"));
+        } else {
+            hud.newLine(Component.translatable("armor.gtceu.night_vision.disabled"));
+        }
     }
 
     public static class NightVisionModuleData extends ModuleData {

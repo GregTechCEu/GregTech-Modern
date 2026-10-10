@@ -42,6 +42,12 @@ public enum GTArmorMaterials implements ArmorMaterial, StringRepresentable {
         map.put(ArmorItem.Type.CHESTPLATE, 0);
         map.put(ArmorItem.Type.HELMET, 0);
     }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 5.0F, 0.0F, () -> Ingredient.EMPTY),
+    HYDRAULIC("gtceu:hydraulic", 0, Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+        map.put(ArmorItem.Type.BOOTS, 0);
+        map.put(ArmorItem.Type.LEGGINGS, 0);
+        map.put(ArmorItem.Type.CHESTPLATE, 0);
+        map.put(ArmorItem.Type.HELMET, 0);
+    }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 5.0F, 0.0F, () -> Ingredient.EMPTY),
     QUARK_TECH("gtceu:quark_tech_suite", 0, Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
         map.put(ArmorItem.Type.BOOTS, 0);
         map.put(ArmorItem.Type.LEGGINGS, 0);
