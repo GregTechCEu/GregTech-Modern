@@ -68,22 +68,6 @@ public record Content(Object content, int chance, int maxChance) {
         return chance > 0 && chance < maxChance;
     }
 
-    /**
-     * Attempts to fix and round the given chance boost due to potential differences
-     * between the max chance and {@link ChanceLogic#getMaxChancedValue()}.
-     * <br />
-     * The worst case would be {@code 5,001 / 10,000} , meaning the boost would
-     * have to be halved to have the intended effect.
-     *
-     * @param chanceBoost the chance boost to be fixed
-     * @return the fixed chance boost
-     */
-    private int fixBoost(int chanceBoost) {
-        float error = (float) ChanceLogic.getMaxChancedValue() / maxChance;
-        int fixed = Math.round(Math.abs(chanceBoost) / error);
-        return chanceBoost < 0 ? -fixed : fixed;
-    }
-
     public static void addChanceTooltips(RichTooltip tooltip, Content content, ChanceLogic logic) {
         if (content.chance() < ChanceLogic.getMaxChancedValue()) {
             if (content.chance() == 0) {
