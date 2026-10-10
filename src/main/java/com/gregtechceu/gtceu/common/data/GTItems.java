@@ -2124,6 +2124,8 @@ public class GTItems {
 
     public static ItemEntry<Item> CREATIVE_FLIGHT_MODULE = REGISTRATE.item("creative_flight_module", Item::new)
             .lang("Gravitation Module")
+            .register();
+
     public static ItemEntry<Item> SPOILABLE_1;
     public static ItemEntry<Item> SPOILABLE_2;
     public static ItemEntry<Item> SPOILABLE_3;
