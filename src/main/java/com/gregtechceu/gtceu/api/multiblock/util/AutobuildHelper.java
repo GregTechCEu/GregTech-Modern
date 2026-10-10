@@ -4,8 +4,9 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
 import com.gregtechceu.gtceu.common.item.behavior.TerminalBehavior;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.SPacketAutobuildHighlight;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -166,15 +167,8 @@ public class AutobuildHelper {
 
         if (!canNotPlaceBlocks.isEmpty()) player.displayClientMessage(
                 Component.translatable("gtceu.autobuild.unplaced_blocks").withStyle(ChatFormatting.RED), false);
-        for (var entry : canNotPlaceBlocks.long2ObjectEntrySet()) {
-            AABBHighlightRenderer.INSTANCE.addHighlight(AABBHighlightRenderer.builder()
-                    .aabb(BlockPos.of(entry.getLongKey()))
-                    .colorARGB(255, 180, 0, 0)
-                    .thickness(0.025)
-                    .durationMillis(10000)
-                    .phaseMillis(750)
-                    .build());
-        }
+        if (!canNotPlaceBlocks.isEmpty())
+            GTNetwork.sendToPlayer(player, new SPacketAutobuildHighlight(canNotPlaceBlocks.keySet().toLongArray()));
     }
 
     public static void printBlockList(Component firstMessage, Map<Item, Integer> blockList, Player player) {
