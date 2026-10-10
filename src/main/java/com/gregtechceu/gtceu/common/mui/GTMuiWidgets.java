@@ -273,7 +273,7 @@ public class GTMuiWidgets {
             return IntCircuitBehaviour.getCircuitConfiguration(circuitGetter.get());
         },
                 (v) -> circuitSetter.accept(v < 0 ? ItemStack.EMPTY :
-                        IntCircuitBehaviour.stack(v)))
+                        IntCircuitBehaviour.stack(v, Math.max(1, circuitGetter.get().getCount()))))
                 .allowC2S();
     }
 
