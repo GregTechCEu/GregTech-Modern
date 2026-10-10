@@ -148,7 +148,11 @@ public class MEInputBusPartMachine extends MEBusPartMachine
             var player = syncManager.getPlayer();
             ItemStack held = player.containerMenu.getCarried();
             if (!held.isEmpty()) {
-                slot.setConfig(GenericStack.fromItemStack(held));
+                GenericStack newStack = GenericStack.fromItemStack(held);
+                if (!aeItemHandler.isConfigStackAllowed(newStack)) {
+                    return;
+                }
+                slot.setConfig(newStack);
             }
         });
 
@@ -192,7 +196,11 @@ public class MEInputBusPartMachine extends MEBusPartMachine
             if (!isFluid) {
                 ItemStack item = packet.readItem();
                 if (!item.isEmpty()) {
-                    aeItemHandler.getInventory()[index].setConfig(GenericStack.fromItemStack(item));
+                    GenericStack newStack = GenericStack.fromItemStack(item);
+                    if (!aeItemHandler.isConfigStackAllowed(newStack)) {
+                        return;
+                    }
+                    aeItemHandler.getInventory()[index].setConfig(newStack);
                 }
             }
         });
