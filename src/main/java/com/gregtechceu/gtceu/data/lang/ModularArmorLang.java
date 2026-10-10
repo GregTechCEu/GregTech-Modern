@@ -89,11 +89,9 @@ public class ModularArmorLang {
         provider.add("module.gtceu.sensor.message", "%s exploded at (%d, %d, %d)");
         provider.add("module.gtceu.sensor.description",
                 "Reports machine explosions (for machines placed by the player)");
-        provider.add("module.gtceu.wireless_charger", "Wireless Charging Module (%s)");
+        provider.add("module.gtceu.wireless_charger", "Quantum Charger (%s)");
         provider.add("module.gtceu.wireless_charger.description",
-                "Allows wireless charging in the range of %s blocks (1A %s max), bind to a charger by right-clicking on it");
-        provider.add("module.gtceu.wireless_charging.description.interdimensional",
-                "%s blocks, 1A %s max, interdimensional if an at least %s field generator is present");
+                "Links armor to a Battery Buffer or Power Substation across any distance and dimension (1A %s max). Right-click to link to storage.");
         provider.add("module.gtceu.creative_flight", "Creative Flight Module");
         provider.add("module.gtceu.creative_flight.description",
                 "Allows creative flight (consumes %s EU/t while flying)");

@@ -33,7 +33,7 @@ public class GTItemModules {
     public static final RegistryEntry<ItemModule, StepHeightModule>[] STEP_HEIGHT = registerTiered(GTCEu.id("step_height"), StepHeightModule::new);
     public static final RegistryEntry<ItemModule, JumpBoostItemModule>[] JUMP_BOOST = registerTiered(GTCEu.id("jump_boost"), JumpBoostItemModule::new);
     public static final RegistryEntry<ItemModule, SensorItemModule>[] SENSOR = registerTiered(GTCEu.id("sensor"), SensorItemModule::new);
-    public static final RegistryEntry<ItemModule, AutoChargeItemModule>[] WIRELESS_CHARGER = registerTiered(GTCEu.id("wireless_charger"), AutoChargeItemModule::new);
+    public static final RegistryEntry<ItemModule, AutoChargeItemModule>[] WIRELESS_CHARGER = registerTiered(GTRegistration.REGISTRATE, GTCEu.id("wireless_charger"), AutoChargeItemModule::new, GTValues.tiersBetween(GTValues.LuV, GTValues.OpV));
     public static final RegistryEntry<ItemModule, AutoEatModule> AUTO_EAT = register(GTCEu.id("auto_eat"), AutoEatModule::new);
     public static final RegistryEntry<ItemModule, AirSupplierModule> AIR_SUPPLIER = register(GTCEu.id("air_supplier"), AirSupplierModule::new);
     public static final RegistryEntry<ItemModule, BatteryItemModule> BATTERY = register(GTCEu.id("battery"), BatteryItemModule::new);

@@ -5,14 +5,12 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -53,10 +51,7 @@ public class AutoChargeItemModule extends TieredItemModule {
 
     @Override
     public Component getInfo() {
-        if (getTier() < GTValues.IV)
-            return Component.translatable(getDescriptionLanguageKey(), getRange(), GTValues.VNF[getTier()]);
-        else return Component.translatable("module.gtceu.wireless_charging.description.interdimensional", getRange(),
-                GTValues.VNF[getTier()], GTValues.VNF[GTValues.IV]);
+        return Component.translatable(getDescriptionLanguageKey(), GTValues.VNF[getTier()]);
     }
 
     @Override
@@ -82,22 +77,7 @@ public class AutoChargeItemModule extends TieredItemModule {
         if (energy <= 0) return 0;
         MetaMachine machine = getLinkedMachine(player.getServer(), moduleContext);
         if (machine == null) return 0;
-        int interdimensionalTier = -1;
-        @Nullable
-        Holder<ItemModule>[] damageBlock = GTItemModules.DAMAGE_BLOCK;
-        for (int i = 0; i < damageBlock.length; i++) {
-            var module = damageBlock[i];
-            if (module == null) continue;
-            ItemModule shieldModule = module.value();
-            IModularItem modularItem = GTCapabilityHelper.getModularItem(moduleContext.getAppliedTo());
-            if (modularItem != null && modularItem.getModuleContext(shieldModule) != null)
-                interdimensionalTier = i + 1;
-        }
-        interdimensionalTier = Math.min(interdimensionalTier, getTier());
-        if (machine.getLevel() != player.level() && interdimensionalTier < GTValues.IV) return 0;
-        if (interdimensionalTier < GTValues.IV && machine.getBlockPos().distSqr(player.blockPosition()) > getRange())
-            return 0;
-        return Math.min(energy, GTValues.V[machine.getLevel() == player.level() ? getTier() : interdimensionalTier]);
+        return Math.min(energy, GTValues.V[getTier()]);
     }
 
     private @Nullable MetaMachine getLinkedMachine(MinecraftServer server, ModuleContext moduleContext) {
@@ -124,10 +104,6 @@ public class AutoChargeItemModule extends TieredItemModule {
             }
         }
         return super.onItemUseFirst(moduleContext, context);
-    }
-
-    private double getRange() {
-        return (8 << getTier());
     }
 
     public static class AutoChargeModuleData extends ModuleData {
