@@ -71,12 +71,6 @@ public class ConfigHolder {
         public boolean disableManualCompression = true; // default true
         @Configurable
         @Configurable.Comment({
-                "Change the recipe of Rods in the Lathe to 1 Rod and 2 Small Piles of Dust, instead of 2 Rods.",
-                "Default: true" })
-        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
-        public boolean harderRods = true; // default true
-        @Configurable
-        @Configurable.Comment({
                 "Whether to make crafting recipes for Bricks, Firebricks, Nether Bricks, and Coke Bricks harder.",
                 "Default: false" })
         @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
@@ -162,7 +156,7 @@ public class ConfigHolder {
         @Configurable.Comment({
                 "Whether tools should have enchants or not. Like the flint sword getting fire aspect.",
                 "Default: false" })
-        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean enchantedTools = false;
 
         @Configurable
