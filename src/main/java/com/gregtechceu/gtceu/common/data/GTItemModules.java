@@ -23,7 +23,7 @@ public class GTItemModules {
     public static final TieredItemModuleSlot[] TIERED_SLOTS = TieredItemModuleSlot.create(TieredItemModuleSlot::new);
 
     public static final RegistryEntry<ItemModule, SpeedItemModule>[] SPEED = registerTiered(GTCEu.id("speed"), SpeedItemModule::new);
-    public static final RegistryEntry<ItemModule, EnergyShieldItemModule>[] DAMAGE_BLOCK = registerTiered(GTCEu.id("damage_block"), EnergyShieldItemModule::new);
+    public static final RegistryEntry<ItemModule, EnergyShieldItemModule>[] DAMAGE_BLOCK = registerTiered(GTRegistration.REGISTRATE, GTCEu.id("damage_block"), EnergyShieldItemModule::new, GTValues.tiersBetween(GTValues.LuV, GTValues.OpV));
     public static final RegistryEntry<ItemModule, AttackSpeedItemModule>[] ATTACK_SPEED = registerTiered(GTCEu.id("attack_speed"), AttackSpeedItemModule::new);
     public static final RegistryEntry<ItemModule, AttackDamageItemModule>[] ATTACK_DAMAGE = registerTiered(GTCEu.id("attack_damage"), AttackDamageItemModule::new);
     public static final RegistryEntry<ItemModule, BlockReachItemModule>[] BLOCK_REACH = registerTiered(GTCEu.id("block_reach"), BlockReachItemModule::new);

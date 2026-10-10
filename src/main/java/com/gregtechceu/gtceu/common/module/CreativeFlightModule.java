@@ -79,6 +79,6 @@ public class CreativeFlightModule extends AttributeItemModule implements ITiered
 
     @Override
     public int getTier() {
-        return GTValues.IV;
+        return GTValues.LuV;
     }
 }
