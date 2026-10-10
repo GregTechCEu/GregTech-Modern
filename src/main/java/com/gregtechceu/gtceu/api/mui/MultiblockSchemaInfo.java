@@ -53,7 +53,8 @@ public class MultiblockSchemaInfo {
             GTCodecUtils.map(Codec.INT, Codec.INT).fieldOf("userSliceRepeats").forGetter(MultiblockSchemaInfo::getUserSliceRepeats),
             Codec.INT.listOf().fieldOf("userDimensions").forGetter(MultiblockSchemaInfo::getUserDimensions),
             GTCodecUtils.map(BlockPos.CODEC, BlockInfo.CODEC).fieldOf("userGlobalBlockPreferences").forGetter(MultiblockSchemaInfo::getUserGlobalBlockPreferences),
-            GTCodecUtils.map(SyncSystemCodecs.CHAR, BlockInfo.CODEC).fieldOf("blockPreferences").forGetter(MultiblockSchemaInfo::getBlockPreferences)
+            GTCodecUtils.map(SyncSystemCodecs.CHAR, BlockInfo.CODEC).fieldOf("blockPreferences").forGetter(MultiblockSchemaInfo::getBlockPreferences),
+            Codec.BOOL.fieldOf("flipped").forGetter(MultiblockSchemaInfo::isFlipped)
             //GTCodecUtils.table(SyncSystemCodecs.CHAR, Codec.INT, GTCodecUtils.FAST_UTIL_INT_PAIR_CODEC).fieldOf("minMaxPreferences").forGetter(MultiblockSchemaInfo::getMinMaxPreferenceCharTable)
     ).apply(instance, MultiblockSchemaInfo::new));
     //spotless:on
@@ -74,6 +75,9 @@ public class MultiblockSchemaInfo {
     private Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
     @Getter
     private final Object2ObjectMap<BlockPos, BlockInfo> userGlobalBlockPreferences;
+    @Getter
+    @Setter
+    private boolean flipped;
     @Getter
     protected final Char2ObjectMap<BlockInfo> blockPreferences = new Char2ObjectArrayMap<>();
     @Getter
@@ -100,8 +104,10 @@ public class MultiblockSchemaInfo {
     public MultiblockSchemaInfo(MultiblockMachineDefinition definition, Map<Integer, Integer> userSliceRepeats,
                                 List<Integer> userDimensions,
                                 Map<BlockPos, BlockInfo> userGlobalBlockPreferences,
-                                Map<Character, BlockInfo> blockPreferenceMap) {
+                                Map<Character, BlockInfo> blockPreferenceMap,
+                                boolean flipped) {
         this.definition = definition;
+        this.flipped = flipped;
         this.userSliceRepeats = new Int2IntArrayMap(userSliceRepeats);
         this.userDimensions = new IntArrayList(userDimensions);
         this.userGlobalBlockPreferences = new Object2ObjectOpenHashMap<>(userGlobalBlockPreferences);

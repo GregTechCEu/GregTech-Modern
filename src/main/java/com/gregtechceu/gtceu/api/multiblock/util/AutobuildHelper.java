@@ -59,7 +59,7 @@ public class AutobuildHelper {
 
     public static void autobuild(ServerPlayer player, ItemStack item, MultiblockMachineDefinition definition,
                                  MultiblockControllerMachine controller, Map<BlockPos, BlockInfo> blocksToPlace,
-                                 AbstractStructureHelper structureHelper) {
+                                 AbstractStructureHelper structureHelper, boolean isFlipped) {
         Long2ObjectOpenHashMap<BlockState> alreadyValidPlaced = new Long2ObjectOpenHashMap<>();
         Long2ObjectOpenHashMap<BlockState> replaceableBlocks = new Long2ObjectOpenHashMap<>();
         Long2ObjectOpenHashMap<BlockState> canNotPlaceBlocks = new Long2ObjectOpenHashMap<>();
@@ -86,7 +86,7 @@ public class AutobuildHelper {
 
             var predicate = structureHelper.getPredicateFromPos(
                     definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get(),
-                    entry.getKey(), controller.getFrontFacing(), controller.getUpwardsFacing(), controller.isFlipped());
+                    entry.getKey(), controller.getFrontFacing(), controller.getUpwardsFacing(), isFlipped);
 
             cxt.updatePos(pos);
             var innerPredicate = predicate.getPredicateAtPos(cxt);

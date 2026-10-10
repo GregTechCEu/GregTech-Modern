@@ -33,6 +33,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
     private final Object2ObjectMap<BlockPos, BlockInfo> globalPreferences;
     private final Char2ObjectMap<BlockInfo> blockPreferences;
     private final Table<Character, Integer, IntIntPair> minMaxPreferences;
+    private final boolean isFlipped;
     boolean isClearMulti;
     boolean isClearPreferences;
 
@@ -41,6 +42,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
                                    Object2ObjectMap<BlockPos, BlockInfo> globalPreferences,
                                    Char2ObjectMap<BlockInfo> blockPreferences,
                                    Table<Character, Integer, IntIntPair> minMaxPreferences,
+                                   boolean isFlipped,
                                    boolean isClearMulti,
                                    boolean isClearPreferences) {
         this.hand = hand;
@@ -50,6 +52,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         this.globalPreferences = globalPreferences;
         this.blockPreferences = blockPreferences;
         this.minMaxPreferences = minMaxPreferences;
+        this.isFlipped = isFlipped;
         this.isClearMulti = isClearMulti;
         this.isClearPreferences = isClearPreferences;
     }
@@ -87,6 +90,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
          * }
          * }
          */
+        this.isFlipped = buf.readBoolean();
         this.isClearMulti = buf.readBoolean();
         this.isClearPreferences = buf.readBoolean();
     }
@@ -109,6 +113,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
          * b1.writeVarInt(p.secondInt());
          * }));
          */
+        buf.writeBoolean(this.isFlipped);
         buf.writeBoolean(this.isClearMulti);
         buf.writeBoolean(this.isClearPreferences);
     }
@@ -122,7 +127,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         if (!GTItems.TERMINAL.isIn(held)) return;
 
         var schemaInfo = new MultiblockSchemaInfo(this.machineDefinition, this.sliceRepeats, this.dimensions,
-                this.globalPreferences, this.blockPreferences);
+                this.globalPreferences, this.blockPreferences, this.isFlipped);
         TerminalBehavior.applyUserPreferences(held, schemaInfo, this.isClearMulti, this.isClearPreferences);
     }
 }

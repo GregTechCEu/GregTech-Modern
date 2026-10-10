@@ -82,6 +82,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     @Setter
     private MultiblockSchemaInfo multiblockSchemaInfo;
 
+    @Getter
     @Setter
     private boolean isFlipped = false;
     @Setter

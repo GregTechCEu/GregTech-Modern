@@ -97,10 +97,10 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
 
         Direction frontFacing = controller.getFrontFacing();
         Direction upFacing = controller.getUpwardsFacing();
-        boolean flipped = controller.isFlipped();
 
         if (!level.isClientSide) {
-            MultiblockSchemaInfo schemaInfo = loadSchemaInfo(stack, controller.getDefinition());
+            MultiblockSchemaInfo schemaInfo = loadSchemaInfo(stack, info);
+            boolean flipped = schemaInfo.isFlipped();
 
             ServerPlayer serverPlayer = (ServerPlayer) player;
             // Partially copy pasted from MultiblockControllerMachine#onUse.
@@ -154,7 +154,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                 }
             } else if (structureHelper != null) {
                 AutobuildHelper.autobuild(serverPlayer, context.getItemInHand(), controller.getDefinition(), controller,
-                        resultStructure, structureHelper);
+                        resultStructure, structureHelper, flipped);
             }
 
             // needed to force the multiblock to do a clean check, kinda sus
@@ -218,13 +218,13 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         var controllerInfo = loadControllerInfo(item);
         if (controllerInfo == null) return Optional.empty();
 
-        MultiblockSchemaInfo schemaInfo = loadSchemaInfo(item, controllerInfo.definition());
+        MultiblockSchemaInfo schemaInfo = loadSchemaInfo(item, controllerInfo);
 
         MultiblockPreviewWidget previewWidget = new MultiblockPreviewWidget(controllerInfo.definition(), schemaInfo,
                 200, 200, true)
                 .setControllerPos(controllerInfo.pos())
                 .setFrontFacing(controllerInfo.facing()).setUpFacing(controllerInfo.upFace())
-                .setFlipped(controllerInfo.flipped());
+                .setFlipped(schemaInfo.isFlipped());
         previewWidget.refreshSchema();
 
         return Optional.of(ModularPanel.defaultPanel("terminal")
@@ -240,8 +240,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         GTNetwork.sendToServer(new CPacketTerminalSettings(hand, definition, schemaInfo.getUserSliceRepeats(),
                 schemaInfo.getUserDimensions(), schemaInfo.getUserGlobalBlockPreferences(),
                 schemaInfo.getBlockPreferences(), HashBasedTable.create()
-                /* schemaInfo.getMinMaxPreferenceCharTable() */, previewWidget.isClearMulti(),
-                previewWidget.isClearPreferences()));
+                /* schemaInfo.getMinMaxPreferenceCharTable() */, previewWidget.isFlipped(),
+                previewWidget.isClearMulti(), previewWidget.isClearPreferences()));
     }
 
     public static void applyUserPreferences(ItemStack item, MultiblockSchemaInfo schemaInfo,
@@ -256,7 +256,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                     .getOrThrow(false, GTCEu.LOGGER::error);
             tag.put(SCHEMA_INFO_TAG,
                     MultiblockSchemaInfo.CODEC
-                            .encodeStart(NbtOps.INSTANCE, new MultiblockSchemaInfo(controllerInfo.definition))
+                            .encodeStart(NbtOps.INSTANCE, defaultSchemaInfo(controllerInfo))
                             .getOrThrow(false, GTCEu.LOGGER::error));
         } else {
             tag.put(SCHEMA_INFO_TAG, MultiblockSchemaInfo.CODEC.encodeStart(NbtOps.INSTANCE, schemaInfo)
@@ -264,7 +264,13 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         }
     }
 
-    public MultiblockSchemaInfo loadSchemaInfo(ItemStack stack, MultiblockMachineDefinition definition) {
+    private static MultiblockSchemaInfo defaultSchemaInfo(ControllerInfo controllerInfo) {
+        MultiblockSchemaInfo schemaInfo = new MultiblockSchemaInfo(controllerInfo.definition());
+        schemaInfo.setFlipped(controllerInfo.flipped());
+        return schemaInfo;
+    }
+
+    public MultiblockSchemaInfo loadSchemaInfo(ItemStack stack, ControllerInfo controllerInfo) {
         CompoundTag tag = stack.getOrCreateTag();
         if (tag.contains(SCHEMA_INFO_TAG)) {
             try {
@@ -272,10 +278,10 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                         .parse(NbtOps.INSTANCE, tag.getCompound(SCHEMA_INFO_TAG))
                         .getOrThrow(false, GTCEu.LOGGER::error);
             } catch (Exception e) {
-                return new MultiblockSchemaInfo(definition);
+                return defaultSchemaInfo(controllerInfo);
             }
         } else {
-            return new MultiblockSchemaInfo(definition);
+            return defaultSchemaInfo(controllerInfo);
         }
     }
 
