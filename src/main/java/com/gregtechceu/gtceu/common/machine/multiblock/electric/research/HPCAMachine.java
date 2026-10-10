@@ -162,19 +162,23 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
+    public int requestCWUt(int cwut, boolean simulate, Set<IOpticalComputationProvider> seen,
+                           Map<IOpticalComputationProvider, Object> simulationState) {
         seen.add(this);
-        return isActive() && isWorkingEnabled() && !hasNotEnoughEnergy ? hpcaHandler.allocateCWUt(cwut, simulate) : 0;
+        return isActive() && isWorkingEnabled() && !hasNotEnoughEnergy ?
+                hpcaHandler.allocateCWUt(cwut, simulate, this, simulationState) : 0;
     }
 
     @Override
-    public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
+    public int getMaxCWUt(Set<IOpticalComputationProvider> seen,
+                          Map<IOpticalComputationProvider, Object> simulationState) {
         seen.add(this);
         return isActive() && isWorkingEnabled() ? hpcaHandler.getMaxCWUt() : 0;
     }
 
     @Override
-    public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
+    public boolean canBridge(Set<IOpticalComputationProvider> seen,
+                             Map<IOpticalComputationProvider, Object> simulationState) {
         seen.add(this);
         // don't show a problem if the structure is not yet formed
         return !isFormed() || hpcaHandler.hasHPCABridge();
@@ -578,13 +582,20 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         }
 
         /** Allocate computation on a given request. Allocates for one tick. */
-        public int allocateCWUt(int cwut, boolean simulate) {
+        public int allocateCWUt(int cwut, boolean simulate, IOpticalComputationProvider selfProvider,
+                                Map<IOpticalComputationProvider, Object> simulationState) {
             if (cwut == 0) return 0;
             int maxCWUt = getMaxCWUt();
-            int availableCWUt = maxCWUt - this.allocatedCWUt;
+
+            int localAllocatedCWUt = (Integer) simulationState.getOrDefault(selfProvider, this.allocatedCWUt);
+            int availableCWUt = maxCWUt - localAllocatedCWUt;
             int toAllocate = Math.min(cwut, availableCWUt);
+
+            localAllocatedCWUt += toAllocate;
             if (!simulate) {
-                this.allocatedCWUt += toAllocate;
+                this.allocatedCWUt = localAllocatedCWUt;
+            } else {
+                simulationState.put(selfProvider, localAllocatedCWUt);
             }
             return toAllocate;
         }
