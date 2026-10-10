@@ -4600,6 +4600,7 @@
   "item.gtceu.naquadah_boule.tooltip": "ʇınɔɹıƆ ʍɐᴚㄥ§",
   "item.gtceu.naquadah_wafer": "ɹǝɟɐM pǝdop-ɥɐpɐnbɐN",
   "item.gtceu.naquadah_wafer.tooltip": "ʇınɔɹıƆ ʍɐᴚㄥ§",
+  "item.gtceu.netherite_plated": "%s pǝʇɐןԀ-ǝʇıɹǝɥʇǝN",
   "item.gtceu.neuro_processing_unit": "ʇıu∩ buıssǝɔoɹԀ oɹnǝN",
   "item.gtceu.neuro_processing_unit.tooltip": "∩ԀƆ oɹnǝNㄥ§",
   "item.gtceu.neutron_reflector": "ɹoʇɔǝןɟǝᴚ uoɹʇnǝN ɯnıpıɹI",
@@ -6163,5 +6164,6 @@
   "tooltip.gtceu.hazard_trigger.protection": ":ɯoɹɟ sʇɔǝʇoɹԀ",
   "tooltip.gtceu.hazard_trigger.skin_contact": "ʇɔɐʇuoɔ uıʞS",
   "tooltip.gtceu.medical_condition.description": "sןıɐʇǝp ʍoɥs oʇ ʇɟıɥS pןoHㄥ§ S∩OᗡᴚⱯZⱯHɔ§ן§",
-  "tooltip.gtceu.medical_condition.description_shift": ":S∩OᗡᴚⱯZⱯHɔ§ן§"
+  "tooltip.gtceu.medical_condition.description_shift": ":S∩OᗡᴚⱯZⱯHɔ§ן§",
+  "tooltip.gtceu.netherite_plated": "sʇoןS ǝןnpoW ᄅ+ :buıʇɐןԀ ǝʇıɹǝɥʇǝN"
 }

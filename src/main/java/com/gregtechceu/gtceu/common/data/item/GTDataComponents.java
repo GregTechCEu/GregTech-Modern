@@ -86,6 +86,9 @@ public class GTDataComponents {
                     .networkSynchronized(ByteBufCodecs.registry(GTRegistries.Keys.MATERIAL)));
 
     // Armor-related
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> NETHERITE_PLATED = DATA_COMPONENTS
+            .registerComponentType("netherite_plated", builder -> builder.persistent(Unit.CODEC)
+                    .networkSynchronized(UNIT_STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<GTArmor>> ARMOR_DATA = DATA_COMPONENTS
             .registerComponentType("armor",
                     builder -> builder.persistent(GTArmor.CODEC).networkSynchronized(GTArmor.STREAM_CODEC));

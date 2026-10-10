@@ -4601,6 +4601,7 @@
   "item.gtceu.naquadah_boule.tooltip": "§7Raw Circuit",
   "item.gtceu.naquadah_wafer": "Naquadah-doped Wafer",
   "item.gtceu.naquadah_wafer.tooltip": "§7Raw Circuit",
+  "item.gtceu.netherite_plated": "Netherite-Plated %s",
   "item.gtceu.neuro_processing_unit": "Neuro Processing Unit",
   "item.gtceu.neuro_processing_unit.tooltip": "§7Neuro CPU",
   "item.gtceu.neutron_reflector": "Iridium Neutron Reflector",
@@ -6164,5 +6165,6 @@
   "tooltip.gtceu.hazard_trigger.protection": "Protects from:",
   "tooltip.gtceu.hazard_trigger.skin_contact": "Skin contact",
   "tooltip.gtceu.medical_condition.description": "§l§cHAZARDOUS §7Hold Shift to show details",
-  "tooltip.gtceu.medical_condition.description_shift": "§l§cHAZARDOUS:"
+  "tooltip.gtceu.medical_condition.description_shift": "§l§cHAZARDOUS:",
+  "tooltip.gtceu.netherite_plated": "Netherite Plating: +2 Module Slots"
 }

@@ -3,8 +3,10 @@ package com.gregtechceu.gtceu.api.item.armor;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -19,6 +21,13 @@ public class ModularArmorItem extends ArmorComponentItem implements IComponentIt
 
     public ModularArmorItem(Holder<ArmorMaterial> material, Type type, Properties properties) {
         super(material, type, properties);
+    }
+
+    @Override
+    public Component getName(ItemStack stack) {
+        Component name = super.getName(stack);
+        return stack.has(GTDataComponents.NETHERITE_PLATED) ?
+                Component.translatable("item.gtceu.netherite_plated", name) : name;
     }
 
     @Override

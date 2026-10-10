@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.capability.ModularItemStack;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
@@ -39,7 +40,13 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
     public ModularItemComponent(int slots, int maxTier) {
         List<ItemModuleSlot> defaultSlots = new ArrayList<>();
         for (int i = 0; i < slots; i++) defaultSlots.add(GTItemModules.TIERED_SLOTS[maxTier]);
-        this.defaultSlotGetter = stack -> defaultSlots;
+        this.defaultSlotGetter = stack -> {
+            if (!stack.has(GTDataComponents.NETHERITE_PLATED)) return defaultSlots;
+            List<ItemModuleSlot> platedSlots = new ArrayList<>(defaultSlots);
+            platedSlots.add(GTItemModules.TIERED_SLOTS[maxTier]);
+            platedSlots.add(GTItemModules.TIERED_SLOTS[maxTier]);
+            return platedSlots;
+        };
     }
 
     @Override
@@ -120,6 +127,11 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                     .max().orElse(-1);
             if (maxTier >= 0) {
                 tooltipComponents.add(Component.translatable("gui.gtceu.max_module_tier", GTValues.VNF[maxTier]));
+            }
+
+            if (stack.has(GTDataComponents.NETHERITE_PLATED)) {
+                tooltipComponents.add(Component.translatable("tooltip.gtceu.netherite_plated")
+                        .withStyle(ChatFormatting.GRAY));
             }
 
             if (!GTUtil.isShiftDown()) {
