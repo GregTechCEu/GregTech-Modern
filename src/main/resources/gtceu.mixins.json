@@ -48,6 +48,7 @@
         "ftbchunks.LargeMapScreenMixin",
         "ftbchunks.RegionMapPanelMixin",
         "jei.RecipesGuiAccessor",
+        "jei.FluidTankRendererMixin",
         "xaerominimap.HighlighterRegistryMixin",
         "xaerominimap.MinimapFBORendererMixin",
         "xaeroworldmap.GuiMapMixin",
