@@ -34,34 +34,20 @@ public class BlockLang {
         provider.add("block.gtceu.substation_capacitor.tooltip_filled", "§cEnergy Capacity: §f%d EU");
 
         // Casings
-        replace(provider, "block.gtceu.bronze_brick_casing", "Bricked Bronze Casing");
-        replace(provider, "block.gtceu.steel_brick_casing", "Bricked Wrought Iron Casing");
         replace(provider, "block.gtceu.heatproof_machine_casing", "Heat Proof Invar Machine Casing");
         replace(provider, "block.gtceu.frostproof_machine_casing", "Frost Proof Aluminium Machine Casing");
         replace(provider, "block.gtceu.steel_machine_casing", "Solid Steel Machine Casing");
         replace(provider, "block.gtceu.clean_machine_casing", "Clean Stainless Steel Casing");
         replace(provider, "block.gtceu.stable_machine_casing", "Stable Titanium Machine Casing");
         replace(provider, "block.gtceu.robust_machine_casing", "Robust Tungstensteel Machine Casing");
-        replace(provider, "block.gtceu.casing_coke_bricks", "Coke Oven Bricks");
         replace(provider, "block.gtceu.inert_machine_casing", "Chemically Inert PTFE Machine Casing");
         replace(provider, "block.gtceu.sturdy_machine_casing", "Sturdy HSS-E Machine Casing");
-        replace(provider, "block.gtceu.casing_grate", "Grate Machine Casing");
-        replace(provider, "block.gtceu.assembly_line_unit", "Assembly Control Casing");
         replace(provider, "block.gtceu.ptfe_pipe_casing", "PTFE Pipe Casing");
         replace(provider, "block.gtceu.bronze_gearbox", "Bronze Gearbox Casing");
         replace(provider, "block.gtceu.steel_gearbox", "Steel Gearbox Casing");
         replace(provider, "block.gtceu.stainless_steel_gearbox", "Stainless Steel Gearbox Casing");
         replace(provider, "block.gtceu.titanium_gearbox", "Titanium Gearbox Casing");
         replace(provider, "block.gtceu.tungstensteel_gearbox", "Tungstensteel Gearbox Casing");
-        replace(provider, "block.gtceu.steel_turbine_casing", "Magnalium Turbine Casing");
-        replace(provider, "block.gtceu.titanium_turbine_casing", "Titanium Turbine Casing");
-        replace(provider, "block.gtceu.stainless_steel_turbine_casing", "Stainless Turbine Casing");
-        replace(provider, "block.gtceu.tungstensteel_turbine_casing", "Tungstensteel Turbine Casing");
-        replace(provider, "block.gtceu.bronze_pipe_casing", "Bronze Pipe Casing");
-        replace(provider, "block.gtceu.steel_pipe_casing", "Steel Pipe Casing");
-        replace(provider, "block.gtceu.titanium_pipe_casing", "Titanium Pipe Casing");
-        replace(provider, "block.gtceu.tungstensteel_pipe_casing", "Tungstensteel Pipe Casing");
-        replace(provider, "block.gtceu.palladium_substation", "Palladium Substation Casing");
 
         replace(provider, "block.gtceu.steam_casing_bronze", "Bronze Hull");
         provider.add("block.gtceu.steam_casing_bronze.tooltip", "§7For your first Steam Machines");

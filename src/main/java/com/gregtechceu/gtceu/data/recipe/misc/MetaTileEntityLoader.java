@@ -61,7 +61,7 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, false, GTMachines.HULL, "PLP", "CHC", 'P', HULL_PLATE, 'L', PLATE, 'C', CABLE,
                 'H', CASING);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_coke_bricks", GTBlocks.CASING_COKE_BRICKS.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "coke_oven_bricks", GTBlocks.CASING_COKE_BRICKS.asStack(),
                 "XX", "XX", 'X', GTItems.COKE_OVEN_BRICK);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_bronze_bricks",
                 GTBlocks.CASING_BRONZE_BRICKS.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PhP", "PBP",
@@ -97,21 +97,21 @@ public class MetaTileEntityLoader {
                 new MaterialEntry(TagPrefix.frameGt, GTMaterials.Europium));
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_steel_turbine_casing",
-                GTBlocks.CASING_STEEL_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PhP", "PFP",
+                GTBlocks.CASING_MAGNALIUM_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PhP", "PFP",
                 "PwP", 'P', new MaterialEntry(TagPrefix.plate, GTMaterials.Magnalium), 'F',
                 new MaterialEntry(TagPrefix.frameGt, GTMaterials.BlueSteel));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_stainless_turbine_casing",
                 GTBlocks.CASING_STAINLESS_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PhP", "PFP",
                 "PwP", 'P', new MaterialEntry(TagPrefix.plate, GTMaterials.StainlessSteel), 'F',
-                GTBlocks.CASING_STEEL_TURBINE.asStack());
+                GTBlocks.CASING_MAGNALIUM_TURBINE.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_titanium_turbine_casing",
                 GTBlocks.CASING_TITANIUM_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PhP", "PFP",
                 "PwP", 'P', new MaterialEntry(TagPrefix.plate, GTMaterials.Titanium), 'F',
-                GTBlocks.CASING_STEEL_TURBINE.asStack());
+                GTBlocks.CASING_MAGNALIUM_TURBINE.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_tungstensteel_turbine_casing",
                 GTBlocks.CASING_TUNGSTENSTEEL_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PhP",
                 "PFP", "PwP", 'P', new MaterialEntry(TagPrefix.plate, GTMaterials.TungstenSteel), 'F',
-                GTBlocks.CASING_STEEL_TURBINE.asStack());
+                GTBlocks.CASING_MAGNALIUM_TURBINE.asStack());
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_bronze_pipe",
                 GTBlocks.CASING_BRONZE_PIPE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PIP", "IFI", "PIP",
@@ -188,17 +188,18 @@ public class MetaTileEntityLoader {
                 new MaterialEntry(TagPrefix.frameGt, GTMaterials.TungstenSteel), 'G',
                 new MaterialEntry(TagPrefix.gear, GTMaterials.TungstenSteel));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_grate_casing",
-                GTBlocks.CASING_GRATE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PVP", "PFP", "PMP", 'P',
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "assembly_line_grating",
+                GTBlocks.CASING_ASSEMBLY_GRATE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PVP", "PFP",
+                "PMP", 'P',
                 new ItemStack(Blocks.IRON_BARS, 1), 'F', new MaterialEntry(TagPrefix.frameGt, GTMaterials.Steel),
                 'M', GTItems.ELECTRIC_MOTOR_MV, 'V', new MaterialEntry(TagPrefix.rotor, GTMaterials.Steel));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_assembly_control",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "assembly_control_casing",
                 GTBlocks.CASING_ASSEMBLY_CONTROL.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "CPC", "SFE",
                 "CMC", 'C', CustomTags.EV_CIRCUITS, 'P', GTItems.HIGH_POWER_INTEGRATED_CIRCUIT, 'S',
                 GTItems.SENSOR_IV.asStack(), 'F', new MaterialEntry(TagPrefix.frameGt, GTMaterials.TungstenSteel),
                 'E', GTItems.EMITTER_IV.asStack(), 'M', GTItems.ELECTRIC_MOTOR_IV);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_assembly_line",
-                GTBlocks.CASING_ASSEMBLY_LINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PGP", "AFA",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "assembly_line_unit",
+                GTBlocks.CASING_ASSEMBLY_UNIT.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PGP", "AFA",
                 "PGP", 'P', new MaterialEntry(TagPrefix.plate, GTMaterials.Steel), 'G',
                 new MaterialEntry(TagPrefix.gear, GTMaterials.Ruridit), 'A', GTItems.ROBOT_ARM_IV.asStack(), 'F',
                 ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.TungstenSteel));

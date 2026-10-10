@@ -169,7 +169,7 @@ public class GTMaterials {
         rock.setIgnored(Marble, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.MARBLE.get()));
         rock.setIgnored(Granite, Blocks.GRANITE);
         rock.setIgnored(Granite, Blocks.POLISHED_GRANITE);
-        rock.setIgnored(GraniteRed, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.RED_GRANITE.get()));
+        rock.setIgnored(RedGranite, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.RED_GRANITE.get()));
         rock.setIgnored(Andesite, Blocks.ANDESITE);
         rock.setIgnored(Andesite, Blocks.POLISHED_ANDESITE);
         rock.setIgnored(Diorite, Blocks.DIORITE);
@@ -781,9 +781,9 @@ public class GTMaterials {
     public static Material ConstructionFoam;
 
     public static Material Oil;
-    public static Material OilHeavy;
+    public static Material HeavyOil;
     public static Material RawOil;
-    public static Material OilLight;
+    public static Material LightOil;
     public static Material NaturalGas;
     public static Material SulfuricHeavyFuel;
     public static Material HeavyFuel;
@@ -923,7 +923,7 @@ public class GTMaterials {
     public static Material GarnetYellow;
     public static Material Marble;
     public static Material Deepslate;
-    public static Material GraniteRed;
+    public static Material RedGranite;
     public static Material Blackstone;
     public static Material VanadiumMagnetite;
     public static Material QuartzSand;

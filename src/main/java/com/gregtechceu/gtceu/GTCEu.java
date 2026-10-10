@@ -17,6 +17,7 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import com.mojang.datafixers.DataFixUtils;
 import dev.emi.emi.config.EmiConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +33,22 @@ public class GTCEu {
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
     public static final Path GTCEU_FOLDER = getGameDir().resolve("gtceu");
+
+    /**
+     * Only used for datafixers. Bump subversion whenever a block changes id, save data layout changes, etc.<br>
+     * Main version should be bumped the first time it is bumped after a release, then subversion for each subsequent
+     * change.
+     *
+     * <p>
+     * Example versions:
+     * <ul>
+     * <li>0: 7.5.3</li>
+     * <li>1.0: 8.0.0-SNAPSHOT+HASH1</li> // TODO set the correct hash here
+     * <li>1.1: 8.0.0-SNAPSHOT+HASH2</li>
+     * <li>2.0: 8.0.1-SNAPSHOT+HASH2</li>
+     * </ul>
+     */
+    public static final int GT_DATA_VERSION = DataFixUtils.makeKey(1, 5);
 
     public GTCEu() {
         GTCEu.init();
