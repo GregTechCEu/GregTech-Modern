@@ -234,7 +234,7 @@ public class CustomTags {
 
     public static final TagKey<Fluid> FREEZABLE_FLUIDS = TagUtil.createModFluidTag("freezable_fluids");
     /** @deprecated Use FREEZABLE_FLUIDS for fluids requiring metal freezing. */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static final TagKey<Fluid> MOLTEN_FLUIDS = TagUtil.createFluidTag("molten");
     public static final TagKey<Fluid> LIQUID_FLUIDS = TagUtil.createFluidTag("liquid");
     public static final TagKey<Fluid> PLASMA_FLUIDS = TagUtil.createFluidTag("plasmatic");

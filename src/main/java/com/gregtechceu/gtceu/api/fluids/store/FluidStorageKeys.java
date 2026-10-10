@@ -42,7 +42,7 @@ public final class FluidStorageKeys {
     /**
      * @deprecated Use {@link #LIQUID}. Addon Support will eventually be removed and forced to use liquid.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static final FluidStorageKey MOLTEN = new FluidStorageKey(GTCEu.id("molten"), CustomTags.MOLTEN_FLUIDS,
             MaterialIconType.molten,
             m -> "molten_" + m.getName(),

@@ -331,7 +331,7 @@ public final class Material {
      *
      * @deprecated Use {@link #getFluid(FluidStorageKey)} with {@link FluidStorageKeys#LIQUID}.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public Fluid getHotFluid() {
         return hasProperty(PropertyKey.FLUID) ? getFluid(FluidStorageKeys.MOLTEN) : null;
     }
@@ -339,7 +339,7 @@ public final class Material {
     /**
      * @deprecated Use {@link #getFluid(FluidStorageKey, int)} with {@link FluidStorageKeys#LIQUID}.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public FluidStack getHotFluid(int amount) {
         Fluid fluid = getHotFluid();
         return fluid == null ? FluidStack.EMPTY : new FluidStack(fluid, amount);
