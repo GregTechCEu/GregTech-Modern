@@ -24,7 +24,6 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -72,10 +71,10 @@ public class GTDataComponents {
             .registerComponentType("tool_mode", builder -> builder
                     .persistent(ToolModeSwitchBehavior.ModeType.CODEC)
                     .networkSynchronized(ToolModeSwitchBehavior.ModeType.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemEnchantments>> INNATE_ENCHANTMENTS = DATA_COMPONENTS
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResolvableItemEnchantments>> INNATE_ENCHANTMENTS = DATA_COMPONENTS
             .registerComponentType("innate_enchantments", builder -> builder
-                    .persistent(ItemEnchantments.CODEC)
-                    .networkSynchronized(ItemEnchantments.STREAM_CODEC)
+                    .persistent(ResolvableItemEnchantments.CODEC)
+                    .networkSynchronized(ResolvableItemEnchantments.STREAM_CODEC)
                     .cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ModularItemData>> MODULAR_ITEM_DATA = DATA_COMPONENTS
             .registerComponentType("modular_item_data", builder -> builder.persistent(ModularItemData.CODEC));

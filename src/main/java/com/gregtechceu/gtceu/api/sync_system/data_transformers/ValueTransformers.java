@@ -15,16 +15,21 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -114,6 +119,10 @@ public final class ValueTransformers {
         registerTransformer(type, new CodecTransformer<>(codec, streamCodec));
     }
 
+    public static <T> void registerRegistryTransformer(Class<T> type, Registry<T> registry) {
+        registerCodecTransformer(type, registry.byNameCodec(), ByteBufCodecs.registry(registry.key()));
+    }
+
     /**
      * Registers a supplier that supplies instances of a specific transformer type.
      * The supplier will be called to create new instances of the transformer for each unique set of generic type
@@ -153,8 +162,11 @@ public final class ValueTransformers {
         registerCodecTransformer(String.class, Codec.STRING, ByteBufCodecs.STRING_UTF8);
         registerCodecTransformer(UUID.class, UUIDUtil.CODEC, UUIDUtil.STREAM_CODEC);
         registerCodecTransformer(CompoundTag.class, CompoundTag.CODEC, ByteBufCodecs.COMPOUND_TAG);
+        registerCodecTransformer(ResourceLocation.class, ResourceLocation.CODEC, ResourceLocation.STREAM_CODEC);
 
+        registerRegistryTransformer(Item.class, BuiltInRegistries.ITEM);
         registerCodecTransformer(ItemStack.class, ItemStack.OPTIONAL_CODEC, ItemStack.OPTIONAL_STREAM_CODEC);
+        registerRegistryTransformer(Fluid.class, BuiltInRegistries.FLUID);
         registerCodecTransformer(FluidStack.class, FluidStack.OPTIONAL_CODEC, FluidStack.OPTIONAL_STREAM_CODEC);
         registerCodecTransformer(Component.class, ComponentSerialization.CODEC, ComponentSerialization.STREAM_CODEC);
 
@@ -177,7 +189,7 @@ public final class ValueTransformers {
         registerCodecTransformer(MonitorGroup.class, MonitorGroup.CODEC, MonitorGroup.STREAM_CODEC);
         registerCodecTransformer(ConsumedInputsData.class, ConsumedInputsData.CODEC, ByteBufCodecs.fromCodecWithRegistries(ConsumedInputsData.CODEC));
 
-        registerTransformer(Material.class, new RegistryReferenceTransformer<>(GTRegistries.Keys.MATERIAL, Material::getResourceLocation));
+        registerRegistryTransformer(Material.class, GTRegistries.MATERIALS);
 
         // spotless:on
     }

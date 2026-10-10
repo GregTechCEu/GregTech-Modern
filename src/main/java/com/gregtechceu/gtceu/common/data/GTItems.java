@@ -55,6 +55,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
@@ -2123,6 +2124,46 @@ public class GTItems {
 
     public static ItemEntry<Item> CREATIVE_FLIGHT_MODULE = REGISTRATE.item("creative_flight_module", Item::new)
             .lang("Gravitation Module")
+    public static ItemEntry<Item> SPOILABLE_1;
+    public static ItemEntry<Item> SPOILABLE_2;
+    public static ItemEntry<Item> SPOILABLE_3;
+    public static ItemEntry<Item> SPOILABLE_4;
+    public static ItemEntry<Item> SPOILABLE_5;
+    public static ItemEntry<Item> ENTITY_SPOILABLE;
+
+    static {
+        if (GTCEu.isDev()) {
+            SPOILABLE_1 = REGISTRATE.item("spoilable_1", Item::new)
+                    .lang("Spoilable 1")
+                    .register();
+            SPOILABLE_2 = REGISTRATE.item("spoilable_2", Item::new)
+                    .lang("Spoilable 2")
+                    .register();
+            SPOILABLE_3 = REGISTRATE.item("spoilable_3", Item::new)
+                    .lang("Spoilable 3")
+                    .register();
+            SPOILABLE_4 = REGISTRATE.item("spoilable_4", Item::new)
+                    .lang("Spoilable 4")
+                    .register();
+            SPOILABLE_5 = REGISTRATE.item("spoilable_5", Item::new)
+                    .lang("Spoilable 5")
+                    .register();
+            ENTITY_SPOILABLE = REGISTRATE.item("entity_spoilable", Item::new)
+                    .lang("Entity Spoilable")
+                    .register();
+        }
+    }
+
+    public static ItemEntry<ComponentItem> MAGNETIC_GOLDEN_CARROT = REGISTRATE
+            .item("magnetic_golden_carrot", ComponentItem::new)
+            .lang("Magnetic Golden Carrot")
+            .onRegister(attach(new FoodStats(new FoodProperties.Builder()
+                    .nutrition(Foods.GOLDEN_CARROT.nutrition())
+                    .saturationModifier(Foods.GOLDEN_CARROT.saturation())
+                    .effect(() -> new MobEffectInstance(MobEffects.DIG_SPEED, 20 * 60 * 10, 1), 1)
+                    .fast()
+                    .alwaysEdible()
+                    .build())))
             .register();
 
     public static void init() {

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.fluids;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
@@ -335,7 +336,9 @@ public class FluidBuilder {
         if (hasCustomStill) {
             still = ResourceLocation.fromNamespaceAndPath(material.getModid(), "block/fluids/fluid." + name);
         } else {
-            still = key.getIconType().getBlockTexturePath(material.getMaterialIconSet(), true);
+            MaterialIconType icon = key == FluidStorageKeys.LIQUID && material.requiresMetalFreezing() ?
+                    MaterialIconType.molten : key.getIconType();
+            still = icon.getBlockTexturePath(material.getMaterialIconSet(), true);
         }
 
         if (hasCustomFlowing) {

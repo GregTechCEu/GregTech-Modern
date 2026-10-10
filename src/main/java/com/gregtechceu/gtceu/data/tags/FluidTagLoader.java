@@ -11,6 +11,7 @@ public class FluidTagLoader {
 
     public static void init(RegistrateTagsProvider.IntrinsicImpl<Fluid> provider) {
         provider.addTag(CustomTags.LIGHTER_FLUIDS).add(GTMaterials.Butane.getFluid(), GTMaterials.Propane.getFluid());
+        provider.addTag(CustomTags.MOLTEN_FLUIDS).addTag(CustomTags.LIQUID_FLUIDS);
         provider.addTag(CustomTags.HPCA_COOLANTS).add(GTMaterials.PCBCoolant.getFluid());
     }
 }
