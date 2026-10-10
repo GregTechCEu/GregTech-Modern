@@ -23,7 +23,6 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import lombok.experimental.ExtensionMethod;
 import org.jetbrains.annotations.NotNull;
 
-
 @ExtensionMethod(SizedIngredientExtensions.class)
 public class AlloyBlastRecipeProducer {
 
