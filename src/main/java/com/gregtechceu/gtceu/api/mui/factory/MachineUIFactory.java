@@ -22,6 +22,7 @@ import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
 import dev.ryanhcode.sable.Sable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -57,9 +58,9 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
     }
 
     @Override
-    public @NotNull IUIHolder<PosGuiData> getGuiHolder(PosGuiData data) {
+    public IUIHolder<PosGuiData> getGuiHolder(PosGuiData data) {
         MetaMachine machine = getMachine(data);
-        if (machine.getDefinition().getUI() != null) {
+        if (Objects.requireNonNull(machine).getDefinition().getUI() != null) {
             return machine.getDefinition().getUI();
         }
         return Objects.requireNonNull(castUIHolder(machine), "Found MetaMachine is not a gui holder!");
@@ -89,7 +90,7 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
         return new PosGuiData(player, buffer.readBlockPos());
     }
 
-    public static MetaMachine getMachine(PosGuiData data) {
+    public static @Nullable MetaMachine getMachine(PosGuiData data) {
         return MetaMachine.getMachine(data.getLevel(), data.getBlockPos());
     }
 
@@ -100,7 +101,7 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
     }
 
     public String getThemeId(PosGuiData data) {
-        return getMachine(data).getDefinition().getThemeId();
+        return Objects.requireNonNull(getMachine(data)).getDefinition().getThemeId();
     }
 
     private static class SableUtils {

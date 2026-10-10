@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
@@ -556,7 +557,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
 
         // electric info
         if (this.isElectric()) {
-            ElectricStats.addCurrentChargeTooltip(tooltip, getCharge(stack), getMaxCharge(stack), getElectricTier(),
+            IElectricItem.addCurrentChargeTooltip(tooltip, getCharge(stack), getMaxCharge(stack), getElectricTier(),
                     false);
         }
 

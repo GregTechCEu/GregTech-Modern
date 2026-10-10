@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
-import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
 
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapability;
@@ -20,8 +20,6 @@ public class GTCapability {
             .createSided(GTCEu.id("workable"), IWorkable.class);
     public static final BlockCapability<IControllable, Direction> CAPABILITY_CONTROLLABLE = BlockCapability
             .createSided(GTCEu.id("controllable"), IControllable.class);
-    public static final BlockCapability<RecipeLogic, Direction> CAPABILITY_RECIPE_LOGIC = BlockCapability
-            .createSided(GTCEu.id("recipe_logic"), RecipeLogic.class);
     public static final ItemCapability<IElectricItem, Void> CAPABILITY_ELECTRIC_ITEM = ItemCapability
             .createVoid(GTCEu.id("electric_item"), IElectricItem.class);
     public static final BlockCapability<ILaserContainer, Direction> CAPABILITY_LASER = BlockCapability
@@ -36,4 +34,6 @@ public class GTCapability {
             .createSided(GTCEu.id("monitor_component"), IMonitorComponent.class);
     public static final ItemCapability<ISpoilableItem, Void> CAPABILITY_SPOILABLE_ITEM = ItemCapability
             .createVoid(GTCEu.id("spoilable_item"), ISpoilableItem.class);
+    public static final ItemCapability<IModularItem, Void> CAPABILITY_MODULAR_ITEM = ItemCapability
+            .createVoid(GTCEu.id("modular_item"), IModularItem.class);
 }

@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
@@ -423,16 +422,6 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
                 for (MachineTrait trait : machine.getTraitHolder().getAllTraits()) {
                     if (trait instanceof IControllable controllable) {
                         return controllable;
-                    }
-                }
-            }
-            return null;
-        }, this);
-        event.registerBlock(GTCapability.CAPABILITY_RECIPE_LOGIC, (level, pos, state, blockEntity, side) -> {
-            if (blockEntity instanceof MetaMachine machine) {
-                for (MachineTrait trait : machine.getTraitHolder().getAllTraits()) {
-                    if (trait instanceof RecipeLogic recipeLogic) {
-                        return recipeLogic;
                     }
                 }
             }

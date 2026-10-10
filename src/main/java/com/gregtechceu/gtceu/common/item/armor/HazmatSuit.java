@@ -43,7 +43,7 @@ public class HazmatSuit implements IArmorLogic {
     }
 
     @Override
-    public boolean isPPE() {
+    public boolean isPPE(ItemStack stack) {
         return true;
     }
 }

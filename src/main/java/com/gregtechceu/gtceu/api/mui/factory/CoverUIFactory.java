@@ -48,7 +48,7 @@ public class CoverUIFactory extends AbstractUIFactory<SidedPosGuiData> {
     }
 
     @Override
-    public @NotNull IUIHolder<SidedPosGuiData> getGuiHolder(SidedPosGuiData data) {
+    public IUIHolder<SidedPosGuiData> getGuiHolder(SidedPosGuiData data) {
         BlockEntity be = data.getBlockEntity();
         if (be == null) {
             throw new IllegalStateException("Could not get gui for null BlockEntity!");

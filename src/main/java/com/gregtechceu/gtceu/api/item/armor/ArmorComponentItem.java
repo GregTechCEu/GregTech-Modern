@@ -23,16 +23,19 @@ import net.neoforged.neoforge.common.ItemAbility;
 
 import com.google.common.base.Preconditions;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
 
+@Accessors(chain = true)
+@NotNullByDefault
 public class ArmorComponentItem extends ArmorItem implements IComponentItem {
 
     @Getter
-    private IArmorLogic armorLogic = new DummyArmorLogic();
+    private @Nullable IArmorLogic armorLogic = null;
     @Getter
     protected List<IItemComponent> components;
 
@@ -58,21 +61,22 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
 
     @Override
     public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
-        List<ItemAttributeModifiers.Entry> list = new ArrayList<>();
         IArmorLogic armorLogic = getArmorLogic();
-        list.addAll(super.getDefaultAttributeModifiers(stack).modifiers());
-        list.addAll(armorLogic.getDefaultAttributeModifiers(Equipable.get(stack).getEquipmentSlot(), stack));
+        List<ItemAttributeModifiers.Entry> list = new ArrayList<>(
+                super.getDefaultAttributeModifiers(stack).modifiers());
+        if (armorLogic != null)
+            list.addAll(armorLogic.getDefaultAttributeModifiers(Equipable.get(stack).getEquipmentSlot(), stack));
         return new ItemAttributeModifiers(list, true);
     }
 
     @Override
     public ArmorItem.Type getType() {
-        return armorLogic.getArmorType();
+        return super.getType();
     }
 
     @Override
     public EquipmentSlot getEquipmentSlot() {
-        return armorLogic.getArmorType().getSlot();
+        return super.getEquipmentSlot();
     }
 
     @Override
@@ -83,6 +87,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
             }
         }
         if (slotId >= 36 && slotId <= 39 && entity instanceof Player player) {
+            if (armorLogic == null) return;
             this.armorLogic.onArmorTick(level, player, stack);
         }
     }
@@ -102,10 +107,6 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
         return 50;
     }
 
-    public int getArmorDisplay(Player player, @NotNull ItemStack armor, EquipmentSlot slot) {
-        return armorLogic.getArmorDisplay(player, armor, slot);
-    }
-
     @Override
     public void setDamage(ItemStack stack, int damage) {}
 
@@ -122,12 +123,14 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     @Override
     public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, @Nullable T entity,
                                                    Consumer<Item> onBroken) {
+        if (armorLogic == null) return super.damageItem(stack, amount, entity, onBroken);
         return armorLogic.damageArmor(entity, stack, amount, this.getEquipmentSlot());
     }
 
     @Override
     public @Nullable ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
                                                       ArmorMaterial.Layer layer, boolean innerModel) {
+        if (armorLogic == null) return super.getArmorTexture(stack, entity, slot, layer, innerModel);
         return armorLogic.getArmorTexture(stack, entity, slot, layer);
     }
 

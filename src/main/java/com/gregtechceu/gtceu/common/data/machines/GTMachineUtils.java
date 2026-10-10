@@ -432,7 +432,8 @@ public class GTMachineUtils {
                     GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
                     (holder) -> new QuantumTankMachine(holder, tier, maxAmount))
                     .langValue(toEnglishName(name) + " " + LVT[tier])
-                    .item(QuantumTankMachineItem::new).build()
+                    .item(QuantumTankMachineItem::new)
+                    .build()
                     .block().properties(Block.Properties::dynamicShape).build()
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)

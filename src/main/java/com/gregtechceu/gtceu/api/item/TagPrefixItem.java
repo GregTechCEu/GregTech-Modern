@@ -85,7 +85,8 @@ public class TagPrefixItem extends Item {
 
                 float heatDamage = ((material.getBlastTemperature() - 1750) / 1000.0F) + 2;
                 ItemStack armor = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
-                if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem armorItem) {
+                if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem armorItem &&
+                        armorItem.getArmorLogic() != null) {
                     heatDamage *= armorItem.getArmorLogic().getHeatResistance();
                 }
                 if (heatDamage > 0.0) {

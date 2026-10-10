@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -21,6 +20,8 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -38,8 +39,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
-import com.gregtechceu.gtceu.common.item.armor.IStepAssist;
-import com.gregtechceu.gtceu.common.item.armor.QuarkTechSuite;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.item.datacomponents.FormatStringList;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -64,11 +63,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
@@ -102,6 +100,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Either;
 import org.jetbrains.annotations.NotNull;
 
@@ -155,7 +154,7 @@ public class CommonEventListener {
             var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
 
             HazardProperty property = material.getProperty(PropertyKey.HAZARD);
-
+            if (property == null) continue;
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
                 property.hazardTrigger.protectionType().damageEquipment(player, 1);
@@ -167,24 +166,37 @@ public class CommonEventListener {
         }
     }
 
-    @SubscribeEvent
-    public static void onMobEffectEvent(MobEffectEvent.Applicable event) {
-        if (event.getEntity() instanceof Player player) {
-            ItemStack item = player.getItemBySlot(EquipmentSlot.HEAD);
-            IElectricItem helmet = GTCapabilityHelper.getElectricItem(item);
-            if (item.is(GTItems.QUANTUM_HELMET.asItem()) && helmet != null) {
-                MobEffectInstance effect = event.getEffectInstance();
-                int cost = QuarkTechSuite.potionRemovalCost.getOrDefault(effect.getEffect(), -1);
-                if (cost != -1) {
-                    cost = cost * (effect.getAmplifier() + 1);
-                    if (helmet.canUse(cost)) {
-                        helmet.discharge(cost, helmet.getTier(), true, false, false);
-                        event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
-                    }
-                }
-            }
-        }
-    }
+    /*
+     * 
+     * public static final Reference2IntMap<Holder<MobEffect>> potionRemovalCost = new Reference2IntOpenHashMap<>();
+     * potionRemovalCost.put(MobEffects.POISON, 10000);
+     * potionRemovalCost.put(MobEffects.WITHER, 25000);
+     * potionRemovalCost.put(MobEffects.CONFUSION, 8000);
+     * potionRemovalCost.put(MobEffects.DIG_SLOWDOWN, 12500);
+     * // potionRemovalCost.put(MobEffects.BAD_OMEN, 30000);
+     * potionRemovalCost.put(MobEffects.MOVEMENT_SLOWDOWN, 9000);
+     * potionRemovalCost.put(MobEffects.UNLUCK, 5000);
+     * }
+     * 
+     * @SubscribeEvent
+     * public static void onMobEffectEvent(MobEffectEvent.Applicable event) {
+     * if (event.getEntity() instanceof Player player) {
+     * ItemStack item = player.getItemBySlot(EquipmentSlot.HEAD);
+     * IElectricItem helmet = GTCapabilityHelper.getElectricItem(item);
+     * if (item.is(GTItems.QUANTUM_HELMET.asItem()) && helmet != null) {
+     * MobEffectInstance effect = event.getEffectInstance();
+     * int cost = QuarkTechSuite.potionRemovalCost.getOrDefault(effect.getEffect(), -1);
+     * if (cost != -1) {
+     * cost = cost * (effect.getAmplifier() + 1);
+     * if (helmet.canUse(cost)) {
+     * helmet.discharge(cost, helmet.getTier(), true, false, false);
+     * event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
+     * }
+     * }
+     * }
+     * }
+     * }
+     */
 
     @SubscribeEvent
     public static void onBlockStartBreak(BlockEvent.BreakEvent event) {
@@ -331,51 +343,100 @@ public class CommonEventListener {
             if (player.fallDistance < 3.2f)
                 return;
 
-            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-            ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-
-            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor) {
-                armor.getArmorLogic().damageArmor(player, boots,
-                        (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
-                player.fallDistance = 0;
-                event.setCanceled(true);
-            } else if (chest.getItem() instanceof ArmorComponentItem armor &&
-                    armor.getArmorLogic() instanceof IJetpack jetpack &&
-                    jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
-                    player.fallDistance >= player.getHealth() + 3.2f) {
-                        IJetpack.performEHover(chest, player);
-                        player.fallDistance = 0;
-                        event.setCanceled(true);
-                    }
+            // todo emergency hover
+            /*
+             * if (boots.getItem() instanceof ArmorComponentItem armor) {
+             * armor.getArmorLogic().damageArmor(player, boots,
+             * (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
+             * player.fallDistance = 0;
+             * event.setCanceled(true);
+             * } else if (chest.getItem() instanceof ArmorComponentItem armor &&
+             * armor.getArmorLogic() instanceof IJetpack jetpack &&
+             * jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
+             * player.fallDistance >= player.getHealth() + 3.2f) {
+             * IJetpack.performEHover(chest, player);
+             * player.fallDistance = 0;
+             * event.setCanceled(true);
+             * }
+             */
         }
     }
 
     @SubscribeEvent
-    public static void stepAssistHandler(EntityTickEvent.Pre event) {
+    public static void onEntityTick(EntityTickEvent.Pre event) {
         if (!(event.getEntity() instanceof LivingEntity entity)) {
             return;
         }
-        AttributeInstance stepHeightAttribute = entity.getAttribute(Attributes.STEP_HEIGHT);
-        if (stepHeightAttribute == null) {
-            return;
+
+        for (ItemStack stack : entity.getArmorSlots()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+            if (modularItem == null) continue;
+            modularItem.runForEachModule((m, a) -> m.onArmorTick(a, entity));
         }
-        if (!entity.isShiftKeyDown() && entity.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS)) {
-            stepHeightAttribute.addOrUpdateTransientModifier(IStepAssist.STEP_ASSIST_MODIFIER);
-        } else {
-            stepHeightAttribute.removeModifier(IStepAssist.STEP_ASSIST_MODIFIER);
+
+        if (entity instanceof Player player && !player.isLocalPlayer()) {
+            var inv = player.getInventory();
+            for (var group : ImmutableList.of(inv.items, inv.armor, inv.offhand)) {
+                for (ItemStack stack : group) {
+                    IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+                    if (modularItem == null) continue;
+                    modularItem.runForEachModule((m, a) -> {
+                        if (m.isEnabled(a)) m.onInventoryTick(a, player);
+                        m.onTickRaw(a, player, player.level(), player.getOnPos());
+                    });
+                }
+            }
         }
     }
 
     @SubscribeEvent
-    public static void onEquipmentChange(LivingEquipmentChangeEvent event) {
+    public static void onEntityEquipmentChange(LivingEquipmentChangeEvent event) {
         if (!event.getSlot().isArmor()) return;
-        if (!(event.getEntity() instanceof Player player)) return;
 
-        if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor) {
-            armor.getArmorLogic().onUnequip(player);
+        final LivingEntity entity = event.getEntity();
+        final ItemStack old = event.getFrom();
+        final ItemStack current = event.getTo();
+
+        if (entity instanceof Player player) {
+            if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() != null) {
+                armor.getArmorLogic().onUnequip(player);
+            }
+            if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() != null) {
+                armor.getArmorLogic().onEquip(player);
+            }
         }
-        if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor) {
-            armor.getArmorLogic().onEquip(player);
+
+        if (ItemStack.matches(old, current)) {
+            return;
+        }
+
+        if (!old.isEmpty()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(old);
+            if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onUnequip(a, entity));
+        }
+
+        if (!current.isEmpty()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(current);
+            if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onEquip(a, entity));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHurt(LivingIncomingDamageEvent event) {
+        final LivingEntity entity = event.getEntity();
+        final DamageSource source = event.getSource();
+
+        for (final ItemStack stack : entity.getArmorSlots()) {
+            float amount = event.getAmount();
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+            if (modularItem == null) continue;
+            for (ModuleContext context : modularItem.getAllModuleInstances()) {
+                if (!context.getModule().isEnabled(context)) continue;
+                amount = context.getModule().changeDamage(context, entity, amount, source);
+            }
+            event.setAmount(amount);
         }
     }
 
@@ -580,10 +641,10 @@ public class CommonEventListener {
             }
         }
         // Alloy Blast Overriding
-        GTMaterials.NiobiumNitride.getProperty(PropertyKey.ALLOY_BLAST)
+        GTMaterials.NiobiumNitride.getPropertyOrThrow(PropertyKey.ALLOY_BLAST)
                 .setRecipeProducer(new CustomAlloyBlastRecipeProducer(1, 11, -1));
 
-        GTMaterials.IndiumTinBariumTitaniumCuprate.getProperty(PropertyKey.ALLOY_BLAST)
+        GTMaterials.IndiumTinBariumTitaniumCuprate.getPropertyOrThrow(PropertyKey.ALLOY_BLAST)
                 .setRecipeProducer(new CustomAlloyBlastRecipeProducer(-1, -1, 16));
     }
 
