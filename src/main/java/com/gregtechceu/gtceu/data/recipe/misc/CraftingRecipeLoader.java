@@ -267,11 +267,6 @@ public class CraftingRecipeLoader {
                 "PxP", 'P', GTItems.CARBON_FIBER_PLATE.asStack(), 'E', GTItems.ENERGIUM_CRYSTAL.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, "nano_boots", GTItems.NANO_BOOTS.asStack(), "PxP", "PEP", 'P',
                 GTItems.CARBON_FIBER_PLATE.asStack(), 'E', GTItems.ENERGIUM_CRYSTAL.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, "nano_chestplate_advanced",
-                GTItems.NANO_CHESTPLATE_ADVANCED.asStack(), "xJd", "PNP", "WCW", 'J',
-                GTItems.ELECTRIC_JETPACK_ADVANCED.asStack(), 'P', GTItems.LOW_POWER_INTEGRATED_CIRCUIT.asStack(), 'N',
-                GTItems.NANO_CHESTPLATE.asStack(), 'W', new MaterialEntry(wireGtQuadruple, Platinum), 'C',
-                CustomTags.IV_CIRCUITS);
         VanillaRecipeHelper.addShapedRecipe(provider, "gravitation_engine", GTItems.GRAVITATION_ENGINE.asStack(), "ESE",
                 "POP", "ESE", 'E', GTItems.EMITTER_LuV.asStack(), 'S', new MaterialEntry(wireGtQuadruple, Osmium),
                 'P', new MaterialEntry(plateDouble, Iridium), 'O', GTItems.ENERGY_LAPOTRONIC_ORB.asStack());

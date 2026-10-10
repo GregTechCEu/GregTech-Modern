@@ -2045,28 +2045,6 @@ public class GTItems {
             .tag(ItemTags.CHEST_ARMOR)
             .register();
 
-    public static ItemEntry<NanoMuscleArmorItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE
-            .item("advanced_nanomuscle_chestplate",
-                    (p) -> new NanoMuscleArmorItem(GTArmorMaterials.ADVANCED_NANO_MUSCLE, ArmorItem.Type.CHESTPLATE, p))
-            .lang("Advanced NanoMuscle™ Suite Chestplate")
-            .properties(p -> p.rarity(Rarity.RARE))
-            .transform(addArmorClientExtensions())
-            .tag(ItemTags.CHEST_ARMOR)
-            .tag(CustomTags.PPE_ARMOR)
-            .onRegister(attach(new ModularItemComponent(5, GTValues.EV)))
-            .register();
-    public static ItemEntry<QuarkTechArmorItem> QUANTUM_CHESTPLATE_ADVANCED = REGISTRATE
-            .item("advanced_quarktech_chestplate",
-                    (p) -> new QuarkTechArmorItem(GTArmorMaterials.ADVANCED_QUARK_TECH, ArmorItem.Type.CHESTPLATE, p))
-            .lang("Advanced QuarkTech™ Suite Chestplate")
-            .properties(p -> p.rarity(Rarity.EPIC))
-            .transform(addArmorClientExtensions())
-            .tag(ItemTags.CHEST_ARMOR)
-            .tag(ItemTags.FREEZE_IMMUNE_WEARABLES)
-            .tag(CustomTags.PPE_ARMOR)
-            .onRegister(attach(new ModularItemComponent(9, GTValues.MAX)))
-            .register();
-
     public static ItemEntry<Item> POWER_THRUSTER = REGISTRATE.item("power_thruster", Item::new)
             .properties(p -> p.rarity(Rarity.UNCOMMON)).register();
     public static ItemEntry<Item> POWER_THRUSTER_ADVANCED = REGISTRATE.item("advanced_power_thruster", Item::new)

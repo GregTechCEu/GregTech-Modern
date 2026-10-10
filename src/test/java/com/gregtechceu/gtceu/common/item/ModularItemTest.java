@@ -45,7 +45,7 @@ public class ModularItemTest {
      * @return a modular item that has 2 LuV slots and an MV slot
      */
     private ItemStack makeModularItem(GameTestHelper helper) {
-        ItemStack armor = GTItems.NANO_CHESTPLATE_ADVANCED.asStack();
+        ItemStack armor = GTItems.NANO_CHESTPLATE.asStack();
         IModularItem modularArmor = getModularItem(helper, armor);
         modularArmor.setSlots(List.of(GTItemModules.TIERED_SLOTS[GTValues.LuV],
                 GTItemModules.TIERED_SLOTS[GTValues.LuV], GTItemModules.TIERED_SLOTS[GTValues.MV]));
