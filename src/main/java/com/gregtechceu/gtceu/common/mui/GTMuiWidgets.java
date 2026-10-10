@@ -28,7 +28,7 @@ import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.text.TextRenderer;
-import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.factory.GuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
@@ -244,7 +244,7 @@ public class GTMuiWidgets {
                         .value(new BoolValue.Dynamic(() -> (i + 1) == circuitSyncValue.getIntValue(),
                                 (v) -> {
                                     if (v) circuitSyncValue.setValue(i + 1);
-                                    else circuitSyncValue.setValue(-1);
+                                    else circuitSyncValue.setValue(0);
                                 })));
 
         return new Dialog<>("circuit_panel")
@@ -317,7 +317,7 @@ public class GTMuiWidgets {
         if (delta > 0) {
             if (current == IntCircuitBehaviour.CIRCUIT_MAX) {
                 // if at max, loop around to no circuit
-                return 0;
+                return -1;
             } else if (stack.isEmpty()) {
                 // if at no circuit, skip 0 and return 1
                 return 1;
@@ -391,7 +391,7 @@ public class GTMuiWidgets {
 
     public static <T> ParentWidget<?> createFilterRow(Flow existingRow,
                                                       FilterHandler<T> filterHandler,
-                                                      SidedPosGuiData data,
+                                                      GuiData data,
                                                       PanelSyncManager syncManager,
                                                       UISettings settings) {
         var filterSlot = filterHandler.getFilterSlot();
@@ -411,7 +411,8 @@ public class GTMuiWidgets {
             panelHandler.deleteCachedPanel();
         });
         return existingRow
-                .child(new ItemSlot().syncHandler(filterSlotHandler))
+                .child(new ItemSlot().syncHandler(filterSlotHandler)
+                        .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY))
                 .child(new ButtonWidget<>()
                         .background(GuiTextures.MC_BUTTON)
                         .size(16)
@@ -423,7 +424,7 @@ public class GTMuiWidgets {
     }
 
     public static <T> ParentWidget<?> createFilterRow(FilterHandler<T> filterHandler,
-                                                      SidedPosGuiData data,
+                                                      GuiData data,
                                                       PanelSyncManager syncManager,
                                                       UISettings settings) {
         Flow row = Flow.row().coverChildrenHeight().childPadding(2);
@@ -574,8 +575,8 @@ public class GTMuiWidgets {
                                                                EnumSyncValue<BucketMode> bucketModeSyncValue,
                                                                IntSupplier maxMB) {
         StringSyncValue formattedValue = new StringSyncValue(
-                () -> String.valueOf(intSyncValue.getValue()),
-                (v) -> intSyncValue.setValue(Integer.parseInt(v), true,
+                () -> formattedBucketValue(intSyncValue.getIntValue(), bucketModeSyncValue.getValue()),
+                (v) -> intSyncValue.setValue(bucketsFromFormattedValue(v, bucketModeSyncValue.getValue()), true,
                         true))
                 .allowC2S();
 
@@ -628,6 +629,21 @@ public class GTMuiWidgets {
                         .background(GTGuiTextures.BUTTON)
                         .stateOverlay(0, BucketMode.BUCKET.icon.asIcon().size(16))
                         .stateOverlay(1, BucketMode.MILLI_BUCKET.icon.asIcon().size(16)));
+    }
+
+    public static String formattedBucketValue(int millibuckets, BucketMode bucketMode) {
+        if (bucketMode == BucketMode.MILLI_BUCKET) return String.valueOf(millibuckets);
+        StringBuilder buckets = new StringBuilder(String.format("%04d", millibuckets));
+        buckets.insert(buckets.length() - 3, '.');
+        return buckets.toString();
+    }
+
+    public static int bucketsFromFormattedValue(String uiInput, BucketMode bucketMode) {
+        if (bucketMode == BucketMode.MILLI_BUCKET) return Integer.parseInt(uiInput);
+        if (!uiInput.contains(".")) return Integer.parseInt(uiInput) * 1000;
+        String[] splitInput = uiInput.split("\\.");
+        if (splitInput.length > 1 && splitInput[1].length() > 3) splitInput[1] = splitInput[1].substring(0, 3);
+        return (Integer.parseInt(splitInput[0]) * 1000) + Integer.parseInt(splitInput[1]);
     }
 
     public static SlotGroupWidget verticalPlayerInventory(SlotGroupWidget.SlotConsumer slotConsumer) {

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
@@ -37,8 +38,10 @@ public class IntCircuitBehaviour implements IAddInformation, IItemUIHolder {
     }
 
     public static void setCircuitConfiguration(ItemStack itemStack, int configuration) {
-        if (configuration < 0 || configuration > CIRCUIT_MAX)
-            throw new IllegalArgumentException("Given configuration number is out of range!");
+        if (configuration < 0 || configuration > CIRCUIT_MAX) {
+            GTCEu.LOGGER.error("Given circuit configuration %d is out of range!".formatted(configuration));
+            configuration = 0;
+        }
         var tagCompound = itemStack.getOrCreateTag();
         tagCompound.putInt("Configuration", configuration);
     }

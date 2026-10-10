@@ -13,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.MinecraftForge;
@@ -38,7 +37,7 @@ public class SpoilableBehavior {
     private final Function<ItemStack, Long> ticks;
     private final SpoilResultProvider spoilResult;
     private final Function<ItemStack, Component> spoilsIntoTooltip;
-    private final List<Item> attachedTo = new ArrayList<>();
+    private final List<ItemLike> attachedTo = new ArrayList<>();
 
     public static void init(IEventBus eventBus) {
         RegisterSpoilablesEvent event = new RegisterSpoilablesEvent(SpoilableBehavior::builder);
@@ -70,14 +69,14 @@ public class SpoilableBehavior {
         if (attachedTo.isEmpty()) {
             MinecraftForge.EVENT_BUS.register(this);
         }
-        attachedTo.add(item.asItem());
+        attachedTo.add(item);
         return this;
     }
 
     @SubscribeEvent
     public void attachCapability(AttachCapabilitiesEvent<ItemStack> event) {
         ItemStack stack = event.getObject();
-        if (attachedTo.stream().anyMatch(stack::is)) {
+        if (attachedTo.stream().map(ItemLike::asItem).anyMatch(stack::is)) {
             event.addCapability(GTCEu.id("spoilable"), new SpoilableBehaviourStack(stack));
         }
     }

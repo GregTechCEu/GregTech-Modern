@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
@@ -138,6 +139,10 @@ public final class Material implements Comparable<Material> {
         this.flags = flags;
         this.properties.setMaterial(this);
         verifyMaterial();
+    }
+
+    public MaterialStack asStack(long amount) {
+        return new MaterialStack(this, amount);
     }
 
     private void registerMaterial() {
@@ -333,22 +338,22 @@ public final class Material implements Comparable<Material> {
     }
 
     /**
-     * @return the correct "molten" fluid for a material
+     * Retains explicitly registered addon molten fluids, falling back to liquid when absent.
+     *
+     * @deprecated Use {@link #getFluid(FluidStorageKey)} with {@link FluidStorageKeys#LIQUID}.
      */
+    @Deprecated
     public Fluid getHotFluid() {
-        if (hasProperty(PropertyKey.ALLOY_BLAST)) {
-            return getFluid(FluidStorageKeys.MOLTEN);
-        }
-        if (!TagPrefix.ingotHot.doGenerateItem(this) && hasProperty(PropertyKey.FLUID)) {
-            return getFluid(FluidStorageKeys.LIQUID);
-        }
-        return null;
+        return hasProperty(PropertyKey.FLUID) ? getFluid(FluidStorageKeys.MOLTEN) : null;
     }
 
+    /**
+     * @deprecated Use {@link #getFluid(FluidStorageKey, int)} with {@link FluidStorageKeys#LIQUID}.
+     */
+    @Deprecated
     public FluidStack getHotFluid(int amount) {
         Fluid fluid = getHotFluid();
-        if (fluid != null) return new FluidStack(fluid, amount);
-        else return FluidStack.EMPTY;
+        return fluid == null ? FluidStack.EMPTY : new FluidStack(fluid, amount);
     }
 
     public Item getBucket() {
@@ -491,6 +496,10 @@ public final class Material implements Comparable<Material> {
         return totalMass / totalAmount;
     }
 
+    public boolean requiresMetalFreezing() {
+        return hasProperty(PropertyKey.ALLOY_BLAST) && TagPrefix.ingotHot.doGenerateItem(this);
+    }
+
     public int getBlastTemperature() {
         BlastProperty prop = properties.getProperty(PropertyKey.BLAST);
         return prop == null ? 0 : prop.getBlastTemperature();
@@ -523,11 +532,6 @@ public final class Material implements Comparable<Material> {
         return materialInfo.resourceLocation.toString();
     }
 
-    // must be named multiply for GroovyScript to allow `material * quantity -> MaterialStack`
-    public MaterialStack multiply(long amount) {
-        return new MaterialStack(this, amount);
-    }
-
     public <T extends IMaterialProperty> boolean hasProperty(PropertyKey<T> key) {
         return properties.hasProperty(key);
     }
@@ -544,7 +548,7 @@ public final class Material implements Comparable<Material> {
         properties.removeProperty(key);
     }
 
-    public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty property) {
+    public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, T property) {
         if (!GTRegistries.MATERIALS.canModifyMaterials()) {
             throw new IllegalStateException("Cannot add properties to a Material when registry is frozen!");
         }
@@ -618,6 +622,22 @@ public final class Material implements Comparable<Material> {
          */
         public Builder langValue(String name) {
             materialInfo.setOverriddenName(name);
+            return this;
+        }
+
+        /**
+         * Adds a property to this material.
+         */
+        public <T extends IMaterialProperty> Builder property(PropertyKey<T> key, T value) {
+            properties.setProperty(key, value);
+            return this;
+        }
+
+        /**
+         * Adds a property to this material
+         */
+        public <T extends IMaterialProperty> Builder property(PropertyKey<T> key) {
+            properties.ensureSet(key);
             return this;
         }
 
@@ -1838,6 +1858,14 @@ public final class Material implements Comparable<Material> {
                     ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack)
                             .toArray(MaterialStack[]::new)) :
                     ImmutableList.copyOf(composition);
+            for (int i = 0; i < materialInfo.componentList.size(); i++) {
+                if (materialInfo.componentList.get(i).isEmpty()) {
+                    GTCEu.LOGGER.error("Material {} has an empty component at index {}: {}",
+                            materialInfo.resourceLocation, i,
+                            compositionSupplier != null && i < compositionSupplier.size() ?
+                                    compositionSupplier.get(i) : composition.get(i));
+                }
+            }
             if (!properties.hasProperty(HAZARD)) {
                 for (MaterialStack materialStack : materialInfo.componentList) {
                     Material material = materialStack.material();
