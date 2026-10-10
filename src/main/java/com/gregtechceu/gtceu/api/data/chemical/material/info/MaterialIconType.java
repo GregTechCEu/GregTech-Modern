@@ -12,7 +12,6 @@ import com.google.common.base.CaseFormat;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -138,19 +137,21 @@ public record MaterialIconType(String name) {
         return ICON_TYPES.get(name);
     }
 
-    public ResourceLocation getBlockTexturePath(@NotNull MaterialIconSet materialIconSet, boolean doReadCache) {
+    public ResourceLocation getBlockTexturePath(MaterialIconSet materialIconSet, boolean doReadCache) {
         return getBlockTexturePath(materialIconSet, null, doReadCache);
     }
 
-    public ResourceLocation getBlockTexturePath(@NotNull MaterialIconSet materialIconSet, @Nullable String suffix,
+    public ResourceLocation getBlockTexturePath(MaterialIconSet materialIconSet, @Nullable String suffix,
                                                 boolean doReadCache) {
         if (doReadCache) {
             if (suffix == null || suffix.isBlank()) {
                 if (BLOCK_TEXTURE_CACHE.contains(this, materialIconSet))
-                    return BLOCK_TEXTURE_CACHE.get(this, materialIconSet);
+                    return Objects.requireNonNullElse(BLOCK_TEXTURE_CACHE.get(this, materialIconSet),
+                            GTModels.BLANK_TEXTURE);
             } else {
                 if (BLOCK_TEXTURE_CACHE_SECONDARY.contains(this, materialIconSet))
-                    return BLOCK_TEXTURE_CACHE_SECONDARY.get(this, materialIconSet);
+                    return Objects.requireNonNullElse(BLOCK_TEXTURE_CACHE_SECONDARY.get(this, materialIconSet),
+                            GTModels.BLANK_TEXTURE);
             }
         }
 
@@ -191,11 +192,10 @@ public record MaterialIconType(String name) {
         return location;
     }
 
-    @NotNull
-    public ResourceLocation getBlockModelPath(@NotNull MaterialIconSet materialIconSet, boolean doReadCache) {
+    public ResourceLocation getBlockModelPath(MaterialIconSet materialIconSet, boolean doReadCache) {
         if (doReadCache) {
             if (BLOCK_MODEL_CACHE.contains(this, materialIconSet)) {
-                return BLOCK_MODEL_CACHE.get(this, materialIconSet);
+                return Objects.requireNonNull(BLOCK_MODEL_CACHE.get(this, materialIconSet));
             }
         }
 
@@ -221,11 +221,10 @@ public record MaterialIconType(String name) {
         return location;
     }
 
-    @NotNull
-    public ResourceLocation getItemModelPath(@NotNull MaterialIconSet materialIconSet, boolean doReadCache) {
+    public ResourceLocation getItemModelPath(MaterialIconSet materialIconSet, boolean doReadCache) {
         if (doReadCache) {
             if (ITEM_MODEL_CACHE.contains(this, materialIconSet)) {
-                return ITEM_MODEL_CACHE.get(this, materialIconSet);
+                return Objects.requireNonNull(ITEM_MODEL_CACHE.get(this, materialIconSet));
             }
         }
 
@@ -254,12 +253,12 @@ public record MaterialIconType(String name) {
     }
 
     @Nullable
-    public ResourceLocation getItemTexturePath(@NotNull MaterialIconSet materialIconSet, boolean doReadCache) {
+    public ResourceLocation getItemTexturePath(MaterialIconSet materialIconSet, boolean doReadCache) {
         return getItemTexturePath(materialIconSet, null, doReadCache);
     }
 
     @Nullable
-    public ResourceLocation getItemTexturePath(@NotNull MaterialIconSet materialIconSet, String suffix,
+    public ResourceLocation getItemTexturePath(MaterialIconSet materialIconSet, @Nullable String suffix,
                                                boolean doReadCache) {
         if (doReadCache) {
             if (suffix == null || suffix.isBlank()) {
@@ -307,7 +306,7 @@ public record MaterialIconType(String name) {
     }
 
     @Override
-    public @NotNull String toString() {
+    public String toString() {
         return this.name;
     }
 }

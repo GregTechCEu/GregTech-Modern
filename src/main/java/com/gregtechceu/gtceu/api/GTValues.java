@@ -110,7 +110,6 @@ public class GTValues {
     }
 
     public static final String MODID_JEI = "jei",
-            MODID_REI = "roughlyenoughitems",
             MODID_EMI = "emi",
             MODID_APPENG = "ae2",
             MODID_KUBEJS = "kubejs",
@@ -121,7 +120,6 @@ public class GTValues {
             MODID_OPTIFINE = "optifine",
             MODID_CREATE = "create",
             MODID_CURIOS = "curios",
-            MODID_AE2WTLIB = "ae2wtlib",
             MODID_MODERNFIX = "modernfix",
             MODID_JOURNEYMAP = "journeymap",
             MODID_XAEROS_MINIMAP = "xaerominimap",

@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
@@ -68,7 +69,6 @@ public class MixinHelpers {
             ItemMaterialData.MATERIAL_ENTRY_ITEM_MAP.forEach((entry, itemLikes) -> {
                 if (itemLikes.isEmpty()) return;
                 var material = entry.material();
-                if (material.isNull()) return;
                 var entries = itemLikes.stream().map(MixinHelpers::makeItemEntry).collect(toArrayList());
 
                 var prefixTagKeys = entry.tagPrefix().getAllItemTags(material);
@@ -80,9 +80,9 @@ public class MixinHelpers {
                 }
 
                 if (entry.tagPrefix() == TagPrefix.crushed && material.hasProperty(PropertyKey.ORE)) {
-                    OreProperty ore = material.getProperty(PropertyKey.ORE);
+                    OreProperty ore = material.getPropertyOrThrow(PropertyKey.ORE);
+                    if (!ore.hasWashedInFluid()) return;
                     Material washedIn = ore.getWashedIn().first();
-                    if (washedIn.isNull()) return;
                     ResourceLocation generalTag = CustomTags.CHEM_BATH_WASHABLE.location();
                     ResourceLocation specificTag = generalTag.withSuffix("/" + washedIn.getName());
 
@@ -142,7 +142,6 @@ public class MixinHelpers {
             ItemMaterialData.MATERIAL_ENTRY_BLOCK_MAP.forEach((entry, blocks) -> {
                 if (blocks.isEmpty()) return;
                 var material = entry.material();
-                if (material.isNull()) return;
 
                 var entries = blocks.stream().map(MixinHelpers::makeBlockEntry).collect(toArrayList());
                 var materialTags = entry.tagPrefix().getAllBlockTags(material);
@@ -228,6 +227,10 @@ public class MixinHelpers {
                     }
                     tagMap.computeIfAbsent(state.getTagKey().location(), path -> new ArrayList<>()).add(entry);
 
+                    if (key == FluidStorageKeys.LIQUID && material.requiresMetalFreezing()) {
+                        tagMap.computeIfAbsent(CustomTags.FREEZABLE_FLUIDS.location(), path -> new ArrayList<>())
+                                .add(entry);
+                    }
                     if (key.getExtraTag() != null) {
                         tagMap.computeIfAbsent(key.getExtraTag().location(), path -> new ArrayList<>()).add(entry);
                     }

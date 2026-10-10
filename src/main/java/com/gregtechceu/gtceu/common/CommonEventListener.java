@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -75,6 +76,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.*;
@@ -86,18 +88,21 @@ import net.minecraftforge.event.level.ChunkWatchEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.MissingMappingsEvent;
 
+import com.mojang.datafixers.util.Either;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
+import java.util.Set;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -167,18 +172,22 @@ public class CommonEventListener {
 
         for (int i = 0; i < inventory.getSlots(); ++i) {
             ItemStack stack = inventory.getStackInSlot(i);
-            MaterialEntry entry = HazardProperty.getValidHazardMaterial(stack);
-            if (entry.material().isNull()) {
+            Either<Material, MaterialEntry> hazardMaterial = HazardProperty.getValidHazardMaterial(stack);
+            if (hazardMaterial == null) {
                 continue;
             }
-            HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
+
+            var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
+
+            HazardProperty property = material.getProperty(PropertyKey.HAZARD);
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
                 property.hazardTrigger.protectionType().damageEquipment(player, 1);
                 // don't progress this material condition if entity is protected
                 continue;
             }
-            tracker.progressRelatedCondition(entry, stack.getCount());
+            hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, stack.getCount()));
+            hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, stack.getCount()));
         }
     }
 
@@ -216,13 +225,17 @@ public class CommonEventListener {
             return;
         }
 
-        MaterialEntry entry = HazardProperty.getValidHazardMaterial(usedItem);
-        if (entry.material().isNull()) {
+        var hazardMaterial = HazardProperty.getValidHazardMaterial(usedItem);
+        if (hazardMaterial == null) {
             return;
         }
-        HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
+
+        var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
+
+        HazardProperty property = material.getProperty(PropertyKey.HAZARD);
         if (property.hazardTrigger == HazardProperty.HazardTrigger.CONSUMPTION) {
-            tracker.progressRelatedCondition(entry, 1);
+            hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, 1));
+            hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, 1));
         }
     }
 
@@ -283,7 +296,6 @@ public class CommonEventListener {
     public static void worldUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
             TaskHandler.onWorldUnLoad(serverLevel);
-            // MultiblockWorldSavedData.getOrCreate(serverLevel).releaseExecutorService();
             ServerCache.instance.invalidateWorld(serverLevel);
         } else if (event.getLevel().isClientSide()) {
             ClientCacheManager.saveCaches();
@@ -300,18 +312,6 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void serverStopped(ServerStoppedEvent event) {
         ServerCache.instance.clear();
-    }
-
-    @SubscribeEvent
-    public static void serverStopping(ServerStoppingEvent event) {
-        /*
-         * var levels = event.getServer().getAllLevels();
-         * for (var level : levels) {
-         * if (!level.isClientSide()) {
-         * MultiblockWorldSavedData.getOrCreate(level).releaseExecutorService();
-         * }
-         * }
-         */
     }
 
     @SubscribeEvent
@@ -533,8 +533,103 @@ public class CommonEventListener {
         }
     }
 
+    /** Migrate Legacy GT Molten fluids, strictly blind to addons to allow them to fail loudly. */
+    private static final Set<String> LEGACY_MOLTEN_MATERIALS = Set.of(
+            "bismuth_bronze",
+            "black_bronze",
+            "black_steel",
+            "blue_steel",
+            "enriched_naquadah_trinium_europium_duranide",
+            "gallium_arsenide",
+            "hastelloy_c_276",
+            "hastelloy_x",
+            "hsla_steel",
+            "hsse",
+            "hssg",
+            "hsss",
+            "incoloy_ma_956",
+            "indium_tin_barium_titanium_cuprate",
+            "kanthal",
+            "magnesium_diboride",
+            "manganese_phosphide",
+            "maraging_steel_300",
+            "mercury_barium_calcium_cuprate",
+            "molybdenum_disilicide",
+            "naquadah_alloy",
+            "nichrome",
+            "niobium_nitride",
+            "niobium_titanium",
+            "osmiridium",
+            "red_steel",
+            "rhodium_plated_palladium",
+            "rose_gold",
+            "rtm_alloy",
+            "ruridit",
+            "ruthenium_trinium_americium_neutronate",
+            "samarium_iron_arsenic_oxide",
+            "stainless_steel",
+            "stellite_100",
+            "sterling_silver",
+            "tantalum_carbide",
+            "titanium_carbide",
+            "titanium_tungsten_carbide",
+            "tungsten_carbide",
+            "tungsten_steel",
+            "ultimet",
+            "uranium_rhodium_dinaquadide",
+            "uranium_triplatinum",
+            "vanadium_gallium",
+            "vanadium_steel",
+            "watertight_steel",
+            "yttrium_barium_cuprate",
+            "zeron_100");
+
+    private static void remapLegacyMoltenFluids(MissingMappingsEvent event) {
+        event.getMappings(Registries.FLUID, GTCEu.MOD_ID).forEach(mapping -> {
+            String path = mapping.getKey().getPath();
+            boolean flowing = path.startsWith("flowing_");
+            String materialName = legacyMoltenMaterial(flowing ? path.substring("flowing_".length()) : path);
+            if (materialName == null) return;
+            var liquid = GTMaterials.get(materialName).getFluid(FluidStorageKeys.LIQUID);
+            if (flowing && liquid instanceof FlowingFluid fluid) {
+                mapping.remap(fluid.getFlowing());
+            } else if (!flowing && liquid != null) {
+                mapping.remap(liquid);
+            } else {
+                mapping.warn();
+            }
+        });
+        event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
+            String path = mapping.getKey().getPath();
+            if (!path.endsWith("_bucket")) return;
+            String materialName = legacyMoltenMaterial(path.substring(0, path.length() - "_bucket".length()));
+            if (materialName == null) return;
+            var liquid = GTMaterials.get(materialName).getFluid(FluidStorageKeys.LIQUID);
+            if (liquid != null && liquid.getBucket() != Items.AIR) {
+                mapping.remap(liquid.getBucket());
+            } else {
+                mapping.warn();
+            }
+        });
+        event.getMappings(ForgeRegistries.Keys.FLUID_TYPES, GTCEu.MOD_ID).forEach(mapping -> {
+            String materialName = legacyMoltenMaterial(mapping.getKey().getPath());
+            if (materialName == null) return;
+            var liquid = GTMaterials.get(materialName).getFluid(FluidStorageKeys.LIQUID);
+            if (liquid != null) mapping.remap(liquid.getFluidType());
+            else mapping.warn();
+        });
+        // We never defined placable moltens, no need to handle them!
+    }
+
+    private static String legacyMoltenMaterial(String path) {
+        if (!path.startsWith("molten_")) return null;
+        String materialName = path.substring("molten_".length());
+        return LEGACY_MOLTEN_MATERIALS.contains(materialName) ? materialName : null;
+    }
+
     @SubscribeEvent
     public static void remapIds(MissingMappingsEvent event) {
+        remapLegacyMoltenFluids(event);
         event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
                 mapping.remap(GTBlocks.COIL_RTMALLOY.get());
@@ -564,7 +659,7 @@ public class CommonEventListener {
 
                 GTToolType type = GTToolType.getTypes().get(typeString);
                 Material material = GTMaterials.get(matString);
-                if (type == null || material.isNull()) {
+                if (type == null || material == null) {
                     mapping.warn();
                     return;
                 }
@@ -660,7 +755,7 @@ public class CommonEventListener {
             }
         });
 
-        for (TagPrefix prefix : TagPrefix.values()) {
+        for (TagPrefix prefix : GTRegistries.TAG_PREFIXES) {
             String first = prefix.invertedName ? toLowerCaseUnderscore(prefix.name) : "(.+?)";
             String last = prefix.invertedName ? "(.+?)" : toLowerCaseUnderscore(prefix.name);
             Pattern idPattern = Pattern.compile(first + "_" + last);
@@ -677,16 +772,14 @@ public class CommonEventListener {
             event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
                 Matcher matcher = idPattern.matcher(mapping.getKey().getPath());
                 if (matcher.matches()) {
-                    BlockEntry<? extends Block> block = GTMaterialBlocks.MATERIAL_BLOCKS.get(prefix,
-                            GTRegistries.MATERIALS.get(GTCEu.id(matcher.group(1))));
+                    Material material = GTRegistries.MATERIALS.get(GTCEu.id(matcher.group(1)));
+                    if (material == null) return;
+                    BlockEntry<? extends Block> block = GTMaterialBlocks.MATERIAL_BLOCKS.get(prefix, material);
                     if (block != null && block.isPresent()) {
                         mapping.remap(block.asItem());
                     } else {
-                        ItemEntry<? extends Item> item = GTMaterialItems.MATERIAL_ITEMS.get(prefix,
-                                GTRegistries.MATERIALS.get(GTCEu.id(matcher.group(1))));
-                        if (item != null && item.isPresent()) {
-                            mapping.remap(item.asItem());
-                        }
+                        ItemEntry<? extends Item> item = GTMaterialItems.MATERIAL_ITEMS.get(prefix, material);
+                        if (item != null && item.isPresent()) mapping.remap(item.asItem());
                     }
                 }
             });

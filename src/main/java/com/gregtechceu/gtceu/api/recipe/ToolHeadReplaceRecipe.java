@@ -21,6 +21,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
             } else return false;
 
             if (!tool.isElectric()) return false;
-            if (toolHead.isEmpty()) return false;
+            if (toolHead == null) return false;
             GTToolType[] output = TOOL_HEAD_TO_TOOL_MAP.get(toolHead.tagPrefix());
             return output != null && output[tool.getElectricTier()] != null &&
                     GTMaterialItems.TOOL_ITEMS.get(toolHead.material(), output[tool.getElectricTier()]) != null;
@@ -110,10 +111,12 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
             } else return ItemStack.EMPTY;
             if (!tool.isElectric()) return ItemStack.EMPTY;
             IElectricItem powerUnit = GTCapabilityHelper.getElectricItem(realTool);
-            if (toolHead.isEmpty() || powerUnit == null) return ItemStack.EMPTY;
+            if (toolHead == null || powerUnit == null) return ItemStack.EMPTY;
             GTToolType[] toolArray = TOOL_HEAD_TO_TOOL_MAP.get(toolHead.tagPrefix());
-            ItemStack newTool = GTMaterialItems.TOOL_ITEMS.get(toolHead.material(), toolArray[tool.getElectricTier()])
-                    .get().get(powerUnit.getCharge(), powerUnit.getMaxCharge());
+            ItemProviderEntry<IGTTool> toolEntry = GTMaterialItems.TOOL_ITEMS.get(toolHead.material(),
+                    toolArray[tool.getElectricTier()]);
+            if (toolEntry == null) return ItemStack.EMPTY;
+            ItemStack newTool = toolEntry.get().get(powerUnit.getCharge(), powerUnit.getMaxCharge());
             if (newTool == null) return ItemStack.EMPTY;
 
             return newTool;

@@ -90,6 +90,10 @@ repositories {
         forRepository { maven { url = "https://maven.theillusivec4.top/" } }
         filter { includeGroup('top.theillusivec4.curios')}
     }
+    exclusiveContent { // KotlinForForge
+        forRepository { maven { url = "https://thedarkcolour.github.io/KotlinForForge/" } }
+        filter { includeGroup("thedarkcolour") }
+    }
     exclusiveContent { // CC: Tweaked
         forRepository { maven { url = "https://maven.squiddev.cc" } }
         filter { includeGroup("cc.tweaked") }
