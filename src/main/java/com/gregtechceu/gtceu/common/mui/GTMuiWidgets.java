@@ -231,7 +231,7 @@ public class GTMuiWidgets {
             return IntCircuitBehaviour.getCircuitConfiguration(circuitGetter.get());
         },
                 (v) -> circuitSetter.accept(v < 0 ? ItemStack.EMPTY :
-                        IntCircuitBehaviour.stack(v, circuitGetter.get().getCount())))
+                        IntCircuitBehaviour.stack(v, Math.max(1, circuitGetter.get().getCount()))))
                 .allowC2S();
     }
 
@@ -245,7 +245,7 @@ public class GTMuiWidgets {
                         .value(new BoolValue.Dynamic(() -> (i + 1) == circuitSyncValue.getIntValue(),
                                 (v) -> {
                                     if (v) circuitSyncValue.setValue(i + 1);
-                                    else circuitSyncValue.setValue(-1);
+                                    else circuitSyncValue.setValue(0);
                                 })));
 
         return new Dialog<>("circuit_panel")
@@ -319,7 +319,7 @@ public class GTMuiWidgets {
         if (delta > 0) {
             if (current == IntCircuitBehaviour.CIRCUIT_MAX) {
                 // if at max, loop around to no circuit
-                return 0;
+                return -1;
             } else if (stack.isEmpty()) {
                 // if at no circuit, skip 0 and return 1
                 return 1;

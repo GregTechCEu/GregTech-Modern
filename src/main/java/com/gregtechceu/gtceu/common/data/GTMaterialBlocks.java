@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -26,6 +27,7 @@ import com.google.common.collect.Table;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Map;
 
@@ -45,6 +47,11 @@ public class GTMaterialBlocks {
             .builder();
 
     // Reference Tables
+
+    /**
+     * Use {@link ChemicalHelper#getBlock(TagPrefix, Material)} instead.
+     */
+    @ApiStatus.Internal
     public static Table<TagPrefix, Material, BlockEntry<? extends Block>> MATERIAL_BLOCKS;
     public static Map<Material, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS;
     public static Table<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS;

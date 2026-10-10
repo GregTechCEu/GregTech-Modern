@@ -1,9 +1,13 @@
 package com.gregtechceu.gtceu.core.mixins.emi;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.item.Item;
@@ -20,6 +24,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
@@ -34,6 +39,21 @@ public abstract class FluidEmiStackMixin extends EmiStack {
 
     @Shadow
     public abstract DataComponentPatch getComponentChanges();
+
+    @Inject(method = "render", at = @At("TAIL"), remap = false)
+    private void gtceu$drawFreezingIndicator(GuiGraphics graphics, int x, int y, float delta, int flags,
+                                             CallbackInfo ci) {
+        if ((flags & EmiStack.RENDER_ICON) == 0) return;
+        var material = ChemicalHelper.getMaterial(fluid);
+        if (material == null || !material.requiresMetalFreezing() ||
+                !fluid.isSame(material.getFluid(FluidStorageKeys.LIQUID)))
+            return;
+        graphics.pose().pushPose();
+        graphics.pose().translate(x + 11, y, 200);
+        graphics.pose().scale(0.75f, 0.75f, 1.0f);
+        graphics.blit(GTCEu.id("textures/gui/fluid_overlay/flame.png"), 0, 0, 0, 0, 8, 8, 8, 8);
+        graphics.pose().popPose();
+    }
 
     @Inject(method = "getTooltip",
             at = @At(value = "INVOKE", target = "Ldev/emi/emi/EmiPort;getFluidRegistry()Lnet/minecraft/core/Registry;"),

@@ -191,26 +191,16 @@ public class GTRecipeTypes {
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(150).EUt(2))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_MACERATE)
                     .setMachineLayoutGridBuilder(ItemRecipeCapability.CAP, IO.OUT, (machine, layout) -> {
-                        int slots = layout.getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP);
-                        int width = 3;
-                        if (machine instanceof ITieredMachine tieredMachine) {
-                            if (tieredMachine.getTier() < GTValues.HV) {
-                                slots = 1;
-                                width = 1;
-                            } else if (tieredMachine.getTier() == GTValues.HV) {
-                                slots = 3;
-                            } else {
-                                slots = 4;
-                                width = 2;
-                            }
-                        }
+                        int slots = machine.getDefinition().getOutputSize(ItemRecipeCapability.CAP,
+                                layout.getRecipeType());
+                        int width = slots > 1 ? 2 : 1;
 
                         return GTMuiWidgets.createGrid(slots, width, true, 's');
                     })
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.CRUSHED_ORE_OVERLAY)
                     .setItemSlotsOverlay(IO.OUT, 0, 3, GTGuiTextures.DUST_OVERLAY)
                     .addRecipeUIModifier(RecipeUIModifier
-                            .textLine(Text.lang("gtceu.recipe.byproduct_tier", GTValues.VNF[GTValues.HV]))))
+                            .textLine(Text.lang("gtceu.recipe.byproduct_tier", GTValues.VNF[GTValues.LV]))))
             .setIconSupplier(() -> GTMachines.MACERATOR[GTValues.LV].asStack())
             .addCustomRecipeLogic(MaceratorLogic.INSTANCE)
             .setSound(GTSoundEntries.MACERATOR)
@@ -230,7 +220,7 @@ public class GTRecipeTypes {
             .register();
 
     public static final GTRecipeTypeEntry CENTRIFUGE_RECIPES = REGISTRATE.recipeType("centrifuge", ELECTRIC)
-            .setMaxIOSize(2, 6, 1, 6)
+            .setMaxIOSize(2, 6, 2, 6)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(5))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_EXTRACT)
