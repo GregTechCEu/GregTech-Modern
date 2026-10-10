@@ -78,11 +78,6 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public void onAttached(ItemStack itemStack, @Nullable ServerPlayer player) {
-        super.onAttached(itemStack, player);
-    }
-
-    @Override
     public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
                                   UISettings settings) {
         EnumSyncValue<FilterMode> filterMode = new EnumSyncValue<>(FilterMode.class,

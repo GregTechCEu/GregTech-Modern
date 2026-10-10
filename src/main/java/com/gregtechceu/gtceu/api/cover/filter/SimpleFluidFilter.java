@@ -52,15 +52,8 @@ public class SimpleFluidFilter extends Filter<FluidStack> {
 
     public SimpleFluidFilter() {
         super();
-        for (int i = 0; i < 9; i++) {
-            int finalI = i;
-            fluidStorageSlots[i] = new CustomFluidTank(MAX_STACK_SIZE);
-            fluidStorageSlots[i].setOnContentsChanged(() -> {
-                matches[finalI] = fluidStorageSlots[finalI].getFluid();
-                updateAndSaveFilter();
-            });
-        }
         Arrays.fill(matches, FluidStack.EMPTY);
+        initFluidStorageSlots();
     }
 
     protected SimpleFluidFilter(boolean isBlackList, boolean ignoreNbt, List<FluidStack> matches) {
@@ -68,6 +61,19 @@ public class SimpleFluidFilter extends Filter<FluidStack> {
         this.isBlackList = isBlackList;
         this.ignoreNbt = ignoreNbt;
         this.matches = matches.toArray(FluidStack[]::new);
+        initFluidStorageSlots();
+    }
+
+    private void initFluidStorageSlots() {
+        for (int i = 0; i < 9; i++) {
+            int finalI = i;
+            fluidStorageSlots[i] = new CustomFluidTank(MAX_STACK_SIZE);
+            fluidStorageSlots[i].setFluid(matches[i]);
+            fluidStorageSlots[i].setOnContentsChanged(() -> {
+                matches[finalI] = fluidStorageSlots[finalI].getFluid();
+                updateAndSaveFilter();
+            });
+        }
     }
 
     @Override
@@ -126,6 +132,11 @@ public class SimpleFluidFilter extends Filter<FluidStack> {
         }
 
         return totalFluidAmount;
+    }
+
+    @Override
+    public Filter<FluidStack> createCopy() {
+        return new SimpleFluidFilter(isBlackList, ignoreNbt, Arrays.asList(matches));
     }
 
     public int getTotalConfiguredFluidAmount(FluidStack fluidStack) {
