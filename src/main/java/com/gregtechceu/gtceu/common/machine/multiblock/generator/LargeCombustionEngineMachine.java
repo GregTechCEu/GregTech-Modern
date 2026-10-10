@@ -19,10 +19,8 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraftforge.fluids.FluidStack;
 
 import brachy.modularui.api.drawable.Text;
@@ -200,12 +198,9 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 () -> new BooleanSyncValue(this::isExtreme));
         LongSyncValue engineOutput = syncManager.getOrCreateSyncHandler("engineOutput", LongSyncValue.class,
                 () -> new LongSyncValue(this::getCurrentProduction));
+        LongSyncValue voltage = syncManager.getOrCreateSyncHandler("voltage", LongSyncValue.class,
+                () -> new LongSyncValue(this::getDisplayRecipeVoltage));
 
-        var engineOutputDisplay = Text.dynamic(() -> Component.translatable(
-                "gtceu.multiblock.large_combustion_engine.output", engineOutput.getLongValue())
-                .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)))
-                .asWidget()
-                .setEnabledIf(w -> isFormed.getBoolValue() && isActive.getBoolValue());
         var boostDisallowed = Text.dynamic(() -> Component.translatable(
                 "gtceu.multiblock.large_combustion_engine.boost_disallowed"))
                 .asWidget()
@@ -222,14 +217,15 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                         "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
                         "gtceu.multiblock.large_combustion_engine.oxygen_boosted"))
                 .asWidget()
-                .setEnabledIf(w -> isFormed.getBoolValue() && isBoostAllowed.getBoolValue() &&
-                        isOxygenBoosted.getBoolValue());
+                .setEnabledIf(
+                        w -> isFormed.getBoolValue() && isActive.getBoolValue() && isBoostAllowed.getBoolValue() &&
+                                isOxygenBoosted.getBoolValue());
 
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, engineOutput, voltage, true));
         widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addRecipeTypeField(this, syncManager));
 
-        widgets.add(engineOutputDisplay);
         widgets.add(boostDisallowed);
         widgets.add(canBoost);
         widgets.add(isBoosted);

@@ -34,7 +34,7 @@ public class TurbineMachinePeripheral implements GenericPeripheral {
 
     @LuaFunction
     public static MethodResult getCurrentProduction(LargeTurbineMachine turbine) {
-        return MethodResult.of(turbine.getCurrentProduction());
+        return MethodResult.of(turbine.getRecipeEUt());
     }
 
     @LuaFunction
