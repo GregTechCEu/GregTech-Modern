@@ -1064,6 +1064,19 @@ public class LangHandler {
         provider.add("gtceu.gui.item_auto_input.tooltip.disabled", "Item Auto-Input Disabled");
         multilineLang(provider, "gtceu.gui.charger_slot.tooltip",
                 "§fCharger Slot§r\n§7Draws power from %s batteries§r\n§7Charges %s tools and batteries");
+        provider.add("gtceu.machine.wireless_charger.tooltip",
+                "Wirelessly charges EU and FE items carried by you and your team, including equipment.");
+        provider.add("gtceu.machine.wireless_charger.range.standard",
+                "§7Standard: §7%s §7block range, 1A input, charges each item once per second");
+        provider.add("gtceu.machine.wireless_charger.range.turbo",
+                "§7Turbo: §7%s §7block range, 4A input, charges each item every 4 ticks");
+        provider.add("gtceu.machine.wireless_charger.toggle",
+                "§7Use a screwdriver to switch between standard and turbo mode");
+        provider.add("gtceu.machine.wireless_charger.mode.standard", "Standard charging mode: %s block range");
+        provider.add("gtceu.machine.wireless_charger.mode.turbo", "Turbo charging mode: %s block range");
+        provider.add("gtceu.machine.wireless_charger.enter_range",
+                "§aYou have entered wireless charging range");
+        provider.add("gtceu.machine.wireless_charger.left_range", "§cYou have left wireless charging range");
         multilineLang(provider, "gtceu.gui.configurator_slot.tooltip",
                 "§fConfigurator Slot§r\n§7Place a §6Programmed Circuit§7 in this slot to\n§7change its configured value.\n§7Hold §6Shift§7 when clicking buttons to change by §65.\n§aA Programmed Circuit in this slot is also valid for recipe inputs.§r");
         provider.add("gtceu.gui.fluid_lock.tooltip.enabled", "Fluid Locking Enabled");
