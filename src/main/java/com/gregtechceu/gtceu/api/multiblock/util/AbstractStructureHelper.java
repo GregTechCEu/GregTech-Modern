@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.util;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
@@ -11,16 +12,17 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
+import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractStructureHelper {
@@ -28,11 +30,6 @@ public abstract class AbstractStructureHelper {
     public static final Direction[] DIRECTIONS_IN_ORDER = { Direction.NORTH, Direction.SOUTH, Direction.WEST,
             Direction.EAST, Direction.UP, Direction.DOWN };
 
-    @Getter
-    protected final HashBasedTable<MultiPredicate, BasePredicate, BlockInfo> blockPreferences = HashBasedTable
-            .create();
-    protected final HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences = HashBasedTable
-            .create();
     protected @Nullable Block controllerBlock;
 
     public static AbstractStructureHelper blockPattern(Int2IntMap sliceRepeats) {
@@ -43,64 +40,91 @@ public abstract class AbstractStructureHelper {
         return new ExpandablePatternHelper(sliceRepeats);
     }
 
-    public Table<MultiPredicate, BasePredicate, IntIntPair> getMinMaxPreferences() {
-        return this.minMaxPreferences;
-    }
+    abstract protected Char2ObjectMap<MultiPredicate> getPredicatesFromPattern(IBlockPattern pattern);
 
-    public void populate(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
-                         @Nullable Long2ObjectMap<BlockInfo> userBlockPreferences,
+    public void populate(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+                         @Nullable Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                          Direction frontFacing, Direction upFacing, boolean isFlipped) {
         setup(pattern, frontFacing, upFacing, isFlipped);
+        Char2ObjectMap<MultiPredicate> sortedPredicates = sortPredicatesForPreferences(
+                getPredicatesFromPattern(pattern), info.getBlockPreferences());
         if (userBlockPreferences != null && !userBlockPreferences.isEmpty()) {
-            populateWithUserBlockPreferences(resultStructure, pattern, userBlockPreferences, frontFacing, upFacing,
-                    isFlipped);
+            populateWithUserBlockPreferences(info, resultStructure, pattern, sortedPredicates, userBlockPreferences,
+                    frontFacing, upFacing, isFlipped);
         }
-        populateFromPattern(resultStructure, pattern, frontFacing, upFacing, isFlipped);
+        populateFromPattern(info, resultStructure, pattern, sortedPredicates, frontFacing, upFacing, isFlipped);
         fixRotationsAndFacing(resultStructure, frontFacing, upFacing, this.controllerBlock);
     }
 
     protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {}
 
-    protected abstract void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure,
+    protected abstract void populateWithUserBlockPreferences(MultiblockSchemaInfo info,
+                                                             Map<BlockPos, BlockInfo> resultStructure,
                                                              IBlockPattern pattern,
-                                                             Long2ObjectMap<BlockInfo> userBlockPreferences,
+                                                             Char2ObjectMap<MultiPredicate> sortedPredicates,
+                                                             Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                                                              Direction frontFacing, Direction upFacing,
                                                              boolean isFlipped);
 
-    protected abstract void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+    protected abstract void populateFromPattern(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                                IBlockPattern pattern, Char2ObjectMap<MultiPredicate> sortedPredicates,
                                                 Direction frontFacing, Direction upFacing, boolean isFlipped);
 
     public abstract MultiPredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
                                                        Direction frontFacing, Direction upFacing, boolean isFlipped);
 
-    protected int getMinCount(MultiPredicate predicate, BasePredicate basePredicate) {
-        if (!minMaxPreferences.contains(predicate, basePredicate))
-            return basePredicate.getMinCount();
-        return minMaxPreferences.get(predicate, basePredicate).leftInt();
+    private Pair<Boolean, MultiPredicate> sortPredicateRecursive(MultiPredicate predicate, BlockInfo preference) {
+        // Matching preds go first, both groups keep their relative ordering
+        List<BasePredicate> matchingPreds = new ArrayList<>();
+        List<BasePredicate> otherPreds = new ArrayList<>();
+        for (var basePred : predicate.predicates()) {
+            if (basePred.getCandidates().contains(preference)) {
+                matchingPreds.add(basePred);
+            } else {
+                otherPreds.add(basePred);
+            }
+        }
+        if (!matchingPreds.isEmpty()) {
+            matchingPreds.addAll(otherPreds);
+            return Pair.of(true, predicate.withContents(predicate.children(), matchingPreds));
+        }
+
+        // Matching children are replaced by their sorted versions and go first
+        List<MultiPredicate> matchingChildren = new ArrayList<>();
+        List<MultiPredicate> otherChildren = new ArrayList<>();
+        for (var child : predicate.children()) {
+            var childMatches = sortPredicateRecursive(child, preference);
+            if (childMatches.getFirst()) {
+                matchingChildren.add(childMatches.getSecond());
+            } else {
+                otherChildren.add(child);
+            }
+        }
+        if (!matchingChildren.isEmpty()) {
+            matchingChildren.addAll(otherChildren);
+            return Pair.of(true, predicate.withContents(matchingChildren, predicate.predicates()));
+        }
+        return Pair.of(false, predicate);
     }
 
-    protected int getMaxCount(MultiPredicate predicate, BasePredicate basePredicate) {
-        if (!minMaxPreferences.contains(predicate, basePredicate))
-            return basePredicate.getMaxCount();
-        return minMaxPreferences.get(predicate, basePredicate).rightInt();
-    }
-
-    protected static int countPopulatedGlobal(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate) {
-        return (int) resultStructure.values().stream()
-                .filter(blockInfo -> basePredicate.getCandidates().contains(blockInfo))
-                .count();
-    }
-
-    protected static int countPopulatedInLayer(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate,
-                                               Direction dir, int offset) {
-        return (int) resultStructure.entrySet().stream()
-                .filter(e -> getCoordFromDir(e.getKey(), dir) == offset)
-                .filter(e -> basePredicate.getCandidates().contains(e.getValue()))
-                .count();
-    }
-
-    protected static int getCoordFromDir(BlockPos pos, Direction dir) {
-        return dir.getAxis().choose(pos.getX(), pos.getY(), pos.getZ());
+    private Char2ObjectMap<MultiPredicate> sortPredicatesForPreferences(Char2ObjectMap<MultiPredicate> predicates,
+                                                                        Char2ObjectMap<BlockInfo> preferences) {
+        if (preferences.isEmpty()) return predicates;
+        Char2ObjectMap<MultiPredicate> sortedMap = new Char2ObjectOpenHashMap<>(predicates.size());
+        for (var entry : predicates.char2ObjectEntrySet()) {
+            var charKey = entry.getCharKey();
+            var predicate = entry.getValue().deepCopy();
+            var preference = preferences.get(charKey);
+            // noinspection ConstantConditions - preferences.get returns null when entry isn't present
+            if (preference != null) {
+                var sorted = sortPredicateRecursive(predicate, preference);
+                if (sorted.getFirst()) {
+                    predicate = sorted.getSecond();
+                }
+            }
+            sortedMap.put(charKey, predicate);
+        }
+        return sortedMap;
     }
 
     protected static void fixRotationsAndFacing(Map<BlockPos, BlockInfo> resultStructure, Direction frontFacing,

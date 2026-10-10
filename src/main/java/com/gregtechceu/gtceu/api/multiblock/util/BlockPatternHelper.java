@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
@@ -12,16 +13,29 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class BlockPatternHelper extends AbstractStructureHelper {
 
     private final Int2IntMap sliceRepeats;
     private char[][][] flattenedBlockPattern = new char[0][][];
+
+    private final Object2IntOpenHashMap<MultiPredicate> predicateCount = new Object2IntOpenHashMap<>();
+    private final Object2IntOpenHashMap<BasePredicate> basePredicateCount = new Object2IntOpenHashMap<>();
+    private final Table<MultiPredicate, Integer, Integer> predicateSliceCount = HashBasedTable.create();
+    private final Table<BasePredicate, Integer, Integer> basePredicateSliceCount = HashBasedTable.create();
 
     protected BlockPatternHelper(Int2IntMap sliceRepeats) {
         this.sliceRepeats = sliceRepeats;
@@ -48,18 +62,30 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         this.flattenedBlockPattern = rotateAndFlipPattern(flattenBlockPattern(blockPattern),
                 blockPattern.getDirections(),
                 frontFacing, upFacing, isFlipped);
+
+        this.predicateCount.clear();
+        this.predicateSliceCount.clear();
+        this.basePredicateCount.clear();
+        this.basePredicateSliceCount.clear();
     }
 
-    protected void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
-                                                    Long2ObjectMap<BlockInfo> userBlockPreferences,
+    protected Char2ObjectMap<MultiPredicate> getPredicatesFromPattern(IBlockPattern pattern) {
+        return ((BlockPattern) pattern).getPredicates();
+    }
+
+    protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                                    IBlockPattern pattern,
+                                                    Char2ObjectMap<MultiPredicate> sortedPredicates,
+                                                    Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
         BlockPattern blockPattern = (BlockPattern) pattern;
 
         Vec3i dimensions = getDimensions(this.flattenedBlockPattern);
         Direction sliceDir = blockPattern.getDirections()[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
+        Direction.Axis sliceAxis = sliceDir.getAxis();
 
-        for (var blockPreference : userBlockPreferences.long2ObjectEntrySet()) {
-            BlockPos pos = BlockPos.of(blockPreference.getLongKey());
+        for (var blockPreference : userBlockPreferences.object2ObjectEntrySet()) {
+            BlockPos pos = blockPreference.getKey();
             BlockInfo blockInfo = blockPreference.getValue();
             if (pos.getX() >= dimensions.getX() ||
                     pos.getY() >= dimensions.getY() ||
@@ -68,25 +94,29 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                         "BlockPos preference " + pos + "is outside of bounds for pattern of size " +
                                 dimensions.getX() + "," + dimensions.getY() + "," + dimensions.getZ());
             }
+            int offset = pos.get(sliceAxis);
             char c = this.flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
-            MultiPredicate predicate = blockPattern.getPredicates().get(c);
-            if (!isValidCandidate(resultStructure, predicate, pos, blockInfo, sliceDir)) {
+            MultiPredicate predicate = sortedPredicates.get(c);
+            var basePair = getBasePredicateRoute(new ArrayList<>(List.of(predicate)), blockInfo);
+            if (basePair == null) {
                 throw new IllegalStateException("Invalid preference " + blockInfo.getBlockState().getBlock().getName() +
                         " for position " + pos);
             }
             resultStructure.put(pos, blockInfo);
+            incrementPredicate(basePair.value(), basePair.key(), offset);
         }
     }
 
-    protected void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+    protected void populateFromPattern(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                       IBlockPattern pattern, Char2ObjectMap<MultiPredicate> sortedPredicates,
                                        Direction frontFacing, Direction upFacing, boolean isFlipped) {
         // spotless:off
-        // 4. Iterate slice by slice (a slice == one "layer"), then over the other two axes within the slice,
+        // 4. Iterate slice by slice (a slice == one "slice"), then over the other two axes within the slice,
         // get the char at that position,
-        // 4a. Go through every BasePredicate in order of priority, see if there's a minCount/minLayerCount that's
+        // 4a. Go through every BasePredicate in order of priority, see if there's a minCount/minSliceCount that's
         //      not satisfied yet, then try those
-        // 4b. If all basePredicates with a mincount/minLayerCount are satisfied, place the first predicate that works
-        // 4c. If the BasePredicate is at its max (maxCount/maxLayerCount), remove it from the list to be considered
+        // 4b. If all basePredicates with a mincount/minSliceCount are satisfied, place the first predicate that works
+        // 4c. If the BasePredicate is at its max (maxCount/maxSliceCount), remove it from the list to be considered
         // 4d. error if none are valid candidates(?)
         // spotless:on
 
@@ -111,16 +141,18 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                     if (resultStructure.containsKey(pos)) continue;
 
                     char c = this.flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
-                    MultiPredicate predicate = blockPattern.getPredicates().get(c);
+                    MultiPredicate predicate = sortedPredicates.get(c);
 
-                    if (predicate.isAir() || predicate.isAny()) {
+                    if (predicate.isAny()) {
                         continue;
                     }
 
-                    // Attempts to first place the predicate if the minimum (layer) count isn't satisfied, then the
-                    // maximum (layer) count
-                    if (tryMinCount(resultStructure, predicate, pos, sliceDir, sliceCoord)) continue;
-                    if (tryMaxCount(resultStructure, predicate, pos, sliceDir, sliceCoord)) continue;
+                    // Attempts to first place the predicate if the minimum (slice) count isn't satisfied, then the
+                    // maximum (slice) count
+                    List<MultiPredicate> chain = new ArrayList<>();
+                    chain.add(predicate);
+                    if (tryMinCount(info, resultStructure, predicate, c, pos, sliceCoord, chain)) continue;
+                    if (tryMaxCount(info, resultStructure, predicate, c, pos, sliceCoord, chain)) continue;
                     // If we arrive here, there's nothing we can place that doesn't overflow a max count!
                     throw new IllegalStateException(
                             "Could not place a block without breaking maxCount requirements for character " + c);
@@ -129,109 +161,245 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         }
     }
 
-    private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
-                                BlockPos pos, Direction dir, int offset) {
-        for (BasePredicate basePredicate : predicate.predicates()) {
-            int minCount = getMinCount(predicate, basePredicate);
-            if (minCount == 0) continue;
-
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset);
-            boolean globalMinMet = minCount == -1 || totalAlreadyPopulated >= minCount;
-            boolean sliceMinMet = basePredicate.testSliceMin(layerAlreadyPopulated);
-
-            if (globalMinMet && sliceMinMet) continue;
-
-            BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
-            if (toInsert == null) {
-                toInsert = basePredicate.getFirstCandidate().orElseGet(() -> {
-                    GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", basePredicate);
-                    return BlockInfo.EMPTY;
-                });
-            }
-            // TODO: is this needed? doesn't this just do what we're already doing?
-            if (isValidCandidate(resultStructure, predicate, pos, toInsert, dir)) {
-                resultStructure.put(pos, toInsert);
-                if (this.controllerBlock == null && predicate.isController()) {
-                    this.controllerBlock = toInsert.getBlockState().getBlock();
-                }
-                return true;
-            }
+    private void incrementPredicate(List<MultiPredicate> predicateChain, BasePredicate base, int offset) {
+        basePredicateCount.merge(base, 1, Integer::sum);
+        basePredicateSliceCount.column(offset).merge(base, 1, Integer::sum);
+        for (var pred : predicateChain) {
+            predicateCount.merge(pred, 1, Integer::sum);
+            predicateSliceCount.column(offset).merge(pred, 1, Integer::sum);
         }
-        for (MultiPredicate child : predicate.children()) {
-            if (tryMinCount(resultStructure, child, pos, dir, offset)) return true;
-        }
-        return false;
     }
 
-    private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
-                                BlockPos pos, Direction dir, int offset) {
-        for (BasePredicate basePredicate : predicate.predicates()) {
-            int maxCount = getMaxCount(predicate, basePredicate);
-            if (maxCount == 0) continue;
-
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset);
-            if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
-            if (!basePredicate.testSliceMax(layerAlreadyPopulated + 1)) continue;
-
-            BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
-            if (toInsert == null) {
-                toInsert = basePredicate.getFirstCandidate().orElseGet(() -> {
-                    GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", basePredicate);
-                    return BlockInfo.EMPTY;
-                });
-            }
-            // TODO: is this needed? doesn't this just do what we're already doing?
-            if (isValidCandidate(resultStructure, predicate, pos, toInsert, dir)) {
-                resultStructure.put(pos, toInsert);
-                if (this.controllerBlock == null && predicate.isController()) {
-                    this.controllerBlock = toInsert.getBlockState().getBlock();
-                }
-                return true;
+    private @Nullable Pair<BasePredicate, List<MultiPredicate>> getBasePredicateRoute(List<MultiPredicate> predicateChain,
+                                                                                      BlockInfo info) {
+        MultiPredicate last = predicateChain.get(predicateChain.size() - 1);
+        for (var base : last.predicates()) {
+            if (base.getCandidates().contains(info)) {
+                return Pair.of(base, predicateChain);
             }
         }
-        for (MultiPredicate child : predicate.children()) {
-            if (tryMaxCount(resultStructure, child, pos, dir, offset)) return true;
+        for (var child : last.children()) {
+            predicateChain.add(child);
+            var pair = getBasePredicateRoute(predicateChain, info);
+            if (pair != null) {
+                return pair;
+            }
+            predicateChain.remove(child);
         }
-        return false;
+        return null;
     }
 
-    private boolean isValidCandidate(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
-                                     BlockPos pos, BlockInfo newInfo, Direction sliceDir) {
-        // force true because idk what to do with this
-        if (newInfo == BlockInfo.EMPTY) return true;
-        // The slice (layer) this position belongs to.
-        int sliceCoord = getCoordFromDir(pos, sliceDir);
+    private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                MultiPredicate predicate, char predicateChar,
+                                BlockPos pos, int offset, List<MultiPredicate> predicateChain) {
+        // TODO rehandle user min count
+        // Find first unsatisfied min predicate while also checking type specific logic
+        BasePredicate baseNotSatisfied = null;
+        if (predicate.isAnd() || predicate.isOr()) {
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                int baseMinCount = basePredicate.getPreviewOrMinCount();
+                if (baseMinCount == 0) continue;
+                int baseMinSliceCount = basePredicate.getMinSliceCount();
+                if (baseMinSliceCount == 0) continue;
 
-        // newInfo is valid if there's a basePredicate it qualifies for whose maxCount (global) and maxSliceCount
-        // (this slice) wouldn't be exceeded by placing it here.
-        for (BasePredicate basePredicate : predicate.predicates()) {
-            /*
-             * PROBLEM:
-             * certain predicates (like air/any) do not have any candidates
-             * so they fail with BlockInfo.EMPTY
-             * there's also no way to "test" the block info since you need a PredicateContext
-             */
-            if (!basePredicate.getCandidates().contains(newInfo)) continue;
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                int baseSliceAlreadyPopulated = basePredicateSliceCount.row(basePredicate).getOrDefault(offset, 0);
+                boolean baseGlobalMinMet = baseMinCount == -1 || baseTotalAlreadyPopulated >= baseMinCount;
+                boolean baseSliceMinMet = baseMinSliceCount == -1 || baseSliceAlreadyPopulated >= baseMinSliceCount;
 
-            int maxCount = getMaxCount(predicate, basePredicate);
-            if (maxCount == 0) continue;
+                if (!baseGlobalMinMet || !baseSliceMinMet) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
+            }
+        } else if (predicate.isXor()) {
+            // For XOR, only one can be true. If we find any condition already satisfied, return false
+            int predTotalAlreadyPopulated = predicateCount.getInt(predicate);
+            int predSliceAlreadyPopulated = predicateSliceCount.row(predicate).getOrDefault(offset, 0);
 
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, sliceDir, sliceCoord);
-            if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
+            int predMinCount = predicate.getPreviewOrMinCount();
+            int predMinSliceCount = predicate.getMinSliceCount();
+            boolean predGlobalMinMet = predTotalAlreadyPopulated >= predMinCount;
+            boolean predSliceMinMet = predSliceAlreadyPopulated >= predMinSliceCount;
+            if (predMinCount != -1 && predGlobalMinMet) return false;
+            if (predMinSliceCount != -1 && predSliceMinMet) return false;
 
-            if (basePredicate.getMaxSliceCount() == -1 || layerAlreadyPopulated < basePredicate.getMaxSliceCount()) {
-                return true;
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                // Same goes for the basePredicates, any satisfied basePredicate with mins returns false
+                int baseMinCount = basePredicate.getPreviewOrMinCount();
+                if (baseMinCount == 0) return false;
+
+                int baseMinSliceCount = basePredicate.getMinSliceCount();
+                if (baseMinSliceCount == 0) return false;
+
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                int baseSliceAlreadyPopulated = basePredicateSliceCount.row(basePredicate).getOrDefault(offset, 0);
+                boolean baseGlobalMinMet = baseTotalAlreadyPopulated >= baseMinCount;
+                boolean baseSliceMinMet = baseSliceAlreadyPopulated >= baseMinSliceCount;
+
+                // If there is a limit, and it's been met, return
+                if (baseMinCount != -1 && baseGlobalMinMet) return false;
+                if (baseMinSliceCount != -1 && baseSliceMinMet) return false;
+
+                // If there is a limit, and it hasn't been met, we have a predicate that needs blocks
+                // noinspection ConstantConditions
+                if ((baseMinCount != -1 && !baseGlobalMinMet) || (baseMinSliceCount != -1 && !baseSliceMinMet)) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
             }
         }
+
+        if (baseNotSatisfied != null) {
+            BasePredicate finalBaseNotSatisfied = baseNotSatisfied;
+            BlockInfo toInsert = baseNotSatisfied.getFirstCandidate().orElseGet(() -> {
+                GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", finalBaseNotSatisfied);
+                return BlockInfo.EMPTY;
+            });
+            resultStructure.put(pos, toInsert);
+            if (this.controllerBlock == null && predicate.isController()) {
+                this.controllerBlock = toInsert.getBlockState().getBlock();
+            }
+            incrementPredicate(predicateChain, finalBaseNotSatisfied, offset);
+            return true;
+        }
+
+        // check if each child predicate min is satisfied
         for (MultiPredicate child : predicate.children()) {
-            if (isValidCandidate(resultStructure, child, pos, newInfo, sliceDir)) {
-                return true;
+            predicateChain.add(child);
+            if (tryMinCount(info, resultStructure, child, predicateChar, pos, offset, predicateChain)) return true;
+            predicateChain.remove(child);
+        }
+
+        // check if main predicate min is satisfied
+        int minCount = predicate.getPreviewOrMinCount();
+        if (minCount == 0) return false;
+        int sliceMinCount = predicate.getMinSliceCount();
+        if (sliceMinCount == 0) return false;
+
+        int totalAlreadyPopulated = predicateCount.getInt(predicate);
+        int sliceAlreadyPopulated = predicateSliceCount.row(predicate).getOrDefault(offset, 0);
+
+        boolean globalMinMet = minCount == -1 || totalAlreadyPopulated >= minCount;
+        boolean sliceMinMet = sliceMinCount == -1 || sliceAlreadyPopulated >= sliceMinCount;
+        if (globalMinMet && sliceMinMet) {
+            return false;
+        }
+
+        BlockInfo toInsert = info.getBlockPreferences().get(predicateChar);
+        if (toInsert == null) {
+            // TODO filtering?
+            toInsert = predicate.getCandidates().get(0).get(0);
+        }
+        var basePair = getBasePredicateRoute(predicateChain, toInsert);
+        if (basePair == null) return false;
+        resultStructure.put(pos, toInsert);
+        if (this.controllerBlock == null && predicate.isController()) {
+            this.controllerBlock = toInsert.getBlockState().getBlock();
+        }
+        incrementPredicate(basePair.value(), basePair.key(), offset);
+        return true;
+    }
+
+    private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                MultiPredicate predicate, char predicateChar,
+                                BlockPos pos, int offset, List<MultiPredicate> predicateChain) {
+        // check if main predicate max is satisfied
+        int maxCount = predicate.getMaxCount();
+        if (maxCount == 0) return false;
+        int maxSliceCount = predicate.getMaxSliceCount();
+        if (maxSliceCount == 0) return false;
+
+        int totalAlreadyPopulated = predicateCount.getInt(predicate);
+        int sliceAlreadyPopulated = predicateSliceCount.row(predicate).getOrDefault(offset, 0);
+
+        boolean globalMaxMet = maxCount != -1 && totalAlreadyPopulated >= maxCount;
+        boolean sliceMaxMet = maxSliceCount != -1 && sliceAlreadyPopulated >= maxSliceCount;
+
+        if (globalMaxMet || sliceMaxMet) {
+            return false;
+        }
+
+        // check if each base predicate max is satisfied
+        BasePredicate baseNotSatisfied = null;
+        if (predicate.isAnd() || predicate.isOr()) {
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                int baseMaxCount = basePredicate.getMaxCount();
+                if (baseMaxCount == 0) continue;
+                int baseMaxSliceCount = basePredicate.getMaxSliceCount();
+                if (baseMaxSliceCount == 0) continue;
+
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                int baseSliceAlreadyPopulated = basePredicateSliceCount.row(basePredicate).getOrDefault(offset, 0);
+                boolean baseGlobalMaxMet = baseMaxCount != -1 && baseTotalAlreadyPopulated >= baseMaxCount;
+                boolean baseSliceMaxMet = baseMaxSliceCount != -1 && baseSliceAlreadyPopulated >= baseMaxSliceCount;
+
+                if (!baseGlobalMaxMet && !baseSliceMaxMet) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
+            }
+        } else if (predicate.isXor()) {
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                // Any satisfied basePredicate with mins and maxs satisfied returns false
+                int baseMaxCount = basePredicate.getMaxCount();
+                if (baseMaxCount == 0) return false;
+                int baseMaxSliceCount = basePredicate.getMaxSliceCount();
+                if (baseMaxSliceCount == 0) return false;
+
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                int baseSliceAlreadyPopulated = basePredicateSliceCount.row(basePredicate).getOrDefault(offset, 0);
+                boolean baseGlobalMaxMet = baseTotalAlreadyPopulated >= baseMaxCount;
+                boolean baseSliceMaxMet = baseSliceAlreadyPopulated >= baseMaxSliceCount;
+
+                // If there is a limit, and it's been met, return
+                if (baseMaxCount != -1 && baseGlobalMaxMet) return false;
+                if (baseMaxSliceCount != -1 && baseSliceMaxMet) return false;
+
+                // If there is no limit, or there is one that hasn't been met, we have a predicate that allows blocks
+                // noinspection ConstantConditions
+                if ((baseMaxCount == -1 || !baseGlobalMaxMet) && (baseMaxSliceCount == -1 || !baseSliceMaxMet)) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
             }
         }
-        return false;
+
+        if (baseNotSatisfied != null) {
+            BasePredicate finalBaseNotSatisfied = baseNotSatisfied;
+            BlockInfo toInsert = baseNotSatisfied.getFirstCandidate().orElseGet(() -> {
+                GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", finalBaseNotSatisfied);
+                return BlockInfo.EMPTY;
+            });
+            incrementPredicate(predicateChain, baseNotSatisfied, offset);
+            resultStructure.put(pos, toInsert);
+            if (this.controllerBlock == null && predicate.isController()) {
+                this.controllerBlock = toInsert.getBlockState().getBlock();
+            }
+            return true;
+        }
+
+        // check if each child predicate min is satisfied
+        for (MultiPredicate child : predicate.children()) {
+            predicateChain.add(child);
+            if (tryMaxCount(info, resultStructure, child, predicateChar, pos, offset, predicateChain)) return true;
+            predicateChain.remove(predicateChain.size() - 1);
+        }
+
+        BlockInfo toInsert = info.getBlockPreferences().get(predicateChar);
+        if (toInsert == null) {
+            // TODO filtering?
+            toInsert = predicate.getCandidates().get(0).get(0);
+        }
+        var basePair = getBasePredicateRoute(predicateChain, toInsert);
+        if (basePair == null) return false;
+        resultStructure.put(pos, toInsert);
+        if (this.controllerBlock == null && predicate.isController()) {
+            this.controllerBlock = toInsert.getBlockState().getBlock();
+        }
+
+        incrementPredicate(basePair.value(), basePair.key(), offset);
+        return true;
     }
 
     private @UnmodifiableView char[][][] flattenBlockPattern(BlockPattern pattern) {

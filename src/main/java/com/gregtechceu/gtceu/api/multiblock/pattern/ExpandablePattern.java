@@ -70,6 +70,11 @@ public class ExpandablePattern implements IBlockPattern {
     }
 
     @Override
+    public Char2ObjectMap<MultiPredicate> getPredicates() {
+        return symbolMap;
+    }
+
+    @Override
     public void checkPatternFastAt(Level level, PatternState patternState, BlockPos centerPos, Direction frontFacing,
                                    Direction upwardsFacing, boolean allowsFlip) {
         if (!patternState.getCache().isEmpty()) {

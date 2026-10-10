@@ -1,16 +1,33 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
+import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
+import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
+import com.gregtechceu.gtceu.api.multiblock.util.AutobuildHelper;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.CPacketTerminalSettings;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -18,8 +35,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 import brachy.modularui.factory.ClientGUI;
 import brachy.modularui.factory.PlayerInventoryGuiData;
@@ -27,60 +46,120 @@ import brachy.modularui.factory.inventory.InventoryTypes;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
+import com.google.common.collect.HashBasedTable;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.ints.*;
+import org.jetbrains.annotations.Nullable;
 
-public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-    // FIXME these are global for all terminal items rn
-    private MultiblockMachineDefinition multiblockDefinition = null;
-    private MultiblockSchemaInfo multiblockSchemaInfo;
-    private BlockPos controllerPos;
-    private Direction frontFacing;
-    private Direction upFacing;
-    private boolean isFlipped = false;
+import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
+public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddInformation {
+
+    public static final String ACCESS_POINT_TAG = "access_pos";
+    private static final String CONTROLLER_INFO_TAG = "controller";
+    private static final String SCHEMA_INFO_TAG = "schema";
+
+    // todo somewhere client panel warning if the structure to be built is invalid
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
+        ItemStack stack = context.getItemInHand();
+        CompoundTag tag = stack.getOrCreateTag();
 
         if (player == null || !player.isShiftKeyDown()) {
-            return InteractionResult.PASS;
-        }
-
-        if (!player.isCreative()) {
             return InteractionResult.PASS;
         }
 
         if (!(MetaMachine.getMachine(level, pos) instanceof MultiblockControllerMachine controller)) {
             return InteractionResult.PASS;
         }
-        if (controller.getDefaultPatternState().isFormed()) {
-            return InteractionResult.PASS;
-        }
-        if (controller.getDefinition() == this.multiblockDefinition && this.multiblockSchemaInfo != null) {
-            this.refreshSchema();
-        }
-        if (this.multiblockSchemaInfo == null) {
-            return InteractionResult.PASS;
-        }
-        if (this.multiblockSchemaInfo.getStructureBlocks() == null ||
-                this.multiblockSchemaInfo.getStructureBlocks().isEmpty()) {
+
+        var info = loadControllerInfo(stack);
+        if (info == null) return InteractionResult.PASS;
+
+        if (controller.getDefinition() != info.definition()) {
+            // TODO: Log errors in chat
             return InteractionResult.PASS;
         }
 
-        BlockPos controllerOffset = controller.getBlockPos()
-                .offset(this.multiblockSchemaInfo.getMapSchema().getControllerPos().multiply(-1));
-        if (context.getPlayer().isCreative()) {
-            for (var entry : this.multiblockSchemaInfo.getStructureBlocks().entrySet()) {
-                level.setBlockAndUpdate(entry.getKey().offset(controllerOffset), entry.getValue().getBlockState());
+        PatternState state = controller.getDefaultPatternState();
+        if (state.isFormed()) {
+            return InteractionResult.PASS;
+        }
+
+        Direction frontFacing = controller.getFrontFacing();
+        Direction upFacing = controller.getUpwardsFacing();
+
+        if (!level.isClientSide) {
+            MultiblockSchemaInfo schemaInfo = loadSchemaInfo(stack, info);
+            boolean flipped = schemaInfo.isFlipped();
+
+            ServerPlayer serverPlayer = (ServerPlayer) player;
+            // Partially copy pasted from MultiblockControllerMachine#onUse.
+            // TODO: Probably extract into helper function
+            Map<BlockPos, BlockInfo> resultStructure = new HashMap<>();
+            AbstractStructureHelper structureHelper = null;
+            IBlockPattern pattern = controller.getStructurePatterns().get(DEFAULT_STRUCTURE);
+            if (pattern instanceof BlockPattern blockPattern) {
+                Int2IntMap slices = new Int2IntArrayMap();
+                for (int i = 0; i < blockPattern.getSlices().length; i++) {
+                    slices.put(i, blockPattern.getSlices()[i].getMinRepeats());
+                }
+                slices.putAll(schemaInfo.getUserSliceRepeats());
+
+                structureHelper = AbstractStructureHelper.blockPattern(slices);
+            } else if (pattern instanceof ExpandablePattern expandablePattern) {
+                IntList dims = new IntArrayList();
+                if (expandablePattern.getBoundsConstraints() != null) {
+                    IntList userDims = schemaInfo.getUserDimensions();
+                    List<IntIntPair> constraints = expandablePattern.getBoundsConstraints().apply();
+                    for (int i = 0; i < constraints.size(); i++) {
+                        IntIntPair bounds = constraints.get(i);
+                        int dim = i < userDims.size() ? userDims.getInt(i) : bounds.leftInt();
+                        dims.add(Mth.clamp(dim, bounds.leftInt(), bounds.rightInt()));
+                    }
+                }
+                structureHelper = AbstractStructureHelper.expandable(dims);
             }
 
-            if (!level.isClientSide()) {
-                // needed to force the multiblock to do a clean check, kinda sus
-                controller.getDefaultPatternState().getCache().clear();
-                controller.checkAndFormStructure();
+            if (structureHelper != null) {
+                structureHelper.populate(schemaInfo, resultStructure, pattern,
+                        schemaInfo.getUserGlobalBlockPreferences(), frontFacing,
+                        upFacing,
+                        flipped);
             }
+
+            // Extract controller block offset
+            Block controllerBlock = controller.getDefinition().getBlock();
+            BlockPos schemaControllerPos = BlockPos.ZERO;
+            for (var entry : resultStructure.entrySet()) {
+                if (entry.getValue().getBlockState().is(controllerBlock)) {
+                    schemaControllerPos = entry.getKey();
+                    break;
+                }
+            }
+
+            BlockPos controllerOffset = controller.getBlockPos().subtract(schemaControllerPos);
+            if (player.isCreative()) {
+                for (var entry : resultStructure.entrySet()) {
+                    level.setBlockAndUpdate(entry.getKey().offset(controllerOffset), entry.getValue().getBlockState());
+                }
+            } else if (structureHelper != null) {
+                AutobuildHelper.autobuild(serverPlayer, context.getItemInHand(), controller.getDefinition(), controller,
+                        resultStructure, structureHelper, flipped);
+            }
+
+            // needed to force the multiblock to do a clean check, kinda sus
+            controller.getDefaultPatternState().getCache().clear();
+            controller.checkAndFormStructure();
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
@@ -94,56 +173,131 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         if (!(MetaMachine.getMachine(level, blockPos) instanceof MultiblockControllerMachine controller)) {
             return InteractionResult.PASS;
         }
-        // always load this data (even if shifting); it's required for #useOn to work
-        if (controller.getDefinition() != this.multiblockDefinition && this.multiblockSchemaInfo != null) {
-            this.multiblockSchemaInfo = null;
-        }
-        this.multiblockDefinition = controller.getDefinition();
-        this.controllerPos = controller.getBlockPos();
-        this.frontFacing = controller.getFrontFacing();
-        this.upFacing = controller.getUpwardsFacing();
-        this.isFlipped = controller.isFlipped();
 
         if (player == null || player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         }
+
         if (level.isClientSide) {
             player.displayClientMessage(Component.literal("Loaded controller information"), false);
+        } else {
+            itemStack.removeTagKey(CONTROLLER_INFO_TAG);
+            itemStack.removeTagKey(SCHEMA_INFO_TAG);
+            itemStack.getOrCreateTag().put(CONTROLLER_INFO_TAG,
+                    ControllerInfo.CODEC.encodeStart(NbtOps.INSTANCE, new ControllerInfo(controller)).getOrThrow(false,
+                            GTCEu.LOGGER::error));
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
-    @Override
-    public boolean shouldOpenUI() {
-        return this.multiblockDefinition != null;
+    public boolean shouldOpenUI(ItemStack item) {
+        return item.getOrCreateTag().contains(CONTROLLER_INFO_TAG);
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
-        if (!shouldOpenUI()) return IItemUIHolder.super.use(item, level, player, usedHand);
+        if (!shouldOpenUI(player.getItemInHand(usedHand))) {
+            if (level.isClientSide)
+                player.displayClientMessage(Component.literal("No controller information loaded"), false);
+            return InteractionResultHolder.pass(player.getItemInHand(usedHand));
+        }
 
         if (level.isClientSide) {
             PlayerInventoryGuiData<?> guiData = PlayerInventoryGuiData.of(player, InventoryTypes.PLAYER, null,
                     usedHand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND : player.getInventory().selected);
-            ModularPanel<?> clientPanel = clientPanel();
-            ClientGUI.open(createScreen(guiData, clientPanel));
+            Optional<ModularPanel<?>> clientPanel = clientPanel(player.getItemInHand(usedHand), usedHand);
+            if (clientPanel.isEmpty()) {
+                return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), true);
+            }
+            ClientGUI.open(createScreen(guiData, clientPanel.get()));
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide);
     }
 
-    private ModularPanel<?> clientPanel() {
-        MultiblockPreviewWidget previewWidget = new MultiblockPreviewWidget(this.multiblockDefinition,
-                this.multiblockSchemaInfo, 200, 200)
-                .setControllerPos(this.controllerPos)
-                .setFrontFacing(this.frontFacing).setUpFacing(this.upFacing).setFlipped(this.isFlipped);
+    private Optional<ModularPanel<?>> clientPanel(ItemStack item, InteractionHand hand) {
+        var controllerInfo = loadControllerInfo(item);
+        if (controllerInfo == null) return Optional.empty();
+
+        MultiblockSchemaInfo schemaInfo = loadSchemaInfo(item, controllerInfo);
+
+        MultiblockPreviewWidget previewWidget = new MultiblockPreviewWidget(controllerInfo.definition(), schemaInfo,
+                200, 200, true)
+                .setControllerPos(controllerInfo.pos())
+                .setFrontFacing(controllerInfo.facing()).setUpFacing(controllerInfo.upFace())
+                .setFlipped(schemaInfo.isFlipped());
         previewWidget.refreshSchema();
 
-        return ModularPanel.defaultPanel("terminal")
+        return Optional.of(ModularPanel.defaultPanel("terminal")
                 .coverChildren()
-                .onCloseAction(w -> {
-                    this.multiblockSchemaInfo = previewWidget.getMultiblockSchemaInfo();
-                })
-                .child(previewWidget);
+                .child(previewWidget)
+                .onCloseAction(w -> writeMultiblockInfo(controllerInfo.definition(), hand, previewWidget)));
+    }
+
+    private void writeMultiblockInfo(MultiblockMachineDefinition definition, InteractionHand hand,
+                                     MultiblockPreviewWidget previewWidget) {
+        MultiblockSchemaInfo schemaInfo = previewWidget.getMultiblockSchemaInfo();
+
+        GTNetwork.sendToServer(new CPacketTerminalSettings(hand, definition, schemaInfo.getUserSliceRepeats(),
+                schemaInfo.getUserDimensions(), schemaInfo.getUserGlobalBlockPreferences(),
+                schemaInfo.getBlockPreferences(), HashBasedTable.create()
+                /* schemaInfo.getMinMaxPreferenceCharTable() */, previewWidget.isFlipped(),
+                previewWidget.isClearMulti(), previewWidget.isClearPreferences()));
+    }
+
+    public static void applyUserPreferences(ItemStack item, MultiblockSchemaInfo schemaInfo,
+                                            boolean isClearMulti,
+                                            boolean isClearPreferences) {
+        CompoundTag tag = item.getOrCreateTag();
+        if (isClearMulti) {
+            tag.remove(CONTROLLER_INFO_TAG);
+        } else if (isClearPreferences) {
+            var controllerInfo = ControllerInfo.CODEC
+                    .parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
+                    .getOrThrow(false, GTCEu.LOGGER::error);
+            tag.put(SCHEMA_INFO_TAG,
+                    MultiblockSchemaInfo.CODEC
+                            .encodeStart(NbtOps.INSTANCE, defaultSchemaInfo(controllerInfo))
+                            .getOrThrow(false, GTCEu.LOGGER::error));
+        } else {
+            tag.put(SCHEMA_INFO_TAG, MultiblockSchemaInfo.CODEC.encodeStart(NbtOps.INSTANCE, schemaInfo)
+                    .getOrThrow(false, GTCEu.LOGGER::error));
+        }
+    }
+
+    private static MultiblockSchemaInfo defaultSchemaInfo(ControllerInfo controllerInfo) {
+        MultiblockSchemaInfo schemaInfo = new MultiblockSchemaInfo(controllerInfo.definition());
+        schemaInfo.setFlipped(controllerInfo.flipped());
+        return schemaInfo;
+    }
+
+    public MultiblockSchemaInfo loadSchemaInfo(ItemStack stack, ControllerInfo controllerInfo) {
+        CompoundTag tag = stack.getOrCreateTag();
+        if (tag.contains(SCHEMA_INFO_TAG)) {
+            try {
+                return MultiblockSchemaInfo.CODEC
+                        .parse(NbtOps.INSTANCE, tag.getCompound(SCHEMA_INFO_TAG))
+                        .getOrThrow(false, GTCEu.LOGGER::error);
+            } catch (Exception e) {
+                return defaultSchemaInfo(controllerInfo);
+            }
+        } else {
+            return defaultSchemaInfo(controllerInfo);
+        }
+    }
+
+    public @Nullable ControllerInfo loadControllerInfo(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        if (tag.contains(CONTROLLER_INFO_TAG)) {
+            try {
+                return ControllerInfo.CODEC
+                        .parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
+                        .getOrThrow(false, GTCEu.LOGGER::error);
+            } catch (Exception e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -151,7 +305,58 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         return null;
     }
 
-    private void refreshSchema() {
-        this.multiblockSchemaInfo.refreshSchema(multiblockDefinition, frontFacing, upFacing, isFlipped, null);
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
+        CompoundTag tag = stack.getOrCreateTag();
+
+        var info = loadControllerInfo(stack);
+        if (info != null) {
+            tooltipComponents.add(Component.translatable("gtceu.terminal.controller_bound",
+                    info.pos().getX(), info.pos().getY(), info.pos().getZ())
+                    .withStyle(ChatFormatting.GOLD));
+            tooltipComponents.add(info.definition().getBlock().getName());
+        }
+
+        GlobalPos aeBinding = getLinkedPos(stack);
+        if (aeBinding != null) {
+            tooltipComponents.add(Component.translatable("gtceu.terminal.network_bound", aeBinding.dimension(),
+                    aeBinding.pos().getX(), aeBinding.pos().getY(), aeBinding.pos().getZ())
+                    .withStyle(ChatFormatting.GOLD));
+        }
+    }
+
+    @Nullable
+    public static GlobalPos getLinkedPos(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        if (tag != null && tag.contains(ACCESS_POINT_TAG)) {
+            try {
+                return GlobalPos.CODEC
+                        .parse(NbtOps.INSTANCE, tag.get(ACCESS_POINT_TAG))
+                        .getOrThrow(false, GTCEu.LOGGER::error);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public record ControllerInfo(MultiblockMachineDefinition definition, BlockPos pos, Direction facing,
+                                 Direction upFace, boolean flipped) {
+
+        // spotless:off
+        public static final Codec<ControllerInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                MultiblockMachineDefinition.CODEC.fieldOf("definition").forGetter(ControllerInfo::definition),
+                BlockPos.CODEC.fieldOf("pos").forGetter(ControllerInfo::pos),
+                Direction.CODEC.fieldOf("facing").forGetter(ControllerInfo::facing),
+                Direction.CODEC.fieldOf("up").forGetter(ControllerInfo::upFace),
+                Codec.BOOL.fieldOf("flipped").forGetter(ControllerInfo::flipped)
+        ).apply(instance, ControllerInfo::new));
+        //spotless:on
+
+        public ControllerInfo(MultiblockControllerMachine machine) {
+            this(machine.getDefinition(), machine.getBlockPos(), machine.getFrontFacing(), machine.getUpwardsFacing(),
+                    machine.isFlipped());
+        }
     }
 }

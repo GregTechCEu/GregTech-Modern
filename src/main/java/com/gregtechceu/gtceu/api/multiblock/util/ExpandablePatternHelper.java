@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
@@ -9,17 +11,32 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ExpandablePatternHelper extends AbstractStructureHelper {
 
     private final IntList userRepeats;
 
+    private final Object2IntOpenHashMap<MultiPredicate> predicateCount = new Object2IntOpenHashMap<>();
+    private final Object2IntOpenHashMap<BasePredicate> basePredicateCount = new Object2IntOpenHashMap<>();
+
     protected ExpandablePatternHelper(IntList userRepeats) {
         this.userRepeats = userRepeats;
+    }
+
+    @Override
+    protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {
+        this.predicateCount.clear();
+        this.basePredicateCount.clear();
     }
 
     private static CornerData getCorners(IntList bounds,
@@ -51,8 +68,10 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     }
 
     @Override
-    protected void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
-                                                    Long2ObjectMap<BlockInfo> userBlockPreferences,
+    protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                                    IBlockPattern pattern,
+                                                    Char2ObjectMap<MultiPredicate> sortedPredicates,
+                                                    Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
         ExpandablePattern expandablePattern = (ExpandablePattern) pattern;
 
@@ -63,21 +82,39 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         // kinda gross, but it's the least invasive way I guess, maybe look for something better
         BoundingBox bounds = corners.inflatedBy(1);
 
-        for (var entry : userBlockPreferences.long2ObjectEntrySet()) {
-            BlockPos pos = BlockPos.of(entry.getLongKey()); // absolute-space
+        var predicateProvider = expandablePattern.getPredicateProvider();
+
+        for (var entry : userBlockPreferences.object2ObjectEntrySet()) {
+            BlockPos pos = entry.getKey(); // absolute-space
+            BlockInfo blockInfo = entry.getValue();
             // Reverse-transform to relative/pattern space (transpose of orthogonal rotation) to check against bounds
             int relX = getOffsetFromDirection(absolutes[0], pos);
             int relY = getOffsetFromDirection(absolutes[1], pos);
             int relZ = getOffsetFromDirection(absolutes[2], pos);
 
-            if (bounds.isInside(relX, relY, relZ)) {
-                resultStructure.put(pos, entry.getValue());
+            if (!bounds.isInside(relX, relY, relZ)) continue;
+
+            char key = predicateProvider.getPredicateKey(new BlockPos.MutableBlockPos(relX, relY, relZ), userRepeats);
+            MultiPredicate predicate = sortedPredicates.get(key);
+            if (predicate == null) continue;
+            var basePair = getBasePredicateRoute(new ArrayList<>(List.of(predicate)), blockInfo);
+            if (basePair == null) {
+                GTCEu.LOGGER.warn("Ignoring invalid preference {} for position {}",
+                        blockInfo.getBlockState().getBlock().getName().getString(), pos);
+                continue;
             }
+            resultStructure.put(pos, blockInfo);
+            incrementPredicate(basePair.value(), basePair.key());
         }
     }
 
+    protected Char2ObjectMap<MultiPredicate> getPredicatesFromPattern(IBlockPattern pattern) {
+        return ((ExpandablePattern) pattern).getSymbolMap();
+    }
+
     @Override
-    public void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+    public void populateFromPattern(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                    IBlockPattern pattern, Char2ObjectMap<MultiPredicate> sortedPredicates,
                                     Direction frontFacing,
                                     Direction upFacing, boolean isFlipped) {
         ExpandablePattern expandablePattern = (ExpandablePattern) pattern;
@@ -90,7 +127,12 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         for (BlockPos pos : betweenClosed(corners.bounds())) {
             BlockPos.MutableBlockPos mutablePos = pos.mutable();
             char key = predicateProvider.getPredicateKey(mutablePos, userRepeats);
-            MultiPredicate predicate = expandablePattern.getSymbolMap().get(key);
+            MultiPredicate predicate = sortedPredicates.get(key);
+
+            if (predicate == null)
+                throw new IllegalStateException(
+                        "Predicate provider returned character that is not mapped to a predicate: '%s'"
+                                .formatted(key));
 
             // this basically reshuffles the coordinates into absolute form from relative form
             setFromDirection(mutablePos, absolutes[0], pos.getX());
@@ -100,61 +142,204 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             // mutablePos = mutablePos.move(translation);
             if (resultStructure.containsKey(mutablePos)) continue;
 
+            if (predicate.isAny()) {
+                continue;
+            }
+
             // Attempts to first place the predicate if the min (layer) count isn't satisfied, then the
             // max (layer) count
-            if (tryMinCount(resultStructure, predicate, mutablePos)) continue;
-            if (tryMaxCount(resultStructure, predicate, mutablePos)) continue;
+            List<MultiPredicate> chain = new ArrayList<>();
+            chain.add(predicate);
+            if (tryMinCount(info, resultStructure, predicate, key, mutablePos, chain)) continue;
+            if (tryMaxCount(info, resultStructure, predicate, key, mutablePos, chain)) continue;
             // If we arrive here, there's nothing we can place that doesn't overflow a max count!
             throw new IllegalStateException("Could not place a block without breaking maxCount requirements");
         }
     }
 
-    private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
-                                BlockPos pos) {
-        for (BasePredicate basePredicate : predicate.predicates()) {
-            int minCount = getMinCount(predicate, basePredicate);
-            if (minCount == 0) continue;
-
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            if (minCount == -1 || totalAlreadyPopulated >= minCount) continue;
-
-            BlockInfo toInsert = null;
-            if (blockPreferences.contains(predicate, basePredicate)) {
-                toInsert = blockPreferences.get(predicate, basePredicate);
-            } else if (!basePredicate.getCandidates().isEmpty()) {
-                toInsert = basePredicate.getCandidates().get(0);
-            }
-            if (toInsert != null) resultStructure.put(pos, toInsert);
-            return true;
+    private void incrementPredicate(List<MultiPredicate> predicateChain, BasePredicate base) {
+        basePredicateCount.merge(base, 1, Integer::sum);
+        for (var pred : predicateChain) {
+            predicateCount.merge(pred, 1, Integer::sum);
         }
-        for (MultiPredicate child : predicate.children()) {
-            if (tryMinCount(resultStructure, child, pos)) return true;
-        }
-        return false;
     }
 
-    private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
-                                BlockPos pos) {
-        for (BasePredicate basePredicate : predicate.predicates()) {
-            int maxCount = getMaxCount(predicate, basePredicate);
-            if (maxCount == 0) continue;
-
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
-
-            BlockInfo toInsert = null;
-            if (blockPreferences.contains(predicate, basePredicate)) {
-                toInsert = blockPreferences.get(predicate, basePredicate);
-            } else if (!basePredicate.getCandidates().isEmpty()) {
-                toInsert = basePredicate.getCandidates().get(0);
+    private @Nullable Pair<BasePredicate, List<MultiPredicate>> getBasePredicateRoute(List<MultiPredicate> predicateChain,
+                                                                                      BlockInfo info) {
+        MultiPredicate last = predicateChain.get(predicateChain.size() - 1);
+        for (var base : last.predicates()) {
+            if (base.getCandidates().contains(info)) {
+                return Pair.of(base, predicateChain);
             }
-            if (toInsert != null) resultStructure.put(pos, toInsert);
+        }
+        for (var child : last.children()) {
+            predicateChain.add(child);
+            var pair = getBasePredicateRoute(predicateChain, info);
+            if (pair != null) {
+                return pair;
+            }
+            predicateChain.remove(predicateChain.size() - 1);
+        }
+        return null;
+    }
+
+    private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                MultiPredicate predicate, char predicateKey, BlockPos pos,
+                                List<MultiPredicate> predicateChain) {
+        // Find first unsatisfied min predicate while also checking type specific logic
+        BasePredicate baseNotSatisfied = null;
+        if (predicate.isAnd() || predicate.isOr()) {
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                int baseMinCount = basePredicate.getPreviewOrMinCount();
+                if (baseMinCount == 0) continue;
+
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                if (baseMinCount != -1 && baseTotalAlreadyPopulated < baseMinCount) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
+            }
+        } else if (predicate.isXor()) {
+            // For XOR, only one can be true. If we find any condition already satisfied, return false
+            int predTotalAlreadyPopulated = predicateCount.getInt(predicate);
+            int predMinCount = predicate.getPreviewOrMinCount();
+            if (predMinCount != -1 && predTotalAlreadyPopulated >= predMinCount) return false;
+
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                // Same goes for the basePredicates, any satisfied basePredicate with mins returns false
+                int baseMinCount = basePredicate.getPreviewOrMinCount();
+                if (baseMinCount == 0) return false;
+
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                // If there is a limit, and it's been met, return
+                if (baseMinCount != -1 && baseTotalAlreadyPopulated >= baseMinCount) return false;
+                // If there is a limit, and it hasn't been met, we have a predicate that needs blocks
+                if (baseMinCount != -1) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
+            }
+        }
+
+        if (baseNotSatisfied != null) {
+            BasePredicate finalBaseNotSatisfied = baseNotSatisfied;
+            BlockInfo toInsert = baseNotSatisfied.getFirstCandidate().orElseGet(() -> {
+                GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", finalBaseNotSatisfied);
+                return BlockInfo.EMPTY;
+            });
+            resultStructure.put(pos, toInsert);
+            if (this.controllerBlock == null && predicate.isController()) {
+                this.controllerBlock = toInsert.getBlockState().getBlock();
+            }
+            incrementPredicate(predicateChain, baseNotSatisfied);
             return true;
         }
+
+        // check if each child predicate min is satisfied
         for (MultiPredicate child : predicate.children()) {
-            if (tryMaxCount(resultStructure, child, pos)) return true;
+            predicateChain.add(child);
+            if (tryMinCount(info, resultStructure, child, predicateKey, pos, predicateChain)) return true;
+            predicateChain.remove(predicateChain.size() - 1);
         }
-        return false;
+
+        // check if main predicate min is satisfied
+        int minCount = predicate.getPreviewOrMinCount();
+        if (minCount == 0) return false;
+
+        int totalAlreadyPopulated = predicateCount.getInt(predicate);
+        if (minCount == -1 || totalAlreadyPopulated >= minCount) {
+            return false;
+        }
+
+        BlockInfo toInsert = info.getBlockPreferences().get(predicateKey);
+        if (toInsert == null) {
+            // TODO filtering?
+            toInsert = predicate.getCandidates().get(0).get(0);
+        }
+        var basePair = getBasePredicateRoute(predicateChain, toInsert);
+        if (basePair == null) return false;
+        resultStructure.put(pos, toInsert);
+        if (this.controllerBlock == null && predicate.isController()) {
+            this.controllerBlock = toInsert.getBlockState().getBlock();
+        }
+        incrementPredicate(basePair.value(), basePair.key());
+        return true;
+    }
+
+    private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                MultiPredicate predicate, char predicateKey, BlockPos pos,
+                                List<MultiPredicate> predicateChain) {
+        // check if main predicate max is satisfied
+        int maxCount = predicate.getMaxCount();
+        if (maxCount == 0) return false;
+
+        int totalAlreadyPopulated = predicateCount.getInt(predicate);
+        if (maxCount != -1 && totalAlreadyPopulated >= maxCount) {
+            return false;
+        }
+
+        // check if each base predicate max is satisfied
+        BasePredicate baseNotSatisfied = null;
+        if (predicate.isAnd() || predicate.isOr()) {
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                int baseMaxCount = basePredicate.getMaxCount();
+                if (baseMaxCount == 0) continue;
+
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                if (baseMaxCount == -1 || baseTotalAlreadyPopulated < baseMaxCount) {
+                    baseNotSatisfied = basePredicate;
+                    break;
+                }
+            }
+        } else if (predicate.isXor()) {
+            for (BasePredicate basePredicate : predicate.predicates()) {
+                // Any satisfied basePredicate with maxs satisfied returns false
+                int baseMaxCount = basePredicate.getMaxCount();
+                if (baseMaxCount == 0) return false;
+
+                int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
+                // If there is a limit, and it's been met, return
+                if (baseMaxCount != -1 && baseTotalAlreadyPopulated >= baseMaxCount) return false;
+                // If there is no limit, or there is one that hasn't been met, we have a predicate that allows blocks
+                baseNotSatisfied = basePredicate;
+                break;
+            }
+        }
+
+        if (baseNotSatisfied != null) {
+            incrementPredicate(predicateChain, baseNotSatisfied);
+            BasePredicate finalBaseNotSatisfied = baseNotSatisfied;
+            BlockInfo toInsert = baseNotSatisfied.getFirstCandidate().orElseGet(() -> {
+                GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", finalBaseNotSatisfied);
+                return BlockInfo.EMPTY;
+            });
+            resultStructure.put(pos, toInsert);
+            if (this.controllerBlock == null && predicate.isController()) {
+                this.controllerBlock = toInsert.getBlockState().getBlock();
+            }
+            return true;
+        }
+
+        // check if each child predicate max is satisfied
+        for (MultiPredicate child : predicate.children()) {
+            predicateChain.add(child);
+            if (tryMaxCount(info, resultStructure, child, predicateKey, pos, predicateChain)) return true;
+            predicateChain.remove(predicateChain.size() - 1);
+        }
+
+        BlockInfo toInsert = info.getBlockPreferences().get(predicateKey);
+        if (toInsert == null) {
+            // TODO filtering?
+            toInsert = predicate.getCandidates().get(0).get(0);
+        }
+        var basePair = getBasePredicateRoute(predicateChain, toInsert);
+        if (basePair == null) return false;
+        resultStructure.put(pos, toInsert);
+        if (this.controllerBlock == null && predicate.isController()) {
+            this.controllerBlock = toInsert.getBlockState().getBlock();
+        }
+        incrementPredicate(basePair.value(), basePair.key());
+        return true;
     }
 
     @Override
