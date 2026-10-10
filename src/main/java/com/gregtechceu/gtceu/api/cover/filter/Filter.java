@@ -7,10 +7,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.factory.GuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.Dialog;
 import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
@@ -37,16 +39,29 @@ public abstract class Filter<T> implements Predicate<T> {
     }
 
     /**
+     * @param popoutHandler The IPanelHandler associated with the panel if this is opened as a popout
+     *
      * @return Filter panel when opened by itself (including the player inventory)
      */
     public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings,
-                                    boolean showPlayerInventory) {
+                                    boolean showPlayerInventory, @Nullable IPanelHandler popoutHandler) {
+        ButtonWidget<?> closeButton = null;
+        if (popoutHandler != null) {
+            closeButton = new ButtonWidget<>()
+                    .overlay(GTGuiTextures.CLOSE_ICON)
+                    .onMousePressed((c, b) -> {
+                        popoutHandler.togglePanel();
+                        return true;
+                    }).size(16);
+        }
+
         return new Dialog<>(Objects.requireNonNull(data.getLevel().registryAccess().registryOrThrow(Registries.ITEM)
                 .getKey(filterItemStack.getItem())).toString())
                 .disablePanelsBelow(false)
                 .draggable(true)
                 .coverChildrenHeight()
-                .child(GTMuiWidgets.createTitleBar(this::getFilterItemStack, 176, GTGuiTextures.BACKGROUND))
+                .child(GTMuiWidgets.createTitleBarWithEnd(this::getFilterItemStack, 176, GTGuiTextures.BACKGROUND,
+                        closeButton))
                 .child(Flow.col().coverChildrenHeight()
                         .child(getFilterUI(data, syncManager, settings).marginTop(10).marginBottom(10))
                         .childIf(showPlayerInventory,

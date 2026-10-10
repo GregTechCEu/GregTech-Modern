@@ -57,6 +57,8 @@ public interface GTGuiTextures {
             "textures/gui/base/indicator_no_steam_steel.png");
     UITexture TANK_ICON = fullImage("textures/gui/base/tank_icon.png");
 
+    UITexture CLOSE_ICON = fullImage("textures/gui/icon/close.png");
+
     // BACKGROUNDS
     UITexture BACKGROUND = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background.png")
