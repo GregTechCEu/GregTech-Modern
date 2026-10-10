@@ -62,7 +62,7 @@ public class GTSingleblockMachinePanels {
                             new GTRecipeTypeMachineWidget(type, syncManager, machine, recipeLogic::getProgressPercent));
                     // .left((int)(offset * ((type.getUiLayout().getProgressSize() / 2.f) + 2)));
                 })
-                .build(syncManager, settings)
+                .build(data, syncManager, settings)
                 .excludeAreaInRecipeViewer();
     };
 }

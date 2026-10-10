@@ -887,6 +887,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.large_combustion_engine.obstructed", "Engine Intakes Obstructed.");
         provider.add("gtceu.multiblock.large_combustion_engine.no_lubricant", "Machine needs Lubricant to run");
         provider.add("gtceu.multiblock.turbine.fuel_amount", "Fuel Amount: %sL (%s)");
+        provider.add("gtceu.multiblock.turbine.no_rotor", "Missing Rotor");
         provider.add("gtceu.multiblock.turbine.rotor_speed", "Rotor Speed: %s/%s RPM");
         provider.add("gtceu.multiblock.turbine.rotor_durability", "Rotor Durability: %s%%");
         provider.add("gtceu.multiblock.turbine.efficiency", "Turbine Efficiency: %s%%");
