@@ -130,6 +130,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                     .where('f', floor)
                     .where('w', walls)
                     .where('l', logs)
+                    .where(' ', Predicates.any())
                     .predicateProvider((bp, b) -> {
                         if (bp.equals(BlockPos.ZERO)) return 'c';
 
