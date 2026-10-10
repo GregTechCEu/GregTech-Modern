@@ -2402,6 +2402,7 @@
   "gtceu.fluid.generic": "%s",
   "gtceu.fluid.liquid_generic": "Liquid %s",
   "gtceu.fluid.molten": "Molten %s",
+  "gtceu.fluid.requires_metal_freezing": "Requires metal freezing",
   "gtceu.fluid.plasma": "%s Plasma",
   "gtceu.fluid.state_gas": "§aState: Gaseous",
   "gtceu.fluid.state_liquid": "§aState: Liquid",

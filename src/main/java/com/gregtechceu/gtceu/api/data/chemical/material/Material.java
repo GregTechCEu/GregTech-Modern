@@ -327,22 +327,22 @@ public final class Material {
     }
 
     /**
-     * @return the correct "molten" fluid for a material
+     * Retains explicitly registered addon molten fluids, falling back to liquid when absent.
+     *
+     * @deprecated Use {@link #getFluid(FluidStorageKey)} with {@link FluidStorageKeys#LIQUID}.
      */
+    @Deprecated(forRemoval = true)
     public Fluid getHotFluid() {
-        if (hasProperty(PropertyKey.ALLOY_BLAST)) {
-            return getFluid(FluidStorageKeys.MOLTEN);
-        }
-        if (!TagPrefix.ingotHot.doGenerateItem(this) && hasProperty(PropertyKey.FLUID)) {
-            return getFluid(FluidStorageKeys.LIQUID);
-        }
-        return null;
+        return hasProperty(PropertyKey.FLUID) ? getFluid(FluidStorageKeys.MOLTEN) : null;
     }
 
+    /**
+     * @deprecated Use {@link #getFluid(FluidStorageKey, int)} with {@link FluidStorageKeys#LIQUID}.
+     */
+    @Deprecated(forRemoval = true)
     public FluidStack getHotFluid(int amount) {
         Fluid fluid = getHotFluid();
-        if (fluid != null) return new FluidStack(fluid, amount);
-        else return FluidStack.EMPTY;
+        return fluid == null ? FluidStack.EMPTY : new FluidStack(fluid, amount);
     }
 
     public Item getBucket() {
@@ -483,6 +483,10 @@ public final class Material {
         }
         if (totalAmount == 0) return 0;
         return totalMass / totalAmount;
+    }
+
+    public boolean requiresMetalFreezing() {
+        return hasProperty(PropertyKey.ALLOY_BLAST) && TagPrefix.ingotHot.doGenerateItem(this);
     }
 
     public int getBlastTemperature() {
