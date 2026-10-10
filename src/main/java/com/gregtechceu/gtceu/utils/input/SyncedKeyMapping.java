@@ -20,6 +20,7 @@ import it.unimi.dsi.fastutil.ints.Int2BooleanMap;
 import it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,6 +34,7 @@ public final class SyncedKeyMapping {
     private static final Int2ObjectMap<SyncedKeyMapping> KEYMAPPINGS = new Int2ObjectOpenHashMap<>();
     private static int syncIndex = 0;
 
+    @Getter
     @OnlyIn(Dist.CLIENT)
     private KeyMapping keyMapping;
     @OnlyIn(Dist.CLIENT)

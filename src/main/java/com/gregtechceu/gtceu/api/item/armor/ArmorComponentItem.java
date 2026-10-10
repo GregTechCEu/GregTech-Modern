@@ -24,18 +24,19 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
 
+@Accessors(chain = true)
 @NotNullByDefault
 public class ArmorComponentItem extends ArmorItem implements IComponentItem {
 
     @Getter
-    private IArmorLogic armorLogic = new DummyArmorLogic();
+    private @Nullable IArmorLogic armorLogic = null;
     @Getter
     protected List<IItemComponent> components;
 
@@ -63,23 +64,18 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
         Multimap<Attribute, AttributeModifier> multimap = ArrayListMultimap.create();
         IArmorLogic armorLogic = getArmorLogic();
         multimap.putAll(super.getAttributeModifiers(slot, stack));
-        multimap.putAll(armorLogic.getAttributeModifiers(slot, stack));
+        if (armorLogic != null) multimap.putAll(armorLogic.getAttributeModifiers(slot, stack));
         return multimap;
     }
 
     @Override
     public ArmorItem.Type getType() {
-        return armorLogic.getArmorType();
+        return super.getType();
     }
 
     @Override
     public EquipmentSlot getEquipmentSlot() {
-        return armorLogic.getArmorType().getSlot();
-    }
-
-    @Override
-    public void onArmorTick(ItemStack stack, Level level, Player player) {
-        this.armorLogic.onArmorTick(level, player, stack);
+        return super.getEquipmentSlot();
     }
 
     @Override
@@ -95,10 +91,6 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     @Override
     public int getEnchantmentValue() {
         return 50;
-    }
-
-    public int getArmorDisplay(Player player, @NotNull ItemStack armor, EquipmentSlot slot) {
-        return armorLogic.getArmorDisplay(player, armor, slot);
     }
 
     // Some trickery to always receive damage events without ever actually breaking the armor
@@ -122,6 +114,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
 
     @Override
     public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
+        if (armorLogic == null) return super.damageItem(stack, amount, entity, onBroken);
         return armorLogic.damageArmor(entity, stack, entity.getLastDamageSource(), amount, this.getEquipmentSlot());
     }
 
@@ -130,9 +123,10 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
         consumer.accept(new IClientItemExtensions() {
 
             @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack,
-                                                                   EquipmentSlot equipmentSlot,
-                                                                   HumanoidModel<?> original) {
+            public HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack,
+                                                          EquipmentSlot equipmentSlot,
+                                                          HumanoidModel<?> original) {
+                if (armorLogic == null) return original;
                 return armorLogic.getArmorModel(livingEntity, itemStack, equipmentSlot, original);
             }
         });
@@ -141,6 +135,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+        if (armorLogic == null) return super.getArmorTexture(stack, entity, slot, type);
         var textureId = armorLogic.getArmorTexture(stack, entity, slot, type);
         return textureId == null ? null : textureId.toString();
     }
@@ -162,11 +157,11 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltips,
                                 TooltipFlag isAdvanced) {
         for (IItemComponent component : components) {
             if (component instanceof IAddInformation addInformation) {
-                addInformation.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+                addInformation.appendHoverText(stack, level, tooltips, isAdvanced);
             }
         }
     }
@@ -296,6 +291,10 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
             if (component instanceof IItemLifeCycle lifeCycle) {
                 lifeCycle.inventoryTick(stack, level, entity, slotId, isSelected);
             }
+        }
+        if (slotId >= 36 && slotId <= 39 && entity instanceof Player player) {
+            if (armorLogic == null) return;
+            this.armorLogic.onArmorTick(level, player, stack);
         }
     }
 

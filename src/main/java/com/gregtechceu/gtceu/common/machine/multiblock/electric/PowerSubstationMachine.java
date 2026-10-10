@@ -73,6 +73,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     private @Nullable MaintenanceHatchPartMachine maintenance;
 
+    @Getter
     @SaveField
     private final PowerStationEnergyBank energyBank;
 

@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.client;
 
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
+import com.gregtechceu.gtceu.api.item.module.IHUDProviderItemModule;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,31 +25,44 @@ public class HudGuiOverlay implements IGuiOverlay {
     public void render(ForgeGui forgeGui, GuiGraphics guiGraphics, float partialTick, int screenWidth,
                        int screenHeight) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.isWindowActive() && mc.level != null && !mc.options.renderDebug && !mc.options.hideGui) {
-            renderHUDMetaArmor(mc.player.getItemBySlot(EquipmentSlot.HEAD), guiGraphics);
-            renderHUDMetaArmor(mc.player.getItemBySlot(EquipmentSlot.CHEST), guiGraphics);
-            renderHUDMetaArmor(mc.player.getItemBySlot(EquipmentSlot.LEGS), guiGraphics);
-            renderHUDMetaArmor(mc.player.getItemBySlot(EquipmentSlot.FEET), guiGraphics);
-            renderHUDMetaItem(mc.player.getItemInHand(InteractionHand.MAIN_HAND), guiGraphics);
-            renderHUDMetaItem(mc.player.getItemInHand(InteractionHand.OFF_HAND), guiGraphics);
+        if (mc.isWindowActive() && mc.level != null && mc.player != null && !mc.options.renderDebug &&
+                !mc.options.hideGui) {
+
+            ArmorUtils.ModularHUD hudStrings = new ArmorUtils.ModularHUD();
+
+            var player = mc.player;
+            if (player == null) return;
+
+            renderHUDMetaArmor(player.getItemBySlot(EquipmentSlot.HEAD), hudStrings, guiGraphics);
+            renderHUDMetaArmor(player.getItemBySlot(EquipmentSlot.CHEST), hudStrings, guiGraphics);
+            renderHUDMetaArmor(player.getItemBySlot(EquipmentSlot.LEGS), hudStrings, guiGraphics);
+            renderHUDMetaArmor(player.getItemBySlot(EquipmentSlot.FEET), hudStrings, guiGraphics);
+            renderHUDMetaItem(player.getItemInHand(InteractionHand.MAIN_HAND), hudStrings, guiGraphics);
+            renderHUDMetaItem(player.getItemInHand(InteractionHand.OFF_HAND), hudStrings, guiGraphics);
+
+            hudStrings.draw(guiGraphics);
         }
     }
 
-    private static void renderHUDMetaArmor(@NotNull ItemStack stack, GuiGraphics guiGraphics) {
+    private static void renderHUDMetaArmor(@NotNull ItemStack stack, ArmorUtils.ModularHUD hudStrings,
+                                           GuiGraphics guiGraphics) {
         if (stack.getItem() instanceof ArmorComponentItem valueItem) {
             if (valueItem.getArmorLogic() instanceof IItemHUDProvider provider) {
-                IItemHUDProvider.tryDrawHud(provider, stack, guiGraphics);
+                IItemHUDProvider.tryDrawHud(provider, stack, hudStrings, guiGraphics);
             }
         }
+        IHUDProviderItemModule.tryDrawHUD(stack, hudStrings, guiGraphics);
     }
 
-    private static void renderHUDMetaItem(@NotNull ItemStack stack, GuiGraphics guiGraphics) {
+    private static void renderHUDMetaItem(@NotNull ItemStack stack, ArmorUtils.ModularHUD hudStrings,
+                                          GuiGraphics guiGraphics) {
         if (stack.getItem() instanceof ComponentItem valueItem) {
             for (IItemComponent behaviour : valueItem.getComponents()) {
                 if (behaviour instanceof IItemHUDProvider provider) {
-                    IItemHUDProvider.tryDrawHud(provider, stack, guiGraphics);
+                    IItemHUDProvider.tryDrawHud(provider, stack, hudStrings, guiGraphics);
                 }
             }
         }
+        IHUDProviderItemModule.tryDrawHUD(stack, hudStrings, guiGraphics);
     }
 }

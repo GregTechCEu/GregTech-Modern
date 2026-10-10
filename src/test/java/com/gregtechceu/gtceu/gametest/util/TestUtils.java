@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.fakeplayer.FakeServerGamePacketListenerImpl;
 
 import net.minecraft.core.BlockPos;
@@ -38,6 +39,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraftforge.fluids.FluidStack;
@@ -300,6 +302,10 @@ public class TestUtils {
                         stack2.getDisplayName().getString(), stack2.getAmount()));
     }
 
+    public static <T> void assertEqual(GameTestHelper helper, T object1, T object2, String message) {
+        helper.assertTrue(Objects.equals(object1, object2), "%s (%s != %s)".formatted(message, object1, object2));
+    }
+
     public static void assertLampOn(GameTestHelper helper, BlockPos pos) {
         helper.assertBlockProperty(pos, RedstoneLampBlock.LIT, true);
     }
@@ -325,6 +331,10 @@ public class TestUtils {
      */
     public static void succeedAfterTest(GameTestHelper helper, long timeout) {
         helper.runAtTickTime(timeout, helper::succeed);
+    }
+
+    public static IItemHandler getItemHandler(GameTestHelper helper, BlockPos pos, Direction direction) {
+        return GTCapabilityHelper.getItemHandler(helper.getLevel(), helper.absolutePos(pos), direction);
     }
 
     public static IItemHandler getItemHandler(GameTestHelper helper, BlockPos pos) {
@@ -435,5 +445,15 @@ public class TestUtils {
 
     public static void assertEntityAlive(GameTestHelper helper, Entity entity) {
         helper.assertTrue(entity.isAlive(), "Entity " + entity + " should be alive");
+    }
+
+    public static void insertItem(GameTestHelper helper, IItemHandler handler, ItemLike item, boolean shouldSucceed,
+                                  String failureMessage) {
+        insertItem(helper, handler, new ItemStack(item), shouldSucceed, failureMessage);
+    }
+
+    public static void insertItem(GameTestHelper helper, IItemHandler handler, ItemStack stack, boolean shouldSucceed,
+                                  String failureMessage) {
+        helper.assertTrue(GTTransferUtils.insertItem(handler, stack, false).isEmpty() == shouldSucceed, failureMessage);
     }
 }
