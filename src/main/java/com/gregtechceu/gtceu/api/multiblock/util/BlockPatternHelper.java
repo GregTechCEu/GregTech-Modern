@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
+import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -19,8 +20,11 @@ import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class BlockPatternHelper extends AbstractStructureHelper {
@@ -140,8 +144,10 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
                     // Attempts to first place the predicate if the minimum (slice) count isn't satisfied, then the
                     // maximum (slice) count
-                    if (tryMinCount(info, resultStructure, predicate, c, pos, sliceDir, sliceCoord)) continue;
-                    if (tryMaxCount(info, resultStructure, predicate, c, pos, sliceDir, sliceCoord)) continue;
+                    List<MultiPredicate> chain = new ArrayList<>();
+                    chain.add(predicate);
+                    if (tryMinCount(info, resultStructure, predicate, c, pos, sliceCoord, chain)) continue;
+                    if (tryMaxCount(info, resultStructure, predicate, c, pos, sliceCoord, chain)) continue;
                     // If we arrive here, there's nothing we can place that doesn't overflow a max count!
                     throw new IllegalStateException(
                             "Could not place a block without breaking maxCount requirements for character " + c);
@@ -150,9 +156,36 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         }
     }
 
+    private void incrementPredicate(List<MultiPredicate> predicateChain, BasePredicate base, int offset) {
+        basePredicateCount.merge(base, 1, Integer::sum);
+        basePredicateSliceCount.column(offset).merge(base, 1, Integer::sum);
+        for (var pred : predicateChain) {
+            predicateCount.merge(pred, 1, Integer::sum);
+            predicateSliceCount.column(offset).merge(pred, 1, Integer::sum);
+        }
+    }
+
+    private @Nullable Pair<BasePredicate, List<MultiPredicate>> getBasePredicateRoute(List<MultiPredicate> predicateChain, BlockInfo info) {
+        MultiPredicate last = predicateChain.get(predicateChain.size() - 1);
+        for (var base : last.predicates()) {
+            if (base.getCandidates().contains(info)) {
+                return Pair.of(base, predicateChain);
+            }
+        }
+        for (var child : last.children()) {
+            predicateChain.add(child);
+            var pair = getBasePredicateRoute(predicateChain, info);
+            if (pair != null) {
+                return pair;
+            }
+            predicateChain.remove(child);
+        }
+        return null;
+    }
+
     private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
                                 MultiPredicate predicate, char predicateChar,
-                                BlockPos pos, Direction dir, int offset) {
+                                BlockPos pos, int offset, List<MultiPredicate> predicateChain) {
         // TODO rehandle user min count
         // Find first unsatisfied min predicate while also checking type specific logic
         BasePredicate baseNotSatisfied = null;
@@ -221,14 +254,15 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             if (this.controllerBlock == null && predicate.isController()) {
                 this.controllerBlock = toInsert.getBlockState().getBlock();
             }
-            basePredicateCount.merge(baseNotSatisfied, 1, Integer::sum);
-            basePredicateSliceCount.column(offset).merge(baseNotSatisfied, 1, Integer::sum);
+            incrementPredicate(predicateChain, finalBaseNotSatisfied, offset);
             return true;
         }
 
         // check if each child predicate min is satisfied
         for (MultiPredicate child : predicate.children()) {
-            if (tryMinCount(info, resultStructure, child, predicateChar, pos, dir, offset)) return true;
+            predicateChain.add(child);
+            if (tryMinCount(info, resultStructure, child, predicateChar, pos, offset, predicateChain)) return true;
+            predicateChain.remove(child);
         }
 
         // check if main predicate min is satisfied
@@ -251,22 +285,19 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             // TODO filtering?
             toInsert = predicate.getCandidates().get(0).get(0);
         }
+        var basePair = getBasePredicateRoute(predicateChain, toInsert);
+        if (basePair == null) return false;
         resultStructure.put(pos, toInsert);
         if (this.controllerBlock == null && predicate.isController()) {
             this.controllerBlock = toInsert.getBlockState().getBlock();
         }
-        predicateCount.merge(predicate, 1, Integer::sum);
-        predicateSliceCount.column(offset).merge(predicate, 1, Integer::sum);
-        for (var child : predicate.children()) {
-            predicateCount.merge(child, 1, Integer::sum);
-            predicateSliceCount.column(offset).merge(child, 1, Integer::sum);
-        }
+        incrementPredicate(basePair.value(), basePair.key(), offset);
         return true;
     }
 
     private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
                                 MultiPredicate predicate, char predicateChar,
-                                BlockPos pos, Direction dir, int offset) {
+                                BlockPos pos, int offset, List<MultiPredicate> predicateChain) {
         // check if main predicate max is satisfied
         int maxCount = predicate.getMaxCount();
         if (maxCount == 0) return false;
@@ -329,13 +360,12 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         }
 
         if (baseNotSatisfied != null) {
-            basePredicateCount.merge(baseNotSatisfied, 1, Integer::sum);
-            basePredicateSliceCount.column(offset).merge(baseNotSatisfied, 1, Integer::sum);
             BasePredicate finalBaseNotSatisfied = baseNotSatisfied;
             BlockInfo toInsert = baseNotSatisfied.getFirstCandidate().orElseGet(() -> {
                 GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", finalBaseNotSatisfied);
                 return BlockInfo.EMPTY;
             });
+            incrementPredicate(predicateChain, baseNotSatisfied, offset);
             resultStructure.put(pos, toInsert);
             if (this.controllerBlock == null && predicate.isController()) {
                 this.controllerBlock = toInsert.getBlockState().getBlock();
@@ -345,7 +375,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
         // check if each child predicate min is satisfied
         for (MultiPredicate child : predicate.children()) {
-            if (tryMaxCount(info, resultStructure, child, predicateChar, pos, dir, offset)) return true;
+            if (tryMaxCount(info, resultStructure, child, predicateChar, pos, offset, predicateChain)) return true;
         }
 
         BlockInfo toInsert = info.getBlockPreferences().get(predicateChar);
@@ -353,16 +383,14 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             // TODO filtering?
             toInsert = predicate.getCandidates().get(0).get(0);
         }
+        var basePair = getBasePredicateRoute(predicateChain, toInsert);
+        if (basePair == null) return false;
         resultStructure.put(pos, toInsert);
         if (this.controllerBlock == null && predicate.isController()) {
             this.controllerBlock = toInsert.getBlockState().getBlock();
         }
-        predicateCount.merge(predicate, 1, Integer::sum);
-        predicateSliceCount.column(offset).merge(predicate, 1, Integer::sum);
-        for (var child : predicate.children()) {
-            predicateCount.merge(child, 1, Integer::sum);
-            predicateSliceCount.column(offset).merge(child, 1, Integer::sum);
-        }
+
+        incrementPredicate(basePair.value(), basePair.key(), offset);
         return true;
     }
 

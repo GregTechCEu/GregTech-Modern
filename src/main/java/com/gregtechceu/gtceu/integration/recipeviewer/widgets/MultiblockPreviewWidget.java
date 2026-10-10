@@ -181,7 +181,19 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                     return new EmptyWidget();
                 }
                 return new Icon(GTGuiTextures.INFO).asWidget()
-                        .tooltip(r -> r.addLine(Component.literal("Structure is unformed")));
+                        .tooltip(r -> {
+                            var patternState = controller.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE);
+                            if (!patternState.hasErrors()) return;
+                            Flow col = Flow.col();
+                            for (var error : patternState.getErrors()) {
+                                error.getPatternErrorUIModifier().apply(col);
+                            }
+                            col.getChildren().forEach(child -> {
+                                if (child instanceof IDrawable drawableChild) r.addDrawableLine(drawableChild);
+                                else if (child instanceof TextWidget<?> textWidget) r.addLine(textWidget.getKey());
+                            });
+                            //r.addLine(Component.literal("Structure is unformed"));
+                        });
             }
             return new EmptyWidget();
         });
