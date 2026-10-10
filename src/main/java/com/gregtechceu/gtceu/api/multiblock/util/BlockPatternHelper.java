@@ -75,6 +75,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
     protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
                                                     IBlockPattern pattern,
+                                                    Char2ObjectMap<MultiPredicate> sortedPredicates,
                                                     Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
         BlockPattern blockPattern = (BlockPattern) pattern;
@@ -95,7 +96,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             }
             int offset = pos.get(sliceAxis);
             char c = this.flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
-            MultiPredicate predicate = blockPattern.getPredicates().get(c);
+            MultiPredicate predicate = sortedPredicates.get(c);
             var basePair = getBasePredicateRoute(new ArrayList<>(List.of(predicate)), blockInfo);
             if (basePair == null) {
                 throw new IllegalStateException("Invalid preference " + blockInfo.getBlockState().getBlock().getName() +

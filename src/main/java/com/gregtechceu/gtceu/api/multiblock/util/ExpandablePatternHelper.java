@@ -71,6 +71,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     @Override
     protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
                                                     IBlockPattern pattern,
+                                                    Char2ObjectMap<MultiPredicate> sortedPredicates,
                                                     Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
         ExpandablePattern expandablePattern = (ExpandablePattern) pattern;
@@ -82,16 +83,29 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         // kinda gross, but it's the least invasive way I guess, maybe look for something better
         BoundingBox bounds = corners.inflatedBy(1);
 
+        var predicateProvider = expandablePattern.getPredicateProvider();
+
         for (var entry : userBlockPreferences.object2ObjectEntrySet()) {
             BlockPos pos = entry.getKey(); // absolute-space
+            BlockInfo blockInfo = entry.getValue();
             // Reverse-transform to relative/pattern space (transpose of orthogonal rotation) to check against bounds
             int relX = getOffsetFromDirection(absolutes[0], pos);
             int relY = getOffsetFromDirection(absolutes[1], pos);
             int relZ = getOffsetFromDirection(absolutes[2], pos);
 
-            if (bounds.isInside(relX, relY, relZ)) {
-                resultStructure.put(pos, entry.getValue());
+            if (!bounds.isInside(relX, relY, relZ)) continue;
+
+            char key = predicateProvider.getPredicateKey(new BlockPos.MutableBlockPos(relX, relY, relZ), userRepeats);
+            MultiPredicate predicate = sortedPredicates.get(key);
+            if (predicate == null) continue;
+            var basePair = getBasePredicateRoute(new ArrayList<>(List.of(predicate)), blockInfo);
+            if (basePair == null) {
+                GTCEu.LOGGER.warn("Ignoring invalid preference {} for position {}",
+                        blockInfo.getBlockState().getBlock().getName().getString(), pos);
+                continue;
             }
+            resultStructure.put(pos, blockInfo);
+            incrementPredicate(basePair.value(), basePair.key());
         }
     }
 

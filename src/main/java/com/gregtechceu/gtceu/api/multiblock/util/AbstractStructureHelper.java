@@ -46,13 +46,12 @@ public abstract class AbstractStructureHelper {
                          @Nullable Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                          Direction frontFacing, Direction upFacing, boolean isFlipped) {
         setup(pattern, frontFacing, upFacing, isFlipped);
-        if (userBlockPreferences != null && !userBlockPreferences.isEmpty()) {
-            populateWithUserBlockPreferences(info, resultStructure, pattern, userBlockPreferences, frontFacing,
-                    upFacing,
-                    isFlipped);
-        }
         Char2ObjectMap<MultiPredicate> sortedPredicates = sortPredicatesForPreferences(
                 getPredicatesFromPattern(pattern), info.getBlockPreferences());
+        if (userBlockPreferences != null && !userBlockPreferences.isEmpty()) {
+            populateWithUserBlockPreferences(info, resultStructure, pattern, sortedPredicates, userBlockPreferences,
+                    frontFacing, upFacing, isFlipped);
+        }
         populateFromPattern(info, resultStructure, pattern, sortedPredicates, frontFacing, upFacing, isFlipped);
         fixRotationsAndFacing(resultStructure, frontFacing, upFacing, this.controllerBlock);
     }
@@ -62,6 +61,7 @@ public abstract class AbstractStructureHelper {
     protected abstract void populateWithUserBlockPreferences(MultiblockSchemaInfo info,
                                                              Map<BlockPos, BlockInfo> resultStructure,
                                                              IBlockPattern pattern,
+                                                             Char2ObjectMap<MultiPredicate> sortedPredicates,
                                                              Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                                                              Direction frontFacing, Direction upFacing,
                                                              boolean isFlipped);
@@ -125,26 +125,6 @@ public abstract class AbstractStructureHelper {
             sortedMap.put(charKey, predicate);
         }
         return sortedMap;
-    }
-
-    // TODO backing map from predicate(base?) -> count
-    protected static int countPopulatedGlobal(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate) {
-        return (int) resultStructure.values().stream()
-                .filter(blockInfo -> basePredicate.getCandidates().contains(blockInfo))
-                .count();
-    }
-
-    // TODO backing map from predicate(base?) + layer offset -> count
-    protected static int countPopulatedInSlice(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate,
-                                               Direction dir, int offset) {
-        return (int) resultStructure.entrySet().stream()
-                .filter(e -> getCoordFromDir(e.getKey(), dir) == offset)
-                .filter(e -> basePredicate.getCandidates().contains(e.getValue()))
-                .count();
-    }
-
-    protected static int getCoordFromDir(BlockPos pos, Direction dir) {
-        return dir.getAxis().choose(pos.getX(), pos.getY(), pos.getZ());
     }
 
     protected static void fixRotationsAndFacing(Map<BlockPos, BlockInfo> resultStructure, Direction frontFacing,
