@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
@@ -74,6 +75,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     // private final SchemaRenderer renderer;
     private final DynamicHandler partsHandler = new DynamicHandler();
     private final DynamicHandler selectedBlockHandler = new DynamicHandler();
+    private final DynamicHandler structureErrorHandler = new DynamicHandler();
     private final Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
 
     @Getter
@@ -171,6 +173,19 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             return null;
         });
 
+        this.structureErrorHandler.widgetProvider(() -> {
+            var schema = this.multiblockSchemaInfo.getMapSchema();
+            var controllerPos = schema.getControllerPos();
+            if (schema.getLevel().getBlockEntity(controllerPos) instanceof MultiblockControllerMachine controller) {
+                if (controller.isFormed()) {
+                    return new EmptyWidget();
+                }
+                return new Icon(GTGuiTextures.INFO).asWidget()
+                        .tooltip(r -> r.addLine(Component.literal("Structure is unformed")));
+            }
+            return new EmptyWidget();
+        });
+
         List<Map.Entry<String, IBlockPattern>> patterns = multiblockDefinition.getStructurePatterns()
                 .entrySet().stream().map(e -> Map.entry(e.getKey(), e.getValue().get())).toList();
 
@@ -178,7 +193,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 this.multiblockSchemaInfo.getMapSchema().getCenter());
         PredicateContext context = new PredicateContext(null);
         SchemaWidget schema = this.multiblockSchemaInfo.getRenderer().asWidget()
-                .background(GTGuiTextures.BACKGROUND_INVERSE)
+
                 .listenGuiAction(setBlockOnClick)
                 .tooltipDynamic(text -> {
                     BlockHitResult hit = this.multiblockSchemaInfo.getRenderer().lastRayTrace();
@@ -237,7 +252,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .value(new BoolValue.Dynamic(() -> isFlipped, v -> {
                             setFlipped(!isFlipped);
                             refreshSchema();
-                            refreshViewWidget();
+                            notifyWidgetHandlers();
                         })))
                 .child(new ButtonWidget<>()
                         .overlay(new DynamicDrawable(() -> Text.dynamic(
@@ -273,7 +288,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                 }
                             }
                             this.multiblockSchemaInfo.setBlockCounts(newBlockCounts);
-                            refreshViewWidget();
+                            notifyWidgetHandlers();
                             return true;
                         }))
                 .child(Flow.col()
@@ -310,7 +325,11 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                         .name("selected_block")
                                         .coverChildren(20)
                                         .clientOnlyHandler(this.selectedBlockHandler))
-                                .child(this.multiblockSchemaInfo.getMultiSchema())
+                                .child(new ParentWidget<>()
+                                        .coverChildren()
+                                        .background(GTGuiTextures.BACKGROUND_INVERSE)
+                                        .padding(3)
+                                        .child(this.multiblockSchemaInfo.getMultiSchema()))
                                 .child(new DynamicWidget<>()
                                         .background(GTGuiTextures.BACKGROUND)
                                         .coverChildrenWidth()
@@ -336,7 +355,11 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             ((ModularGuiContext) guiContext).getScreen().getMainPanel().closeIfOpen();
                             return true;
                         })
-                        .tooltip(r -> r.addLine(Component.translatable("gtceu.terminal.clear_preference"))));
+                        .tooltip(r -> r.addLine(Component.translatable("gtceu.terminal.clear_preference"))))
+                .child(new DynamicWidget<>()
+                        .right(-20)
+                                .clientOnlyHandler(structureErrorHandler)
+                        );
     }
 
     private ContextMenuButton<?> createSelectedBlockMenu(MultiPredicate predicate) {
@@ -494,12 +517,15 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 onSchemaRefresh);
     }
 
-    private void refreshViewWidget() {
+    private void notifyWidgetHandlers() {
         if (partsViewWidget != null) {
             partsViewWidget.notifyUpdate((packet) -> {});
         }
         if (partsHandler != null) {
             partsHandler.notifyUpdate();
+        }
+        if (structureErrorHandler != null) {
+            structureErrorHandler.notifyUpdate();
         }
         if (this.multiblockSchemaInfo.getRenderer() != null) {
             this.multiblockSchemaInfo.getRenderer().notifyRecompile();
@@ -511,14 +537,14 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                           BlockInfo blockInfo) {
         this.multiblockSchemaInfo.getBlockPreferences().put(predicate, blockInfo);
         refreshSchema();
-        refreshViewWidget();
+        notifyWidgetHandlers();
     }
 
     private void setUserDefinedBlockInfo(BlockPos pos, BlockInfo blockInfo) {
         // todo validation testing?
         this.multiblockSchemaInfo.getUserGlobalBlockPreferences().put(pos, blockInfo);
         refreshSchema();
-        refreshViewWidget();
+        notifyWidgetHandlers();
     }
 
     private void createConstraintSliders(Flow parent, ExpandablePattern pattern) {
@@ -541,7 +567,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             if (oldValue == v) return;
                             this.getMultiblockSchemaInfo().getUserDimensions().set(index, v);
                             refreshSchema();
-                            refreshViewWidget();
+                            notifyWidgetHandlers();
                         });
 
                 var textField = new TextFieldWidget() {
@@ -605,7 +631,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                     if (oldValue == v) return;
                     this.multiblockSchemaInfo.getUserSliceRepeats().put(index, v);
                     refreshSchema();
-                    refreshViewWidget();
+                    notifyWidgetHandlers();
                 });
 
                 var textField = new TextFieldWidget() {
