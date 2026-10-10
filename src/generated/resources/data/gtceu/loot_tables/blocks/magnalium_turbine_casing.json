@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:assembly_line_casing"
+          "name": "gtceu:magnalium_turbine_casing"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/assembly_line_casing"
+  "random_sequence": "gtceu:blocks/magnalium_turbine_casing"
 }

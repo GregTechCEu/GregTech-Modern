@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:steel_brick_casing"
+          "name": "gtceu:bricked_bronze_casing"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/steel_brick_casing"
+  "random_sequence": "gtceu:blocks/bricked_bronze_casing"
 }

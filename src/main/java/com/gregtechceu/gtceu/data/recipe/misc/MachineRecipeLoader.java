@@ -860,23 +860,31 @@ public class MachineRecipeLoader {
                 .duration(100).cleanroom(CleanroomType.CLEANROOM)
                 .addMaterialInfo(true, true).save(provider);
 
-        WELDER_RECIPES.recipeBuilder("casing_magnalium_turbine").EUt(16).inputItems(plate, Magnalium, 6)
-                .inputItems(frameGt, BlueSteel, 1).circuitMeta(6)
+        WELDER_RECIPES.recipeBuilder("casing_magnalium_turbine").EUt(16)
+                .inputItems(plate, Magnalium, 6)
+                .inputItems(frameGt, BlueSteel, 1)
+                .circuitMeta(6)
                 .outputItems(GTBlocks.CASING_MAGNALIUM_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
         WELDER_RECIPES.recipeBuilder("casing_stainless_steel_turbine").EUt(16)
-                .inputItems(GTBlocks.CASING_MAGNALIUM_TURBINE.asStack()).inputItems(plate, StainlessSteel, 6).circuitMeta(6)
+                .inputItems(GTBlocks.CASING_MAGNALIUM_TURBINE.asStack())
+                .inputItems(plate, StainlessSteel, 6)
+                .circuitMeta(6)
                 .outputItems(GTBlocks.CASING_STAINLESS_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
         WELDER_RECIPES.recipeBuilder("casing_titanium_turbine").EUt(16)
-                .inputItems(GTBlocks.CASING_MAGNALIUM_TURBINE.asStack()).inputItems(plate, Titanium, 6).circuitMeta(6)
+                .inputItems(GTBlocks.CASING_MAGNALIUM_TURBINE.asStack())
+                .inputItems(plate, Titanium, 6)
+                .circuitMeta(6)
                 .outputItems(GTBlocks.CASING_TITANIUM_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
         WELDER_RECIPES.recipeBuilder("casing_tungstensteel_turbine").EUt(16)
-                .inputItems(GTBlocks.CASING_MAGNALIUM_TURBINE.asStack()).inputItems(plate, TungstenSteel, 6).circuitMeta(6)
+                .inputItems(GTBlocks.CASING_MAGNALIUM_TURBINE.asStack())
+                .inputItems(plate, TungstenSteel, 6)
+                .circuitMeta(6)
                 .outputItems(
                         GTBlocks.CASING_TUNGSTENSTEEL_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)

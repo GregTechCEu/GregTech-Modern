@@ -189,7 +189,8 @@ public class MetaTileEntityLoader {
                 new MaterialEntry(TagPrefix.gear, GTMaterials.TungstenSteel));
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "assembly_line_grating",
-                GTBlocks.CASING_ASSEMBLY_GRATE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PVP", "PFP", "PMP", 'P',
+                GTBlocks.CASING_ASSEMBLY_GRATE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PVP", "PFP",
+                "PMP", 'P',
                 new ItemStack(Blocks.IRON_BARS, 1), 'F', new MaterialEntry(TagPrefix.frameGt, GTMaterials.Steel),
                 'M', GTItems.ELECTRIC_MOTOR_MV, 'V', new MaterialEntry(TagPrefix.rotor, GTMaterials.Steel));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "assembly_control_casing",

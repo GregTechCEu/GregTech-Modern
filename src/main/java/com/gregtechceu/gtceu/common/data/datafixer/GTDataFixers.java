@@ -178,7 +178,7 @@ public class GTDataFixers {
     }
 
     private static void createBlockItemFluidRenameFix(DataFixerBuilder builder, Schema schema, String name,
-                                                 UnaryOperator<String> renamer) {
+                                                      UnaryOperator<String> renamer) {
         createBlockItemRenameFix(builder, schema, name, renamer);
         builder.addFixer(FluidRenameFix.create(schema, name + " for fluid", renamer));
     }

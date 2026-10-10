@@ -1,10 +1,10 @@
 {
   "variants": {
     "active=false": {
-      "model": "gtceu:block/variant/assembly_line"
+      "model": "gtceu:block/variant/assembly_line_unit"
     },
     "active=true": {
-      "model": "gtceu:block/variant/assembly_line_active"
+      "model": "gtceu:block/variant/assembly_line_unit_active"
     }
   }
 }

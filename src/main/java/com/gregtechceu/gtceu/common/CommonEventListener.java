@@ -68,7 +68,6 @@ import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.*;

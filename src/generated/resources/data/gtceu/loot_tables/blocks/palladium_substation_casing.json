@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:steel_turbine_casing"
+          "name": "gtceu:palladium_substation_casing"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/steel_turbine_casing"
+  "random_sequence": "gtceu:blocks/palladium_substation_casing"
 }

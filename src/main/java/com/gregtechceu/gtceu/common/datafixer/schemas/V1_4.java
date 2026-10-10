@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.datafixer.schemas;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.datafixer.schemas.AutomaticNamespacedSchema;
+
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
 

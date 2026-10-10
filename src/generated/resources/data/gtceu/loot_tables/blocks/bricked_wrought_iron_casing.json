@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:palladium_substation"
+          "name": "gtceu:bricked_wrought_iron_casing"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/palladium_substation"
+  "random_sequence": "gtceu:blocks/bricked_wrought_iron_casing"
 }
