@@ -27,6 +27,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -48,7 +49,6 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import com.google.common.collect.HashBasedTable;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -119,9 +119,13 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             } else if (pattern instanceof ExpandablePattern expandablePattern) {
                 IntList dims = new IntArrayList();
                 if (expandablePattern.getBoundsConstraints() != null) {
-                    expandablePattern.getBoundsConstraints().apply().stream()
-                            .mapToInt(Pair::left)
-                            .forEach(dims::add);
+                    IntList userDims = schemaInfo.getUserDimensions();
+                    List<IntIntPair> constraints = expandablePattern.getBoundsConstraints().apply();
+                    for (int i = 0; i < constraints.size(); i++) {
+                        IntIntPair bounds = constraints.get(i);
+                        int dim = i < userDims.size() ? userDims.getInt(i) : bounds.leftInt();
+                        dims.add(Mth.clamp(dim, bounds.leftInt(), bounds.rightInt()));
+                    }
                 }
                 structureHelper = AbstractStructureHelper.expandable(dims);
             }
