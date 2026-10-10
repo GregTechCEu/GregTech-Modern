@@ -182,7 +182,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 }
                 return new Icon(GTGuiTextures.INFO).asWidget()
                         .tooltip(r -> {
-                            var patternState = controller.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE);
+                            var patternState = controller
+                                    .getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE);
                             if (!patternState.hasErrors()) return;
                             Flow col = Flow.col();
                             for (var error : patternState.getErrors()) {
@@ -192,7 +193,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                 if (child instanceof IDrawable drawableChild) r.addDrawableLine(drawableChild);
                                 else if (child instanceof TextWidget<?> textWidget) r.addLine(textWidget.getKey());
                             });
-                            //r.addLine(Component.literal("Structure is unformed"));
+                            // r.addLine(Component.literal("Structure is unformed"));
                         });
             }
             return new EmptyWidget();
@@ -370,8 +371,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .tooltip(r -> r.addLine(Component.translatable("gtceu.terminal.clear_preference"))))
                 .child(new DynamicWidget<>()
                         .right(-20)
-                                .clientOnlyHandler(structureErrorHandler)
-                        );
+                        .clientOnlyHandler(structureErrorHandler));
     }
 
     private ContextMenuButton<?> createSelectedBlockMenu(MultiPredicate predicate) {

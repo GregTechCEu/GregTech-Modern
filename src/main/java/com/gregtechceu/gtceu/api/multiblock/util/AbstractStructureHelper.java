@@ -74,39 +74,35 @@ public abstract class AbstractStructureHelper {
                                                        Direction frontFacing, Direction upFacing, boolean isFlipped);
 
     private Pair<Boolean, MultiPredicate> sortPredicateRecursive(MultiPredicate predicate, BlockInfo preference) {
+        // Matching preds go first, both groups keep their relative ordering
         List<BasePredicate> matchingPreds = new ArrayList<>();
+        List<BasePredicate> otherPreds = new ArrayList<>();
         for (var basePred : predicate.predicates()) {
             if (basePred.getCandidates().contains(preference)) {
                 matchingPreds.add(basePred);
+            } else {
+                otherPreds.add(basePred);
             }
         }
-        int i = 0;
         if (!matchingPreds.isEmpty()) {
-            List<BasePredicate> sortedPredicates = new ArrayList<>(predicate.predicates());
-            for (var matchingPred : matchingPreds) {
-                sortedPredicates.remove(matchingPred);
-                // Keep track of index so multiple preds that match keep their ordering
-                sortedPredicates.add(i++, matchingPred);
-            }
-            return Pair.of(true,
-                    predicate.getType().makePredicate(predicate.children(), sortedPredicates, predicate.hasAir()));
+            matchingPreds.addAll(otherPreds);
+            return Pair.of(true, predicate.withContents(predicate.children(), matchingPreds));
         }
 
+        // Matching children are replaced by their sorted versions and go first
         List<MultiPredicate> matchingChildren = new ArrayList<>();
+        List<MultiPredicate> otherChildren = new ArrayList<>();
         for (var child : predicate.children()) {
             var childMatches = sortPredicateRecursive(child, preference);
-            if (childMatches.getFirst()) matchingChildren.add(childMatches.getSecond());
-        }
-
-        if (!matchingChildren.isEmpty()) {
-            List<MultiPredicate> sortedChildren = new ArrayList<>(predicate.children());
-            for (var matchingChild : matchingChildren) {
-                sortedChildren.remove(matchingChild);
-                // Keep track of index so multiple children that match keep their ordering
-                sortedChildren.add(i++, matchingChild);
+            if (childMatches.getFirst()) {
+                matchingChildren.add(childMatches.getSecond());
+            } else {
+                otherChildren.add(child);
             }
-            return Pair.of(true,
-                    predicate.getType().makePredicate(sortedChildren, predicate.predicates(), predicate.hasAir()));
+        }
+        if (!matchingChildren.isEmpty()) {
+            matchingChildren.addAll(otherChildren);
+            return Pair.of(true, predicate.withContents(matchingChildren, predicate.predicates()));
         }
         return Pair.of(false, predicate);
     }

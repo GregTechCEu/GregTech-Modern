@@ -9,13 +9,13 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
-import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -81,6 +81,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
         Vec3i dimensions = getDimensions(this.flattenedBlockPattern);
         Direction sliceDir = blockPattern.getDirections()[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
+        Direction.Axis sliceAxis = sliceDir.getAxis();
 
         for (var blockPreference : userBlockPreferences.object2ObjectEntrySet()) {
             BlockPos pos = blockPreference.getKey();
@@ -92,13 +93,16 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                         "BlockPos preference " + pos + "is outside of bounds for pattern of size " +
                                 dimensions.getX() + "," + dimensions.getY() + "," + dimensions.getZ());
             }
+            int offset = pos.get(sliceAxis);
             char c = this.flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
             MultiPredicate predicate = blockPattern.getPredicates().get(c);
-            if (!isValidCandidate(info, resultStructure, predicate, pos, blockInfo, sliceDir)) {
+            var basePair = getBasePredicateRoute(new ArrayList<>(List.of(predicate)), blockInfo);
+            if (basePair == null) {
                 throw new IllegalStateException("Invalid preference " + blockInfo.getBlockState().getBlock().getName() +
                         " for position " + pos);
             }
             resultStructure.put(pos, blockInfo);
+            incrementPredicate(basePair.value(), basePair.key(), offset);
         }
     }
 
@@ -165,7 +169,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         }
     }
 
-    private @Nullable Pair<BasePredicate, List<MultiPredicate>> getBasePredicateRoute(List<MultiPredicate> predicateChain, BlockInfo info) {
+    private @Nullable Pair<BasePredicate, List<MultiPredicate>> getBasePredicateRoute(List<MultiPredicate> predicateChain,
+                                                                                      BlockInfo info) {
         MultiPredicate last = predicateChain.get(predicateChain.size() - 1);
         for (var base : last.predicates()) {
             if (base.getCandidates().contains(info)) {
@@ -375,7 +380,9 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
         // check if each child predicate min is satisfied
         for (MultiPredicate child : predicate.children()) {
+            predicateChain.add(child);
             if (tryMaxCount(info, resultStructure, child, predicateChar, pos, offset, predicateChain)) return true;
+            predicateChain.remove(predicateChain.size() - 1);
         }
 
         BlockInfo toInsert = info.getBlockPreferences().get(predicateChar);
@@ -392,44 +399,6 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
         incrementPredicate(basePair.value(), basePair.key(), offset);
         return true;
-    }
-
-    private boolean isValidCandidate(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
-                                     MultiPredicate predicate,
-                                     BlockPos pos, BlockInfo newInfo, Direction sliceDir) {
-        // force true because idk what to do with this
-        if (newInfo == BlockInfo.EMPTY) return true;
-        // The slice this position belongs to.
-        int sliceCoord = getCoordFromDir(pos, sliceDir);
-
-        // newInfo is valid if there's a basePredicate it qualifies for whose maxCount (global) and maxSliceCount
-        // (this slice) wouldn't be exceeded by placing it here.
-        for (BasePredicate basePredicate : predicate.predicates()) {
-            /*
-             * PROBLEM:
-             * certain predicates (like air/any) do not have any candidates
-             * so they fail with BlockInfo.EMPTY
-             * there's also no way to "test" the block info since you need a PredicateContext
-             */
-            if (!basePredicate.getCandidates().contains(newInfo)) continue;
-
-            int maxCount = info.getMaxCount(predicate, basePredicate);
-            if (maxCount == 0) continue;
-
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            int sliceAlreadyPopulated = countPopulatedInSlice(resultStructure, basePredicate, sliceDir, sliceCoord);
-            if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
-
-            if (basePredicate.getMaxSliceCount() == -1 || sliceAlreadyPopulated < basePredicate.getMaxSliceCount()) {
-                return true;
-            }
-        }
-        for (MultiPredicate child : predicate.children()) {
-            if (isValidCandidate(info, resultStructure, child, pos, newInfo, sliceDir)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private @UnmodifiableView char[][][] flattenBlockPattern(BlockPattern pattern) {

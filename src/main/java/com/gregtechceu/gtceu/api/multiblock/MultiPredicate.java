@@ -317,6 +317,17 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         return copy;
     }
 
+    @ApiStatus.Internal
+    @CheckReturnValue
+    public MultiPredicate withContents(List<MultiPredicate> children, List<BasePredicate> predicates) {
+        MultiPredicate copy = this.type.makePredicate(children, predicates, this.hasAir);
+        copy.setSettings(this.settings);
+        copy.setController(this.controller);
+        copy.isAir(this.isAir);
+        copy.isAny(this.isAny);
+        return copy;
+    }
+
     @CheckReturnValue
     public MultiPredicate copyWith(Consumer<MultiPredicate> configurator) {
         MultiPredicate copy = deepCopy();
