@@ -290,6 +290,8 @@ public final class PartsRecipeHandler {
                         .outputItems(plate, material)
                         .duration(40)
                         .EUt(VA[ULV])
+                        .onSave((builder, output) -> MaterialRecipeHandler.prepareCastingRecipe(builder, material,
+                                stack.getAmount()))
                         .save(provider);
             }
         }

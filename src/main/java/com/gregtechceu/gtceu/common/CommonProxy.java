@@ -110,6 +110,7 @@ import net.neoforged.neoforge.fluids.crafting.*;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import brachy.modularui.factory.GuiManager;
 import com.google.common.collect.Multimaps;
@@ -122,6 +123,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
@@ -524,4 +526,71 @@ public class CommonProxy {
             GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());
         }
     }
+
+    /** Migrate Legacy GT Molten fluids, strictly blind to addons to allow them to fail loudly. */
+    private static final Set<String> LEGACY_MOLTEN_MATERIALS = Set.of(
+            "bismuth_bronze",
+            "black_bronze",
+            "black_steel",
+            "blue_steel",
+            "enriched_naquadah_trinium_europium_duranide",
+            "gallium_arsenide",
+            "hastelloy_c_276",
+            "hastelloy_x",
+            "hsla_steel",
+            "hsse",
+            "hssg",
+            "hsss",
+            "incoloy_ma_956",
+            "indium_tin_barium_titanium_cuprate",
+            "kanthal",
+            "magnesium_diboride",
+            "manganese_phosphide",
+            "maraging_steel_300",
+            "mercury_barium_calcium_cuprate",
+            "molybdenum_disilicide",
+            "naquadah_alloy",
+            "nichrome",
+            "niobium_nitride",
+            "niobium_titanium",
+            "osmiridium",
+            "red_steel",
+            "rhodium_plated_palladium",
+            "rose_gold",
+            "rtm_alloy",
+            "ruridit",
+            "ruthenium_trinium_americium_neutronate",
+            "samarium_iron_arsenic_oxide",
+            "stainless_steel",
+            "stellite_100",
+            "sterling_silver",
+            "tantalum_carbide",
+            "titanium_carbide",
+            "titanium_tungsten_carbide",
+            "tungsten_carbide",
+            "tungsten_steel",
+            "ultimet",
+            "uranium_rhodium_dinaquadide",
+            "uranium_triplatinum",
+            "vanadium_gallium",
+            "vanadium_steel",
+            "watertight_steel",
+            "yttrium_barium_cuprate",
+            "zeron_100");
+
+    @SubscribeEvent
+    public static void registerLegacyMoltenAliases(RegisterEvent event) {
+        var key = event.getRegistryKey();
+        boolean fluid = key.equals(Registries.FLUID);
+        boolean item = key.equals(Registries.ITEM);
+        if (!fluid && !item && !key.equals(NeoForgeRegistries.Keys.FLUID_TYPES)) return;
+        for (String material : LEGACY_MOLTEN_MATERIALS) {
+            String suffix = item ? "_bucket" : "";
+            event.getRegistry().addAlias(GTCEu.id("molten_" + material + suffix), GTCEu.id(material + suffix));
+            if (fluid) {
+                event.getRegistry().addAlias(GTCEu.id("flowing_molten_" + material), GTCEu.id("flowing_" + material));
+            }
+        }
+    }
+
 }

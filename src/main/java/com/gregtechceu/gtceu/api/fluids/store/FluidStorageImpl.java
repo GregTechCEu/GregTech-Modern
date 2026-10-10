@@ -51,7 +51,9 @@ public class FluidStorageImpl implements FluidStorage {
         if (registered) {
             throw new IllegalArgumentException("FluidStorage has already been registered");
         }
-        return toRegister.get(key);
+        FluidBuilder builder = toRegister.get(key);
+        return builder == null && key == FluidStorageKeys.MOLTEN ?
+                toRegister.get(FluidStorageKeys.LIQUID) : builder;
     }
 
     /**
@@ -97,11 +99,13 @@ public class FluidStorageImpl implements FluidStorage {
      */
     @Override
     public @Nullable Fluid get(FluidStorageKey key) {
-        return map.containsKey(key) ? map.get(key).getFluid().get() : null;
+        FluidEntry entry = getEntry(key);
+        return entry == null ? null : entry.getFluid().get();
     }
 
     public @Nullable FluidEntry getEntry(FluidStorageKey key) {
-        return map.get(key);
+        FluidEntry entry = map.get(key);
+        return entry == null && key == FluidStorageKeys.MOLTEN ? map.get(FluidStorageKeys.LIQUID) : entry;
     }
 
     /**
