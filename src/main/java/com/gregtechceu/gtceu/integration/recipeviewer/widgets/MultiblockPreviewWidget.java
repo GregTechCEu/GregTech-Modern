@@ -137,20 +137,16 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 .coverChildrenWidth(26)
                 .childPadding(1)
                 .height(height)
-                .children(this.multiblockSchemaInfo.getBlockCounts()
-                        .reference2IntEntrySet()
-                        .stream()
-                        .filter(x -> !x.getKey().defaultBlockState().isAir())
-                        .toList(), e -> {
-                            ItemStack stack = new ItemStack(e.getKey(), e.getIntValue());
-                            return RecipeViewerSlotWidget.create(ItemStack.class)
-                                    .recipeSlotRole(RecipeSlotRole.OUTPUT)
-                                    .value(stack)
-                                    .background(IDrawable.EMPTY)
-                                    .size(16)
-                                    // .margin(1)
-                                    .tooltip(r -> r.addFromItem(stack));
-                        })
+                .children(this.multiblockSchemaInfo.getBlockCounts().reference2IntEntrySet(), e -> {
+                    ItemStack stack = new ItemStack(e.getKey(), e.getIntValue());
+                    return RecipeViewerSlotWidget.create(ItemStack.class)
+                            .recipeSlotRole(RecipeSlotRole.OUTPUT)
+                            .value(stack)
+                            .background(IDrawable.EMPTY)
+                            .size(16)
+                            // .margin(1)
+                            .tooltip(r -> r.addFromItem(stack));
+                })
                 .horizontalCenter());
 
         this.selectedBlockHandler.widgetProvider(() -> {

@@ -19,6 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.config.Actionable;
@@ -92,6 +93,8 @@ public class AutobuildHelper {
             var innerPredicate = predicate.getPredicateAtPos(cxt);
             if (innerPredicate.hasMatched()) {
                 alreadyValidPlaced.put(pos.asLong(), blockState);
+            } else if (entry.getValue().getBlockState().isAir() && blockState.canBeReplaced()) {
+                level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             } else {
                 if (blockState.canBeReplaced()) {
                     replaceableBlocks.put(pos.asLong(), blocksToPlace.get(entry.getKey()).getBlockState());

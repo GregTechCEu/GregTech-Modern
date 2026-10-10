@@ -183,6 +183,7 @@ public class MultiblockSchemaInfo {
         for (var entry : resultStructure.entrySet()) {
             BlockState state = entry.getValue().getBlockState();
             schemaMap.put(entry.getKey().asLong(), state);
+            if (state.isAir()) continue;
             this.blockCounts.merge(state.getBlock(), 1, Integer::sum);
         }
         if (this.mapSchema == null) {
