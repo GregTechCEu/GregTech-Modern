@@ -5,7 +5,10 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 
@@ -189,6 +192,15 @@ public class ItemTagLoader {
         provider.addTag(Tags.Items.ENCHANTING_FUELS)
                 .add(ChemicalHelper.getItemOrThrow(gem, Lazurite))
                 .add(ChemicalHelper.getItemOrThrow(gem, Sodalite));
+
+        // Curios
+        provider.addTag(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "gtceu_magnet")))
+                .add(GTItems.ITEM_MAGNET_LV.get())
+                .add(GTItems.ITEM_MAGNET_HV.get());
+        provider.addTag(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "hands")))
+                .add(GTItems.RUBBER_GLOVES.get());
+        provider.addTag(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "head")))
+                .add(GTItems.FACE_MASK.get());
 
         provider.addTag(CustomTags.HIDDEN_FROM_RECIPE_VIEWERS)
                 .addOptional(GTItems.SPOILABLE_1.getId())
