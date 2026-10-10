@@ -7,8 +7,11 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
@@ -195,6 +198,15 @@ public class ItemTagLoader {
         provider.addTag(Tags.Items.ENCHANTING_FUELS)
                 .add(ChemicalHelper.getItemOrThrow(gem, Lazurite))
                 .add(ChemicalHelper.getItemOrThrow(gem, Sodalite));
+
+        // Curios
+        provider.addTag(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "gtceu_magnet")))
+                .add(GTItems.ITEM_MAGNET_LV.get())
+                .add(GTItems.ITEM_MAGNET_HV.get());
+        provider.addTag(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "hands")))
+                .add(GTItems.RUBBER_GLOVES.get());
+        provider.addTag(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "head")))
+                .add(GTItems.FACE_MASK.get());
     }
 
     private static IntrinsicHolderTagsProvider.IntrinsicTagAppender<Item> addTag(RegistrateItemTagsProvider provider,
