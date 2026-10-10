@@ -595,4 +595,13 @@ public class CommonProxy {
             }
         }
     }
+
+    @SubscribeEvent
+    public static void registerLegacyArmorAliases(RegisterEvent event) {
+        if (!event.getRegistryKey().equals(Registries.ITEM)) return;
+        for (String piece : List.of("helmet", "chestplate", "leggings", "boots")) {
+            event.getRegistry().addAlias(GTCEu.id("nanomuscle_" + piece), GTCEu.id("nano_fiber_" + piece));
+            event.getRegistry().addAlias(GTCEu.id("quarktech_" + piece), GTCEu.id("quark_matter_" + piece));
+        }
+    }
 }

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.misc;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
-import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
@@ -26,8 +25,6 @@ import brachy.modularui.screen.ModularScreen;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widget.Widget;
-import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 import org.jetbrains.annotations.Nullable;
@@ -98,50 +95,51 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
         ParentWidget<?> main = new ParentWidget<>().background(GTGuiTextures.BACKGROUND_EQUIPMENT_FOUNDRY).size(168,
-                75);
+                76);
 
+        // The 24px decorative frames surround the 18px interactive slots.
         List<ItemSlot> moduleSlots = new ArrayList<>();
         for (int i = 0; i < MAX_MODIFIER_SLOTS; i++) {
-            moduleSlots.add(new ItemSlot()
-                    .background()
+            ItemSlot moduleSlot = new ItemSlot()
+                    .left(36 + (i % 5) * 26)
+                    .top(9 + (i / 5) * 40)
+                    .size(18, 18)
+                    .background(GTGuiTextures.EQUIPMENT_FOUNDRY_MODULE_SLOT.asIcon().size(24).center())
                     .slot(new ModularSlot(this.moduleSlots, i)
-                            .singletonSlotGroup()));
+                            .singletonSlotGroup());
+            moduleSlots.add(moduleSlot);
+            main.child(moduleSlot);
         }
 
-        updateModuleSlotBackgrounds(moduleSlots, equipmentSlot.getStackInSlot(0));
+        updateModuleSlotOverlays(moduleSlots, equipmentSlot.getStackInSlot(0));
 
         main.child(new ItemSlot()
                 .left(10)
-                .top(28)
-                .background()
+                .top(29)
+                .size(18, 18)
+                .background(GTGuiTextures.EQUIPMENT_FOUNDRY_ARMOR_SLOT.asIcon().size(24).center())
                 .slot(equipmentSlot, 0)
                 .slot(new ModularSlot(equipmentSlot, 0)
                         .singletonSlotGroup()
                         .changeListener((oldStack, newStack, client, init) -> {
-                            if (!ItemStack.isSameItem(oldStack, newStack))
-                                updateModuleSlotBackgrounds(moduleSlots, newStack);
-                        })))
-                .child(new Grid()
-                        .background()
-                        .left(34)
-                        .top(-1)
-                        .minColWidth(26)
-                        .minRowHeight(39)
-                        .gridOf(5, moduleSlots));
+                            updateModuleSlotOverlays(moduleSlots, newStack);
+                        })));
 
         mainWidget.child(main);
     }
 
-    private void updateModuleSlotBackgrounds(List<ItemSlot> moduleSlots, ItemStack stack) {
+    private void updateModuleSlotOverlays(List<ItemSlot> moduleSlots, ItemStack stack) {
         var modular = GTCapabilityHelper.getModularItem(stack);
-        if (modular == null) {
-            moduleSlots.forEach(Widget::background);
-            return;
-        }
-        List<ItemModuleSlot> slots = modular.getSlots();
-        for (int i = 0; i < slots.size() && i < moduleSlots.size(); i++) {
+        for (int i = 0; i < moduleSlots.size(); i++) {
+            ModuleContext module = modular == null ? null : modular.getModuleContextForSlot(i);
+            boolean locked = modular == null || i >= modular.getSlots().size() ||
+                    (module != null && !module.getModule().canRemove(module));
             ItemSlot slotWidget = moduleSlots.get(i);
-            slotWidget.background(slots.get(i).getSlotTexture());
+            if (locked) {
+                slotWidget.overlay(GTGuiTextures.EQUIPMENT_FOUNDRY_LOCK.asIcon().size(10).center());
+            } else {
+                slotWidget.overlay();
+            }
         }
     }
 

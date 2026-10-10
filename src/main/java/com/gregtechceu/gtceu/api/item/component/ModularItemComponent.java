@@ -1,19 +1,18 @@
 package com.gregtechceu.gtceu.api.item.component;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.capability.ModularItemStack;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -26,8 +25,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
+import it.unimi.dsi.fastutil.ints.IntList;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -48,7 +48,13 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
     public ModularItemComponent(int slots, int maxTier) {
         List<ItemModuleSlot> defaultSlots = new ArrayList<>();
         for (int i = 0; i < slots; i++) defaultSlots.add(GTItemModules.TIERED_SLOTS[maxTier]);
-        this.defaultSlotGetter = stack -> defaultSlots;
+        this.defaultSlotGetter = stack -> {
+            if (!stack.has(GTDataComponents.NETHERITE_PLATED)) return defaultSlots;
+            List<ItemModuleSlot> platedSlots = new ArrayList<>(defaultSlots);
+            platedSlots.add(GTItemModules.TIERED_SLOTS[maxTier]);
+            platedSlots.add(GTItemModules.TIERED_SLOTS[maxTier]);
+            return platedSlots;
+        };
     }
 
     @Override
@@ -123,24 +129,20 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                     .withStyle(ChatFormatting.GRAY));
             List<ItemModuleSlot> slots = modularItem.getSlots();
 
+            int maxTier = slots.stream()
+                    .mapToInt(slot -> slot instanceof UniversalItemModuleSlot ? GTValues.MAX :
+                            slot instanceof TieredItemModuleSlot tiered ? tiered.getTier() : -1)
+                    .max().orElse(-1);
+            if (maxTier >= 0) {
+                tooltipComponents.add(Component.translatable("gui.gtceu.max_module_tier", GTValues.VNF[maxTier]));
+            }
+
+            if (stack.has(GTDataComponents.NETHERITE_PLATED)) {
+                tooltipComponents.add(Component.translatable("tooltip.gtceu.netherite_plated")
+                        .withStyle(ChatFormatting.GRAY));
+            }
+
             if (!GTUtil.isShiftDown()) {
-
-                MutableComponent moduleComponent = Component.translatable("gui.gtceu.modules")
-                        .append(CommonComponents.SPACE);
-                List<Component> moduleNames = new ArrayList<>();
-                for (int slotI = 0; slotI < slots.size(); slotI++) {
-                    ItemModuleSlot slot = slots.get(slotI);
-                    if (slot == null) continue;
-                    ModuleContext moduleData = modularItem.getModuleContextForSlot(slotI);
-                    if (moduleData != null) moduleNames.add(moduleData.getModule().getDisplayName(moduleData));
-                }
-
-                for (int i = 0; i < moduleNames.size(); i++) {
-                    moduleComponent.append(moduleNames.get(i));
-                    if (i != moduleNames.size() - 1) moduleComponent.append(", ");
-                }
-
-                if (!moduleNames.isEmpty()) tooltipComponents.add(moduleComponent);
                 tooltipComponents.add(Component.translatable("gtceu.tooltip.hold_shift"));
                 return;
             }
@@ -152,8 +154,6 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                 ModuleContext moduleData = modularItem.getModuleContextForSlot(slotI);
                 if (moduleData != null) {
                     tooltipComponents.add(Component.literal(" - ")
-                            .append(slot.getDisplayName())
-                            .append(Component.literal(": "))
                             .append(moduleData.getModule().getDisplayName(moduleData)));
 
                     List<Component> moduleTooltips = new ArrayList<>();
@@ -164,8 +164,6 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                             .forEach(tooltipComponents::add);
                 } else {
                     tooltipComponents.add(Component.literal(" - ")
-                            .append(slot.getDisplayName())
-                            .append(Component.literal(": "))
                             .append(Component.translatable("gui.gtceu.item_module.empty_module_slot")
                                     .withStyle(ChatFormatting.GRAY)));
                 }

@@ -262,23 +262,6 @@ public class MiscRecipeLoader {
                 .addMaterialInfo(true, true)
                 .save(provider);
 
-        ASSEMBLY_LINE_RECIPES.recipeBuilder("quantum_chestplate_advanced").duration(1000).EUt(VA[LuV])
-                .inputItems(QUANTUM_CHESTPLATE.asItem())
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(wireFine, NiobiumTitanium, 64)
-                .inputItems(wireGtQuadruple, Osmium, 6)
-                .inputItems(plateDouble, Iridium, 4)
-                .inputItems(GRAVITATION_ENGINE, 2)
-                .inputItems(CustomTags.ZPM_CIRCUITS)
-                .inputItems(plateDense, RhodiumPlatedPalladium, 2)
-                .inputItems(ENERGY_LAPOTRONIC_ORB_CLUSTER)
-                .inputItems(FIELD_GENERATOR_LuV, 2)
-                .inputItems(ELECTRIC_MOTOR_LuV, 2)
-                .inputItems(screw, HSSS, 8)
-                .outputItems(QUANTUM_CHESTPLATE_ADVANCED)
-                .addMaterialInfo(true, true)
-                .save(provider);
-
         // TODO Central monitor
         /*
          * ASSEMBLER_RECIPES.recipeBuilder("monitor_screen").duration(80).EUt(VA[HV])

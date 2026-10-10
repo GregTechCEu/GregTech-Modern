@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
@@ -7,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -14,12 +16,19 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
@@ -27,7 +36,23 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class CraftingRecipeLoader {
 
+    private static void netheritePlatingRecipes(RecipeOutput provider) {
+        for (var armor : List.of(NANO_HELMET, NANO_CHESTPLATE, NANO_LEGGINGS, NANO_BOOTS,
+                QUANTUM_HELMET, QUANTUM_CHESTPLATE, QUANTUM_LEGGINGS, QUANTUM_BOOTS)) {
+            ItemStack result = new ItemStack(armor.get());
+            result.set(GTDataComponents.NETHERITE_PLATED, Unit.INSTANCE);
+            Ingredient base = DifferenceIngredient.of(Ingredient.of(armor.get()),
+                    DataComponentIngredient.of(false, GTDataComponents.NETHERITE_PLATED, Unit.INSTANCE, armor.get()));
+            provider.accept(GTCEu.id("netherite_plated_" + armor.getId().getPath()),
+                    new SmithingTransformRecipe(Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), base,
+                            Ingredient.of(Items.NETHERITE_INGOT), result),
+                    null);
+        }
+    }
+
     public static void init(RecipeOutput provider) {
+        netheritePlatingRecipes(provider);
+
         VanillaRecipeHelper.addShapedRecipe(provider, "small_wooden_pipe", ChemicalHelper.get(pipeSmallFluid, Wood),
                 "sWr", 'W', ItemTags.PLANKS);
         VanillaRecipeHelper.addShapedRecipe(provider, "normal_wooden_pipe", ChemicalHelper.get(pipeNormalFluid, Wood),
@@ -267,11 +292,6 @@ public class CraftingRecipeLoader {
                 "PxP", 'P', GTItems.CARBON_FIBER_PLATE.asStack(), 'E', GTItems.ENERGIUM_CRYSTAL.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, "nano_boots", GTItems.NANO_BOOTS.asStack(), "PxP", "PEP", 'P',
                 GTItems.CARBON_FIBER_PLATE.asStack(), 'E', GTItems.ENERGIUM_CRYSTAL.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, "nano_chestplate_advanced",
-                GTItems.NANO_CHESTPLATE_ADVANCED.asStack(), "xJd", "PNP", "WCW", 'J',
-                GTItems.ELECTRIC_JETPACK_ADVANCED.asStack(), 'P', GTItems.LOW_POWER_INTEGRATED_CIRCUIT.asStack(), 'N',
-                GTItems.NANO_CHESTPLATE.asStack(), 'W', new MaterialEntry(wireGtQuadruple, Platinum), 'C',
-                CustomTags.IV_CIRCUITS);
         VanillaRecipeHelper.addShapedRecipe(provider, "gravitation_engine", GTItems.GRAVITATION_ENGINE.asStack(), "ESE",
                 "POP", "ESE", 'E', GTItems.EMITTER_LuV.asStack(), 'S', new MaterialEntry(wireGtQuadruple, Osmium),
                 'P', new MaterialEntry(plateDouble, Iridium), 'O', GTItems.ENERGY_LAPOTRONIC_ORB.asStack());

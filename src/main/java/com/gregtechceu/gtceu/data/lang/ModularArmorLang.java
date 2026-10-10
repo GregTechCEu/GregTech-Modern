@@ -5,6 +5,8 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 public class ModularArmorLang {
 
     public static void init(RegistrateLangProvider provider) {
+        provider.add("item.gtceu.netherite_plated", "Netherite-Plated %s");
+        provider.add("tooltip.gtceu.netherite_plated", "Netherite Plating: +2 Module Slots");
         provider.add("tooltip.gtceu.configure_modular_armor", "Press [%s] when holding to configure modular item");
 
         provider.add("gui.gtceu.equipment_foundry.applied_to", "Applied to:");
@@ -35,6 +37,7 @@ public class ModularArmorLang {
         provider.add("gui.gtceu.item_module.empty_module_slot", "Empty");
         provider.add("gui.gtceu.module_slot.universal", "Universal");
         provider.add("gui.gtceu.module_slot.tiered", "Tiered (%s)");
+        provider.add("gui.gtceu.max_module_tier", "Max Module Tier: %s");
         provider.add("gui.gtceu.module_slots", "Module slots:");
         provider.add("gui.gtceu.modules", "Modules:");
 
@@ -89,11 +92,9 @@ public class ModularArmorLang {
         provider.add("module.gtceu.sensor.message", "%s exploded at (%d, %d, %d)");
         provider.add("module.gtceu.sensor.description",
                 "Reports machine explosions (for machines placed by the player)");
-        provider.add("module.gtceu.wireless_charger", "Wireless Charging Module (%s)");
+        provider.add("module.gtceu.wireless_charger", "Quantum Charger (%s)");
         provider.add("module.gtceu.wireless_charger.description",
-                "Allows wireless charging in the range of %s blocks (1A %s max), bind to a charger by right-clicking on it");
-        provider.add("module.gtceu.wireless_charging.description.interdimensional",
-                "%s blocks, 1A %s max, interdimensional if an at least %s field generator is present");
+                "Links armor to a Battery Buffer or Power Substation across any distance and dimension (1A %s max). Right-click to link to storage.");
         provider.add("module.gtceu.creative_flight", "Creative Flight Module");
         provider.add("module.gtceu.creative_flight.description",
                 "Allows creative flight (consumes %s EU/t while flying)");
@@ -116,7 +117,7 @@ public class ModularArmorLang {
 
         provider.add("module.gtceu.damage_block.short", "%s EU per HP");
         provider.add("module.gtceu.short_percentage", "... by %s%%");
-        provider.add("module.gtceu.wireless_charging.short", "%s blocks, 1A %s max");
+        provider.add("module.gtceu.wireless_charging.short", "Unlimited range, interdimensional, 1A %s max");
         provider.add("module.gtceu.block_reach.short", "... by %s blocks");
         provider.add("gui.gtceu.item_module.enabled", "Enabled:");
         provider.add("gui.gtceu.item_module.jump_boost", "Boost:");
