@@ -19,19 +19,30 @@ public class SPacketImageResponse implements GTNetwork.INetPacket {
     private final String url;
     private final int index;
     private final int totalSize;
+    private final boolean downloadSuccess;
 
     public SPacketImageResponse(String url, byte[] imagePart, int index, int totalSize) {
         this.url = url;
         this.imagePart = imagePart;
         this.index = index;
         this.totalSize = totalSize;
+        this.downloadSuccess = true;
     }
 
     public SPacketImageResponse(FriendlyByteBuf buf) {
         this.index = buf.readInt();
         this.totalSize = buf.readInt();
         this.url = buf.readUtf();
-        this.imagePart = buf.readByteArray();
+        this.downloadSuccess = buf.readBoolean();
+        this.imagePart = downloadSuccess ? buf.readByteArray() : null;
+    }
+
+    public SPacketImageResponse(String url) {
+        this.url = url;
+        this.imagePart = null;
+        this.index = 0;
+        this.totalSize = 0;
+        this.downloadSuccess = false;
     }
 
     @Override
@@ -39,12 +50,16 @@ public class SPacketImageResponse implements GTNetwork.INetPacket {
         buffer.writeInt(index);
         buffer.writeInt(totalSize);
         buffer.writeUtf(url);
-        buffer.writeByteArray(imagePart);
+        buffer.writeBoolean(downloadSuccess);
+        if (downloadSuccess) {
+            buffer.writeByteArray(imagePart);
+        }
     }
 
     @Override
     public void execute(NetworkEvent.Context context) {
-        if (imagePart == null) {
+        if (imagePart == null || !downloadSuccess) {
+            ClientImageCache.imageLoadFailed(url);
             return;
         }
         try {
