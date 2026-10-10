@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.item.armor;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
+
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -10,6 +11,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.Nullable;
 
 public class HydraulicArmorItem extends ModularArmorItem {
@@ -29,5 +31,4 @@ public class HydraulicArmorItem extends ModularArmorItem {
                 GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)) :
                 GTCEu.id(String.format("textures/armor/%s_2.png", armorTexture));
     }
-
 }
