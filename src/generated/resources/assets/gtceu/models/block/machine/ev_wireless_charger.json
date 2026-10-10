@@ -2,40 +2,19 @@
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:ev_wireless_charger",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
-    "recipe_logic_status=idle": {
+    "": {
       "model": {
-        "parent": "gtceu:block/casings/voltage/ev",
+        "parent": "gtceu:block/machine/wireless_charger",
         "textures": {
-          "overlay_front": "gtceu:block/overlay/machine/wireless_charger/overlay_front",
-          "overlay_front_emissive": "gtceu:block/overlay/machine/wireless_charger/overlay_front_emissive"
-        }
-      }
-    },
-    "recipe_logic_status=suspend": {
-      "model": {
-        "parent": "gtceu:block/casings/voltage/ev",
-        "textures": {
-          "overlay_front": "gtceu:block/overlay/machine/wireless_charger/overlay_front",
-          "overlay_front_emissive": "gtceu:block/overlay/machine/wireless_charger/overlay_front_emissive"
-        }
-      }
-    },
-    "recipe_logic_status=waiting": {
-      "model": {
-        "parent": "gtceu:block/casings/voltage/ev",
-        "textures": {
-          "overlay_front": "gtceu:block/overlay/machine/wireless_charger/overlay_front",
-          "overlay_front_emissive": "gtceu:block/overlay/machine/wireless_charger/overlay_front_emissive"
-        }
-      }
-    },
-    "recipe_logic_status=working": {
-      "model": {
-        "parent": "gtceu:block/casings/voltage/ev",
-        "textures": {
-          "overlay_front": "gtceu:block/overlay/machine/wireless_charger/overlay_front",
-          "overlay_front_emissive": "gtceu:block/overlay/machine/wireless_charger/overlay_front_emissive"
+          "bottom": "gtceu:block/casings/voltage/ev/bottom",
+          "side": "gtceu:block/casings/voltage/ev/side",
+          "top": "gtceu:block/casings/voltage/ev/top"
         }
       }
     }

@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -18,7 +18,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import top.theillusivec4.curios.api.CuriosApi;
 
@@ -29,7 +32,6 @@ import java.util.UUID;
 public class WirelessChargerMachine extends TieredEnergyMachine {
 
     @SaveField
-    @SyncToClient
     private boolean turbo = true;
 
     private TickableSubscription chargeSubscription;
@@ -77,8 +79,8 @@ public class WirelessChargerMachine extends TieredEnergyMachine {
         members.add(owner.getPlayerUUID());
         long chargeAmount = GTValues.V[getTier()] * (turbo ? 4 : 1);
         for (UUID member : members) {
-            Player player = level.getPlayerByUUID(id);
-            if (player == null !bounds.intersects(player.getBoundingBox())) continue;
+            Player player = level.getPlayerByUUID(member);
+            if (player == null || !bounds.intersects(player.getBoundingBox())) continue;
             players.add(member);
             if (!previousPlayers.contains(member)) {
                 player.displayClientMessage(Component.translatable("gtceu.machine.wireless_charger.enter_range"), true);
@@ -98,19 +100,21 @@ public class WirelessChargerMachine extends TieredEnergyMachine {
     private void chargeInventory(Player player, long chargeAmount) {
         if (energyContainer.getEnergyStored() <= 0) return;
         if (GTCEu.Mods.isCuriosLoaded()) {
-            CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
+            var inventory = CuriosApi.getCuriosInventory(player).orElse(null);
+            if (inventory != null) {
                 var curios = inventory.getEquippedCurios();
                 for (int slot = 0; slot < curios.getSlots(); slot++) {
                     chargeItem(curios.getStackInSlot(slot), chargeAmount);
                 }
-            });
+            }
         }
         // charge all slots including armor
-        player.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(inventory -> {
+        IItemHandler inventory = player.getCapability(Capabilities.ItemHandler.ENTITY, null);
+        if (inventory != null) {
             for (int slot = 0; slot < inventory.getSlots(); slot++) {
                 chargeItem(inventory.getStackInSlot(slot), chargeAmount);
             }
-        });
+        }
     }
 
     private void chargeItem(ItemStack stack, long chargeAmount) {
@@ -134,7 +138,6 @@ public class WirelessChargerMachine extends TieredEnergyMachine {
     protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         if (!isRemote()) {
             turbo = !turbo;
-            getSyncDataHolder().markClientSyncFieldDirty("turbo");
             setChanged();
             if (context.getPlayer() != null) {
                 context.getPlayer().displayClientMessage(Component.translatable(

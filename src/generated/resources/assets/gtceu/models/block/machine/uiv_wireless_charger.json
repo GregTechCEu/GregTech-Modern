@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
-  "machine": "gtceu:zpm_wireless_charger",
+  "machine": "gtceu:uiv_wireless_charger",
   "replaceable_textures": [
     "bottom",
     "top",
@@ -12,9 +12,9 @@
       "model": {
         "parent": "gtceu:block/machine/wireless_charger",
         "textures": {
-          "bottom": "gtceu:block/casings/voltage/zpm/bottom",
-          "side": "gtceu:block/casings/voltage/zpm/side",
-          "top": "gtceu:block/casings/voltage/zpm/top"
+          "bottom": "gtceu:block/casings/voltage/uiv/bottom",
+          "side": "gtceu:block/casings/voltage/uiv/side",
+          "top": "gtceu:block/casings/voltage/uiv/top"
         }
       }
     }

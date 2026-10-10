@@ -465,7 +465,7 @@ public class GTMachines {
                                     FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
                             Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
                                     FormattingUtil.formatNumbers(V[tier] * 64L)))
-                    .workableTieredHullModel(GTCEu.id("block/overlay/machine/wireless_charger"))
+                    .overlayTieredHullModel(GTCEu.id("block/machine/wireless_charger"))
                     .register(),
             GTMachineUtils.ELECTRIC_TIERS);
 
