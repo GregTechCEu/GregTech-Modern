@@ -20,8 +20,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import brachy.modularui.drawable.SchemaRenderer;
 import brachy.modularui.widgets.SchemaWidget;
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Table;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.Pair;
@@ -56,7 +54,6 @@ public class MultiblockSchemaInfo {
             GTCodecUtils.map(SyncSystemCodecs.CHAR, BlockInfo.CODEC).fieldOf("blockPreferences").forGetter(MultiblockSchemaInfo::getBlockPreferences),
             Codec.BOOL.fieldOf("flipped").forGetter(MultiblockSchemaInfo::isFlipped),
             Codec.BOOL.fieldOf("ignorePreviewCount").forGetter(MultiblockSchemaInfo::isIgnorePreviewCount)
-            //GTCodecUtils.table(SyncSystemCodecs.CHAR, Codec.INT, GTCodecUtils.FAST_UTIL_INT_PAIR_CODEC).fieldOf("minMaxPreferences").forGetter(MultiblockSchemaInfo::getMinMaxPreferenceCharTable)
     ).apply(instance, MultiblockSchemaInfo::new));
     //spotless:on
 
@@ -117,37 +114,7 @@ public class MultiblockSchemaInfo {
         this.userSliceRepeats = new Int2IntArrayMap(userSliceRepeats);
         this.userDimensions = new IntArrayList(userDimensions);
         this.userGlobalBlockPreferences = new Object2ObjectOpenHashMap<>(userGlobalBlockPreferences);
-
-        IBlockPattern pattern = definition.getStructurePatterns()
-                .get(DEFAULT_STRUCTURE).get();
-
-        blockPreferences.putAll(blockPreferenceMap);
-
-        /*
-         * if (pattern instanceof BlockPattern blockPattern) {
-         * for (var entry : minMaxPreferences.cellSet()) {
-         * MultiPredicate pred = blockPattern.getPredicates().get(entry.getRowKey());
-         * BasePredicate base = pred.predicates().get(entry.getColumnKey());
-         * getMinMaxPreferences().put(pred, base, entry.getValue());
-         * }
-         * }
-         */
-    }
-
-    public Table<Character, Integer, IntIntPair> getMinMaxPreferenceCharTable() {
-        IBlockPattern pattern = definition.getStructurePatterns()
-                .get(DEFAULT_STRUCTURE).get();
-
-        Table<Character, Integer, IntIntPair> table = HashBasedTable.create();
-
-        var predicateInverseMap = HashBiMap.create(pattern.getPredicates()).inverse();
-        for (var entry : getMinMaxPreferences().cellSet()) {
-            var row = predicateInverseMap.get(entry.getRowKey());
-            var col = entry.getRowKey().predicates().indexOf(entry.getColumnKey());
-            table.put(row, col, entry.getValue());
-        }
-
-        return table;
+        this.blockPreferences.putAll(blockPreferenceMap);
     }
 
     @ApiStatus.Internal

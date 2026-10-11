@@ -16,8 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.network.NetworkEvent;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.ints.*;
@@ -32,7 +30,6 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
     private final IntList dimensions;
     private final Object2ObjectMap<BlockPos, BlockInfo> globalPreferences;
     private final Char2ObjectMap<BlockInfo> blockPreferences;
-    private final Table<Character, Integer, IntIntPair> minMaxPreferences;
     private final boolean isFlipped;
     boolean isClearMulti;
     boolean isClearPreferences;
@@ -42,7 +39,6 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
                                    IntList dimensions,
                                    Object2ObjectMap<BlockPos, BlockInfo> globalPreferences,
                                    Char2ObjectMap<BlockInfo> blockPreferences,
-                                   Table<Character, Integer, IntIntPair> minMaxPreferences,
                                    boolean isFlipped,
                                    boolean isClearMulti,
                                    boolean isClearPreferences,
@@ -53,7 +49,6 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         this.dimensions = dimensions;
         this.globalPreferences = globalPreferences;
         this.blockPreferences = blockPreferences;
-        this.minMaxPreferences = minMaxPreferences;
         this.isFlipped = isFlipped;
         this.isClearMulti = isClearMulti;
         this.isClearPreferences = isClearPreferences;
@@ -79,20 +74,6 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
                 blockInfoReader);
         this.blockPreferences = buf.readMap(Char2ObjectArrayMap::new, FriendlyByteBuf::readChar, blockInfoReader);
 
-        minMaxPreferences = HashBasedTable.create();
-        /*
-         * Char2ObjectMap<Int2ObjectMap<IntIntPair>> minMaxPreferenceMap = buf.readMap(Char2ObjectArrayMap::new,
-         * FriendlyByteBuf::readChar,
-         * (b) -> b.readMap(Int2ObjectArrayMap::new, FriendlyByteBuf::readVarInt,
-         * (b1) -> IntIntPair.of(b1.readVarInt(), b1.readVarInt())));
-         * 
-         * for (var row : minMaxPreferenceMap.char2ObjectEntrySet()) {
-         * var rowKey = row.getCharKey();
-         * for (var col : row.getValue().int2ObjectEntrySet()) {
-         * minMaxPreferences.put(rowKey, col.getIntKey(), col.getValue());
-         * }
-         * }
-         */
         this.isFlipped = buf.readBoolean();
         this.isClearMulti = buf.readBoolean();
         this.isClearPreferences = buf.readBoolean();
@@ -110,13 +91,6 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         buf.writeMap(globalPreferences, FriendlyByteBuf::writeBlockPos, blockInfoWriter);
         buf.writeMap(blockPreferences, (b, v) -> b.writeChar(v), blockInfoWriter);
 
-        /*
-         * buf.writeMap(minMaxPreferences.rowMap(), (b, v) -> b.writeChar(v),
-         * (b, v) -> b.writeMap(v, FriendlyByteBuf::writeVarInt, (b1, p) -> {
-         * b1.writeVarInt(p.firstInt());
-         * b1.writeVarInt(p.secondInt());
-         * }));
-         */
         buf.writeBoolean(this.isFlipped);
         buf.writeBoolean(this.isClearMulti);
         buf.writeBoolean(this.isClearPreferences);
