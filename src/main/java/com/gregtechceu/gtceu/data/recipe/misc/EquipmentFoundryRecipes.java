@@ -120,7 +120,7 @@ public class EquipmentFoundryRecipes {
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("creative_flight"),
                 Ingredient.of(ItemTags.CHEST_ARMOR),
-                GTItems.CREATIVE_FLIGHT_MODULE, GTItemModules.CREATIVE_FLIGHT);
+                GTItems.GRAVITATION_ENGINE, GTItemModules.CREATIVE_FLIGHT);
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("fluid_storage"),
                 Ingredient.of(ItemTags.CHEST_ARMOR),
