@@ -117,7 +117,7 @@ public class EquipmentFoundryRecipes {
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("creative_flight"),
                 Ingredient.of(Tags.Items.ARMORS_CHESTPLATES),
-                GTItems.CREATIVE_FLIGHT_MODULE, GTItemModules.CREATIVE_FLIGHT);
+                GTItems.GRAVITATION_ENGINE, GTItemModules.CREATIVE_FLIGHT);
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("fluid_storage"),
                 Ingredient.of(Tags.Items.ARMORS_CHESTPLATES),
