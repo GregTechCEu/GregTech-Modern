@@ -540,7 +540,7 @@ public class GTMultiblockTextUtil {
         } else {
             var stacks = ItemRecipeCapability.CAP.of(itemOutput.content()).getItems();
             if (stacks.length == 0) return Optional.empty();
-            stack = stacks[0];
+            stack = stacks[0].copy();
             count = stack.getCount();
             countD *= count;
             if (itemOutput.chance() < itemOutput.maxChance()) {
@@ -608,7 +608,7 @@ public class GTMultiblockTextUtil {
         } else {
             var stacks = FluidRecipeCapability.CAP.of(fluidOutput.content()).getStacks();
             if (stacks.length == 0) return Optional.empty();
-            stack = stacks[0];
+            stack = stacks[0].copy();
             amount = stack.getAmount();
             amountD *= amount;
             if (fluidOutput.chance() < fluidOutput.maxChance()) {
