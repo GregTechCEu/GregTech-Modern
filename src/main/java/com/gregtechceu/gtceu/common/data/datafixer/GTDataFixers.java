@@ -124,6 +124,12 @@ public class GTDataFixers {
         builder.addFixer(ItemRenameFix.create(v1_0, "Rename electric wire cutters",
                 createRenamer(Pattern.compile("([lhi])v_([a-z0-9/._-]+)_wirecutter"), "$1v_$2_wire_cutter")));
 
+        // for whatever reason forge registers the milk fluid under MC's namespace
+        builder.addFixer(FluidRenameFix.create(v1_0, "Remove GT milk fluid",
+                createRenamer(Map.of("gtceu:milk", "minecraft:milk", "gtceu:flowing_milk", "minecraft:flowing_milk"))));
+        builder.addFixer(ItemRenameFix.create(v1_0, "Remove GT milk bucket",
+                createRenamer("gtceu:milk_bucket", "minecraft:milk_bucket")));
+
         // separator
 
         Schema v1_1 = builder.addSchema(1, 1, SAME_NAMESPACED);
