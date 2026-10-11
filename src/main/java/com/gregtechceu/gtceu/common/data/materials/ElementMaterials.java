@@ -383,6 +383,7 @@ public class ElementMaterials {
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL,
                         GENERATE_FINE_WIRE)
                 .element(GTElements.Pb)
+                .oreByproducts(Silver, Sulfur)
                 .cableProperties(V[ULV], 2, 2)
                 .fluidPipeProperties(1200, 32, true)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.WEAK_POISON));
@@ -391,6 +392,7 @@ public class ElementMaterials {
                 .dust()
                 .liquid(new FluidBuilder().temperature(454))
                 .ore()
+                .oreByproducts(Lithium)
                 .color(0xd7e7ee).secondaryColor(0xBDC7DB)
                 .element(GTElements.Li));
 
@@ -436,6 +438,7 @@ public class ElementMaterials {
                 .ingot()
                 .liquid(new FluidBuilder().temperature(2896))
                 .ore()
+                .oreByproducts(Molybdenum)
                 .color(0xc1c1ce).secondaryColor(0x404068).iconSet(SHINY)
                 .element(GTElements.Mo)
                 .flags(GENERATE_FOIL, GENERATE_BOLT_SCREW)
@@ -446,7 +449,8 @@ public class ElementMaterials {
                 .element(GTElements.Mc));
 
         Neodymium = REGISTRATE.material("neodymium", builder -> builder
-                .ingot().fluid().ore()
+                .ingot().fluid()
+                .ore().oreByproducts(RareEarth)
                 .color(0x6c5863).secondaryColor(0x2c1919).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_ROD, GENERATE_BOLT_SCREW)
                 .element(GTElements.Nd)
@@ -469,7 +473,8 @@ public class ElementMaterials {
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1728))
                 .plasma()
-                .ore()
+                .ore().oreByproducts(Cobalt, Iron, Platinum)
+                .separatedInto(Iron).washedIn(Mercury)
                 .color(0xccdff5).secondaryColor(0x59563a).iconSet(METALLIC)
                 .appendFlags(STD_METAL, MORTAR_GRINDABLE)
                 .element(GTElements.Ni)
@@ -550,7 +555,8 @@ public class ElementMaterials {
         Platinum = REGISTRATE.material("platinum", builder -> builder
                 .ingot()
                 .liquid(new FluidBuilder().temperature(2041))
-                .ore()
+                .ore().oreByproducts(Nickel, Nickel, Cobalt, Palladium)
+                .washedIn(Mercury)
                 .color(0xfff4ba).secondaryColor(0x8d8d71).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, GENERATE_FOIL, GENERATE_FINE_WIRE, GENERATE_RING, GENERATE_SPRING_SMALL,
                         GENERATE_SPRING)
@@ -561,7 +567,7 @@ public class ElementMaterials {
         Plutonium239 = REGISTRATE.material("plutonium_239", builder -> builder
                 .ingot(3)
                 .liquid(new FluidBuilder().temperature(913))
-                .ore(true)
+                .ore(true).oreByproducts(Uraninite, Lead, Uraninite)
                 .color(0xba2727).secondaryColor(0x222730).iconSet(RADIOACTIVE)
                 .element(GTElements.Pu239)
                 .radioactiveHazard(1.5f));
@@ -678,7 +684,8 @@ public class ElementMaterials {
         Silver = REGISTRATE.material("silver", builder -> builder
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1235))
-                .ore()
+                .ore().oreByproducts(Lead, Sulfur, Sulfur, Gold)
+                .washedIn(Mercury)
                 .color(0xDCDCFF).secondaryColor(0x5a4705).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_FINE_WIRE, GENERATE_RING)
                 .element(GTElements.Ag)
@@ -694,7 +701,7 @@ public class ElementMaterials {
                 .element(GTElements.Sr));
 
         Sulfur = REGISTRATE.material("sulfur", builder -> builder
-                .dust().ore()
+                .dust().ore().oreByproducts(Sulfur)
                 .color(0xfdff31).secondaryColor(0xffb400)
                 .flags(FLAMMABLE)
                 .element(GTElements.S));
@@ -729,7 +736,7 @@ public class ElementMaterials {
         Thorium = REGISTRATE.material("thorium", builder -> builder
                 .ingot()
                 .liquid(new FluidBuilder().temperature(2023))
-                .ore()
+                .ore().oreByproducts(Uraninite, Lead)
                 .color(0x25411b).secondaryColor(0x051E05).iconSet(SHINY)
                 .appendFlags(STD_METAL, GENERATE_ROD)
                 .element(GTElements.Th));
@@ -749,7 +756,8 @@ public class ElementMaterials {
                 .ingot(1)
                 .liquid(new FluidBuilder().temperature(505))
                 .plasma()
-                .ore()
+                .ore().oreByproducts(Iron, Zinc)
+                .separatedInto(Iron).washedIn(SodiumPersulfate)
                 .color(0xfafeff).secondaryColor(0x4e676c)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL,
                         GENERATE_FINE_WIRE)
@@ -845,7 +853,8 @@ public class ElementMaterials {
         Naquadah = REGISTRATE.material("naquadah", builder -> builder
                 .ingot(4)
                 .liquid(new FluidBuilder().customStill())
-                .ore()
+                .ore().oreByproducts(Sulfur, Barite, NaquadahEnriched)
+                .separatedInto(NaquadahEnriched)
                 .color(0x323232, false).secondaryColor(0x1e251b).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_FOIL, GENERATE_SPRING, GENERATE_FINE_WIRE, GENERATE_BOLT_SCREW)
                 .element(GTElements.Nq)

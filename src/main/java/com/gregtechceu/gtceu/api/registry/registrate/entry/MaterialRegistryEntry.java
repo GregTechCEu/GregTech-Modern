@@ -104,6 +104,10 @@ public class MaterialRegistryEntry extends RegistryEntry<Material, Material> {
         return value().getProperty(key);
     }
 
+    public <T extends IMaterialProperty> T getPropertyOrThrow(PropertyKey<T> key) {
+        return value().getPropertyOrThrow(key);
+    }
+
     public <T extends IMaterialProperty> void removeProperty(PropertyKey<T> key) {
         value().removeProperty(key);
     }
