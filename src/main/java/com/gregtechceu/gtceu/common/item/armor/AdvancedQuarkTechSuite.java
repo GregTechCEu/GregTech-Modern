@@ -5,15 +5,19 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.api.item.jetpack.AbstractJetpackLogic;
+import com.gregtechceu.gtceu.api.item.jetpack.ElectricJetpackLogic;
+import com.gregtechceu.gtceu.api.item.jetpack.IJetpackLogic;
+import com.gregtechceu.gtceu.api.item.jetpack.IJetpackLogic.JetpackStats;
 import com.gregtechceu.gtceu.core.IFireImmuneEntity;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -27,18 +31,24 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.IntList;
-import org.jetbrains.annotations.NotNull;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.List;
 
-public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
+public class AdvancedQuarkTechSuite extends QuarkTechSuite {
 
     // A replacement for checking the current world time, to get around the gamerule that stops it
     private long timer = 0L;
     private List<Pair<NonNullList<ItemStack>, IntList>> inventoryIndexMap;
+    private final AbstractJetpackLogic jetpackLogic;
 
     public AdvancedQuarkTechSuite(int energyPerUse, long capacity, int tier) {
         super(ArmorItem.Type.CHESTPLATE, energyPerUse, capacity, tier);
+        JetpackStats stats = new JetpackStats(0.065, 0.9, 0.15, 0.15, 0.012, 4.39,
+                getEnergyPerUse(), Mth.ceil(getEnergyPerUse() * 6.0), null);
+        JetpackStats hoverStats = new JetpackStats(0.065, 0.18, 0.15, 0.4, 0.012, 4.39,
+                getEnergyPerUse(), Mth.ceil(getEnergyPerUse() * 6.0), null);
+        this.jetpackLogic = new ElectricJetpackLogic(stats, hoverStats);
     }
 
     @Override
@@ -49,30 +59,12 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
         }
 
         CompoundTag data = item.getOrCreateTag();
-        // Assume no tags exist if we don't see the enabled tag
-        if (!data.contains("enabled")) {
-            data.putBoolean("enabled", true);
-            data.putBoolean("hover", false);
-            data.putByte("toggleTimer", (byte) 0);
-            data.putBoolean("canShare", false);
-        }
-
-        boolean jetpackEnabled = data.getBoolean("enabled");
-        boolean hoverMode = data.getBoolean("hover");
         byte toggleTimer = data.getByte("toggleTimer");
         boolean canShare = data.getBoolean("canShare");
 
         String messageKey = null;
         if (toggleTimer == 0) {
-            if (SyncedKeyMappings.JETPACK_ENABLE.isKeyDown(player)) {
-                jetpackEnabled = !jetpackEnabled;
-                messageKey = "metaarmor.jetpack.flight." + (jetpackEnabled ? "enable" : "disable");
-                data.putBoolean("enabled", jetpackEnabled);
-            } else if (SyncedKeyMappings.ARMOR_HOVER.isKeyDown(player)) {
-                hoverMode = !hoverMode;
-                messageKey = "metaarmor.jetpack.hover." + (hoverMode ? "enable" : "disable");
-                data.putBoolean("hover", hoverMode);
-            } else if (SyncedKeyMappings.ARMOR_CHARGING.isKeyDown(player)) {
+            if (SyncedKeyMappings.ARMOR_CHARGING.isKeyDown(player)) {
                 canShare = !canShare;
                 if (canShare && cont.getCharge() == 0) { // Only allow for charging to be enabled if charge is nonzero
                     messageKey = "metaarmor.qts.share.error";
@@ -91,8 +83,6 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
 
         if (toggleTimer > 0) toggleTimer--;
         data.putByte("toggleTimer", toggleTimer);
-
-        performFlying(player, jetpackEnabled, hoverMode, item);
 
         if (type == ArmorItem.Type.CHESTPLATE && !player.fireImmune()) {
             ((IFireImmuneEntity) player).gtceu$setFireImmune(true);
@@ -152,21 +142,12 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
         super.addInfo(itemStack, lines);
         CompoundTag data = itemStack.getOrCreateTag();
         Component state;
-        boolean enabled = !data.contains("enabled") || data.getBoolean("enabled");
-        state = enabled ? Component.translatable("metaarmor.hud.status.enabled") :
-                Component.translatable("metaarmor.hud.status.disabled");
-        lines.add(Component.translatable("metaarmor.hud.engine_enabled", state));
-
         boolean canShare = data.contains("canShare") && data.getBoolean("canShare");
         state = canShare ? Component.translatable("metaarmor.hud.status.enabled") :
                 Component.translatable("metaarmor.hud.status.disabled");
         lines.add(Component.translatable("metaarmor.energy_share.tooltip", state));
         lines.add(Component.translatable("metaarmor.energy_share.tooltip.guide"));
-
-        boolean hover = data.contains("hover") && data.getBoolean("hover");
-        state = hover ? Component.translatable("metaarmor.hud.status.enabled") :
-                Component.translatable("metaarmor.hud.status.disabled");
-        lines.add(Component.translatable("metaarmor.hud.hover_mode", state));
+        jetpackLogic.addInformation(itemStack, lines);
     }
 
     @Override
@@ -201,33 +182,19 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void drawHUD(ItemStack item, GuiGraphics guiGraphics) {
+    public void drawHUD(ItemStack item, GuiGraphics guiGraphics, MutableInt drawOffsetY) {
         addCapacityHUD(item, this.HUD);
         IElectricItem cont = GTCapabilityHelper.getElectricItem(item);
-        if (cont == null) return;
-        if (!cont.canUse(energyPerUse)) return;
-        CompoundTag data = item.getTag();
-        if (data != null) {
-            if (data.contains("enabled")) {
-                Component status = (data.getBoolean("enabled") ?
-                        Component.translatable("metaarmor.hud.status.enabled") :
-                        Component.translatable("metaarmor.hud.status.disabled"));
-                Component result = Component.translatable("metaarmor.hud.engine_enabled", status);
-                this.HUD.newString(result);
-            }
-            if (data.contains("canShare")) {
+        if (cont != null && cont.canUse(energyPerUse)) {
+            jetpackLogic.addHUDLines(item, this.HUD);
+            CompoundTag data = item.getTag();
+            if (data != null && data.contains("canShare")) {
                 String status = data.getBoolean("canShare") ? "metaarmor.hud.status.enabled" :
                         "metaarmor.hud.status.disabled";
                 this.HUD.newString(Component.translatable("mataarmor.hud.supply_mode", Component.translatable(status)));
             }
-
-            if (data.contains("hover")) {
-                String status = data.getBoolean("hover") ? "metaarmor.hud.status.enabled" :
-                        "metaarmor.hud.status.disabled";
-                this.HUD.newString(Component.translatable("metaarmor.hud.hover_mode", Component.translatable(status)));
-            }
         }
-        this.HUD.draw(guiGraphics);
+        this.HUD.draw(guiGraphics, drawOffsetY);
         this.HUD.reset();
     }
 
@@ -264,75 +231,7 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
     }
 
     @Override
-    public boolean canUseEnergy(@NotNull ItemStack stack, int amount) {
-        IElectricItem container = getIElectricItem(stack);
-        if (container == null)
-            return false;
-        return container.canUse(amount);
-    }
-
-    @Override
-    public void drainEnergy(@NotNull ItemStack stack, int amount) {
-        IElectricItem container = getIElectricItem(stack);
-        if (container == null)
-            return;
-        container.discharge(amount, tier, true, false, false);
-    }
-
-    @Override
-    public boolean hasEnergy(@NotNull ItemStack stack) {
-        IElectricItem container = getIElectricItem(stack);
-        if (container == null)
-            return false;
-        return container.getCharge() > 0;
-    }
-
-    private static IElectricItem getIElectricItem(@NotNull ItemStack stack) {
-        return GTCapabilityHelper.getElectricItem(stack);
-    }
-
-    @Override
-    public double getSprintEnergyModifier() {
-        return 6.0D;
-    }
-
-    @Override
-    public double getSprintSpeedModifier() {
-        return 2.4D;
-    }
-
-    @Override
-    public double getVerticalHoverSpeed() {
-        return 0.45D;
-    }
-
-    @Override
-    public double getVerticalHoverSlowSpeed() {
-        return 0.0D;
-    }
-
-    @Override
-    public double getVerticalAcceleration() {
-        return 0.15D;
-    }
-
-    @Override
-    public double getVerticalSpeed() {
-        return 0.9D;
-    }
-
-    @Override
-    public double getSidewaysSpeed() {
-        return 0.21D;
-    }
-
-    @Override
-    public ParticleOptions getParticle() {
-        return null;
-    }
-
-    @Override
-    public float getFallDamageReduction() {
-        return 8f;
+    public IJetpackLogic getJetpackLogic(ItemStack stack) {
+        return jetpackLogic;
     }
 }

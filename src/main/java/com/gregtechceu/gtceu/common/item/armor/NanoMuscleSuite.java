@@ -27,6 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -135,13 +136,15 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
      */
 
     @Override
-    public int damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
-                           EquipmentSlot equipmentSlot) {
+    public int absorbDamage(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
+                            EquipmentSlot equipmentSlot, boolean simulate) {
         IElectricItem item = GTCapabilityHelper.getElectricItem(itemStack);
-        if (item != null) {
-            item.discharge(energyPerUse / 10L * damage, item.getTier(), true, false, false);
+        long dischargeAmount = energyPerUse / 10L * damage;
+        if (item == null || dischargeAmount <= 0) {
+            return 0;
         }
-        return super.damageArmor(entity, itemStack, source, damage, equipmentSlot);
+        long actualAmount = item.discharge(dischargeAmount, item.getTier(), true, false, simulate);
+        return (int) (damage * actualAmount / dischargeAmount);
     }
 
     @Override
@@ -168,9 +171,9 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void drawHUD(ItemStack item, GuiGraphics guiGraphics) {
+    public void drawHUD(ItemStack item, GuiGraphics guiGraphics, MutableInt drawOffsetY) {
         addCapacityHUD(item, this.HUD);
-        this.HUD.draw(guiGraphics);
+        this.HUD.draw(guiGraphics, drawOffsetY);
         this.HUD.reset();
     }
 

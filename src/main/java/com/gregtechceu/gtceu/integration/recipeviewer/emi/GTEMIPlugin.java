@@ -67,6 +67,9 @@ public class GTEMIPlugin implements EmiPlugin {
             GTBedrockOreEmiCategory.registerWorkStations(registry);
         registry.addWorkstation(GTRecipeEMICategory.CATEGORIES.apply(GTRecipeTypes.CHEMICAL_RECIPES.getCategory()),
                 EmiStack.of(GTMultiMachines.LARGE_CHEMICAL_REACTOR.asStack()));
+        registry.addWorkstation(
+                GTRecipeEMICategory.CATEGORIES.apply(GTRecipeTypes.COMBUSTION_GENERATOR_FUELS.getCategory()),
+                EmiStack.of(GTItems.LIQUID_FUEL_JETPACK.asStack()));
 
         // Comparators
         registry.setDefaultComparison(GTItems.TURBINE_ROTOR.asItem(), Comparison.compareNbt());

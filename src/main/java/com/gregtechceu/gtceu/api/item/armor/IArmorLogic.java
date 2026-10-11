@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
+import com.gregtechceu.gtceu.api.item.jetpack.IJetpackLogic;
+
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.resources.ResourceLocation;
@@ -56,6 +58,12 @@ public interface IArmorLogic {
 
     default int damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
                             EquipmentSlot equipmentSlot) {
+        absorbDamage(entity, itemStack, source, damage, equipmentSlot, false);
+        return 0;
+    }
+
+    default int absorbDamage(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
+                             EquipmentSlot equipmentSlot, boolean simulate) {
         return 0;
     }
 
@@ -87,6 +95,11 @@ public interface IArmorLogic {
     default HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot,
                                            HumanoidModel<?> defaultModel) {
         return defaultModel;
+    }
+
+    /** @return the jetpack logic for this armor piece, or null if it is not a jetpack */
+    default IJetpackLogic getJetpackLogic(ItemStack stack) {
+        return null;
     }
 
     /**
