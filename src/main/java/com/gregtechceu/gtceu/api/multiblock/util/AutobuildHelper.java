@@ -10,17 +10,23 @@ import com.gregtechceu.gtceu.common.network.packets.SPacketAutobuildHighlight;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraftforge.common.util.BlockSnapshot;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import appeng.api.config.Actionable;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
@@ -93,11 +99,9 @@ public class AutobuildHelper {
             var innerPredicate = predicate.getPredicateAtPos(cxt);
             if (innerPredicate.hasMatched()) {
                 alreadyValidPlaced.put(pos.asLong(), blockState);
-            } else if (entry.getValue().getBlockState().isAir() && blockState.canBeReplaced()) {
-                level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             } else {
                 if (blockState.canBeReplaced()) {
-                    replaceableBlocks.put(pos.asLong(), blocksToPlace.get(entry.getKey()).getBlockState());
+                    replaceableBlocks.put(pos.asLong(), entry.getValue().getBlockState());
                     checkedBlocks++;
                 } else {
                     canNotPlaceBlocks.put(pos.asLong(), blockState);
@@ -111,6 +115,7 @@ public class AutobuildHelper {
         // Step 1. Making the "what we want" list
         Map<Item, Integer> whatWeWant = new Object2IntArrayMap<>();
         for (var entry : replaceableBlocks.long2ObjectEntrySet()) {
+            if (entry.getValue().isAir()) continue;
             whatWeWant.merge(entry.getValue().getBlock().asItem(), 1, Integer::sum);
         }
 
@@ -147,20 +152,36 @@ public class AutobuildHelper {
                 player);
 
         Map<Item, Integer> whatWePlaced = new Object2IntArrayMap<>();
+        BlockState lastPlaced = null;
         // Step 3. Place what was fetched
         for (var entry : replaceableBlocks.long2ObjectEntrySet()
                 .stream()
                 .sorted(Comparator.comparingLong(Long2ObjectMap.Entry::getLongKey))
                 .toList()) {
             var blockState = entry.getValue();
+            BlockPos pos = BlockPos.of(entry.getLongKey());
+            if (blockState.isAir()) {
+                level.setBlockAndUpdate(pos, blockState);
+                continue;
+            }
             var blocksLeft = whatWeHave.merge(blockState.getBlock().asItem(), -1, Integer::sum);
             if (blocksLeft < 0) {
                 blocksLeft = whatWeHaveAE.merge(blockState.getBlock().asItem(), -1, Integer::sum);
                 if (blocksLeft < 0) continue;
             }
+            ItemStack placedStack = new ItemStack(blockState.getBlock().asItem());
+            if (!placeAsPlayer(player, pos, blockState, placedStack)) {
+                player.getInventory().placeItemBackInInventory(placedStack);
+                continue;
+            }
             whatWeWant.merge(blockState.getBlock().asItem(), -1, Integer::sum);
             whatWePlaced.merge(blockState.getBlock().asItem(), 1, Integer::sum);
-            level.setBlockAndUpdate(BlockPos.of(entry.getLongKey()), blockState);
+            lastPlaced = blockState;
+        }
+        if (lastPlaced != null) {
+            SoundType soundType = lastPlaced.getSoundType();
+            level.playSound(null, player.blockPosition(), soundType.getPlaceSound(), SoundSource.BLOCKS,
+                    (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
         }
 
         printBlockList(Component.translatable("gtceu.autobuild.placed_blocks").withStyle(ChatFormatting.GREEN),
@@ -172,6 +193,23 @@ public class AutobuildHelper {
                 Component.translatable("gtceu.autobuild.unplaced_blocks").withStyle(ChatFormatting.RED), false);
         if (!canNotPlaceBlocks.isEmpty())
             GTNetwork.sendToPlayer(player, new SPacketAutobuildHighlight(canNotPlaceBlocks.keySet().toLongArray()));
+    }
+
+    private static boolean placeAsPlayer(ServerPlayer player, BlockPos pos, BlockState state, ItemStack stack) {
+        ServerLevel level = player.serverLevel();
+        if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos, Direction.UP, stack)) return false;
+
+        BlockSnapshot snapshot = BlockSnapshot.create(level.dimension(), level, pos);
+        if (!level.setBlock(pos, state, Block.UPDATE_ALL_IMMEDIATE)) return false;
+        if (ForgeEventFactory.onBlockPlace(player, snapshot, Direction.UP)) {
+            snapshot.restore(true, false);
+            return false;
+        }
+
+        BlockItem.updateCustomBlockEntityTag(level, player, pos, stack);
+        state.getBlock().setPlacedBy(level, pos, state, player, stack);
+        level.gameEvent(GameEvent.BLOCK_PLACE, pos, GameEvent.Context.of(player, state));
+        return true;
     }
 
     public static void printBlockList(Component firstMessage, Map<Item, Integer> blockList, Player player) {
