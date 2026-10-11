@@ -4,7 +4,6 @@ import com.mojang.datafixers.*;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Dynamic;
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.util.datafix.schemas.NamespacedSchema;
 
@@ -32,8 +31,13 @@ public class ItemStackTurbineRotorFix extends DataFix {
             if (itemId.isEmpty() || !Objects.equals(itemId.get().getSecond(), OLD_TURBINE_ROTOR_ITEM_ID)) {
                 return typed;
             }
-            Typed<?> tag = typed.getOrCreateTyped(tagFinder);
-            Typed<?> partStats = tag.getOrCreateTyped(partStatsFinder);
+            var tag = typed.getOptionalTyped(tagFinder);
+            if (tag.isEmpty()) {
+                // if it doesn't have a tag (registry snapshots?), make it an iron turbine rotor by default.
+                return typed.set(itemIdFinder,
+                        Pair.of(References.ITEM_NAME.typeName(), "gtceu:iron_turbine_rotor"));
+            }
+            Typed<?> partStats = tag.get().getOrCreateTyped(partStatsFinder);
 
             // move the Damage nbt field to the root of nbt
             var damage = partStats.getOrCreate(DSL.remainderFinder())
