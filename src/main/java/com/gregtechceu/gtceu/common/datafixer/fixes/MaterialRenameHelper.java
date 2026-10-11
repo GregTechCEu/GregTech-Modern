@@ -8,24 +8,44 @@ import java.util.function.UnaryOperator;
 
 public class MaterialRenameHelper {
 
+    /**
+     * This class creates a renamer that handles all of a material's (default) forms
+     * @param oldName
+     * @param newName
+     * @return
+     */
     public static UnaryOperator<String> createRenamer(String oldName, String newName) {
         // variable names are shoter than usual to make the rename map be as small as possible
-        // old namespace
+        // old namespace (including colon)
         final String oNs = oldName.substring(0, oldName.indexOf(':') + 1);
         // old path
         final String oP = oldName.substring(oldName.indexOf(':') + 1);
 
-        // new namespace
+        // new namespace (including colon)
         final String nNs = newName.substring(0, newName.indexOf(':') + 1);
         // new path
         final String nP = newName.substring(newName.indexOf(':') + 1);
 
         // if anyone has a better suggestion on how to implement this, feel free to tell.
         final Map<String, String> renameMap = ImmutableMap.<String, String>builder() // spotless:off
-                .put(oNs + oP,                                             nNs + nP)
+                .put(oldName,                                              newName)
                 .put(oNs + "flowing_" + oP,                                nNs + "flowing_" + nP)
+                .put(oNs + "liquid_" + oP,                                 nNs + "liquid_" + nP)
+                .put(oNs + "flowing_" + "liquid_" + oP,                    nNs + "flowing_" + "liquid_" + nP)
+                .put(oldName + "_gas",                                     newName + "_gas")
+                .put(oNs + "flowing_" + oP + "_gas",                       nNs + "flowing_" + nP + "_gas")
+                .put(oldName + "_plasma",                                  newName + "_plasma")
+                .put(oNs + "flowing_" + oP + "_plasma",                    nNs + "flowing_" + nP + "_plasma")
+                .put(oNs + "molten_" + oP,                                 nNs + "molten_" + nP)
+                .put(oNs + "flowing_" + "molten_" + oP,                    nNs + "flowing_" + "molten_" + nP)
 
-                .put(oNs + oP + "_ore",                                    nNs + nP + "_ore")
+                .put(oldName + "_bucket",                                  newName + "_bucket")
+                .put(oNs + "liquid_" + oP + "_bucket",                     nNs + "liquid_" + nP + "_bucket")
+                .put(oldName + "_gas" + "_bucket",                         newName + "_gas" + "_bucket")
+                .put(oldName + "_plasma" + "_bucket",                      newName + "_plasma" + "_bucket")
+                .put(oNs + "molten_" + oP + "_bucket",                     nNs + "molten_" + nP + "_bucket")
+
+                .put(oldName + "_ore",                                     newName + "_ore")
                 .put(oNs + "granite_" + oP + "_ore",                       nNs + "granite_" + nP + "_ore")
                 .put(oNs + "diorite_" + oP + "_ore",                       nNs + "diorite_" + nP + "_ore")
                 .put(oNs + "andesite_" + oP + "_ore",                      nNs + "andesite_" + nP + "_ore")
@@ -40,7 +60,7 @@ public class MaterialRenameHelper {
                 .put(oNs + "netherrack_" + oP + "_ore",                    nNs + "netherrack_" + nP + "_ore")
                 .put(oNs + "blackstone_" + oP + "_ore",                    nNs + "blackstone_" + nP + "_ore")
                 .put(oNs + "endstone_" + oP + "_ore",                      nNs + "endstone_" + nP + "_ore")
-                .put(oNs + oP + "_indicator",                              nNs + nP + "_indicator")
+                .put(oldName + "_indicator",                               newName + "_indicator")
 
                 .put(oNs + "raw_" + oP,                                    nNs + "raw_" + nP)
                 .put(oNs + "raw_" + oP + "_block",                         nNs + "raw_" + nP + "_block")
@@ -48,63 +68,63 @@ public class MaterialRenameHelper {
                 .put(oNs + "refined_" + oP + "_ore",                       nNs + "refined_" + nP + "_ore")
                 .put(oNs + "purified_" + oP + "_ore",                      nNs + "purified_" + nP + "_ore")
 
-                .put(oNs + oP + "_dust",                                   nNs + nP + "_dust")
+                .put(oldName + "_dust",                                    newName + "_dust")
                 .put(oNs + "small_" + oP + "_dust",                        nNs + "small_" + nP + "_dust")
                 .put(oNs + "tiny_" + oP + "_dust",                         nNs + "tiny_" + nP + "_dust")
                 .put(oNs + "impure_" + oP + "_dust",                       nNs + "impure_" + nP + "_dust")
                 .put(oNs + "purified_" + oP + "_dust",                     nNs + "purified_" + nP + "_dust")
 
-                .put(oNs + oP + "_ingot",                                  nNs + nP + "_ingot")
+                .put(oldName + "_ingot",                                   newName + "_ingot")
                 .put(oNs + "hot_" + oP + "_ingot",                         nNs + "hot_" + nP + "_ingot")
-                .put(oNs + oP + "_nugget",                                 nNs + nP + "_nugget")
+                .put(oldName + "_nugget",                                  newName + "_nugget")
 
-                .put(oNs + oP + "_gem",                                    nNs + nP + "_gem")
+                .put(oldName + "_gem",                                     newName + "_gem")
                 .put(oNs + "chipped_" + oP + "_gem",                       nNs + "chipped_" + nP + "_gem")
                 .put(oNs + "flawed_" + oP + "_gem",                        nNs + "flawed_" + nP + "_gem")
                 .put(oNs + "flawless_" + oP + "_gem",                      nNs + "flawless_" + nP + "_gem")
                 .put(oNs + "exquisite_" + oP + "_gem",                     nNs + "exquisite_" + nP + "_gem")
 
-                .put(oNs + oP + "_plate",                                  nNs + nP + "_plate")
+                .put(oldName + "_plate",                                   newName + "_plate")
                 .put(oNs + "dense_" + oP + "_plate",                       nNs + "dense_" + nP + "_plate")
                 .put(oNs + "double_" + oP + "_plate",                      nNs + "double_" + nP + "_plate")
 
-                .put(oNs + oP + "_round",                                  nNs + nP + "_round")
-                .put(oNs + oP + "_foil",                                   nNs + nP + "_foil")
-                .put(oNs + oP + "_rod",                                    nNs + nP + "_rod")
+                .put(oldName + "_round",                                   newName + "_round")
+                .put(oldName + "_foil",                                    newName + "_foil")
+                .put(oldName + "_rod",                                     newName + "_rod")
                 .put(oNs + "long_" + oP + "_rod",                          nNs + "long_" + nP + "_rod")
-                .put(oNs + oP + "_bolt",                                   nNs + nP + "_bolt")
-                .put(oNs + oP + "_screw",                                  nNs + nP + "_screw")
-                .put(oNs + oP + "_ring",                                   nNs + nP + "_ring")
-                .put(oNs + oP + "_spring",                                 nNs + nP + "_spring")
+                .put(oldName + "_bolt",                                    newName + "_bolt")
+                .put(oldName + "_screw",                                   newName + "_screw")
+                .put(oldName + "_ring",                                    newName + "_ring")
+                .put(oldName + "_spring",                                  newName + "_spring")
                 .put(oNs + "small_" + oP + "_spring",                      nNs + "small_" + nP + "_spring")
-                .put(oNs + oP + "_rotor",                                  nNs + nP + "_rotor")
-                .put(oNs + oP + "_gear",                                   nNs + nP + "_gear")
+                .put(oldName + "_rotor",                                   newName + "_rotor")
+                .put(oldName + "_gear",                                    newName + "_gear")
                 .put(oNs + "small_" + oP + "_gear",                        nNs + "small_" + nP + "_gear")
-                .put(oNs + oP + "_lens",                                   nNs + nP + "_lens")
+                .put(oldName + "_lens",                                    newName + "_lens")
 
-                .put(oNs + oP + "_buzz_saw_blade",                         nNs + nP + "_buzz_saw_blade")
-                .put(oNs + oP + "_screwdriver_tip",                        nNs + nP + "_screwdriver_tip")
-                .put(oNs + oP + "_drill_head",                             nNs + nP + "_drill_head")
-                .put(oNs + oP + "_chainsaw_head",                          nNs + nP + "_chainsaw_head")
-                .put(oNs + oP + "_wrench_tip",                             nNs + nP + "_wrench_tip")
-                .put(oNs + oP + "_wire_cutter_head",                       nNs + nP + "_wire_cutter_head")
-                .put(oNs + oP + "_turbine_blade",                          nNs + nP + "_turbine_blade")
-                .put(oNs + oP + "_turbine_rotor",                          nNs + nP + "_turbine_rotor")
+                .put(oldName + "_buzz_saw_blade",                          newName + "_buzz_saw_blade")
+                .put(oldName + "_screwdriver_tip",                         newName + "_screwdriver_tip")
+                .put(oldName + "_drill_head",                              newName + "_drill_head")
+                .put(oldName + "_chainsaw_head",                           newName + "_chainsaw_head")
+                .put(oldName + "_wrench_tip",                              newName + "_wrench_tip")
+                .put(oldName + "_wire_cutter_head",                        newName + "_wire_cutter_head")
+                .put(oldName + "_turbine_blade",                           newName + "_turbine_blade")
+                .put(oldName + "_turbine_rotor",                           newName + "_turbine_rotor")
 
-                .put(oNs + oP + "_block",                                  nNs + nP + "_block")
-                .put(oNs + oP + "_frame",                                  nNs + nP + "_frame")
+                .put(oldName + "_block",                                   newName + "_block")
+                .put(oldName + "_frame",                                   newName + "_frame")
 
                 .put(oNs + "fine_" + oP + "_wire",                         nNs + "fine_" + nP + "_wire")
-                .put(oNs + oP + "_single_wire",                            nNs + nP + "_single_wire")
-                .put(oNs + oP + "_double_wire",                            nNs + nP + "_double_wire")
-                .put(oNs + oP + "_quadruple_wire",                         nNs + nP + "_quadruple_wire")
-                .put(oNs + oP + "_octal_wire",                             nNs + nP + "_octal_wire")
-                .put(oNs + oP + "_hex_wire",                               nNs + nP + "_hex_wire")
-                .put(oNs + oP + "_single_cable",                           nNs + nP + "_single_cable")
-                .put(oNs + oP + "_double_cable",                           nNs + nP + "_double_cable")
-                .put(oNs + oP + "_quadruple_cable",                        nNs + nP + "_quadruple_cable")
-                .put(oNs + oP + "_octal_cable",                            nNs + nP + "_octal_cable")
-                .put(oNs + oP + "_hex_cable",                              nNs + nP + "_hex_cable")
+                .put(oldName + "_single_wire",                             newName + "_single_wire")
+                .put(oldName + "_double_wire",                             newName + "_double_wire")
+                .put(oldName + "_quadruple_wire",                          newName + "_quadruple_wire")
+                .put(oldName + "_octal_wire",                              newName + "_octal_wire")
+                .put(oldName + "_hex_wire",                                newName + "_hex_wire")
+                .put(oldName + "_single_cable",                            newName + "_single_cable")
+                .put(oldName + "_double_cable",                            newName + "_double_cable")
+                .put(oldName + "_quadruple_cable",                         newName + "_quadruple_cable")
+                .put(oldName + "_octal_cable",                             newName + "_octal_cable")
+                .put(oldName + "_hex_cable",                               newName + "_hex_cable")
 
                 .put(oNs + "tiny_" + oP + "_fluid_pipe",                   nNs + "tiny_" + nP + "_fluid_pipe")
                 .put(oNs + "small_" + oP + "_fluid_pipe",                  nNs + "small_" + nP + "_fluid_pipe")
