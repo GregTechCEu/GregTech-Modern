@@ -43,9 +43,9 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite {
 
     public AdvancedNanoMuscleSuite(int energyPerUse, long capacity, int tier) {
         super(ArmorItem.Type.CHESTPLATE, energyPerUse, capacity, tier);
-        JetpackStats stats = new JetpackStats(0.057, 0.8, 0.14, 0.15, 0.01, 2.56,
+        JetpackStats stats = new JetpackStats(0.057, 0.8, 0.14, 0.15, 0.01, 2.56, true,
                 getEnergyPerUse(), getEnergyPerUse() * 4, null);
-        JetpackStats hoverStats = new JetpackStats(0.057, 0.16, 0.14, 0.4, 0.01, 2.56,
+        JetpackStats hoverStats = new JetpackStats(0.057, 0.16, 0.14, 0.4, 0.01, 2.56, true,
                 getEnergyPerUse(), getEnergyPerUse() * 4, null);
         this.jetpackLogic = new ElectricJetpackLogic(stats, hoverStats);
     }

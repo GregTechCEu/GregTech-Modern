@@ -44,7 +44,7 @@ import java.util.List;
 public class PowerlessJetpack implements IArmorLogic, IItemHUDProvider {
 
     public static final int tankCapacity = 16000;
-    private static final JetpackStats STATS = new JetpackStats(0.02, 0.22, 0.1, 0.15, 0.006, 1.3,
+    private static final JetpackStats STATS = new JetpackStats(0.02, 0.22, 0.1, 0.15, 0.006, 1.3, true,
             1, 1,
             ParticleTypes.SMOKE);
 

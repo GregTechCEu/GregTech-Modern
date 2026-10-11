@@ -312,6 +312,8 @@ public abstract class PlayerMixin extends LivingEntity implements IGTSyncedDataP
                             opcode = Opcodes.GETFIELD))
     private boolean shouldHaveNoMovementEmission(Abilities instance, Operation<Boolean> original) {
         Player self = (Player) (Object) this;
-        return original.call(instance) || JetpackHelper.isHoveringWithJetpack(self);
+        JetpackHelper jetpackHelper = JetpackHelper.getActiveJetpackInstance(self);
+        return original.call(instance) || (jetpackHelper != null && jetpackHelper.isHovering() &&
+                !jetpackHelper.getJetpackStats().shouldProduceSoundEmissions());
     }
 }

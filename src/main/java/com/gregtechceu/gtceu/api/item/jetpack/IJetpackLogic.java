@@ -19,6 +19,7 @@ public interface IJetpackLogic {
                         double verticalMomentumFalloff,
                         double altitudeHoldingHorizontalSpeed,
                         double sprintSpeedMultiplier,
+                        boolean shouldProduceSoundEmissions,
                         int energyUsagePerTick,
                         int energyUsagePerTickWhenSprinting,
                         @Nullable ParticleOptions flightParticle) {}

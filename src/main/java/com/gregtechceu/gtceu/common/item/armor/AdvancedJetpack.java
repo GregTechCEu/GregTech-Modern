@@ -18,14 +18,14 @@ public class AdvancedJetpack extends Jetpack {
 
     @Override
     protected JetpackStats getJetpackStats() {
-        return new JetpackStats(0.04, 0.48, 0.13, 0.15, 0.008, 1.49,
+        return new JetpackStats(0.04, 0.48, 0.13, 0.15, 0.008, 1.49, true,
                 getEnergyPerUse(), Mth.ceil(getEnergyPerUse() * 2.5),
                 ParticleTypes.CLOUD);
     }
 
     @Override
     protected JetpackStats getHoverJetpackStats() {
-        return new JetpackStats(0.04, 0.136, 0.13, 0.4, 0.008, 1.49,
+        return new JetpackStats(0.04, 0.136, 0.13, 0.4, 0.008, 1.49, true,
                 getEnergyPerUse(), Mth.ceil(getEnergyPerUse() * 2.5),
                 ParticleTypes.CLOUD);
     }

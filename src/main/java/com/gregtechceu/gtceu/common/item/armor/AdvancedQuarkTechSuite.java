@@ -44,9 +44,9 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite {
 
     public AdvancedQuarkTechSuite(int energyPerUse, long capacity, int tier) {
         super(ArmorItem.Type.CHESTPLATE, energyPerUse, capacity, tier);
-        JetpackStats stats = new JetpackStats(0.065, 0.9, 0.15, 0.15, 0.012, 4.39,
+        JetpackStats stats = new JetpackStats(0.065, 0.9, 0.15, 0.15, 0.012, 4.39, true,
                 getEnergyPerUse(), Mth.ceil(getEnergyPerUse() * 6.0), null);
-        JetpackStats hoverStats = new JetpackStats(0.065, 0.18, 0.15, 0.4, 0.012, 4.39,
+        JetpackStats hoverStats = new JetpackStats(0.065, 0.18, 0.15, 0.4, 0.012, 4.39, true,
                 getEnergyPerUse(), Mth.ceil(getEnergyPerUse() * 6.0), null);
         this.jetpackLogic = new ElectricJetpackLogic(stats, hoverStats);
     }

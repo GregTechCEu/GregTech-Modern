@@ -46,7 +46,7 @@ public class Jetpack extends ArmorLogicSuite {
     }
 
     protected JetpackStats getJetpackStats() {
-        return new JetpackStats(0.0265, 0.3, 0.12, 0.15, 0.006, 1.23,
+        return new JetpackStats(0.0265, 0.3, 0.12, 0.15, 0.006, 1.23, true,
                 getEnergyPerUse(), getEnergyPerUse(),
                 ParticleTypes.SMOKE);
     }
