@@ -22,6 +22,7 @@ import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Player.class)
@@ -29,6 +30,16 @@ public abstract class PlayerMixin extends LivingEntity {
 
     public PlayerMixin(EntityType<? extends LivingEntity> entityType, Level level) {
         super(entityType, level);
+    }
+
+    // Prevent jumping when hover mode is enabled on an active jetpack, otherwise it is applied
+    // on top of hover momentum and results in an excessive upwards momentum on liftoff
+    @Inject(method = "jumpFromGround", cancellable = true, at = @At("HEAD"))
+    private void gtceu$preventJumpWithHoverModeEnabled(CallbackInfo callbackInfo) {
+        JetpackHelper jetpackHelper = JetpackHelper.getActiveJetpackInstance((Player) (Object) this);
+        if (jetpackHelper != null && jetpackHelper.isHoverModeEnabled()) {
+            callbackInfo.cancel();
+        }
     }
 
     @Inject(method = "causeFallDamage", cancellable = true, at = @At("HEAD"))
