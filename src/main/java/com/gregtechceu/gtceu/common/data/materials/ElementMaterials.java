@@ -28,7 +28,8 @@ public class ElementMaterials {
         Aluminium = REGISTRATE.material("aluminium", builder -> builder
                 .ingot()
                 .liquid(new FluidBuilder().temperature(933))
-                .ore()
+                .ore().oreByproducts(Bauxite, Bauxite, Ilmenite, Rutile)
+                .washedIn(SodiumPersulfate)
                 .color(0x7db9d8).secondaryColor(0x756ac9c)
                 .appendFlags(EXT2_METAL, GENERATE_GEAR, GENERATE_SMALL_GEAR, GENERATE_RING, GENERATE_FRAME,
                         GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE)
@@ -86,7 +87,7 @@ public class ElementMaterials {
         Beryllium = REGISTRATE.material("beryllium", builder -> builder
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1560))
-                .ore()
+                .ore().oreByproducts(Emerald, Emerald, Thorium)
                 .color(0x73d73d).secondaryColor(0x184537).iconSet(METALLIC)
                 .appendFlags(STD_METAL)
                 .element(GTElements.Be));
@@ -163,7 +164,9 @@ public class ElementMaterials {
         Cobalt = REGISTRATE.material("cobalt", builder -> builder
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1768))
-                .ore() // leave for TiCon ore processing
+                .ore()
+                .oreByproducts(CobaltOxide, Cobaltite)
+                .washedIn(SodiumPersulfate)
                 .color(0x5050FA).secondaryColor(0x2d2d7a).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_FINE_WIRE)
                 .element(GTElements.Co)
@@ -179,7 +182,8 @@ public class ElementMaterials {
         Copper = REGISTRATE.material("copper", builder -> builder
                 .ingot(1)
                 .liquid(new FluidBuilder().temperature(1358))
-                .ore()
+                .ore().oreByproducts(Cobalt, Gold, Nickel, Gold)
+                .washedIn(Mercury)
                 .color(0xe77c56).secondaryColor(0xe4673e).iconSet(BRIGHT)
                 .appendFlags(EXT_METAL, MORTAR_GRINDABLE, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_RING,
                         GENERATE_FINE_WIRE, GENERATE_ROTOR)
@@ -273,7 +277,8 @@ public class ElementMaterials {
         Gold = REGISTRATE.material("gold", builder -> builder
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1337))
-                .ore()
+                .ore().oreByproducts(Copper, Nickel, Silver)
+                .washedIn(Mercury)
                 .color(0xfdf55f).secondaryColor(0xf25833).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, GENERATE_RING, MORTAR_GRINDABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
                         GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE, GENERATE_FOIL)
@@ -344,7 +349,8 @@ public class ElementMaterials {
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1811))
                 .plasma()
-                .ore()
+                .ore().oreByproducts(Nickel, Tin, Tin, Gold)
+                .washedIn(SodiumPersulfate)
                 .color(0xeeeeee).secondaryColor(0x979797).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_GEAR,
                         GENERATE_SPRING_SMALL, GENERATE_SPRING, GENERATE_ROUND, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,

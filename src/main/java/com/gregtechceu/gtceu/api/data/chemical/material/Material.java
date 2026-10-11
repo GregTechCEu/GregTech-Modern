@@ -35,13 +35,10 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 @SuppressWarnings("unused")
 public final class Material {
@@ -137,11 +134,6 @@ public final class Material {
 
     public String getName() {
         return materialInfo.resourceLocation.getPath();
-    }
-
-    @ApiStatus.Internal
-    public String getDefaultTranslation() {
-        return materialInfo.overriddenName != null ? materialInfo.overriddenName : toEnglishName(getName());
     }
 
     public String getModid() {
@@ -550,12 +542,6 @@ public final class Material {
         return hasProperty(PropertyKey.FLUID);
     }
 
-    public void verifyMaterial() {
-        properties.verify();
-        flags.verify(this);
-        calculateDecompositionType();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -571,8 +557,40 @@ public final class Material {
         return Objects.hashCode(this.getResourceLocation());
     }
 
+    public void verifyMaterial() {
+        properties.verify();
+        flags.verify(this);
+        calculateDecompositionType();
+
+        if (!properties.hasProperty(PropertyKey.HAZARD)) {
+            for (MaterialStack materialStack : materialInfo.getComponentList()) {
+                Material material = materialStack.material();
+                HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+                if (property != null && property.applyToDerivatives) {
+                    properties.setProperty(PropertyKey.HAZARD, property);
+                    break;
+                }
+            }
+        }
+
+        // Verify MaterialRGB
+        if (materialInfo.colors.getInt(0) == -1) {
+            if (!materialInfo.useAverageRGB || getMaterialComponents().isEmpty())
+                materialInfo.colors.set(0, 0xFFFFFF);
+            else {
+                long colorTemp = 0;
+                long divisor = 0;
+                for (MaterialStack stack : getMaterialComponents()) {
+                    colorTemp += stack.material().getMaterialARGB() * stack.amount();
+                    divisor += stack.amount();
+                }
+                materialInfo.colors.set(0, GTMath.saturatedCast(colorTemp / divisor));
+            }
+        }
+    }
+
     /**
-     * Holds the basic info for a Material, like the name, color, id, etc..
+     * Holds the basic info for a Material, like the name, color, id, etc.
      */
     @SuppressWarnings("UnusedReturnValue")
     @Accessors(chain = true)
@@ -584,10 +602,6 @@ public final class Material {
          * Required.
          */
         private final ResourceLocation resourceLocation;
-
-        @Setter
-        @Getter
-        private @Nullable String overriddenName = null;
 
         /**
          * The colors of this Material.
@@ -635,11 +649,18 @@ public final class Material {
         @Setter
         private @Nullable Holder<Element> element;
 
+        /*
+         * Temporary value to use to determine how to calculate default RGB.
+         */
+        @Getter
+        @Setter
+        private boolean useAverageRGB = false;
+
         public MaterialInfo(ResourceLocation resourceLocation) {
             this.resourceLocation = resourceLocation;
         }
 
-        public void verifyInfo(MaterialProperties p, boolean averageRGB) {
+        public void verifyInfo(MaterialProperties p) {
             // Verify IconSet
             if (iconSet == MaterialIconSet.DULL) {
                 if (p.hasProperty(PropertyKey.GEM)) {
@@ -651,21 +672,6 @@ public final class Material {
                     if (p.hasProperty(PropertyKey.FLUID)) {
                         iconSet = MaterialIconSet.FLUID;
                     } else iconSet = MaterialIconSet.DULL;
-            }
-
-            // Verify MaterialRGB
-            if (colors.getInt(0) == -1) {
-                if (!averageRGB || getComponentList().isEmpty())
-                    colors.set(0, 0xFFFFFF);
-                else {
-                    long colorTemp = 0;
-                    long divisor = 0;
-                    for (MaterialStack stack : getComponentList()) {
-                        colorTemp += stack.material().getMaterialARGB() * stack.amount();
-                        divisor += stack.amount();
-                    }
-                    colors.set(0, GTMath.saturatedCast(colorTemp / divisor));
-                }
             }
         }
 

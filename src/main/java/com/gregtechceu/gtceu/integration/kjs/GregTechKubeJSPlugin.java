@@ -91,6 +91,7 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.*;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -114,6 +115,8 @@ import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Wrapper;
+
+import java.util.Objects;
 
 public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
@@ -337,6 +340,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void registerTypeWrappers(TypeWrapperRegistry registry) {
         registry.register(GTResourceLocation.class, GTResourceLocation::wrap);
 
@@ -391,6 +395,11 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             o = Wrapper.unwrapped(o);
             if (o instanceof MaterialStack stack) return stack;
             if (o instanceof Material material) return new MaterialStack(material, 1);
+            if (o instanceof Holder<?> holder &&
+                    Objects.requireNonNull(holder.getKey()).registryKey().equals(GTRegistries.Keys.MATERIAL)) {
+                Holder<Material> materialHolder = (Holder<Material>) holder;
+                return new MaterialStack(materialHolder.value(), 1);
+            }
             if (o instanceof CharSequence chars) return MaterialStack.fromString(chars);
             return null;
         });
@@ -399,6 +408,11 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             if (o instanceof DeferredMaterialStack wrapper) return wrapper;
             if (o instanceof MaterialStack stack) return new DeferredMaterialStack(stack::material, stack.amount());
             if (o instanceof Material material) return new DeferredMaterialStack(() -> material, 1);
+            if (o instanceof Holder<?> holder &&
+                    Objects.requireNonNull(holder.getKey()).registryKey().equals(GTRegistries.Keys.MATERIAL)) {
+                Holder<Material> materialHolder = (Holder<Material>) holder;
+                return new DeferredMaterialStack(materialHolder::value, 1);
+            }
             if (o instanceof CharSequence chars) return DeferredMaterialStack.fromString(chars);
             return null;
         });

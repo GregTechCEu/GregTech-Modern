@@ -608,8 +608,8 @@ public class MaterialBuilderJS extends BuilderBase<Material> {
         return this;
     }
 
-    public MaterialBuilderJS washedIn(Holder<Material> m) {
-        internal.washedIn(m);
+    public MaterialBuilderJS washedIn(Material m) {
+        internal.washedIn(m.getRegistryHolder());
         return this;
     }
 
@@ -620,7 +620,7 @@ public class MaterialBuilderJS extends BuilderBase<Material> {
 
     @SuppressWarnings("unchecked")
     public final MaterialBuilderJS separatedInto(Material... m) {
-        internal.oreByproducts(Arrays.stream(m).map(Material::getRegistryHolder).toArray(Holder[]::new));
+        internal.separatedInto(Arrays.stream(m).map(Material::getRegistryHolder).toArray(Holder[]::new));
         return this;
     }
 

@@ -632,7 +632,7 @@ public class FirstDegreeMaterials {
                 .fluidPipeProperties(1572, 20, true));
 
         Topaz = REGISTRATE.material("topaz", builder -> builder
-                .gem(3).ore().oreByproducts(Topaz)
+                .gem(3).ore().oreByproducts(BlueTopaz)
                 .color(0xe8d73a).secondaryColor(0xf4680f).iconSet(GEM_HORIZONTAL)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT)
                 .components(Aluminium, 2, Silicon, 1, Oxygen, 5, Fluorine, 1, Hydrogen, 1));

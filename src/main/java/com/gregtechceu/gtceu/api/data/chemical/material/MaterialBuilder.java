@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.DeferredMaterialStack;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
@@ -53,11 +52,6 @@ public class MaterialBuilder {
     private boolean formatFormula = true;
 
     private List<DeferredMaterialStack> compositionSupplier = new ArrayList<>();
-
-    /*
-     * Temporary value to use to determine how to calculate default RGB.
-     */
-    private boolean averageRGB = false;
 
     /**
      * Constructs a {@link Material}. This Builder replaces the old constructors, and
@@ -632,7 +626,7 @@ public class MaterialBuilder {
      * Will default to <strong>0xFFFFFF</strong> if a components list is not specified.
      */
     public MaterialBuilder colorAverage() {
-        this.averageRGB = true;
+        materialInfo.setUseAverageRGB(true);
         return this;
     }
 
@@ -1330,17 +1324,6 @@ public class MaterialBuilder {
     public Material createMaterial() {
         materialInfo.setComponents(compositionSupplier);
 
-        if (!properties.hasProperty(PropertyKey.HAZARD)) {
-            for (MaterialStack materialStack : materialInfo.getComponentList()) {
-                Material material = materialStack.material();
-                HazardProperty property = material.getProperty(PropertyKey.HAZARD);
-                if (property != null && property.applyToDerivatives) {
-                    properties.setProperty(PropertyKey.HAZARD, property);
-                    break;
-                }
-            }
-        }
-
         HazardProperty hazardProperty = properties.getProperty(PropertyKey.HAZARD);
         if (hazardProperty != null && hazardProperty.hazardTrigger == HazardProperty.HazardTrigger.NONE) {
             properties.removeProperty(PropertyKey.HAZARD);
@@ -1353,7 +1336,7 @@ public class MaterialBuilder {
         if (formula != null) {
             mat.setFormula(formula, formatFormula);
         }
-        materialInfo.verifyInfo(properties, averageRGB);
+        materialInfo.verifyInfo(properties);
         if (ignoredTagPrefixes != null) {
             ignoredTagPrefixes.forEach(p -> p.value().setIgnored(mat));
         }
