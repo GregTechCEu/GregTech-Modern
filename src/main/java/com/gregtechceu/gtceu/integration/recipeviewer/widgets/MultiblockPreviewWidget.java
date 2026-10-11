@@ -368,7 +368,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         })
                         .tooltip(r -> r.addLine(Component.translatable("gtceu.terminal.clear_preference"))))
                 .childIf(terminal, () -> new ToggleButton()
-                        .right(-10)
+                        .right(43)
                         .overlay(new DrawableStack(new ItemDrawable(GTMachines.ITEM_EXPORT_BUS[0].asStack()),
                                 new ItemDrawable(Items.BARRIER)))
                         .value(new BoolValue.Dynamic(() -> this.multiblockSchemaInfo.isIgnorePreviewCount(), value -> {
