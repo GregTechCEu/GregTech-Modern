@@ -26,7 +26,7 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyExpressionValue(method = "causeFallDamage",
                            at = @At(value = "INVOKE",
                                     target = "Lnet/minecraft/world/entity/LivingEntity;calculateFallDamage(FF)I"))
-    private int modifyPlayerFallDamage(int damage, @Local(argsOnly = true) DamageSource source) {
+    private int gtceu$modifyPlayerFallDamage(int damage, @Local(argsOnly = true) DamageSource source) {
         LivingEntity self = (LivingEntity) (Object) this;
 
         // Check if the boots can absorb the fall damage

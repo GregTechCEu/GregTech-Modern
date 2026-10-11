@@ -24,7 +24,7 @@ public abstract class ServerGamePacketListenerImplMixin {
                    at = @At(value = "FIELD",
                             target = "Lnet/minecraft/world/entity/player/Abilities;mayfly:Z",
                             opcode = Opcodes.GETFIELD))
-    private boolean shouldPreventClientFloatingCheck(Abilities instance, Operation<Boolean> original) {
+    private boolean gtceu$shouldPreventClientFloatingCheck(Abilities instance, Operation<Boolean> original) {
         return original.call(instance) || JetpackHelper.isFlyingWithJetpack(this.player);
     }
 }

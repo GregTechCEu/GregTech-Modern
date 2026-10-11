@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.jetpack.IJetpackLogic;
 import com.gregtechceu.gtceu.api.item.jetpack.IJetpackLogic.JetpackUseContext;
-import com.gregtechceu.gtceu.core.IGTSyncedDataPlayer;
+import com.gregtechceu.gtceu.common.capability.PlayerJetpackHandler;
 
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
@@ -19,6 +20,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class JetpackHelper {
 
+    private static final double SAFETY_BRAKING_DECELERATION = 0.10;
+    private static final double SAFETY_BRAKING_OUT_OF_WORLD_DECELERATION = 0.40;
+    private static final double SAFETY_BRAKING_DESCENT_SPEED = 0.15;
+    private static final double SAFETY_BRAKING_BOUNDARY_RETURN_FACTOR = 0.1;
+    private static final float JETPACK_FALL_DISTANCE_ABSORPTION_THRESHOLD = 8.0f;
+
     @Getter
     private final JetpackUseContext context;
     @Getter
@@ -27,12 +34,15 @@ public class JetpackHelper {
     private final IJetpackLogic.JetpackStats jetpackStats;
     @Getter
     private final boolean hoverModeEnabled;
+    @Nullable
+    private final PlayerJetpackHandler jetpackHandler;
 
     private JetpackHelper(JetpackUseContext context, IJetpackLogic jetpack) {
         this.context = context;
         this.jetpack = jetpack;
         this.jetpackStats = jetpack.getJetpackStats(context);
         this.hoverModeEnabled = jetpack.isHoverModeEnabled(context.stack());
+        this.jetpackHandler = GTCapabilityHelper.getPlayerJetpackHandler(context.player());
     }
 
     private boolean canFlyWithJetpack(boolean checkForFlightEnabled) {
@@ -48,17 +58,26 @@ public class JetpackHelper {
     }
 
     public boolean isFlyingWithJetpack() {
-        IGTSyncedDataPlayer syncedDataAccessor = (IGTSyncedDataPlayer) this.context.player();
         if (isHoverModeEnabled()) {
             return !this.context.player().onGround();
         }
-        return syncedDataAccessor.gtceu$isJetpackThrusting() || syncedDataAccessor.gtceu$isSafetyBraking();
+        return isJetpackThrusting() || isSafetyBraking();
     }
 
     public boolean isHoldingAltitude() {
-        IGTSyncedDataPlayer syncedDataAccessor = (IGTSyncedDataPlayer) this.context.player();
-        return !isHoverModeEnabled() && syncedDataAccessor.gtceu$isJetpackThrusting() &&
-                this.context.player().isShiftKeyDown();
+        return !isHoverModeEnabled() && isJetpackThrusting() && this.context.player().isShiftKeyDown();
+    }
+
+    public boolean isJetpackThrusting() {
+        return this.jetpackHandler != null && this.jetpackHandler.isJetpackThrusting();
+    }
+
+    public boolean isPrecisionHovering() {
+        return this.jetpackHandler != null && this.jetpackHandler.isPrecisionHovering();
+    }
+
+    public boolean isSafetyBraking() {
+        return this.jetpackHandler != null && this.jetpackHandler.isSafetyBraking();
     }
 
     /** @return true if player is hovering with the jetpack, e.g. has hover mode enabled or is holding altitude */
@@ -86,6 +105,14 @@ public class JetpackHelper {
         return 1.0;
     }
 
+    public boolean shouldAbsorbFallDamage(float fallDistance) {
+        return fallDistance < JETPACK_FALL_DISTANCE_ABSORPTION_THRESHOLD;
+    }
+
+    public boolean shouldSuppressMovementEmission() {
+        return isHovering() && !this.jetpackStats.shouldProduceSoundEmissions();
+    }
+
     public Vec3 getVerticalHoverMovementDelta(int movementDirection) {
         double effectiveVerticalSpeed = this.jetpackStats.verticalSpeed() * getEffectiveSpeedMultiplier();
         return new Vec3(0.0, effectiveVerticalSpeed * movementDirection, 0.0);
@@ -98,6 +125,28 @@ public class JetpackHelper {
         return new Vec3(movementDelta.x, newVerticalSpeed, movementDelta.z);
     }
 
+    public Vec3 applyHoveringDeceleration(Vec3 currentMomentum, double lastMomentumY) {
+        double momentumScale = Mth.clamp(1.0f - this.jetpackStats.verticalMomentumFalloff(), 0.0f, 1.0f);
+        return new Vec3(currentMomentum.x, lastMomentumY * momentumScale, currentMomentum.z);
+    }
+
+    public Vec3 applySafetyBraking(Vec3 currentMomentum) {
+        Player player = this.context.player();
+        boolean isOutOfWorld = player.getY() < player.level().getMinBuildHeight();
+        double newMomentumY = currentMomentum.y();
+
+        double effectiveBrakingDeceleration = isOutOfWorld ? SAFETY_BRAKING_OUT_OF_WORLD_DECELERATION :
+                SAFETY_BRAKING_DECELERATION;
+        double targetMomentumY = isOutOfWorld ? Mth.clamp(
+                (player.level().getMinBuildHeight() - player.getY()) * SAFETY_BRAKING_BOUNDARY_RETURN_FACTOR, 0.0,
+                SAFETY_BRAKING_DESCENT_SPEED) : -SAFETY_BRAKING_DESCENT_SPEED;
+
+        if (newMomentumY < targetMomentumY) {
+            newMomentumY = Math.min(targetMomentumY, newMomentumY + effectiveBrakingDeceleration);
+        }
+        return new Vec3(currentMomentum.x(), newMomentumY, currentMomentum.z());
+    }
+
     public double getEffectiveHorizontalFlySpeed() {
         if (isHoldingAltitude()) {
             return this.jetpackStats.altitudeHoldingHorizontalSpeed();
@@ -105,8 +154,7 @@ public class JetpackHelper {
         double effectiveSpeed = this.jetpackStats.horizontalSpeed() * getEffectiveSpeedMultiplier();
 
         // Precision hovering allows slower horizontal movement for more precision when hovering
-        IGTSyncedDataPlayer syncedDataAccessor = (IGTSyncedDataPlayer) this.context.player();
-        if (syncedDataAccessor.gtceu$isPrecisionHovering()) {
+        if (isPrecisionHovering()) {
             effectiveSpeed *= 0.3f;
         }
         return effectiveSpeed;

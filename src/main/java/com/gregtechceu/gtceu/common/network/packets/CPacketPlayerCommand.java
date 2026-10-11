@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.common.network.packets;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.common.capability.PlayerJetpackHandler;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
-import com.gregtechceu.gtceu.core.IGTSyncedDataPlayer;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -25,20 +26,18 @@ public class CPacketPlayerCommand implements GTNetwork.INetPacket {
 
     @Override
     public void execute(NetworkEvent.Context context) {
-        if (context.getSender() != null) {
+        if (context.getSender() == null) {
+            return;
+        }
+        PlayerJetpackHandler jetpackHandler = GTCapabilityHelper.getPlayerJetpackHandler(context.getSender());
+        if (jetpackHandler != null) {
             switch (this.action) {
-                case START_JETPACK_THRUSTING -> ((IGTSyncedDataPlayer) context.getSender())
-                        .gtceu$setJetpackThrusting(true);
-                case STOP_JETPACK_THRUSTING -> ((IGTSyncedDataPlayer) context.getSender())
-                        .gtceu$setJetpackThrusting(false);
-                case START_PRECISION_HOVERING -> ((IGTSyncedDataPlayer) context.getSender())
-                        .gtceu$setPrecisionHovering(true);
-                case STOP_PRECISION_HOVERING -> ((IGTSyncedDataPlayer) context.getSender())
-                        .gtceu$setPrecisionHovering(false);
-                case START_SAFETY_BRAKING -> ((IGTSyncedDataPlayer) context.getSender())
-                        .gtceu$setSafetyBraking(true);
-                case STOP_SAFETY_BRAKING -> ((IGTSyncedDataPlayer) context.getSender())
-                        .gtceu$setSafetyBraking(false);
+                case START_JETPACK_THRUSTING -> jetpackHandler.setJetpackThrusting(true);
+                case STOP_JETPACK_THRUSTING -> jetpackHandler.setJetpackThrusting(false);
+                case START_PRECISION_HOVERING -> jetpackHandler.setPrecisionHovering(true);
+                case STOP_PRECISION_HOVERING -> jetpackHandler.setPrecisionHovering(false);
+                case START_SAFETY_BRAKING -> jetpackHandler.setSafetyBraking(true);
+                case STOP_SAFETY_BRAKING -> jetpackHandler.setSafetyBraking(false);
             }
         }
     }

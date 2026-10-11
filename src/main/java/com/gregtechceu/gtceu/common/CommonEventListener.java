@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
+import com.gregtechceu.gtceu.common.capability.PlayerJetpackHandler;
 import com.gregtechceu.gtceu.common.capability.WorldIDSaveData;
 import com.gregtechceu.gtceu.common.commands.GTCommands;
 import com.gregtechceu.gtceu.common.commands.HazardCommands;
@@ -44,7 +45,6 @@ import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncLevelHazards;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.core.IGTSyncedDataPlayer;
 import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.GTOreLoader;
@@ -123,6 +123,7 @@ public class CommonEventListener {
         if (event.getObject() instanceof Player entity) {
             final MedicalConditionTracker tracker = new MedicalConditionTracker(entity);
             event.addCapability(GTCEu.id("medical_condition_tracker"), tracker);
+            event.addCapability(GTCEu.id("jetpack_handler"), new PlayerJetpackHandler(entity));
         }
     }
 
@@ -384,6 +385,17 @@ public class CommonEventListener {
     }
 
     @SubscribeEvent
+    public static void tickPlayerJetpack(TickEvent.PlayerTickEvent event) {
+        if (event.side == LogicalSide.CLIENT || event.phase != TickEvent.Phase.END) {
+            return;
+        }
+        PlayerJetpackHandler jetpackHandler = GTCapabilityHelper.getPlayerJetpackHandler(event.player);
+        if (jetpackHandler != null) {
+            jetpackHandler.serverTick();
+        }
+    }
+
+    @SubscribeEvent
     public static void stepAssistHandler(LivingEvent.LivingTickEvent event) {
         float MAGIC_STEP_HEIGHT = 1.0023f;
         if (event.getEntity() == null || !(event.getEntity() instanceof Player player)) return;
@@ -428,10 +440,10 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void onPlayerLevelChange(PlayerEvent.PlayerChangedDimensionEvent event) {
         // Reset synced data on dimension change, since client will reset it due to player entity recreation
-        IGTSyncedDataPlayer syncedDataAccessor = (IGTSyncedDataPlayer) event.getEntity();
-        syncedDataAccessor.gtceu$setJetpackThrusting(false);
-        syncedDataAccessor.gtceu$setPrecisionHovering(false);
-        syncedDataAccessor.gtceu$setSafetyBraking(false);
+        PlayerJetpackHandler jetpackHandler = GTCapabilityHelper.getPlayerJetpackHandler(event.getEntity());
+        if (jetpackHandler != null) {
+            jetpackHandler.reset();
+        }
 
         if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
             ServerLevel newLevel = event.getEntity().getServer().getLevel(event.getTo());

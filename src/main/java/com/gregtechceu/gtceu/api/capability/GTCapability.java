@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
+import com.gregtechceu.gtceu.common.capability.PlayerJetpackHandler;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -35,6 +36,8 @@ public class GTCapability {
 
     public static final Capability<MedicalConditionTracker> CAPABILITY_MEDICAL_CONDITION_TRACKER = CapabilityManager
             .get(new CapabilityToken<>() {});
+    public static final Capability<PlayerJetpackHandler> CAPABILITY_PLAYER_JETPACK_HANDLER = CapabilityManager
+            .get(new CapabilityToken<>() {});
 
     public static void register(RegisterCapabilitiesEvent event) {
         event.register(IEnergyContainer.class);
@@ -47,6 +50,7 @@ public class GTCapability {
         event.register(IOpticalComputationProvider.class);
         event.register(IDataAccessHatch.class);
         event.register(MedicalConditionTracker.class);
+        event.register(PlayerJetpackHandler.class);
         event.register(IHazardParticleContainer.class);
         event.register(IMonitorComponent.class);
         event.register(ISpoilableItem.class);
