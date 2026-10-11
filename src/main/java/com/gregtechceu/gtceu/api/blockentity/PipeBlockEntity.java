@@ -95,6 +95,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        // Because the null material sentinel value was removed in favour of just using null directly,
+        // remove occurences where a null material was serialised as the null sentinel value in old saves.
         if (tag.contains("frameMaterial") && tag.getString("frameMaterial").equals("gtceu:null")) {
             tag.remove("frameMaterial");
         }

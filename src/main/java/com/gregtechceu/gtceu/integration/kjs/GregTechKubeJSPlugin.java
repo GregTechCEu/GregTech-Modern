@@ -116,8 +116,6 @@ import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Wrapper;
 
-import java.util.Objects;
-
 public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
     @Override
@@ -396,7 +394,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             if (o instanceof MaterialStack stack) return stack;
             if (o instanceof Material material) return new MaterialStack(material, 1);
             if (o instanceof Holder<?> holder &&
-                    Objects.requireNonNull(holder.getKey()).registryKey().equals(GTRegistries.Keys.MATERIAL)) {
+                    holder.unwrapKey().filter(f -> f.isFor(GTRegistries.Keys.MATERIAL)).isPresent()) {
                 Holder<Material> materialHolder = (Holder<Material>) holder;
                 return new MaterialStack(materialHolder.value(), 1);
             }
@@ -409,7 +407,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             if (o instanceof MaterialStack stack) return new DeferredMaterialStack(stack::material, stack.amount());
             if (o instanceof Material material) return new DeferredMaterialStack(() -> material, 1);
             if (o instanceof Holder<?> holder &&
-                    Objects.requireNonNull(holder.getKey()).registryKey().equals(GTRegistries.Keys.MATERIAL)) {
+                    holder.unwrapKey().filter(f -> f.isFor(GTRegistries.Keys.MATERIAL)).isPresent()) {
                 Holder<Material> materialHolder = (Holder<Material>) holder;
                 return new DeferredMaterialStack(materialHolder::value, 1);
             }
@@ -425,7 +423,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
             if (o instanceof CharSequence) {
                 return () -> BlockStatePredicate.wrap(cx, o).asRuleTest();
-            } ;
+            }
             return () -> BlockStatePredicate.wrapRuleTest(cx, o);
         });
 

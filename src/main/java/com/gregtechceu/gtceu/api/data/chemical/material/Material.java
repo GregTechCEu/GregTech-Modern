@@ -35,6 +35,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
@@ -557,14 +558,17 @@ public final class Material {
         return Objects.hashCode(this.getResourceLocation());
     }
 
-    public void verifyMaterial() {
-        properties.verify();
-        flags.verify(this);
-        calculateDecompositionType();
+    private boolean inheritedPropertiesResolved = false;
+
+    private void resolveInheritedProperties() {
+        if (inheritedPropertiesResolved) return;
 
         if (!properties.hasProperty(PropertyKey.HAZARD)) {
             for (MaterialStack materialStack : materialInfo.getComponentList()) {
                 Material material = materialStack.material();
+
+                material.resolveInheritedProperties();
+
                 HazardProperty property = material.getProperty(PropertyKey.HAZARD);
                 if (property != null && property.applyToDerivatives) {
                     properties.setProperty(PropertyKey.HAZARD, property);
@@ -573,7 +577,6 @@ public final class Material {
             }
         }
 
-        // Verify MaterialRGB
         if (materialInfo.colors.getInt(0) == -1) {
             if (!materialInfo.useAverageRGB || getMaterialComponents().isEmpty())
                 materialInfo.colors.set(0, 0xFFFFFF);
@@ -581,11 +584,46 @@ public final class Material {
                 long colorTemp = 0;
                 long divisor = 0;
                 for (MaterialStack stack : getMaterialComponents()) {
+
+                    stack.material().resolveInheritedProperties();
+
                     colorTemp += stack.material().getMaterialARGB() * stack.amount();
                     divisor += stack.amount();
                 }
                 materialInfo.colors.set(0, GTMath.saturatedCast(colorTemp / divisor));
             }
+        }
+
+        inheritedPropertiesResolved = true;
+    }
+
+    /**
+     * Initial verification occurs before material modification and
+     * makes sure that the properties and flags added during a material's initial builder are properly verified.
+     */
+    @ApiStatus.Internal
+    public void verifyMaterialInitial() {
+        properties.verify();
+        flags.verify(this);
+
+        calculateDecompositionType();
+    }
+
+    /**
+     * Final verification is performed after material modification and
+     * makes sure that properties and flags are verified,
+     * and verifies material properties which are dependent on component materials.
+     */
+    @ApiStatus.Internal
+    public void verifyMaterialFinal() {
+        properties.verify();
+        flags.verify(this);
+
+        resolveInheritedProperties();
+
+        HazardProperty hazardProperty = properties.getProperty(PropertyKey.HAZARD);
+        if (hazardProperty != null && hazardProperty.hazardTrigger == HazardProperty.HazardTrigger.NONE) {
+            properties.removeProperty(PropertyKey.HAZARD);
         }
     }
 
