@@ -320,21 +320,23 @@ public class LangHandler {
         provider.add("item.gtceu.tool.aoe.columns", "Columns");
         provider.add("item.gtceu.tool.aoe.layers", "Layers");
 
+        /// @deprecated remove when IMaterialPartItem is removed
+        provider.add("metaitem.tool.tooltip.primary_material", "§fMaterial: §e%s");
+
         provider.add("item.gtceu.armor.helmet", "%s Helmet");
         provider.add("item.gtceu.armor.chestplate", "%s Chestplate");
         provider.add("item.gtceu.armor.leggings", "%s Leggings");
         provider.add("item.gtceu.armor.boots", "%s Boots");
 
         provider.add("item.gtceu.turbine_rotor.tooltip", "Turbine Rotors for your power station");
+        provider.add("item.gtceu.turbine_rotor.tooltip.efficiency", "Turbine Efficiency: §9%s%%");
+        provider.add("item.gtceu.turbine_rotor.tooltip.power", "Turbine Power: §9%s%%");
+
         provider.add("metaitem.clipboard.tooltip",
                 "Can be written on (without any writing Instrument). Right-click on Wall to place, and Shift-Right-Click to remove");
         provider.add("metaitem.behavior.mode_switch.tooltip", "Use while sneaking to switch mode");
         provider.add("metaitem.behavior.mode_switch.mode_switched", "§eMode Set to: %s");
         provider.add("metaitem.behavior.mode_switch.current_mode", "Mode: %s");
-        provider.add("metaitem.tool.tooltip.primary_material", "§fMaterial: §e%s");
-        provider.add("metaitem.tool.tooltip.durability", "§fDurability: §a%d / %d");
-        provider.add("metaitem.tool.tooltip.rotor.efficiency", "Turbine Efficiency: §9%d%%");
-        provider.add("metaitem.tool.tooltip.rotor.power", "Turbine Power: §9%d%%");
         provider.add("item.gtceu.ulv_voltage_coil.tooltip", "Primitive Coil");
         provider.add("item.gtceu.lv_voltage_coil.tooltip", "Basic Coil");
         provider.add("item.gtceu.mv_voltage_coil.tooltip", "Good Coil");

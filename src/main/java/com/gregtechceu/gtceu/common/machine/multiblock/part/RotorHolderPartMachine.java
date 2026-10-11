@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
-import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
+import com.gregtechceu.gtceu.common.item.TurbineRotorItem;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.ISubscription;
@@ -119,13 +119,12 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
     //////////////////////////////////////
 
     private void onRotorInventoryChanged() {
-        var stack = getRotorStack();
-        var rotorBehaviour = TurbineRotorBehaviour.getBehaviour(stack);
-        if (rotorBehaviour != null) {
-            this.rotorMaterial = rotorBehaviour.getPartMaterial(stack);
+        ItemStack stack = getRotorStack();
+        if (stack.getItem() instanceof TurbineRotorItem rotor) {
+            this.rotorMaterial = rotor.material;
 
             boolean emissive = this.rotorMaterial.hasProperty(PropertyKey.ORE) &&
-                    this.rotorMaterial.getProperty(PropertyKey.ORE).isEmissive();
+                    this.rotorMaterial.getPropertyOrThrow(PropertyKey.ORE).isEmissive();
             setRenderState(getRenderState()
                     .setValue(HAS_ROTOR, true)
                     .setValue(IS_EMISSIVE_ROTOR, emissive));
@@ -209,12 +208,13 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
 
     @Override
     public InteractionResult onUse(ExtendedUseOnContext context) {
-        var superResult = super.onUse(context);
+        InteractionResult superResult = super.onUse(context);
         if (superResult != InteractionResult.PASS) return superResult;
+
         if (!isRemote() && getRotorSpeed() > 0 && !context.getPlayer().isCreative()) {
-            TurbineRotorBehaviour behaviour = TurbineRotorBehaviour.getBehaviour(getRotorStack());
-            if (behaviour != null) {
-                context.getPlayer().hurt(GTDamageTypes.TURBINE.source(level), behaviour.getDamage(getRotorStack()));
+            ItemStack stack = getRotorStack();
+            if (stack.getItem() instanceof TurbineRotorItem rotor) {
+                context.getPlayer().hurt(GTDamageTypes.TURBINE.source(level), rotor.getAttackDamage(stack));
             }
             return InteractionResult.FAIL;
         }
@@ -271,12 +271,10 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
      */
     public int getTotalEfficiency() {
         int rotorEfficiency = getRotorEfficiency();
-        if (rotorEfficiency == -1)
-            return -1;
+        if (rotorEfficiency == -1) return -1;
 
         int holderEfficiency = getHolderEfficiency();
-        if (holderEfficiency == -1)
-            return -1;
+        if (holderEfficiency == -1) return -1;
 
         return Math.max(getBaseEfficiency(), rotorEfficiency * holderEfficiency / 100);
     }
@@ -286,8 +284,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
      */
     public int getHolderEfficiency() {
         int tierDifference = getTierDifference();
-        if (tierDifference == -1)
-            return -1;
+        if (tierDifference == -1) return -1;
 
         return 100 + 10 * tierDifference;
     }
@@ -306,36 +303,28 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
      * @return the rotor's efficiency in %
      */
     public int getRotorEfficiency() {
-        var stack = getRotorStack();
-        var behavior = TurbineRotorBehaviour.getBehaviour(stack);
-        if (behavior != null) {
-            return behavior.getRotorEfficiency(stack);
-        }
-        return -1;
+        ItemStack stack = getRotorStack();
+        if (!(stack.getItem() instanceof TurbineRotorItem rotor)) return -1;
+
+        return rotor.getRotorEfficiency(stack);
     }
 
     /**
      * @return the rotor's power in %
      */
     public int getRotorPower() {
-        var stack = getRotorStack();
-        var behavior = TurbineRotorBehaviour.getBehaviour(stack);
-        if (behavior != null) {
-            return behavior.getRotorPower(stack);
-        }
-        return -1;
+        ItemStack stack = getRotorStack();
+        if (!(stack.getItem() instanceof TurbineRotorItem rotor)) return -1;
+
+        return rotor.getRotorPower(stack);
     }
 
     /**
      * @return the rotor's durability as %
      */
     public int getRotorDurabilityPercent() {
-        var stack = getRotorStack();
-        var behavior = TurbineRotorBehaviour.getBehaviour(stack);
-        if (behavior != null) {
-            return behavior.getRotorDurabilityPercent(stack);
-        }
-        return -1;
+        ItemStack stack = getRotorStack();
+        return 100 - 100 * stack.getDamageValue() / stack.getMaxDamage();
     }
 
     /**
@@ -344,12 +333,12 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
      * @param damageAmount to damage
      */
     public void damageRotor(int damageAmount) {
-        var stack = getRotorStack();
-        var behavior = TurbineRotorBehaviour.getBehaviour(stack);
-        if (behavior != null) {
-            behavior.applyRotorDamage(stack, damageAmount);
-            setRotorStack(stack);
+        ItemStack stack = getRotorStack();
+        if (stack.hurt(damageAmount, this.level.random, null)) {
+            stack.shrink(1);
+            stack.setDamageValue(0);
         }
+        setRotorStack(stack);
     }
 
     /**

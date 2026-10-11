@@ -408,15 +408,6 @@ public class V1_3 extends AutomaticNamespacedSchema {
         }
         // endregion
 
-        // register all remaining machines as ""plain"" types
-        // IDEK if this works because the registry might not be loaded at this point... oh well.
-        for (MachineDefinition definition : GTRegistries.MACHINES) {
-            String id = definition.getId().toString();
-            if (!map.containsKey(id)) {
-                schema.register(map, id, traitHolder);
-            }
-        }
-
         return map;
     }
 

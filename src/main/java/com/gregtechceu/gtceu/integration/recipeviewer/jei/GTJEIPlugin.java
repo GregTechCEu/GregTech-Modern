@@ -113,7 +113,6 @@ public class GTJEIPlugin implements IModPlugin {
     public void registerItemSubtypes(ISubtypeRegistration registration) {
         if (GTCEu.Mods.isEMILoaded()) return;
         registration.useNbtForSubtypes(GTItems.PROGRAMMED_CIRCUIT.asItem());
-        registration.useNbtForSubtypes(GTItems.TURBINE_ROTOR.asItem());
     }
 
     @Override

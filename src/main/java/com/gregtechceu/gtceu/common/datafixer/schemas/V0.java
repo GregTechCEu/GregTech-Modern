@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.datafixer.GTReferences;
 
+import com.gregtechceu.gtceu.core.mixins.datafixer.V705Accessor;
+import com.mojang.datafixers.types.templates.Hook;
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraftforge.fml.loading.LoadingModList;
 
@@ -74,6 +76,24 @@ public class V0 extends AutomaticNamespacedSchema {
                 "Tag", remainder()
         ));
         schema.registerType(false, GTReferences.FLUID_NAME, () -> constType(namespacedString()));
+
+        // add part stats NBT field
+        schema.registerType(true, References.ITEM_STACK, () -> hook(
+                optionalFields(
+                        "id", References.ITEM_NAME.in(schema),
+                        "tag", optionalFields(
+                                "EntityTag", References.ENTITY_TREE.in(schema),
+                                "BlockEntityTag", References.BLOCK_ENTITY.in(schema),
+                                "CanDestroy", list(References.BLOCK_NAME.in(schema)),
+                                "CanPlaceOn", list(References.BLOCK_NAME.in(schema)),
+                                "Items", list(References.ITEM_STACK.in(schema)),
+                                "GT.PartStats", optionalFields(
+                                        "Material", GTReferences.MATERIAL_NAME.in(schema)
+                                )
+                        )
+                ),
+                V705Accessor.gtceu$getAddNames(), Hook.HookFunction.IDENTITY
+        ));
     }
 
     @Override
@@ -444,14 +464,6 @@ public class V0 extends AutomaticNamespacedSchema {
             schema.registerSimple(map, "me_pattern_buffer_proxy");
         }
         // endregion
-
-        // register all remaining machines as very 'plain' types
-        for (MachineDefinition definition : GTRegistries.MACHINES) {
-            String id = definition.getId().toString();
-            if (!map.containsKey(id)) {
-                schema.registerSimple(map, id);
-            }
-        }
 
         return map;
     }

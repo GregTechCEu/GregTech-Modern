@@ -47,8 +47,8 @@
         "ftbchunks.FTBChunksClientMixin",
         "ftbchunks.LargeMapScreenMixin",
         "ftbchunks.RegionMapPanelMixin",
-        "jei.RecipesGuiAccessor",
         "jei.FluidTankRendererMixin",
+        "jei.RecipesGuiAccessor",
         "xaerominimap.HighlighterRegistryMixin",
         "xaerominimap.MinimapFBORendererMixin",
         "xaeroworldmap.GuiMapMixin",
@@ -97,6 +97,7 @@
         "datafixer.DataFixTypesMixin",
         "datafixer.ForgeHooksMixin",
         "datafixer.NbtUtilsMixin",
+        "datafixer.V705Accessor",
         "dev.datagen.FixParallelKeyMappingRegistrationMixin",
         "dev.test.GameTestRegistryMixin",
         "emi.EmiApiAccessor",
@@ -110,7 +111,7 @@
         "forge.StrictNBTIngredientAccessor",
         "jei.FluidHelperMixin",
         "registrate.AbstractRegistrateAccessor",
-        "registrate.RegistrateDataProviderAccessor",
+        "registrate.RegistrateDataProviderAccessor"
     ],
     "injectors": {
         "defaultRequire": 1,

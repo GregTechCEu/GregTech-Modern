@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.item.TurbineRotorItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
@@ -574,7 +575,7 @@ public class TagPrefix {
             .generateItem(true)
             .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_FINE_WIRE));
 
-    // consisting out of 4 Plates, 1 Ring and 1 Screw.
+    // consisting out of 4 Plates and 1 Ring.
     public static final TagPrefix rotor = new TagPrefix(GTCEu.id("rotor"))
             .defaultTagPath("rotors/%s")
             .unformattedTagPath("rotors")
@@ -698,17 +699,30 @@ public class TagPrefix {
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
                     .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WIRE_CUTTER_LV)));
 
-    // made of 5 Ingots.
-    public static final TagPrefix turbineBlade = new TagPrefix(GTCEu.id("turbineBlade"))
+    // made of 5 Double Plates and 2 Screws.
+    public static final TagPrefix turbineBlade = new TagPrefix(GTCEu.id("turbine_blade"))
             .langValue("%s Turbine Blade")
-            .materialAmount(GTValues.M * 10)
+            .materialAmount(GTValues.M * 92 / 9)
             .materialIconType(MaterialIconType.turbineBlade)
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasRotorProperty
-                    .and(m -> m.hasFlags(MaterialFlags.GENERATE_BOLT_SCREW, MaterialFlags.GENERATE_PLATE) &&
-                            !m.hasProperty(PropertyKey.GEM)));
+                    .and(m -> m.hasFlags(MaterialFlags.GENERATE_BOLT_SCREW, MaterialFlags.GENERATE_PLATE))
+                    .and(hasGemProperty.negate()));
+
+    // made of 8 Turbine Blades.
+    public static final TagPrefix turbineRotor = new TagPrefix(GTCEu.id("turbine_rotor"))
+            .langValue("%s Turbine Rotor")
+            .materialAmount(GTValues.M * 92 / 9)
+            .materialIconType(MaterialIconType.turbineRotor)
+            .unificationEnabled(true)
+            .generateItem(true)
+            .itemConstructor(TurbineRotorItem::new)
+            .generationCondition(hasRotorProperty
+                    .and(m -> m.hasFlags(MaterialFlags.GENERATE_BOLT_SCREW, MaterialFlags.GENERATE_PLATE))
+                    .and(hasGemProperty.negate()))
+            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("item.gtceu.turbine_rotor.tooltip")));
 
     // Storage Block consisting out of 9 Ingots/Gems/Dusts.
     public static final TagPrefix block = new TagPrefix(GTCEu.id("block"))

@@ -223,6 +223,8 @@ public class GTMaterials {
         cableGtOctal.addSecondaryMaterial(new MaterialStack(Rubber, plate.materialAmount() * 3));
         cableGtHex.addSecondaryMaterial(new MaterialStack(Rubber, plate.materialAmount() * 5));
 
+        turbineRotor.addSecondaryMaterial(new MaterialStack(Magnalium, rodLong.materialAmount()));
+
         plateDouble.setIgnored(BorosilicateGlass);
         plateDouble.setIgnored(Wood);
         plateDouble.setIgnored(TreatedWood);

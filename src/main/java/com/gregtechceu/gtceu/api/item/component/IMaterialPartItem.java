@@ -21,6 +21,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * @deprecated Create separate items for every material instead. If you want custom functionality, check
+ * {@link com.gregtechceu.gtceu.api.data.tag.TagPrefix#turbineRotor TagPrefix.turbineRotor}.
+ *
+ * @see com.gregtechceu.gtceu.api.data.tag.TagPrefix#turbineRotor TagPrefix.turbineRotor
+ */
+@Deprecated(forRemoval = true)
 public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddInformation, ICustomDescriptionId {
 
     int getPartMaxDurability(ItemStack itemStack);
@@ -82,7 +89,7 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
         var maxDurability = getPartMaxDurability(stack);
         var damage = getPartDamage(stack);
         tooltipComponents
-                .add(Component.translatable("metaitem.tool.tooltip.durability", maxDurability - damage, maxDurability));
+                .add(Component.translatable("item.durability", maxDurability - damage, maxDurability));
         tooltipComponents
                 .add(Component.translatable("metaitem.tool.tooltip.primary_material", material.getLocalizedName()));
     }
