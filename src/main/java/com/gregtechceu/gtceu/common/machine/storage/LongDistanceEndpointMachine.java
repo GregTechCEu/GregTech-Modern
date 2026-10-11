@@ -222,16 +222,16 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
                 textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.pipe_count",
                         FormattingUtil.formatNumbers(network.getTotalSize())));
                 ILDEndpoint in = network.getActiveInputIndex(), out = network.getActiveOutputIndex();
-                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.input_pos",
+                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.pos.input",
                         Component.literal(in == null ? "none" : in.getBlockPos().toString())));
-                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.output_pos",
+                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.pos.output",
                         Component.literal(out == null ? "none" : out.getBlockPos().toString())));
             }
             if (isInput()) {
-                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.input_endpoint"));
+                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.endpoint.input"));
             }
             if (isOutput()) {
-                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.output_endpoint"));
+                textComponents.add(Component.translatable("gui.gtceu.machine.ldpl.endpoint.output"));
             }
         }
 

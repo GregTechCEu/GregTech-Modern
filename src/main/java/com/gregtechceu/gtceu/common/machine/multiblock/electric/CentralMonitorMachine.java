@@ -314,12 +314,14 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Override
     public List<Component> getDebugInfo(Player player, int logLevel,
                                         PortableScannerBehavior.DisplayMode mode) {
-        return List.of(Component.translatable("gui.gtceu.machine.central_monitor.size", leftDist, rightDist, upDist, downDist));
+        return List.of(Component.translatable("gui.gtceu.machine.central_monitor.size", leftDist, rightDist, upDist,
+                downDist));
     }
 
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
-        return List.of(Component.translatable("gui.gtceu.machine.central_monitor.size", leftDist, rightDist, upDist, downDist));
+        return List.of(Component.translatable("gui.gtceu.machine.central_monitor.size", leftDist, rightDist, upDist,
+                downDist));
     }
 
     @Override

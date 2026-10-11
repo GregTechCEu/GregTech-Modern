@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.LangUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -425,9 +426,7 @@ public class GCYMMachines {
             .multiblock("alloy_blast_smelter", CoilWorkableElectricMultiblockMachine::new)
             .langValue("Alloy Blast Smelter")
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(ALLOY_BLAST_RECIPES))
-            .tooltips(Component.translatable("machine.gtceu.electric_blast_furnace.tooltip.0"),
-                    Component.translatable("machine.gtceu.electric_blast_furnace.tooltip.1"),
-                    Component.translatable("machine.gtceu.electric_blast_furnace.tooltip.2"))
+            .tooltips(LangUtil.getMultiLang("machine.gtceu.electric_blast_furnace.tooltip"))
             .rotationState(RotationState.ALL)
             .recipeType(ALLOY_BLAST_RECIPES)
             .recipeModifiers(GTRecipeModifiers::ebfOverclock)
@@ -726,9 +725,7 @@ public class GCYMMachines {
             .langValue("Rotary Hearth Furnace")
             .tooltips(Component.translatable("gui.gtceu.supports_parallel"))
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(BLAST_RECIPES))
-            .tooltips(Component.translatable("machine.gtceu.electric_blast_furnace.tooltip.0"),
-                    Component.translatable("machine.gtceu.electric_blast_furnace.tooltip.1"),
-                    Component.translatable("machine.gtceu.electric_blast_furnace.tooltip.2"))
+            .tooltips(LangUtil.getMultiLang("machine.gtceu.electric_blast_furnace.tooltip"))
             .rotationState(RotationState.ALL)
             .recipeType(BLAST_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers::ebfOverclock, BATCH_MODE)

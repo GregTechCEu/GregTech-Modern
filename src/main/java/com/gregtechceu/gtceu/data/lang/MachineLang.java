@@ -271,12 +271,12 @@ public class MachineLang {
                 "Pipelines must have exactly §f1 Input§7 and §f1 Output§7 endpoint.",
                 "Only pipeline endpoints need to be §fchunk-loaded§7.");
         provider.add("gui.gtceu.machine.ldpl.no_network", "No network found");
-        provider.add("gui.gtceu.machine.ldpl.input_endpoint", "Input Endpoint");
-        provider.add("gui.gtceu.machine.ldpl.output_endpoint", "Output Endpoint");
+        provider.add("gui.gtceu.machine.ldpl.endpoint.input", "Input Endpoint");
+        provider.add("gui.gtceu.machine.ldpl.endpoint.output", "Output Endpoint");
         provider.add("gui.gtceu.machine.ldpl.network_header", "Network:");
         provider.add("gui.gtceu.machine.ldpl.pipe_count", " - Pipes: %s");
-        provider.add("gui.gtceu.machine.ldpl.input_pos", " - Input: %s");
-        provider.add("gui.gtceu.machine.ldpl.output_pos", " - Output: %s");
+        provider.add("gui.gtceu.machine.ldpl.pos.input", " - Input: %s");
+        provider.add("gui.gtceu.machine.ldpl.pos.output", " - Output: %s");
         provider.add("machine.gtceu.long_distance_pipe.tooltip.min_length", "§bMinimum Endpoint Distance: §f%d Blocks");
     }
 
@@ -323,7 +323,7 @@ public class MachineLang {
                 "The Multi Smelter is a multiblock structure used for smelting massive amounts of items at once. Different tiers of coils provide a speed boost and energy efficiency gain. 32 is the base value of items smelted per operation, and can be multiplied by using higher level coils.");
         provider.add("gui.gtceu.machine.multi_smelter.heating_coil_level", "Heating Coil Level: %s");
         provider.add("gui.gtceu.machine.multi_smelter.heating_coil_discount", "Heating Coil EU Boost: %sx");
-        
+
         // Pyrolyse Oven
         provider.add("gui.gtceu.machine.pyrolyse_oven.processing_speed", "Processing Speed: %s%%");
 
@@ -561,14 +561,11 @@ public class MachineLang {
 
         // ME Stocking
         provider.addMultiLang("machine.gtceu.me.stocking_item.tooltip", "Retrieves items directly from the ME network",
+                "Keeps 16 item types in stock",
                 "Auto-Pull from ME mode will automatically stock the first 16 items in the ME system, updated every 5 seconds.");
         provider.addMultiLang("machine.gtceu.me.stocking_fluid.tooltip",
-                "Retrieves fluids directly from the ME network",
+                "Retrieves fluids directly from the ME network", "Keeps 16 fluid types in stock",
                 "Auto-Pull from ME mode will automatically stock the first 16 fluids in the ME system, updated every 5 seconds.");
-        provider.add("machine.gtceu.me_import_item_hatch.configs.tooltip",
-                "Keeps 16 item types in stock");
-        provider.add("machine.gtceu.me_import_fluid_hatch.configs.tooltip",
-                "Keeps 16 fluid types in stock");
 
         provider.add("gui.gtceu.machine.me_stocking.auto_pull.enabled",
                 "Auto-Pull Enabled");
@@ -1030,7 +1027,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.work_paused", "Work Paused.");
         provider.add("gui.gtceu.machine.running", "Running perfectly.");
         provider.add("gui.gtceu.machine.idling", "Idling.");
-        
+
         // Energy Requirement
         provider.add("gui.gtceu.machine.low_energy", "WARNING: Machine needs more energy.");
         provider.add("gui.gtceu.machine.low_energy_output", "WARNING: Energy Dynamo Tier Too Low!");

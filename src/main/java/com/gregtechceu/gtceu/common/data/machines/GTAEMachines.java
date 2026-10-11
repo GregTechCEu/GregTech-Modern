@@ -40,9 +40,9 @@ public class GTAEMachines {
             .tooltips(
                     Component.translatable("machine.gtceu.item_bus.import.tooltip"),
                     Component.translatable("machine.gtceu.me.stocking_item.tooltip.0"),
-                    Component.translatable("machine.gtceu.me_import_item_hatch.configs.tooltip"),
-                    Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
                     Component.translatable("machine.gtceu.me.stocking_item.tooltip.1"),
+                    Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
+                    Component.translatable("machine.gtceu.me.stocking_item.tooltip.2"),
                     Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
 
@@ -85,9 +85,9 @@ public class GTAEMachines {
             .tooltips(
                     Component.translatable("machine.gtceu.fluid_hatch.import.tooltip"),
                     Component.translatable("machine.gtceu.me.stocking_fluid.tooltip.0"),
-                    Component.translatable("machine.gtceu.me_import_fluid_hatch.configs.tooltip"),
-                    Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
                     Component.translatable("machine.gtceu.me.stocking_fluid.tooltip.1"),
+                    Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
+                    Component.translatable("machine.gtceu.me.stocking_fluid.tooltip.2"),
                     Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
 

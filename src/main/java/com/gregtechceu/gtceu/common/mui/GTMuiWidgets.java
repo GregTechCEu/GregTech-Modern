@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import com.demonwav.mcdev.annotations.Translatable;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -46,6 +45,7 @@ import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
+import com.demonwav.mcdev.annotations.Translatable;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import org.jetbrains.annotations.Nullable;
@@ -123,7 +123,8 @@ public class GTMuiWidgets {
     }
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture background,
-                                                  UITexture selectedBackground, @Translatable(suffix = ".enabled") String langKey) {
+                                                  UITexture selectedBackground,
+                                                  @Translatable(suffix = ".enabled") String langKey) {
         var value = new BooleanSyncValue(getter, setter).allowC2S();
         return new ToggleButton()
                 .value(value)
