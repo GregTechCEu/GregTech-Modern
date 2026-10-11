@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTDimensionMarkers;
+import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -365,6 +366,16 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             ((ModularGuiContext) guiContext).getScreen().getMainPanel().closeIfOpen();
                             return true;
                         })
+                        .tooltip(r -> r.addLine(Component.translatable("gtceu.terminal.clear_preference"))))
+                .childIf(terminal, () -> new ToggleButton()
+                        .right(-10)
+                        .overlay(new DrawableStack(new ItemDrawable(GTMachines.ITEM_EXPORT_BUS[0].asStack()),
+                                new ItemDrawable(Items.BARRIER)))
+                        .value(new BoolValue.Dynamic(() -> this.multiblockSchemaInfo.isIgnorePreviewCount(), value -> {
+                            this.multiblockSchemaInfo.setIgnorePreviewCount(value);
+                            refreshSchema();
+                            notifyWidgetHandlers();
+                        }))
                         .tooltip(r -> r.addLine(Component.translatable("gtceu.terminal.clear_preference"))))
                 .child(new DynamicWidget<>()
                         .right(-20)

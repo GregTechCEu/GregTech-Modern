@@ -523,7 +523,9 @@ public class MultiblockControllerMachine extends MetaMachine {
                 }
 
                 if (structureHelper != null) {
-                    structureHelper.populate(new MultiblockSchemaInfo(this.getDefinition()), resultStructure, pattern,
+                    var info = new MultiblockSchemaInfo(this.getDefinition());
+                    info.setIgnorePreviewCount(true);
+                    structureHelper.populate(info, resultStructure, pattern,
                             null,
                             getFrontFacing(), getUpwardsFacing(),
                             isFlipped());

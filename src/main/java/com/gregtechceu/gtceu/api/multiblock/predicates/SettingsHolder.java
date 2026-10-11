@@ -36,10 +36,10 @@ public interface SettingsHolder<S extends SettingsHolder<S>> extends Comparable<
         return hasSettings() ? getSettings().previewCount() : -1;
     }
 
-    default int getPreviewOrMinCount() {
+    default int getPreviewOrMinCount(boolean ignorePreviewCount) {
         if (!hasSettings()) return -1;
         PredicateSettings settings = getSettings();
-        if (settings.previewCount() != -1) return settings.previewCount();
+        if (settings.previewCount() != -1 && !ignorePreviewCount) return settings.previewCount();
         return settings.minCount();
     }
 

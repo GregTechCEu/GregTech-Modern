@@ -31,6 +31,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
     private final Int2IntMap sliceRepeats;
     private char[][][] flattenedBlockPattern = new char[0][][];
+    private boolean ignorePreviewCount;
 
     private final Object2IntOpenHashMap<MultiPredicate> predicateCount = new Object2IntOpenHashMap<>();
     private final Object2IntOpenHashMap<BasePredicate> basePredicateCount = new Object2IntOpenHashMap<>();
@@ -57,7 +58,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         return blockPattern.getPredicates().get(c);
     }
 
-    protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {
+    protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped,
+                         boolean ignorePreviewCount) {
         BlockPattern blockPattern = (BlockPattern) pattern;
         this.flattenedBlockPattern = rotateAndFlipPattern(flattenBlockPattern(blockPattern),
                 blockPattern.getDirections(),
@@ -67,6 +69,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         this.predicateSliceCount.clear();
         this.basePredicateCount.clear();
         this.basePredicateSliceCount.clear();
+        this.ignorePreviewCount = ignorePreviewCount;
     }
 
     protected Char2ObjectMap<MultiPredicate> getPredicatesFromPattern(IBlockPattern pattern) {
@@ -197,7 +200,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         BasePredicate baseNotSatisfied = null;
         if (predicate.isAnd() || predicate.isOr()) {
             for (BasePredicate basePredicate : predicate.predicates()) {
-                int baseMinCount = basePredicate.getPreviewOrMinCount();
+                int baseMinCount = basePredicate.getPreviewOrMinCount(ignorePreviewCount);
                 if (baseMinCount == 0) continue;
                 int baseMinSliceCount = basePredicate.getMinSliceCount();
                 if (baseMinSliceCount == 0) continue;
@@ -217,7 +220,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             int predTotalAlreadyPopulated = predicateCount.getInt(predicate);
             int predSliceAlreadyPopulated = predicateSliceCount.row(predicate).getOrDefault(offset, 0);
 
-            int predMinCount = predicate.getPreviewOrMinCount();
+            int predMinCount = predicate.getPreviewOrMinCount(ignorePreviewCount);
             int predMinSliceCount = predicate.getMinSliceCount();
             boolean predGlobalMinMet = predTotalAlreadyPopulated >= predMinCount;
             boolean predSliceMinMet = predSliceAlreadyPopulated >= predMinSliceCount;
@@ -226,7 +229,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
             for (BasePredicate basePredicate : predicate.predicates()) {
                 // Same goes for the basePredicates, any satisfied basePredicate with mins returns false
-                int baseMinCount = basePredicate.getPreviewOrMinCount();
+                int baseMinCount = basePredicate.getPreviewOrMinCount(ignorePreviewCount);
                 if (baseMinCount == 0) return false;
 
                 int baseMinSliceCount = basePredicate.getMinSliceCount();
@@ -272,7 +275,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         }
 
         // check if main predicate min is satisfied
-        int minCount = predicate.getPreviewOrMinCount();
+        int minCount = predicate.getPreviewOrMinCount(ignorePreviewCount);
         if (minCount == 0) return false;
         int sliceMinCount = predicate.getMinSliceCount();
         if (sliceMinCount == 0) return false;

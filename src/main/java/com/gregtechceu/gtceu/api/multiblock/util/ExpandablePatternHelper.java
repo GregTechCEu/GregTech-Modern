@@ -26,6 +26,7 @@ import java.util.Objects;
 public class ExpandablePatternHelper extends AbstractStructureHelper {
 
     private final IntList userRepeats;
+    private boolean ignorePreviewCount;
 
     private final Object2IntOpenHashMap<MultiPredicate> predicateCount = new Object2IntOpenHashMap<>();
     private final Object2IntOpenHashMap<BasePredicate> basePredicateCount = new Object2IntOpenHashMap<>();
@@ -35,9 +36,11 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     }
 
     @Override
-    protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {
+    protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped,
+                         boolean ignorePreviewCount) {
         this.predicateCount.clear();
         this.basePredicateCount.clear();
+        this.ignorePreviewCount = ignorePreviewCount;
     }
 
     private static CornerData getCorners(IntList bounds,
@@ -191,7 +194,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         BasePredicate baseNotSatisfied = null;
         if (predicate.isAnd() || predicate.isOr()) {
             for (BasePredicate basePredicate : predicate.predicates()) {
-                int baseMinCount = basePredicate.getPreviewOrMinCount();
+                int baseMinCount = basePredicate.getPreviewOrMinCount(ignorePreviewCount);
                 if (baseMinCount == 0) continue;
 
                 int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
@@ -203,12 +206,12 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         } else if (predicate.isXor()) {
             // For XOR, only one can be true. If we find any condition already satisfied, return false
             int predTotalAlreadyPopulated = predicateCount.getInt(predicate);
-            int predMinCount = predicate.getPreviewOrMinCount();
+            int predMinCount = predicate.getPreviewOrMinCount(ignorePreviewCount);
             if (predMinCount != -1 && predTotalAlreadyPopulated >= predMinCount) return false;
 
             for (BasePredicate basePredicate : predicate.predicates()) {
                 // Same goes for the basePredicates, any satisfied basePredicate with mins returns false
-                int baseMinCount = basePredicate.getPreviewOrMinCount();
+                int baseMinCount = basePredicate.getPreviewOrMinCount(ignorePreviewCount);
                 if (baseMinCount == 0) return false;
 
                 int baseTotalAlreadyPopulated = basePredicateCount.getInt(basePredicate);
@@ -244,7 +247,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         }
 
         // check if main predicate min is satisfied
-        int minCount = predicate.getPreviewOrMinCount();
+        int minCount = predicate.getPreviewOrMinCount(ignorePreviewCount);
         if (minCount == 0) return false;
 
         int totalAlreadyPopulated = predicateCount.getInt(predicate);

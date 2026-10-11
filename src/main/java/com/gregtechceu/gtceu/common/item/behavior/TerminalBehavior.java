@@ -241,7 +241,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                 schemaInfo.getUserDimensions(), schemaInfo.getUserGlobalBlockPreferences(),
                 schemaInfo.getBlockPreferences(), HashBasedTable.create()
                 /* schemaInfo.getMinMaxPreferenceCharTable() */, previewWidget.isFlipped(),
-                previewWidget.isClearMulti(), previewWidget.isClearPreferences()));
+                previewWidget.isClearMulti(), previewWidget.isClearPreferences(), schemaInfo.isIgnorePreviewCount()));
     }
 
     public static void applyUserPreferences(ItemStack item, MultiblockSchemaInfo schemaInfo,

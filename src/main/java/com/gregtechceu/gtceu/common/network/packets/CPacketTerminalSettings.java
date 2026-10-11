@@ -36,6 +36,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
     private final boolean isFlipped;
     boolean isClearMulti;
     boolean isClearPreferences;
+    boolean ignorePreviewCount;
 
     public CPacketTerminalSettings(InteractionHand hand, MultiblockMachineDefinition def, Int2IntMap sliceRepeats,
                                    IntList dimensions,
@@ -44,7 +45,8 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
                                    Table<Character, Integer, IntIntPair> minMaxPreferences,
                                    boolean isFlipped,
                                    boolean isClearMulti,
-                                   boolean isClearPreferences) {
+                                   boolean isClearPreferences,
+                                   boolean ignorePreviewCount) {
         this.hand = hand;
         this.machineDefinition = def;
         this.sliceRepeats = sliceRepeats;
@@ -55,6 +57,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         this.isFlipped = isFlipped;
         this.isClearMulti = isClearMulti;
         this.isClearPreferences = isClearPreferences;
+        this.ignorePreviewCount = ignorePreviewCount;
     }
 
     private static final FriendlyByteBuf.Reader<BlockInfo> blockInfoReader = (b) -> BlockInfo
@@ -93,6 +96,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         this.isFlipped = buf.readBoolean();
         this.isClearMulti = buf.readBoolean();
         this.isClearPreferences = buf.readBoolean();
+        this.ignorePreviewCount = buf.readBoolean();
     }
 
     @Override
@@ -116,6 +120,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         buf.writeBoolean(this.isFlipped);
         buf.writeBoolean(this.isClearMulti);
         buf.writeBoolean(this.isClearPreferences);
+        buf.writeBoolean(this.ignorePreviewCount);
     }
 
     @Override
@@ -127,7 +132,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         if (!GTItems.TERMINAL.isIn(held)) return;
 
         var schemaInfo = new MultiblockSchemaInfo(this.machineDefinition, this.sliceRepeats, this.dimensions,
-                this.globalPreferences, this.blockPreferences, this.isFlipped);
+                this.globalPreferences, this.blockPreferences, this.isFlipped, this.ignorePreviewCount);
         TerminalBehavior.applyUserPreferences(held, schemaInfo, this.isClearMulti, this.isClearPreferences);
     }
 }

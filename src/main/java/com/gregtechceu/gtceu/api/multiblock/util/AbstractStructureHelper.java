@@ -45,7 +45,7 @@ public abstract class AbstractStructureHelper {
     public void populate(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
                          @Nullable Object2ObjectMap<BlockPos, BlockInfo> userBlockPreferences,
                          Direction frontFacing, Direction upFacing, boolean isFlipped) {
-        setup(pattern, frontFacing, upFacing, isFlipped);
+        setup(pattern, frontFacing, upFacing, isFlipped, info.isIgnorePreviewCount());
         Char2ObjectMap<MultiPredicate> sortedPredicates = sortPredicatesForPreferences(
                 getPredicatesFromPattern(pattern), info.getBlockPreferences());
         if (userBlockPreferences != null && !userBlockPreferences.isEmpty()) {
@@ -56,7 +56,8 @@ public abstract class AbstractStructureHelper {
         fixRotationsAndFacing(resultStructure, frontFacing, upFacing, this.controllerBlock);
     }
 
-    protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {}
+    protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped,
+                         boolean ignorePreviewCount) {}
 
     protected abstract void populateWithUserBlockPreferences(MultiblockSchemaInfo info,
                                                              Map<BlockPos, BlockInfo> resultStructure,
