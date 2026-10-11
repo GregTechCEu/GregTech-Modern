@@ -1060,6 +1060,7 @@ public class LangHandler {
         provider.add("gtceu.fluid.gas_vapor", "%s Vapor");
         provider.add("gtceu.fluid.plasma", "%s Plasma");
         provider.add("gtceu.fluid.molten", "Molten %s");
+        provider.add("gtceu.fluid.requires_metal_freezing", "Requires metal freezing");
         provider.add("gtceu.fluid.empty", "Empty");
         provider.add("gtceu.fluid.amount", "§9Amount: %d/%d mB");
         provider.add("gtceu.fluid.temperature", "§cTemperature: %s");

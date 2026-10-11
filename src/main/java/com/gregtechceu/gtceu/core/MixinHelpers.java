@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
@@ -226,6 +227,10 @@ public class MixinHelpers {
                     }
                     tagMap.computeIfAbsent(state.getTagKey().location(), path -> new ArrayList<>()).add(entry);
 
+                    if (key == FluidStorageKeys.LIQUID && material.requiresMetalFreezing()) {
+                        tagMap.computeIfAbsent(CustomTags.FREEZABLE_FLUIDS.location(), path -> new ArrayList<>())
+                                .add(entry);
+                    }
                     if (key.getExtraTag() != null) {
                         tagMap.computeIfAbsent(key.getExtraTag().location(), path -> new ArrayList<>()).add(entry);
                     }
