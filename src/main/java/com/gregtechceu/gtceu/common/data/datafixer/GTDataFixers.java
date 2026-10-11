@@ -146,7 +146,7 @@ public class GTDataFixers {
         builder.addFixer(new AddNewChoices(v1_4, "Added Welder and Spooler", References.BLOCK_ENTITY));
         // Migrate GT's Molten fluids, ignore addons to allow them to fail loudly
         createBlockItemFluidRenameFix(builder, v1_4, "Remove molten fluids",
-                createRenamer(Pattern.compile("gtceu:molten_"), "gtceu:"));
+                createRenamer(Pattern.compile("gtceu:(flowing_)?molten_"), "gtceu:$1"));
 
         // separator
 
@@ -156,7 +156,7 @@ public class GTDataFixers {
         // createMaterialRenameFix(builder, v1_5, "Rename uranium_235 to uranium",
         // createRenamer(Pattern.compile("gtceu:(.*)uranium_235"), "gtceu:$1uranium"));
         createMaterialRenameFix(builder, v1_5, "Fix Red Granite name",
-                createRenamer(Pattern.compile("gtceu:(.*)granite_red"), "gtceu:$1red_granite"));
+                createRenamer(RedGraniteRenameFix.RENAMED_IDS));
         createMaterialRenameFix(builder, v1_5, "Fix Oil variant names",
                 createRenamer(OilVariantsRenameFix.RENAMED_IDS));
         createMaterialRenameFix(builder, v1_5, "Fix Raw Palladium name",
