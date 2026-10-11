@@ -100,7 +100,7 @@ public class ModularArmorLang {
         provider.add("module.gtceu.creative_flight.description",
                 "Allows creative flight (consumes %s EU/t while flying)");
 
-        provider.add("module.gtceu.fluid_storage", "Fluid Storage (%s)");
+        provider.add("module.gtceu.fluid_storage", "Fluid Storage");
         provider.add("module.gtceu.fluid_storage.description",
                 "Allows the item to store liquids or increases its capacity (capacity is equal to the tank's)");
         provider.add("module.gtceu.fluid_storage.current_stored", "Storing %s/%s mB of %s");

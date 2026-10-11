@@ -208,8 +208,8 @@ public class ModularItemTest {
         helper.getLevel().addFreshEntity(player);
 
         BatteryBufferMachine buffer = (BatteryBufferMachine) TestUtils.setMachine(helper, BlockPos.ZERO,
-                GTMachines.BATTERY_BUFFER_4[GTValues.MV]);
-        ItemStack bufferBattery = chargeToMax(GTItems.BATTERY_MV_LITHIUM.asStack());
+                GTMachines.BATTERY_BUFFER_4[GTValues.LuV]);
+        ItemStack bufferBattery = chargeToMax(GTItems.ENERGY_LAPOTRONIC_ORB_CLUSTER.asStack());
         buffer.getBatteryInventory().setStackInSlot(0, bufferBattery);
         buffer.setOwnerUUID(player.getUUID());
         IElectricItem bufferBatteryElectricItem = GTCapabilityHelper.getElectricItem(bufferBattery);
@@ -217,13 +217,19 @@ public class ModularItemTest {
 
         var wirelessModule = modular.attach(GTItemModules.WIRELESS_CHARGER[GTValues.LuV], GTItems.SENSOR_LuV.asStack(),
                 false);
-        modular.attach(GTItemModules.BATTERY, GTItems.BATTERY_MV_LITHIUM.asStack(), false);
+        modular.attach(GTItemModules.BATTERY, GTItems.ENERGY_LAPOTRONIC_ORB_CLUSTER.asStack(), false);
 
         assert wirelessModule != null;
         wirelessModule.setData(wirelessModule.getData(AutoChargeItemModule.AutoChargeModuleData.class).withLinkedPos(
                 GlobalPos.of(helper.getLevel().dimension(), buffer.getBlockPos())));
 
         player.setItemSlot(EquipmentSlot.CHEST, armor);
+
+        IModularItem modularItem = GTCapabilityHelper.getModularItem(armor);
+        Objects.requireNonNull(modularItem).runForEachModule((m, a) -> {
+            if (m.isEnabled(a)) m.onInventoryTick(a, player);
+            m.onTickRaw(a, player, player.level(), player.getOnPos());
+        });
 
         helper.runAtTickTime(20, () -> {
             IElectricItem electric = GTCapabilityHelper.getElectricItem(armor);

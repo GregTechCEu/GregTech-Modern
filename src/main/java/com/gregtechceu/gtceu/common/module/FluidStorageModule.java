@@ -72,8 +72,7 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
     public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
-        tooltips.add(Component.translatable(getLanguageKey(),
-                moduleContext.getData().getModuleItem().getHoverName()));
+        tooltips.add(moduleContext.getData().getModuleItem().getHoverName());
         IFluidHandlerItem fluidHandler = moduleContext.getAppliedTo()
                 .getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
         if (fluidHandler != null) {
