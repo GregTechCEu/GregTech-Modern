@@ -22,11 +22,13 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 public abstract class ToolDecompLogic implements GTRecipeType.ICustomRecipeLogic {
 
-    private final GTRecipeCategory recipeCategory;
+    public ToolDecompLogic() {}
 
-    public ToolDecompLogic(GTRecipeCategory recipeCategory) {
-        this.recipeCategory = recipeCategory;
-    }
+    public abstract @Nullable GTRecipe applyDurabilityRecipe(String id, ItemStack inputStack, Material mat,
+                                                             long fullAmount, float durability, long voltage,
+                                                             int durationFactor);
+
+    public abstract GTRecipeCategory getDisplayRecipeCategory();
 
     @Override
     public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
@@ -60,10 +62,6 @@ public abstract class ToolDecompLogic implements GTRecipeType.ICustomRecipeLogic
         return null;
     }
 
-    public abstract @Nullable GTRecipe applyDurabilityRecipe(String id, ItemStack inputStack, Material mat,
-                                                             long fullAmount, float durability, long voltage,
-                                                             int durationFactor);
-
     @Override
     public void buildRepresentativeRecipes() {
         float durability = 0.69f;
@@ -78,7 +76,7 @@ public abstract class ToolDecompLogic implements GTRecipeType.ICustomRecipeLogic
                 GTValues.VH[GTValues.LV], 2);
         assert pickaxeRecipe != null : "Default Tool Decomp recipe couldn't be generated";
         pickaxeRecipe.setId(pickaxeRecipe.getId().withPrefix("/"));
-        this.recipeCategory.addRecipe(pickaxeRecipe);
+        getDisplayRecipeCategory().addRecipe(pickaxeRecipe);
 
         // separator //
 
@@ -90,6 +88,6 @@ public abstract class ToolDecompLogic implements GTRecipeType.ICustomRecipeLogic
                 turbineRotor.materialAmount() / GTValues.M, durability, GTValues.VH[GTValues.EV], 1);
         assert rotorRecipe != null : "Default Turbine Decomp recipe couldn't be generated";
         rotorRecipe.setId(rotorRecipe.getId().withPrefix("/"));
-        this.recipeCategory.addRecipe(rotorRecipe);
+        getDisplayRecipeCategory().addRecipe(rotorRecipe);
     }
 }

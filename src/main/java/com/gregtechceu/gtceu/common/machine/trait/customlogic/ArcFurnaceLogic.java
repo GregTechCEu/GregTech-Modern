@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.IngotProperty
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.machine.trait.customlogic.ToolDecompLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.world.item.ItemStack;
@@ -19,9 +20,7 @@ public final class ArcFurnaceLogic extends ToolDecompLogic {
 
     public static final ArcFurnaceLogic INSTANCE = new ArcFurnaceLogic();
 
-    public ArcFurnaceLogic() {
-        super(ARC_FURNACE_RECYCLING);
-    }
+    private ArcFurnaceLogic() {}
 
     @Override
     public @Nullable GTRecipe applyDurabilityRecipe(String id, ItemStack inputStack, Material mat,
@@ -52,5 +51,10 @@ public final class ArcFurnaceLogic extends ToolDecompLogic {
         }
 
         return builder.buildRawRecipe();
+    }
+
+    @Override
+    public GTRecipeCategory getDisplayRecipeCategory() {
+        return ARC_FURNACE_RECYCLING;
     }
 }

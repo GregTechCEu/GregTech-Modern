@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.trait.customlogic.ToolDecompLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -18,9 +19,7 @@ public final class MaceratorLogic extends ToolDecompLogic {
 
     public static final MaceratorLogic INSTANCE = new MaceratorLogic();
 
-    public MaceratorLogic() {
-        super(MACERATOR_RECYCLING);
-    }
+    private MaceratorLogic() {}
 
     @Override
     public @Nullable GTRecipe applyDurabilityRecipe(String id, ItemStack inputStack, Material mat,
@@ -49,5 +48,10 @@ public final class MaceratorLogic extends ToolDecompLogic {
         }
 
         return builder.buildRawRecipe();
+    }
+
+    @Override
+    public GTRecipeCategory getDisplayRecipeCategory() {
+        return MACERATOR_RECYCLING;
     }
 }
