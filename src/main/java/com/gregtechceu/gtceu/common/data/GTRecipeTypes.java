@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
+import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.*;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
@@ -117,7 +118,25 @@ public class GTRecipeTypes {
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER))
             .setSound(GTSoundEntries.ASSEMBLER);
 
-    public final static GTRecipeType AUTOCLAVE_RECIPES = register("autoclave", ELECTRIC).setMaxIOSize(2, 2, 1, 1)
+    public static final GTRecipeType SPOOLING_RECIPES = register("spooling", ELECTRIC)
+            .setMaxIOSize(3, 1, 1, 0)
+            .setEUIO(IO.IN)
+            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER))
+            .setSound(GTSoundEntries.COMPRESSOR);
+
+    public static final GTRecipeType WELDER_RECIPES = register("welder", ELECTRIC)
+            .setMaxIOSize(4, 1, 1, 0)
+            .setEUIO(IO.IN)
+            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER)
+                    .setMachineLayoutGridBuilder(ItemRecipeCapability.CAP, IO.IN,
+                            (machine, l) -> {
+                                int slots = l.getRecipeType().getMaxInputs(ItemRecipeCapability.CAP);
+                                return GTMuiWidgets.createGrid(slots, (int) Mth.sqrt(slots), false, 's');
+                            }))
+            .setSound(GTSoundEntries.ELECTROLYZER);
+
+    public static final GTRecipeType AUTOCLAVE_RECIPES = register("autoclave", ELECTRIC)
+            .setMaxIOSize(2, 2, 1, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_CRYSTALLIZATION)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.DUST_OVERLAY)
@@ -144,26 +163,16 @@ public class GTRecipeTypes {
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(150).EUt(2))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_MACERATE)
                     .setMachineLayoutGridBuilder(ItemRecipeCapability.CAP, IO.OUT, (machine, layout) -> {
-                        int slots = layout.getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP);
-                        int width = 3;
-                        if (machine instanceof ITieredMachine tieredMachine) {
-                            if (tieredMachine.getTier() < GTValues.HV) {
-                                slots = 1;
-                                width = 1;
-                            } else if (tieredMachine.getTier() == GTValues.HV) {
-                                slots = 3;
-                            } else {
-                                slots = 4;
-                                width = 2;
-                            }
-                        }
+                        int slots = machine.getDefinition().getOutputSize(ItemRecipeCapability.CAP,
+                                layout.getRecipeType());
+                        int width = slots > 1 ? 2 : 1;
 
                         return GTMuiWidgets.createGrid(slots, width, true, 's');
                     })
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.CRUSHED_ORE_OVERLAY)
                     .setItemSlotsOverlay(IO.OUT, 0, 3, GTGuiTextures.DUST_OVERLAY)
                     .addRecipeUIModifier(RecipeUIModifier
-                            .textLine(Text.lang("gtceu.recipe.byproduct_tier", GTValues.VNF[GTValues.HV]))))
+                            .textLine(Text.lang("gtceu.recipe.byproduct_tier", GTValues.VNF[GTValues.LV]))))
             .setIconSupplier(() -> GTMachines.MACERATOR[GTValues.LV].asStack())
             .addCustomRecipeLogic(MaceratorLogic.INSTANCE)
             .setSound(GTSoundEntries.MACERATOR);
@@ -179,7 +188,7 @@ public class GTRecipeTypes {
             .addCustomRecipeLogic(CannerLogic.INSTANCE)
             .setSound(GTSoundEntries.BATH);
 
-    public final static GTRecipeType CENTRIFUGE_RECIPES = register("centrifuge", ELECTRIC).setMaxIOSize(2, 6, 1, 6)
+    public final static GTRecipeType CENTRIFUGE_RECIPES = register("centrifuge", ELECTRIC).setMaxIOSize(2, 6, 2, 6)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(5))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_EXTRACT)
@@ -363,7 +372,9 @@ public class GTRecipeTypes {
             .addCustomRecipeLogic(FormingPressLogic.INSTANCE)
             .setSound(GTSoundEntries.COMPRESSOR);
 
-    public final static GTRecipeType LATHE_RECIPES = register("lathe", ELECTRIC).setMaxIOSize(1, 2, 0, 0).setEUIO(IO.IN)
+    public static final GTRecipeType LATHE_RECIPES = register("lathe", ELECTRIC)
+            .addCustomRecipeLogic(LatheRecipeLogic.REPRESENTATIVE_RECIPES)
+            .setMaxIOSize(1, 2, 1, 0).setEUIO(IO.IN)
             .UI(builder -> builder
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.PIPE_OVERLAY_1)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.PIPE_OVERLAY_2)

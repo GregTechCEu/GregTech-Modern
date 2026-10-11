@@ -12,6 +12,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+import static com.gregtechceu.gtceu.api.multiblock.pattern.PatternBuilderUtils.checkNullPredicates;
+
 @Accessors(fluent = true, chain = true)
 public class ExpandableMultiblockPatternBuilder {
 
@@ -51,6 +53,7 @@ public class ExpandableMultiblockPatternBuilder {
     public ExpandablePattern build() {
         Objects.requireNonNull(boundsProvider, "Bound function is null");
         Objects.requireNonNull(predicateProvider, "Predicate function is null");
+        checkNullPredicates(symbolMap);
         ExpandablePattern pattern = new ExpandablePattern(boundsProvider, predicateProvider, symbolMap, directions);
         if (constraintProvider != null) {
             pattern.setBoundsConstraints(constraintProvider);

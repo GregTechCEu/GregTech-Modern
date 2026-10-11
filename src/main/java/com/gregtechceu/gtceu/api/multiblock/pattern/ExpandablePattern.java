@@ -174,9 +174,7 @@ public class ExpandablePattern implements IBlockPattern {
         for (var pos : BlockPos.betweenClosed(negCorner, posCorner)) {
             BlockPos.MutableBlockPos mPos = pos.mutable();
             char key = predicateProvider.getPredicateKey(mPos, bounds);
-            /* log missing char -> multi predicate? */
             MultiPredicate multiPredicate = this.symbolMap.get(key);
-            if (multiPredicate == null) continue;
 
             if (visited.add(multiPredicate)) {
                 multiPredicate.resetLogic();

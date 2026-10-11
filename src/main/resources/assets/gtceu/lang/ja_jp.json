@@ -1811,7 +1811,6 @@
   "config.gtceu.option.harderBrickRecipes": "ハードな煉瓦のレシピ",
   "config.gtceu.option.harderCharcoalRecipe": "ハードなチャコールのレシピ",
   "config.gtceu.option.harderCircuitRecipes": "ハードな回路のレシピ",
-  "config.gtceu.option.harderRods": "ハードな棒",
   "config.gtceu.option.harmlessActiveTransformers": "稼働中の変圧器汚染を減らす",
   "config.gtceu.option.hazardsEnabled": "汚染の有効化",
   "config.gtceu.option.hideFacadesInRecipeViewer": "レシピmodでファサードを非表示にする",
