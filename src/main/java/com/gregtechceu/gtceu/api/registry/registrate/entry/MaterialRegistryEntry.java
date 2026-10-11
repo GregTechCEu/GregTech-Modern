@@ -112,7 +112,7 @@ public class MaterialRegistryEntry extends RegistryEntry<Material, Material> {
         value().removeProperty(key);
     }
 
-    public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty property) {
+    public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, T property) {
         value().setProperty(key, property);
     }
 
