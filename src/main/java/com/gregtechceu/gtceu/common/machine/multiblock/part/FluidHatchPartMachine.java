@@ -275,7 +275,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
                                 .tooltip(t -> t.addLine("Locked Fluid")))
                         .childIf(io.support(IO.OUT), () -> new ToggleButton()
                                 .syncHandler("locked")
-                                .tooltipDynamic(t -> t.addLine(Component.translatable("gtceu.gui.fluid_lock.tooltip." +
+                                .tooltipDynamic(t -> t.addLine(Component.translatable("gui.gtceu.fluid_locking." +
                                         (locked.getBoolValue() ? "enabled" : "disabled"))))
                                 .overlay(false, GTGuiTextures.BUTTON_LOCK)
                                 .overlay(true, GTGuiTextures.BUTTON_LOCK)

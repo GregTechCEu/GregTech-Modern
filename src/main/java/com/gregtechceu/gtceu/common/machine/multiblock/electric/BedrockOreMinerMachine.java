@@ -53,16 +53,16 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
     // int energyContainer = getEnergyTier();
     // long maxVoltage = GTValues.V[energyContainer];
     // String voltageName = GTValues.VNF[energyContainer];
-    // textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));
+    // textList.add(Component.translatable("gui.gtceu.machine.max_eut", maxVoltage, voltageName));
     //
     // if (getRecipeLogic().getVeinMaterials() != null) {
     // // Ore names
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ores_list")
+    // textList.add(Component.translatable("gui.gtceu.machine.bedrock_miner.drilled_ores_list")
     // .withStyle(ChatFormatting.GREEN));
     // List<WeightedMaterial> drilledOres = getRecipeLogic().getVeinMaterials();
     // for (var entry : drilledOres) {
     // Component fluidInfo = entry.material().getLocalizedName().withStyle(ChatFormatting.GREEN);
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ore_entry", fluidInfo)
+    // textList.add(Component.translatable("gui.gtceu.machine.bedrock_miner.drilled_ore_entry", fluidInfo)
     // .withStyle(ChatFormatting.GRAY));
     // }
     //
@@ -70,20 +70,20 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
     // Component amountInfo = Component.literal(FormattingUtil.formatNumbers(
     // getRecipeLogic().getOreToProduce() * 20L / BedrockOreMinerLogic.MAX_PROGRESS) +
     // "/s").withStyle(ChatFormatting.BLUE);
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.ore_amount", amountInfo)
+    // textList.add(Component.translatable("gui.gtceu.machine.bedrock_miner.ore_amount", amountInfo)
     // .withStyle(ChatFormatting.GRAY));
     // } else {
-    // Component noOre = Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area")
+    // Component noOre = Component.translatable("gui.gtceu.machine.fluid_rig.no_fluid_in_area")
     // .withStyle(ChatFormatting.RED);
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ores_list")
+    // textList.add(Component.translatable("gui.gtceu.machine.bedrock_miner.drilled_ores_list")
     // .withStyle(ChatFormatting.GREEN));
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ore_entry", noOre)
+    // textList.add(Component.translatable("gui.gtceu.machine.bedrock_miner.drilled_ore_entry", noOre)
     // .withStyle(ChatFormatting.GRAY));
     // }
     // } else {
-    // Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
+    // Component tooltip = Component.translatable("gui.gtceu.machine.invalid_structure.tooltip")
     // .withStyle(ChatFormatting.GRAY);
-    // textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
+    // textList.add(Component.translatable("gui.gtceu.machine.invalid_structure")
     // .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
     // .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
     // }

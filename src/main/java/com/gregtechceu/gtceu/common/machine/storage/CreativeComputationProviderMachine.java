@@ -118,7 +118,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                 .leftRel(0)
                                 .childPadding(5)
                                 .coverChildren()
-                                .child(new TextWidget<>(Text.lang("gtceu.creative.computation.max_usage")))
+                                .child(new TextWidget<>(Text.lang("gui.gtceu.machine.creative_computation.max_usage")))
                                 .child(new TextFieldWidget()
                                         .setNumbers(0, Integer.MAX_VALUE)
                                         .value(new IntSyncValue(() -> maxCWUt, (v) -> maxCWUt = v).allowC2S())))
@@ -129,7 +129,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                 .childPadding(5)
                                 .coverChildren()
                                 .child(
-                                        Text.dynamic(() -> Text.lang("gtceu.creative.computation.average",
+                                        Text.dynamic(() -> Text.lang("gui.gtceu.machine.creative_computation.average",
                                                 lastRequestedSyncCWU.getIntValue()))
                                                 .asWidget())));
     }

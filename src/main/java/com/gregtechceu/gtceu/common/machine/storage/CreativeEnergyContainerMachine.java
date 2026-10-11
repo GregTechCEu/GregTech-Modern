@@ -268,7 +268,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
     static Flow createAmpRow(IntSyncValue amps) {
         return Flow.row()
                 .coverChildrenHeight()
-                .child(Text.lang("gtceu.creative.energy.amperage").asWidget()
+                .child(Text.lang("gui.gtceu.machine.creative_energy.amperage").asWidget()
                         .marginRight(4)
                         .verticalCenter().width(50))
                 .child(
@@ -322,7 +322,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                                     return IDrawable.EMPTY;
                                 }))
                                 .value(sourceSync))
-                        .child(Text.lang("gtceu.creative.energy.source").asWidget())
+                        .child(Text.lang("gui.gtceu.machine.creative_energy.source").asWidget())
                         .paddingBottom(2))
                 .child(Flow.row()
                         .coverChildrenHeight()
@@ -337,7 +337,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                                     return IDrawable.EMPTY;
                                 }))
                                 .value(sinkSync))
-                        .child(Text.lang("gtceu.creative.energy.sink").asWidget()));
+                        .child(Text.lang("gui.gtceu.machine.creative_energy.sink").asWidget()));
     }
 
     private ModularPanel<?> createAmpSelector(LongSyncValue voltage, IntSyncValue tier) {

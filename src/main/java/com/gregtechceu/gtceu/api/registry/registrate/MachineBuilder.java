@@ -32,6 +32,7 @@ import com.gregtechceu.gtceu.data.lang.LangGenerationHandler;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
+import com.gregtechceu.gtceu.utils.LangUtil;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -134,8 +135,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private PartAbility[] abilities = new PartAbility[0];
     private final List<String> langTooltips = new ArrayList<>();
     private final List<Component> tooltips = new ArrayList<>();
+
+    private boolean addDefaultTooltips = true;
     @Nullable
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
+
     private RecipeModifier recipeModifier = new RecipeModifierList(GTRecipeModifiers.OC_NON_PERFECT);
     private boolean alwaysTryModifyRecipe;
     @NotNull
@@ -268,6 +272,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     public SELF itemColor(BiFunction<ItemStack, Integer, Integer> itemColor) {
         this.itemColor = itemColor;
+        return getThis();
+    }
+
+    public SELF addDefaultTooltips(boolean addDefaultTooltips) {
+        this.addDefaultTooltips = addDefaultTooltips;
         return getThis();
     }
 
@@ -772,6 +781,13 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.setRecipeOutputLimits(recipeOutputLimits);
         definition.setBlockEntityTypeSupplier(blockEntity::get);
         definition.setTooltipBuilder((itemStack, components) -> {
+            if (addDefaultTooltips) {
+                String mainKey = definition.getId().toLanguageKey("machine", "tooltip");
+                if (LangUtil.hasSingleOrMultiLang(mainKey)) {
+                    var langs = LangUtil.getSingleOrMultiLang(mainKey);
+                    components.addAll(List.of(langs));
+                }
+            }
             components.addAll(tooltips);
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
         });

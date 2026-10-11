@@ -34,7 +34,7 @@ public class DataBankBlockProvider extends MachineInfoProvider<DataBankMachine, 
         // wrap in text component to keep it from being formatted
         Component voltageName = Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(energyUsage)]);
         Component text = Component.translatable(
-                "gtceu.multiblock.energy_consumption",
+                "gui.gtceu.machine.energy_consumption",
                 energyFormatted,
                 voltageName);
 

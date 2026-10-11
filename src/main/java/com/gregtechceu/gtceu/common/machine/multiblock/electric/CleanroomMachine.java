@@ -467,7 +467,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
         widgets.add(Text.dynamic(() -> {
             String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage.getLongValue())];
-            return Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage.getLongValue(),
+            return Component.translatable("gui.gtceu.machine.max_eut", maxVoltage.getLongValue(),
                     voltageName);
         })
                 .asWidget()
@@ -483,32 +483,32 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !cleanroomTypeIsNull.getBoolValue()));
 
-        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.work_paused"))
+        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.work_paused"))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !workingEnabled.getBoolValue()));
 
         widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
 
-        widgets.add(Text.lang("gtceu.multiblock.idling")
+        widgets.add(Text.lang("gui.gtceu.machine.idling")
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() &&
                         !active.getBoolValue()));
 
         widgets.add(Text
-                .of(Component.translatable("gtceu.multiblock.waiting")
+                .of(Component.translatable("gui.gtceu.machine.waiting")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && waiting.getBoolValue()));
 
-        widgets.add(Text.of(Component.translatable("gtceu.multiblock.cleanroom.clean_state"))
+        widgets.add(Text.of(Component.translatable("gui.gtceu.machine.cleanroom.clean_state"))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && cleanroomProviderTraitIsActive.getBoolValue()));
-        widgets.add(Text.of(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"))
+        widgets.add(Text.of(Component.translatable("gui.gtceu.machine.cleanroom.dirty_state"))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !cleanroomProviderTraitIsActive.getBoolValue()));
 
         widgets.add(Text.dynamic(
-                () -> Component.translatable("gtceu.multiblock.cleanroom.clean_amount", cleanAmount.getIntValue()))
+                () -> Component.translatable("gui.gtceu.machine.cleanroom.clean_amount", cleanAmount.getIntValue()))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));
 
@@ -545,8 +545,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
                 mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
             return Collections.singletonList(Component.translatable(
-                    cleanroomProviderTrait.isActive() ? "gtceu.multiblock.cleanroom.clean_state" :
-                            "gtceu.multiblock.cleanroom.dirty_state"));
+                    cleanroomProviderTrait.isActive() ? "gui.gtceu.machine.cleanroom.clean_state" :
+                            "gui.gtceu.machine.cleanroom.dirty_state"));
         }
         return new ArrayList<>();
     }

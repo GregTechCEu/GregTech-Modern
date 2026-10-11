@@ -262,7 +262,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
 
         widgets.add(Text.dynamic(() -> {
             if (!isFormed.getBoolValue()) return Component.empty();
-            return Component.translatable("gtceu.multiblock.large_boiler.temperature",
+            return Component.translatable("gui.gtceu.machine.large_boiler.temperature",
                     currentTemperature.getIntValue() + 274, maxTemperature.getIntValue() + 274)
                     .withStyle(ChatFormatting.WHITE);
         })
@@ -270,12 +270,12 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                 .setEnabledIf((w) -> isFormed.getBoolValue()));
         widgets.add(Text.dynamic(() -> {
             if (!isFormed.getBoolValue()) return Component.empty();
-            return Component.translatable("gtceu.multiblock.large_boiler.steam_output",
+            return Component.translatable("gui.gtceu.machine.large_boiler.steam_output",
                     steamGenerated.getIntValue() / TICKS_PER_STEAM_GENERATION).withStyle(ChatFormatting.WHITE);
         })
                 .asWidget()
                 .setEnabledIf((w) -> isFormed.getBoolValue()));
-        widgets.add(Text.of(Component.translatable("gtceu.multiblock.large_boiler.throttle_modify")
+        widgets.add(Text.of(Component.translatable("gui.gtceu.machine.large_boiler.throttle_modify")
                 .withStyle(ChatFormatting.WHITE))
                 .asWidget().setEnabledIf((w) -> isFormed.getBoolValue()));
         widgets.add(createIntInputWithButtons(throttle)

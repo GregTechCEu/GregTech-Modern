@@ -82,13 +82,13 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
                 (sm, sh) -> PopupPanel.createPopupPanel("stocking_settings_panel", 140, 70)
                         .child(Flow.col()
                                 .coverChildren()
-                                .child(Text.lang("gtceu.gui.me_network.min_stack_size").asWidget())
+                                .child(Text.lang("gui.gtceu.machine.me_part.network.min_stack_size").asWidget())
                                 .child(new TextFieldWidget()
                                         .size(120, 18)
                                         .value(SyncHandlers.intNumber(this::getMinStackSize, this::setMinStackSize)
                                                 .allowC2S())
                                         .setNumbers(1, Integer.MAX_VALUE))
-                                .child(Text.lang("gtceu.gui.me_network.ticks_per_cycle").asWidget())
+                                .child(Text.lang("gui.gtceu.machine.me_part.network.ticks_per_cycle").asWidget())
                                 .child(new TextFieldWidget()
                                         .size(120, 18)
                                         .value(SyncHandlers.intNumber(this::getTicksPerCycle, this::setTicksPerCycle)
@@ -103,7 +103,7 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
                             .stateOverlay(GTGuiTextures.BUTTON_AUTO_PULL)
                             .tooltipAutoUpdate(true)
                             .tooltipBuilder(r -> r
-                                    .addLine(Text.lang("gtceu.gui.me_network.auto_pull_toggle"))))
+                                    .addLine(Text.lang("gui.gtceu.machine.me_part.network.auto_pull_toggle"))))
                             .child(new ButtonWidget<>()
                                     .size(18)
                                     .onMousePressed((context, b) -> {
@@ -112,7 +112,8 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
                                     })
                                     .overlay(new ItemDrawable(GTItems.TOOL_DATA_STICK.asItem()).asIcon().size(16))
                                     .tooltip(new RichTooltip()
-                                            .addLine(Text.lang("gtceu.gui.me_network.stocking_settings"))));
+                                            .addLine(
+                                                    Text.lang("gui.gtceu.machine.me_part.network.stocking_settings"))));
 
                 });
     }

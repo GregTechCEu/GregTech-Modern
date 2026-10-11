@@ -98,7 +98,7 @@ public interface ModifierFunction {
         return apply(recipe);
     }
 
-    static final Component DEFAULT_FAILURE = Component.translatable("recipe_modifier.gtceu.default_fail");
+    static final Component DEFAULT_FAILURE = Component.translatable("gui.gtceu.recipe_modifier.default_fail");
 
     default Component getFailReason() {
         return DEFAULT_FAILURE;

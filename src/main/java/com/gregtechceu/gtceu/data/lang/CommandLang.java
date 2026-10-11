@@ -10,8 +10,8 @@ public class CommandLang {
 
     private static void generateCommandLang(GTLangProvider provider) {
         provider.add("command.gtceu.dump_data.success", "Dumped %s resources from registry %s to %s");
-        provider.add("gtceu.debug.resource_rebuild.done", "Gradle resource rebuild done in %s");
-        provider.add("gtceu.debug.resource_rebuild.start",
+        provider.add("command.gtceu.debug.resource_rebuild.done", "Gradle resource rebuild done in %s");
+        provider.add("command.gtceu.debug.resource_rebuild.start",
                 "Invoking gradle resource rebuild (./gradlew :processResources)");
 
         // Prospection Commands
@@ -50,7 +50,7 @@ public class CommandLang {
                 "Worldgen reload failed. Check console for errors.");
 
         // Cape Message
-        provider.add("gtceu.chat.cape",
+        provider.add("chat.gtceu.cape",
                 "§5Congrats: you just unlocked a new cape! See the Cape Selector terminal app to use it.§r");
 
         // New Cape Commands

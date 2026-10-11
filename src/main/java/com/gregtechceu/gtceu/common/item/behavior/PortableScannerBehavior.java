@@ -324,7 +324,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                     if (recipeLogic.getStatus().equals(RecipeLogic.Status.WAITING) &&
                             recipeLogic.getBestFailureReason() != null) {
                         list.add(Component.translatable("item.gtceu.behavior.portable_scanner.divider"));
-                        list.add(Component.translatable("gtceu.multiblock.waiting"));
+                        list.add(Component.translatable("gui.gtceu.machine.waiting"));
                         list.add(recipeLogic.getBestFailureReason());
                     } else if (recipe != null) {
                         list.add(Component.translatable("item.gtceu.behavior.portable_scanner.divider"));

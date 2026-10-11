@@ -637,7 +637,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                     SlotGroup sharedItemSlotGroup = new SlotGroup("shared_item_slots", 3, false);
 
                     return PopupPanel.createPopupPanel("shared_items_panel", 80, 86)
-                            .child(Text.lang("gui.gtceu.share_inventory.title").asWidget().margin(4))
+                            .child(Text.lang("gui.gtceu.machine.pattern_buffer.shared_inventory.title").asWidget()
+                                    .margin(4))
                             .child(new Grid()
                                     .name("shared_item_grid")
                                     .top(26)
@@ -653,7 +654,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
         IPanelHandler sharedFluidsPanelHandler = syncManager.syncedPanel("shared_fluids", true,
                 (syncManager1, panelHandler) -> PopupPanel.createPopupPanel("shared_fluids_panel", 85, 86)
-                        .child(Text.lang("gui.gtceu.share_tank.title").asWidget().margin(4))
+                        .child(Text.lang("gui.gtceu.machine.pattern_buffer.shared_tank.title").asWidget().margin(4))
                         .child(GTMuiMachineUtil.createSlotGroupFromInventory(syncManager1, shareTank,
                                 "shared_fluid_slots", 9, 'F',
                                 GTMuiMachineUtil.createSquareMatrix(9, 'F'))
@@ -677,8 +678,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                     })
                     .overlay(GTGuiTextures.BUTTON_ITEM_OUTPUT)
                     .tooltip(new RichTooltip()
-                            .addLine(Text.lang("gui.gtceu.share_inventory.desc.0"))
-                            .addLine(Text.lang("gui.gtceu.share_inventory.desc.1"))))
+                            .addLine(Text.lang("gui.gtceu.machine.pattern_buffer.shared_inventory.desc.0"))
+                            .addLine(Text.lang("gui.gtceu.machine.pattern_buffer.shared_inventory.desc.1"))))
                     .child(new ButtonWidget<>() // Shared fluids subpanel
                             .size(18)
                             .onMousePressed((context, b) -> {
@@ -690,8 +691,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                             })
                             .overlay(GTGuiTextures.BUTTON_FLUID_OUTPUT)
                             .tooltip(new RichTooltip()
-                                    .addLine(Text.lang("gui.gtceu.share_tank.desc.0"))
-                                    .addLine(Text.lang("gui.gtceu.share_inventory.desc.1"))))
+                                    .addLine(Text.lang("gui.gtceu.machine.pattern_buffer.shared_tank.desc.0"))
+                                    .addLine(Text.lang("gui.gtceu.machine.pattern_buffer.shared_inventory.desc.1"))))
                     .child(new ButtonWidget<>() // Refund button
                             .size(18)
                             .onMousePressed((context, b) -> {
@@ -712,7 +713,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                                 }
                             }))
                             .tooltip(new RichTooltip()
-                                    .addLine(Text.lang("gui.gtceu.refund_all.desc"))))
+                                    .addLine(Text.lang("gui.gtceu.machine.pattern_buffer.refund"))))
                     .child(new ButtonWidget<>() // Renaming button
                             .size(18)
                             .onMousePressed((context, b) -> {
@@ -726,7 +727,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                                     .asIcon()
                                     .size(16))
                             .tooltip(new RichTooltip()
-                                    .addLine(Text.lang("gui.gtceu.rename.desc"))));
+                                    .addLine(Text.lang("gui.gtceu.machine.pattern_buffer.rename"))));
         });
     }
 
@@ -741,8 +742,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         var flow = Flow.col().coverChildren();
 
         flow.child(Text.dynamic(() -> isOnlineValue.getBoolValue() ?
-                Component.translatable("gtceu.gui.me_network.online") :
-                Component.translatable("gtceu.gui.me_network.offline"))
+                Component.translatable("gui.gtceu.machine.me_part.network.online") :
+                Component.translatable("gui.gtceu.machine.me_part.network.offline"))
                 .asWidget().marginTop(2).marginBottom(4));
 
         flow.child(new Grid()

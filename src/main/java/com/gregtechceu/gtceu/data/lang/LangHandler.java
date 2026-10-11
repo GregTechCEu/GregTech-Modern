@@ -36,8 +36,8 @@ public class LangHandler {
         ItemLang.init(provider);
         MultiblockLang.init(provider);
         MachineLang.init(provider); // TODO
-        MaterialLang.init(provider); // TODO
-        RecipeLang.init(provider); // TODO
+        MaterialLang.init(provider);
+        RecipeLang.init(provider);
         ToolLang.init(provider); // TODO
     }
 }

@@ -70,7 +70,7 @@ public class TagFilter<T, S> extends Filter<T> {
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         StringSyncValue filterString = new StringSyncValue(this::getFilterString, this::setFilterString).allowC2S();
         RichTooltip infoTooltip = new RichTooltip();
-        LangUtil.getListMultiLang("cover.gtceu.tag_filter.info").forEach(infoTooltip::addLine);
+        LangUtil.getListMultiLang("gui.gtceu.cover.tag_filter.info").forEach(infoTooltip::addLine);
 
         return Flow.row()
                 .coverChildren()

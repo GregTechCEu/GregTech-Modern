@@ -183,7 +183,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     }
 
     public String getDescriptionId() {
-        return getBlock().getDescriptionId();
+        return id.toLanguageKey("machine");
     }
 
     public BlockState defaultBlockState() {

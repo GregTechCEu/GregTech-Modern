@@ -125,6 +125,9 @@ public class ToolLang {
             provider.add(toolType.getUnlocalizedName(), toEnglishName(toolType.name));
         }
 
+        provider.add("item.gtceu.turbine_rotor_generic", "Turbine Rotor");
+        provider.add("item.gtceu.tool_generic", "Non-electric tool");
+
         // Tool Names
         provider.add("item.gtceu.tool.sword", "%s Sword");
         provider.add("item.gtceu.tool.pickaxe", "%s Pickaxe");

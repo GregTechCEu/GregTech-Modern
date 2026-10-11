@@ -222,9 +222,9 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
                                 .coverChildren()
                                 .child(GTMuiWidgets.createAutoOutputFluidButton(autoOutput))
                                 .child(GTMuiWidgets.createToggleButton(this::isLocked, this::setLocked,
-                                        GTGuiTextures.BUTTON_LOCK, "gtceu.gui.fluid_lock.tooltip"))
+                                        GTGuiTextures.BUTTON_LOCK, "gui.gtceu.fluid_locking"))
                                 .child(GTMuiWidgets.createToggleButton(this::isVoiding, this::setVoiding,
-                                        GTGuiTextures.BUTTON_VOID, "gtceu.gui.fluid_voiding_partial.tooltip")))
+                                        GTGuiTextures.BUTTON_VOID, "gui.gtceu.fluid_voiding")))
                         .child(Flow.column()
                                 .margin(68, 0, 23, 0)
                                 .coverChildren()

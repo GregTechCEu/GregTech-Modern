@@ -9,8 +9,8 @@ public class MaterialLang {
         generateFluidKeys(provider);
 
         // Cauldron Washing
-        provider.add("tagprefix.gtceu.impure_dust.purify_tooltip", "Right click a Cauldron to get clean Dust");
-        provider.add("tagprefix.gtceu.crushed_ore.purify_tooltip", "Right click a Cauldron to get Purified Ore");
+        provider.add("tooltip.gtceu.purify_impure_dust", "Right click a Cauldron to get clean Dust");
+        provider.add("tooltip.gtceu.purify_crushed_ore", "Right click a Cauldron to get Purified Ore");
     }
 
     private static void generateCustomMaterialNames(GTLangProvider provider) {
