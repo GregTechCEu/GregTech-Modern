@@ -73,6 +73,8 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
 
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        // Because the null material sentinel value was removed in favour of just using null directly,
+        // remove occurences where a null material was serialised as the null sentinel value in old saves.
         if (tag.contains("rotorMaterial") && tag.getString("rotorMaterial").equals("gtceu:null")) {
             tag.remove("rotorMaterial");
         }

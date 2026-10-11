@@ -39,13 +39,14 @@ public class OreTagPrefixBuilderJS extends TagPrefixBuilderJS {
 
     public OreTagPrefixBuilderJS(ResourceLocation id) {
         super(id);
+
+        defaultTagPath("ores/%s");
+        prefixOnlyTagPath("ores_in_ground/%s");
+        unformattedTagPath("ores");
     }
 
     @Override
     public TagPrefix create(ResourceLocation id) {
-        defaultTagPath("ores/%s");
-        prefixOnlyTagPath("ores_in_ground/%s");
-        unformattedTagPath("ores");
         materialIconType(MaterialIconType.ore);
         unificationEnabled(true);
         blockConstructor(OreBlock::new);

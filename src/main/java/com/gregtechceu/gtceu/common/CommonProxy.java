@@ -222,6 +222,10 @@ public class CommonProxy {
         if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
             GTRegistries.MATERIALS.close();
 
+            // Because material properties can't be verified while holders may be unresolved, verify all materials after
+            // the registry is closed and all elements have been registered.
+            GTRegistries.MATERIALS.forEach(Material::verifyMaterialInitial);
+
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
             // Block entirely new Materials from being added in the Post event
             GTCEu.LOGGER.info("Firing material register late event");
@@ -230,9 +234,7 @@ public class CommonProxy {
                 KJSEventWrapper.materialModification();
             }
 
-            // Because material properties can't be verified while holders may be unresolved, verify all materials after
-            // the registry is closed and all elements have been registered.
-            GTRegistries.MATERIALS.forEach(Material::verifyMaterial);
+            GTRegistries.MATERIALS.forEach(Material::verifyMaterialFinal);
 
         } else if (event.getRegistryKey() == GTRegistries.Keys.MACHINE) {
             // Prepare machine render states after all machines have been registered

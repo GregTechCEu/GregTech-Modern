@@ -1324,18 +1324,15 @@ public class MaterialBuilder {
     public Material createMaterial() {
         materialInfo.setComponents(compositionSupplier);
 
-        HazardProperty hazardProperty = properties.getProperty(PropertyKey.HAZARD);
-        if (hazardProperty != null && hazardProperty.hazardTrigger == HazardProperty.HazardTrigger.NONE) {
-            properties.removeProperty(PropertyKey.HAZARD);
-        }
-
         var mat = new Material(materialInfo, properties, flags);
+
         if (!itemTags.isEmpty()) {
             mat.getItemTags().addAll(itemTags);
         }
         if (formula != null) {
             mat.setFormula(formula, formatFormula);
         }
+
         materialInfo.verifyInfo(properties);
         if (ignoredTagPrefixes != null) {
             ignoredTagPrefixes.forEach(p -> p.value().setIgnored(mat));
