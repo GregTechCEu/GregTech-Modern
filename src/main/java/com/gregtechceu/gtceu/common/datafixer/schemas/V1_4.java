@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.common.datafixer.schemas;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.datafixer.schemas.AutomaticNamespacedSchema;
-
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
 
@@ -12,10 +9,10 @@ import java.util.function.Supplier;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.ELECTRIC_TIERS;
 import static com.gregtechceu.gtceu.common.datafixer.schemas.V1_3.registerSimpleMachine;
 
-public class V1_4 extends AutomaticNamespacedSchema {
+public class V1_4 extends AutoGTNamespacedSchema {
 
     public V1_4(int versionKey, Schema parent) {
-        super(versionKey, parent, GTCEu.MOD_ID);
+        super(versionKey, parent);
     }
 
     @Override

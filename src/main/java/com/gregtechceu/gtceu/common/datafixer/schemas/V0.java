@@ -1,11 +1,7 @@
 package com.gregtechceu.gtceu.common.datafixer.schemas;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.datafixer.schemas.AutomaticNamespacedSchema;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.datafixer.GTReferences;
 
 import com.gregtechceu.gtceu.core.mixins.datafixer.V705Accessor;
@@ -27,10 +23,10 @@ import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.ALL_TIERS;
 import static com.mojang.datafixers.DSL.*;
 
-public class V0 extends AutomaticNamespacedSchema {
+public class V0 extends AutoGTNamespacedSchema {
 
     public V0(int versionKey, Schema parent) {
-        super(versionKey, parent, GTCEu.MOD_ID);
+        super(versionKey, parent);
     }
 
     // spotless:off
