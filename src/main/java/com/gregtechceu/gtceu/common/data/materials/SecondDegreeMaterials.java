@@ -461,7 +461,7 @@ public class SecondDegreeMaterials {
                 .components(SiliconDioxide, 2, Gold, 3)
                 .buildAndRegister();
 
-        PalladiumRaw = new Material.Builder(GTCEu.id("palladium_raw"))
+        RawPalladium = new Material.Builder(GTCEu.id("raw_palladium"))
                 .dust()
                 .color(0x5d4e1a).secondaryColor(0x33352d).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)

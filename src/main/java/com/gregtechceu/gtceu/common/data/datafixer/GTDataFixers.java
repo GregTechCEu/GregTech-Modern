@@ -157,6 +157,8 @@ public class GTDataFixers {
                 createRenamer(Pattern.compile("gtceu:(.*)granite_red"), "gtceu:$1red_granite"));
         createMaterialRenameFix(builder, v1_5, "Fix Oil variant names",
                 createRenamer(OilVariantsRenameFix.RENAMED_IDS));
+        createMaterialRenameFix(builder, v1_5, "Fix Raw Palladium name",
+                createRenamer(Pattern.compile("gtceu:(.*)palladium_raw"), "gtceu:$1raw_palladium"));
 
         createBlockItemRenameFix(builder, v1_5, "Fix Palladium Substation Casing name",
                 createRenamer("gtceu:palladium_substation", "gtceu:palladium_substation_casing"));

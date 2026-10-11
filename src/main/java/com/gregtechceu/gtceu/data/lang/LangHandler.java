@@ -750,9 +750,9 @@ public class LangHandler {
         provider.add("item.gtceu.tiny_platinum_raw_dust", "Tiny Pile of Raw Platinum Powder");
         provider.add("item.gtceu.small_platinum_raw_dust", "Small Pile of Raw Platinum Powder");
         provider.add("item.gtceu.platinum_raw_dust", "Raw Platinum Powder");
-        provider.add("item.gtceu.tiny_palladium_raw_dust", "Tiny Pile of Raw Palladium Powder");
-        provider.add("item.gtceu.small_palladium_raw_dust", "Small Pile of Raw Palladium Powder");
-        provider.add("item.gtceu.palladium_raw_dust", "Raw Palladium Powder");
+        provider.add("item.gtceu.tiny_raw_palladium_dust", "Tiny Pile of Raw Palladium Powder");
+        provider.add("item.gtceu.small_raw_palladium_dust", "Small Pile of Raw Palladium Powder");
+        provider.add("item.gtceu.raw_palladium_dust", "Raw Palladium Powder");
         provider.add("item.gtceu.tiny_inert_metal_mixture_dust", "Tiny Pile of Inert Metal Mixture");
         provider.add("item.gtceu.small_inert_metal_mixture_dust", "Small Pile of Inert Metal Mixture");
         provider.add("item.gtceu.inert_metal_mixture_dust", "Inert Metal Mixture");

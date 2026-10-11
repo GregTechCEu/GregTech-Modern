@@ -744,7 +744,7 @@ public class GTMaterials {
     public static Material CyclohexanoneOxime;
     public static Material Caprolactam;
     public static Material PlatinumSludgeResidue;
-    public static Material PalladiumRaw;
+    public static Material RawPalladium;
     public static Material RarestMetalMixture;
     public static Material AmmoniumChloride;
     public static Material AcidicOsmiumSolution;
