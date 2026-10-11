@@ -171,39 +171,4 @@ public class MultiblockSchemaInfo {
             onSchemaRefresh.run();
         }
     }
-
-    public int getMinCount(MultiPredicate predicate, BasePredicate basePredicate) {
-        if (!minMaxPreferences.contains(predicate, basePredicate))
-            return Math.max(predicate.getMinCount(), basePredicate.getMinCount());
-        return minMaxPreferences.get(predicate, basePredicate).leftInt();
-    }
-
-    public int getMaxCount(MultiPredicate predicate, BasePredicate basePredicate) {
-        if (!minMaxPreferences.contains(predicate, basePredicate)) {
-            if (predicate.getMaxCount() == -1) return basePredicate.getMaxCount();
-            if (basePredicate.getMaxCount() == -1) return predicate.getMaxCount();
-            return Math.min(predicate.getMaxCount(), basePredicate.getMaxCount());
-        }
-        return minMaxPreferences.get(predicate, basePredicate).rightInt();
-    }
-
-    public int getMinSliceCount(MultiPredicate predicate, BasePredicate basePredicate) {
-        if (!minMaxPreferences.contains(predicate, basePredicate))
-            return Math.max(predicate.getMinSliceCount(), basePredicate.getMinSliceCount());
-        return minMaxPreferences.get(predicate, basePredicate).leftInt();
-    }
-
-    public int getMaxSliceCount(MultiPredicate predicate, BasePredicate basePredicate) {
-        if (!minMaxPreferences.contains(predicate, basePredicate)) {
-            if (predicate.getMaxSliceCount() == -1) return basePredicate.getMaxSliceCount();
-            if (basePredicate.getMaxSliceCount() == -1) return predicate.getMaxSliceCount();
-            return Math.min(predicate.getMaxSliceCount(), basePredicate.getMaxSliceCount());
-        }
-        return minMaxPreferences.get(predicate, basePredicate).rightInt();
-    }
-
-    public void clearUserPreferences() {
-        this.userSliceRepeats.clear();
-        this.userDimensions.clear();
-    }
 }
