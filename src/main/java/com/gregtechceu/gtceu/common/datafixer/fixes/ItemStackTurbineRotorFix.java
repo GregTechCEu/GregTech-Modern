@@ -4,6 +4,7 @@ import com.mojang.datafixers.*;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Dynamic;
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.util.datafix.schemas.NamespacedSchema;
 
@@ -15,7 +16,7 @@ public class ItemStackTurbineRotorFix extends DataFix {
     private static final String OLD_TURBINE_ROTOR_ITEM_ID = "gtceu:turbine_rotor";
 
     public ItemStackTurbineRotorFix(Schema outputSchema) {
-        super(outputSchema, false);
+        super(outputSchema, true);
     }
 
     public TypeRewriteRule makeRule() {
@@ -33,6 +34,16 @@ public class ItemStackTurbineRotorFix extends DataFix {
             }
             Typed<?> tag = typed.getOrCreateTyped(tagFinder);
             Typed<?> partStats = tag.getOrCreateTyped(partStatsFinder);
+
+            // move the Damage nbt field to the root of nbt
+            var damage = partStats.getOrCreate(DSL.remainderFinder())
+                    .get("Damage").result();
+            if (damage.isPresent()) {
+                typed = typed.update(DSL.remainderFinder(), dynamic -> {
+                    return dynamic.set("Damage", damage.get());
+                });
+            }
+
             Optional<String> material = partStats.getOptional(materialFinder);
             if (material.isEmpty()) {
                 // if it doesn't have a material (somehow??), make it an iron turbine rotor by default.
