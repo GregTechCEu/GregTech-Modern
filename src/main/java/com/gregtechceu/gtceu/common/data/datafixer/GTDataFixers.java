@@ -186,6 +186,7 @@ public class GTDataFixers {
                 createRenamer("gtceu:steel_brick_casing", "gtceu:bricked_wrought_iron_casing"));
 
         builder.addFixer(new ItemStackTurbineRotorFix(v1_5));
+        builder.addFixer(new ExtruderCastingMoldRemapFix(v1_5));
     }
 
     private static void createBlockItemRenameFix(DataFixerBuilder builder, Schema schema, String name,
