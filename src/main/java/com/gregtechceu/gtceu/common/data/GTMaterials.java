@@ -72,11 +72,6 @@ public class GTMaterials {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void modifyMaterials(PostMaterialEvent event) {
-        /*
-         * Register info for cyclical references
-         */
-        MaterialFlagAddition.register();
-
         DYE_MATERIALS.put(DyeColor.WHITE, DyeWhite);
         DYE_MATERIALS.put(DyeColor.ORANGE, DyeOrange);
         DYE_MATERIALS.put(DyeColor.MAGENTA, DyeMagenta);

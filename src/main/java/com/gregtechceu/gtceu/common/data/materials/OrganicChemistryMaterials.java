@@ -15,9 +15,6 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class OrganicChemistryMaterials {
 
-    /**
-     * ID RANGE: 1000-1068 (incl.)
-     */
     public static void register() {
         SiliconeRubber = REGISTRATE.material("silicone_rubber", builder -> builder
                 .polymer()

@@ -24,6 +24,7 @@ public class FirstDegreeMaterials {
         Almandine = REGISTRATE.material("almandine", builder -> builder
                 .gem(1)
                 .ore(3, 1)
+                .oreByproducts(GarnetRed, Aluminium)
                 .color(0xa21717)
                 .secondaryColor(0x4b1e0c)
                 .components(Aluminium, 2, Iron, 3, Silicon, 3, Oxygen, 12));
@@ -42,7 +43,9 @@ public class FirstDegreeMaterials {
                 .cableProperties(V[MV], 1, 1));
 
         Asbestos = REGISTRATE.material("asbestos", builder -> builder
-                .dust(1).ore(3, 1)
+                .dust(1)
+                .ore(3, 1)
+                .oreByproducts(Diatomite, Silicon, Magnesium)
                 .color(0xE6E6E6).secondaryColor(0xdbd7bf)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.ASBESTOSIS)
                 .components(Magnesium, 3, Silicon, 2, Hydrogen, 4, Oxygen, 9));
@@ -54,7 +57,8 @@ public class FirstDegreeMaterials {
                 .components(Carbon, 1));
 
         Hematite = REGISTRATE.material("hematite", builder -> builder
-                .dust().ore()
+                .dust().ore().oreByproducts(Magnetite, Calcium, Magnesium)
+                .separatedInto(Iron).oreSmeltInto(Iron)
                 .color(0xff7161).secondaryColor(0x330817)
                 .components(Iron, 2, Oxygen, 3));
 
@@ -66,7 +70,8 @@ public class FirstDegreeMaterials {
                 .components(Lead, 4, Antimony, 1));
 
         BlueTopaz = REGISTRATE.material("blue_topaz", builder -> builder
-                .gem(3).ore(2, 1)
+                .gem(3)
+                .ore(2, 1).oreByproducts(Topaz)
                 .color(0xdbfeff).secondaryColor(0xa0c4d7).iconSet(GEM_HORIZONTAL)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT)
                 .components(Aluminium, 2, Silicon, 1, Oxygen, 4, Fluorine, 2));
@@ -101,28 +106,37 @@ public class FirstDegreeMaterials {
                 .fluidPipeProperties(1696, 20, true));
 
         Goethite = REGISTRATE.material("goethite", builder -> builder
-                .dust(1).ore()
+                .dust(1)
+                .ore().oreByproducts(Malachite, YellowLimonite)
+                .separatedInto(Iron).oreSmeltInto(Iron)
                 .color(0x97873a).secondaryColor(0x313131).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, BLAST_FURNACE_CALCITE_TRIPLE)
                 .components(Iron, 1, Hydrogen, 1, Oxygen, 2));
 
         Calcite = REGISTRATE.material("calcite", builder -> builder
-                .dust(1).ore()
+                .dust(1)
+                .ore().oreByproducts(Calcium, Calcium, Sodalite)
                 .color(0xfffef8).secondaryColor(0xbbaf62)
                 .components(Calcium, 1, Carbon, 1, Oxygen, 3));
 
         Cassiterite = REGISTRATE.material("cassiterite", builder -> builder
-                .dust(1).ore(2, 1)
+                .dust(1)
+                .ore(2, 1).oreByproducts(Tin, Bismuth)
+                .oreSmeltInto(Tin)
                 .color(0x89847e).secondaryColor(0x3b3b35).iconSet(ROUGH)
                 .components(Tin, 1, Oxygen, 2));
 
         CassiteriteSand = REGISTRATE.material("cassiterite_sand", builder -> builder
-                .dust(1).ore(2, 1)
+                .dust(1)
+                .ore(2, 1)
+                .oreByproducts(Tin).oreSmeltInto(Tin)
                 .color(0x89847e).secondaryColor(0x3b3b35).iconSet(SAND)
                 .components(Tin, 1, Oxygen, 2));
 
         Chalcopyrite = REGISTRATE.material("chalcopyrite", builder -> builder
-                .dust(1).ore()
+                .dust(1)
+                .ore().oreByproducts(Pyrite, Cobalt, Cadmium, Gold)
+                .washedIn(Mercury).oreSmeltInto(Copper)
                 .color(0x96c185).secondaryColor(0xe3af1a)
                 .components(Copper, 1, Iron, 1, Sulfur, 2));
 
@@ -133,12 +147,15 @@ public class FirstDegreeMaterials {
                 .components(Carbon, 1));
 
         Chromite = REGISTRATE.material("chromite", builder -> builder
-                .dust(1).ore()
+                .dust(1)
+                .ore().oreByproducts(Iron, Magnesium, Chromium)
+                .separatedInto(Iron)
                 .color(0xc5c1a8).secondaryColor(0x4c1a69).iconSet(METALLIC)
                 .components(Iron, 1, Chromium, 2, Oxygen, 4));
 
         Cinnabar = REGISTRATE.material("cinnabar", builder -> builder
-                .gem(1).ore()
+                .gem(1)
+                .ore().oreByproducts(Redstone, Sulfur, Glowstone)
                 .color(0xff335f).secondaryColor(0x3f0110).iconSet(EMERALD)
                 .flags(CRYSTALLIZABLE, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Mercury, 1, Sulfur, 1));
@@ -151,18 +168,23 @@ public class FirstDegreeMaterials {
 
         Coal = REGISTRATE.material("coal", builder -> builder
                 .gem(1, 1600).ore(2, 1) // default coal burn time in vanilla
+                .oreByproducts(Coal, Coal, Thorium)
                 .color(0x393e41).secondaryColor(0x101015).iconSet(LIGNITE)
                 .flags(FLAMMABLE, NO_SMELTING, NO_SMASHING, MORTAR_GRINDABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
                         DISABLE_DECOMPOSITION)
                 .components(Carbon, 1));
 
         Cobaltite = REGISTRATE.material("cobaltite", builder -> builder
-                .dust(1).ore()
+                .dust(1)
+                .ore().oreByproducts(Sulfur, Cobalt)
+                .washedIn(SodiumPersulfate).oreSmeltInto(Cobalt)
                 .color(0x1975ff).secondaryColor(0x56071f).iconSet(METALLIC)
                 .components(Cobalt, 1, Arsenic, 1, Sulfur, 1));
 
         Cooperite = REGISTRATE.material("cooperite", builder -> builder
-                .dust(1).ore()
+                .dust(1)
+                .ore().oreByproducts(Nickel, Nickel, Cobalt, Palladium)
+                .washedIn(Mercury)
                 .color(0xe9ffa7).secondaryColor(0x665f2f).iconSet(METALLIC)
                 .components(Platinum, 3, Nickel, 1, Sulfur, 1, Palladium, 1));
 
@@ -182,7 +204,7 @@ public class FirstDegreeMaterials {
                 .components(Carbon, 1));
 
         Diamond = REGISTRATE.material("diamond", builder -> builder
-                .gem(3).ore()
+                .gem(3).ore().oreByproducts(Graphite)
                 .color(0xC8FFFF).iconSet(DIAMOND)
                 .flags(GENERATE_BOLT_SCREW, GENERATE_LENS, GENERATE_GEAR, NO_SMASHING, NO_SMELTING,
                         HIGH_SIFTER_OUTPUT, DISABLE_DECOMPOSITION, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
@@ -201,31 +223,36 @@ public class FirstDegreeMaterials {
                 .cableProperties(V[HV], 2, 2));
 
         Emerald = REGISTRATE.material("emerald", builder -> builder
-                .gem().ore(2, 1)
+                .gem()
+                .ore(2, 1).oreByproducts(Beryllium, Aluminium)
                 .color(0x17ff6c).secondaryColor(0x003f00).iconSet(EMERALD)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT,
                         EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES, GENERATE_LENS)
                 .components(Beryllium, 3, Aluminium, 2, Silicon, 6, Oxygen, 18));
 
         Galena = REGISTRATE.material("galena", builder -> builder
-                .dust(3).ore()
+                .dust(3)
+                .ore().oreByproducts(Sulfur, Silver)
+                .washedIn(Mercury).oreSmeltInto(Lead)
                 .color(0xf3e8fa).secondaryColor(0x331d42).iconSet(METALLIC)
                 .flags(NO_SMELTING)
                 .components(Lead, 1, Sulfur, 1));
 
         Garnierite = REGISTRATE.material("garnierite", builder -> builder
-                .dust(3).ore()
+                .dust(3)
+                .ore().oreByproducts(Iron, Nickel).oreSmeltInto(Nickel)
                 .color(0x32c880).secondaryColor(0x344028).iconSet(METALLIC)
                 .components(Nickel, 1, Oxygen, 1));
 
         GreenSapphire = REGISTRATE.material("green_sapphire", builder -> builder
-                .gem().ore()
+                .gem().ore().oreByproducts(Aluminium, Sapphire)
                 .color(0x9ae6b0).secondaryColor(0x64C882).iconSet(GEM_HORIZONTAL)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT)
                 .components(Aluminium, 2, Oxygen, 3));
 
         Grossular = REGISTRATE.material("grossular", builder -> builder
-                .gem(1).ore(3, 1)
+                .gem(1)
+                .ore(3, 1).oreByproducts(GarnetYellow, Calcium)
                 .color(0xffb777).secondaryColor(0x856f48).iconSet(RUBY)
                 .components(Calcium, 3, Aluminium, 2, Silicon, 3, Oxygen, 12));
 
@@ -239,7 +266,9 @@ public class FirstDegreeMaterials {
                 .components(Hydrogen, 2, Oxygen, 1));
 
         Ilmenite = REGISTRATE.material("ilmenite", builder -> builder
-                .dust(3).ore()
+                .dust(3)
+                .ore().oreByproducts(Iron, Rutile, Rutile, IlmeniteSlag)
+                .separatedInto(Iron).washedIn(SodiumPersulfate)
                 .color(0x2b2a24).secondaryColor(0x2b1700).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Iron, 1, Titanium, 1, Oxygen, 3));
@@ -251,7 +280,9 @@ public class FirstDegreeMaterials {
                 .components(Titanium, 1, Oxygen, 2));
 
         Bauxite = REGISTRATE.material("bauxite", builder -> builder
-                .dust(1).ore()
+                .dust(1)
+                .ore().oreByproducts(Grossular, Rutile, Gallium)
+                .washedIn(SodiumPersulfate)
                 .color(0xcfb853).secondaryColor(0xe6220c)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Aluminium, 2, Oxygen, 3));
@@ -280,7 +311,8 @@ public class FirstDegreeMaterials {
                         .blastStats(VA[HV], 900)));
 
         Lazurite = REGISTRATE.material("lazurite", builder -> builder
-                .gem(1).ore(6, 4)
+                .gem(1)
+                .ore(6, 4).oreByproducts(Sodalite, Lapis)
                 .color(0x2836f1).secondaryColor(0x183ca3).iconSet(LAPIS)
                 .flags(GENERATE_PLATE, NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE, GENERATE_ROD,
                         DECOMPOSITION_BY_ELECTROLYZING)
@@ -296,17 +328,20 @@ public class FirstDegreeMaterials {
                 .itemPipeProperties(1024, 2));
 
         Magnesite = REGISTRATE.material("magnesite", builder -> builder
-                .dust().ore()
+                .dust().ore().oreByproducts(Magnesium, Magnesium, Cobaltite)
+                .oreSmeltInto(Magnesium)
                 .color(0xfbfbf6).secondaryColor(0x80705e).iconSet(ROUGH)
                 .components(Magnesium, 1, Carbon, 1, Oxygen, 3));
 
         Magnetite = REGISTRATE.material("magnetite", builder -> builder
-                .dust().ore()
+                .dust().ore().oreByproducts(Iron, Gold)
+                .separatedInto(Gold).oreSmeltInto(Iron).washedIn(Mercury)
                 .color(0x9d9d9d).secondaryColor(0x06070e).iconSet(METALLIC)
                 .components(Iron, 3, Oxygen, 4));
 
         Molybdenite = REGISTRATE.material("molybdenite", builder -> builder
                 .dust().ore()
+                .oreByproducts(Molybdenum, Sulfur, Quartzite).oreSmeltInto(Molybdenum)
                 .color(0xe3ddc3).secondaryColor(0x191919).iconSet(METALLIC)
                 .components(Molybdenum, 1, Sulfur, 2));
 
@@ -415,27 +450,31 @@ public class FirstDegreeMaterials {
 
         Powellite = REGISTRATE.material("powellite", builder -> builder
                 .dust().ore()
+                .oreByproducts(Iron, Potassium, Molybdenite)
                 .color(0xd8cfac).secondaryColor(0xbc7a2c)
                 .components(Calcium, 1, Molybdenum, 1, Oxygen, 4));
 
         Pyrite = REGISTRATE.material("pyrite", builder -> builder
-                .dust(1).ore()
+                .dust(1).ore().oreByproducts(Sulfur, TricalciumPhosphate, Iron)
+                .separatedInto(Iron).oreSmeltInto(Iron)
                 .color(0xfffee6).secondaryColor(0xb69f4e).iconSet(ROUGH)
                 .flags(BLAST_FURNACE_CALCITE_DOUBLE)
                 .components(Iron, 1, Sulfur, 2));
 
         Pyrolusite = REGISTRATE.material("pyrolusite", builder -> builder
-                .dust().ore()
+                .dust().ore().oreByproducts(Manganese, Tantalite, Niobium)
+                .oreSmeltInto(Manganese)
                 .color(0xc7b5ab).secondaryColor(0x595756)
                 .components(Manganese, 1, Oxygen, 2));
 
         Pyrope = REGISTRATE.material("pyrope", builder -> builder
-                .gem().ore(3, 1)
+                .gem()
+                .ore(3, 1).oreByproducts(GarnetRed, Magnesium)
                 .color(0xe81958).secondaryColor(0x811e00).iconSet(RUBY)
                 .components(Aluminium, 2, Magnesium, 3, Silicon, 3, Oxygen, 12));
 
         RockSalt = REGISTRATE.material("rock_salt", builder -> builder
-                .gem(1).ore(2, 1)
+                .gem(1).ore(2, 1).oreByproducts(Salt, Borax)
                 .color(0xffeae1).secondaryColor(0xF0C8C8).iconSet(FINE)
                 .flags(NO_SMASHING)
                 .components(Potassium, 1, Chlorine, 1));
@@ -461,38 +500,42 @@ public class FirstDegreeMaterials {
                         .vacuumStats(VA[HV], 300)));
 
         Ruby = REGISTRATE.material("ruby", builder -> builder
-                .gem().ore()
+                .gem().ore().oreByproducts(Chromium, GarnetRed, Chromium)
                 .color(0xd72310).secondaryColor(0x960b6d).iconSet(RUBY)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, GENERATE_LENS)
                 .components(Chromium, 1, Aluminium, 2, Oxygen, 3));
 
         Salt = REGISTRATE.material("salt", builder -> builder
-                .gem(1).ore(2, 1)
+                .gem(1)
+                .ore(2, 1).oreByproducts(RockSalt, Borax)
                 .color(0xFAFAFA).iconSet(FINE)
                 .flags(NO_SMASHING)
                 .components(Sodium, 1, Chlorine, 1));
 
         Saltpeter = REGISTRATE.material("saltpeter", builder -> builder
-                .dust(1).ore(2, 1)
+                .dust(1)
+                .ore(2, 1).oreByproducts(Saltpeter, Potassium, Salt)
                 .color(0xE6E6E6).secondaryColor(0xe6e1cf).iconSet(FINE)
                 .flags(NO_SMASHING, NO_SMELTING, FLAMMABLE)
                 .components(Potassium, 1, Nitrogen, 1, Oxygen, 3));
 
         Sapphire = REGISTRATE.material("sapphire", builder -> builder
-                .gem().ore()
+                .gem().ore().oreByproducts(Aluminium, GreenSapphire)
                 .color(0x3235e3).secondaryColor(0x211455).iconSet(EMERALD)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, GENERATE_LENS)
                 .components(Aluminium, 2, Oxygen, 3));
 
         Scheelite = REGISTRATE.material("scheelite", builder -> builder
-                .dust(3).ore()
+                .dust(3)
+                .ore().oreByproducts(Manganese, Molybdenum, Calcium)
                 .color(0xd7e8b3).secondaryColor(0x143cae)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Calcium, 1, Tungsten, 1, Oxygen, 4)
                 .formula("Ca(WO3)O", true));
 
         Sodalite = REGISTRATE.material("sodalite", builder -> builder
-                .gem(1).ore(6, 4)
+                .gem(1)
+                .ore(6, 4).oreByproducts(Lazurite, Lapis)
                 .color(0x3d54ff).secondaryColor(0x210d78).iconSet(LAPIS)
                 .flags(GENERATE_PLATE, GENERATE_ROD, NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE,
                         DECOMPOSITION_BY_ELECTROLYZING)
@@ -505,7 +548,7 @@ public class FirstDegreeMaterials {
                 .formula("Al2(SO3)3", true));
 
         Tantalite = REGISTRATE.material("tantalite", builder -> builder
-                .dust(3).ore()
+                .dust(3).ore().oreByproducts(Manganese, Niobium, Tantalum)
                 .color(0x4e6b94).secondaryColor(0x632300).iconSet(METALLIC)
                 .components(Manganese, 1, Tantalum, 2, Oxygen, 6));
 
@@ -522,12 +565,13 @@ public class FirstDegreeMaterials {
                 .components(Tin, 6, Lead, 3, Antimony, 1));
 
         Spessartine = REGISTRATE.material("spessartine", builder -> builder
-                .gem().ore(3, 1)
+                .gem().ore(3, 1).oreByproducts(GarnetRed, Manganese)
                 .color(0xffa81e).secondaryColor(0xb33700).iconSet(RUBY)
                 .components(Aluminium, 2, Manganese, 3, Silicon, 3, Oxygen, 12));
 
         Sphalerite = REGISTRATE.material("sphalerite", builder -> builder
-                .dust(1).ore()
+                .dust(1).ore().oreByproducts(GarnetYellow, Gallium, Cadmium, Zinc)
+                .washedIn(SodiumPersulfate).oreSmeltInto(Zinc)
                 .color(0xffdc88).secondaryColor(0x0f1605)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Zinc, 1, Sulfur, 1));
@@ -567,13 +611,15 @@ public class FirstDegreeMaterials {
                 .magneticMaterial(SteelMagnetic));
 
         Stibnite = REGISTRATE.material("stibnite", builder -> builder
-                .dust().ore()
+                .dust().ore().oreByproducts(AntimonyTrioxide, Antimony, Cinnabar)
+                .washedIn(SodiumPersulfate).oreSmeltInto(Antimony)
                 .color(0x656565).secondaryColor(0x0a1432).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Antimony, 2, Sulfur, 3));
 
         Tetrahedrite = REGISTRATE.material("tetrahedrite", builder -> builder
-                .dust().ore()
+                .dust().ore().oreByproducts(Antimony, Zinc, Cadmium)
+                .washedIn(SodiumPersulfate).oreSmeltInto(Copper)
                 .color(0xa3a09b).secondaryColor(0x143313)
                 .components(Copper, 2, Iron, 1, Antimony, 1, Sulfur, 3));
 
@@ -586,13 +632,15 @@ public class FirstDegreeMaterials {
                 .fluidPipeProperties(1572, 20, true));
 
         Topaz = REGISTRATE.material("topaz", builder -> builder
-                .gem(3).ore()
+                .gem(3).ore().oreByproducts(Topaz)
                 .color(0xe8d73a).secondaryColor(0xf4680f).iconSet(GEM_HORIZONTAL)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT)
                 .components(Aluminium, 2, Silicon, 1, Oxygen, 5, Fluorine, 1, Hydrogen, 1));
 
         Tungstate = REGISTRATE.material("tungstate", builder -> builder
-                .dust(3).ore()
+                .dust(3)
+                .ore().oreByproducts(Manganese, Silver, Lithium)
+                .washedIn(Mercury)
                 .color(0xe0ffc4).secondaryColor(0xab4400)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Tungsten, 1, Lithium, 2, Oxygen, 4)
@@ -612,7 +660,8 @@ public class FirstDegreeMaterials {
                         .blastStats(VA[HV], 1300)));
 
         Uraninite = REGISTRATE.material("uraninite", builder -> builder
-                .dust(3).ore(true)
+                .dust(3)
+                .ore(true).oreByproducts(Uraninite, Thorium, Silver)
                 .color(0xffd52e).secondaryColor(0x17212b).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Uranium238, 1, Oxygen, 2)
@@ -647,12 +696,14 @@ public class FirstDegreeMaterials {
                 .rotorStats(145, 105, 3.5f, 384));
 
         Wulfenite = REGISTRATE.material("wulfenite", builder -> builder
-                .dust(3).ore()
+                .dust(3)
+                .ore().oreByproducts(Iron, Manganese, Manganese, Lead)
                 .color(0xff9000).secondaryColor(0xFF0000)
                 .components(Lead, 1, Molybdenum, 1, Oxygen, 4));
 
         YellowLimonite = REGISTRATE.material("yellow_limonite", builder -> builder
-                .dust().ore()
+                .dust().ore().oreByproducts(Nickel, Goethite, CobaltOxide)
+                .separatedInto(Iron).washedIn(SodiumPersulfate).oreSmeltInto(Iron)
                 .color(0xf5e315).secondaryColor(0xc06f33).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, BLAST_FURNACE_CALCITE_DOUBLE)
                 .components(Iron, 1, Hydrogen, 1, Oxygen, 2));
@@ -670,26 +721,29 @@ public class FirstDegreeMaterials {
                         .vacuumStats(VA[EV], 150)));
 
         NetherQuartz = REGISTRATE.material("nether_quartz", builder -> builder
-                .gem(1).ore(2, 1)
+                .gem(1).ore(2, 1).oreByproducts(Quartzite)
                 .color(0xf8efe3).secondaryColor(0xe6c1bb).iconSet(QUARTZ)
                 .flags(GENERATE_PLATE, NO_SMELTING, CRYSTALLIZABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
                         DISABLE_DECOMPOSITION)
                 .components(Silicon, 1, Oxygen, 2));
 
         CertusQuartz = REGISTRATE.material("certus_quartz", builder -> builder
-                .gem(1).ore(2, 1)
+                .gem(1)
+                .ore(2, 1)
+                .oreByproducts(NetherQuartz, Barite)
                 .color(0xc2d6ff).secondaryColor(0x86bacf).iconSet(CERTUS)
                 .flags(GENERATE_PLATE, NO_SMELTING, CRYSTALLIZABLE, DISABLE_DECOMPOSITION)
                 .components(Silicon, 1, Oxygen, 2));
 
         Quartzite = REGISTRATE.material("quartzite", builder -> builder
                 .gem(1).ore(2, 1)
+                .oreByproducts(CertusQuartz, Barite)
                 .color(0xf2f5ed).secondaryColor(0xb8e2b8).iconSet(QUARTZ)
                 .flags(NO_SMELTING, CRYSTALLIZABLE, DISABLE_DECOMPOSITION, GENERATE_PLATE)
                 .components(Silicon, 1, Oxygen, 2));
 
         Graphite = REGISTRATE.material("graphite", builder -> builder
-                .ore()
+                .ore().oreByproducts(Carbon)
                 .color(0xa8a89e).secondaryColor(0x172602)
                 .flags(NO_SMELTING, FLAMMABLE, DISABLE_DECOMPOSITION)
                 .components(Carbon, 1));
@@ -731,12 +785,13 @@ public class FirstDegreeMaterials {
                 .components(Calcium, 1, Chlorine, 2));
 
         Bornite = REGISTRATE.material("bornite", builder -> builder
-                .dust(1).ore()
+                .dust(1).ore().oreByproducts(Pyrite, Cobalt, Cadmium, Gold)
+                .washedIn(Mercury).oreSmeltInto(Copper)
                 .color(0xffe05a).secondaryColor(0x442602).iconSet(ROUGH)
                 .components(Copper, 5, Iron, 1, Sulfur, 4));
 
         Chalcocite = REGISTRATE.material("chalcocite", builder -> builder
-                .dust().ore()
+                .dust().ore().oreByproducts(Sulfur, Massicot, Silver).oreSmeltInto(Copper)
                 .color(0x657882).secondaryColor(0x33302e).iconSet(EMERALD)
                 .components(Copper, 2, Sulfur, 1));
 
@@ -825,7 +880,7 @@ public class FirstDegreeMaterials {
                 .flags(DISABLE_DECOMPOSITION));
 
         Realgar = REGISTRATE.material("realgar", builder -> builder
-                .gem().ore()
+                .gem().ore().oreByproducts(Sulfur, Antimony, Barite)
                 .color(0xff3d33).secondaryColor(0x3f0110).iconSet(EMERALD)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Arsenic, 4, Sulfur, 4));
@@ -901,36 +956,41 @@ public class FirstDegreeMaterials {
 
         Bastnasite = REGISTRATE.material("bastnasite", builder -> builder
                 .dust().ore(2, 1)
+                .oreByproducts(Neodymium, RareEarth).separatedInto(Neodymium)
                 .color(0xcaab60).secondaryColor(0xc8502d).iconSet(FINE)
                 .components(Cerium, 1, Carbon, 1, Fluorine, 1, Oxygen, 3));
 
         Pentlandite = REGISTRATE.material("pentlandite", builder -> builder
-                .dust().ore()
+                .dust().ore().oreByproducts(Iron, Sulfur, Cobalt)
+                .separatedInto(Iron).washedIn(SodiumPersulfate).oreSmeltInto(Nickel)
                 .color(0xe3cf13).secondaryColor(0x29315b)
                 .components(Nickel, 9, Sulfur, 8));
 
         Spodumene = REGISTRATE.material("spodumene", builder -> builder
-                .dust().ore()
+                .dust().ore().oreByproducts(Aluminium, Lithium)
                 .color(0xffbcbc).secondaryColor(0xc490ff)
                 .components(Lithium, 1, Aluminium, 1, Silicon, 2, Oxygen, 6));
 
         Lepidolite = REGISTRATE.material("lepidolite", builder -> builder
-                .dust().ore(2, 1)
+                .dust().ore(2, 1).oreByproducts(Lithium, Caesium, Boron)
                 .color(0xffdae4).secondaryColor(0x75376f).iconSet(FINE)
                 .components(Potassium, 1, Lithium, 3, Aluminium, 4, Fluorine, 2, Oxygen, 10));
 
         GlauconiteSand = REGISTRATE.material("glauconite_sand", builder -> builder
                 .dust().ore(3, 1)
+                .oreByproducts(Sodium, Aluminium, Iron).separatedInto(Iron)
                 .color(0x1da351).secondaryColor(0x1a6e8f).iconSet(SAND)
                 .components(Potassium, 1, Magnesium, 2, Aluminium, 2, Silicon, 3, Oxygen, 12, Hydrogen, 2, Water, 1));
 
         Malachite = REGISTRATE.material("malachite", builder -> builder
-                .gem().ore()
+                .gem().ore().oreByproducts(Goethite, Calcite, Zincite)
+                .washedIn(SodiumPersulfate).oreSmeltInto(Copper)
                 .color(0x00f1b0).secondaryColor(0x107a47).iconSet(LAPIS)
                 .components(Copper, 2, Carbon, 1, Hydrogen, 2, Oxygen, 5));
 
         Mica = REGISTRATE.material("mica", builder -> builder
-                .dust().ore(2, 1)
+                .dust()
+                .ore(2, 1).oreByproducts(Potassium, Aluminium)
                 .color(0xecfeff).secondaryColor(0xc2a03c).iconSet(FINE)
                 .components(Potassium, 1, Aluminium, 3, Silicon, 3, Fluorine, 2, Oxygen, 10));
 
@@ -945,17 +1005,18 @@ public class FirstDegreeMaterials {
                 .components(Potassium, 1, Aluminium, 2, Silicon, 2, Hydrogen, 6, Oxygen, 14));
 
         Talc = REGISTRATE.material("talc", builder -> builder
-                .dust().ore(2, 1)
+                .dust().ore(2, 1).oreByproducts(Clay, Carbon, Clay)
                 .color(0xebffe9).secondaryColor(0x6fe19b).iconSet(FINE)
                 .components(Magnesium, 3, Silicon, 4, Hydrogen, 2, Oxygen, 12));
 
         Soapstone = REGISTRATE.material("soapstone", builder -> builder
-                .dust(1).ore(3, 1)
+                .dust(1)
+                .ore(3, 1).oreByproducts(SiliconDioxide, Magnesium, Calcite, Talc)
                 .color(0x5a7261).secondaryColor(0x464c4b).iconSet(ROUGH)
                 .components(Magnesium, 3, Silicon, 4, Hydrogen, 2, Oxygen, 12));
 
         Kyanite = REGISTRATE.material("kyanite", builder -> builder
-                .dust().ore()
+                .dust().ore().oreByproducts(Talc, Aluminium, Silicon)
                 .color(0xd5ffff).secondaryColor(0x5a69d6).iconSet(FLINT)
                 .components(Aluminium, 2, Silicon, 1, Oxygen, 5));
 
@@ -1347,7 +1408,7 @@ public class FirstDegreeMaterials {
                 .components(Naquadria, 1, Sulfur, 1, Oxygen, 4));
 
         Pyrochlore = REGISTRATE.material("pyrochlore", builder -> builder
-                .dust().ore()
+                .dust().ore().oreByproducts(Apatite, Calcium, Niobium)
                 .color(0x5b4838).secondaryColor(0x331400).iconSet(METALLIC)
                 .components(Calcium, 2, Niobium, 2, Oxygen, 6, Fluorine, 1));
 

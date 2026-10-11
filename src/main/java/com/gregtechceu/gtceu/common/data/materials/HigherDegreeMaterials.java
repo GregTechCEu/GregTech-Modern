@@ -15,7 +15,8 @@ public class HigherDegreeMaterials {
 
     public static void register() {
         Electrotine = REGISTRATE.material("electrotine", builder -> builder
-                .dust().ore(5, 1, true)
+                .dust()
+                .ore(5, 1, true).oreByproducts(Redstone, Electrum, Diamond)
                 .color(0x83cbf5).secondaryColor(0x004585).iconSet(SHINY)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Redstone, 1, Electrum, 1));
@@ -27,7 +28,8 @@ public class HigherDegreeMaterials {
                 .components(EnderPearl, 1, Blaze, 1));
 
         Diatomite = REGISTRATE.material("diatomite", builder -> builder
-                .dust(1).ore()
+                .dust(1)
+                .ore().oreByproducts(Hematite, Sapphire)
                 .color(0xfffafa)
                 .components(Flint, 8, Hematite, 1, Sapphire, 1));
 
@@ -58,7 +60,9 @@ public class HigherDegreeMaterials {
                 .components(Olivine, 1, Calcite, 3, Flint, 8, DarkAsh, 4));
 
         GraniticMineralSand = REGISTRATE.material("granitic_mineral_sand", builder -> builder
-                .dust(1).ore()
+                .dust(1)
+                .ore().oreByproducts(Deepslate, Magnetite).separatedInto(Gold)
+                .oreSmeltInto(Iron)
                 .color(0xd69077).secondaryColor(0x71352c).iconSet(SAND)
                 .components(Magnetite, 1, Deepslate, 1)
                 .flags(BLAST_FURNACE_CALCITE_DOUBLE));
@@ -70,7 +74,7 @@ public class HigherDegreeMaterials {
                 .components(Calcite, 2, Flint, 1));
 
         GarnetSand = REGISTRATE.material("garnet_sand", builder -> builder
-                .dust(1).ore()
+                .dust(1).ore().oreByproducts(GarnetRed, GarnetYellow)
                 .color(0xcc4c25).secondaryColor(0x510b04).iconSet(SAND)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Almandine, 1, Andradite, 1, Grossular, 1, Pyrope, 1, Spessartine, 1, Uvarovite, 1));
@@ -98,7 +102,8 @@ public class HigherDegreeMaterials {
                 .cableProperties(GTValues.V[0], 1, 0));
 
         BasalticMineralSand = REGISTRATE.material("basaltic_mineral_sand", builder -> builder
-                .dust(1).ore()
+                .dust(1).ore().oreByproducts(Basalt, Magnetite)
+                .separatedInto(Gold).oreSmeltInto(Iron)
                 .color(0x5c5c5c).secondaryColor(0x283228).iconSet(SAND)
                 .components(Magnetite, 1, Basalt, 1)
                 .flags(BLAST_FURNACE_CALCITE_DOUBLE));
