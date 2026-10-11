@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.block;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -12,7 +13,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvid
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
-import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.LevelFluidPipeNet;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
@@ -124,9 +124,9 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
             GTCEu.LOGGER.error("Pipe was null");
             return;
         }
-        if (!pipeNode.getFrameMaterial().isNull()) {
-            BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
-                    .getDefaultState();
+        if (pipeNode.getFrameMaterial() != null) {
+            BlockState frameState = ChemicalHelper.getBlockOrThrow(TagPrefix.frameGt, pipeNode.getFrameMaterial())
+                    .defaultBlockState();
             frameState.getBlock().entityInside(frameState, level, pos, entity);
             return;
         }

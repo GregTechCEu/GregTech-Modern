@@ -7,8 +7,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.client.model.runtimegen.MaterialBlockModelGenerator;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
@@ -62,17 +61,18 @@ public class MaterialBlock extends Block {
     public final TagPrefix tagPrefix;
     public final Material material;
 
-    public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material, boolean registerModel) {
+    public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material) {
         super(properties);
         this.material = material;
         this.tagPrefix = tagPrefix;
-        if (registerModel && GTCEu.isClientSide()) {
-            MaterialBlockRenderer.create(this, tagPrefix.materialIconType(), material.getMaterialIconSet());
-        }
     }
 
-    public MaterialBlock(Properties properties, TagPrefix tagPrefix, Material material) {
-        this(properties, tagPrefix, material, true);
+    public static MaterialBlock createAndAddModel(Properties properties, TagPrefix tagPrefix, Material material) {
+        MaterialBlock block = new MaterialBlock(properties, tagPrefix, material);
+        if (GTCEu.isClientSide()) {
+            MaterialBlockModelGenerator.add(block, tagPrefix.materialIconType(), material.getMaterialIconSet());
+        }
+        return block;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -188,7 +188,7 @@ public class MaterialBlock extends Block {
                 continue;
             }
             BlockEntity be = level.getBlockEntity(blockPos);
-            if (be instanceof PipeBlockEntity<?, ?> pbe && !pbe.getFrameMaterial().isNull()) {
+            if (be instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial() != null) {
                 blockPos.move(Direction.UP);
                 continue;
             }
@@ -197,7 +197,7 @@ public class MaterialBlock extends Block {
                 if (!player.isCreative())
                     stack.shrink(1);
                 return InteractionResult.SUCCESS;
-            } else if (be instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial().isNull()) {
+            } else if (be instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial() == null) {
                 pbe.setFrameMaterial(frameBlock.material);
 
                 if (!player.isCreative())
@@ -226,8 +226,8 @@ public class MaterialBlock extends Block {
         BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof PipeBlockEntity<?, ?> pipeTile) {
             Material mat = pipeTile.getFrameMaterial();
-            if (!mat.isNull()) {
-                pipeTile.setFrameMaterial(GTMaterials.NULL);
+            if (mat != null) {
+                pipeTile.setFrameMaterial(null);
                 Block.popResource(level, pos, this.asItem().getDefaultInstance());
                 ToolHelper.damageItem(stack, player);
                 ToolHelper.playToolSound(GTToolType.CROWBAR, (ServerPlayer) player);

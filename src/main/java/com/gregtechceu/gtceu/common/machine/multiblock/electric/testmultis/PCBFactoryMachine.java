@@ -46,7 +46,7 @@ public class PCBFactoryMachine extends WorkableElectricMultiblockMachine {
         // .slice("BBBBBBB", "B#####B", "###B###", "##BBB##")
         // .slice("BBBBBBB", "B#####B", "#######", "#######")
         // .slice("BBBBBBB", "BBBBBBB", "#######", "#######")
-        // .where('#', PatternPredicate.AIR)
+        // .where('#', MultiPredicate.AIR)
         // .where('B', Predicates.blocks(GTBlocks.CASING_COKE_BRICKS.get()))
         // .where('C', Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()))
         // .startOffset(OriginOffset.of(RelativeDirection.FRONT, 10))

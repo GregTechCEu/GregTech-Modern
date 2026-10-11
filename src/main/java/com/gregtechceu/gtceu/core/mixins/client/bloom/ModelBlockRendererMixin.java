@@ -26,8 +26,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class ModelBlockRendererMixin {
 
     @Unique
-    private static final ThreadLocal<ScopedValue.Object<RenderType>> gtceu$currentRenderType = ThreadLocal
-            .withInitial(ScopedValue.Object::new);
+    private static final ScopedValue.Object<RenderType> gtceu$currentRenderType = new ScopedValue.Object<>();
 
     @WrapMethod(method = {
             "tesselateWithAO(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/client/resources/model/BakedModel;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;ZLnet/minecraft/util/RandomSource;JILnet/minecraftforge/client/model/data/ModelData;Lnet/minecraft/client/renderer/RenderType;)V",
@@ -38,7 +37,7 @@ public class ModelBlockRendererMixin {
                                         RandomSource random, long seed, int packedOverlay,
                                         ModelData modelData, RenderType renderType,
                                         Operation<Void> original) {
-        try (var $ = gtceu$currentRenderType.get().with(renderType)) {
+        try (var $ = gtceu$currentRenderType.with(renderType)) {
             original.call(level, model, state, pos, poseStack, consumer, checkSides, random, seed, packedOverlay,
                     modelData, renderType);
         }
@@ -50,16 +49,15 @@ public class ModelBlockRendererMixin {
                             target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V"))
     private void gtceu$copyBloomQuads(VertexConsumer consumer, PoseStack.Pose pose, BakedQuad quad,
                                       float[] colorMuls, float red, float green, float blue,
-                                      int[] combinedLights, int combinedOverlay, boolean mulColor,
+                                      int[] lightmap, int overlay, boolean mulColor,
                                       Operation<Void> original) {
-        original.call(consumer, pose, quad, colorMuls, red, green, blue, combinedLights, combinedOverlay, mulColor);
+        original.call(consumer, pose, quad, colorMuls, red, green, blue, lightmap, overlay, mulColor);
 
         if (!BloomShaderManager.isBloomActive()) return;
 
-        RenderType renderType = gtceu$currentRenderType.get().getValue();
-        BloomRenderer.copyBloomQuad(quad, combinedLights, renderType, bloomVertexConsumer -> {
-            original.call(bloomVertexConsumer, pose, quad, colorMuls, red, green, blue,
-                    combinedLights, combinedOverlay, mulColor);
+        RenderType renderType = gtceu$currentRenderType.getValue();
+        BloomRenderer.copyBloomQuad(quad, lightmap, renderType, bloomVertexConsumer -> {
+            original.call(bloomVertexConsumer, pose, quad, colorMuls, red, green, blue, lightmap, overlay, mulColor);
         });
     }
 }

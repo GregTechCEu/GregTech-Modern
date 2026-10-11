@@ -58,11 +58,6 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         super(info);
     }
 
-    @Override
-    public WorkableElectricMultiblockMachine self() {
-        return this;
-    }
-
     //////////////////////////////////////
     // *** Multiblock Lifecycle ***//
     //////////////////////////////////////
@@ -124,7 +119,6 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
         List<IWidget> widgets = new ArrayList<>();
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));
         widgets.addAll(super.getWidgetsForDisplay(syncManager));
@@ -242,7 +236,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public long getDisplayGeneratorPower() {
         if (this.isGenerator()) {
-            long power = -1;
+            long power = 0;
             var handlers = getCapabilitiesFlat(IO.OUT, EURecipeCapability.CAP);
             for (IRecipeHandler<?> handler : handlers) {
                 if (handler instanceof IEnergyContainer container) {

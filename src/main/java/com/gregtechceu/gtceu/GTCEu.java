@@ -18,7 +18,6 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import dev.emi.emi.config.EmiConfig;
-import me.shedaniel.rei.api.client.REIRuntime;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,7 +27,7 @@ import java.nio.file.Path;
 public class GTCEu {
 
     public static final String MOD_ID = "gtceu";
-    private static final ResourceLocation TEMPLATE_LOCATION = new ResourceLocation(MOD_ID, "");
+    private static final ResourceLocation TEMPLATE_LOCATION = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
@@ -51,7 +50,7 @@ public class GTCEu {
 
         int i = path.indexOf(':');
         if (i > 0) {
-            return new ResourceLocation(path);
+            return ResourceLocation.parse(path);
         } else if (i == 0) {
             path = path.substring(i + 1);
         }
@@ -157,12 +156,8 @@ public class GTCEu {
     public static class Mods {
 
         public static boolean isJEILoaded() {
-            return !(isModLoaded(GTValues.MODID_EMI) || isModLoaded(GTValues.MODID_REI)) &&
+            return !isModLoaded(GTValues.MODID_EMI) &&
                     isModLoaded(GTValues.MODID_JEI);
-        }
-
-        public static boolean isREILoaded() {
-            return isModLoaded(GTValues.MODID_REI) && (!isClientSide() || REIRuntime.getInstance().isOverlayVisible());
         }
 
         public static boolean isEMILoaded() {
@@ -191,10 +186,6 @@ public class GTCEu {
 
         public static boolean isModernFixLoaded() {
             return isModLoaded(GTValues.MODID_MODERNFIX);
-        }
-
-        public static boolean isJAVDLoaded() {
-            return isModLoaded(GTValues.MODID_JAVD);
         }
 
         public static boolean isFTBTeamsLoaded() {

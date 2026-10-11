@@ -15,7 +15,7 @@ import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widgets.ButtonWidget;
@@ -85,19 +85,21 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
                                 .child(Text.lang("gtceu.gui.me_network.min_stack_size").asWidget())
                                 .child(new TextFieldWidget()
                                         .size(120, 18)
-                                        .value(SyncHandlers.intNumber(this::getMinStackSize, this::setMinStackSize))
+                                        .value(SyncHandlers.intNumber(this::getMinStackSize, this::setMinStackSize)
+                                                .allowC2S())
                                         .setNumbers(1, Integer.MAX_VALUE))
                                 .child(Text.lang("gtceu.gui.me_network.ticks_per_cycle").asWidget())
                                 .child(new TextFieldWidget()
                                         .size(120, 18)
-                                        .value(SyncHandlers.intNumber(this::getTicksPerCycle, this::setTicksPerCycle))
+                                        .value(SyncHandlers.intNumber(this::getTicksPerCycle, this::setTicksPerCycle)
+                                                .allowC2S())
                                         .setNumbers(1, 200))
                                 .margin(5)));
 
         return MachineUIPanelBuilder.panelBuilder(this.self())
                 .rightConfigurators(f -> {
                     f.child(new ToggleButton()
-                            .value(new BoolValue.Dynamic(this::isAutoPull, this::setAutoPull))
+                            .value(new BooleanSyncValue(this::isAutoPull, this::setAutoPull).allowC2S())
                             .stateOverlay(GTGuiTextures.BUTTON_AUTO_PULL)
                             .tooltipAutoUpdate(true)
                             .tooltipBuilder(r -> r

@@ -22,7 +22,6 @@ dependencies {
 
     // Recipe Viewers
     modCompileOnly(forge.bundles.jei)
-    modCompileOnly(forge.bundles.rei)
     modCompileOnly(forge.emi)
 
     // Jade (WAILA)
@@ -33,7 +32,6 @@ dependencies {
 
     // AE2
     modCompileOnly(forge.ae2)
-    modCompileOnly(forge.ae2wtlib)
 
     // Create
     modCompileOnly(forge.ponder)
@@ -76,13 +74,13 @@ dependencies {
     // Standard runtime mods //
     modLocalRuntime(forge.jade)
     modLocalRuntime(forge.ae2)
+    modLocalRuntime(forge.guideme)
     modLocalRuntime(forge.spark)
     modLocalRuntime(forge.modernfix)
 
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
     modLocalRuntime(forge.emi)
-//    modLocalRuntime(forge.jei.forge.impl)
-//    modLocalRuntime(forge.bundles.rei.runtime)
+    //modLocalRuntime(forge.jei.forge.impl)
 
     // Client-only runtime mods //
     modClientLocalRuntime(forge.embeddium)

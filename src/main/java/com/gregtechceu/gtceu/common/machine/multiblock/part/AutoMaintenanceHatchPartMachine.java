@@ -5,6 +5,10 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
+
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -58,4 +62,9 @@ public class AutoMaintenanceHatchPartMachine extends MaintenanceHatchPartMachine
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {}
+
+    @Override
+    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
+        return false;
+    }
 }

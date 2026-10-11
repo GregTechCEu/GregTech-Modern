@@ -1,0 +1,152 @@
+package com.gregtechceu.gtceu.api.multiblock;
+
+import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
+import com.gregtechceu.gtceu.api.multiblock.predicates.TestType;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Objects;
+
+public class XorPredicate extends MultiPredicate {
+
+    // this could be a base predicate or a child
+    private @Nullable PassedPredicate passedPredicate;
+    /// {@code true} if any base predicate have a min count of 0 or -1,
+    /// meaning that it is possible that no predicates may be present in the multi.
+    protected boolean noneValid;
+
+    public XorPredicate(List<MultiPredicate> children, List<BasePredicate> predicates, boolean hasAir) {
+        super(Logic.XOR, children, predicates, hasAir);
+    }
+
+    @Override
+    protected void onSettingsChanged() {
+        this.noneValid = isNoneValid(this);
+    }
+
+    @Override
+    protected PredicateResult onPredicateMatched(PredicateResult result, PredicateContext context) {
+        BasePredicate matchedPredicate = Objects.requireNonNull(result.match());
+        MultiPredicate bottom = Objects.requireNonNull(result.getBottom());
+        if (bottom == this) {
+            if (this.passedPredicate == null) {
+                this.passedPredicate = ofPredicate(matchedPredicate);
+            } else if (!this.passedPredicate.is(matchedPredicate)) {
+                xorError(context, matchedPredicate, this.passedPredicate);
+                return PredicateResult.failed();
+            }
+        } else {
+            if (this.passedPredicate == null) {
+                this.passedPredicate = ofChild(bottom);
+            } else if (!this.passedPredicate.is(bottom)) {
+                xorError(context, matchedPredicate, this.passedPredicate);
+                return PredicateResult.failed();
+            }
+        }
+        return result;
+    }
+
+    @Override
+    protected boolean testGlobalMin(PredicateContext ctx) {
+        boolean result = TestType.GLOBAL_MIN.testCounts(this, ctx);
+        result &= (noneValid && passedPredicate == null) ||
+                (passedPredicate != null && passedPredicate.testGlobalMin(ctx));
+        return result;
+    }
+
+    @Override
+    protected boolean testSliceMin(PredicateContext ctx) {
+        boolean result = TestType.SLICE_MIN.testCounts(this, ctx);
+        result &= (noneValid && passedPredicate == null) ||
+                (passedPredicate != null && passedPredicate.testSliceMin(ctx));
+        return result;
+    }
+
+    @Override
+    public void resetLogic() {
+        super.resetLogic();
+        this.passedPredicate = null;
+    }
+
+    private static void xorError(PredicateContext context, BasePredicate predicate, PassedPredicate passedPredicate) {
+        MutableComponent found = Component.literal(predicate + " present in multiblock");
+        Component passed = passedPredicate.toComponent();
+        MutableComponent expected = Component
+                .literal("expected only: " + passed.getString());
+        context.appendError(
+                PatternStringError.literal("XOR error\n" + found.getString() + "\n" + expected.getString()));
+        context.skipFlipCheck();
+    }
+
+    private static boolean isNoneValid(MultiPredicate multiPredicate) {
+        PredicateSettings settings = multiPredicate.getSettings();
+        if (settings != null && !settings.isNoneValid()) return false;
+
+        for (BasePredicate predicate : multiPredicate.predicates()) {
+            if (predicate.getSettings().isNoneValid()) {
+                return true;
+            }
+        }
+        for (MultiPredicate child : multiPredicate.children()) {
+            if (isNoneValid(child)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static PassedPredicate ofPredicate(BasePredicate predicate) {
+        return new PassedPredicate(predicate, null);
+    }
+
+    private static PassedPredicate ofChild(MultiPredicate predicate) {
+        return new PassedPredicate(null, predicate);
+    }
+
+    // this needs to hold both base predicate or passing children
+    private record PassedPredicate(@Nullable BasePredicate predicate, @Nullable MultiPredicate multiPredicate) {
+
+        public boolean testGlobalMin(PredicateContext ctx) {
+            if (this.predicate != null) {
+                return TestType.GLOBAL_MIN.testWithError(this.predicate, ctx);
+            } else if (this.multiPredicate != null) {
+                return this.multiPredicate.testGlobalMin(ctx);
+            }
+            throw new IllegalStateException();
+        }
+
+        public boolean testSliceMin(PredicateContext ctx) {
+            if (predicate != null) {
+                return TestType.SLICE_MIN.testWithError(this.predicate, ctx);
+            } else if (multiPredicate != null) {
+                return multiPredicate.testSliceMin(ctx);
+            }
+            throw new IllegalStateException();
+        }
+
+        public boolean is(BasePredicate predicate) {
+            if (this.multiPredicate != null) return false;
+            return Objects.requireNonNull(this.predicate) == predicate;
+        }
+
+        public boolean is(MultiPredicate multiPredicate) {
+            if (this.predicate != null) return false;
+            return Objects.requireNonNull(this.multiPredicate) == multiPredicate;
+        }
+
+        public Component toComponent() {
+            if (this.predicate != null) {
+                return Component.literal(this.predicate.toString());
+            } else if (this.multiPredicate != null) {
+                return Component.literal(this.multiPredicate.toString());
+            }
+            return Component.empty();
+        }
+    }
+}

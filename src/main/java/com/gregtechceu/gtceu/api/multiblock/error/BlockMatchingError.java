@@ -13,15 +13,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class BlockMatchingError extends PatternError {
 
     public static final Codec<BlockMatchingError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
-            Codec.list(BuiltInRegistries.BLOCK.byNameCodec()).fieldOf("blocks")
+            BuiltInRegistries.BLOCK.byNameCodec().listOf().fieldOf("blocks")
                     .forGetter(BlockMatchingError::getBlocks))
             .apply(instance, BlockMatchingError::new));
 
@@ -31,7 +29,7 @@ public class BlockMatchingError extends PatternError {
     private final List<Block> blocks;
 
     public BlockMatchingError(BlockPos pos, List<Block> blocks) {
-        super(pos, Collections.emptyList());
+        super(pos);
         this.blocks = blocks;
     }
 
@@ -42,7 +40,6 @@ public class BlockMatchingError extends PatternError {
             for (Block block : blocks) {
                 comps.add(block.getName());
             }
-            Objects.requireNonNull(pos);
             comps.add(Component.translatable("gtceu.pattern_predicate.blocks", pos.getX(), pos.getY(), pos.getZ()));
             comps.forEach(comp -> parent.child(Text.of(comp).asWidget()));
         };

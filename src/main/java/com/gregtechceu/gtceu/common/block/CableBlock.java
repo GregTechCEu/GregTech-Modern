@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
@@ -16,7 +17,6 @@ import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
-import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.cable.LevelEnergyNet;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -123,9 +123,9 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
             GTCEu.LOGGER.error("Pipe was null");
             return;
         }
-        if (!pipeNode.getFrameMaterial().isNull()) {
-            BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
-                    .getDefaultState();
+        if (pipeNode.getFrameMaterial() != null) {
+            BlockState frameState = ChemicalHelper.getBlockOrThrow(TagPrefix.frameGt, pipeNode.getFrameMaterial())
+                    .defaultBlockState();
             frameState.getBlock().entityInside(frameState, level, pos, entity);
             return;
         }
@@ -134,7 +134,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
         Insulation insulation = getPipeTile(level, pos).getPipeType();
         if (!insulation.isCable() && entity instanceof LivingEntity entityLiving) {
             CableBlockEntity cable = (CableBlockEntity) getPipeTile(level, pos);
-            if (cable != null && cable.getFrameMaterial().isNull() &&
+            if (cable != null && cable.getFrameMaterial() == null &&
                     cable.getNodeData().getLossPerBlock() > 0) {
                 long voltage = cable.getCurrentMaxVoltage();
                 double amperage = cable.getAverageAmperage();

@@ -3,11 +3,13 @@ package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.predicates.*;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -45,7 +47,10 @@ import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
@@ -55,6 +60,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
 @Accessors(chain = true)
 public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidget> {
@@ -124,7 +131,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 .height(height)
                 .children(this.multiblockSchemaInfo.getBlockCounts().reference2IntEntrySet(), e -> {
                     ItemStack stack = new ItemStack(e.getKey(), e.getIntValue());
-                    return RecipeViewerSlotWidget.create()
+                    return RecipeViewerSlotWidget.create(ItemStack.class)
                             .recipeSlotRole(RecipeSlotRole.OUTPUT)
                             .value(stack)
                             .background(IDrawable.EMPTY)
@@ -140,13 +147,13 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             IBlockPattern pattern = multiblockDefinition.getStructurePatterns().get("main").get();
             if (pattern instanceof BlockPattern blockPattern) {
                 @SuppressWarnings("DataFlowIssue") // realistically it can't be null here
-                PatternPredicate predicate = this.multiblockSchemaInfo.getStructureHelper().getPredicateFromPos(
+                MultiPredicate predicate = this.multiblockSchemaInfo.getStructureHelper().getPredicateFromPos(
                         blockPattern, this.selectionInfo.pos(), frontFacing, upFacing, isFlipped);
 
                 return createSelectedBlockMenu(predicate);
             } else if (pattern instanceof ExpandablePattern expandablePattern) {
                 @SuppressWarnings("DataFlowIssue") // realistically it can't be null here
-                PatternPredicate predicate = this.multiblockSchemaInfo.getStructureHelper().getPredicateFromPos(
+                MultiPredicate predicate = this.multiblockSchemaInfo.getStructureHelper().getPredicateFromPos(
                         expandablePattern, this.selectionInfo.pos(), frontFacing, upFacing, isFlipped);
 
                 return createSelectedBlockMenu(predicate);
@@ -159,6 +166,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
         this.multiblockSchemaInfo.getRenderer().camera().setPosAndLookAt(0, 0, -10,
                 this.multiblockSchemaInfo.getMapSchema().getCenter());
+        PredicateContext context = new PredicateContext(null);
         SchemaWidget schema = this.multiblockSchemaInfo.getRenderer().asWidget()
                 .listenGuiAction(setBlockOnClick)
                 .tooltipDynamic(text -> {
@@ -170,6 +178,16 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                 this.getMultiblockSchemaInfo().getMapSchema().getLevel(), hit.getBlockPos(),
                                 this.getContext().getMC().player);
                         text.addFromItem(pickedItem);
+                        IBlockPattern value = patterns.get(0).getValue();
+                        context.updateLevel(this.multiblockSchemaInfo.getMapSchema().getLevel());
+                        context.updatePos(hit.getBlockPos());
+                        MultiPredicate root = Objects.requireNonNull(this.multiblockSchemaInfo.getStructureHelper())
+                                .getPredicateFromPos(value, hit.getBlockPos(), frontFacing, upFacing, isFlipped);
+                        root.resetLogic();
+                        BasePredicate predicate = root.getPredicateAtPos(context).match();
+                        if (predicate != null) {
+                            predicate.getRecipeViewerTooltips(root).forEach(t -> text.add(t).newLine());
+                        }
                     }
                 }).tooltipAutoUpdate(true)
                 .size(width, height);
@@ -240,7 +258,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                         .clientOnlyHandler(partsHandler))));
     }
 
-    private ContextMenuButton<?> createSelectedBlockMenu(PatternPredicate predicate) {
+    private ContextMenuButton<?> createSelectedBlockMenu(MultiPredicate predicate) {
         // TODO this can throw invalid state exception when
         // opening after clicking on a block twice
         return new ContextMenuButton<>(this.selectionInfo.pos().toString())
@@ -253,14 +271,15 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .coverChildrenWidth()
                         .collapseDisabledChildren()
                         .childSeparator(Icon.EMPTY_2PX)
-                        .children(predicate.subPredicates, basePredicate -> {
-                            List<BlockInfo> candidates = basePredicate.candidates;
+                        // todo handle children
+                        .children(predicate.expand(), basePredicate -> {
+                            List<BlockInfo> candidates = basePredicate.getCandidates();
                             if (candidates.isEmpty())
                                 return new EmptyWidget();
                             if (candidates.size() > 1) {
-                                return new ContextMenuButton<>(basePredicate.getPredicateName())
+                                return new ContextMenuButton<>(basePredicate.getTypeName())
                                         .size(16)
-                                        .tooltip(r -> r.add(basePredicate.getPredicateName()))
+                                        .tooltip(r -> r.add(basePredicate.getTypeName()))
                                         .overlay(new ItemDrawable(
                                                 candidates.get(0).getItemStackForm()))
                                         .requiresClick()
@@ -290,7 +309,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                                         candidates.get(0))))
                                         .size(16)
                                         .tooltip(r -> r.add(
-                                                basePredicate.candidates.get(0).getItemStackForm().getHoverName()))
+                                                basePredicate.getCandidates().get(0).getItemStackForm().getHoverName()))
                                         .overlay(new ItemDrawable(
                                                 candidates.get(0).getItemStackForm()));
                             }
@@ -299,14 +318,14 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
     private void createPredicateMenus(Flow predicatesRow, BlockPattern blockPattern) {
         for (var entry : blockPattern.getPredicates().char2ObjectEntrySet()) {
-            PatternPredicate predicate = entry.getValue();
+            MultiPredicate predicate = entry.getValue();
             // todo figure out sliders needed for predicate min/max depending on base predicates in the
             // main predicate
-            if (predicate.equals(PatternPredicate.ANY) || predicate.equals(PatternPredicate.AIR)) {
+            if (predicate.isAny() || predicate.isAir()) {
                 continue;
             }
             IDrawable overlay;
-            if (predicate.subPredicates.size() == 1 && predicate.subPredicates.get(0).candidates.size() == 1) {
+            if (predicate.getCandidates().size() == 1 && predicate.getCandidates().get(0).size() == 1) {
                 continue;
             } else {
                 overlay = Text.str(String.valueOf(entry.getCharKey())).asIcon().size(8).center();
@@ -328,8 +347,9 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             .coverChildrenWidth()
                             .collapseDisabledChildren()
                             .childSeparator(Icon.EMPTY_2PX)
-                            .children(predicate.subPredicates, basePredicate -> {
-                                List<BlockInfo> candidates = basePredicate.candidates;
+                            // todo handle children
+                            .children(predicate.expand(), basePredicate -> {
+                                List<BlockInfo> candidates = basePredicate.getCandidates();
                                 if (candidates.isEmpty()) {
                                     return new EmptyWidget();
                                 } else if (candidates.size() > 1) {
@@ -341,7 +361,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                                             candidates.get(0))))
                                             .size(16)
                                             .tooltip(r -> r.add(
-                                                    basePredicate.candidates.get(0).getItemStackForm().getHoverName()))
+                                                    basePredicate.getCandidates().get(0).getItemStackForm()
+                                                            .getHoverName()))
                                             .overlay(new ItemDrawable(
                                                     candidates.get(0).getItemStackForm()));
                                 }
@@ -350,11 +371,11 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         }
     }
 
-    private ContextMenuButton<?> createInnerPredicateMenu(PatternPredicate predicate, BasePredicate basePredicate,
+    private ContextMenuButton<?> createInnerPredicateMenu(MultiPredicate predicate, BasePredicate basePredicate,
                                                           List<BlockInfo> candidates) {
-        return new ContextMenuButton<>(basePredicate.getPredicateName())
+        return new ContextMenuButton<>(basePredicate.toString())
                 .size(16)
-                .tooltip(r -> r.add(basePredicate.getPredicateName()))
+                .tooltip(r -> r.add(basePredicate.getTypeName()))
                 .overlay(new ItemDrawable(
                         candidates.get(0).getItemStackForm()))
                 .requiresClick()
@@ -397,7 +418,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     }
 
     /// ==== User Preference UI ======
-    private void setPredicateDefaultBlock(PatternPredicate predicate, BasePredicate basePredicate,
+    private void setPredicateDefaultBlock(MultiPredicate predicate, BasePredicate basePredicate,
                                           BlockInfo blockInfo) {
         this.multiblockSchemaInfo.putPredicatePreference(predicate, basePredicate, blockInfo);
         refreshSchema();
@@ -492,5 +513,40 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         public ItemStack stack() {
             return info().getItemStackForm();
         }
+    }
+
+    public static List<ItemStack> initializeContainedBlocks(MultiblockMachineDefinition definition) {
+        List<ItemStack> containedBlocks = new ArrayList<>();
+        Map<BlockPos, BlockInfo> resultStructure = new HashMap<>();
+
+        IBlockPattern pattern = definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
+        AbstractStructureHelper structureHelper = null;
+        if (pattern instanceof BlockPattern blockPattern) {
+            var sliceRepeats = new Int2IntArrayMap();
+            for (int i = 0; i < blockPattern.getSlices().length; i++) {
+                sliceRepeats.put(i, blockPattern.getSlices()[i].getMinRepeats());
+            }
+            structureHelper = AbstractStructureHelper.blockPattern(sliceRepeats);
+        } else if (pattern instanceof ExpandablePattern expandablePattern) {
+            var userDimensions = new IntArrayList();
+            expandablePattern.getBoundsConstraints().apply().stream()
+                    .mapToInt(Pair::left)
+                    .forEach(userDimensions::add);
+            structureHelper = AbstractStructureHelper.expandable(userDimensions);
+        }
+        if (structureHelper != null) {
+            structureHelper.populate(resultStructure, pattern, null,
+                    definition.getRotationState().defaultDirection, switch (definition.getRotationState()) {
+                        case Y_AXIS -> Direction.NORTH;
+                        case ALL, NON_Y_AXIS, NONE -> Direction.UP;
+                    }, false);
+
+            Object2IntMap<Block> blockCount = new Object2IntOpenHashMap<>();
+            resultStructure.forEach(
+                    (pos, state) -> blockCount.mergeInt(state.getBlockState().getBlock(), 1, Integer::sum));
+            blockCount.forEach((block, count) -> containedBlocks.add(new ItemStack(block.asItem(), count)));
+        }
+
+        return containedBlocks;
     }
 }

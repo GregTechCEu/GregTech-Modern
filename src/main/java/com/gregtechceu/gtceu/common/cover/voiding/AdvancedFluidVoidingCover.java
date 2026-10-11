@@ -2,8 +2,7 @@ package com.gregtechceu.gtceu.common.cover.voiding;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -95,17 +94,13 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         if (!filterHandler.isFilterPresent())
             return globalTransferSizeMillibuckets;
 
-        FluidFilter filter = filterHandler.getFilter();
-        return filter.isBlackList() ? globalTransferSizeMillibuckets : filter.testFluidAmount(fluidStack);
+        Filter<FluidStack> filter = filterHandler.getFilter();
+        return filter.supportsAmounts() ? filter.testAmount(fluidStack) : globalTransferSizeMillibuckets;
     }
 
     public void setVoidingMode(VoidingMode voidingMode) {
         this.voidingMode = voidingMode;
         syncDataHolder.markClientSyncFieldDirty("voidingMode");
-
-        if (!this.isRemote()) {
-            configureFilter();
-        }
     }
 
     private void setTransferBucketMode(BucketMode transferBucketMode) {
@@ -122,11 +117,11 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         super.createCoverUIRows(column, data, syncManager, settings);
 
         EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
-                this::getVoidingMode, this::setVoidingMode);
+                this::getVoidingMode, this::setVoidingMode).allowC2S();
         IntSyncValue voidingLimit = new IntSyncValue(this::getGlobalTransferSizeMillibuckets,
-                this::setGlobalTransferSizeMillibuckets);
+                this::setGlobalTransferSizeMillibuckets).allowC2S();
         EnumSyncValue<BucketMode> bucketModeSync = new EnumSyncValue<>(BucketMode.class, this::getBucketMode,
-                this::setBucketMode);
+                this::setBucketMode).allowC2S();
 
         syncManager.syncValue("voidingMode", voidingMode);
         syncManager.syncValue("voidingLimit", voidingLimit);
@@ -141,24 +136,8 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
         column.child(
                 GTMuiWidgets
-                        .createIntInputWithBucketMode(voidingLimit, bucketModeSync, () -> getVoidingMode().maxStackSize)
+                        .createIntInputWithBucketMode(voidingLimit, bucketModeSync, () -> Integer.MAX_VALUE)
                         .setEnabledIf($ -> shouldShowStackSize()));
-    }
-
-    private int getCurrentBucketModeTransferSize() {
-        return this.globalTransferSizeMillibuckets / this.transferBucketMode.multiplier;
-    }
-
-    private void setCurrentBucketModeTransferSize(int transferSize) {
-        this.globalTransferSizeMillibuckets = Math.max(transferSize * this.transferBucketMode.multiplier, 0);
-        syncDataHolder.markClientSyncFieldDirty("globalTransferSizeMillibuckets");
-    }
-
-    @Override
-    protected void configureFilter() {
-        if (filterHandler.getFilter() instanceof SimpleFluidFilter filter) {
-            filter.setMaxStackSize(voidingMode == VoidingMode.VOID_ANY ? 1 : Integer.MAX_VALUE);
-        }
     }
 
     private boolean shouldShowStackSize() {
@@ -168,7 +147,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         if (!this.filterHandler.isFilterPresent())
             return true;
 
-        return this.filterHandler.getFilter().isBlackList();
+        return this.filterHandler.getFilter().supportsAmounts();
     }
 
     @Override
@@ -182,7 +161,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
         setVoidingMode(VoidingMode.values()[tag.getInt("voidingMode")]);
         setTransferBucketMode(BucketMode.values()[tag.getInt("voidBucketMode")]);
-        setCurrentBucketModeTransferSize(tag.getInt("voidSize"));
+        setGlobalTransferSizeMillibuckets(tag.getInt("voidSize"));
         super.pasteConfig(player, tag);
     }
 }

@@ -118,7 +118,7 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
         if (belowControllerY == partY) {
             // firebox
 
-            var recipeLogic = controller.getTrait(RecipeLogic.TYPE);
+            var recipeLogic = controller.getTrait(RecipeLogic.class);
 
             if (recipeLogic != null && recipeLogic.isWorking()) {
                 emitQuads(quads, fireboxActiveModel, controller.getLevel(), partPos, fireboxActive,

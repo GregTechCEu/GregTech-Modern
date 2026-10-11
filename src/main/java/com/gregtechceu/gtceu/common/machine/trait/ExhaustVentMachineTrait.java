@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRecipeLogicModifierTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
@@ -32,9 +31,6 @@ import lombok.Setter;
  */
 public class ExhaustVentMachineTrait extends MachineTrait implements IRecipeLogicModifierTrait {
 
-    public static final MachineTraitType<ExhaustVentMachineTrait> TYPE = new MachineTraitType<>(
-            ExhaustVentMachineTrait.class, false);
-
     @Getter
     @Setter
     private Direction ventingDirection = Direction.UP;
@@ -51,11 +47,6 @@ public class ExhaustVentMachineTrait extends MachineTrait implements IRecipeLogi
 
         this.needsVenting = false;
         this.ventingDamageAmount = 0;
-    }
-
-    @Override
-    public MachineTraitType<ExhaustVentMachineTrait> getTraitType() {
-        return TYPE;
     }
 
     @Override

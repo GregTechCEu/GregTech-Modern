@@ -136,7 +136,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
                 Component.translatable("gtceu.gui.me_network.online") :
                 Component.translatable("gtceu.gui.me_network.offline"))
                 .asWidget().marginTop(2).marginBottom(4));
-        flow.child(new AEConfigWidget(aeFluidHandler, CONFIG_SIZE, false)
+        flow.child(new AEConfigWidget(aeFluidHandler, CONFIG_SIZE, true)
                 .syncManager(syncManager)
                 .size(8 * 18, 2 * (18 * 2 + 2)));
 

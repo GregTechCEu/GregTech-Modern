@@ -90,7 +90,7 @@ or
 GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
   event.create("unboxinator")
     .setProgressBar(
-      ResourceTexture["(net.minecraft.resources.ResourceLocation)"](new ResourceLocation("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png")),
+      ResourceTexture["(net.minecraft.resources.ResourceLocation)"]("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
       FillDirection.LEFT_TO_RIGHT
     )
     // Rest of the recipe type

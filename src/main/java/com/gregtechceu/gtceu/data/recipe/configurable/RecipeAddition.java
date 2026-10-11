@@ -9,8 +9,10 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -37,7 +39,7 @@ public class RecipeAddition {
         hardRedstoneRecipes(provider);
         disableManualCompression(provider);
         hardToolArmorRecipes(provider);
-        harderRods(provider);
+        stoneRods(provider);
         harderBrickRecipes(provider);
         steelSteamMultiblocks(provider);
         if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) hardWoodRecipes(provider);
@@ -765,32 +767,18 @@ public class RecipeAddition {
         }
     }
 
-    private static void harderRods(Consumer<FinishedRecipe> provider) {
-        if (ConfigHolder.INSTANCE.recipes.harderRods) {
-            LATHE_RECIPES.recipeBuilder("stone_rod_from_cobblestone")
-                    .inputItems(ItemTags.STONE_CRAFTING_MATERIALS)
-                    .outputItems(rod, Stone, 1)
+    private static void stoneRods(Consumer<FinishedRecipe> provider) {
+        var cobblestone = LATHE_RECIPES.recipeBuilder("stone_rod_from_cobblestone")
+                .inputItems(ItemTags.STONE_CRAFTING_MATERIALS)
+                .duration(20).EUt(VA[ULV]);
+        var stone = LATHE_RECIPES.recipeBuilder("stone_rod_from_stone")
+                .inputItems(new ItemStack(Blocks.STONE))
+                .duration(20).EUt(VA[ULV]);
+        for (var builder : new GTRecipeBuilder[] { cobblestone, stone }) {
+            builder.addData(LatheRecipeLogic.LUBRICATED_ROD,
+                    BuiltInRegistries.ITEM.getKey(ChemicalHelper.get(rod, Stone).getItem()).toString())
+                    .outputItems(rod, Stone)
                     .outputItems(dustSmall, Stone, 2)
-                    .duration(20).EUt(VA[ULV])
-                    .save(provider);
-
-            LATHE_RECIPES.recipeBuilder("stone_rod_from_stone")
-                    .inputItems(new ItemStack(Blocks.STONE))
-                    .outputItems(rod, Stone, 1)
-                    .outputItems(dustSmall, Stone, 2)
-                    .duration(20).EUt(VA[ULV])
-                    .save(provider);
-        } else {
-            LATHE_RECIPES.recipeBuilder("stone_rod_from_cobblestone")
-                    .inputItems(ItemTags.STONE_CRAFTING_MATERIALS)
-                    .outputItems(rod, Stone, 2)
-                    .duration(20).EUt(VA[ULV])
-                    .save(provider);
-
-            LATHE_RECIPES.recipeBuilder("stone_rod_from_stone")
-                    .inputItems(new ItemStack(Blocks.STONE))
-                    .outputItems(rod, Stone, 2)
-                    .duration(20).EUt(VA[ULV])
                     .save(provider);
         }
     }
@@ -1319,9 +1307,10 @@ public class RecipeAddition {
     private static void addBedRecipe(Consumer<FinishedRecipe> provider, DyeColor color) {
         String colorName = color.getName();
         VanillaRecipeHelper.addShapedRecipe(provider, colorName + "_bed",
-                new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(colorName + "_bed"))), "WWW", "PPP",
+                new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_bed"))),
+                "WWW", "PPP",
                 "FrF",
-                'W', BuiltInRegistries.ITEM.get(new ResourceLocation(colorName + "_carpet")),
+                'W', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_carpet")),
                 'P', ItemTags.PLANKS,
                 'F', ItemTags.WOODEN_FENCES);
     }
@@ -1329,8 +1318,9 @@ public class RecipeAddition {
     private static void addCarpetRecipe(Consumer<FinishedRecipe> provider, DyeColor color) {
         String colorName = color.getName();
         VanillaRecipeHelper.addShapedRecipe(provider, colorName + "_carpet",
-                new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(colorName + "_carpet"))), "WW",
-                'W', BuiltInRegistries.ITEM.get(new ResourceLocation(colorName + "_wool")));
+                new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_carpet"))),
+                "WW",
+                'W', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_wool")));
     }
 
     private static void hardGlassRecipes(Consumer<FinishedRecipe> provider) {
@@ -1340,9 +1330,10 @@ public class RecipeAddition {
         for (DyeColor color : DyeColor.values()) {
             String dyeName = color.getName();
             VanillaRecipeHelper.addShapedRecipe(provider, dyeName + "_glass_pane",
-                    new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass_pane")), 2),
+                    new ItemStack(BuiltInRegistries.ITEM
+                            .get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass_pane")), 2),
                     "sG",
-                    'G', BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass")));
+                    'G', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass")));
         }
 
         ALLOY_SMELTER_RECIPES.recipeBuilder("tinted_glass")

@@ -4,8 +4,6 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
-import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
@@ -16,6 +14,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.trait.ProgrammableCircuitSlotTrait;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
@@ -29,9 +28,11 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
@@ -55,7 +56,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @SaveField
     @SyncToClient
     @Getter
-    protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
+    protected final FilterHandler<ItemStack> filterHandler;
 
     @Getter
     @SaveField
@@ -70,7 +71,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
      */
     public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
         this(info, tier, io,
-                new NotifiableItemStackHandler(getInventorySize(tier), io, io.support(IO.IN) ? IO.BOTH : io));
+                new NotifiableItemStackHandler(getInventorySize(tier), io));
     }
 
     /**
@@ -86,7 +87,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         this.inventory = attachTrait(inventory);
         this.circuitSlot = attachTrait(new ProgrammableCircuitSlotTrait());
         circuitSlot.setEnabled(io == IO.IN);
-        filterHandler = FilterHandlers.item(this);
+        filterHandler = new FilterHandler<>(this, ItemStack.class);
 
         inventory.setFilter(this::matchesFilter);
     }
@@ -122,6 +123,13 @@ public class ItemBusPartMachine extends TieredIOPartMachine
             inventorySubs.unsubscribe();
             inventorySubs = null;
         }
+    }
+
+    @Override
+    public void onMachineDestroyed() {
+        if (filterHandler.isFilterPresent())
+            Block.popResource(getLevel(), getBlockPos(), filterHandler.getFilterItem());
+        super.onMachineDestroyed();
     }
 
     @Override
@@ -248,18 +256,29 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         int rowSize = (int) Math.sqrt(getInventorySize(tier));
 
         SlotGroup group = new SlotGroup("item_inv", rowSize, 0, true);
-        mainWidget.child(new Grid()
+        Grid grid = new Grid()
                 .coverChildren()
-                .center()
                 .margin(7, 5)
                 .gridOfSizeHeight(rowSize * rowSize, rowSize, (x, y, index) -> new ItemSlot()
-                        .slot(SyncHandlers.itemSlot(inventory, index)
+                        .slot(SyncHandlers.itemSlot(inventory.storage, index)
                                 .slotGroup(group)
                                 .changeListener((oldStack, newStack, client, init) -> {
                                     if (ItemStack.isSameItem(oldStack, newStack)) {
                                         inventory.onContentsChanged();
                                     }
                                 })
-                                .accessibility(inventory.handlerIO.support(IO.IN), true))));
+                                .accessibility(inventory.handlerIO.support(IO.IN), true)));
+
+        if (io == IO.OUT) {
+            Flow filterRow = Flow.row().width(9 * 18).coverChildrenHeight().childPadding(2);
+            mainWidget.child(Flow.col()
+                    .coverChildren()
+                    .center()
+                    .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                    .child(grid)
+                    .child(GTMuiWidgets.createFilterRow(filterRow, filterHandler, guiData, syncManager, settings)));
+        } else {
+            mainWidget.child(grid.center());
+        }
     }
 }

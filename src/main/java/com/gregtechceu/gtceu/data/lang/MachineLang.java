@@ -876,20 +876,23 @@ public class MachineLang {
                 "Liquid Oxygen Amount: %sL");
         provider.add("gtceu.multiblock.large_combustion_engine.oxygen_boosted", "§bOxygen boosted.");
         provider.add("gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted",
-                "§bLiquid Oxygen boosted.");
+                "§9Liquid Oxygen boosted.");
         provider.add("gtceu.multiblock.large_combustion_engine.boost_disallowed",
                 "§bUpgrade the Dynamo Hatch to enable Oxygen Boosting.");
         provider.add("gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost",
-                "Supply Oxygen to boost.");
+                "Supply §bOxygen§7 to boost.");
         provider.add("gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost",
-                "Supply Liquid Oxygen to boost.");
+                "Supply §9Liquid Oxygen§7 to boost.");
+        provider.add("gtceu.multiblock.large_combustion_engine.output", "Producing %s EU/t");
         provider.add("gtceu.multiblock.large_combustion_engine.obstructed", "Engine Intakes Obstructed.");
+        provider.add("gtceu.multiblock.large_combustion_engine.no_lubricant", "Machine needs Lubricant to run");
         provider.add("gtceu.multiblock.turbine.fuel_amount", "Fuel Amount: %sL (%s)");
         provider.add("gtceu.multiblock.turbine.rotor_speed", "Rotor Speed: %s/%s RPM");
         provider.add("gtceu.multiblock.turbine.rotor_durability", "Rotor Durability: %s%%");
         provider.add("gtceu.multiblock.turbine.efficiency", "Turbine Efficiency: %s%%");
         provider.add("gtceu.multiblock.turbine.energy_per_tick", "Energy Output: %s/%s EU/t");
         provider.add("gtceu.multiblock.turbine.energy_per_tick_maxed", "Energy Output: %s EU/t");
+        provider.add("gtceu.multiblock.turbine.no_rotor", "Missing Rotor");
         provider.add("gtceu.multiblock.turbine.obstructed", "Turbine Face Obstructed");
         provider.add("gtceu.multiblock.turbine.efficiency_tooltip",
                 "Each Rotor Holder above %s§7 adds §f10%% efficiency and multiplies EU/t by 2§7.");
@@ -952,6 +955,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.active_transformer.max_output", "§cMax Output: §f%s EU/t");
         provider.add("gtceu.multiblock.active_transformer.danger_enabled", "§c§bDANGER: Explosive");
         provider.add("gtceu.multiblock.data_bank.providing", "Providing data.");
+        provider.add("gtceu.multiblock.data_bank.error_power", "Power low, no data provided!");
         provider.add("gtceu.multiblock.hpca.computation", "Providing: %s");
         provider.add("gtceu.multiblock.hpca.energy", "Using: %s / %s EU/t (%s)");
         provider.add("gtceu.multiblock.hpca.temperature", "Temperature: %s");
@@ -959,6 +963,8 @@ public class MachineLang {
         provider.add("gtceu.multiblock.hpca.error_damaged", "Damaged component in structure!");
         provider.add("gtceu.multiblock.hpca.error_temperature",
                 "Temperature above 100C, components may be damaged!");
+        provider.add("gtceu.multiblock.hpca.error_power",
+                "Power low, CWU generation halted!");
         provider.add("gtceu.multiblock.hpca.warning_temperature",
                 "Temperature above 50C, components may be damaged at 100C!");
         provider.add("gtceu.multiblock.hpca.warning_temperature_active_cool", "Fully utilizing active coolers");

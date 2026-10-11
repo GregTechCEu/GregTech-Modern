@@ -27,6 +27,7 @@ import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,9 +41,9 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                                     implements IOpticalComputationReceiver {
 
     @Getter
-    private IOpticalComputationProvider computationProvider;
+    private @Nullable IOpticalComputationProvider computationProvider;
     @Getter
-    private ObjectHolderMachine objectHolder;
+    private @Nullable ObjectHolderMachine objectHolder;
 
     public ResearchStationMachine(BlockEntityCreationInfo info) {
         super(info, new ResearchStationRecipeLogic());
@@ -134,6 +135,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         widgets.add(GTMultiblockTextUtil.addOutputLines(this, syncManager));
         // .addComputationUsageExactLine(computationProvider.getMaxCWUt()) // TODO: (Onion)
         widgets.add(GTMultiblockTextUtil.addProgressLinePercentOnly(this, syncManager));
+        widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
         return widgets;
     }
 

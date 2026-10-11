@@ -11,7 +11,8 @@ import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidge
 
 import net.minecraft.network.chat.Component;
 
-import brachy.modularui.integration.jei.recipe.ModularUIRecipeCategory;
+import brachy.modularui.integration.jei.recipe.ModularUIJeiCategory;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IJeiHelpers;
@@ -22,18 +23,19 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfoCategory.GTOreVeinInfoWrapper> {
+public class GTOreVeinInfoCategory extends ModularUIJeiCategory<GTOreDefinition> {
 
-    public final static RecipeType<GTOreVeinInfoWrapper> RECIPE_TYPE = new RecipeType<>(GTCEu.id("ore_vein_diagram"),
-            GTOreVeinInfoWrapper.class);
+    public final static RecipeType<GTOreDefinition> RECIPE_TYPE = new RecipeType<>(GTCEu.id("ore_vein_diagram"),
+            GTOreDefinition.class);
     private final IDrawable icon;
 
     public GTOreVeinInfoCategory(IJeiHelpers helpers) {
-        super(v -> new OreVeinRecipeWidget(v.oreDefinition),
-                v -> ClientProxy.CLIENT_ORE_VEINS.inverse().get(v.oreDefinition));
+        super(OreVeinRecipeWidget::new, v -> ClientProxy.CLIENT_ORE_VEINS.inverse().get(v));
 
         this.icon = helpers.getGuiHelper()
                 .createDrawableItemStack(ChemicalHelper.get(TagPrefix.rawOre, GTMaterials.Iron));
@@ -41,15 +43,14 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfo
 
     public static void registerRecipes(IRecipeRegistration registry) {
         registry.addRecipes(RECIPE_TYPE, ClientProxy.CLIENT_ORE_VEINS.values().stream()
-                .map(GTOreVeinInfoWrapper::new)
                 .toList());
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, GTOreVeinInfoWrapper wrapper, IFocusGroup focuses) {
-        super.setRecipe(builder, wrapper, focuses);
+    public void setRecipe(IRecipeLayoutBuilder builder, GTOreDefinition oreDefinition, IFocusGroup focuses) {
+        super.setRecipe(builder, oreDefinition, focuses);
         builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT)
-                .addItemStacks(OreVeinRecipeWidget.getContainedOresAndBlocks(wrapper.oreDefinition));
+                .addItemStacks(OreVeinRecipeWidget.getContainedOresAndBlocks(oreDefinition));
     }
 
     public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
@@ -60,8 +61,28 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfo
 
     @NotNull
     @Override
-    public RecipeType<GTOreVeinInfoWrapper> getRecipeType() {
+    public RecipeType<GTOreDefinition> getRecipeType() {
         return RECIPE_TYPE;
+    }
+
+    @Override
+    public int getMaxWidth() {
+        return 180;
+    }
+
+    @Override
+    public int getMaxHeight() {
+        return 300;
+    }
+
+    @Override
+    public void setupRecipeIngredients(IRecipeLayoutBuilder builder, GTOreDefinition ore, IFocusGroup focuses) {
+        Arrays.stream(OreVeinRecipeWidget.getDimensionMarkers(ore.dimensionFilter()))
+                .forEach(v -> builder.addSlot(RecipeIngredientRole.INPUT).addIngredient(VanillaTypes.ITEM_STACK,
+                        v.getIcon()));
+
+        OreVeinRecipeWidget.getContainedOresAndBlocks(ore)
+                .forEach(v -> builder.addSlot(RecipeIngredientRole.OUTPUT).addIngredient(VanillaTypes.ITEM_STACK, v));
     }
 
     @NotNull
@@ -75,6 +96,4 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfo
     public IDrawable getIcon() {
         return icon;
     }
-
-    public record GTOreVeinInfoWrapper(GTOreDefinition oreDefinition) {}
 }

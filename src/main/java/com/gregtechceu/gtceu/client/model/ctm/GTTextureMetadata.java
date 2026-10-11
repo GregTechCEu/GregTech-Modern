@@ -43,7 +43,7 @@ public record GTTextureMetadata(@Nullable ResourceLocation connectionTexture, Tr
 
     public static class Serializer implements MetadataSectionSerializer<GTTextureMetadata> {
 
-        protected static final ResourceLocation EMPTY_CONNECTION = new ResourceLocation("", "");
+        protected static final ResourceLocation EMPTY_CONNECTION = ResourceLocation.fromNamespaceAndPath("", "");
 
         // spotless:off
         public static final Codec<GTTextureMetadata> CODEC = RecordCodecBuilder.create(instance -> instance.group(
