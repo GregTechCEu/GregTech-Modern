@@ -78,7 +78,6 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
@@ -1869,7 +1868,7 @@ public class GTItems {
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .transform(addArmorClientExtensions())
             .tag(ItemTags.HEAD_ARMOR)
-            .onRegister(attach(new ModularItemComponent(IntList.of(GTValues.MV, GTValues.LV, GTValues.LV))))
+            .onRegister(attach(new ModularItemComponent(3, GTValues.MV)))
             .register();
 
     public static ItemEntry<HydraulicArmorItem> HYDRAULIC_CHESTPLATE = REGISTRATE.item("hydraulic_chestplate",
@@ -1878,7 +1877,7 @@ public class GTItems {
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .transform(addArmorClientExtensions())
             .tag(ItemTags.CHEST_ARMOR)
-            .onRegister(attach(new ModularItemComponent(IntList.of(GTValues.MV, GTValues.LV, GTValues.LV))))
+            .onRegister(attach(new ModularItemComponent(3, GTValues.MV)))
             .register();
 
     public static ItemEntry<HydraulicArmorItem> HYDRAULIC_LEGGINGS = REGISTRATE.item("hydraulic_leggings",
@@ -1887,7 +1886,7 @@ public class GTItems {
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .transform(addArmorClientExtensions())
             .tag(ItemTags.LEG_ARMOR)
-            .onRegister(attach(new ModularItemComponent(IntList.of(GTValues.MV, GTValues.LV, GTValues.LV))))
+            .onRegister(attach(new ModularItemComponent(3, GTValues.MV)))
             .register();
 
     public static ItemEntry<HydraulicArmorItem> HYDRAULIC_BOOTS = REGISTRATE.item("hydraulic_boots",
@@ -1896,7 +1895,7 @@ public class GTItems {
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .transform(addArmorClientExtensions())
             .tag(ItemTags.FOOT_ARMOR)
-            .onRegister(attach(new ModularItemComponent(IntList.of(GTValues.MV, GTValues.LV, GTValues.LV))))
+            .onRegister(attach(new ModularItemComponent(3, GTValues.MV)))
             .register();
 
     public static ItemEntry<NanoMuscleArmorItem> NANO_CHESTPLATE = REGISTRATE

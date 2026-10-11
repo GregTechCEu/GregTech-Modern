@@ -71,8 +71,7 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
     public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, List<Component> tooltips,
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, context, tooltips, isAdvanced);
-        tooltips.add(Component.translatable(getLanguageKey(),
-                moduleContext.getData().getModuleItem().getHoverName()));
+        tooltips.add(moduleContext.getData().getModuleItem().getHoverName());
         IFluidHandlerItem fluidHandler = moduleContext.getAppliedTo().getCapability(Capabilities.FluidHandler.ITEM);
         if (fluidHandler != null) {
             FluidStack fluid = fluidHandler.getFluidInTank(0);
