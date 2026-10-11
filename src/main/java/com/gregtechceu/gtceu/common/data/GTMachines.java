@@ -1204,10 +1204,8 @@ public class GTMachines {
             .machine("equipment_foundry", EquipmentFoundryMachine::new)
             .rotationState(RotationState.NONE)
             .themeId(GTGuiTheme.EQUIPMENT_FOUNDRY.getId())
-            .blockModel((ctx, prov) -> {
-                prov.simpleBlock(ctx.getEntry(), prov.models().cubeAll(
-                        ctx.getId().withPrefix("block/machine/").toString(), GTCEu.id("block/equipment_foundry")));
-            }).register();
+            .model(createBasicMachineModel(GTCEu.id("block/machine/equipment_foundry/base")))
+            .register();
 
     public static void init() {
         GTMultiMachines.init();
