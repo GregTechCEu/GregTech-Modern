@@ -177,7 +177,7 @@ public class TagPrefixBuilderJS extends BuilderBase<TagPrefix> {
                 .blockProperties(blockProperties)
                 .generationCondition(generationCondition)
                 .materialIconType(materialIconType)
-                .itemTable(itemTable)
+                .customLookupTable(itemTable)
                 .tooltip(tooltip)
                 .maxStackSize(maxStackSize);
     }

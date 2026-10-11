@@ -51,7 +51,7 @@ public class MaterialBuilderJS extends BuilderBase<Material> {
     /**
      * Adds a property to this material.
      */
-    public <T extends IMaterialProperty> MaterialBuilderWrapper property(PropertyKey<T> key, T value) {
+    public <T extends IMaterialProperty> MaterialBuilderJS property(PropertyKey<T> key, T value) {
         internal.property(key, value);
         return this;
     }
@@ -59,7 +59,7 @@ public class MaterialBuilderJS extends BuilderBase<Material> {
     /**
      * Adds a property to this material
      */
-    public <T extends IMaterialProperty> MaterialBuilderWrapper property(PropertyKey<T> key) {
+    public <T extends IMaterialProperty> MaterialBuilderJS property(PropertyKey<T> key) {
         internal.property(key);
         return this;
     }

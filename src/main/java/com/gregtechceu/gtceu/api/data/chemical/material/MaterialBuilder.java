@@ -92,7 +92,6 @@ public class MaterialBuilder {
         return this;
     }
 
-
     /**
      * Adds a property to this material.
      */
