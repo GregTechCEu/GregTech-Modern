@@ -1,6 +1,10 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "gtceu:block/equipment_foundry"
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:equipment_foundry",
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/equipment_foundry/base"
+    }
   }
 }
