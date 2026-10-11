@@ -145,8 +145,15 @@ public class GTDataFixers {
         Schema v1_4 = builder.addSchema(1, 4, V1_4::new);
         builder.addFixer(new AddNewChoices(v1_4, "Added Welder and Spooler", References.BLOCK_ENTITY));
         // Migrate GT's Molten fluids, ignore addons to allow them to fail loudly
-        createBlockItemFluidRenameFix(builder, v1_4, "Remove molten fluids",
-                createRenamer(Pattern.compile("gtceu:(flowing_)?molten_"), "gtceu:$1"));
+        builder.addFixer(BlockRenameFix.create(v1_4, "Remove molten fluid blocks",
+                createRenamer(RemoveMoltenFluidsFix.REMOVED_BLOCKS)));
+        builder.addFixer(ItemRenameFix.create(v1_4, "Remove molten fluid buckets",
+                createRenamer(RemoveMoltenFluidsFix.REMOVED_ITEMS)));
+        builder.addFixer(FluidRenameFix.create(v1_4, "Remove molten fluids",
+                createRenamer(RemoveMoltenFluidsFix.REMOVED_FLUIDS)));
+        // version that doesn't ignore addons:
+        // createBlockItemFluidRenameFix(builder, v1_4, "Remove molten fluids",
+        // createRenamer(Pattern.compile("(flowing_)?molten_"), "$1"));
 
         // separator
 
@@ -155,12 +162,11 @@ public class GTDataFixers {
         // createRenamer(Pattern.compile("gtceu:(.*)?uranium"), "gtceu:$1uranium_238"));
         // createMaterialRenameFix(builder, v1_5, "Rename uranium_235 to uranium",
         // createRenamer(Pattern.compile("gtceu:(.*)uranium_235"), "gtceu:$1uranium"));
-        createMaterialRenameFix(builder, v1_5, "Fix Red Granite name",
-                createRenamer(RedGraniteRenameFix.RENAMED_IDS));
-        createMaterialRenameFix(builder, v1_5, "Fix Oil variant names",
-                createRenamer(OilVariantsRenameFix.RENAMED_IDS));
-        createMaterialRenameFix(builder, v1_5, "Fix Raw Palladium name",
-                createRenamer(Pattern.compile("gtceu:(.*)palladium_raw"), "gtceu:$1raw_palladium"));
+        createMaterialRenameFix(builder, v1_5, "gtceu:granite_red", "gtceu:red_granite");
+        createMaterialRenameFix(builder, v1_5, "gtceu:oil_heavy", "gtceu:heavy_oil");
+        createMaterialRenameFix(builder, v1_5, "gtceu:oil_light", "gtceu:light_oil");
+        createMaterialRenameFix(builder, v1_5, "gtceu:oil_medium", "gtceu:raw_oil");
+        createMaterialRenameFix(builder, v1_5, "gtceu:palladium_raw", "gtceu:raw_palladium");
 
         createBlockItemRenameFix(builder, v1_5, "Fix Palladium Substation Casing name",
                 createRenamer("gtceu:palladium_substation", "gtceu:palladium_substation_casing"));
@@ -189,10 +195,20 @@ public class GTDataFixers {
         builder.addFixer(FluidRenameFix.create(schema, name + " for fluid", renamer));
     }
 
-    private static void createMaterialRenameFix(DataFixerBuilder builder, Schema schema, String name,
-                                                UnaryOperator<String> renamer) {
-        createBlockItemFluidRenameFix(builder, schema, name, renamer);
-        builder.addFixer(MaterialRenameFix.create(schema, name + " for material", renamer));
+    /**
+     * create and add all required fixes to rename a material.
+     * @param builder the DFU builder instance
+     * @param schema  the current version's schema
+     * @param oldName the material's old name INCLUDING the namespace
+     * @param newName the material's new name INCLUDING the namespace
+     */
+    private static void createMaterialRenameFix(DataFixerBuilder builder, Schema schema,
+                                                String oldName, String newName) {
+        final UnaryOperator<String> renamer = MaterialRenameHelper.createRenamer(oldName, newName);
+        final String dataFixName = "Fix " + newName + " name";
+
+        createBlockItemFluidRenameFix(builder, schema, dataFixName, renamer);
+        builder.addFixer(MaterialRenameFix.create(schema, dataFixName + " for material", renamer));
     }
 
     private static void createBlockItemEntityRenameFix(DataFixerBuilder builder, Schema schema, String name,
