@@ -70,7 +70,6 @@ public class MaterialRenameHelper {
 
                 .put(oNs + oP + "_round",                                  nNs + nP + "_round")
                 .put(oNs + oP + "_foil",                                   nNs + nP + "_foil")
-                .put(oNs + oP + "_foil",                                   nNs + nP + "_foil")
                 .put(oNs + oP + "_rod",                                    nNs + nP + "_rod")
                 .put(oNs + "long_" + oP + "_rod",                          nNs + "long_" + nP + "_rod")
                 .put(oNs + oP + "_bolt",                                   nNs + nP + "_bolt")

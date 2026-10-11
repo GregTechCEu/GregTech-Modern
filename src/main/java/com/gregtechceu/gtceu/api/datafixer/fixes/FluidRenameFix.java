@@ -29,17 +29,17 @@ public abstract class FluidRenameFix extends DataFix {
         if (!Objects.equals(this.getInputSchema().getType(GTReferences.FLUID_NAME), type)) {
             throw new IllegalStateException("item name type is not what was expected.");
         } else {
-            return this.fixTypeEverywhere(this.name, type, (ops) -> (typeAndId) -> typeAndId.mapSecond(this::fixItem));
+            return this.fixTypeEverywhere(this.name, type, (ops) -> (typeAndId) -> typeAndId.mapSecond(this::fixFluid));
         }
     }
 
-    protected abstract String fixItem(String item);
+    protected abstract String fixFluid(String fluid);
 
     public static DataFix create(Schema outputSchema, String name, final Function<String, String> fixer) {
-        return new net.minecraft.util.datafix.fixes.ItemRenameFix(outputSchema, name) {
+        return new FluidRenameFix(outputSchema, name) {
 
-            protected String fixItem(String item) {
-                return fixer.apply(item);
+            protected String fixFluid(String fluid) {
+                return fixer.apply(fluid);
             }
         };
     }
