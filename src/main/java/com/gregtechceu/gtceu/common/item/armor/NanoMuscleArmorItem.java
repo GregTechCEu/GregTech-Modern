@@ -22,7 +22,7 @@ public class NanoMuscleArmorItem extends ModularArmorItem {
         var texture = super.getArmorTexture(stack, entity, slot, type);
         if (texture != null) return texture;
 
-        String armorTexture = "nano_muscule_suite";
+        String armorTexture = "nano_muscle_suite";
         return slot != EquipmentSlot.LEGS ?
                 GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)).toString() :
                 GTCEu.id(String.format("textures/armor/%s_2.png", armorTexture)).toString();
