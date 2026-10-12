@@ -2043,43 +2043,8 @@ public class GTItems {
             .onRegister(attach(new ModularItemComponent(8, GTValues.MAX)))
             .register();
 
-    public static ItemEntry<ArmorComponentItem> LIQUID_FUEL_JETPACK = REGISTRATE
-            .item("liquid_fuel_jetpack",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
-                            .setArmorLogic(new PowerlessJetpack()))
-            .lang("Liquid Fuel Jetpack")
-            .transform(addArmorClientExtensions())
-            .tag(ItemTags.CHEST_ARMOR)
-            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
-            .register();
-
-    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK = REGISTRATE
-            .item("electric_jetpack",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
-                            .setArmorLogic(new Jetpack(15,
-                                    1_000_000L * (long) Math.max(1,
-                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierImpeller - 2)),
-                                    ConfigHolder.INSTANCE.tools.voltageTierImpeller)))
-            .lang("Electric Jetpack")
-            .properties(p -> p.rarity(Rarity.UNCOMMON))
-            .transform(addArmorClientExtensions())
-            .tag(ItemTags.CHEST_ARMOR)
-            .model(overrideModel(GTCEu.id("electric_jetpack"), 8))
-            .onRegister(modelPredicate(GTCEu.id("electric_jetpack"), ElectricStats::getStoredPredicate))
-            .register();
-
-    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK_ADVANCED = REGISTRATE
-            .item("advanced_electric_jetpack",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
-                            .setArmorLogic(new AdvancedJetpack(256,
-                                    6_400_000L * (long) Math.max(1,
-                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller - 4)),
-                                    ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller)))
-            .lang("Advanced Electric Jetpack")
-            .properties(p -> p.rarity(Rarity.RARE))
-            .transform(addArmorClientExtensions())
-            .tag(ItemTags.CHEST_ARMOR)
-            .register();
+    public static ItemEntry<Item> LIQUID_FUEL_THRUSTER = REGISTRATE.item("liquid_fuel_thruster", Item::new)
+            .lang("Liquid-Fueled Thruster").register();
 
     public static ItemEntry<Item> POWER_THRUSTER = REGISTRATE.item("power_thruster", Item::new)
             .properties(p -> p.rarity(Rarity.UNCOMMON)).register();
