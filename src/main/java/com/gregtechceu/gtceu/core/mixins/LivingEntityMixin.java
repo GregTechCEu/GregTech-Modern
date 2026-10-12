@@ -59,7 +59,8 @@ public abstract class LivingEntityMixin {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) continue;
             for (ModuleContext module : modularItem.getAllModuleInstances()) {
-                if (module.getModule() instanceof IJumpBoostItemModule jumpBoostModule) {
+                if (module.getModule().isEnabled(module) &&
+                        module.getModule() instanceof IJumpBoostItemModule jumpBoostModule) {
                     add += jumpBoostModule.getJumpBoost(module);
                 }
             }

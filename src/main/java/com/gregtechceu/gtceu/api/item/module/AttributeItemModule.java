@@ -43,7 +43,9 @@ public abstract class AttributeItemModule extends ItemModule {
         return new AttributeModuleData(slot, module, moduleStack, getMaxAttributeAmount());
     }
 
-    private void attachAttribute(ModuleContext moduleContext) {
+    protected void attachAttribute(ModuleContext moduleContext) {
+        if (!isEnabled(moduleContext)) return;
+
         if (attributeAttached(moduleContext)) return;
 
         EquipmentSlot slot = LivingEntity.getEquipmentSlotForItem(moduleContext.getAppliedTo());
@@ -169,7 +171,7 @@ public abstract class AttributeItemModule extends ItemModule {
     @Override
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
         var currentlyAttached = attributeAttached(moduleContext);
-        var shouldKeepAttached = keepAttributeActive(moduleContext, entity);
+        var shouldKeepAttached = isEnabled(moduleContext) && keepAttributeActive(moduleContext, entity);
         if (shouldKeepAttached && !currentlyAttached) attachAttribute(moduleContext);
         if (!shouldKeepAttached && currentlyAttached) detachAttribute(moduleContext);
     }

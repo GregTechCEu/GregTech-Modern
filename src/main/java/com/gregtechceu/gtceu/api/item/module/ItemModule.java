@@ -89,6 +89,7 @@ public abstract class ItemModule {
     public void onEquip(ModuleContext moduleContext, LivingEntity entity) {}
 
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
+        if (!isEnabled(moduleContext)) return;
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         long energy = energyUsagePerTick(moduleContext, entity);
         if (electricItem != null) {
