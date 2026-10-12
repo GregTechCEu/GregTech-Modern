@@ -99,7 +99,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
     public long getCurrentProduction() {
         return isActive() && recipeLogic.getLastUnrolledRecipe() != null ?
-                recipeLogic.getLastUnrolledRecipe().getOutputEUt().voltage() : 0;
+                recipeLogic.getLastUnrolledRecipe().getOutputEUt().getTotalEU() : 0;
     }
 
     public boolean hasLubricant() {

@@ -116,7 +116,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
     public long getCurrentProduction() {
         return isActive() && recipeLogic.getLastUnrolledRecipe() != null ?
-                recipeLogic.getLastUnrolledRecipe().getOutputEUt().voltage() : 0;
+                recipeLogic.getLastUnrolledRecipe().getOutputEUt().getTotalEU() : 0;
     }
 
     public int getRotorDurabilityPercent() {
@@ -147,6 +147,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
         LongSyncValue euOutput = new LongSyncValue(this::getCurrentProduction);
         LongSyncValue maxOutput = new LongSyncValue(this::getOverclockVoltage);
+        LongSyncValue turbineVoltage = new LongSyncValue(this::getDisplayRecipeVoltage);
 
         syncManager.syncValue("hasRotor", hasRotor);
         syncManager.syncValue("rotorSpeed", rotorSpeed);
@@ -156,9 +157,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
         syncManager.syncValue("euOutput", euOutput);
         syncManager.syncValue("maxOutput", maxOutput);
-
-        LongSyncValue turbineVoltage = syncManager.getOrCreateSyncHandler("turbineVoltage", LongSyncValue.class,
-                () -> new LongSyncValue(this::getDisplayRecipeVoltage));
+        syncManager.syncValue("turbineVoltage", turbineVoltage);
 
         var hasNoRotorWarning = Text.dynamic(() -> (Component.translatable("gtceu.multiblock.turbine.no_rotor"))
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)))
