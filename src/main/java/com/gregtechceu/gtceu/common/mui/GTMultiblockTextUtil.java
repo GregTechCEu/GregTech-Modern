@@ -41,6 +41,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class GTMultiblockTextUtil {
@@ -112,37 +113,30 @@ public class GTMultiblockTextUtil {
                 .syncHandler(dynamicLinkedSyncHandler);
     }
 
-    public static TextWidget<?> addEnergyUsageLine(WorkableElectricMultiblockMachine weMachine,
+    /**
+     * displays the maximum power draw a machine can run at, as A @ V with EU/t in a hover tooltip
+     */
+    public static Flow addEnergyUsageLine(WorkableElectricMultiblockMachine weMachine,
                                                    PanelSyncManager syncManager) {
         LongSyncValue energyUsage = syncManager.getOrCreateSyncHandler("energyUsage", LongSyncValue.class,
                 () -> new LongSyncValue(() -> {
                     var energyList = weMachine.getEnergyContainer();
                     return Math.max(energyList.getInputVoltage(), energyList.getOutputVoltage());
                 }));
+        LongSyncValue voltage = syncManager.getOrCreateSyncHandler("voltage", LongSyncValue.class,
+                () -> new LongSyncValue(() -> {
+                    var energyList = weMachine.getEnergyContainer();
+                    return energyList.getHighestInputVoltage();
+                }));
+
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(weMachine::isFormed));
-        BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
-                () -> new BooleanSyncValue(() -> weMachine.getRecipeLogic().isActive()));
 
-        var widget = Text.dynamic(() -> {
-            String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
-
-            byte voltageTier = GTUtil.getFloorTierByVoltage(energyUsage.getLongValue());
-            Component voltageName = Component.literal(
-                    GTValues.VNF[voltageTier]);
-
-            MutableComponent bodyText = Component.translatable("gtceu.multiblock.max_energy_per_tick",
-                    energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
-            Component hoverText = Component.translatable("gtceu.multiblock.max_energy_per_tick_hover")
-                    .withStyle(ChatFormatting.GRAY);
-            return bodyText
-                    .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText)))
-                    .withStyle(ChatFormatting.WHITE);
-        })
-                .asWidget()
-                .setEnabledIf($ -> isFormed.getBoolValue() && isActive.getBoolValue());
-
-        return widget;
+        return buildAmpVoltEutHoverLine(
+                buildAmpVoltComponent(energyUsage, voltage),
+                buildEutHoverTooltip(energyUsage, true),
+                ($ -> isFormed.getBoolValue())
+        );
     }
 
     public static TextWidget<?> addEnergyUsageExactLine(WorkableElectricMultiblockMachine weMachine,
@@ -215,6 +209,45 @@ public class GTMultiblockTextUtil {
         })
                 .asWidget()
                 .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
+    }
+
+    public static Component buildAmpVoltComponent(LongSyncValue energyUsage, LongSyncValue voltage) {
+        long EUt = energyUsage.getLongValue();
+        long V = voltage.getLongValue();
+        long minAmperage = (V == 0 ? 0 : EUt / V); // catch the first frame divide by zero
+        int tier = GTUtil.getTierByVoltage(V);
+
+        return Component.translatable("gtceu.multiblock.general.amp_volt", // A @ V
+                Component.literal(FormattingUtil.formatNumbers(minAmperage))
+                        .withStyle(ChatFormatting.RED),
+                tier < GTValues.TIER_COUNT ? Component.literal(GTValues.VNF[tier]) : voltage);
+    }
+
+    public static RichTooltip buildEutHoverTooltip(LongSyncValue energyUsage, boolean isMaxAvailable) {
+        return new RichTooltip().autoUpdate(true).tooltipBuilder(builder -> {
+            String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
+
+            builder.addLine(Component.translatable("gtceu.multiblock.general.eut",
+                            energyFormatted).withStyle(ChatFormatting.GRAY)
+                    .withStyle(ChatFormatting.WHITE));
+            if (isMaxAvailable)
+                builder.addLine(Component.translatable("gtceu.multiblock.max_energy_per_tick_hover")
+                        .withStyle(ChatFormatting.GRAY));
+        });
+    }
+
+    public static Flow buildAmpVoltEutHoverLine(Component ampVolt, RichTooltip tooltip,
+                                                Predicate<Flow> enabledConditions) {
+        var widget = Text.dynamic(() -> ampVolt)
+                .asWidget();
+
+        return Flow.row()
+                .coverChildren()
+                .childPadding(2)
+                .child(widget)
+                .child(GTGuiTextures.INFO.asWidget().size(9).tooltip(tooltip))
+                .tooltip(tooltip) // has to be added twice, one for the line of text one for the icon
+                .setEnabledIf(enabledConditions);
     }
 
     public static Component addEnergyTierLine(boolean formed, int tier) {
