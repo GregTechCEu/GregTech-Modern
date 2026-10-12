@@ -282,7 +282,7 @@ public class CraftingRecipeLoader {
                 "CSC", "RBR", "LdL", 'C', CustomTags.ULV_CIRCUITS, 'S', new MaterialEntry(screw, Steel), 'R',
                 new MaterialEntry(ring, Rubber), 'B', GTItems.BATTERY_LV_SODIUM, 'L',
                 new MaterialEntry(lens, Glass));
-1        VanillaRecipeHelper.addShapedRecipe(provider, "liquid_fuel_thruster", GTItems.LIQUID_FUEL_THRUSTER.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, "liquid_fuel_thruster", GTItems.LIQUID_FUEL_THRUSTER.asStack(),
                 "xCw",
                 "SUS", "RIR", 'C', CustomTags.LV_CIRCUITS, 'S', GTItems.FLUID_CELL_LARGE_STEEL.asStack(), 'U',
                 GTItems.ELECTRIC_PUMP_LV.asStack(), 'R', new MaterialEntry(rotor, Lead), 'I',

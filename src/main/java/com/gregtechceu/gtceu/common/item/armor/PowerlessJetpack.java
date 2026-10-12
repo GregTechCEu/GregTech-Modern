@@ -67,7 +67,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         }
 
         boolean jetpackEnabled = data.getBoolean("enabled");
-        boolean hoverMode = data.getBoolean("hover");
+        boolean hoverMode = updateHoverMode(player, stack, data.getBoolean("hover"), false);
         byte toggleTimer = data.getByte("toggleTimer");
 
         String messageKey = null;

@@ -36,6 +36,8 @@ import com.gregtechceu.gtceu.common.item.armor.IJetpack;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.module.JetpackModule;
+import com.gregtechceu.gtceu.common.module.LiquidFuelJetpackModule;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSendWorldID;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
@@ -537,12 +539,16 @@ public class CommonEventListener {
     public static void modifyBreakSpeed(PlayerEvent.BreakSpeed event) {
         Player player = event.getEntity();
         for (ItemStack stack : player.getArmorSlots()) {
-            if (!(stack.getItem() instanceof ArmorComponentItem componentItem)) {
-                continue;
+            boolean removesPenalty = stack.getItem() instanceof ArmorComponentItem componentItem &&
+                    componentItem.getArmorLogic() instanceof IJetpack jetpack && jetpack.removeMiningSpeedPenalty();
+            var modular = GTCapabilityHelper.getModularItem(stack);
+            if (modular != null) {
+                removesPenalty |= modular.getAllModuleInstances().stream()
+                        .anyMatch(context -> context.getModule().isEnabled(context) &&
+                                (context.getModule() instanceof JetpackModule ||
+                                        context.getModule() instanceof LiquidFuelJetpackModule));
             }
-            if (!(componentItem.getArmorLogic() instanceof IJetpack jetpack) || !jetpack.removeMiningSpeedPenalty()) {
-                continue;
-            }
+            if (!removesPenalty) continue;
             // undo flight mining speed debuff
             if (!player.onGround()) {
                 event.setNewSpeed(event.getNewSpeed() * 5);
@@ -551,6 +557,7 @@ public class CommonEventListener {
             if (player.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) && !EnchantmentHelper.hasAquaAffinity(player)) {
                 event.setNewSpeed(event.getNewSpeed() * 5);
             }
+            break;
         }
 
         MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
