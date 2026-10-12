@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;

@@ -16,8 +16,6 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
-import com.gregtechceu.gtceu.api.item.component.IAddInformation;
-import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -466,7 +464,7 @@ public class CommonEventListener {
         final LivingEntity entity = event.getEntity();
         final DamageSource source = event.getSource();
         // GT heat also has the fire tag; hot ingots use the separate insulation multiplier.
-        if (source.is(DamageTypeTags.IS_FIRE) && !source.is(GTDamageTypes.HEAT) &&
+        if (source.is(DamageTypeTags.IS_FIRE) && !source.is(GTDamageTypes.HEAT.key) &&
                 entity.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ModularArmorItem armor &&
                 armor.protectsAgainstFire()) {
             entity.clearFire();

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.mui.modular_item;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -40,15 +40,15 @@ public class ModularArmorUIFactory extends AbstractUIFactory<ModularArmorUIFacto
     }
 
     @Override
-    public void writeGuiData(ArmorGuiData data, RegistryFriendlyByteBuf buffer) {
-        for (ItemStack stack : data.armor) ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, stack);
+    public void writeGuiData(ArmorGuiData data, FriendlyByteBuf buffer) {
+        for (ItemStack stack : data.armor) buffer.writeItem(stack);
     }
 
     @Override
-    public ArmorGuiData readGuiData(Player player, RegistryFriendlyByteBuf buffer) {
+    public ArmorGuiData readGuiData(Player player, FriendlyByteBuf buffer) {
         ArmorGuiData data = new ArmorGuiData(player);
         for (int i = 0; i < ARMOR_SLOTS.length; i++) {
-            data.armor[i] = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
+            data.armor[i] = buffer.readItem();
         }
         return data;
     }

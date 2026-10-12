@@ -61,7 +61,7 @@ import java.util.function.*;
 public class GTMuiWidgets {
 
     public static void addWrappedModuleDescription(RichTooltip tooltip,
-                                                    Component description) {
+                                                   Component description) {
         var minecraft = Minecraft.getInstance();
         int width = Math.max(1, Math.min(220, minecraft.getWindow().getGuiScaledWidth() - 24));
         for (var line : minecraft.font.getSplitter().splitLines(description, width,
