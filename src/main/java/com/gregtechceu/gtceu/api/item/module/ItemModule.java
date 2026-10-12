@@ -22,7 +22,6 @@ import net.minecraft.world.level.Level;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.value.sync.SyncHandlers;
 import com.mojang.serialization.Codec;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -175,8 +174,6 @@ public abstract class ItemModule {
     }
 
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
-        psm.syncValue("module_enabled", id,
-                SyncHandlers.intNumber(() -> isEnabled(moduleContext) ? 0 : 1, x -> setEnabled(moduleContext, x == 0)));
         ItemModuleSettingsBuilder settings = new ItemModuleSettingsBuilder(psm, id);
         return settings
                 .bool(Text.lang("gui.gtceu.item_module.enabled"), () -> isEnabled(moduleContext),

@@ -8,6 +8,7 @@ import brachy.modularui.drawable.DrawableStack;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.drawable.progress.ProgressDrawable;
+import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandler;
@@ -61,18 +62,15 @@ public final class ItemModuleSettingsBuilder extends ArrayList<IWidget> {
 
     public ItemModuleSettingsBuilder custom(Text label, SyncHandler<?> syncHandler, Widget<?> widget) {
         String key = registerSyncValue(syncHandler);
-        add(wrap(label, widget
-                .syncHandler(key, id)));
+        add(wrap(label, widget.syncHandler(key, id)));
         return this;
     }
 
     public ItemModuleSettingsBuilder bool(Text label, BooleanSupplier getter, Consumer<Boolean> setter) {
-        return custom(label,
-                SyncHandlers.intNumber(() -> getter.getAsBoolean() ? 0 : 1, x -> setter.accept(x == 0))
-                        .allowC2S(),
-                new ToggleButton()
-                        .invertSelected(true)
-                        .overlay(false, GuiTextures.CHECKMARK));
+        add(wrap(label, new ToggleButton()
+                .value(new BooleanSyncValue(getter, setter::accept).allowC2S())
+                .overlay(true, GuiTextures.CHECKMARK)));
+        return this;
     }
 
     public ItemModuleSettingsBuilder num(Text label, IntSupplier getter, IntConsumer setter, int min, int max) {
