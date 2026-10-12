@@ -55,7 +55,7 @@ public class ModularArmorLang {
         provider.add("tooltip.gtceu.armor.trait.fall", "Fall protection");
         provider.add("tooltip.gtceu.armor.trait.fire", "Fire immunity");
         provider.add("tooltip.gtceu.armor.trait.freeze", "Freeze protection");
-        provider.add("tooltip.gtceu.armor.trait.heat", "Hot-ingot damage reduced by %s%%");
+        provider.add("tooltip.gtceu.armor.trait.heat", "Reduces damage from hot ingots by %s%%");
         provider.add("tooltip.gtceu.armor.trait.hazard", "Hazard protection");
 
         // Module names/descriptions

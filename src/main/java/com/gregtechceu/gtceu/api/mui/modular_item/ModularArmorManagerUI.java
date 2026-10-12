@@ -75,7 +75,7 @@ public class ModularArmorManagerUI implements IUIHolder<ModularArmorUIFactory.Ar
                     popouts.add(handler);
                     moduleList.child(new ButtonWidget<>().size(224, 16)
                             .overlay(Text.dynamic(() -> applied.getModule().getDisplayName(applied)).scale(0.75f))
-                            .tooltipDynamic(tooltip -> tooltip.add(applied.getModule().getInfo()))
+                            .tooltipDynamic(tooltip -> GTMuiWidgets.addWrappedModuleDescription(tooltip, applied.getModule().getInfo()))
                             .onMousePressed((ctx, mouseButton) -> {
                                 if (mouseButton != 0) return false;
                                 for (IPanelHandler other : popouts) {
