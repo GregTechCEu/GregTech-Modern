@@ -54,7 +54,7 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
 
     @Override
     public int getTier() {
-        return GTValues.HV;
+        return GTValues.MV;
     }
 
     @Override
