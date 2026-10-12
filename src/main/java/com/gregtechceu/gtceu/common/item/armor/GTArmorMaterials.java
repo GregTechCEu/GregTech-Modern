@@ -70,7 +70,9 @@ public class GTArmorMaterials {
                 map.put(ArmorItem.Type.CHESTPLATE, 12);
                 map.put(ArmorItem.Type.HELMET, 4);
             }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, BLANK_LAYERS, 4.0F, 0.0F));
-
+    // Note: Quark-Matter Armor exceeds Vanilla's Armor and Toughness limits.
+    // We may want to consider Apothic Attributes in the future if other modular tool/gear systems demand it and justify
+    // it, this is slightly misleading but sufficies for vanilla
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> QUARK_TECH = ARMOR_MATERIALS.register("quark_tech",
             () -> new ArmorMaterial(Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
                 map.put(ArmorItem.Type.BOOTS, 6);
