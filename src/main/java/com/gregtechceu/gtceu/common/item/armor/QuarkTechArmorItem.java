@@ -17,6 +17,21 @@ public class QuarkTechArmorItem extends ModularArmorItem {
     }
 
     @Override
+    public boolean protectsAgainstFalls() {
+        return getType() == Type.BOOTS;
+    }
+
+    @Override
+    public float getHeatResistance() {
+        return getType() == Type.CHESTPLATE ? 0.5f : 1.0f;
+    }
+
+    @Override
+    public boolean protectsAgainstFire() {
+        return getType() == Type.CHESTPLATE;
+    }
+
+    @Override
     public @Nullable String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         var texture = super.getArmorTexture(stack, entity, slot, type);
         if (texture != null) return texture;

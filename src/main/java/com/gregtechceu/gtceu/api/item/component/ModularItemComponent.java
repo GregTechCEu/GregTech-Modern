@@ -159,6 +159,9 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                 return;
             }
 
+            if (stack.getItem() instanceof ModularArmorItem armor) {
+                armor.appendBuiltInTraits(stack, tooltipComponents);
+            }
             if (!slots.isEmpty()) tooltipComponents.add(Component.translatable("gui.gtceu.module_slots"));
             for (int slotI = 0; slotI < slots.size(); slotI++) {
                 ItemModuleSlot slot = slots.get(slotI);
