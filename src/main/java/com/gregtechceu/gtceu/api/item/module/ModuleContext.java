@@ -46,6 +46,6 @@ public class ModuleContext {
                     .formatted(getModule().moduleDataClass(), data.getClass()));
         }
         this.data = data;
-        modularItemStack.setData(modularItemStack.getData().withModuleInSlot(getData().getSlot(), getData()));
+        modularItemStack.setData(modularItemStack.getData().withModuleInSlot(data.getSlot(), data));
     }
 }
