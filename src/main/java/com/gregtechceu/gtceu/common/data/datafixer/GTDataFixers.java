@@ -204,6 +204,7 @@ public class GTDataFixers {
 
     /**
      * create and add all required fixes to rename a material.
+     * 
      * @param builder the DFU builder instance
      * @param schema  the current version's schema
      * @param oldName the material's old name INCLUDING the namespace

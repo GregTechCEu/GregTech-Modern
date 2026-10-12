@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.common.datafixer.schemas;
 
 import com.gregtechceu.gtceu.core.mixins.datafixer.V705Accessor;
+
+import net.minecraft.util.datafix.fixes.References;
+
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.Hook;
 import com.mojang.datafixers.types.templates.TypeTemplate;
-import net.minecraft.util.datafix.fixes.References;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -31,10 +33,7 @@ public class V1_5 extends AutoGTNamespacedSchema {
                                 "BlockEntityTag", References.BLOCK_ENTITY.in(schema),
                                 "CanDestroy", list(References.BLOCK_NAME.in(schema)),
                                 "CanPlaceOn", list(References.BLOCK_NAME.in(schema)),
-                                "Items", list(References.ITEM_STACK.in(schema))
-                        )
-                ),
-                V705Accessor.gtceu$getAddNames(), Hook.HookFunction.IDENTITY
-        ));
+                                "Items", list(References.ITEM_STACK.in(schema)))),
+                V705Accessor.gtceu$getAddNames(), Hook.HookFunction.IDENTITY));
     }
 }

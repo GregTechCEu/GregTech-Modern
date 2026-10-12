@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.common.datafixer.fixes;
 
-import com.mojang.datafixers.schemas.Schema;
 import net.minecraft.util.datafix.fixes.ItemRenameFix;
+
+import com.mojang.datafixers.schemas.Schema;
 
 import java.util.Set;
 
@@ -12,8 +13,8 @@ public class ExtruderCastingMoldRemapFix extends ItemRenameFix {
             "gtceu:bolt_extruder_mold",
             "gtceu:gear_extruder_mold",
             "gtceu:small_gear_extruder_mold",
-            "gtceu:rotor_extruder_mold"//,
-            //"gtceu:rotor_casting_mold" TODO uncomment when this is removed
+            "gtceu:rotor_extruder_mold"
+    // "gtceu:rotor_casting_mold" TODO uncomment when this is removed
     );
     private static final String REPLACEMENT_ITEM = "gtceu:empty_mold";
 

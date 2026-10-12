@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.common.datafixer.fixes;
 
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.util.datafix.schemas.NamespacedSchema;
+
+import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 import java.util.function.UnaryOperator;
@@ -10,6 +11,7 @@ public class MaterialRenameHelper {
 
     /**
      * This class creates a renamer that handles all of a material's (default) forms
+     * 
      * @param oldName
      * @param newName
      * @return

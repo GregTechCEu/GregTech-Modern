@@ -3,14 +3,14 @@ package com.gregtechceu.gtceu.common.datafixer.schemas;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.data.datafixer.GTReferences;
-
 import com.gregtechceu.gtceu.core.mixins.datafixer.V705Accessor;
-import com.mojang.datafixers.types.templates.Hook;
+
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraftforge.fml.loading.LoadingModList;
 
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.schemas.Schema;
+import com.mojang.datafixers.types.templates.Hook;
 import com.mojang.datafixers.types.templates.TypeTemplate;
 
 import java.util.Locale;

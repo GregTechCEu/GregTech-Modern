@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * @deprecated Create separate items for every material instead. If you want custom functionality, check
- * {@link com.gregtechceu.gtceu.api.data.tag.TagPrefix#turbineRotor TagPrefix.turbineRotor}.
+ *             {@link com.gregtechceu.gtceu.api.data.tag.TagPrefix#turbineRotor TagPrefix.turbineRotor}.
  *
  * @see com.gregtechceu.gtceu.api.data.tag.TagPrefix#turbineRotor TagPrefix.turbineRotor
  */

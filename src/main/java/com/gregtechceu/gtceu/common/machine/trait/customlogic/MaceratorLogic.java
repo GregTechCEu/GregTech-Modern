@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.trait.customlogic.ToolDecompLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
+
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;

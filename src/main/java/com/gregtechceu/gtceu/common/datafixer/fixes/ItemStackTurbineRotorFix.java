@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.common.datafixer.fixes;
 
+import net.minecraft.util.datafix.fixes.References;
+import net.minecraft.util.datafix.schemas.NamespacedSchema;
+
 import com.mojang.datafixers.*;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.util.datafix.fixes.References;
-import net.minecraft.util.datafix.schemas.NamespacedSchema;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -71,8 +72,6 @@ public class ItemStackTurbineRotorFix extends DataFix {
                         ops -> itemName -> itemName.mapSecond(id -> {
                             return Objects.equals(id, OLD_TURBINE_ROTOR_ITEM_ID) ?
                                     DEFAULT_NEW_TURBINE_ROTOR_ITEM_ID : id;
-                        })
-                )
-        );
+                        })));
     }
 }

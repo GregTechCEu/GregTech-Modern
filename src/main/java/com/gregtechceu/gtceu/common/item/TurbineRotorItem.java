@@ -5,10 +5,12 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.RotorProperty;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -43,7 +45,8 @@ public class TurbineRotorItem extends TagPrefixItem {
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-        tooltipComponents.add(Component.translatable("item.gtceu.turbine_rotor.tooltip.efficiency", getRotorEfficiency(stack)));
+        tooltipComponents.add(Component.translatable("item.gtceu.turbine_rotor.tooltip.efficiency",
+                getRotorEfficiency(stack)));
         tooltipComponents.add(Component.translatable("item.gtceu.turbine_rotor.tooltip.power", getRotorPower(stack)));
     }
 }

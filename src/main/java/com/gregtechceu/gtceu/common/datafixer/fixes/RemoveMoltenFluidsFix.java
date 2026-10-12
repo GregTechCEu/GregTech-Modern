@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.datafixer.fixes;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
-import java.util.Set;
 
 public class RemoveMoltenFluidsFix {
 
@@ -12,7 +11,8 @@ public class RemoveMoltenFluidsFix {
             .put("gtceu:molten_black_bronze", "gtceu:black_bronze")
             .put("gtceu:molten_black_steel", "gtceu:black_steel")
             .put("gtceu:molten_blue_steel", "gtceu:blue_steel")
-            .put("gtceu:molten_enriched_naquadah_trinium_europium_duranide", "gtceu:enriched_naquadah_trinium_europium_duranide")
+            .put("gtceu:molten_enriched_naquadah_trinium_europium_duranide",
+                    "gtceu:enriched_naquadah_trinium_europium_duranide")
             .put("gtceu:molten_gallium_arsenide", "gtceu:gallium_arsenide")
             .put("gtceu:molten_hastelloy_c_276", "gtceu:hastelloy_c_276")
             .put("gtceu:molten_hastelloy_x", "gtceu:hastelloy_x")
@@ -64,7 +64,8 @@ public class RemoveMoltenFluidsFix {
             .put("gtceu:flowing_molten_black_bronze", "gtceu:flowing_black_bronze")
             .put("gtceu:flowing_molten_black_steel", "gtceu:flowing_black_steel")
             .put("gtceu:flowing_molten_blue_steel", "gtceu:flowing_blue_steel")
-            .put("gtceu:flowing_molten_enriched_naquadah_trinium_europium_duranide", "gtceu:flowing_enriched_naquadah_trinium_europium_duranide")
+            .put("gtceu:flowing_molten_enriched_naquadah_trinium_europium_duranide",
+                    "gtceu:flowing_enriched_naquadah_trinium_europium_duranide")
             .put("gtceu:flowing_molten_gallium_arsenide", "gtceu:flowing_gallium_arsenide")
             .put("gtceu:flowing_molten_hastelloy_c_276", "gtceu:flowing_hastelloy_c_276")
             .put("gtceu:flowing_molten_hastelloy_x", "gtceu:flowing_hastelloy_x")
@@ -73,7 +74,8 @@ public class RemoveMoltenFluidsFix {
             .put("gtceu:flowing_molten_hssg", "gtceu:flowing_hssg")
             .put("gtceu:flowing_molten_hsss", "gtceu:flowing_hsss")
             .put("gtceu:flowing_molten_incoloy_ma_956", "gtceu:flowing_incoloy_ma_956")
-            .put("gtceu:flowing_molten_indium_tin_barium_titanium_cuprate", "gtceu:flowing_indium_tin_barium_titanium_cuprate")
+            .put("gtceu:flowing_molten_indium_tin_barium_titanium_cuprate",
+                    "gtceu:flowing_indium_tin_barium_titanium_cuprate")
             .put("gtceu:flowing_molten_kanthal", "gtceu:flowing_kanthal")
             .put("gtceu:flowing_molten_magnesium_diboride", "gtceu:flowing_magnesium_diboride")
             .put("gtceu:flowing_molten_manganese_phosphide", "gtceu:flowing_manganese_phosphide")
@@ -90,7 +92,8 @@ public class RemoveMoltenFluidsFix {
             .put("gtceu:flowing_molten_rose_gold", "gtceu:flowing_rose_gold")
             .put("gtceu:flowing_molten_rtm_alloy", "gtceu:flowing_rtm_alloy")
             .put("gtceu:flowing_molten_ruridit", "gtceu:flowing_ruridit")
-            .put("gtceu:flowing_molten_ruthenium_trinium_americium_neutronate", "gtceu:flowing_ruthenium_trinium_americium_neutronate")
+            .put("gtceu:flowing_molten_ruthenium_trinium_americium_neutronate",
+                    "gtceu:flowing_ruthenium_trinium_americium_neutronate")
             .put("gtceu:flowing_molten_samarium_iron_arsenic_oxide", "gtceu:flowing_samarium_iron_arsenic_oxide")
             .put("gtceu:flowing_molten_stainless_steel", "gtceu:flowing_stainless_steel")
             .put("gtceu:flowing_molten_stellite_100", "gtceu:flowing_stellite_100")
@@ -115,7 +118,8 @@ public class RemoveMoltenFluidsFix {
             .put("gtceu:molten_black_bronze_bucket", "gtceu:black_bronze_bucket")
             .put("gtceu:molten_black_steel_bucket", "gtceu:black_steel_bucket")
             .put("gtceu:molten_blue_steel_bucket", "gtceu:blue_steel_bucket")
-            .put("gtceu:molten_enriched_naquadah_trinium_europium_duranide_bucket", "gtceu:enriched_naquadah_trinium_europium_duranide_bucket")
+            .put("gtceu:molten_enriched_naquadah_trinium_europium_duranide_bucket",
+                    "gtceu:enriched_naquadah_trinium_europium_duranide_bucket")
             .put("gtceu:molten_gallium_arsenide_bucket", "gtceu:gallium_arsenide_bucket")
             .put("gtceu:molten_hastelloy_c_276_bucket", "gtceu:hastelloy_c_276_bucket")
             .put("gtceu:molten_hastelloy_x_bucket", "gtceu:hastelloy_x_bucket")
@@ -124,7 +128,8 @@ public class RemoveMoltenFluidsFix {
             .put("gtceu:molten_hssg_bucket", "gtceu:hssg_bucket")
             .put("gtceu:molten_hsss_bucket", "gtceu:hsss_bucket")
             .put("gtceu:molten_incoloy_ma_956_bucket", "gtceu:incoloy_ma_956_bucket")
-            .put("gtceu:molten_indium_tin_barium_titanium_cuprate_bucket", "gtceu:indium_tin_barium_titanium_cuprate_bucket")
+            .put("gtceu:molten_indium_tin_barium_titanium_cuprate_bucket",
+                    "gtceu:indium_tin_barium_titanium_cuprate_bucket")
             .put("gtceu:molten_kanthal_bucket", "gtceu:kanthal_bucket")
             .put("gtceu:molten_magnesium_diboride_bucket", "gtceu:magnesium_diboride_bucket")
             .put("gtceu:molten_manganese_phosphide_bucket", "gtceu:manganese_phosphide_bucket")
@@ -141,7 +146,8 @@ public class RemoveMoltenFluidsFix {
             .put("gtceu:molten_rose_gold_bucket", "gtceu:rose_gold_bucket")
             .put("gtceu:molten_rtm_alloy_bucket", "gtceu:rtm_alloy_bucket")
             .put("gtceu:molten_ruridit_bucket", "gtceu:ruridit_bucket")
-            .put("gtceu:molten_ruthenium_trinium_americium_neutronate_bucket", "gtceu:ruthenium_trinium_americium_neutronate_bucket")
+            .put("gtceu:molten_ruthenium_trinium_americium_neutronate_bucket",
+                    "gtceu:ruthenium_trinium_americium_neutronate_bucket")
             .put("gtceu:molten_samarium_iron_arsenic_oxide_bucket", "gtceu:samarium_iron_arsenic_oxide_bucket")
             .put("gtceu:molten_stainless_steel_bucket", "gtceu:stainless_steel_bucket")
             .put("gtceu:molten_stellite_100_bucket", "gtceu:stellite_100_bucket")

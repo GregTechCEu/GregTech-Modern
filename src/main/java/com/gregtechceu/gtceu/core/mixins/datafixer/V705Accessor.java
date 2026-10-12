@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.core.mixins.datafixer;
 
-import com.mojang.datafixers.types.templates.Hook;
 import net.minecraft.util.datafix.schemas.V705;
+
+import com.mojang.datafixers.types.templates.Hook;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
