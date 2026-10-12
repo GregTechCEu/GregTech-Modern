@@ -59,7 +59,7 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
     @Override
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
         return super.getSettings(moduleContext, psm, id)
-                .bool(Text.lang("hud.gtceu.armor.hover_mode"),
+                .bool(Text.lang("gui.gtceu.item_module.hover_mode"),
                         () -> moduleContext.getAppliedTo().getOrCreateTag().getBoolean("hover"),
                         b -> moduleContext.getAppliedTo().getOrCreateTag().putBoolean("hover", b));
     }
