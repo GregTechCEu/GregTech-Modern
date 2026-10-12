@@ -302,7 +302,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 .resizeableOnDrag(true)
                 .child(Flow.column()
                         .margin(5)
-                        .child(new TextWidget<>(Text.lang("gui.gtceu.central_monitor.help")))
+                        .child(new TextWidget<>(Text.lang("gui.gtceu.central_monitor.info")))
                         .child(Flow.row()
                                 .marginTop(10)
                                 .height(40)

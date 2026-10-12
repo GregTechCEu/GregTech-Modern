@@ -37,7 +37,9 @@ public class MultiblockLang {
         provider.add("multiblock.gtceu.pattern_error.active_transformer.missing_io",
                 "Missing hatches: IN - %s | OUT - %s");
         provider.add("multiblock.gtceu.pattern_error.cleanroom.too_small", "Cleanroom must be at least 5x5x4.");
-        provider.add("multiblock.gtceu.pattern_error.cleanroom.not_centered", "Cleanroom controller must be centered.");
+        provider.add(
+                "multiblock.gtceu.pattern_error.cleanroom.not_centeredmultiblock.gtceu.pattern_error.cleanroom.not_centered",
+                "Cleanroom controller must be centered.");
         provider.add("multiblock.gtceu.pattern_error.distillery.unexpected_hatch",
                 "Fluid hatch at unexpected position (%d, %d, %d).");
         provider.add("multiblock.gtceu.pattern_error.distillery.missing_outputs", "Missing fluid output hatches.");

@@ -564,7 +564,7 @@ public class GTMachineUtils {
                 .tooltips(
                         Component.translatable("machine.gtceu.multiblock.tank.tooltip"),
                         Component.translatable("common.gtceu.tooltip.fluid_storage_capacity", capacity),
-                        (filter != null) ? Component.translatable("gtceu.fluid_pipe.max_temperature",
+                        (filter != null) ? Component.translatable("tooltip.gtceu.fluid_pipe.max_temperature",
                                 FormattingUtil.formatTemperature(filter.getMaxFluidTemperature())) : null)
                 .rotationState(RotationState.ALL)
                 .recipeType(DUMMY_RECIPES)
@@ -809,7 +809,7 @@ public class GTMachineUtils {
                 .blocks(PartAbility.ROTOR_HOLDER.getAllBlocks())
                 .contents(builder -> builder.append(PartAbility.ROTOR_HOLDER.getName()))
                 .toMultiPredicate()
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
+                .addTooltips(Component.translatable("multiblock.gtceu.pattern.clear_amount", 3, 3, 3))
                 // todo lang: must be of tier %s
                 .addTooltips(Component.literal("Can only be of tier: %s".formatted(VN[tier])));
     }

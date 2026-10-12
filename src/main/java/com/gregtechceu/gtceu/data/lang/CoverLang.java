@@ -139,6 +139,7 @@ public class CoverLang {
         provider.add("cover.gtceu.ender_link.tooltip.channel_name", "Set channel name with input text");
         provider.add("cover.gtceu.ender_link.tooltip.list_button", "Show channel list");
         provider.add("cover.gtceu.ender_link.tooltip.clear_button", "Clear channel description");
+        provider.add("cover.gtceu.ender_link.tooltip.description_empty", "Empty Description");
         provider.addMultiline("cover.gtceu.ender_link.private.tooltip.disabled",
                 "Switch to private mode\nPrivate mode uses the player who originally placed the cover");
         provider.add("cover.gtceu.ender_link.private.tooltip.enabled", "Switch to public mode");

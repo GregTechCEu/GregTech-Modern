@@ -231,7 +231,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
 
     private Component getFluidNameText() {
         return this.tank.getFluidInTank(0).isEmpty() ?
-                Component.translatable("gtceu.fluid.empty") :
+                Component.translatable("common.gtceu.empty") :
                 this.tank.getFluidInTank(0).getDisplayName();
     }
 

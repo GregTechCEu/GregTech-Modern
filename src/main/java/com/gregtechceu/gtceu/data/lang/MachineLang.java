@@ -253,7 +253,8 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.creative_energy.voltage", "Voltage");
         provider.add("gui.gtceu.machine.creative_energy.sink", "Sink");
         provider.add("gui.gtceu.machine.creative_energy.source", "Source");
-        provider.add("gui.gtceu.machine.creative_computation.average", "Average Requested CWUt");
+        provider.add("gui.gtceu.machine.creative_computation.average", "Average Requested CWUt: %s");
+        provider.add("gui.gtceu.machine.creative_computation.max_usage", "Max CWU/tick: %s");
         provider.add("gui.gtceu.machine.creative.activity.on", "Active");
         provider.add("gui.gtceu.machine.creative.activity.off", "Not active");
 
@@ -442,7 +443,7 @@ public class MachineLang {
 
         // Data Bank
         provider.add("gui.gtceu.machine.data_bank.working", "Providing data.");
-
+        provider.add("gui.gtceu.machine.data_bank.error_power", "Power low, no data provided!");
         // Computation
         provider.add("gui.gtceu.machine.network_switch.non_bridging", "Non-bridging connection found");
         provider.add("gui.gtceu.machine.network_switch.non_bridging.detailed",
@@ -1003,11 +1004,29 @@ public class MachineLang {
         provider.add("gui.gtceu.cover.computer_monitor.error.no_ae", "Cover holder does not have an AE2 network!");
         provider.add("gui.gtceu.cover.computer_monitor.error.not_supported",
                 "This feature is not supported by this block/cover!");
+
+        provider.add("gui.gtceu.central_monitor.left_click", "Select/unselect a monitor by left-clicking it");
+        provider.add("gui.gtceu.central_monitor.right_click",
+                "Select a block by right-clicking it. Only 1 block can be a target.");
+        provider.add("gui.gtceu.central_monitor.in_group",
+                "Monitors selected this way are added to the group, and will be used to display stuff");
+        provider.add("gui.gtceu.central_monitor.in_group_and_target",
+                "The monitor selected this way is used for displaying and as a target at the same time.");
+        provider.add("gui.gtceu.central_monitor.data_hatch_target",
+                "If you select a data hatch as a target, you will be prompted to enter a slot number. Then the block that the data stick in the specified slot is linked to (via right-clicking a wireless transmitter cover) will be considered the target instead.");
+        provider.add("gui.gtceu.central_monitor.group_name", "Name:");
+        provider.add("gui.gtceu.central_monitor.module_editor_button", "Edit module");;
+        provider.add("gui.gtceu.central_monitor.group_editor", "Editing monitor group");
+        provider.add("gui.gtceu.central_monitor.monitor_groups", "Monitor Groups");
         provider.add("gui.gtceu.central_monitor.create_group", "Create group");
         provider.add("gui.gtceu.central_monitor.remove_from_group", "Remove from group");
         provider.add("gui.gtceu.central_monitor.set_target", "Set target");
         provider.add("gui.gtceu.central_monitor.currently_editing", "Currently editing: %s");
-        provider.addMultiLang("tooltip.gtceu.central_monitor.info",
+        provider.add("gui.gtceu.central_monitor.data_slot", "Set slot number of data stick");
+        provider.add("gui.gtceu.central_monitor.target",
+                "The block selected this way is considered a target, to be used with placeholders in a text module.");
+
+        provider.addMultiLang("gui.gtceu.central_monitor.info",
                 "In order to use monitors, you have to split them into groups first. A group may only have 1 module in it.",
                 "Select them by left-clicking, then click 'Create group'.",
                 "Then in the settings page for the group you can insert a module, you can configure it in the same page.",
