@@ -39,7 +39,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     public void onArmorTick(Level world, Player player, ItemStack stack) {
         GTArmor.Mutable data = stack.getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY).toMutable();
         byte toggleTimer = data.toggleTimer();
-        boolean hoverMode = data.hover();
+        boolean hoverMode = updateHoverMode(player, stack, data.hover(), false);
         boolean jetpackEnabled = data.enabled();
 
         String messageKey = null;
@@ -49,8 +49,8 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
                 messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.flight", jetpackEnabled);
                 data.enabled(jetpackEnabled);
             } else if (SyncedKeyMappings.ARMOR_HOVER.isKeyDown(player)) {
-                hoverMode = !hoverMode;
-                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.hover", jetpackEnabled);
+                hoverMode = updateHoverMode(player, stack, hoverMode, true);
+                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.hover", hoverMode);
                 data.hover(hoverMode);
             }
 
@@ -62,6 +62,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
         if (toggleTimer > 0) toggleTimer--;
         data.toggleTimer(toggleTimer);
+        data.hover(hoverMode);
 
         stack.set(GTDataComponents.ARMOR_DATA, data.toImmutable());
         performFlying(player, jetpackEnabled, hoverMode, stack);

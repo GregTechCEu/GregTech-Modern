@@ -19,13 +19,15 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 
 public class CreativeFlightModule extends AttributeItemModule implements ITieredItemModule {
 
+    public static final int ENERGY_PER_TICK = 2048;
+
     public CreativeFlightModule(ResourceLocation id) {
         super(id);
     }
 
     @Override
     public Component getInfo() {
-        return Component.translatable(getDescriptionLanguageKey(), 2048);
+        return Component.translatable(getDescriptionLanguageKey(), ENERGY_PER_TICK);
     }
 
     private boolean isFlying(LivingEntity entity) {
@@ -67,14 +69,11 @@ public class CreativeFlightModule extends AttributeItemModule implements ITiered
     @Override
     public boolean keepAttributeActive(ModuleContext moduleContext, LivingEntity entity) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
-        if (electricItem == null) return false;
+        if (!isEnabled(moduleContext) || electricItem == null || !electricItem.canUse(ENERGY_PER_TICK)) return false;
         if (!isFlying(entity)) return true;
 
-        if (!electricItem.canUse(2048)) return false;
-        else {
-            electricItem.discharge(2048, electricItem.getTier(), true, false, false);
-            return true;
-        }
+        electricItem.discharge(ENERGY_PER_TICK, electricItem.getTier(), true, false, false);
+        return true;
     }
 
     @Override

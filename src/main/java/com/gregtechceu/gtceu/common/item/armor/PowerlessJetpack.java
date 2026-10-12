@@ -56,12 +56,10 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     @Override
     public void onArmorTick(Level world, Player player, @NotNull ItemStack stack) {
-        if (FluidUtil.getFluidHandler(stack).isEmpty()) return;
-
         GTArmor.Mutable data = stack.getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY).toMutable();
 
         boolean jetpackEnabled = data.enabled();
-        boolean hoverMode = data.hover();
+        boolean hoverMode = updateHoverMode(player, stack, data.hover(), false);
         byte toggleTimer = data.toggleTimer();
 
         String messageKey = null;
@@ -71,8 +69,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                 messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.flight", jetpackEnabled);
                 data.enabled(jetpackEnabled);
             } else if (SyncedKeyMappings.ARMOR_HOVER.isKeyDown(player)) {
-                hoverMode = !hoverMode;
-                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.hover", jetpackEnabled);
+                hoverMode = updateHoverMode(player, stack, hoverMode, true);
+                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.hover", hoverMode);
                 data.hover(hoverMode);
             }
 
@@ -84,6 +82,12 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
         if (toggleTimer > 0) toggleTimer--;
         data.toggleTimer(toggleTimer);
+        data.hover(hoverMode);
+
+        if (FluidUtil.getFluidHandler(stack).isEmpty()) {
+            stack.set(GTDataComponents.ARMOR_DATA, data.toImmutable());
+            return;
+        }
 
         if (currentFuel.ingredient().hasNoFluids())
             findNewRecipe(stack);
