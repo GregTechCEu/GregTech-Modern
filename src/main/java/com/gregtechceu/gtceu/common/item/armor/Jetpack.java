@@ -49,7 +49,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         }
 
         boolean jetpackEnabled = data.getBoolean("enabled");
-        boolean hoverMode = data.getBoolean("hover");
+        boolean hoverMode = updateHoverMode(player, item, data.getBoolean("hover"), false);
         byte toggleTimer = data.getByte("toggleTimer");
 
         String messageKey = null;
@@ -59,8 +59,8 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
                 messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.flight", jetpackEnabled);
                 data.putBoolean("enabled", jetpackEnabled);
             } else if (SyncedKeyMappings.ARMOR_HOVER.isKeyDown(player)) {
-                hoverMode = !hoverMode;
-                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.hover", jetpackEnabled);
+                hoverMode = updateHoverMode(player, item, hoverMode, true);
+                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.hover", hoverMode);
                 data.putBoolean("hover", hoverMode);
             }
 
@@ -72,6 +72,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
         if (toggleTimer > 0) toggleTimer--;
         data.putByte("toggleTimer", toggleTimer);
+        data.putBoolean("hover", hoverMode);
 
         performFlying(player, jetpackEnabled, hoverMode, item);
     }

@@ -15,13 +15,15 @@ import net.minecraft.world.entity.player.Player;
 
 public class CreativeFlightModule extends ItemModule implements ITieredItemModule {
 
+    public static final int ENERGY_PER_TICK = 2048;
+
     public CreativeFlightModule(ResourceLocation id) {
         super(id);
     }
 
     @Override
     public Component getInfo() {
-        return Component.translatable(getDescriptionLanguageKey(), 2048);
+        return Component.translatable(getDescriptionLanguageKey(), ENERGY_PER_TICK);
     }
 
     private void setMayFly(LivingEntity entity, boolean mayFly) {
@@ -53,13 +55,20 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
         super.onArmorTick(moduleContext, entity);
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
-        if (electricItem == null || !isFlying(entity)) return;
-        if (!electricItem.canUse(2048)) setMayFly(entity, false);
-        else {
-            electricItem.discharge(2048, electricItem.getTier(), true, false, false);
-            setMayFly(entity, true);
+        if (!isEnabled(moduleContext) || electricItem == null || !electricItem.canUse(ENERGY_PER_TICK)) {
+            setMayFly(entity, false);
+            return;
         }
+
+        if (!isFlying(entity)) {
+            setMayFly(entity, true);
+            return;
+        }
+
+        electricItem.discharge(ENERGY_PER_TICK, electricItem.getTier(), true, false, false);
+        setMayFly(entity, true);
     }
+
 
     @Override
     public Component getDisplayName(ModuleContext moduleContext) {

@@ -77,8 +77,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                 messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.flight", jetpackEnabled);
                 data.putBoolean("enabled", jetpackEnabled);
             } else if (SyncedKeyMappings.ARMOR_HOVER.isKeyDown(player)) {
-                hoverMode = !hoverMode;
-                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.hover", jetpackEnabled);
+                hoverMode = updateHoverMode(player, stack, hoverMode, true);
+                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.hover", hoverMode);
                 data.putBoolean("hover", hoverMode);
             }
 
@@ -90,6 +90,10 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
         if (toggleTimer > 0) toggleTimer--;
         data.putByte("toggleTimer", toggleTimer);
+        data.putBoolean("hover", hoverMode);
+
+        if (currentFuel.getStacks().length == 0)
+            findNewRecipe(stack);
 
         performFlying(player, jetpackEnabled, hoverMode, stack);
 
