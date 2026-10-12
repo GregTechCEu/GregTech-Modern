@@ -15,11 +15,8 @@ import com.gregtechceu.gtceu.utils.GTStringUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -84,14 +81,6 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
     }
 
     @Override
-    public void onInventoryTick(ModuleContext moduleContext, Player player) {
-        super.onInventoryTick(moduleContext, player);
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
-        if (electricItem != null)
-            electricItem.inventoryTick(moduleContext.getAppliedTo(), player.level(), player, 0, false);
-    }
-
-    @Override
     public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
@@ -100,7 +89,8 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
                         moduleContext.getData().getModuleItem().getHoverName()));
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem != null)
-            electricItem.appendHoverText(moduleContext.getAppliedTo(), level, tooltips, isAdvanced);
+            IElectricItem.addCurrentChargeTooltip(tooltips, electricItem.getCharge(), electricItem.getMaxCharge(),
+                    electricItem.getTier(), false);
     }
 
     @Override
@@ -117,14 +107,6 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
         }
         hud.newLine(Component.translatable("module.gtceu.battery.hud.info", electricItem.getCharge(),
                 electricItem.getMaxCharge()));
-    }
-
-    @Override
-    public InteractionResultHolder<ItemStack> use(ModuleContext moduleContext, Level level, Player player,
-                                                  InteractionHand hand) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
-        if (electricItem != null) return electricItem.use(moduleContext.getAppliedTo(), level, player, hand);
-        return InteractionResultHolder.pass(moduleContext.getAppliedTo());
     }
 
     @Override

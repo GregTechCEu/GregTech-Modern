@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
@@ -101,6 +102,7 @@ public class HudGuiOverlay implements IGuiOverlay {
 
     private static void renderHUDMetaItem(@NotNull ItemStack stack, ArmorUtils.ModularHUD hudStrings,
                                           GuiGraphics guiGraphics) {
+        if (stack.getItem() instanceof ArmorItem) return;
         if (stack.getItem() instanceof ComponentItem valueItem) {
             for (IItemComponent behaviour : valueItem.getComponents()) {
                 if (behaviour instanceof IItemHUDProvider provider) {
