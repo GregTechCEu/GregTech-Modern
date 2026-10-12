@@ -170,7 +170,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     private ParentWidget<?> createTagFilterPage(TagFilter<ItemStack, Item> filter) {
         StringSyncValue filterString = new StringSyncValue(filter::getFilterString, filter::setFilterString).allowC2S();
         RichTooltip infoTooltip = new RichTooltip();
-        LangUtil.getListMultiLang("cover.tag_filter.info").forEach(infoTooltip::addLine);
+        LangUtil.getListMultiLang("gui.gtceu.cover.tag_filter.info").forEach(infoTooltip::addLine);
 
         return new ParentWidget<>()
                 .size(150, 55)
@@ -219,7 +219,6 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
 
     private static boolean toggleActive(ItemStack stack) {
         boolean isActive = isActive(stack);
-        // noinspection ConstantConditions
         stack.getOrCreateTag().putBoolean("IsActive", !isActive);
         return !isActive;
     }

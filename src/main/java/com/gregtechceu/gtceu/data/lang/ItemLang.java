@@ -193,5 +193,17 @@ public class ItemLang {
         // Data Stick
         provider.add("item.gtceu.behavior.data_item.title", "§n%s Construction Data:");
         provider.add("item.gtceu.behavior.data_item.data", "- §a%s");
+
+        // Spoilage lang
+        provider.add("tooltip.gtceu.spoilage.spoil_time_remaining", "Time until spoils: %s");
+        provider.add("tooltip.gtceu.spoilage.spoil_time_total", "Total spoil time: %s");
+        provider.add("tooltip.gtceu.spoilage.spoils_into", "Spoils into: %s");
+        provider.add("tooltip.gtceu.spoilage.creation_tick", "Created on overworld tick %d");
+        provider.add("tooltip.gtceu.spoilage.location", "Location: %s (%d, %d, %d)");
+        provider.add("tooltip.gtceu.spoilage.location_entity", "Entity: %s");
+        provider.add("tooltip.gtceu.spoilage.item_handler_source", "Handler source: %s");
+        provider.add("tooltip.gtceu.spoilage.item_handler_data", "Handler data: %s");
+        provider.add("tooltip.gtceu.spoilage.location_slot", "Slot: %s");
     }
+
 }

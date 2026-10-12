@@ -224,7 +224,6 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         return isHighPressure ? 40 : 45;
     }
 
-    @SuppressWarnings("MethodMayBeStatic")
     protected int getCoolDownRate() {
         return 1;
     }

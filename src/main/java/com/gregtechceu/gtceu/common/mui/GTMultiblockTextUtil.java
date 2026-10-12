@@ -448,7 +448,6 @@ public class GTMultiblockTextUtil {
         return lineList;
     }
 
-    @SuppressWarnings("unchecked")
     public static TextWidget<?> addRecipeTypeField(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         StringSyncValue recipeTypeName = syncManager.getOrCreateSyncHandler("recipeTypeName", StringSyncValue.class,
                 () -> new StringSyncValue(

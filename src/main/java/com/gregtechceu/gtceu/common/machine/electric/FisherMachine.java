@@ -260,8 +260,7 @@ public class FisherMachine extends TieredEnergyMachine
                                 .overlay(new ItemDrawable(Items.NAME_TAG))
                                 .tooltipAutoUpdate(true)
                                 .tooltipDynamic((r) -> {
-                                    var lines = LangUtil.getMultiLang("gui.gtceu.machine.fisher.fisher_mode",
-                                            GTValues.VNF[getTier()], GTValues.VNF[getTier()]);
+                                    var lines = LangUtil.getMultiLang("gui.gtceu.machine.fisher.fisher_mode");
                                     for (var line : lines) {
                                         r.addLine(line);
                                     }
