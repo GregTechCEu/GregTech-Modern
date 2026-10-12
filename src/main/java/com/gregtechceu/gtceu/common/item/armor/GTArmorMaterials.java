@@ -44,7 +44,7 @@ public enum GTArmorMaterials implements ArmorMaterial, StringRepresentable {
     }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 1.0F, 0.0F, () -> Ingredient.EMPTY),
     // Note: Quark-Matter Armor exceeds Vanilla's Armor and Toughness limits.
     // We may want to consider Apothic Attributes in the future if other modular tool/gear systems demand it and justify
-    // it, this is slightly misleading but sufficies for vanilla
+    // it, this is slightly misleading but suffices for vanilla
     QUARK_TECH("gtceu:quark_tech_suite", 0, Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
         map.put(ArmorItem.Type.BOOTS, 6);
         map.put(ArmorItem.Type.LEGGINGS, 12);
