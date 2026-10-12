@@ -20,8 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -82,10 +81,11 @@ public class AutoChargeItemModule extends TieredItemModule {
         long remaining = source.getTransferLimit();
         if (GTCEu.Mods.isCuriosLoaded()) {
             IItemHandler curios = CuriosApi.getCuriosInventory(player)
-                    .<IItemHandler>map(ICuriosItemHandler::getEquippedCurios)
-                    .orElse(EmptyItemHandler.INSTANCE);
-            for (int i = 0; i < curios.getSlots() && remaining > 0; i++) {
-                remaining -= IElectricItem.chargeItemStack(remaining, source, curios.getStackInSlot(i));
+                    .<IItemHandler>map(ICuriosItemHandler::getEquippedCurios).orElse(null);
+            if (curios != null) {
+                for (int i = 0; i < curios.getSlots() && remaining > 0; i++) {
+                    remaining -= IElectricItem.chargeItemStack(remaining, source, curios.getStackInSlot(i));
+                }
             }
         }
         var inventory = player.getInventory();

@@ -35,9 +35,9 @@ import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
-import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.module.JetpackModule;
 import com.gregtechceu.gtceu.common.module.LiquidFuelJetpackModule;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSendWorldID;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
@@ -374,6 +374,7 @@ public class CommonEventListener {
         }
     }
 
+    @SubscribeEvent
     public static void playerTickEvent(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         if (event.phase == TickEvent.Phase.START && !player.level().isClientSide) {

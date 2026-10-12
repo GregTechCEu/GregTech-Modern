@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -58,7 +59,8 @@ public class HudGuiOverlay implements IGuiOverlay {
         boolean hasBattery = false;
         for (var slot : new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST,
                 EquipmentSlot.LEGS, EquipmentSlot.FEET }) {
-            if (slot != EquipmentSlot.HEAD) percentages.append(Component.literal(" | ").withStyle(ChatFormatting.WHITE));
+            if (slot != EquipmentSlot.HEAD)
+                percentages.append(Component.literal(" | ").withStyle(ChatFormatting.WHITE));
             var stack = player.getItemBySlot(slot);
             var modular = GTCapabilityHelper.getModularItem(stack);
             var electric = GTCapabilityHelper.getElectricItem(stack);
@@ -69,7 +71,7 @@ public class HudGuiOverlay implements IGuiOverlay {
                 continue;
             }
             hasBattery = true;
-            int percent = (int) Math.clamp(100.0 * electric.getCharge() / electric.getMaxCharge(), 0, 100);
+            int percent = (int) Mth.clamp(100.0 * electric.getCharge() / electric.getMaxCharge(), 0, 100);
             var color = percent >= 75 ? ChatFormatting.GREEN :
                     percent >= 50 ? ChatFormatting.YELLOW :
                             percent >= 25 ? ChatFormatting.GOLD :

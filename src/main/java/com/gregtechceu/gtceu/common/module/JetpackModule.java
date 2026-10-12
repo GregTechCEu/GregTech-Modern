@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.ArmorLogicItemModule;
 import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
