@@ -17,10 +17,10 @@ public class ModularArmorLang {
         provider.add("gui.gtceu.equipment_foundry.tooltip.tier_switch",
                 "Left-click to increase tier by 1\nRight-click to decrease tier by 1");
 
-        provider.add("armor.gtceu.jetpack.flight.enabled", "Jetpack: Flight Enabled");
-        provider.add("armor.gtceu.jetpack.flight.disabled", "Jetpack: Flight Disabled");
-        provider.add("armor.gtceu.jetpack.hover.enabled", "Jetpack: Hover Mode Enabled");
-        provider.add("armor.gtceu.jetpack.hover.disabled", "Jetpack: Hover Mode Disabled");
+        provider.add("armor.gtceu.jetpack.flight.enabled", "Thruster: Flight Enabled");
+        provider.add("armor.gtceu.jetpack.flight.disabled", "Thruster: Flight Disabled");
+        provider.add("armor.gtceu.jetpack.hover.enabled", "Thruster: Hover Mode Enabled");
+        provider.add("armor.gtceu.jetpack.hover.disabled", "Thruster: Hover Mode Disabled");
         provider.add("armor.gtceu.jetpack.emergency_hover", "Emergency Hover Mode Enabled!");
 
         provider.add("armor.gtceu.night_vision.enabled", "§bNightVision: §aOn");
@@ -79,15 +79,15 @@ public class ModularArmorLang {
         provider.add("module.gtceu.auto_eat", "Auto Eat Module");
         provider.add("module.gtceu.auto_eat.description", "Replenishes Food Bar by Using Food from Inventory");
 
-        provider.add("module.gtceu.liquid_fuel_jetpack", "Liquid Fuel Jetpack");
+        provider.add("module.gtceu.liquid_fuel_jetpack", "Liquid-Fueled Thruster");
         provider.add("module.gtceu.liquid_fuel_jetpack.description",
-                "Makes the chestplate work like a liquid fueled jetpack (requires any fluid storage module)");
-        provider.add("module.gtceu.jetpack", "Basic Jetpack");
+                "Provides thrust (requires a fluid storage module, does not work with Creative Flight Modules)");
+        provider.add("module.gtceu.jetpack", "Electric Thruster");
         provider.add("module.gtceu.jetpack.description",
-                "Makes the chestplate work like a jetpack (requires any battery module)");
-        provider.add("module.gtceu.advanced_jetpack", "Advanced Jetpack");
+                "Provides thrust, sprint during Creative Flight for 1.3x speed (requires a battery module)");
+        provider.add("module.gtceu.advanced_jetpack", "Advanced Electric Thruster");
         provider.add("module.gtceu.advanced_jetpack.description",
-                "Makes the chestplate work like an advanced jetpack (requires any battery module)");
+                "Provides thrust, sprint during Creative Flight for 2.4x speed (requires a battery module)");
         provider.add("module.gtceu.sensor", "Explosion Reporting Module (%s)");
         provider.add("module.gtceu.sensor.message", "%s exploded at (%d, %d, %d)");
         provider.add("module.gtceu.sensor.description",
