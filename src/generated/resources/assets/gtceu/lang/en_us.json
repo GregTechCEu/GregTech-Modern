@@ -4121,6 +4121,7 @@
   "gui.gtceu.item_module.empty_module_slot": "Empty",
   "gui.gtceu.item_module.enabled": "Enabled:",
   "gui.gtceu.item_module.energy_limit": "Energy limit:",
+  "gui.gtceu.item_module.hover_mode": "Hover Mode",
   "gui.gtceu.item_module.hp": "HP:",
   "gui.gtceu.item_module.jump_boost": "Boost:",
   "gui.gtceu.item_module.power": "Power:",

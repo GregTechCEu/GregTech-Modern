@@ -5,6 +5,7 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 public class ModularArmorLang {
 
     public static void init(RegistrateLangProvider provider) {
+        provider.add("gui.gtceu.item_module.hover_mode", "Hover Mode");
         provider.add("item.gtceu.netherite_plated", "Netherite-Plated %s");
         provider.add("tooltip.gtceu.netherite_plated", "Netherite Plating: +2 Module Slots");
 
