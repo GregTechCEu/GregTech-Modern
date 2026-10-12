@@ -198,30 +198,26 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
-        List<IWidget> widgets = new ArrayList<>();
-
-        widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
-
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isFormed));
         BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isActive));
-        BooleanSyncValue hasLubricant = syncManager.getOrCreateSyncHandler("hasLubricant",
-                BooleanSyncValue.class,
-                () -> new BooleanSyncValue(this::hasLubricant));
-        BooleanSyncValue isBoostAllowed = syncManager.getOrCreateSyncHandler("canBoost",
-                BooleanSyncValue.class,
-                () -> new BooleanSyncValue(this::isBoostAllowed));
-        BooleanSyncValue isOxygenBoosted = syncManager.getOrCreateSyncHandler("isOxygenBoosted",
-                BooleanSyncValue.class,
-                () -> new BooleanSyncValue(this::isOxygenBoosted));
-        BooleanSyncValue isExtreme = syncManager.getOrCreateSyncHandler("isExtreme", BooleanSyncValue.class,
-                () -> new BooleanSyncValue(this::isExtreme));
-        LongSyncValue engineOutput = syncManager.getOrCreateSyncHandler("engineOutput", LongSyncValue.class,
-                () -> new LongSyncValue(this::getCurrentProduction));
-        LongSyncValue voltage = syncManager.getOrCreateSyncHandler("voltage", LongSyncValue.class,
-                () -> new LongSyncValue(this::getDisplayRecipeVoltage));
+
+        BooleanSyncValue hasLubricant = new BooleanSyncValue(this::hasLubricant);
+        BooleanSyncValue isBoostAllowed = new BooleanSyncValue(this::isBoostAllowed);
+        BooleanSyncValue isOxygenBoosted = new BooleanSyncValue(this::isOxygenBoosted);
+        BooleanSyncValue isExtreme = new BooleanSyncValue(this::isExtreme);
+
+        LongSyncValue euOutput = new LongSyncValue(this::getCurrentProduction);
+        LongSyncValue voltage = new LongSyncValue(this::getDisplayRecipeVoltage);
+
+        syncManager.syncValue("hasLubricant", hasLubricant);
+        syncManager.syncValue("isBoostAllowed", isBoostAllowed);
+        syncManager.syncValue("isOxygenBoosted", isOxygenBoosted);
+        syncManager.syncValue("isExtreme", isExtreme);
+
+        syncManager.syncValue("euOutput", euOutput);
+        syncManager.syncValue("voltage", voltage);
 
         var hasLubricantWarning = Text.dynamic(() -> Component.translatable(
                 "gtceu.multiblock.large_combustion_engine.no_lubricant"))
@@ -247,7 +243,12 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                         w -> isFormed.getBoolValue() && isActive.getBoolValue() && isBoostAllowed.getBoolValue() &&
                                 isOxygenBoosted.getBoolValue());
 
-        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, engineOutput, voltage, true));
+        List<IWidget> widgets = new ArrayList<>();
+
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
+
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, euOutput, voltage, true));
         widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addRecipeTypeField(this, syncManager));
