@@ -108,15 +108,15 @@ public class EquipmentFoundryRecipes {
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("jetpack"),
                 Ingredient.of(ItemTags.CHEST_ARMOR),
-                GTItems.ELECTRIC_JETPACK, GTItemModules.JETPACK);
+                GTItems.POWER_THRUSTER, GTItemModules.JETPACK);
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("advanced_jetpack"),
                 Ingredient.of(ItemTags.CHEST_ARMOR),
-                GTItems.ELECTRIC_JETPACK_ADVANCED, GTItemModules.ADVANCED_JETPACK);
+                GTItems.POWER_THRUSTER_ADVANCED, GTItemModules.ADVANCED_JETPACK);
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("liquid_fuel_jetpack"),
                 Ingredient.of(ItemTags.CHEST_ARMOR),
-                GTItems.LIQUID_FUEL_JETPACK, GTItemModules.LIQUID_FUEL_JETPACK);
+                GTItems.LIQUID_FUEL_THRUSTER, GTItemModules.LIQUID_FUEL_JETPACK);
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("creative_flight"),
                 Ingredient.of(ItemTags.CHEST_ARMOR),

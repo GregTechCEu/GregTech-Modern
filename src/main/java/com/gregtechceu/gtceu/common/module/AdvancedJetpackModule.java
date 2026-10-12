@@ -1,24 +1,14 @@
 package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
-import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
-import com.gregtechceu.gtceu.api.item.module.ArmorLogicItemModule;
-import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
-import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.armor.AdvancedJetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.value.sync.PanelSyncManager;
-import org.jetbrains.annotations.Nullable;
-
-public class AdvancedJetpackModule extends ArmorLogicItemModule implements ITieredItemModule {
+public class AdvancedJetpackModule extends JetpackModule {
 
     private static final AdvancedJetpack JETPACK = new AdvancedJetpack(
             256,
@@ -35,22 +25,12 @@ public class AdvancedJetpackModule extends ArmorLogicItemModule implements ITier
     }
 
     @Override
-    protected @Nullable IArmorLogic getArmorLogic(ModuleContext moduleContext) {
+    protected AdvancedJetpack getArmorLogic(ModuleContext moduleContext) {
         return JETPACK;
     }
 
     @Override
     public int getTier() {
         return GTValues.EV;
-    }
-
-    @Override
-    public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
-        return super.getSettings(moduleContext, psm, id)
-                .bool(Text.lang("hud.gtceu.armor.hover_mode"),
-                        () -> moduleContext.getAppliedTo().getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY)
-                                .hover(),
-                        b -> moduleContext.getAppliedTo().update(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY,
-                                v -> v.setHover(b)));
     }
 }

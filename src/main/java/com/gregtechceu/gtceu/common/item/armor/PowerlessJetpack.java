@@ -58,6 +58,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     public void onArmorTick(Level world, Player player, @NotNull ItemStack stack) {
         GTArmor.Mutable data = stack.getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY).toMutable();
 
+        burnTimer = data.burnTimer();
+
         boolean jetpackEnabled = data.enabled();
         boolean hoverMode = updateHoverMode(player, stack, data.hover(), false);
         byte toggleTimer = data.toggleTimer();

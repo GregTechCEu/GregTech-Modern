@@ -42,7 +42,7 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
 
     @Override
     public @Nullable IFluidHandlerItem createCapabilityForStack(ModuleContext context, ItemStack stack) {
-        if (!(stack.getItem() instanceof IComponentItem componentItem)) return null;
+        if (!(context.getData().getModuleItem().getItem() instanceof IComponentItem componentItem)) return null;
         ThermalFluidStats thermalStats = null;
         for (var component : componentItem.getComponents()) {
             if (component instanceof ThermalFluidStats stats) {
