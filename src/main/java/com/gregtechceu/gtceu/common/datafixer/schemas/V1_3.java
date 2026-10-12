@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.data.datafixer.GTReferences;
 
 import net.minecraft.util.datafix.fixes.References;
+import net.minecraft.util.datafix.schemas.NamespacedSchema;
 import net.minecraftforge.fml.loading.LoadingModList;
 
 import com.mojang.datafixers.schemas.Schema;
@@ -19,7 +20,7 @@ import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.ALL_TIER
 import static com.gregtechceu.gtceu.common.datafixer.schemas.V0.*;
 import static com.mojang.datafixers.DSL.*;
 
-public class V1_3 extends AutoGTNamespacedSchema {
+public class V1_3 extends NamespacedSchema {
 
     public V1_3(int versionKey, Schema parent) {
         super(versionKey, parent);
@@ -41,15 +42,15 @@ public class V1_3 extends AutoGTNamespacedSchema {
                 "waterTank", notifiableFluidTank(schema),
                 steamMachine.get()
         );
-        registerSteamMachine(schema, map, "steam_solar_boiler", steamBoiler);
-        registerSimpleSteamMachine(schema, map, "extractor");
-        registerSimpleSteamMachine(schema, map, "steam_macerator");
-        registerSimpleSteamMachine(schema, map, "compressor");
-        registerSimpleSteamMachine(schema, map, "forge_hammer");
-        registerSimpleSteamMachine(schema, map, "furnace");
-        registerSimpleSteamMachine(schema, map, "alloy_smelter");
-        registerSimpleSteamMachine(schema, map, "rock_crusher");
-        schema.register(map, "steam_miner", () -> optionalFields(
+        registerSteamMachine(schema, map, "gtceu:steam_solar_boiler", steamBoiler);
+        registerSimpleSteamMachine(schema, map, "gtceu:extractor");
+        registerSimpleSteamMachine(schema, map, "gtceu:steam_macerator");
+        registerSimpleSteamMachine(schema, map, "gtceu:compressor");
+        registerSimpleSteamMachine(schema, map, "gtceu:forge_hammer");
+        registerSimpleSteamMachine(schema, map, "gtceu:furnace");
+        registerSimpleSteamMachine(schema, map, "gtceu:alloy_smelter");
+        registerSimpleSteamMachine(schema, map, "gtceu:rock_crusher");
+        schema.register(map, "gtceu:steam_miner", () -> optionalFields(
                 "importItems", notifiableItemHandler(schema),
                 "exportItems", notifiableItemHandler(schema),
                 "steamTank", notifiableFluidTank(schema),
@@ -58,93 +59,93 @@ public class V1_3 extends AutoGTNamespacedSchema {
         // endregion
 
         // region simple
-        registerForTiers(schema, map, "machine_hull", traitHolder, ALL_TIERS);
-        registerSimpleMachine(schema, map, "electric_furnace", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "alloy_smelter", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "arc_furnace", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "assembler", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "autoclave", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "bender", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "brewery", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "canner", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "centrifuge", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "chemical_bath", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "chemical_reactor", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "compressor", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "cutter", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "distillery", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "electrolyzer", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "electromagnetic_separator", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "extractor", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "extruder", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "fermenter", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "fluid_heater", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "fluid_solidifier", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "forge_hammer", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "forming_press", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "lathe", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "scanner", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "mixer", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "ore_washer", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "packer", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "polarizer", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "laser_engraver", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "sifter", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "thermal_centrifuge", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "wiremill", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "circuit_assembler", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "macerator", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "gas_collector", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "rock_crusher", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "air_scrubber", LOW_TIERS);
-        registerSimpleMachine(schema, map, "combustion", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "steam_turbine", ELECTRIC_TIERS);
-        registerSimpleMachine(schema, map, "gas_turbine", ELECTRIC_TIERS);
+        registerForTiers(schema, map, "gtceu:machine_hull", traitHolder, ALL_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:electric_furnace", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:alloy_smelter", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:arc_furnace", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:assembler", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:autoclave", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:bender", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:brewery", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:canner", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:centrifuge", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:chemical_bath", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:chemical_reactor", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:compressor", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:cutter", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:distillery", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:electrolyzer", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:electromagnetic_separator", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:extractor", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:extruder", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:fermenter", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:fluid_heater", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:fluid_solidifier", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:forge_hammer", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:forming_press", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:lathe", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:scanner", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:mixer", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:ore_washer", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:packer", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:polarizer", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:laser_engraver", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:sifter", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:thermal_centrifuge", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:wiremill", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:circuit_assembler", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:macerator", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:gas_collector", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:rock_crusher", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:air_scrubber", LOW_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:combustion", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:steam_turbine", ELECTRIC_TIERS);
+        registerSimpleMachine(schema, map, "gtceu:gas_turbine", ELECTRIC_TIERS);
         // endregion
 
         // region electric
         final int[] transformerTiers = GTValues.tiersBetween(ULV, GTCEuAPI.isHighTier() ? OpV : UV);
-        registerForTiers(schema, map, "transformer_1a", traitHolder, transformerTiers);
-        registerForTiers(schema, map, "transformer_2a", traitHolder, transformerTiers);
-        registerForTiers(schema, map, "transformer_4a", traitHolder, transformerTiers);
-        registerForTiers(schema, map, "transformer_16a", traitHolder, transformerTiers);
+        registerForTiers(schema, map, "gtceu:transformer_1a", traitHolder, transformerTiers);
+        registerForTiers(schema, map, "gtceu:transformer_2a", traitHolder, transformerTiers);
+        registerForTiers(schema, map, "gtceu:transformer_4a", traitHolder, transformerTiers);
+        registerForTiers(schema, map, "gtceu:transformer_16a", traitHolder, transformerTiers);
 
-        registerForTiers(schema, map, "1a_energy_converter", traitHolder, ALL_TIERS);
-        registerForTiers(schema, map, "4a_energy_converter", traitHolder, ALL_TIERS);
-        registerForTiers(schema, map, "8a_energy_converter", traitHolder, ALL_TIERS);
-        registerForTiers(schema, map, "16a_energy_converter", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:1a_energy_converter", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:4a_energy_converter", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:8a_energy_converter", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:16a_energy_converter", traitHolder, ALL_TIERS);
 
-        schema.register(map, "long_distance_item_pipeline_endpoint", traitHolder);
-        schema.register(map, "long_distance_fluid_pipeline_endpoint", traitHolder);
-        schema.register(map, "long_distance_fluid_pipeline_endpoint", traitHolder);
+        schema.register(map, "gtceu:long_distance_item_pipeline_endpoint", traitHolder);
+        schema.register(map, "gtceu:long_distance_fluid_pipeline_endpoint", traitHolder);
+        schema.register(map, "gtceu:long_distance_fluid_pipeline_endpoint", traitHolder);
 
         final Supplier<TypeTemplate> batteryBuffer = () -> optionalFields(
                 "batteryInventory", itemHandler(schema),
                 traitHolder(schema)
         );
-        registerForTiers(schema, map, "battery_buffer_4x", batteryBuffer, ALL_TIERS);
-        registerForTiers(schema, map, "battery_buffer_8x", batteryBuffer, ALL_TIERS);
-        registerForTiers(schema, map, "battery_buffer_16x", batteryBuffer, ALL_TIERS);
-        registerForTiers(schema, map, "charger_4x", batteryBuffer, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:battery_buffer_4x", batteryBuffer, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:battery_buffer_8x", batteryBuffer, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:battery_buffer_16x", batteryBuffer, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:charger_4x", batteryBuffer, ALL_TIERS);
 
-        registerForTiers(schema, map, "pump", () -> optionalFields(
+        registerForTiers(schema, map, "gtceu:pump", () -> optionalFields(
                 "cache", notifiableFluidTank(schema),
                 traitHolder(schema)
         ), LV, MV, HV, EV);
-        registerForTiers(schema, map, "fisher", () -> optionalFields(
+        registerForTiers(schema, map, "gtceu:fisher", () -> optionalFields(
                 "cache", notifiableItemHandler(schema),
                 "baitHandler", notifiableItemHandler(schema),
                 "chargerInventory", itemHandler(schema),
                 traitHolder(schema)
         ), LV, MV, HV, EV, IV, LuV);
-        registerForTiers(schema, map, "block_breaker", () -> optionalFields(
+        registerForTiers(schema, map, "gtceu:block_breaker", () -> optionalFields(
                 "cache", notifiableItemHandler(schema),
                 "chargerInventory", itemHandler(schema),
                 traitHolder(schema)
         ), LV, MV, HV, EV);
-        registerSimpleMachine(schema, map, "miner", LV, MV, HV);
-        registerForTiers(schema, map, "world_accelerator", traitHolder, LV, MV, HV, EV, IV, LuV, ZPM, UV);
-        registerForTiers(schema, map, "item_collector", () -> optionalFields(
+        registerSimpleMachine(schema, map, "gtceu:miner", LV, MV, HV);
+        registerForTiers(schema, map, "gtceu:world_accelerator", traitHolder, LV, MV, HV, EV, IV, LuV, ZPM, UV);
+        registerForTiers(schema, map, "gtceu:item_collector", () -> optionalFields(
                 "output", notifiableItemHandler(schema),
                 "chargerInventory", itemHandler(schema),
                 "filterInventory", itemHandler(schema),
@@ -157,12 +158,12 @@ public class V1_3 extends AutoGTNamespacedSchema {
                 "inventory", notifiableItemHandler(schema),
                 traitHolder(schema)
         );
-        registerForTiers(schema, map, "buffer", () -> optionalFields(
+        registerForTiers(schema, map, "gtceu:buffer", () -> optionalFields(
                 "tank", notifiableFluidTank(schema),
                 itemStorage.get()
         ), LV, MV, HV);
-        schema.register(map, "creative_energy", traitHolder);
-        schema.register(map, "creative_computation_provider", traitHolder);
+        schema.register(map, "gtceu:creative_energy", traitHolder);
+        schema.register(map, "gtceu:creative_computation_provider", traitHolder);
 
         final Supplier<TypeTemplate> quantumChest = () -> optionalFields(
                 "lockedFluid", GTReferences.FLUID_STACK.in(schema),
@@ -174,33 +175,33 @@ public class V1_3 extends AutoGTNamespacedSchema {
                 "stored", References.ITEM_STACK.in(schema),
                 traitHolder(schema)
         );
-        schema.register(map, "creative_chest", quantumChest);
-        schema.register(map, "creative_tank", quantumTank);
-        registerForTiers(schema, map, "super_chest", quantumChest, LOW_TIERS);
-        registerForTiers(schema, map, "quantum_chest", quantumChest, HIGH_TIERS);
-        registerForTiers(schema, map, "super_tank", quantumTank, LOW_TIERS);
-        registerForTiers(schema, map, "quantum_tank", quantumTank, HIGH_TIERS);
+        schema.register(map, "gtceu:creative_chest", quantumChest);
+        schema.register(map, "gtceu:creative_tank", quantumTank);
+        registerForTiers(schema, map, "gtceu:super_chest", quantumChest, LOW_TIERS);
+        registerForTiers(schema, map, "gtceu:quantum_chest", quantumChest, HIGH_TIERS);
+        registerForTiers(schema, map, "gtceu:super_tank", quantumTank, LOW_TIERS);
+        registerForTiers(schema, map, "gtceu:quantum_tank", quantumTank, HIGH_TIERS);
 
-        schema.register(map, "wood_crate", itemStorage);
-        schema.register(map, "bronze_crate", itemStorage);
-        schema.register(map, "steel_crate", itemStorage);
-        schema.register(map, "aluminium_crate", itemStorage);
-        schema.register(map, "stainless_steel_crate", itemStorage);
-        schema.register(map, "titanium_crate", itemStorage);
-        schema.register(map, "tungsten_steel_crate", itemStorage);
+        schema.register(map, "gtceu:wood_crate", itemStorage);
+        schema.register(map, "gtceu:bronze_crate", itemStorage);
+        schema.register(map, "gtceu:steel_crate", itemStorage);
+        schema.register(map, "gtceu:aluminium_crate", itemStorage);
+        schema.register(map, "gtceu:stainless_steel_crate", itemStorage);
+        schema.register(map, "gtceu:titanium_crate", itemStorage);
+        schema.register(map, "gtceu:tungsten_steel_crate", itemStorage);
 
         final Supplier<TypeTemplate> drum = () -> optionalFields(
                 "stored", GTReferences.FLUID_STACK.in(schema),
                 traitHolder(schema)
         );
-        schema.register(map, "wood_drum", drum);
-        schema.register(map, "bronze_drum", drum);
-        schema.register(map, "steel_drum", drum);
-        schema.register(map, "aluminium_drum", drum);
-        schema.register(map, "stainless_steel_drum", drum);
-        schema.register(map, "gold_drum", drum);
-        schema.register(map, "titanium_drum", drum);
-        schema.register(map, "tungsten_steel_drum", drum);
+        schema.register(map, "gtceu:wood_drum", drum);
+        schema.register(map, "gtceu:bronze_drum", drum);
+        schema.register(map, "gtceu:steel_drum", drum);
+        schema.register(map, "gtceu:aluminium_drum", drum);
+        schema.register(map, "gtceu:stainless_steel_drum", drum);
+        schema.register(map, "gtceu:gold_drum", drum);
+        schema.register(map, "gtceu:titanium_drum", drum);
+        schema.register(map, "gtceu:tungsten_steel_drum", drum);
         // endregion
 
         // region part
@@ -208,77 +209,77 @@ public class V1_3 extends AutoGTNamespacedSchema {
                 "circuitSlot", notifiableItemHandler(schema),
                 itemStorage.get()
         );
-        registerForTiers(schema, map, "input_bus", itemBus, ALL_TIERS);
-        registerForTiers(schema, map, "output_bus", itemBus, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:input_bus", itemBus, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:output_bus", itemBus, ALL_TIERS);
         final Supplier<TypeTemplate> fluidHatch = () -> optionalFields(
                 "tank", notifiableFluidTank(schema),
                 "circuitSlot", notifiableItemHandler(schema),
                 traitHolder(schema)
         );
-        registerForTiers(schema, map, "input_hatch", fluidHatch, ALL_TIERS);
-        registerForTiers(schema, map, "input_hatch_4x", fluidHatch, ALL_TIERS);
-        registerForTiers(schema, map, "input_hatch_9x", fluidHatch, ALL_TIERS);
-        registerForTiers(schema, map, "output_hatch", fluidHatch, ALL_TIERS);
-        registerForTiers(schema, map, "output_hatch_4x", fluidHatch, ALL_TIERS);
-        registerForTiers(schema, map, "output_hatch_9x", fluidHatch, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:input_hatch", fluidHatch, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:input_hatch_4x", fluidHatch, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:input_hatch_9x", fluidHatch, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:output_hatch", fluidHatch, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:output_hatch_4x", fluidHatch, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:output_hatch_9x", fluidHatch, ALL_TIERS);
 
-        registerForTiers(schema, map, "energy_input_hatch", traitHolder, ALL_TIERS);
-        registerForTiers(schema, map, "energy_output_hatch", traitHolder, ALL_TIERS);
-        registerForTiers(schema, map, "energy_input_hatch_4a", traitHolder, ALL_TIERS);
-        registerForTiers(schema, map, "energy_output_hatch_4a", traitHolder, ALL_TIERS);
-        registerForTiers(schema, map, "energy_input_hatch_16a", traitHolder, ALL_TIERS);
-        registerForTiers(schema, map, "energy_output_hatch_16a", traitHolder, ALL_TIERS);
-        registerForTiers(schema, map, "substation_input_hatch_64a", traitHolder, ALL_TIERS);
-        registerForTiers(schema, map, "substation_output_hatch_64a", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:energy_input_hatch", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:energy_output_hatch", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:energy_input_hatch_4a", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:energy_output_hatch_4a", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:energy_input_hatch_16a", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:energy_output_hatch_16a", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:substation_input_hatch_64a", traitHolder, ALL_TIERS);
+        registerForTiers(schema, map, "gtceu:substation_output_hatch_64a", traitHolder, ALL_TIERS);
 
-        registerForTiers(schema, map, "muffler_hatch", itemStorage, ELECTRIC_TIERS);
+        registerForTiers(schema, map, "gtceu:muffler_hatch", itemStorage, ELECTRIC_TIERS);
 
-        schema.register(map, "steam_input_bus", itemBus);
-        schema.register(map, "steam_output_bus", itemBus);
-        schema.register(map, "steam_input_hatch", fluidHatch);
-        schema.register(map, "coke_oven_hatch", traitHolder);
-        schema.register(map, "pump_hatch", fluidHatch);
+        schema.register(map, "gtceu:steam_input_bus", itemBus);
+        schema.register(map, "gtceu:steam_output_bus", itemBus);
+        schema.register(map, "gtceu:steam_input_hatch", fluidHatch);
+        schema.register(map, "gtceu:coke_oven_hatch", traitHolder);
+        schema.register(map, "gtceu:pump_hatch", fluidHatch);
         final Supplier<TypeTemplate> maintenanceHatch = () -> optionalFields(
                 "itemStackHandler", notifiableItemHandler(schema),
                 traitHolder(schema)
         );
-        schema.register(map, "maintenance_hatch", maintenanceHatch);
-        schema.register(map, "configurable_maintenance_hatch", maintenanceHatch);
-        schema.register(map, "cleaning_maintenance_hatch", maintenanceHatch);
-        schema.register(map, "auto_maintenance_hatch", maintenanceHatch);
+        schema.register(map, "gtceu:maintenance_hatch", maintenanceHatch);
+        schema.register(map, "gtceu:configurable_maintenance_hatch", maintenanceHatch);
+        schema.register(map, "gtceu:cleaning_maintenance_hatch", maintenanceHatch);
+        schema.register(map, "gtceu:auto_maintenance_hatch", maintenanceHatch);
 
-        registerForTiers(schema, map, "item_passthrough_hatch", itemBus, ELECTRIC_TIERS);
-        registerForTiers(schema, map, "fluid_passthrough_hatch", fluidHatch, ELECTRIC_TIERS);
-        schema.register(map, "reservoir_hatch", fluidHatch);
+        registerForTiers(schema, map, "gtceu:item_passthrough_hatch", itemBus, ELECTRIC_TIERS);
+        registerForTiers(schema, map, "gtceu:fluid_passthrough_hatch", fluidHatch, ELECTRIC_TIERS);
+        schema.register(map, "gtceu:reservoir_hatch", fluidHatch);
         final Supplier<TypeTemplate> dualHatch = () -> optionalFields(
                 "tank", notifiableFluidTank(schema),
                 itemBus.get()
         );
-        registerForTiers(schema, map, "dual_input_hatch", dualHatch, DUAL_HATCH_TIERS);
-        registerForTiers(schema, map, "dual_output_hatch", dualHatch, DUAL_HATCH_TIERS);
+        registerForTiers(schema, map, "gtceu:dual_input_hatch", dualHatch, DUAL_HATCH_TIERS);
+        registerForTiers(schema, map, "gtceu:dual_output_hatch", dualHatch, DUAL_HATCH_TIERS);
 
-        registerForTiers(schema, map, "diode", traitHolder, ELECTRIC_TIERS);
-        registerForTiers(schema, map, "rotor_holder", () -> optionalFields(
+        registerForTiers(schema, map, "gtceu:diode", traitHolder, ELECTRIC_TIERS);
+        registerForTiers(schema, map, "gtceu:rotor_holder", () -> optionalFields(
                 "rotorMaterial", GTReferences.MATERIAL_NAME.in(schema),
                 itemStorage.get()
         ), GTValues.tiersBetween(HV, GTCEuAPI.isHighTier() ? OpV : UV));
 
-        registerForTiers(schema, map, "256a_laser_target_hatch", traitHolder, HIGH_TIERS);
-        registerForTiers(schema, map, "256a_laser_source_hatch", traitHolder, HIGH_TIERS);
-        registerForTiers(schema, map, "1024a_laser_target_hatch", traitHolder, HIGH_TIERS);
-        registerForTiers(schema, map, "1024a_laser_source_hatch", traitHolder, HIGH_TIERS);
-        registerForTiers(schema, map, "4096a_laser_target_hatch", traitHolder, HIGH_TIERS);
-        registerForTiers(schema, map, "4096a_laser_source_hatch", traitHolder, HIGH_TIERS);
+        registerForTiers(schema, map, "gtceu:256a_laser_target_hatch", traitHolder, HIGH_TIERS);
+        registerForTiers(schema, map, "gtceu:256a_laser_source_hatch", traitHolder, HIGH_TIERS);
+        registerForTiers(schema, map, "gtceu:1024a_laser_target_hatch", traitHolder, HIGH_TIERS);
+        registerForTiers(schema, map, "gtceu:1024a_laser_source_hatch", traitHolder, HIGH_TIERS);
+        registerForTiers(schema, map, "gtceu:4096a_laser_target_hatch", traitHolder, HIGH_TIERS);
+        registerForTiers(schema, map, "gtceu:4096a_laser_source_hatch", traitHolder, HIGH_TIERS);
 
-        schema.register(map, "monitor", traitHolder);
-        schema.register(map, "advanced_monitor", traitHolder);
+        schema.register(map, "gtceu:monitor", traitHolder);
+        schema.register(map, "gtceu:advanced_monitor", traitHolder);
         // endregion
 
         // region multiblock
-        schema.register(map, "bronze_large_boiler", traitHolder);
-        schema.register(map, "steel_large_boiler", traitHolder);
-        schema.register(map, "titanium_large_boiler", traitHolder);
-        schema.register(map, "tungstensteel_large_boiler", traitHolder);
+        schema.register(map, "gtceu:bronze_large_boiler", traitHolder);
+        schema.register(map, "gtceu:steel_large_boiler", traitHolder);
+        schema.register(map, "gtceu:titanium_large_boiler", traitHolder);
+        schema.register(map, "gtceu:tungstensteel_large_boiler", traitHolder);
 
         final Supplier<TypeTemplate> primitiveMachine = () -> optionalFields(
                 "importItems", notifiableItemHandler(schema),
@@ -287,108 +288,108 @@ public class V1_3 extends AutoGTNamespacedSchema {
                 "exportFluids", notifiableFluidTank(schema),
                 traitHolder(schema)
         );
-        schema.register(map, "coke_oven", primitiveMachine);
-        schema.register(map, "primitive_blast_furnace", primitiveMachine);
+        schema.register(map, "gtceu:coke_oven", primitiveMachine);
+        schema.register(map, "gtceu:primitive_blast_furnace", primitiveMachine);
 
-        schema.register(map, "electric_blast_furnace", traitHolder);
-        schema.register(map, "large_chemical_reactor", traitHolder);
-        schema.register(map, "implosion_compressor", traitHolder);
-        schema.register(map, "pyrolyse_oven", traitHolder);
-        schema.register(map, "multi_smelter", traitHolder);
-        schema.register(map, "cracker", traitHolder);
-        schema.register(map, "distillation_tower", traitHolder);
-        schema.register(map, "vacuum_freezer", traitHolder);
-        schema.register(map, "assembly_line", traitHolder);
-        schema.register(map, "primitive_pump", traitHolder);
-        schema.register(map, "steam_grinder", traitHolder);
-        schema.register(map, "steam_oven", traitHolder);
-        registerForTiers(schema, map, "fusion_reactor", traitHolder, LuV, ZPM, UV);
-        registerForTiers(schema, map, "fluid_drilling_rig", traitHolder, MV, HV, EV);
-        registerForTiers(schema, map, "large_miner", traitHolder, EV, IV, LuV);
-        schema.register(map, "cleanroom", traitHolder);
-        schema.register(map, "large_combustion_engine", traitHolder);
-        schema.register(map, "extreme_combustion_engine", traitHolder);
-        schema.register(map, "steam_large_turbine", traitHolder);
-        schema.register(map, "gas_large_turbine", traitHolder);
-        schema.register(map, "plasma_large_turbine", traitHolder);
-        schema.register(map, "active_transformer", traitHolder);
-        schema.register(map, "power_substation", traitHolder);
-        registerForTiers(schema, map, "bedrock_ore_miner", traitHolder, MV, HV, EV);
-        schema.register(map, "wooden_tank_valve", traitHolder);
-        schema.register(map, "wooden_multiblock_tank", traitHolder);
-        schema.register(map, "bronze_tank_valve", traitHolder);
-        schema.register(map, "bronze_multiblock_tank", traitHolder);
-        schema.register(map, "steel_tank_valve", traitHolder);
-        schema.register(map, "steel_multiblock_tank", traitHolder);
+        schema.register(map, "gtceu:electric_blast_furnace", traitHolder);
+        schema.register(map, "gtceu:large_chemical_reactor", traitHolder);
+        schema.register(map, "gtceu:implosion_compressor", traitHolder);
+        schema.register(map, "gtceu:pyrolyse_oven", traitHolder);
+        schema.register(map, "gtceu:multi_smelter", traitHolder);
+        schema.register(map, "gtceu:cracker", traitHolder);
+        schema.register(map, "gtceu:distillation_tower", traitHolder);
+        schema.register(map, "gtceu:vacuum_freezer", traitHolder);
+        schema.register(map, "gtceu:assembly_line", traitHolder);
+        schema.register(map, "gtceu:primitive_pump", traitHolder);
+        schema.register(map, "gtceu:steam_grinder", traitHolder);
+        schema.register(map, "gtceu:steam_oven", traitHolder);
+        registerForTiers(schema, map, "gtceu:fusion_reactor", traitHolder, LuV, ZPM, UV);
+        registerForTiers(schema, map, "gtceu:fluid_drilling_rig", traitHolder, MV, HV, EV);
+        registerForTiers(schema, map, "gtceu:large_miner", traitHolder, EV, IV, LuV);
+        schema.register(map, "gtceu:cleanroom", traitHolder);
+        schema.register(map, "gtceu:large_combustion_engine", traitHolder);
+        schema.register(map, "gtceu:extreme_combustion_engine", traitHolder);
+        schema.register(map, "gtceu:steam_large_turbine", traitHolder);
+        schema.register(map, "gtceu:gas_large_turbine", traitHolder);
+        schema.register(map, "gtceu:plasma_large_turbine", traitHolder);
+        schema.register(map, "gtceu:active_transformer", traitHolder);
+        schema.register(map, "gtceu:power_substation", traitHolder);
+        registerForTiers(schema, map, "gtceu:bedrock_ore_miner", traitHolder, MV, HV, EV);
+        schema.register(map, "gtceu:wooden_tank_valve", traitHolder);
+        schema.register(map, "gtceu:wooden_multiblock_tank", traitHolder);
+        schema.register(map, "gtceu:bronze_tank_valve", traitHolder);
+        schema.register(map, "gtceu:bronze_multiblock_tank", traitHolder);
+        schema.register(map, "gtceu:steel_tank_valve", traitHolder);
+        schema.register(map, "gtceu:steel_multiblock_tank", traitHolder);
 
-        schema.register(map, "central_monitor", traitHolder);
+        schema.register(map, "gtceu:central_monitor", traitHolder);
 
         // region GCYM
-        registerForTiers(schema, map, "parallel_hatch", traitHolder, IV, LuV, ZPM, UV);
-        schema.register(map, "large_maceration_tower", traitHolder);
-        schema.register(map, "large_chemical_bath", traitHolder);
-        schema.register(map, "large_centrifuge", traitHolder);
-        schema.register(map, "large_mixer", traitHolder);
-        schema.register(map, "large_electrolyzer", traitHolder);
-        schema.register(map, "large_electromagnet", traitHolder);
-        schema.register(map, "large_packer", traitHolder);
-        schema.register(map, "large_assembler", traitHolder);
-        schema.register(map, "large_circuit_assembler", traitHolder);
-        schema.register(map, "large_arc_smelter", traitHolder);
-        schema.register(map, "large_engraving_laser", traitHolder);
-        schema.register(map, "large_sifting_funnel", traitHolder);
-        schema.register(map, "alloy_blast_smelter", traitHolder);
-        schema.register(map, "large_autoclave", traitHolder);
-        schema.register(map, "large_material_press", traitHolder);
-        schema.register(map, "large_brewer", traitHolder);
-        schema.register(map, "large_cutter", traitHolder);
-        schema.register(map, "large_extractor", traitHolder);
-        schema.register(map, "large_extruder", traitHolder);
-        schema.register(map, "large_solidifier", traitHolder);
-        schema.register(map, "large_wiremill", traitHolder);
-        schema.register(map, "mega_blast_furnace", traitHolder);
-        schema.register(map, "mega_vacuum_freezer", traitHolder);
+        registerForTiers(schema, map, "gtceu:parallel_hatch", traitHolder, IV, LuV, ZPM, UV);
+        schema.register(map, "gtceu:large_maceration_tower", traitHolder);
+        schema.register(map, "gtceu:large_chemical_bath", traitHolder);
+        schema.register(map, "gtceu:large_centrifuge", traitHolder);
+        schema.register(map, "gtceu:large_mixer", traitHolder);
+        schema.register(map, "gtceu:large_electrolyzer", traitHolder);
+        schema.register(map, "gtceu:large_electromagnet", traitHolder);
+        schema.register(map, "gtceu:large_packer", traitHolder);
+        schema.register(map, "gtceu:large_assembler", traitHolder);
+        schema.register(map, "gtceu:large_circuit_assembler", traitHolder);
+        schema.register(map, "gtceu:large_arc_smelter", traitHolder);
+        schema.register(map, "gtceu:large_engraving_laser", traitHolder);
+        schema.register(map, "gtceu:large_sifting_funnel", traitHolder);
+        schema.register(map, "gtceu:alloy_blast_smelter", traitHolder);
+        schema.register(map, "gtceu:large_autoclave", traitHolder);
+        schema.register(map, "gtceu:large_material_press", traitHolder);
+        schema.register(map, "gtceu:large_brewer", traitHolder);
+        schema.register(map, "gtceu:large_cutter", traitHolder);
+        schema.register(map, "gtceu:large_extractor", traitHolder);
+        schema.register(map, "gtceu:large_extruder", traitHolder);
+        schema.register(map, "gtceu:large_solidifier", traitHolder);
+        schema.register(map, "gtceu:large_wiremill", traitHolder);
+        schema.register(map, "gtceu:mega_blast_furnace", traitHolder);
+        schema.register(map, "gtceu:mega_vacuum_freezer", traitHolder);
         // endregion
         // endregion
 
         // region research
-        schema.register(map, "research_station", traitHolder);
-        schema.register(map, "object_holder", () -> optionalFields(
+        schema.register(map, "gtceu:research_station", traitHolder);
+        schema.register(map, "gtceu:object_holder", () -> optionalFields(
                 "heldItems", notifiableItemHandler(schema),
                 traitHolder(schema)
         ));
-        schema.register(map, "data_bank", traitHolder);
-        schema.register(map, "network_switch", traitHolder);
-        schema.register(map, "high_performance_computation_array", traitHolder);
-        schema.register(map, "computation_transmitter_hatch", traitHolder);
-        schema.register(map, "computation_receiver_hatch", traitHolder);
-        schema.register(map, "data_transmitter_hatch", traitHolder);
-        schema.register(map, "data_receiver_hatch", traitHolder);
+        schema.register(map, "gtceu:data_bank", traitHolder);
+        schema.register(map, "gtceu:network_switch", traitHolder);
+        schema.register(map, "gtceu:high_performance_computation_array", traitHolder);
+        schema.register(map, "gtceu:computation_transmitter_hatch", traitHolder);
+        schema.register(map, "gtceu:computation_receiver_hatch", traitHolder);
+        schema.register(map, "gtceu:data_transmitter_hatch", traitHolder);
+        schema.register(map, "gtceu:data_receiver_hatch", traitHolder);
         final Supplier<TypeTemplate> dataAccessHatch = () -> optionalFields(
                 "importItems", notifiableItemHandler(schema),
                 traitHolder(schema)
         );
-        schema.register(map, "basic_data_access_hatch", dataAccessHatch);
-        schema.register(map, "data_access_hatch", dataAccessHatch);
-        schema.register(map, "advanced_data_access_hatch", dataAccessHatch);
-        schema.register(map, "creative_data_access_hatch", dataAccessHatch);
-        schema.register(map, "hpca_empty_component", traitHolder);
-        schema.register(map, "hpca_computation_component", traitHolder);
-        schema.register(map, "hpca_advanced_computation_component", traitHolder);
-        schema.register(map, "hpca_heat_sink_component", traitHolder);
-        schema.register(map, "hpca_active_cooler_component", traitHolder);
-        schema.register(map, "hpca_bridge_component", traitHolder);
+        schema.register(map, "gtceu:basic_data_access_hatch", dataAccessHatch);
+        schema.register(map, "gtceu:data_access_hatch", dataAccessHatch);
+        schema.register(map, "gtceu:advanced_data_access_hatch", dataAccessHatch);
+        schema.register(map, "gtceu:creative_data_access_hatch", dataAccessHatch);
+        schema.register(map, "gtceu:hpca_empty_component", traitHolder);
+        schema.register(map, "gtceu:hpca_computation_component", traitHolder);
+        schema.register(map, "gtceu:hpca_advanced_computation_component", traitHolder);
+        schema.register(map, "gtceu:hpca_heat_sink_component", traitHolder);
+        schema.register(map, "gtceu:hpca_active_cooler_component", traitHolder);
+        schema.register(map, "gtceu:hpca_bridge_component", traitHolder);
         // endregion
 
         // region AE2 compat
         if (LoadingModList.get().getModFileById(MODID_APPENG) != null) { // only add these if AE2 is loaded
-            schema.register(map, "me_input_bus", itemBus);
-            schema.register(map, "me_stocking_input_bus", itemBus);
-            schema.register(map, "me_output_bus", itemBus);
-            schema.register(map, "me_input_hatch", fluidHatch);
-            schema.register(map, "me_stocking_input_hatch", fluidHatch);
-            schema.register(map, "me_output_hatch", fluidHatch);
-            schema.register(map, "me_pattern_buffer", () -> optionalFields(
+            schema.register(map, "gtceu:me_input_bus", itemBus);
+            schema.register(map, "gtceu:me_stocking_input_bus", itemBus);
+            schema.register(map, "gtceu:me_output_bus", itemBus);
+            schema.register(map, "gtceu:me_input_hatch", fluidHatch);
+            schema.register(map, "gtceu:me_stocking_input_hatch", fluidHatch);
+            schema.register(map, "gtceu:me_output_hatch", fluidHatch);
+            schema.register(map, "gtceu:me_pattern_buffer", () -> optionalFields(
                     "patternInventory", itemHandler(schema),
                     "shareInventory", notifiableItemHandler(schema),
                     "shareTank", notifiableFluidTank(schema),
@@ -400,7 +401,7 @@ public class V1_3 extends AutoGTNamespacedSchema {
                     ),
                     itemBus.get()
             ));
-            schema.register(map, "me_pattern_buffer_proxy", traitHolder);
+            schema.register(map, "gtceu:me_pattern_buffer_proxy", traitHolder);
         }
         // endregion
 

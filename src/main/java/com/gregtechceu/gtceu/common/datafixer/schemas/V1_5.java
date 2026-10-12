@@ -7,13 +7,14 @@ import net.minecraft.util.datafix.fixes.References;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.Hook;
 import com.mojang.datafixers.types.templates.TypeTemplate;
+import net.minecraft.util.datafix.schemas.NamespacedSchema;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.mojang.datafixers.DSL.*;
 
-public class V1_5 extends AutoGTNamespacedSchema {
+public class V1_5 extends NamespacedSchema {
 
     public V1_5(int versionKey, Schema parent) {
         super(versionKey, parent);
