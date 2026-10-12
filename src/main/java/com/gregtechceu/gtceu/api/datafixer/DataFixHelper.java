@@ -56,25 +56,25 @@ public abstract class DataFixHelper {
     }
 
     @Contract(pure = true)
-    @Range(from = 0, to = Integer.MAX_VALUE)
+    @Range(from = -1, to = Integer.MAX_VALUE)
     public static int getGTDataVersion(Dynamic<?> dynamic) {
         return getGTDataVersion(dynamic, -1);
     }
 
     @Contract(pure = true)
-    @Range(from = 0, to = Integer.MAX_VALUE)
+    @Range(from = -1, to = Integer.MAX_VALUE)
     public static int getGTDataVersion(Dynamic<?> dynamic, int defaultValue) {
         return dynamic.get(GT_DATA_VERSION_TAG).asInt(defaultValue);
     }
 
     @Contract(pure = true)
-    @Range(from = 0, to = Integer.MAX_VALUE)
+    @Range(from = -1, to = Integer.MAX_VALUE)
     public static int getGTDataVersion(CompoundTag tag) {
         return getGTDataVersion(tag, -1);
     }
 
     @Contract(pure = true)
-    @Range(from = 0, to = Integer.MAX_VALUE)
+    @Range(from = -1, to = Integer.MAX_VALUE)
     public static int getGTDataVersion(CompoundTag tag, int defaultValue) {
         return tag.contains(GT_DATA_VERSION_TAG, CompoundTag.TAG_ANY_NUMERIC) ? tag.getInt(GT_DATA_VERSION_TAG) :
                 defaultValue;

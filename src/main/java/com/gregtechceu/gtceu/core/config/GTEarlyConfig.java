@@ -61,6 +61,8 @@ public class GTEarlyConfig {
         enableIfModPresent("xaerominimap", "xaerominimap");
         enableIfModPresent("xaeroworldmap", "xaeroworldmap");
 
+        enableIfModPresent("datafixer.modernfix", "modernfix");
+
         // bind non-empty parents
         for (Map.Entry<String, Option> entry : this.options.entrySet()) {
             if (entry.getValue().getParent() != null) continue;
