@@ -58,7 +58,8 @@ public class HudGuiOverlay implements LayeredDraw.Layer {
         boolean hasBattery = false;
         for (var slot : new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST,
                 EquipmentSlot.LEGS, EquipmentSlot.FEET }) {
-            if (slot != EquipmentSlot.HEAD) percentages.append(Component.literal(" | ").withStyle(ChatFormatting.WHITE));
+            if (slot != EquipmentSlot.HEAD)
+                percentages.append(Component.literal(" | ").withStyle(ChatFormatting.WHITE));
             var stack = player.getItemBySlot(slot);
             var modular = GTCapabilityHelper.getModularItem(stack);
             var electric = GTCapabilityHelper.getElectricItem(stack);
