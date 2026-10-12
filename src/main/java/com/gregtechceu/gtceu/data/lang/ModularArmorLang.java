@@ -69,6 +69,7 @@ public class ModularArmorLang {
         provider.add("module.gtceu.battery", "Battery Module (%s)");
         provider.add("module.gtceu.battery.description",
                 "Allows the item to store energy or increases its capacity (capacity is equal to the battery's)");
+        provider.add("module.gtceu.battery.hud.suit", "Armor Power");
         provider.add("module.gtceu.battery.hud.info", "Storing %s/%s EU");
         provider.add("module.gtceu.battery.hud.helmet", "Helmet battery: %s");
         provider.add("module.gtceu.battery.hud.chestplate", "Chestplate battery: %s");

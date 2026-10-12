@@ -5933,6 +5933,7 @@
   "module.gtceu.battery.hud.helmet": "Helmet battery: %s",
   "module.gtceu.battery.hud.info": "Storing %s/%s EU",
   "module.gtceu.battery.hud.leggings": "Leggings battery: %s",
+  "module.gtceu.battery.hud.suit": "Armor Power",
   "module.gtceu.block_reach": "Reach Module (%s)",
   "module.gtceu.block_reach.description": "Increases block reach by %s blocks",
   "module.gtceu.block_reach.short": "... by %s blocks",
