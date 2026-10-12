@@ -40,6 +40,7 @@ import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -657,115 +658,115 @@ public class MachineRecipeLoader {
                 .addMaterialInfo(true, true)
                 .save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_ulv").EUt(16).inputItems(plate, WroughtIron, 8)
+        WELDER_RECIPES.recipeBuilder("casing_ulv").EUt(16).inputItems(plate, WroughtIron, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_ULV.asStack())
                 .circuitMeta(8).duration(25)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_lv").EUt(16).inputItems(plate, Steel, 8)
+        WELDER_RECIPES.recipeBuilder("casing_lv").EUt(16).inputItems(plate, Steel, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_LV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_mv").EUt(16).inputItems(plate, Aluminium, 8)
+        WELDER_RECIPES.recipeBuilder("casing_mv").EUt(16).inputItems(plate, Aluminium, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_MV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_hv").EUt(16).inputItems(plate, StainlessSteel, 8)
+        WELDER_RECIPES.recipeBuilder("casing_hv").EUt(16).inputItems(plate, StainlessSteel, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_HV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_ev").EUt(16).inputItems(plate, Titanium, 8)
+        WELDER_RECIPES.recipeBuilder("casing_ev").EUt(16).inputItems(plate, Titanium, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_EV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_iv").EUt(16).inputItems(plate, TungstenSteel, 8)
+        WELDER_RECIPES.recipeBuilder("casing_iv").EUt(16).inputItems(plate, TungstenSteel, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_IV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_luv").EUt(16).inputItems(plate, RhodiumPlatedPalladium, 8)
+        WELDER_RECIPES.recipeBuilder("casing_luv").EUt(16).inputItems(plate, RhodiumPlatedPalladium, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_LuV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_zpm").EUt(16).inputItems(plate, NaquadahAlloy, 8)
+        WELDER_RECIPES.recipeBuilder("casing_zpm").EUt(16).inputItems(plate, NaquadahAlloy, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_ZPM.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_uv").EUt(16).inputItems(plate, Darmstadtium, 8)
+        WELDER_RECIPES.recipeBuilder("casing_uv").EUt(16).inputItems(plate, Darmstadtium, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_UV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_uhv").EUt(16).inputItems(plate, Neutronium, 8)
+        WELDER_RECIPES.recipeBuilder("casing_uhv").EUt(16).inputItems(plate, Neutronium, 8)
                 .outputItems(GTBlocks.MACHINE_CASING_UHV.asStack())
                 .circuitMeta(8).duration(50)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("coil_cupronickel").EUt(VA[LV]).inputItems(wireGtDouble, Cupronickel, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_cupronickel").EUt(VA[LV]).inputItems(wireGtDouble, Cupronickel, 8)
                 .inputItems(foil, Bronze, 8).inputFluids(TinAlloy, GTValues.L)
                 .outputItems(GTBlocks.COIL_CUPRONICKEL.asStack()).duration(200)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_kanthal").EUt(VA[MV]).inputItems(wireGtDouble, Kanthal, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_kanthal").EUt(VA[MV]).inputItems(wireGtDouble, Kanthal, 8)
                 .inputItems(foil, Aluminium, 8).inputFluids(Copper, GTValues.L)
                 .outputItems(GTBlocks.COIL_KANTHAL.asStack()).duration(300)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_nichrome").EUt(VA[HV]).inputItems(wireGtDouble, Nichrome, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_nichrome").EUt(VA[HV]).inputItems(wireGtDouble, Nichrome, 8)
                 .inputItems(foil, StainlessSteel, 8).inputFluids(Aluminium, GTValues.L)
                 .outputItems(GTBlocks.COIL_NICHROME.asStack()).duration(400)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_rtm_alloy").EUt(VA[EV]).inputItems(wireGtDouble, RTMAlloy, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_rtm_alloy").EUt(VA[EV]).inputItems(wireGtDouble, RTMAlloy, 8)
                 .inputItems(foil, VanadiumSteel, 8).inputFluids(Nichrome, GTValues.L)
                 .outputItems(GTBlocks.COIL_RTMALLOY.asStack()).duration(500)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_hssg").EUt(VA[IV]).inputItems(wireGtDouble, HSSG, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_hssg").EUt(VA[IV]).inputItems(wireGtDouble, HSSG, 8)
                 .inputItems(foil, TungstenCarbide, 8).inputFluids(Tungsten, GTValues.L)
                 .outputItems(GTBlocks.COIL_HSSG.asStack()).duration(600)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_naquadah").EUt(VA[LuV]).inputItems(wireGtDouble, Naquadah, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_naquadah").EUt(VA[LuV]).inputItems(wireGtDouble, Naquadah, 8)
                 .inputItems(foil, Osmium, 8).inputFluids(TungstenSteel, GTValues.L)
                 .outputItems(GTBlocks.COIL_NAQUADAH.asStack()).duration(700)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_trinium").EUt(VA[ZPM]).inputItems(wireGtDouble, Trinium, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_trinium").EUt(VA[ZPM]).inputItems(wireGtDouble, Trinium, 8)
                 .inputItems(foil, NaquadahEnriched, 8).inputFluids(Naquadah, GTValues.L)
                 .outputItems(GTBlocks.COIL_TRINIUM.asStack()).duration(800)
                 .addMaterialInfo(true, true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_tritanium").EUt(VA[UV]).inputItems(wireGtDouble, Tritanium, 8)
+        SPOOLING_RECIPES.recipeBuilder("coil_tritanium").EUt(VA[UV]).inputItems(wireGtDouble, Tritanium, 8)
                 .inputItems(foil, Naquadria, 8).inputFluids(Trinium, GTValues.L)
                 .outputItems(GTBlocks.COIL_TRITANIUM.asStack()).duration(900)
                 .addMaterialInfo(true, true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_bronze_bricks").EUt(16).inputItems(plate, Bronze, 6)
+        WELDER_RECIPES.recipeBuilder("casing_bronze_bricks").EUt(16).inputItems(plate, Bronze, 6)
                 .inputItems(new ItemStack(Blocks.BRICKS)).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_BRONZE_BRICKS.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_invar_heatproof").EUt(16).inputItems(plate, Invar, 6)
+        WELDER_RECIPES.recipeBuilder("casing_invar_heatproof").EUt(16).inputItems(plate, Invar, 6)
                 .inputItems(frameGt, Invar).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_INVAR_HEATPROOF.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_steel_solid").EUt(16).inputItems(plate, Steel, 6)
+        WELDER_RECIPES.recipeBuilder("casing_steel_solid").EUt(16).inputItems(plate, Steel, 6)
                 .inputItems(frameGt, Steel).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_STEEL_SOLID.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_aluminium_frostproof").EUt(16).inputItems(plate, Aluminium, 6)
+        WELDER_RECIPES.recipeBuilder("casing_aluminium_frostproof").EUt(16).inputItems(plate, Aluminium, 6)
                 .inputItems(frameGt, Aluminium).circuitMeta(6)
                 .outputItems(
                         GTBlocks.CASING_ALUMINIUM_FROSTPROOF.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_tungsteensteel_robust").EUt(16).inputItems(plate, TungstenSteel, 6)
+        WELDER_RECIPES.recipeBuilder("casing_tungsteensteel_robust").EUt(16).inputItems(plate, TungstenSteel, 6)
                 .inputItems(frameGt, TungstenSteel).circuitMeta(6)
                 .outputItems(
                         GTBlocks.CASING_TUNGSTENSTEEL_ROBUST.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_stainless_clean").EUt(16).inputItems(plate, StainlessSteel, 6)
+        WELDER_RECIPES.recipeBuilder("casing_stainless_clean").EUt(16).inputItems(plate, StainlessSteel, 6)
                 .inputItems(frameGt, StainlessSteel).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_STAINLESS_CLEAN.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_titanium_stable").EUt(16).inputItems(plate, Titanium, 6)
+        WELDER_RECIPES.recipeBuilder("casing_titanium_stable").EUt(16).inputItems(plate, Titanium, 6)
                 .inputItems(frameGt, Titanium).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_TITANIUM_STABLE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_hsse_sturdy").EUt(16).inputItems(plate, HSSE, 6)
+        WELDER_RECIPES.recipeBuilder("casing_hsse_sturdy").EUt(16).inputItems(plate, HSSE, 6)
                 .inputItems(frameGt, Europium).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_HSSE_STURDY.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_palladium_substation").EUt(16).inputItems(plate, Palladium, 6)
+        WELDER_RECIPES.recipeBuilder("casing_palladium_substation").EUt(16).inputItems(plate, Palladium, 6)
                 .inputItems(frameGt, Iridium).circuitMeta(6)
                 .outputItems(
                         GTBlocks.CASING_PALLADIUM_SUBSTATION.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
@@ -776,7 +777,7 @@ public class MachineRecipeLoader {
                 .outputItems(GTBlocks.CASING_PTFE_INERT.asStack()).duration(50)
                 .addMaterialInfo(true, true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_bronze_firebox")
+        WELDER_RECIPES.recipeBuilder("casing_bronze_firebox")
                 .inputItems(rod, Bronze, 3)
                 .inputItems(frameGt, Bronze)
                 .inputItems(plate, Bronze, 3)
@@ -785,7 +786,7 @@ public class MachineRecipeLoader {
                 .duration(100)
                 .EUt(VA[LV])
                 .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_steel_firebox")
+        WELDER_RECIPES.recipeBuilder("casing_steel_firebox")
                 .inputItems(rod, Steel, 3)
                 .inputItems(frameGt, Steel)
                 .inputItems(plate, Steel, 3)
@@ -794,7 +795,7 @@ public class MachineRecipeLoader {
                 .duration(200)
                 .EUt(VA[LV])
                 .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_titanium_firebox")
+        WELDER_RECIPES.recipeBuilder("casing_titanium_firebox")
                 .inputItems(rod, Titanium, 3)
                 .inputItems(frameGt, Titanium)
                 .inputItems(plate, Titanium, 3)
@@ -803,7 +804,7 @@ public class MachineRecipeLoader {
                 .duration(300)
                 .EUt(VA[HV])
                 .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_tungstensteel_firebox")
+        WELDER_RECIPES.recipeBuilder("casing_tungstensteel_firebox")
                 .inputItems(rod, TungstenSteel, 3)
                 .inputItems(frameGt, TungstenSteel)
                 .inputItems(plate, TungstenSteel, 3)
@@ -859,27 +860,81 @@ public class MachineRecipeLoader {
                 .duration(100).cleanroom(CleanroomType.CLEANROOM)
                 .addMaterialInfo(true, true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_steel_turbine").EUt(16).inputItems(plate, Magnalium, 6)
+        WELDER_RECIPES.recipeBuilder("casing_steel_turbine").EUt(16).inputItems(plate, Magnalium, 6)
                 .inputItems(frameGt, BlueSteel, 1).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_STEEL_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_stainless_steel_turbine").EUt(16)
+        WELDER_RECIPES.recipeBuilder("casing_stainless_steel_turbine").EUt(16)
                 .inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(plate, StainlessSteel, 6).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_STAINLESS_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_titanium_turbine").EUt(16)
+        WELDER_RECIPES.recipeBuilder("casing_titanium_turbine").EUt(16)
                 .inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(plate, Titanium, 6).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_TITANIUM_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_tungstensteel_turbine").EUt(16)
+        WELDER_RECIPES.recipeBuilder("casing_tungstensteel_turbine").EUt(16)
                 .inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(plate, TungstenSteel, 6).circuitMeta(6)
                 .outputItems(
                         GTBlocks.CASING_TUNGSTENSTEEL_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
+
+        WELDER_RECIPES.recipeBuilder("bronze_gearbox_casing")
+                .inputItems(plate, Bronze, 4)
+                .inputItems(gear, Bronze, 2)
+                .inputItems(frameGt, Bronze)
+                .circuitMeta(4)
+                .outputItems(CASING_BRONZE_GEARBOX.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
+                .duration(50).EUt(16).save(provider);
+
+        WELDER_RECIPES.recipeBuilder("steel_gearbox_casing")
+                .inputItems(plate, Steel, 4)
+                .inputItems(gear, Steel, 2)
+                .inputItems(frameGt, Steel)
+                .circuitMeta(4)
+                .outputItems(CASING_STEEL_GEARBOX.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
+                .duration(50).EUt(16).save(provider);
+
+        WELDER_RECIPES.recipeBuilder("stainless_steel_gearbox_casing")
+                .inputItems(plate, StainlessSteel, 4)
+                .inputItems(gear, StainlessSteel, 2)
+                .inputItems(frameGt, StainlessSteel)
+                .circuitMeta(4)
+                .outputItems(CASING_STAINLESS_STEEL_GEARBOX.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
+                .duration(50).EUt(16).save(provider);
+
+        WELDER_RECIPES.recipeBuilder("titanium_gearbox_casing")
+                .inputItems(plate, Titanium, 4)
+                .inputItems(gear, Titanium, 2)
+                .inputItems(frameGt, Titanium)
+                .circuitMeta(4)
+                .outputItems(CASING_TITANIUM_GEARBOX.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
+                .duration(50).EUt(16).save(provider);
+
+        WELDER_RECIPES.recipeBuilder("tungstensteel_gearbox_casing")
+                .inputItems(plate, TungstenSteel, 4)
+                .inputItems(gear, TungstenSteel, 2)
+                .inputItems(frameGt, TungstenSteel)
+                .circuitMeta(4)
+                .outputItems(CASING_TUNGSTENSTEEL_GEARBOX.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
+                .duration(50).EUt(16).save(provider);
+
+        WELDER_RECIPES.recipeBuilder("stable_titanium_casing")
+                .inputItems(rotor, Titanium, 2)
+                .inputItems(pipeNormalFluid, Titanium, 4)
+                .inputItems(CASING_TITANIUM_STABLE.asStack())
+                .outputItems(CASING_ENGINE_INTAKE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
+                .duration(50).EUt(16).save(provider);
+
+        WELDER_RECIPES.recipeBuilder("stable_tungstensteel_casing")
+                .inputItems(rotor, TungstenSteel, 2)
+                .inputItems(pipeNormalFluid, TungstenSteel, 4)
+                .inputItems(CASING_TUNGSTENSTEEL_ROBUST.asStack())
+                .outputItems(CASING_EXTREME_ENGINE_INTAKE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
+                .duration(50).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_grate_casing")
                 .inputItems(Items.IRON_BARS, 6)

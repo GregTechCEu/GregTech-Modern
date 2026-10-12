@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.trait.ProgrammableCircuitSlotTrait;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
@@ -27,9 +28,11 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
@@ -253,9 +256,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         int rowSize = (int) Math.sqrt(getInventorySize(tier));
 
         SlotGroup group = new SlotGroup("item_inv", rowSize, 0, true);
-        mainWidget.child(new Grid()
+        Grid grid = new Grid()
                 .coverChildren()
-                .center()
                 .margin(7, 5)
                 .gridOfSizeHeight(rowSize * rowSize, rowSize, (x, y, index) -> new ItemSlot()
                         .slot(SyncHandlers.itemSlot(inventory.storage, index)
@@ -265,6 +267,18 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                                         inventory.onContentsChanged();
                                     }
                                 })
-                                .accessibility(inventory.handlerIO.support(IO.IN), true))));
+                                .accessibility(inventory.handlerIO.support(IO.IN), true)));
+
+        if (io == IO.OUT) {
+            Flow filterRow = Flow.row().width(9 * 18).coverChildrenHeight().childPadding(2);
+            mainWidget.child(Flow.col()
+                    .coverChildren()
+                    .center()
+                    .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                    .child(grid)
+                    .child(GTMuiWidgets.createFilterRow(filterRow, filterHandler, guiData, syncManager, settings)));
+        } else {
+            mainWidget.child(grid.center());
+        }
     }
 }

@@ -104,6 +104,18 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 recipeLogic.getLastUnrolledRecipe().getOutputEUt().voltage() : 0;
     }
 
+    public boolean hasLubricant() {
+        return RecipeHelper.matchRecipe(this, getLubricantRecipe()).isSuccess();
+    }
+
+    @Override
+    public boolean isRecipeLogicAvailable() {
+        if (super.isRecipeLogicAvailable() && hasLubricant()) return true;
+
+        if (recipeLogic.isActive()) recipeLogic.interruptRecipe();
+        return false;
+    }
+
     /**
      * @return EUt multiplier that should be applied to the engine's output
      */
@@ -131,13 +143,20 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
             return ModifierFunction
                     .cancel(Component.translatable("gtceu.multiblock.large_combustion_engine.obstructed"));
         }
-        if (!RecipeHelper.matchRecipe(engineMachine, engineMachine.getLubricantRecipe()).isSuccess()) {
+        if (!engineMachine.hasLubricant()) {
             return ModifierFunction
                     .cancel(Component.translatable("gtceu.multiblock.large_combustion_engine.no_lubricant"));
         }
 
         EnergyStack EUt = recipe.getOutputEUt();
         if (!EUt.isEmpty()) {
+            engineMachine.isOxygenBoosted = RecipeHelper.matchRecipe(engineMachine, engineMachine.getBoostRecipe())
+                    .isSuccess() &&
+                    RecipeHelper
+                            .handleRecipeIO(engineMachine, engineMachine.getBoostRecipe(), IO.IN,
+                                    engineMachine.recipeLogic.getChanceCaches())
+                            .isSuccess();
+
             int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt.getTotalEU()); // get maximum parallel
             int actualParallel = ParallelLogic.getParallelAmount(engineMachine, recipe, maxParallel);
             double eutMultiplier = actualParallel * engineMachine.getProductionBoost();
@@ -190,6 +209,9 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 () -> new BooleanSyncValue(this::isFormed));
         BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isActive));
+        BooleanSyncValue hasLubricant = syncManager.getOrCreateSyncHandler("hasLubricant",
+                BooleanSyncValue.class,
+                () -> new BooleanSyncValue(this::hasLubricant));
         BooleanSyncValue isBoostAllowed = syncManager.getOrCreateSyncHandler("canBoost",
                 BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isBoostAllowed));
@@ -206,6 +228,10 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && isActive.getBoolValue());
+        var hasLubricantWarning = Text.dynamic(() -> Component.translatable(
+                "gtceu.multiblock.large_combustion_engine.no_lubricant"))
+                .asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue() && !hasLubricant.getBoolValue());
         var boostDisallowed = Text.dynamic(() -> Component.translatable(
                 "gtceu.multiblock.large_combustion_engine.boost_disallowed"))
                 .asWidget()
@@ -230,6 +256,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         widgets.add(GTMultiblockTextUtil.addRecipeTypeField(this, syncManager));
 
         widgets.add(engineOutputDisplay);
+        widgets.add(hasLubricantWarning);
         widgets.add(boostDisallowed);
         widgets.add(canBoost);
         widgets.add(isBoosted);
