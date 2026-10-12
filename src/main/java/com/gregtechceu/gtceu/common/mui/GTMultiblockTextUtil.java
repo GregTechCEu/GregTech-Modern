@@ -130,7 +130,7 @@ public class GTMultiblockTextUtil {
                 () -> new BooleanSyncValue(weMachine::isFormed));
 
         return buildAmpVoltEutHoverLine(
-                () -> Component.translatable("gtceu.multiblock.general.energy_throughput",
+                () -> Component.translatable("gtceu.multiblock.general.max_power",
                         buildAmpVoltComponent(maxEnergyUsage, voltage))
                         .withStyle(ChatFormatting.WHITE),
                 buildEutHoverTooltip(maxEnergyUsage, true),

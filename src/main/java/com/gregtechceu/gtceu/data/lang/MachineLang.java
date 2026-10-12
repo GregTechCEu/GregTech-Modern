@@ -866,7 +866,7 @@ public class MachineLang {
         provider.add("gtceu.machine.object_holder.tooltip", "Advanced Holding Mechanism for Research Station");
 
         // Multiblock tooltips
-        provider.add("gtceu.multiblock.general.energy_throughput", "Max Throughput: %s");
+        provider.add("gtceu.multiblock.general.max_power", "Max Power: %s");
         provider.add("gtceu.multiblock.general.energy_consumption", "Using %s");
         provider.add("gtceu.multiblock.general.energy_production", "Producing %s");
         provider.add("gtceu.multiblock.general.energy_consumption_waiting", "Trying to Use %s");
