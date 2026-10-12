@@ -231,13 +231,13 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             } else {
                 this.hasNotEnoughEnergy = true;
                 getRecipeLogic()
-                        .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
+                        .setWaiting(Component.translatable("gui.gtceu.recipe.insufficient_in")
                                 .append(": ").append(EURecipeCapability.CAP.getName()));
             }
         } else {
             this.hasNotEnoughEnergy = true;
             getRecipeLogic()
-                    .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
+                    .setWaiting(Component.translatable("gui.gtceu.recipe.insufficient_out")
                             .append(": ").append(EURecipeCapability.CAP.getName()));
         }
         return false;
@@ -267,7 +267,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
                 () -> Component.translatable("gui.gtceu.machine.running").withStyle(ChatFormatting.GREEN),
-                () -> Component.translatable("gui.gtceu.machine.hpca.error_power").withStyle(ChatFormatting.RED)));
+                () -> Component.translatable("gui.gtceu.machine.hpca.warning_power").withStyle(ChatFormatting.RED)));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager));
         widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
         widgets.add(new TextWidget<>(Text.dynamic(text::getValue)));
@@ -691,7 +691,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                     ChatFormatting.GREEN;
             MutableComponent data = Component.literal(Integer.toString(getMaxCoolingDemand())).withStyle(coolingColor);
             textList.add(
-                    Component.translatable("gui.gtceu.machine.hpca.info_cooling_demand", data, getMaxCoolingAmount())
+                    Component
+                            .translatable("gui.gtceu.machine.hpca.info_max_cooling_demand", data, getMaxCoolingAmount())
                             .withStyle(ChatFormatting.GRAY));
 
             // Coolant Required

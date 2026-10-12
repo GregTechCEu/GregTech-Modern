@@ -20,7 +20,7 @@ public class RecipeLang {
         provider.add("gui.gtceu.recipe.no_contents", "Recipe has no Contents");
         provider.add("gui.gtceu.recipe.no_capabilities", "Machine has no Capabilities");
 
-        provider.add("gui.gtceu.recipe.setup_fail", "Fail to setup recipe: ");
+        provider.add("gui.gtceu.recipe.setup_fail", "Failed to setup recipe: ");
         provider.add("gui.gtceu.recipe.recipe_waiting", "Recipe Waiting");
 
         provider.add("gui.gtceu.recipe.insufficient_fuel", "Insufficient Fuel");

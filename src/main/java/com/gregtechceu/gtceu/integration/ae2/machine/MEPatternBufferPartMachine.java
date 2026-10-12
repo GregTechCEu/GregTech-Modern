@@ -625,7 +625,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 ((syncManager1, syncHandler) -> PopupPanel.createPopupPanel("renaming_panel", 110, 40)
                         .child(Flow.col()
                                 .coverChildren()
-                                .child(Text.lang("gtceu.gui.pattern_buffer.set_custom_name").asWidget())
+                                .child(Text.lang("gui.gtceu.machine.pattern_buffer.rename").asWidget())
                                 .child(new TextFieldWidget()
                                         .size(90, 20)
                                         .value(SyncHandlers.string(() -> this.customName, this::setCustomName)

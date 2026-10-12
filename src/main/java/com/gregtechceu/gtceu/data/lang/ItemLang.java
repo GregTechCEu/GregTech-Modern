@@ -21,8 +21,8 @@ public class ItemLang {
         provider.add("item.gtceu.robot.arm.tooltip", "§7Limits §fItems§7 to specific quantities as §fCover§7.");
 
         // Programmed Circuit
-        provider.add("item.gtceu.circuit.integrated.gui", "§7Programmed Circuit Configuration");
-        provider.add("item.int_circuit.configuration", "Configuration: %d");
+        provider.add("item.gtceu.circuit.integrated.gui", "Programmed Circuit Configuration");
+        provider.add("item.gtceu.int_circuit.configuration", "Circuit Configuration: %d");
 
         // Turbines
         provider.add("item.gtceu.turbine_rotor.tooltip", "Turbine Rotors for your power station");

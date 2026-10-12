@@ -80,7 +80,7 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
 
         mainWidget
                 .background(GTGuiTextures.DISPLAY)
-                .child(Text.lang("gtceu.gui.fluid_amount").asWidget()
+                .child(Text.lang("common.gtceu.fluid_amount").asWidget()
                         .color(0xffffff)
                         .margin(8, 0, 8, 0))
                 .child(Text.dynamic(

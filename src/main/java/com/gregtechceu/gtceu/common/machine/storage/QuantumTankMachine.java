@@ -208,7 +208,7 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
                         .background(GTGuiTextures.DISPLAY)
                         .size(90, 63)
                         .center()
-                        .child(Text.lang("gtceu.gui.fluid_amount").asWidget()
+                        .child(Text.lang("common.gtceu.fluid_amount").asWidget()
                                 .color(0xffffff)
                                 .margin(8, 0, 8, 0))
                         .child(Text.dynamic(

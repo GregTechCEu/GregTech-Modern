@@ -26,6 +26,28 @@ public class CoverLang {
         provider.add("cover.gtceu.ender_redstone_link.tooltip",
                 "§7Transmits §fRedstone signals§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
 
+        // Common cover key entries
+
+        provider.add("cover.gtceu.manual_io_mode.title", "Manual I/O");
+        provider.add("cover.gtceu.manual_io_mode.disabled", "§bDisabled§r");
+        provider.add("cover.gtceu.manual_io_mode.filtered", "§bFiltered§r");
+        provider.add("cover.gtceu.manual_io_mode.unfiltered", "§bUnfiltered§r");
+
+        provider.addMultiLang("cover.gtceu.manual_io_mode.disabled.description",
+                "Manual I/O: §bDisabled", "Items / Fluids will only move as specified by the cover and its filter.");
+        provider.addMultiLang("cover.gtceu.manual_io_mode.filtered.description",
+                "Manual I/O: §bFiltered",
+                "Items / Fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any)");
+        provider.addMultiLang("cover.gtceu.manual_io_mode.unfiltered.description",
+                "Manual I/O: §bUnfiltered",
+                "Items / Fluids can be moved independently of the cover mode. The filter only applies to what is inserted or extracted by this cover itself.");
+        provider.addMultiline("cover.gtceu.manual_io_mode.description",
+                """
+                        §eDisabled§r - Items/fluids will only move as specified by the cover and its filter.
+                        §eAllow Filtered§r - Items/fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any).
+                        §eAllow Unfiltered§r - Items/fluids can be moved independently of the cover mode. Filter applies to the items inserted or extracted by this cover
+                        """);
+
         // Tag filter
         provider.addMultiline("gui.gtceu.cover.tag_filter.info",
                 """
@@ -50,6 +72,7 @@ public class CoverLang {
         provider.add("cover.gtceu.smart_item_filter.filtering_mode.electrolyzer", "Electrolyzer");
         provider.add("cover.gtceu.smart_item_filter.filtering_mode.centrifuge", "Centrifuge");
         provider.add("cover.gtceu.smart_item_filter.filtering_mode.sifter", "Sifter");
+        provider.add("cover.gtceu.smart_item_filter.recipe_type", "Recipe Type");
         provider.addMultiline("cover.gtceu.smart_item_filter.filtering_mode.description",
                 "Select Machine this Smart Filter will use for filtering.\nIt will automatically pick right portions of items for robotic arm.");
 
@@ -77,25 +100,11 @@ public class CoverLang {
                 §7Restrictive item pipes lower the priority of a path.
                 """);
 
-        // Common cover key entries
-        provider.add("cover.gtceu.manual_io_mode.disabled",
-                "Manual I/O: §bDisabled\n§7Items / Fluids will only move as specified by the cover and its filter.");
-        provider.add("cover.gtceu.manual_io_mode.filtered",
-                "Manual I/O: §bFiltered\n§7Items / Fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any)");
-        provider.add("cover.gtceu.manual_io_mode.unfiltered",
-                "Manual I/O: §bUnfiltered\n§7Items / Fluids can be moved independently of the cover mode. The filter only applies to what is inserted or extracted by this cover itself.");
-        provider.addMultiline("cover.gtceu.manual_io_mode.description",
-                """
-                        §eDisabled§r - Items/fluids will only move as specified by the cover and its filter.
-                        §eAllow Filtered§r - Items/fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any).
-                        §eAllow Unfiltered§r - Items/fluids can be moved independently of the cover mode. Filter applies to the items inserted or extracted by this cover
-                        """);
-
         // Robot arm
-        provider.add("cover.gtceu.robot_arm_transfer_mode.transfer_any", "Transfer Any");
-        provider.add("cover.gtceu.robot_arm_transfer_mode.transfer_exact", "Supply Exact");
-        provider.add("cover.gtceu.robot_arm_transfer_mode.keep_exact", "Keep Exact");
-        provider.addMultiline("cover.gtceu.robot_arm_transfer_mode.description",
+        provider.add("cover.gtceu.robot_arm.transfer_mode.transfer_any", "Transfer Any");
+        provider.add("cover.gtceu.robot_arm.transfer_mode.transfer_exact", "Supply Exact");
+        provider.add("cover.gtceu.robot_arm.transfer_mode.keep_exact", "Keep Exact");
+        provider.addMultiline("cover.gtceu.robot_arm.transfer_mode.description",
                 """
                         §eTransfer Any§r - in this mode, cover will transfer as many items matching its filter as possible.
                         §eSupply Exact§r - in this mode, cover will supply items in portions specified in item filter slots (or variable under this button for tag filter). If amount of items is less than portion size, items won't be moved.
@@ -121,6 +130,13 @@ public class CoverLang {
                 "§eInverted§r - in this mode, the cover will require a signal stronger than the set redstone level to run");
         provider.addMultiline("cover.gtceu.machine_controller.invert.disabled",
                 "§eNormal§r - in this mode, the cover will require a signal weaker than the set redstone level to run");
+
+        provider.add("cover.gtceu.machine_controller.enable_with_redstone", "Enable with Redstone");
+        provider.add("cover.gtceu.machine_controller.disable_with_redstone", "Disable with Redstone");
+        provider.add("cover.gtceu.machine_controller.controller_target", "Controller Target");
+        provider.add("cover.gtceu.machine_controller.cannot_control_cover", "Cannot Control Cover");
+        provider.add("cover.gtceu.machine_controller.cannot_control_machine", "Cannot Control Machine");
+
         provider.add("cover.gtceu.machine_controller.redstone", "Min Redstone Strength: %d");
         provider.add("cover.gtceu.machine_controller.suspend_powerfail", "Prevent Power Failing:");
         provider.add("cover.gtceu.machine_controller.mode.machine", "Control Machine");

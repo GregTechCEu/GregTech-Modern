@@ -91,7 +91,7 @@ public class OreVeinIcon implements MapIcon {
             title.append(" (").append(Component.translatable("minimap.gtceu.ore_vein.depleted")).append(")");
         }
         ContextMenuItem markDepleted = new ContextMenuItem(
-                Component.translatable("gtceu.map.button.mark_as_depleted.name"),
+                Component.translatable("map.gtceu.button.mark_as_depleted.name"),
                 Icons.REMOVE,
                 b -> veinMetadata.depleted(!veinMetadata.depleted()));
 
@@ -101,7 +101,7 @@ public class OreVeinIcon implements MapIcon {
             waypointIcon = waypointIcon.withColor(color);
         }
         ContextMenuItem toggleWaypoint = new ContextMenuItem(
-                Component.translatable("gtceu.map.button.toggle_waypoint.name"),
+                Component.translatable("map.gtceu.button.toggle_waypoint.name"),
                 waypointIcon,
                 b -> toggleWaypoint(screen));
 

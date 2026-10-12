@@ -141,7 +141,7 @@ public class GTMuiWidgets {
                 recipeLogicMachine::setWorkingEnabled,
                 GTGuiTextures.BUTTON_POWER[0],
                 GTGuiTextures.BUTTON_POWER[1],
-                "item.gtceu.behavior.soft_hammer");
+                "common.gtceu.workable");
     }
 
     public static ToggleButton createPowerButton(IControllable workable) {
@@ -150,7 +150,7 @@ public class GTMuiWidgets {
                 workable::setWorkingEnabled,
                 GTGuiTextures.BUTTON_POWER[0],
                 GTGuiTextures.BUTTON_POWER[1],
-                "item.gtceu.behavior.soft_hammer");
+                "common.gtceu.workable");
     }
 
     public static FluidSlot createTankWidget() {
@@ -200,13 +200,13 @@ public class GTMuiWidgets {
     public static ToggleButton createInputFromOutputItem(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::allowsItemInputFromOutputSide,
                 autoOutput::setAllowItemInputFromOutputSide, GTGuiTextures.BUTTON_ITEM_ALLOW_INPUT_OUTPUT,
-                "gtceu.gui.item_input_from_output");
+                "gui.gtceu.auto_output.item.allow_input");
     }
 
     public static ToggleButton createInputFromOutputFluid(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::allowsFluidInputFromOutputSide,
                 autoOutput::setAllowFluidInputFromOutputSide, GTGuiTextures.BUTTON_FLUID_ALLOW_INPUT_OUTPUT,
-                "gtceu.gui.fluid_input_from_output");
+                "gui.gtceu.auto_output.fluid.allow_input");
     }
 
     public static ButtonWidget<?> createRecipeTypeButton(WorkableElectricMultiblockMachine workableMultiblock,
@@ -312,7 +312,7 @@ public class GTMuiWidgets {
                 }))
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder((r) -> r
-                        .addLine(Text.lang("metaitem.int_circuit.configuration", circuitTrait.getCurrentCircuit())));
+                        .addLine(Text.lang("item.gtceu.circuit.integrated.gui", circuitTrait.getCurrentCircuit())));
     }
 
     private static int nextCircuitValue(ItemStack stack, int current, double delta) {

@@ -324,7 +324,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         if (mode == ProspectorMode.ORE) {
             var veins = GTClientCache.instance.getNearbyVeins(player.level().dimension(), pos, 32);
             if (veins.isEmpty()) {
-                return new WaypointItem(pos, null, Component.translatable("gtceu.minimap.ore_vein.depleted"),
+                return new WaypointItem(pos, null, Component.translatable("minimap.gtceu.ore_vein.depleted"),
                         0xFF990000);
             }
             veins.sort((o1, o2) -> {
@@ -340,7 +340,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
             return new WaypointItem(pos, uniqueId, name, color);
         }
 
-        return new WaypointItem(pos, null, Component.translatable("gtceu.minimap.ore_vein.depleted"), 0xFF990000);
+        return new WaypointItem(pos, null, Component.translatable("minimap.gtceu.ore_vein.depleted"), 0xFF990000);
     }
 
     private record WaypointItem(BlockPos position, @Nullable String uniqueId, Component name, int color) {}

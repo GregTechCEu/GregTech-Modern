@@ -18,6 +18,15 @@ public class MachineLang {
 
     private static void generateMachineTooltips(GTLangProvider provider) {
         provider.add("gui.gtceu.machine.terrain_resist", "This Machine will not explode when exposed to the Elements");
+
+        // Distinctness
+        provider.add("gui.gtceu.machine.distinct.title", "Distinct Buses:");
+
+        provider.add("gui.gtceu.machine.distinct.enabled", "Distinct Buses: §eEnabled");
+        provider.add("gui.gtceu.machine.distinct.disabled", "Distinct Buses: §eDisabled");
+
+        provider.add("gui.gtceu.machine.distinct.info",
+                "If enabled, each Item Input Bus will be treated as fully distinct from each other for recipe lookup. Useful for things like Programmed Circuits, Extruder Shapes, etc.");
     }
 
     private static void generateGeneralMachineLang(GTLangProvider provider) {
@@ -63,10 +72,12 @@ public class MachineLang {
         provider.add("gui.gtceu.circuit_settings", "Circuit Settings");
         provider.addMultiLang("gui.gtceu.output_settings_tune.tooltips", "left-click to tune the item auto output",
                 "right-click to tune the fluid auto output.");
+
         provider.add("gui.gtceu.auto_output.item.allow_input.enabled",
                 "Allow items input from the output side.");
         provider.add("gui.gtceu.auto_output.item.allow_input.disabled",
                 "Disable items input from the output side.");
+
         provider.add("gui.gtceu.auto_output.item.enabled", "Item Auto Output: §aEnabled");
         provider.add("gui.gtceu.auto_output.item.disabled", "Item Auto Output: §cDisabled");
         provider.addMultiLang("gui.gtceu.auto_output.item.unselected",
@@ -84,7 +95,7 @@ public class MachineLang {
                 "Allow fluids input from the output side.");
         provider.add("gui.gtceu.auto_output.fluid.allow_input.disabled",
                 "Disable fluids input from the output side.");
-        provider.add("gui.gftceu.auto_output.fluid.enabled", "Fluid Auto Output: §aEnabled");
+        provider.add("gui.gtceu.auto_output.fluid.enabled", "Fluid Auto Output: §aEnabled");
         provider.add("gui.gtceu.auto_output.fluid.disabled", "Fluid Auto Output: §cDisabled");
         provider.addMultiLang("gui.gtceu.auto_output.fluid.unselected",
                 """
@@ -157,6 +168,7 @@ public class MachineLang {
         provider.add("machine.gtceu.item_collector.tooltip", "Collects Items around itself");
         provider.add("machine.gtceu.item_collector.gui.collect_range",
                 "Collect within an area of %sx%s blocks");
+        provider.add("gui.gtceu.machine.item_collector.range", "Range:");
 
         // Fisher
         provider.add("machine.gtceu.fisher.tooltip", "Costs string to fish. Consumes one string each time.");
@@ -284,6 +296,7 @@ public class MachineLang {
     private static void generateCustomMultiblockLang(GTLangProvider provider) {
         // Primitive Water Pump
         provider.add("machine.gtceu.primitive_pump.tooltip", "Endervoir at Home");
+        provider.add("gui.gtceu.machine.primitive_water_pump.production", "Production: %s mB/s");
         provider.add("gui.gtceu.machine.primitive_water_pump.description",
                 "The Primitive Water Pump is a pre-Steam Era multiblock that collects water once per second, depending on the Biome it is in. It can use a Pump, ULV, or LV Output Hatch, increasing the amount of water per tier. Follows the formula: Biome Coefficient * Hatch Multiplier.");
         provider.addMultiline("gui.gtceu.machine.primitive_water_pump.extra1",
@@ -347,7 +360,10 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.large_combustion_engine.oxygen_boosted", "Oxygen boosted.");
         provider.add("gui.gtceu.machine.large_combustion_engine.liquid_oxygen_boosted",
                 "Liquid Oxygen boosted.");
-        provider.add("gui.gtceu.machine.large_combustion_engine.obstructed", "Engine Intakes Obstructed.");
+        provider.add("gui.gtceu.machine.large_combustion_engine.obstructed", "Engine Intakes Obstructed");
+        provider.add("gui.gtceu.machine.large_combustion_engine.no_lubricant", "Lubricant Needed");
+        provider.add("gui.gtceu.machine.large_combustion_engine.boost_disallowed",
+                "§bUpgrade the Dynamo Hatch to enable Oxygen Boosting.");
 
         // Turbines
 
@@ -465,6 +481,8 @@ public class MachineLang {
                 "- Multiple bridges in structure (provides no additional benefit)");
         provider.add("gui.gtceu.machine.hpca.warning_no_computation", "- No computation providers");
         provider.add("gui.gtceu.machine.hpca.warning_low_cooling", "- Not enough cooling");
+        provider.add("gui.gtceu.machine.hpca.warning_power",
+                "Power low, CWU generation halted!");
         provider.add("gui.gtceu.machine.hpca.info_max_computation", "Max CWU/t: %s");
         provider.add("gui.gtceu.machine.hpca.info_max_cooling_demand", "Cooling Demand: %s");
         provider.add("gui.gtceu.machine.hpca.info_max_cooling_available", "Cooling Available: %s");
@@ -512,8 +530,9 @@ public class MachineLang {
 
         // Parallel Hatch
         provider.add("machine.gtceu.parallel_hatch.display", "Adjust the maximum parallel of the multiblock");
-        provider.add("gui.gtceu.supports_parallel", "Can parallelize with Parallel Control Hatches.");
         provider.add("machine.gtceu.parallel_hatch.tooltip", "Allows to run up to %s recipes in parallel.");
+        provider.add("gui.gtceu.supports_parallel", "Can parallelize with Parallel Control Hatches.");
+        provider.add("gui.gtceu.machine.parallel_hatch.parallels", "Parallels");
 
         // Item/Fluid Hatches
         provider.add("machine.gtceu.item_bus.import.tooltip", "Item Input for Multiblocks");
@@ -526,6 +545,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.me_part.network.online", "Network Status: §2Online§r");
         provider.add("gui.gtceu.machine.me_part.network.offline", "Network Status: §4Offline§r");
         provider.add("gui.gtceu.machine.me_output.waiting_list", "Sending Queue:");
+        provider.add("gui.gtceu.machine.me_output.waiting_list_empty", "Sending Queue: §2Empty");
         provider.add("gui.gtceu.machine.me_input.config_slot", "§fConfig Slot§r");
         provider.add("gui.gtceu.machine.me_input.config_slot.set", "§7Click to §bset/select§7 config slot.§r");
         provider.add("gui.gtceu.machine.me_input.config_slot.scroll", "§7Scroll wheel to §achange§7 config amount.§r");
@@ -566,12 +586,20 @@ public class MachineLang {
                 "Retrieves fluids directly from the ME network", "Keeps 16 fluid types in stock",
                 "Auto-Pull from ME mode will automatically stock the first 16 fluids in the ME system, updated every 5 seconds.");
 
+        provider.add("gui.gtceu.machine.me_stocking.auto_pull.toggle", "Toggle Auto-Pull");
         provider.add("gui.gtceu.machine.me_stocking.auto_pull.enabled",
                 "Auto-Pull Enabled");
         provider.add("gui.gtceu.machine.me_stocking.auto_pull.disabled",
                 "Auto-Pull Disabled");
 
-        // ME Adv Stocking
+        provider.add("gui.gtceu.machine.me.stocking.min_stack_size", "Min Stack Size");
+        provider.add("gui.gtceu.machine.me.stocking.ticks_per_cycle",
+                "Ticks Per Cycle");
+        provider.add("gui.gtceu.machine.me.stocking.ticks_per_cycle_tooltip",
+                "Tick Delay between input content update");
+
+        provider.add("gui.gtceu.machine.me.stocking.stocking_settings", "Stocking Settings");
+
         provider.add("gui.gtceu.machine.me.stocking_adv.min_item_count_title",
                 "Min. Item Count");
         provider.add("gui.gtceu.machine.me.stocking_adv.min_fluid_count_title",
@@ -580,8 +608,6 @@ public class MachineLang {
                 "Minimum Item Stack Size for Automated Pulling");
         provider.add("gui.gtceu.machine.me.stocking_adv.min_fluid_count",
                 "Minimum Fluid Stack Size for Automated Pulling");
-        provider.add("gui.gtceu.machine.me.stocking_adv.ticks_per_cycle_title",
-                "Ticks Per Cycle");
         provider.add("gui.gtceu.machine.me.stocking_adv.ticks_per_cycle",
                 "Delay between item list updates");
         provider.add("gui.gtceu.machine.me.stocking_adv.title",
@@ -683,6 +709,12 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.central_monitor.width", "Screen Width: %d");
         provider.add("gui.gtceu.machine.central_monitor.height_modify", "Modify Height: %d");
         provider.add("machine.gtceu.central_monitor.tooltip", "But can it run Doom?");
+
+        provider.add("gui.gtceu.machine.central_monitor.pause",
+                "Pause placeholder execution. Text won't be updated, and code won't be run.");
+        provider.add("gui.gtceu.machine.central_monitor.resume", "Unpause placeholder execution.");
+        provider.add("gui.gtceu.machine.central_monitor.update_once",
+                "Update text and run all placeholders in it exactly once.");
 
         provider.add("tooltip.gtceu.wireless_transmitter_bind",
                 "Binding to a transmitter cover at %s %s %s facing %s in %s");
@@ -969,10 +1001,10 @@ public class MachineLang {
         provider.add("gui.gtceu.cover.computer_monitor.update_interval", "Update interval (in ticks)");
         provider.add("gui.gtceu.cover.computer_monitor.edit_blank_placeholders", "Edit blank placeholders");
         provider.add("gui.gtceu.cover.computer_monitor.edit_displayed_text", "Edit displayed text");
-        provider.add("gui.gtceu.central_monitor.text_scale", "Text scale");
-        provider.add("gui.gtceu.central_monitor.group", "Group: %s");
-        provider.add("gui.gtceu.central_monitor.group_default_name", "Group #%d");
-        provider.add("gui.gtceu.central_monitor.none", "none");
+        provider.add("gui.gtceu.machine.central_monitor.text_scale", "Text scale");
+        provider.add("gui.gtceu.machine.central_monitor.group", "Group: %s");
+        provider.add("gui.gtceu.machine.central_monitor.group_default_name", "Group #%d");
+        provider.add("gui.gtceu.machine.central_monitor.none", "none");
         provider.add("gui.gtceu.machine.central_monitor.size", "Size: (%d+1+%d)x(%d+1+%d)");
         provider.add("gui.gtceu.cover.computer_monitor.error.invalid_number", "Invalid number '%s'!");
         provider.add("gui.gtceu.cover.computer_monitor.error.wrong_number_of_args", "Expected %d args, got %d!");
@@ -998,6 +1030,7 @@ public class MachineLang {
         provider.addMultiLang("gui.gtceu.cover.computer_monitor.second_page_textbox_tooltip",
                 "Input placeholder to be used in place of %s '{}' here.",
                 "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");
+
         provider.add("gui.gtceu.cover.computer_monitor.error.no_placeholder", "No such placeholder: '%s'!");
         provider.add("gui.gtceu.cover.computer_monitor.error.unclosed_bracket", "Unclosed bracket!");
         provider.add("gui.gtceu.cover.computer_monitor.error.unexpected_bracket", "Unexpected closing bracket!");
@@ -1005,28 +1038,59 @@ public class MachineLang {
         provider.add("gui.gtceu.cover.computer_monitor.error.not_supported",
                 "This feature is not supported by this block/cover!");
 
-        provider.add("gui.gtceu.central_monitor.left_click", "Select/unselect a monitor by left-clicking it");
-        provider.add("gui.gtceu.central_monitor.right_click",
+        provider.add("gui.gtceu.placeholder_editor.unclosed_bracket", "Unclosed bracket (\"}\")");
+        provider.add("gui.gtceu.placeholder_editor.unclosed_brackets", "%d brackets (\"}\") are unclosed");
+        provider.add("gui.gtceu.placeholder_editor.unclosed_escape", "Unclosed escape (\"']\")");
+        provider.add("gui.gtceu.placeholder_editor.unclosed_escapes", "%d escapes (\"']\") are unclosed");
+        provider.add("gui.gtceu.placeholder_editor.extra_closing_bracket", "Extra closing bracket");
+        provider.add("gui.gtceu.placeholder_editor.no_placeholder", "Placeholder with name '%s' does not exist");
+
+        provider.add("gui.gtceu.placeholder_editor.constant_value",
+                "This expression always evaluates to '%s'.Consider replacing it with a constant.");
+
+        provider.addMultiline("gui.gtceu.placeholder_editor.write_in_if", """
+                Placeholders inside {if} are executed regardless of the condition.
+                This means that, for example, "{if 0 {redstone set 15}}" will produce redstone output.
+                To avoid this, use "{eval {if <condition> "<code>" "<else_code>"}}".""");
+
+        provider.add("gui.gtceu.machine.central_monitor.left_click", "Select/unselect a monitor by left-clicking it");
+        provider.add("gui.gtceu.machine.central_monitor.right_click",
                 "Select a block by right-clicking it. Only 1 block can be a target.");
-        provider.add("gui.gtceu.central_monitor.in_group",
+        provider.add("gui.gtceu.machine.central_monitor.in_group",
                 "Monitors selected this way are added to the group, and will be used to display stuff");
-        provider.add("gui.gtceu.central_monitor.in_group_and_target",
+        provider.add("gui.gtceu.machine.central_monitor.in_group_and_target",
                 "The monitor selected this way is used for displaying and as a target at the same time.");
-        provider.add("gui.gtceu.central_monitor.data_hatch_target",
+        provider.add("gui.gtceu.machine.central_monitor.data_hatch_target",
                 "If you select a data hatch as a target, you will be prompted to enter a slot number. Then the block that the data stick in the specified slot is linked to (via right-clicking a wireless transmitter cover) will be considered the target instead.");
-        provider.add("gui.gtceu.central_monitor.group_name", "Name:");
-        provider.add("gui.gtceu.central_monitor.module_editor_button", "Edit module");;
-        provider.add("gui.gtceu.central_monitor.group_editor", "Editing monitor group");
-        provider.add("gui.gtceu.central_monitor.monitor_groups", "Monitor Groups");
-        provider.add("gui.gtceu.central_monitor.create_group", "Create group");
-        provider.add("gui.gtceu.central_monitor.remove_from_group", "Remove from group");
-        provider.add("gui.gtceu.central_monitor.set_target", "Set target");
-        provider.add("gui.gtceu.central_monitor.currently_editing", "Currently editing: %s");
-        provider.add("gui.gtceu.central_monitor.data_slot", "Set slot number of data stick");
-        provider.add("gui.gtceu.central_monitor.target",
+        provider.add("gui.gtceu.machine.central_monitor.group_name", "Name:");
+        provider.add("gui.gtceu.machine.central_monitor.module_editor_button", "Edit module");;
+        provider.add("gui.gtceu.machine.central_monitor.group_editor", "Editing monitor group");
+        provider.add("gui.gtceu.machine.central_monitor.monitor_groups", "Monitor Groups");
+        provider.add("gui.gtceu.machine.central_monitor.create_group", "Create group");
+        provider.add("gui.gtceu.machine.central_monitor.remove_from_group", "Remove from group");
+        provider.add("gui.gtceu.machine.central_monitor.set_target", "Set target");
+        provider.add("gui.gtceu.machine.central_monitor.currently_editing", "Currently editing: %s");
+        provider.add("gui.gtceu.machine.central_monitor.data_slot", "Set slot number of data stick");
+        provider.add("gui.gtceu.machine.central_monitor.gui_module_info",
+                "To select a block to get the GUI from, select a target in the monitor group editor.");
+
+        provider.addMultiline("gui.gtceu.machine.central_monitor.text_module_help",
+                """
+                        This module displays text that can have placeholders.
+                        Placeholders are strings like "{energy}" that when displayed, will display their value instead (in this case the amount of energy).
+                        They can also do some other things, such as set a redstone output/read redstone input, run calculations, etc.
+                        Some placeholders, like {energy} must have a target to function. A target is basically any block that can accept covers or is part of the
+                        central monitor multiblock. For example {energy} displays the amount of energy in its target block, usually a battery buffer or a PSS.
+                        Select a target in the monitor group editing window, check out the help page there for more info.
+                        Here's an example usage of placeholders, that displays some energy info and sends a redstone signal when energy is <50%:
+                        """);
+
+        provider.add("gui.gtceu.machine.central_monitor.image_url", "Input image URL:");
+        provider.add("gui.gtceu.machine.central_monitor.image_url_tooltip", "Image URL: %s");
+        provider.add("gui.gtceu.machine.central_monitor.target",
                 "The block selected this way is considered a target, to be used with placeholders in a text module.");
 
-        provider.addMultiLang("gui.gtceu.central_monitor.info",
+        provider.addMultiLang("gui.gtceu.machine.central_monitor.info",
                 "In order to use monitors, you have to split them into groups first. A group may only have 1 module in it.",
                 "Select them by left-clicking, then click 'Create group'.",
                 "Then in the settings page for the group you can insert a module, you can configure it in the same page.",
@@ -1083,10 +1147,16 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.energy_generation", "Outputting: §a%s EU/t");
 
         // Maintenence
-        provider.add("gui.gtceu.machine.maintenance.no_problems", "No Maintenance Problems!");
-        provider.add("gui.gtceu.machine.maintenance.has_problems", "Has Maintenance Problems!");
-        provider.add("gui.gtceu.machine.maintenance.has_problems_header",
-                "Fix the following issues in a Maintenance Hatch:");
+
+        provider.add("gui.gtceu.machine.maintenance.fixed", "Maintenance Fine");
+        provider.add("gui.gtceu.machine.maintenance.broken", "Needs Maintenance");
+        provider.add("gui.gtceu.machine.maintenance.wrench", "Pipe is loose");
+        provider.add("gui.gtceu.machine.maintenance.screwdriver", "Screws are loose");
+        provider.add("gui.gtceu.machine.maintenance.soft_mallet", "Something is stuck");
+        provider.add("gui.gtceu.machine.maintenance.hard_hammer", "Plating is dented");
+        provider.add("gui.gtceu.machine.maintenance.wire_cutter", "Wires burned out");
+        provider.add("gui.gtceu.machine.maintenance.crowbar", "That doesn't belong there");
+
         provider.add("gui.gtceu.maintenance.problem.wrench", "§7Pipe is loose. (§aWrench§7)");
         provider.add("gui.gtceu.maintenance.problem.screwdriver", "§7Screws are loose. (§aScrewdriver§7)");
         provider.add("gui.gtceu.maintenance.problem.soft_mallet", "§7Something is stuck. (§aSoft Mallet§7)");
@@ -1101,11 +1171,6 @@ public class MachineLang {
 
         // Rotor
         provider.add("gui.gtceu.machine.rotor_obstructed", "Rotor is Obstructed!");
-
-        // Distinctness
-        provider.add("gui.gtceu.machine.distinct", "Distinct Buses:");
-        provider.add("gui.gtceu.machine.distinct.info",
-                "If enabled, each Item Input Bus will be treated as fully distinct from each other for recipe lookup. Useful for things like Programmed Circuits, Extruder Shapes, etc.");
 
         // Batching
         provider.add("machine.gtceu.batching.enabled", "Batching Enabled");

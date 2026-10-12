@@ -42,7 +42,7 @@ public class ImageModuleBehaviour implements IMonitorModuleItem, IAddInformation
                                 .marginTop(5)
                                 .center()
                                 .widthRel(1)
-                                .child(new TextWidget<>(Text.lang("gui.gtceu.central_monitor.url")))
+                                .child(new TextWidget<>(Text.lang("gui.gtceu.machine.central_monitor.image_url")))
                                 .child(new TextFieldWidget()
                                         .value(SyncHandlers.string(() -> getUrl(stack), s -> setUrl(stack, s))
                                                 .allowC2S())
@@ -66,7 +66,8 @@ public class ImageModuleBehaviour implements IMonitorModuleItem, IAddInformation
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        tooltipComponents.add(Component.translatable("gtceu.item.tooltip.image_url", getUrl(stack))
-                .withStyle(ChatFormatting.DARK_AQUA));
+        tooltipComponents
+                .add(Component.translatable("gui.gtceu.machine.central_monitor.image_url_tooltip", getUrl(stack))
+                        .withStyle(ChatFormatting.DARK_AQUA));
     }
 }

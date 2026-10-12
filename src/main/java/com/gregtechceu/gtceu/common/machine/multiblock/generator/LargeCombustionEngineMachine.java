@@ -133,7 +133,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         }
         if (!RecipeHelper.matchRecipe(engineMachine, engineMachine.getLubricantRecipe()).isSuccess()) {
             return ModifierFunction
-                    .cancel(Component.translatable("gui.gtceu.machine.large_combustion_engine.no_lubricant"));
+                    .cancel(Component.translatable("gui.gtceu.machine.large_combustion_engine.no_lubricant")
+                            .withStyle(ChatFormatting.RED));
         }
 
         EnergyStack EUt = recipe.getOutputEUt();

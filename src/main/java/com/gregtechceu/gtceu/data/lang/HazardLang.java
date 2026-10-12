@@ -27,12 +27,12 @@ public class HazardLang {
         provider.add("symptom.gtceu.hunger", "Increased appetite");
 
         // Hazard Triggers
-        provider.add("hazard_trigger.gtceu.tooltip", "Caused by:");
-        provider.add("hazard_trigger.gtceu.protection", "Protects from:");
-        provider.add("hazard_trigger.gtceu.inhalation", "Inhalation");
-        provider.add("hazard_trigger.gtceu.any", "Any contact");
-        provider.add("hazard_trigger.gtceu.skin_contact", "Skin contact");
-        provider.add("hazard_trigger.gtceu.none", "Nothing");
+        provider.add("tooltip.gtceu.hazard_trigger.caused_by", "Caused by:");
+        provider.add("tooltip.gtceu.hazard_trigger.protection", "Protects from:");
+        provider.add("tooltip.gtceu.hazard_trigger.inhalation", "Inhalation");
+        provider.add("tooltip.gtceu.hazard_trigger.any", "Any contact");
+        provider.add("tooltip.gtceu.hazard_trigger.skin_contact", "Skin contact");
+        provider.add("tooltip.gtceu.hazard_trigger.none", "Nothing");
 
         // Antidote
         provider.add("antidote.gtceu.description", "§aAntidote §7Hold Shift to show details");

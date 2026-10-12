@@ -177,7 +177,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine implements
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(Text
                 .dynamic(() -> Text
-                        .lang("gtceu.top.primitive_pump_production",
+                        .lang("gui.gtceu.machine.primitive_water_pump.production",
                                 FormattingUtil.formatNumbers(this.getFluidProduction()))
                         .withStyle(ChatFormatting.WHITE))
                 .asWidget()

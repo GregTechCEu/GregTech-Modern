@@ -443,8 +443,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         Runnable updateWidget = () -> {
             while (!maintenanceStatusWidget.getChildren().isEmpty()) maintenanceStatusWidget.remove(0);
             maintenanceStatusWidget.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems() ?
-                    Component.translatable("gtceu.top.maintenance_broken") :
-                    Component.translatable("gtceu.top.maintenance_fixed"))))
+                    Component.translatable("gui.gtceu.machine.maintenance.broken") :
+                    Component.translatable("gui.gtceu.machine.maintenance.fixed"))))
                     .child(Flow.row()
                             .coverChildren()
                             .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)

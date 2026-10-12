@@ -48,7 +48,7 @@ public abstract class LargeMapScreenMixin extends BaseScreen {
             add(buttonWidget);
             gtceu$injectedWidgets.add(buttonWidget);
         }
-        var hideDepletedButton = new SimpleButton(this, Component.translatable("gtceu.button.hide_depleted"),
+        var hideDepletedButton = new SimpleButton(this, Component.translatable("map.gtceu.button.hide_depleted"),
                 ItemIcon.getItemIcon(Items.SPYGLASS), (b, m) -> {
                     FTBChunksOptions.toggleLayer("hide_depleted", !FTBChunksOptions.showLayer("hide_depleted"));
                 }) {

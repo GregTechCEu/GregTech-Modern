@@ -97,22 +97,9 @@ public class IntegrationLang {
         provider.add("integration.gtceu.jade.valid_structure", "Structure Formed");
         provider.add("integration.gtceu.jade.obstructed_structure", "Structure Obstructed");
 
-        // Maintenance
-        provider.add("integration.gtceu.jade.maintenance_fixed", "Maintenance Fine");
-        provider.add("integration.gtceu.jade.maintenance_broken", "Needs Maintenance");
-        provider.add("integration.gtceu.jade.maintenance.wrench", "Pipe is loose");
-        provider.add("integration.gtceu.jade.maintenance.screwdriver", "Screws are loose");
-        provider.add("integration.gtceu.jade.maintenance.soft_mallet", "Something is stuck");
-        provider.add("integration.gtceu.jade.maintenance.hard_hammer", "Plating is dented");
-        provider.add("integration.gtceu.jade.maintenance.wire_cutter", "Wires burned out");
-        provider.add("integration.gtceu.jade.maintenance.crowbar", "That doesn't belong there");
-
         // Steam Venting
         provider.add("integration.gtceu.jade.exhaust_vent_direction", "Exhaust Vent: %s");
         provider.add("integration.gtceu.jade.exhaust_vent_blocked", "Blocked");
-
-        // Primitive Pump
-        provider.add("integration.gtceu.jade.primitive_pump_production", "Production: %s mB/s");
 
         // Recipe Provider
         provider.add("integration.gtceu.jade.recipe_output", "Recipe Outputs:");

@@ -133,9 +133,8 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                                         .child(widget);
                                 var entry = list.get(index);
                                 return row
-                                        .child(Text.comp(Component
-                                                .translatable("gtceu.universal.liters",
-                                                        FormattingUtil.formatNumbers(entry.amount()))
+                                        .child(Text.comp(FormattingUtil.prepend("common.gtceu.bucket",
+                                                FormattingUtil.formatNumbers(entry.amount()))
                                                 .append(CommonComponents.SPACE)
                                                 .append(entry.what().getDisplayName()))
                                                 .asWidget()

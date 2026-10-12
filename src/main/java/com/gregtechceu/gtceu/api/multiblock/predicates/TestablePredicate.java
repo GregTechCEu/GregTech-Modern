@@ -63,22 +63,22 @@ class TestablePredicate extends BasePredicate {
         int minCount = getMinCount();
         int maxCount = getMaxCount();
         if (minCount == maxCount && maxCount != -1) {
-            tooltips.add(Component.translatable("gtceu.multiblock.pattern.exact_count", minCount));
+            tooltips.add(Component.translatable("multiblock.gtceu.predicate.count.exact", minCount));
         } else if (minCount != maxCount && minCount != -1 && maxCount != -1) {
-            tooltips.add(Component.translatable("gtceu.multiblock.pattern.between_count", minCount, maxCount));
+            tooltips.add(Component.translatable("multiblock.gtceu.predicate.count.range", minCount, maxCount));
         } else {
             if (minCount > 0) {
-                tooltips.add(Component.translatable("gtceu.multiblock.pattern.min_count", minCount));
+                tooltips.add(Component.translatable("multiblock.gtceu.predicate.limit_min", minCount));
             }
             if (maxCount != -1) {
-                tooltips.add(Component.translatable("gtceu.multiblock.pattern.max_count", maxCount));
+                tooltips.add(Component.translatable("multiblock.gtceu.predicate.limit_max", maxCount));
             }
         }
         if (root.isSingle()) {
-            tooltips.add(Component.translatable("gtceu.multiblock.pattern.single"));
+            tooltips.add(Component.translatable("multiblock.gtceu.pattern.replaceable_air"));
         }
         if (root.hasAir()) {
-            tooltips.add(Component.translatable("gtceu.multiblock.pattern.replaceable_air"));
+            tooltips.add(Component.translatable("multiblock.gtceu.predicate.single"));
         }
         return tooltips;
     }

@@ -432,7 +432,7 @@ public class GTMultiblockTextUtil {
         var lineList = new ArrayList<TextWidget<?>>();
 
         lineList.add(Text
-                .dynamic(() -> Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED))
+                .dynamic(() -> Component.translatable("gui.gtceu.recipe.setup_fail").withStyle(ChatFormatting.RED))
                 .asWidget()
                 .setEnabledIf((w) -> isFormed.getBoolValue() && (isIdle.getBoolValue() || isWaiting.getBoolValue()) &&
                         !hasRunningRecipe.getBoolValue() && bestFailureReason.getValue() != null));

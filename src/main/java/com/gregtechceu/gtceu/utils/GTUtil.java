@@ -581,7 +581,7 @@ public class GTUtil {
             tooltipComponents.add(Component.translatable("medical_condition.gtceu.tooltip.description").append(":")
                     .withStyle(ChatFormatting.BOLD, ChatFormatting.RED));
             tooltipComponents.add(material.getProperty(HAZARD).condition.getTranslatableName());
-            tooltipComponents.add(Component.translatable("hazard_trigger.gtceu"));
+            tooltipComponents.add(Component.translatable("tooltip.gtceu.hazard_trigger.caused_by"));
             tooltipComponents.add(material.getProperty(HAZARD).hazardTrigger.getTranslatableName());
             return;
         }
@@ -627,17 +627,17 @@ public class GTUtil {
     public static Pair<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
         return switch (flag) {
             case 0 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.WRENCH),
-                    Component.translatable("integration.gtceu.jade.maintenance.wrench"));
+                    Component.translatable("gui.gtceu.machine.maintenance.wrench"));
             case 1 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.SCREWDRIVER),
-                    Component.translatable("integration.gtceu.jade.maintenance.screwdriver"));
+                    Component.translatable("gui.gtceu.machine.maintenance.screwdriver"));
             case 2 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.SOFT_MALLET),
-                    Component.translatable("integration.gtceu.jade.maintenance.soft_mallet"));
+                    Component.translatable("gui.gtceu.machine.maintenance.soft_mallet"));
             case 3 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.HARD_HAMMER),
-                    Component.translatable("integration.gtceu.jade.maintenance.hard_hammer"));
+                    Component.translatable("gui.gtceu.machine.maintenance.hard_hammer"));
             case 4 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.WIRE_CUTTER),
-                    Component.translatable("integration.gtceu.jade.maintenance.wire_cutter"));
+                    Component.translatable("gui.gtceu.machine.maintenance.wire_cutter"));
             default -> Pair.of(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
-                    Component.translatable("integration.gtceu.jade.maintenance.crowbar"));
+                    Component.translatable("gui.gtceu.machine.maintenance.crowbar"));
         };
     }
 

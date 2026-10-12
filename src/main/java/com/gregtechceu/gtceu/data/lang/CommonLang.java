@@ -15,9 +15,11 @@ public class CommonLang {
         // Working status
         provider.add("common.gtceu.workable.enabled", "Working Enabled");
         provider.add("common.gtceu.workable.disabled", "Working Disabled");
+        provider.add("common.gtceu.workable.cannot_disable", "Cannot be disabled");
         provider.add("common.gtceu.workable.disabled_next_cycle", "Working disabled after current cycle");
 
         // IO
+        provider.add("common.gtceu.io.title", "IO Mode");
         provider.add("common.gtceu.io.import", "Import");
         provider.add("common.gtceu.io.export", "Export");
         provider.add("common.gtceu.io.both", "Both");
@@ -43,6 +45,8 @@ public class CommonLang {
         provider.add("common.gtceu.unknown", "Unknown");
 
         provider.add("common.gtceu.empty", "Empty");
+
+        provider.add("common.gtceu.fluid_amount", "Fluid Amount: ");
 
         // Units & Amounts
 
