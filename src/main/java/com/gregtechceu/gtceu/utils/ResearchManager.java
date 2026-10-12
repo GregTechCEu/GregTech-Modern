@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -221,11 +222,14 @@ public final class ResearchManager {
         @Override
         public void buildRepresentativeRecipes() {
             ItemStack copiedStick = GTItems.TOOL_DATA_STICK.asStack();
-            copiedStick.setHoverName(Component.translatable("gui.gtceu.machine.scanner.copy_stick_from"));
+            copiedStick.setHoverName(Component.translatable("gui.gtceu.machine.scanner.copy_stick_from")
+                    .withStyle(ChatFormatting.ITALIC));
             ItemStack emptyStick = GTItems.TOOL_DATA_STICK.asStack();
-            emptyStick.setHoverName(Component.translatable("gui.gtceu.machine.scanner.copy_stick_empty"));
+            emptyStick.setHoverName(Component.translatable("gui.gtceu.machine.scanner.copy_stick_empty")
+                    .withStyle(ChatFormatting.ITALIC));
             ItemStack resultStick = GTItems.TOOL_DATA_STICK.asStack();
-            resultStick.setHoverName(Component.translatable("gui.gtceu.machine.scanner.copy_stick_to"));
+            resultStick.setHoverName(
+                    Component.translatable("gui.gtceu.machine.scanner.copy_stick_to").withStyle(ChatFormatting.ITALIC));
 
             GTRecipe recipe = GTRecipeTypes.SCANNER_RECIPES
                     .recipeBuilder("copy_" + GTStringUtils.itemStackToString(copiedStick))

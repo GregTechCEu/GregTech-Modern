@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -194,7 +195,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
             CompoundTag tag = new CompoundTag();
             tag.put("MEInputHatch", writeConfigToTag());
             dataStick.setTag(tag);
-            dataStick.setHoverName(Component.translatable("machine.gtceu.me.fluid_import.data_stick.name"));
+            dataStick.setHoverName(Component.translatable("machine.gtceu.me.fluid_import.data_stick.name")
+                    .withStyle(ChatFormatting.ITALIC));
             player.sendSystemMessage(Component.translatable("machine.gtceu.me.import_copy_settings"));
         }
         return InteractionResult.SUCCESS;

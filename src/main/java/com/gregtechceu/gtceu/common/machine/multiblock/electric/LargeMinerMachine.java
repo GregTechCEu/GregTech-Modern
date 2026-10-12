@@ -329,7 +329,8 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
             }
             getRecipeLogic().resetArea(true);
         } else {
-            context.getPlayer().sendSystemMessage(Component.translatable("gui.gtceu.machine.large_miner.errorradius"));
+            context.getPlayer().sendSystemMessage(Component.translatable("gui.gtceu.machine.large_miner.errorradius")
+                    .withStyle(ChatFormatting.RED));
         }
         return InteractionResult.SUCCESS;
     }

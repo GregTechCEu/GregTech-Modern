@@ -48,10 +48,10 @@ public class SteamBoilerBlockProvider extends MachineInfoProvider<SteamBoilerMac
         MutableComponent root;
         if (isBurning && temperature < maxTemperature) {
             // Heating up
-            root = Component.translatable("gui.gtceu.machine.boiler.heating_up");
+            root = Component.translatable("gui.gtceu.machine.boiler.heating_up").withStyle(ChatFormatting.RED);
         } else if (!isBurning && temperature > 0) {
             // Cooling down
-            root = Component.translatable("gui.gtceu.machine.boiler.cooling_down");
+            root = Component.translatable("gui.gtceu.machine.boiler.cooling_down").withStyle(ChatFormatting.BLUE);
         } else {
             root = null; // neither heating nor cooling, is either max temperature or temperature of zero
         }
@@ -62,7 +62,8 @@ public class SteamBoilerBlockProvider extends MachineInfoProvider<SteamBoilerMac
             // Producing some amount of steam
             extra = Component.translatable("gui.gtceu.machine.boiler.production",
                     Component.literal(FormattingUtil.formatNumbers(production / 10))
-                            .withStyle(ChatFormatting.GREEN));
+                            .withStyle(ChatFormatting.GREEN))
+                    .withStyle(ChatFormatting.GREEN);
             if (root != null) {
                 // append some nice separation here to the root
                 extra = Component.literal(" | ").append(extra);

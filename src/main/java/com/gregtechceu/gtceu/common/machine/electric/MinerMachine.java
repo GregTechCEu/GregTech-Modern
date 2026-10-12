@@ -106,7 +106,8 @@ public class MinerMachine extends WorkableTieredMachine
             context.getPlayer().sendSystemMessage(
                     Component.translatable("machine.gtceu.miner.working_area", workingArea, workingArea));
         } else {
-            context.getPlayer().sendSystemMessage(Component.translatable("gui.gtceu.machine.large_miner.errorradius"));
+            context.getPlayer().sendSystemMessage(Component.translatable("gui.gtceu.machine.large_miner.errorradius")
+                    .withStyle(ChatFormatting.RED));
         }
         return InteractionResult.SUCCESS;
     }

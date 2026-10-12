@@ -192,7 +192,7 @@ public class GTMachines {
                     .overlayTieredHullModel("hull")
                     .abilities(PartAbility.PASSTHROUGH_HATCH)
                     .modelProperty(IS_FORMED, false)
-                    .langValue("%s §fMachine Hull".formatted(VNF[tier]))
+                    .langValue("%s§f Machine Hull".formatted(VNF[tier]))
                     .tooltips(Component.translatable("machine.gtceu.hull.tooltip"))
                     .register(),
             ALL_TIERS);
@@ -263,10 +263,10 @@ public class GTMachines {
             .register();
     public static final MachineDefinition[] CENTRIFUGE = new SimpleMachineBuilder(REGISTRATE, "centrifuge",
             GTRecipeTypes.CENTRIFUGE_RECIPES)
-            .tooltipLang("§7Separating Molecules", LV, MV, HV)
-            .tooltipLang("§7Molecular Separator", EV)
-            .tooltipLang("§7Molecular Cyclone", IV, LuV, ZPM)
-            .tooltipLang("§7Molecular Tornado")
+            .tooltipLang("Separating Molecules", LV, MV, HV)
+            .tooltipLang("Molecular Separator", EV)
+            .tooltipLang("Molecular Cyclone", IV, LuV, ZPM)
+            .tooltipLang("Molecular Tornado")
             .tankScalingFunction(largeTankSizeFunction)
             .register();
     public static final MachineDefinition[] CHEMICAL_BATH = new SimpleMachineBuilder(REGISTRATE, "chemical_bath",
@@ -306,11 +306,11 @@ public class GTMachines {
     public static final MachineDefinition[] ELECTROLYZER = new SimpleMachineBuilder(REGISTRATE, "electrolyzer",
             GTRecipeTypes.ELECTROLYZER_RECIPES)
             .tankScalingFunction(largeTankSizeFunction)
-            .tooltipLang("§7Electrolyzing Molecules", LV, MV, HV, EV)
-            .tooltipLang("§7Molecular Disintegrator E-4906", IV)
-            .tooltipLang("§7Molecular Disintegrator E-4907", LuV)
-            .tooltipLang("§7Molecular Disintegrator E-4908", ZPM)
-            .tooltipLang("§7Atomic Ionizer")
+            .tooltipLang("Electrolyzing Molecules", LV, MV, HV, EV)
+            .tooltipLang("Molecular Disintegrator E-4906", IV)
+            .tooltipLang("Molecular Disintegrator E-4907", LuV)
+            .tooltipLang("Molecular Disintegrator E-4908", ZPM)
+            .tooltipLang("Atomic Ionizer")
             .register();
     public static final MachineDefinition[] ELECTROMAGNETIC_SEPARATOR = new SimpleMachineBuilder(REGISTRATE,
             "electromagnetic_separator", GTRecipeTypes.ELECTROMAGNETIC_SEPARATOR_RECIPES)
@@ -365,11 +365,11 @@ public class GTMachines {
             .register();
     public static final MachineDefinition[] LATHE = new SimpleMachineBuilder(REGISTRATE, "lathe",
             GTRecipeTypes.LATHE_RECIPES)
-            .tooltipLang("§7Produces Rods more efficiently", LV, MV, HV, EV)
-            .tooltipLang("§7Turn-O-Matic L-5906", IV)
-            .tooltipLang("§7Turn-O-Matic L-5907", LuV)
-            .tooltipLang("§7Turn-O-Matic L-5908", ZPM)
-            .tooltipLang("§7Rotation Grinder")
+            .tooltipLang("Produces Rods more efficiently", LV, MV, HV, EV)
+            .tooltipLang("Turn-O-Matic L-5906", IV)
+            .tooltipLang("Turn-O-Matic L-5907", LuV)
+            .tooltipLang("Turn-O-Matic L-5908", ZPM)
+            .tooltipLang("Rotation Grinder")
             .register();
     public static final MachineDefinition[] SCANNER = new SimpleMachineBuilder(REGISTRATE, "scanner",
             GTRecipeTypes.SCANNER_RECIPES)
@@ -386,11 +386,11 @@ public class GTMachines {
             .register();
     public static final MachineDefinition[] ORE_WASHER = new SimpleMachineBuilder(REGISTRATE, "ore_washer",
             GTRecipeTypes.ORE_WASHER_RECIPES)
-            .tooltipLang("§7Getting more Byproducts from your Ores", LV, MV, HV, EV)
-            .tooltipLang("§7Repurposed Laundry-Washer I-360", IV)
-            .tooltipLang("§7Repurposed Laundry-Washer I-361", LuV)
-            .tooltipLang("§7Repurposed Laundry-Washer I-362", ZPM)
-            .tooltipLang("§7Miniature Car Wash")
+            .tooltipLang("Getting more Byproducts from your Ores", LV, MV, HV, EV)
+            .tooltipLang("Repurposed Laundry-Washer I-360", IV)
+            .tooltipLang("Repurposed Laundry-Washer I-361", LuV)
+            .tooltipLang("Repurposed Laundry-Washer I-362", ZPM)
+            .tooltipLang("Miniature Car Wash")
             .register();
     public static final MachineDefinition[] PACKER = new SimpleMachineBuilder(REGISTRATE, "packer",
             GTRecipeTypes.PACKER_RECIPES)
@@ -408,11 +408,11 @@ public class GTMachines {
             GTRecipeTypes.LASER_ENGRAVER_RECIPES)
             .tankScalingFunction(defaultTankSizeFunction)
             .hasPollutionDebuff(true)
-            .tooltipLang("§7Don't look directly at the Laser", LV, MV, HV, EV)
-            .tooltipLang("§7With the Power of 2.04 MW", IV)
-            .tooltipLang("§7With the Power of 8.16 MW", LuV)
-            .tooltipLang("§7With the Power of 32.64 MW", ZPM)
-            .tooltipLang("§7Exact Photon Cannon")
+            .tooltipLang("Don't look directly at the Laser", LV, MV, HV, EV)
+            .tooltipLang("With the Power of 2.04 MW", IV)
+            .tooltipLang("With the Power of 8.16 MW", LuV)
+            .tooltipLang("With the Power of 32.64 MW", ZPM)
+            .tooltipLang("Exact Photon Cannon")
             .register();
     public static final MachineDefinition[] SIFTER = new SimpleMachineBuilder(REGISTRATE, "sifter",
             GTRecipeTypes.SIFTER_RECIPES)
@@ -423,11 +423,11 @@ public class GTMachines {
     public static final MachineDefinition[] THERMAL_CENTRIFUGE = new SimpleMachineBuilder(REGISTRATE,
             "thermal_centrifuge",
             GTRecipeTypes.THERMAL_CENTRIFUGE_RECIPES)
-            .tooltipLang("§7Separating Ores more precisely", LV, MV, HV, EV)
-            .tooltipLang("§7Blaze Sweatshop T-6350", IV)
-            .tooltipLang("§7Blaze Sweatshop T-6351", LuV)
-            .tooltipLang("§7Blaze Sweatshop T-6352", ZPM)
-            .tooltipLang("§7Fire Cyclone")
+            .tooltipLang("Separating Ores more precisely", LV, MV, HV, EV)
+            .tooltipLang("Blaze Sweatshop T-6350", IV)
+            .tooltipLang("Blaze Sweatshop T-6351", LuV)
+            .tooltipLang("Blaze Sweatshop T-6352", ZPM)
+            .tooltipLang("Fire Cyclone")
             .register();
     public static final MachineDefinition[] WIREMILL = new SimpleMachineBuilder(REGISTRATE, "wiremill",
             GTRecipeTypes.WIREMILL_RECIPES)
@@ -455,12 +455,12 @@ public class GTMachines {
                         default -> 4;
                     })
                     .tooltipLang(switch (tier) {
-                        case LV, MV -> "§7Shredding your Ores without Byproducts";
-                        case HV, EV -> "§7Shredding your Ores with Byproducts";
-                        case IV -> "§7Blend-O-Matic 9001";
-                        case LuV -> "§7Blend-O-Matic 9002";
-                        case ZPM -> "§7Blend-O-Matic 9003";
-                        default -> "§7Shape Eliminator";
+                        case LV, MV -> "Shredding your Ores without Byproducts";
+                        case HV, EV -> "Shredding your Ores with Byproducts";
+                        case IV -> "Blend-O-Matic 9001";
+                        case LuV -> "Blend-O-Matic 9002";
+                        case ZPM -> "Blend-O-Matic 9003";
+                        default -> "Shape Eliminator";
                     })
                     .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
@@ -473,10 +473,10 @@ public class GTMachines {
             GTRecipeTypes.GAS_COLLECTOR_RECIPES)
             .tankScalingFunction(largeTankSizeFunction)
             .hasPollutionDebuff(true)
-            .tooltipLang("§7Collects Gas from the air depending on the dimension", LV, MV, HV, EV)
-            .tooltipLang("§7Collects Gas from the atmosphere depending on the dimension", IV, LuV, ZPM)
-            .tooltipLang("§7Collects Gas from the solar system depending on the dimension", UV, UHV, UEV, UIV)
-            .tooltipLang("§7Collects Gas from the universe depending on the dimension", OpV)
+            .tooltipLang("Collects Gas from the air depending on the dimension", LV, MV, HV, EV)
+            .tooltipLang("Collects Gas from the atmosphere depending on the dimension", IV, LuV, ZPM)
+            .tooltipLang("Collects Gas from the solar system depending on the dimension", UV, UHV, UEV, UIV)
+            .tooltipLang("Collects Gas from the universe depending on the dimension", OpV)
             .register();
 
     public static final MachineDefinition[] ROCK_CRUSHER = registerTieredMachines(REGISTRATE, "rock_crusher",
@@ -488,11 +488,11 @@ public class GTMachines {
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
                     .workableTieredHullModel(GTCEu.id("block/machines/rock_crusher"))
                     .tooltipLang(switch (tier) {
-                        case LV, MV, HV, EV -> "§7Place Water and Lava horizontally adjacent";
-                        case IV -> "§7Cryogenic Magma Solidifier R-8200";
-                        case LuV -> "§7Cryogenic Magma Solidifier R-9200";
-                        case ZPM -> "§7Cryogenic Magma Solidifier R-10200";
-                        default -> "§7Volcanic Formation Chamber";
+                        case LV, MV, HV, EV -> "Place Water and Lava horizontally adjacent";
+                        case IV -> "Cryogenic Magma Solidifier R-8200";
+                        case LuV -> "Cryogenic Magma Solidifier R-9200";
+                        case ZPM -> "Cryogenic Magma Solidifier R-10200";
+                        default -> "Volcanic Formation Chamber";
                     })
                     .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
                             GTRecipeTypes.ROCK_BREAKER_RECIPES, defaultTankSizeFunction.applyAsInt(tier), true))
@@ -1122,7 +1122,7 @@ public class GTMachines {
             .tooltips(Component.translatable("multiblock.gtceu.part_sharing.disabled"))
             .simpleModel(GTCEu.id("block/machine/part/coke_oven_hatch"))
             .themeId(GTGuiTheme.PRIMITIVE.getId())
-            .tooltipLang("§7Allows automation access for the Coke Oven.")
+            .tooltipLang("Allows automation access for the Coke Oven.")
             .register();
 
     public static final MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)

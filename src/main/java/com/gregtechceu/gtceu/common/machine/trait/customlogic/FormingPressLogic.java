@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -117,11 +118,14 @@ public enum FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
     @Override
     public void buildRepresentativeRecipes() {
         ItemStack press = GTItems.SHAPE_MOLD_NAME.asStack();
-        press.setHoverName(Component.translatable("gui.gtceu.machine.forming_press.naming.press"));
+        press.setHoverName(Component.translatable("gui.gtceu.machine.forming_press.naming.press")
+                .withStyle(ChatFormatting.ITALIC));
         ItemStack toName = new ItemStack(Items.NAME_TAG);
-        toName.setHoverName(Component.translatable("gui.gtceu.machine.forming_press.naming.to_name"));
+        toName.setHoverName(Component.translatable("gui.gtceu.machine.forming_press.naming.to_name")
+                .withStyle(ChatFormatting.ITALIC));
         ItemStack named = new ItemStack(Items.NAME_TAG);
-        named.setHoverName(Component.translatable("gui.gtceu.machine.forming_press.naming.named"));
+        named.setHoverName(Component.translatable("gui.gtceu.machine.forming_press.naming.named")
+                .withStyle(ChatFormatting.ITALIC));
         GTRecipe recipe = GTRecipeTypes.FORMING_PRESS_RECIPES.recipeBuilder("name_item")
                 .notConsumable(press)
                 .inputItems(toName)

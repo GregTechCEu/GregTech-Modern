@@ -220,7 +220,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         var isBoosted = Text.dynamic(() -> Component.translatable(
                 isExtreme.getValue() ?
                         "gui.gtceu.machine.large_combustion_engine.liquid_oxygen_boosted" :
-                        "gui.gtceu.machine.large_combustion_engine.oxygen_boosted"))
+                        "gui.gtceu.machine.large_combustion_engine.oxygen_boosted")
+                .withStyle(ChatFormatting.AQUA))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && isBoostAllowed.getBoolValue() &&
                         isOxygenBoosted.getBoolValue());

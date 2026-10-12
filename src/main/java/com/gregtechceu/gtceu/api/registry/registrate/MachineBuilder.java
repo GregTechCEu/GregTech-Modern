@@ -35,9 +35,11 @@ import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 import com.gregtechceu.gtceu.utils.LangUtil;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -785,6 +787,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                 String mainKey = definition.getId().toLanguageKey("machine", "tooltip");
                 if (LangUtil.hasSingleOrMultiLang(mainKey)) {
                     var langs = LangUtil.getSingleOrMultiLang(mainKey);
+                    for (MutableComponent lang : langs) {
+                        if (lang.getStyle().getColor() == null) lang.withStyle(ChatFormatting.GRAY);
+                    }
                     components.addAll(List.of(langs));
                 }
             }

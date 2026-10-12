@@ -261,7 +261,6 @@ public class GTMultiMachines {
                     GTCEu.id("block/multiblock/pyrolyse_oven"))
             .tooltipLang("Electric Coke Oven",
                     "§6Cupronickel §7coils are §f25%%§7 slower. Every coil after §bKanthal§7 increases speed by §f50%%§7.")
-            .tooltips(Component.translatable("machine.gtceu.pyrolyse_oven.coil_tooltip"))
             .additionalDisplay((controller, syncManager) -> {
                 if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
                     return Collections.emptyList();
