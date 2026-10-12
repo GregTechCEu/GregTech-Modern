@@ -122,12 +122,12 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         List<IWidget> widgets = new ArrayList<>();
         LongSyncValue machinePower = syncManager.getOrCreateSyncHandler("machinePower", LongSyncValue.class,
                 () -> new LongSyncValue(this::getRecipeEUt));
-        LongSyncValue voltage = syncManager.getOrCreateSyncHandler("voltage", LongSyncValue.class,
+        LongSyncValue machineVoltage = syncManager.getOrCreateSyncHandler("machineVoltage", LongSyncValue.class,
                 () -> new LongSyncValue(this::getDisplayWorkingVoltage));
 
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));
-        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, machinePower, voltage,
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, machinePower, machineVoltage,
                 this.isGenerator()));
         widgets.addAll(super.getWidgetsForDisplay(syncManager));
         return widgets;

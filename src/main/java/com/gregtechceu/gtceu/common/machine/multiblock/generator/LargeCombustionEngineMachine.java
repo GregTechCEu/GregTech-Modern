@@ -209,7 +209,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         BooleanSyncValue isExtreme = new BooleanSyncValue(this::isExtreme);
 
         LongSyncValue euOutput = new LongSyncValue(this::getCurrentProduction);
-        LongSyncValue voltage = new LongSyncValue(this::getDisplayRecipeVoltage);
+        LongSyncValue engineVoltage = new LongSyncValue(this::getDisplayRecipeVoltage);
 
         syncManager.syncValue("hasLubricant", hasLubricant);
         syncManager.syncValue("isBoostAllowed", isBoostAllowed);
@@ -217,7 +217,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         syncManager.syncValue("isExtreme", isExtreme);
 
         syncManager.syncValue("euOutput", euOutput);
-        syncManager.syncValue("voltage", voltage);
+        syncManager.syncValue("engineVoltage", engineVoltage);
 
         var hasLubricantWarning = Text.dynamic(() -> Component.translatable(
                 "gtceu.multiblock.large_combustion_engine.no_lubricant"))
@@ -248,7 +248,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
 
-        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, euOutput, voltage, true));
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, euOutput, engineVoltage, true));
         widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addRecipeTypeField(this, syncManager));

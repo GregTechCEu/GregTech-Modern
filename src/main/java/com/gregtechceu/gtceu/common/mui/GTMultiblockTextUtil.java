@@ -118,23 +118,22 @@ public class GTMultiblockTextUtil {
      */
     public static Flow addEnergyUsageLine(WorkableElectricMultiblockMachine weMachine,
                                                    PanelSyncManager syncManager) {
-        LongSyncValue energyUsage = syncManager.getOrCreateSyncHandler("energyUsage", LongSyncValue.class,
+        LongSyncValue maxEnergyUsage = syncManager.getOrCreateSyncHandler("maxEnergyUsage", LongSyncValue.class,
                 () -> new LongSyncValue(() -> {
                     var energyList = weMachine.getEnergyContainer();
                     return Math.max(energyList.getInputVoltage(), energyList.getOutputVoltage());
                 }));
         LongSyncValue voltage = syncManager.getOrCreateSyncHandler("voltage", LongSyncValue.class,
-                () -> new LongSyncValue(() -> {
-                    var energyList = weMachine.getEnergyContainer();
-                    return energyList.getHighestInputVoltage();
-                }));
+                () -> new LongSyncValue(weMachine::getDisplayWorkingVoltage));
 
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(weMachine::isFormed));
 
         return buildAmpVoltEutHoverLine(
-                buildAmpVoltComponent(energyUsage, voltage),
-                buildEutHoverTooltip(energyUsage, true),
+                () -> Component.translatable("gtceu.multiblock.general.energy_throughput",
+                                buildAmpVoltComponent(maxEnergyUsage, voltage))
+                        .withStyle(ChatFormatting.WHITE),
+                buildEutHoverTooltip(maxEnergyUsage, true),
                 ($ -> isFormed.getBoolValue())
         );
     }
@@ -236,9 +235,9 @@ public class GTMultiblockTextUtil {
         });
     }
 
-    public static Flow buildAmpVoltEutHoverLine(Component ampVolt, RichTooltip tooltip,
+    public static Flow buildAmpVoltEutHoverLine(Supplier<Component> ampVolt, RichTooltip tooltip,
                                                 Predicate<Flow> enabledConditions) {
-        var widget = Text.dynamic(() -> ampVolt)
+        var widget = Text.dynamic(ampVolt)
                 .asWidget();
 
         return Flow.row()

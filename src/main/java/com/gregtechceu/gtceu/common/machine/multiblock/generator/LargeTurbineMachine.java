@@ -157,7 +157,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         syncManager.syncValue("euOutput", euOutput);
         syncManager.syncValue("maxOutput", maxOutput);
 
-        LongSyncValue voltage = syncManager.getOrCreateSyncHandler("voltage", LongSyncValue.class,
+        LongSyncValue turbineVoltage = syncManager.getOrCreateSyncHandler("turbineVoltage", LongSyncValue.class,
                 () -> new LongSyncValue(this::getDisplayRecipeVoltage));
 
         var hasNoRotorWarning = Text.dynamic(() -> (Component.translatable("gtceu.multiblock.turbine.no_rotor"))
@@ -195,7 +195,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
 
-        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, euOutput, voltage, true));
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, euOutput, turbineVoltage, true));
         widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addRecipeTypeField(this, syncManager));
