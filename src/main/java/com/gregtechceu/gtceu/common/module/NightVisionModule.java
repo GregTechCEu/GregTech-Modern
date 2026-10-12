@@ -54,8 +54,17 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
 
     @Override
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
-        super.onArmorTick(moduleContext, entity);
         if (!(entity instanceof Player player)) return;
+        if (!isEnabled(moduleContext)) {
+            var data = moduleContext.getData(NightVisionModuleData.class);
+            if (data.isNightVision()) {
+                player.removeEffect(MobEffects.NIGHT_VISION);
+                moduleContext.setData(new NightVisionModuleData(data.getSlot(), data.getModule(), data.getModuleItem(),
+                        false, false, (byte) 0, 0));
+            }
+            return;
+        }
+        super.onArmorTick(moduleContext, entity);
         IElectricItem item = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (item == null) {
             return;

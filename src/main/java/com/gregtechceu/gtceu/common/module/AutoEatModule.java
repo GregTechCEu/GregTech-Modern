@@ -32,10 +32,11 @@ public class AutoEatModule extends ItemModule {
 
     @Override
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
+        if (!isEnabled(moduleContext) || !(entity instanceof Player player) || player.level().isClientSide) return;
         super.onArmorTick(moduleContext, entity);
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return;
-        supplyFood(electricItem, (Player) entity, 512);
+        supplyFood(electricItem, player, 512);
     }
 
     public static void supplyFood(@NotNull IElectricItem item, Player player, long energyPerUse) {

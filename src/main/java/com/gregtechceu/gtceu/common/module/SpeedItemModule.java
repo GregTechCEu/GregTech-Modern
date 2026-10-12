@@ -25,6 +25,7 @@ public class SpeedItemModule extends TieredItemModule {
 
     @Override
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
+        if (!isEnabled(moduleContext)) return;
         super.onArmorTick(moduleContext, entity);
         if (entity instanceof Player player) {
             float mul = getTier() / 4f + 1;

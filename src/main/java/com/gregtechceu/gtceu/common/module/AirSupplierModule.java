@@ -29,10 +29,11 @@ public class AirSupplierModule extends ItemModule {
 
     @Override
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
+        if (!isEnabled(moduleContext) || !(entity instanceof Player player) || player.level().isClientSide) return;
         super.onArmorTick(moduleContext, entity);
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return;
-        supplyAir(electricItem, (Player) entity, 128);
+        supplyAir(electricItem, player, 128);
     }
 
     @Override
