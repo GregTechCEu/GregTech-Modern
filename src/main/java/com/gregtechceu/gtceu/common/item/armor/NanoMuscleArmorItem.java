@@ -19,6 +19,16 @@ public class NanoMuscleArmorItem extends ModularArmorItem {
     }
 
     @Override
+    public boolean protectsAgainstFalls() {
+        return getType() == Type.BOOTS;
+    }
+
+    @Override
+    public float getHeatResistance() {
+        return getType() == Type.CHESTPLATE ? 0.75f : 1.0f;
+    }
+
+    @Override
     public @Nullable ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
                                                       ArmorMaterial.Layer layer, boolean innerModel) {
         var texture = super.getArmorTexture(stack, entity, slot, layer, innerModel);

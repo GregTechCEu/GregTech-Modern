@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
 import com.gregtechceu.gtceu.api.item.capability.ModularItemStack;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -147,6 +148,9 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                 return;
             }
 
+            if (stack.getItem() instanceof ModularArmorItem armor) {
+                armor.appendBuiltInTraits(stack, tooltipComponents);
+            }
             if (!slots.isEmpty()) tooltipComponents.add(Component.translatable("gui.gtceu.module_slots"));
             for (int slotI = 0; slotI < slots.size(); slotI++) {
                 ItemModuleSlot slot = slots.get(slotI);

@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
@@ -35,6 +36,7 @@ import com.gregtechceu.gtceu.common.commands.HazardCommands;
 import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
 import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.data.GTAttributeModifierIds;
+import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
@@ -64,6 +66,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -341,6 +344,13 @@ public class CommonEventListener {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onEntityLivingFallEvent(LivingFallEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (entity.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof ModularArmorItem armor &&
+                armor.protectsAgainstFalls()) {
+            entity.fallDistance = 0;
+            event.setCanceled(true);
+            return;
+        }
         if (event.getEntity() instanceof ServerPlayer player) {
             if (player.fallDistance < 3.2f)
                 return;
@@ -368,6 +378,11 @@ public class CommonEventListener {
     public static void onEntityTick(EntityTickEvent.Pre event) {
         if (!(event.getEntity() instanceof LivingEntity entity)) {
             return;
+        }
+
+        if (entity.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ModularArmorItem armor &&
+                armor.protectsAgainstFire()) {
+            entity.clearFire();
         }
 
         for (ItemStack stack : entity.getArmorSlots()) {
@@ -429,6 +444,14 @@ public class CommonEventListener {
     public static void onLivingHurt(LivingIncomingDamageEvent event) {
         final LivingEntity entity = event.getEntity();
         final DamageSource source = event.getSource();
+        // GT heat also has the fire tag; hot ingots use the separate insulation multiplier.
+        if (source.is(DamageTypeTags.IS_FIRE) && !source.is(GTDamageTypes.HEAT) &&
+                entity.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ModularArmorItem armor &&
+                armor.protectsAgainstFire()) {
+            entity.clearFire();
+            event.setCanceled(true);
+            return;
+        }
 
         for (final ItemStack stack : entity.getArmorSlots()) {
             float amount = event.getAmount();
