@@ -12,6 +12,7 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.apache.commons.lang3.NotImplementedException;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -30,7 +31,16 @@ public class Filters {
     public static <T> Filter<T> loadFilter(Class<T> filterableType, ItemStack stack) {
         var entry = FILTERS.get(stack.getItem());
         if (entry.filterableType != filterableType) return null;
-        Filter<T> filter = (Filter<T>) stack.getOrDefault(entry.dataComponentType.value(), entry.filterFactory.get());
+        Filter<T> filter = (Filter<T>) stack.get(entry.dataComponentType.value());
+
+        // Makes a copy of the filter data component, potentially stopping issues where different filters get
+        // "entangled"
+        if (filter == null) {
+            filter = (Filter<T>) entry.filterFactory.get();
+        } else {
+            filter = filter.createCopy();
+        }
+
         filter.setFilterItemStack(stack);
         filter.setItemWriter(w -> stack.set((DataComponentType<? super Filter<T>>) entry.dataComponentType.value(), w));
         return filter;
@@ -47,6 +57,15 @@ public class Filters {
     public static boolean isValidFilter(Class<?> filterableType, Item item) {
         if (!FILTERS.containsKey(item)) return false;
         return FILTERS.get(item).filterableType == filterableType;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Nullable
+    public static <T> DataComponentType<Filter<T>> getFilterComponentType(Class<T> filterableType, Item item) {
+        if (!FILTERS.containsKey(item)) return null;
+        var entry = FILTERS.get(item);
+        if (entry.filterableType != filterableType) return null;
+        return (DataComponentType<Filter<T>>) entry.dataComponentType.value();
     }
 
     public static <T> Filter<T> getEmptyFilter() {
@@ -70,6 +89,11 @@ public class Filters {
             @Override
             public int testAmount(T stack) {
                 return Integer.MAX_VALUE;
+            }
+
+            @Override
+            public Filter<T> createCopy() {
+                return getEmptyFilter();
             }
         };
     }

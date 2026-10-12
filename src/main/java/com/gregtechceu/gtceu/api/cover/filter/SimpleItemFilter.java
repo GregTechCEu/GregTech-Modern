@@ -186,6 +186,11 @@ public class SimpleItemFilter extends Filter<ItemStack> {
         return totalItemCount;
     }
 
+    @Override
+    public Filter<ItemStack> createCopy() {
+        return new SimpleItemFilter(isBlackList, ignoreNbt, Arrays.asList(matches));
+    }
+
     public int getTotalConfiguredItemCount(ItemStack itemStack) {
         int totalCount = 0;
 
