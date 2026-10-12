@@ -60,6 +60,11 @@ public final class ItemModuleSettingsBuilder extends ArrayList<IWidget> {
                 .child(widget);
     }
 
+    private ItemModuleSettingsBuilder addSetting(Text label, IWidget widget) {
+        add(wrap(label, widget));
+        return this;
+    }
+
     public ItemModuleSettingsBuilder custom(Text label, SyncHandler<?> syncHandler, Widget<?> widget) {
         String key = registerSyncValue(syncHandler);
         add(wrap(label, widget.syncHandler(key, id)));
@@ -79,10 +84,8 @@ public final class ItemModuleSettingsBuilder extends ArrayList<IWidget> {
 
     public ItemModuleSettingsBuilder num(Text label, IntSupplier getter, IntConsumer setter, int min, int max,
                                          String sliderLabel) {
-        custom(label,
-                SyncHandlers.intNumber(getter, setter)
-                        .allowC2S(),
-                new SliderWidget()
+        addSetting(label, new SliderWidget()
+                        .value(SyncHandlers.intNumber(getter, setter).allowC2S())
                         .bounds(min, max)
                         .width(50)
                         .stopper(1))
@@ -100,10 +103,8 @@ public final class ItemModuleSettingsBuilder extends ArrayList<IWidget> {
     public ItemModuleSettingsBuilder num(Text label, DoubleSupplier getter, DoubleConsumer setter, double min,
                                          double max,
                                          DoubleFunction<String> sliderLabel) {
-        custom(label,
-                SyncHandlers.doubleNumber(getter, setter)
-                        .allowC2S(),
-                new SliderWidget()
+        addSetting(label, new SliderWidget()
+                        .value(SyncHandlers.doubleNumber(getter, setter).allowC2S())
                         .bounds(min, max)
                         .width(50)
                         .stopper((max - min) / 10))
@@ -114,15 +115,14 @@ public final class ItemModuleSettingsBuilder extends ArrayList<IWidget> {
     }
 
     public ItemModuleSettingsBuilder str(Text label, Supplier<String> getter, Consumer<String> setter) {
-        return custom(label,
-                SyncHandlers.string(getter, setter)
-                        .allowC2S(),
-                new TextFieldWidget());
+        return addSetting(label, new TextFieldWidget()
+                .value(SyncHandlers.string(getter, setter).allowC2S()));
     }
 
     public ItemModuleSettingsBuilder progress(Text label, DoubleSupplier getter, DoubleFunction<String> rightLabel) {
         DoubleSyncValue syncValue = SyncHandlers.doubleNumber(getter, null);
-        custom(label, syncValue, new ProgressWidget()
+        addSetting(label, new ProgressWidget()
+                .value(syncValue)
                 .texture(new Rectangle().hollow(1).color(0xFF555555),
                         new DrawableStack(
                                 new Rectangle().color(0xFFEEE600),
