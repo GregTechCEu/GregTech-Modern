@@ -287,6 +287,20 @@ public class CraftingRecipeLoader {
                 "SUS", "RIR", 'C', CustomTags.LV_CIRCUITS, 'S', GTItems.FLUID_CELL_LARGE_STEEL.asStack(), 'U',
                 GTItems.ELECTRIC_PUMP_LV.asStack(), 'R', new MaterialEntry(rotor, Lead), 'I',
                 new MaterialEntry(pipeSmallFluid, Potin));
+        VanillaRecipeHelper.addShapedRecipe(provider, "hydraulic_helmet", HYDRAULIC_HELMET.asStack(),
+                "SPS", "FAF", "PdP", 'S', new MaterialEntry(screw, Steel), 'P', new MaterialEntry(plateDouble, Steel),
+                'F', new MaterialEntry(frameGt, Steel), 'A', Items.IRON_HELMET);
+        VanillaRecipeHelper.addShapedRecipe(provider, "hydraulic_chestplate", HYDRAULIC_CHESTPLATE.asStack(),
+                "PdP", "FAF", "SPS", 'S', new MaterialEntry(screw, Steel), 'P', new MaterialEntry(plateDouble, Steel),
+                'F', new MaterialEntry(frameGt, Steel), 'A', Items.IRON_CHESTPLATE);
+        VanillaRecipeHelper.addShapedRecipe(provider, "hydraulic_leggings", HYDRAULIC_LEGGINGS.asStack(),
+                "ISI", "FAF", "PdP", 'I', ELECTRIC_PISTON_LV.asStack(), 'S', new MaterialEntry(screw, Steel),
+                'F', new MaterialEntry(frameGt, Steel), 'P', new MaterialEntry(plateDouble, Steel),
+                'A', Items.IRON_LEGGINGS);
+        VanillaRecipeHelper.addShapedRecipe(provider, "hydraulic_boots", HYDRAULIC_BOOTS.asStack(),
+                "ISI", "PAP", "FdF", 'I', ELECTRIC_PISTON_LV.asStack(), 'S', new MaterialEntry(screw, Steel),
+                'F', new MaterialEntry(frameGt, Steel), 'P', new MaterialEntry(plateDouble, Steel), 'A',
+                Items.IRON_BOOTS);
         VanillaRecipeHelper.addShapedRecipe(provider, "nano_helmet", GTItems.NANO_HELMET.asStack(), "PPP", "PNP", "xEd",
                 'P', GTItems.CARBON_FIBER_PLATE.asStack(), 'N', GTItems.NIGHTVISION_GOGGLES.asStack(), 'E',
                 GTItems.ENERGIUM_CRYSTAL.asStack());
