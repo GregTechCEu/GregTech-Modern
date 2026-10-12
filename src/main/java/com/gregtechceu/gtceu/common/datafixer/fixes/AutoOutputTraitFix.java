@@ -39,8 +39,7 @@ public class AutoOutputTraitFix extends DataFix {
                             dynamic = dynamic.remove(oldName);
                         }
                     }
-                    dynamic.set("autoOutput", traitValue);
-                    return dynamic;
+                    return dynamic.set("autoOutput", traitValue);
                 }));
     }
 }

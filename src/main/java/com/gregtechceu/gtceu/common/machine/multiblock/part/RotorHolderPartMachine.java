@@ -324,6 +324,8 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
      */
     public int getRotorDurabilityPercent() {
         ItemStack stack = getRotorStack();
+        if (stack.getMaxDamage() == 0) return -1;
+
         return 100 - 100 * stack.getDamageValue() / stack.getMaxDamage();
     }
 
