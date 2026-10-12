@@ -85,10 +85,10 @@ public final class ItemModuleSettingsBuilder extends ArrayList<IWidget> {
     public ItemModuleSettingsBuilder num(Text label, IntSupplier getter, IntConsumer setter, int min, int max,
                                          String sliderLabel) {
         addSetting(label, new SliderWidget()
-                        .value(SyncHandlers.intNumber(getter, setter).allowC2S())
-                        .bounds(min, max)
-                        .width(50)
-                        .stopper(1))
+                .value(SyncHandlers.intNumber(getter, setter).allowC2S())
+                .bounds(min, max)
+                .width(50)
+                .stopper(1))
                 .<Flow>last()
                 .child(new TextWidget<>(
                         Text.dynamic(() -> Component.literal(sliderLabel.formatted(getter.getAsInt())))));
@@ -104,10 +104,10 @@ public final class ItemModuleSettingsBuilder extends ArrayList<IWidget> {
                                          double max,
                                          DoubleFunction<String> sliderLabel) {
         addSetting(label, new SliderWidget()
-                        .value(SyncHandlers.doubleNumber(getter, setter).allowC2S())
-                        .bounds(min, max)
-                        .width(50)
-                        .stopper((max - min) / 10))
+                .value(SyncHandlers.doubleNumber(getter, setter).allowC2S())
+                .bounds(min, max)
+                .width(50)
+                .stopper((max - min) / 10))
                 .<Flow>last()
                 .child(new TextWidget<>(
                         Text.dynamic(() -> Component.literal(sliderLabel.apply(getter.getAsDouble())))));
