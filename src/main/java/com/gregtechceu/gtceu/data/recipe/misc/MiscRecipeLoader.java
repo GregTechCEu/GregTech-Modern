@@ -191,12 +191,12 @@ public class MiscRecipeLoader {
                 .addMaterialInfo(true)
                 .save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("power_thruster_advanced").duration(200).EUt(30)
-                .inputItems(ELECTRIC_MOTOR_HV)
-                .inputItems(ring, StainlessSteel, 2)
-                .inputItems(rod, StainlessSteel)
-                .inputItems(rotor, Chromium)
-                .inputItems(cableGtSingle, Gold, 2)
+        ASSEMBLER_RECIPES.recipeBuilder("power_thruster_advanced").duration(200).EUt(VA[EV])
+                .inputItems(ELECTRIC_MOTOR_EV)
+                .inputItems(ring, Titanium, 2)
+                .inputItems(rod, Titanium)
+                .inputItems(rotor, Titanium)
+                .inputItems(cableGtSingle, Aluminium, 2)
                 .outputItems(POWER_THRUSTER_ADVANCED)
                 .addMaterialInfo(true)
                 .save(provider);
