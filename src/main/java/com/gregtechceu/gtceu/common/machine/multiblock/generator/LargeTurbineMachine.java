@@ -114,6 +114,11 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         return -1;
     }
 
+    public long getCurrentProduction() {
+        return isActive() && recipeLogic.getLastUnrolledRecipe() != null ?
+                recipeLogic.getLastUnrolledRecipe().getOutputEUt().voltage() : 0;
+    }
+
     public int getRotorDurabilityPercent() {
         var rotorHolder = getRotorHolder();
         if (rotorHolder != null && rotorHolder.hasRotor()) {
@@ -144,7 +149,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                 () -> new BooleanSyncValue(() -> this.getRotorHolder() != null && this.getRotorHolder().hasRotor()));
         LongSyncValue currentOutput = syncManager.getOrCreateSyncHandler("currentOutput",
                 LongSyncValue.class,
-                () -> new LongSyncValue(this::getRecipeEUt));
+                () -> new LongSyncValue(this::getCurrentProduction));
         LongSyncValue voltage = syncManager.getOrCreateSyncHandler("voltage", LongSyncValue.class,
                 () -> new LongSyncValue(this::getDisplayRecipeVoltage));
         LongSyncValue maxOutput = syncManager.getOrCreateSyncHandler("maxOutput",
