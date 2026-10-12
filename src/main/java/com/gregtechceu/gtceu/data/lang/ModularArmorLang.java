@@ -6,10 +6,19 @@ public class ModularArmorLang {
 
     public static void init(RegistrateLangProvider provider) {
         provider.add("gui.gtceu.item_module.hover_mode", "Hover Mode");
+        provider.add("gtceu.key.modular_item_gui", "Armor Configuration");
+        provider.add("gui.gtceu.armor_config.title", "Armor Configuration");
+        provider.add("gui.gtceu.armor_config.select", "Select an equipped armor piece");
+        provider.add("gui.gtceu.armor_config.no_modules", "No modules installed");
+        provider.add("gui.gtceu.armor_config.helmet", "Helmet");
+        provider.add("gui.gtceu.armor_config.chestplate", "Chestplate");
+        provider.add("gui.gtceu.armor_config.leggings", "Leggings");
+        provider.add("gui.gtceu.armor_config.boots", "Boots");
+
         provider.add("item.gtceu.netherite_plated", "Netherite-Plated %s");
         provider.add("tooltip.gtceu.netherite_plated", "Netherite Plating: +2 Module Slots");
 
-        provider.add("tooltip.gtceu.configure_modular_armor", "Press [%s] when holding to configure modular item");
+        provider.add("tooltip.gtceu.configure_modular_armor", "Press [%s] to configure equipped armor");
 
         provider.add("gui.gtceu.equipment_foundry.applied_to", "Applied to:");
         provider.add("gui.gtceu.equipment_foundry.module_item", "Module item:");

@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.utils.input;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.mui.modular_item.ModularItemUIFactory;
+import com.gregtechceu.gtceu.api.mui.modular_item.ModularArmorUIFactory;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.InteractionHand;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoader;
@@ -47,8 +45,8 @@ public final class SyncedKeyMappings {
     public static final SyncedKeyMapping MODULAR_ITEM_GUI = SyncedKeyMapping.createConfigurable(
             "gtceu.key.modular_item_gui", KeyConflictContext.IN_GAME,
             InputConstants.KEY_V).registerGlobalListener((player, key, isDown) -> {
-                if (isDown && GTCapabilityHelper.getModularItem(player.getMainHandItem()) != null) {
-                    ModularItemUIFactory.INSTANCE.openFromHand(player, InteractionHand.MAIN_HAND);
+                if (isDown && player.containerMenu == player.inventoryMenu) {
+                    ModularArmorUIFactory.INSTANCE.open(player);
                 }
             });
 

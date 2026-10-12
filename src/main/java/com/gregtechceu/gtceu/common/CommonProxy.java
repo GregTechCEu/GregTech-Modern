@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
 import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.mui.modular_item.ModularArmorUIFactory;
 import com.gregtechceu.gtceu.api.mui.modular_item.ModularItemUIFactory;
 import com.gregtechceu.gtceu.api.multiblock.error.GTPatternErrors;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
@@ -97,6 +98,7 @@ public class CommonProxy {
         GuiManager.registerFactory(MachineUIFactory.INSTANCE);
         GuiManager.registerFactory(CoverUIFactory.INSTANCE);
         GuiManager.registerFactory(ModularItemUIFactory.INSTANCE);
+        GuiManager.registerFactory(ModularArmorUIFactory.INSTANCE);
 
         // GTGuiTheme.registerThemes();
 
