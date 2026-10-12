@@ -4,9 +4,6 @@
     "gtceu:nano_fiber_chestplate",
     "gtceu:rubber_gloves",
     "gtceu:hazmat_chestpiece",
-    "gtceu:quark_matter_chestplate",
-    "gtceu:liquid_fuel_jetpack",
-    "gtceu:electric_jetpack",
-    "gtceu:advanced_electric_jetpack"
+    "gtceu:quark_matter_chestplate"
   ]
 }
