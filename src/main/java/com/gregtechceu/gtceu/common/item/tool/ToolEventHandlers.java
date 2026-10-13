@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.item.tool;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
@@ -9,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.TickTask;
@@ -27,6 +29,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
@@ -111,14 +116,28 @@ public class ToolEventHandlers {
                                                  BlockPos pos, BlockState state, boolean isSilkTouch,
                                                  int fortuneLevel, List<ItemStack> drops,
                                                  float dropChance) {
-        if (!(tool.getItem() instanceof IGTTool)) {
-            return drops;
-        }
-        if (!isSilkTouch) {
+        boolean gtTool = tool.getItem() instanceof IGTTool;
+        if (gtTool && !isSilkTouch) {
+            drops = new ArrayList<>(drops);
             ToolHelper.applyHammerDropConversion(level, pos, tool, state, drops, fortuneLevel, dropChance,
                     player.getRandom());
         }
-        if (!ToolHelper.hasBehaviorsComponent(tool)) return drops;
+        if (!isSilkTouch && fortuneLevel > 0 && ConfigHolder.INSTANCE.gameplay.enableOreFortune &&
+                state.getBlock() instanceof OreBlock) {
+            var context = ToolHelper.createBlockLootContext(level, state, new LootParams.Builder(level)
+                    .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+                    .withParameter(LootContextParams.TOOL, tool));
+            var multiplier = ToolHelper.getOrInitOreDropMultiplier(level.registryAccess());
+            List<ItemStack> boostedDrops = new ArrayList<>();
+            for (ItemStack drop : drops) {
+                ItemStack boosted = multiplier.apply(drop.copy(), context);
+                while (!boosted.isEmpty()) {
+                    boostedDrops.add(boosted.split(boosted.getMaxStackSize()));
+                }
+            }
+            drops = boostedDrops;
+        }
+        if (!gtTool || !ToolHelper.hasBehaviorsComponent(tool)) return drops;
 
         ToolBehaviors behaviorTag = ToolHelper.getBehaviorsComponent(tool);
         Block block = state.getBlock();
