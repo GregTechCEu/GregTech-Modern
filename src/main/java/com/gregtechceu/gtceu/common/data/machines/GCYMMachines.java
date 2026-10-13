@@ -852,7 +852,7 @@ public class GCYMMachines {
                         .build();
             })
             .workableCasingModel(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
-                    GTCEu.id("block/multiblock/gcym/mega_blast_furnace"))
+                    GTCEu.id("block/multiblock/gcym/rotary_hearth_furnace"))
             .additionalDisplay((controller, syncManager) -> {
                 if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
                     return Collections.emptyList();
