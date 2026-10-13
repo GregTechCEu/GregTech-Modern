@@ -5917,7 +5917,7 @@
   "module.gtceu.swim_speed": "Swim Speed Module (%s)",
   "module.gtceu.swim_speed.description": "Increases swim speed by %s%%",
   "module.gtceu.wireless_charger": "Quantum Charger (%s)",
-  "module.gtceu.wireless_charger.description": "Links armor to a Battery Buffer or Power Substation across any distance and dimension (1A %s max). Right-click to link to storage.",
+  "module.gtceu.wireless_charger.description": "Links armor to a Battery Buffer or Power Substation across any distance and dimension (up to %s, configurable 1-16A). Right-click to link to storage.",
   "module.gtceu.wireless_charging.short": "Unlimited range, interdimensional, 1A %s max",
   "monitor.gui.title.argb": "ARGB:",
   "monitor.gui.title.back": "Back",

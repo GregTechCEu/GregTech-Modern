@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.utils.GTStringUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -51,7 +52,8 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
         if (!(batteryItem instanceof IComponentItem componentItem)) return null;
         for (var component : componentItem.getComponents()) {
             if (component instanceof ElectricStats stats) {
-                return new ElectricItem(stack, stats.maxCharge, stats.tier, stats.chargeable, stats.dischargeable);
+                return new ElectricItem(stack, stats.maxCharge, stats.tier, stats.chargeable,
+                        stats.dischargeable && !(stack.getItem() instanceof ArmorItem));
             }
         }
         return null;

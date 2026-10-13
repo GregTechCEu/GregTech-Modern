@@ -64,7 +64,8 @@ public class ModularItemManagerUI implements IUIHolder<PlayerInventoryGuiData<?>
                                         .width(150)
                                         .overlay(Text.of(module.getDisplayName(appliedModule)))
                                         .backgroundOverlay(slots.get(index).getSlotTexture())
-                                        .tooltipDynamic(tooltip -> GTMuiWidgets.addWrappedModuleDescription(tooltip, module.getInfo()));
+                                        .tooltipDynamic(tooltip -> GTMuiWidgets.addWrappedModuleDescription(tooltip,
+                                                module.getInfo()));
                             }
                         }));
 
