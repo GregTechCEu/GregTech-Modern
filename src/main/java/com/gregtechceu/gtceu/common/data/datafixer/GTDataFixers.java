@@ -109,10 +109,10 @@ public class GTDataFixers {
 
         Schema v1 = builder.addSchema(1, V1::new);
         builder.addFixer(new AddNewChoices(v1, "Added High Pressure Steam Miner", References.BLOCK_ENTITY));
-        createBlockItemRenameFix(builder, v1, "Rename RTM Alloy Coil Block",
-                createRenamer("tungstensteel_coil_block", "rtm_alloy_coil_block"));
+        createBlockItemRenameFix(builder, v1, "Rename Tungstensteel Coil Block",
+                createRenamer("gtceu:tungstensteel_coil_block", "gtceu:rtm_alloy_coil_block"));
 
-        builder.addFixer(ItemRenameFix.create(v1, "Fix Advanced Nanomuscle Chestplate name",
+        builder.addFixer(ItemRenameFix.create(v1, "Rename Advanced Nanomuscle Chestplate",
                 createRenamer("gtceu:avanced_nanomuscle_chestplate", "gtceu:advanced_nanomuscle_chestplate")));
 
         builder.addFixer(ItemRenameFix.create(v1, "Rename Tungstensteel Fluid Cell",
@@ -175,15 +175,15 @@ public class GTDataFixers {
         createMaterialRenameFix(builder, v3_0, "gtceu:oil_medium", "gtceu:raw_oil");
         createMaterialRenameFix(builder, v3_0, "gtceu:palladium_raw", "gtceu:raw_palladium");
 
-        createBlockItemRenameFix(builder, v3_0, "Fix Palladium Substation Casing name",
+        createBlockItemRenameFix(builder, v3_0, "Rename Palladium Substation Casing",
                 createRenamer("gtceu:palladium_substation", "gtceu:palladium_substation_casing"));
-        createBlockItemRenameFix(builder, v3_0, "Fix Assembly Control Casing name",
+        createBlockItemRenameFix(builder, v3_0, "Rename Assembly Control Casing",
                 createRenamer("gtceu:assembly_line_casing", "gtceu:assembly_control_casing"));
-        createBlockItemRenameFix(builder, v3_0, "Fix Magnalium Turbine Casing name",
+        createBlockItemRenameFix(builder, v3_0, "Rename Magnalium Turbine Casing",
                 createRenamer("gtceu:steel_turbine_casing", "gtceu:magnalium_turbine_casing"));
-        createBlockItemRenameFix(builder, v3_0, "Fix Bricked Bronze Casing name",
+        createBlockItemRenameFix(builder, v3_0, "Rename Bricked Bronze Casing",
                 createRenamer("gtceu:bronze_brick_casing", "gtceu:bricked_bronze_casing"));
-        createBlockItemRenameFix(builder, v3_0, "Fix Bricked Wrought Iron Casing name",
+        createBlockItemRenameFix(builder, v3_0, "Rename Bricked Wrought Iron Casing",
                 createRenamer("gtceu:steel_brick_casing", "gtceu:bricked_wrought_iron_casing"));
 
         builder.addFixer(new ItemStackTurbineRotorFix(v3_0));
@@ -191,9 +191,9 @@ public class GTDataFixers {
         // separator
 
         Schema v3_1 = builder.addSchema(3, 1, V3_1::new);
-        createBlockItemEntityRenameFix(builder, v3_1, "Fix Rotary Hearth Furnace name",
+        createBlockItemEntityRenameFix(builder, v3_1, "Rename Rotary Hearth Furnace",
                 createRenamer("gtceu:mega_blast_furnace", "gtceu:rotary_hearth_furnace"));
-        createBlockItemEntityRenameFix(builder, v3_1, "Fix Bulk Blast Chiller name",
+        createBlockItemEntityRenameFix(builder, v3_1, "Rename Bulk Blast Chiller",
                 createRenamer("gtceu:mega_vacuum_freezer", "gtceu:bulk_blast_chiller"));
 
     }
@@ -222,7 +222,7 @@ public class GTDataFixers {
     private static void createMaterialRenameFix(FixedDataFixerBuilder builder, Schema schema,
                                                 String oldName, String newName) {
         final UnaryOperator<String> renamer = MaterialRenameHelper.createRenamer(oldName, newName);
-        final String dataFixName = "Fix " + newName + " name";
+        final String dataFixName = "Rename " + oldName;
 
         createBlockItemFluidRenameFix(builder, schema, dataFixName, renamer);
         builder.addFixer(MaterialRenameFix.create(schema, dataFixName + " for material", renamer));

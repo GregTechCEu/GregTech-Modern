@@ -423,10 +423,10 @@ public class V2_2 extends NamespacedSchema {
                 "traitHolder", optionalFields(
                         // TODO I'm not sure if this is all of the item/fluid fields? - add missing ones if not
                         "batterySlot", notifiableItemHandler(schema),
-                        or(
-                                optionalFields("circuit", notifiableItemHandler(schema)),
-                                optionalFields("circuitSlot", notifiableItemHandler(schema))
-                        )
+                        optional(or(
+                                fields("circuit", notifiableItemHandler(schema)),
+                                fields("circuitSlot", notifiableItemHandler(schema))
+                        ))
                 )
         );
     }

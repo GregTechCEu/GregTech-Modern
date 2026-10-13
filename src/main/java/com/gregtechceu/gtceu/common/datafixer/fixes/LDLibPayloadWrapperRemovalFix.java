@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.common.datafixer.fixes;
 
+import com.mojang.serialization.OptionalDynamic;
 import net.minecraft.util.datafix.fixes.References;
 
 import com.mojang.datafixers.*;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.Type;
 import com.mojang.serialization.Dynamic;
+
+import java.util.Optional;
 
 public class LDLibPayloadWrapperRemovalFix extends DataFix {
 
@@ -21,7 +24,7 @@ public class LDLibPayloadWrapperRemovalFix extends DataFix {
                 LDLibPayloadWrapperRemovalFix::fix);
     }
 
-    private static Dynamic<?> fix(Dynamic<?> dynamic) {
+    private static <T> Dynamic<T> fix(Dynamic<T> dynamic) {
         var stream = dynamic.asStreamOpt().result();
         if (stream.isPresent()) {
             // if the entry is a list, attempt to apply the fixer to its elements
@@ -38,33 +41,20 @@ public class LDLibPayloadWrapperRemovalFix extends DataFix {
      * <p>
      * Reading the code implies only array-like objects get the `{ "t": type, "p": value }` treatment.
      */
-    public static Dynamic<?> stripLDLibPayloadWrapper(Dynamic<?> dynamic) {
-        final Dynamic<?> tKey = dynamic.createString("t");
-        final Dynamic<?> pKey = dynamic.createString("p");
+    public static <T> Dynamic<T> stripLDLibPayloadWrapper(Dynamic<T> dynamic) {
+        // only allow entries with *only* the specific keys we expect so we don't accidentally touch other stuff
+        var asMap = dynamic.asMapOpt().result();
+        if (asMap.isEmpty() || asMap.get().count() != 2) {
+            return dynamic;
+        }
 
-        return DataFixUtils.orElse(dynamic.getMapValues().result()
-                .map(map -> {
-                    // only allow entries with only the specific keys we expect so we don't accidentally touch other
-                    // stuff
-                    // tag.contains("p") && tag.contains("t")
-                    if (map.size() == 2 && map.containsKey(pKey) && map.containsKey(tKey)) {
-                        // return tag.get("p")
-                        return map.get(pKey);
-                    } else if (map.size() == 1) {
-                        // I don't think this one is something that can happen, but I'm not sure about that, so
-                        // it's staying.
-                        //
-                        // As far as I can see, the only format that's used by LDLib is the above
-                        // `{ "t": type, "p": value }` one.
-
-                        var tValue = map.get(tKey).getMapValues().result();
-                        if (tValue.isPresent()) {
-                            return tValue.get().get(pKey);
-                        }
-                    }
-                    return dynamic.createMap(map);
-                })
-                // also apply the fixer to all child objects
-                .map(LDLibPayloadWrapperRemovalFix::fix), dynamic);
+        Optional<Dynamic<T>> tElement = dynamic.get("t").result();
+        Optional<Dynamic<T>> pElement = dynamic.get("p").result();
+        // equivalent to `tag.contains("p") && tag.contains("t")`
+        if (tElement.isPresent() && pElement.isPresent()) {
+            return LDLibPayloadWrapperRemovalFix.fix(pElement.get());
+        } else {
+            return LDLibPayloadWrapperRemovalFix.fix(dynamic);
+        }
     }
 }

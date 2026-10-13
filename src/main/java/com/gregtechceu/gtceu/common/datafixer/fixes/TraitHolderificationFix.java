@@ -6,26 +6,22 @@ import com.mojang.datafixers.*;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Unit;
 
 import java.util.function.Function;
-
-import static com.mojang.datafixers.DSL.*;
 
 public class TraitHolderificationFix extends DataFix {
 
     public TraitHolderificationFix(Schema outputSchema) {
-        super(outputSchema, true);
+        super(outputSchema, false);
     }
 
     @Override
     protected TypeRewriteRule makeRule() {
-        Type<?> blockEntityIn = this.getInputSchema().getType(References.BLOCK_ENTITY);
-        Type<?> blockEntityOut = this.getOutputSchema().getType(References.BLOCK_ENTITY);
+        Type<?> blockEntityType = this.getOutputSchema().getType(References.BLOCK_ENTITY);
 
-        return this.fixTypeEverywhereTyped("TraitHolderDataFix", blockEntityIn, blockEntityOut, typed -> {
+        return this.fixTypeEverywhereTyped("TraitHolderificationFix", blockEntityType, typed -> {
             // move the auto output trait first
-            typed = typed.update(remainderFinder(), dynamic -> {
+            typed = typed.update(DSL.remainderFinder(), dynamic -> {
                 final var field = dynamic.get("autoOutput").result();
                 if (field.isPresent()) {
                     dynamic = dynamic.update("traitHolder", val -> val.set("autoOutput", field.get()));
@@ -47,16 +43,19 @@ public class TraitHolderificationFix extends DataFix {
     }
 
     private static Typed<?> moveItemHandlerField(Typed<?> typed, String oldName, String newName) {
-        return moveItemHandlerFieldHelper(typed, oldName, newName, typed.getType().findFieldType(oldName))
+        var field = typed.getType().findFieldTypeOpt(oldName);
+        if (field.isEmpty()) return typed;
+
+        return moveItemHandlerFieldHelper(typed, oldName, newName, field.get())
                 .update(DSL.remainderFinder(), dynamic -> dynamic.remove(oldName));
     }
 
     private static <A> Typed<?> moveItemHandlerFieldHelper(Typed<?> typed, String oldName, String newName,
                                                            Type<A> fieldType) {
-        Type<Either<A, Unit>> type = DSL.optional(DSL.field(oldName, fieldType));
-        Type<Either<A, Unit>> type1 = optional(field(newName, field("storage", fieldType)));
+        var oldField = DSL.optional(DSL.field(oldName, fieldType));
+        var newField = DSL.optional(DSL.field(newName, DSL.field("storage", fieldType)));
 
-        return typed.update(type.finder(), type1, Function.identity());
+        return typed.update(oldField.finder(), newField, Function.identity());
     }
 
     private static Typed<?> copyFieldToTraitHolder(Typed<?> typed, String name) {
@@ -64,13 +63,15 @@ public class TraitHolderificationFix extends DataFix {
     }
 
     private static Typed<?> copyFieldToTraitHolder(Typed<?> typed, String oldName, String newName) {
-        return copyFieldToTraitHolderHelper(typed, oldName, newName, typed.getType().findFieldType(oldName));
+        var field = typed.getType().findFieldTypeOpt(oldName);
+        if (field.isEmpty()) return typed;
+        return copyFieldToTraitHolderHelper(typed, oldName, newName, field.get());
     }
 
     private static <A> Typed<?> copyFieldToTraitHolderHelper(Typed<?> typed, String oldName, String newName,
                                                              Type<A> fieldType) {
-        Type<Either<A, Unit>> type = DSL.optional(DSL.field(oldName, fieldType));
-        Type<Either<Either<A, Unit>, Unit>> type1 = optional(field("traitHolder", optional(field(newName, fieldType))));
+        var type = DSL.optional(DSL.field(oldName, fieldType));
+        var type1 = DSL.optional(DSL.field("traitHolder", DSL.optional(DSL.field(newName, fieldType))));
 
         return typed.update(type.finder(), type1, field -> Either.left(field));
     }
