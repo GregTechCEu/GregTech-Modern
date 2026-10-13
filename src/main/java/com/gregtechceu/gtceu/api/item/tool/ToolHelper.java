@@ -391,7 +391,8 @@ public class ToolHelper {
 
             RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
                     new DummyRecipeUtils.DummyEnergyContainer(GTValues.V[GTValues.LV], GTValues.V[GTValues.LV], 1),
-                    new DummyRecipeUtils.DummyItemHandler(IO.IN, NonNullList.of(ItemStack.EMPTY, silkTouchDrop.copy())));
+                    new DummyRecipeUtils.DummyItemHandler(IO.IN,
+                            NonNullList.of(ItemStack.EMPTY, silkTouchDrop.copy())));
 
             RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
                     new DummyRecipeUtils.DummyItemHandler(IO.OUT, 2));
