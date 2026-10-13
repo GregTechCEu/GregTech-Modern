@@ -802,8 +802,8 @@ public class GCYMMachines {
             .register();
 
     // spotless:off
-    public final static MultiblockMachineDefinition MEGA_BLAST_FURNACE = REGISTRATE
-            .multiblock("mega_blast_furnace", CoilWorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition ROTARY_HEARTH_FURNACE = REGISTRATE
+            .multiblock("rotary_hearth_furnace", CoilWorkableElectricMultiblockMachine::new)
             .langValue("Rotary Hearth Furnace")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
@@ -850,7 +850,7 @@ public class GCYMMachines {
                         .build();
             })
             .workableCasingModel(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
-                    GTCEu.id("block/multiblock/gcym/mega_blast_furnace"))
+                    GTCEu.id("block/multiblock/gcym/rotary_hearth_furnace"))
             .additionalDisplay((controller, syncManager) -> {
                 if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
                     return Collections.emptyList();
@@ -871,8 +871,8 @@ public class GCYMMachines {
             })
             .register();
 
-    public final static MultiblockMachineDefinition MEGA_VACUUM_FREEZER = REGISTRATE
-            .multiblock("mega_vacuum_freezer", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition BULK_BLAST_CHILLER = REGISTRATE
+            .multiblock("bulk_blast_chiller", WorkableElectricMultiblockMachine::new)
             .langValue("Bulk Blast Chiller")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
@@ -902,7 +902,7 @@ public class GCYMMachines {
                     .where('#', any())
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
-                    GTCEu.id("block/multiblock/gcym/mega_vacuum_freezer"))
+                    GTCEu.id("block/multiblock/gcym/bulk_blast_chiller"))
             .register();
     // spotless:on
 }

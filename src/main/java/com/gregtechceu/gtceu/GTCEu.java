@@ -40,15 +40,15 @@ public class GTCEu {
      * change.
      *
      * <p>
-     * Example versions:
+     * Versions:
      * <ul>
-     * <li>0: 7.5.3</li>
-     * <li>1.0: 8.0.0-SNAPSHOT+HASH1</li> // TODO set the correct hash here
-     * <li>1.1: 8.0.0-SNAPSHOT+HASH2</li>
-     * <li>2.0: 8.0.1-SNAPSHOT+HASH2</li>
+     * <li>0: 1.3.0-7.5.3</li>
+     * <li>1.0: 8.0.0-SNAPSHOT+HASH1</li> // TODO set the correct hash(es) here
+     * <li>1.1-1.6: 8.0.0-SNAPSHOT+HASH2</li>
+     * <li>2.0: 8.0.1-SNAPSHOT+HASH3</li>
      * </ul>
      */
-    public static final int GT_DATA_VERSION = DataFixUtils.makeKey(1, 5);
+    public static final int GT_DATA_VERSION = DataFixUtils.makeKey(1, 6);
 
     public GTCEu() {
         GTCEu.init();

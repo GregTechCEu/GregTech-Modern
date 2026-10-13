@@ -1,0 +1,25 @@
+package com.gregtechceu.gtceu.common.datafixer.schemas;
+
+import com.mojang.datafixers.schemas.Schema;
+import com.mojang.datafixers.types.templates.TypeTemplate;
+import net.minecraft.util.datafix.schemas.NamespacedSchema;
+
+import java.util.Map;
+import java.util.function.Supplier;
+
+public class V1_6 extends NamespacedSchema {
+
+    public V1_6(int versionKey, Schema parent) {
+        super(versionKey, parent);
+    }
+
+    @Override
+    public Map<String, Supplier<TypeTemplate>> registerBlockEntities(Schema schema) {
+        Map<String, Supplier<TypeTemplate>> map = super.registerBlockEntities(schema);
+
+        schema.register(map, "gtceu:rotary_hearth_furnace", map.remove("gtceu:mega_blast_furnace"));
+        schema.register(map, "gtceu:bulk_blast_chiller", map.remove("gtceu:mega_vacuum_freezer"));
+
+        return map;
+    }
+}

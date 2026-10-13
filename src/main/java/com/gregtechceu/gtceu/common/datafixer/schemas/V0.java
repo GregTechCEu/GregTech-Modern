@@ -406,8 +406,8 @@ public class V0 extends NamespacedSchema {
         schema.registerSimple(map, "gtceu:large_extruder");
         schema.registerSimple(map, "gtceu:large_solidifier");
         schema.registerSimple(map, "gtceu:large_wiremill");
-        schema.registerSimple(map, "gtceu:mega_blast_furnace"); // TODO add fixer to rename to "rotary_hearth_furnace"
-        schema.registerSimple(map, "gtceu:mega_vacuum_freezer"); // TODO add fixer to rename to "bulk_blast_chiller"
+        schema.registerSimple(map, "gtceu:mega_blast_furnace");
+        schema.registerSimple(map, "gtceu:mega_vacuum_freezer");
         // endregion
         // endregion
 
