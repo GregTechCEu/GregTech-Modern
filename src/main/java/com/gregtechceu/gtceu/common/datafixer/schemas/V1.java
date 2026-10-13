@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.common.datafixer.schemas;
 
+import net.minecraft.util.datafix.schemas.NamespacedSchema;
+
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
-import net.minecraft.util.datafix.schemas.NamespacedSchema;
 
 import java.util.Map;
 import java.util.function.Supplier;

@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.common.datafixer.fixes;
 
 import com.gregtechceu.gtceu.common.data.datafixer.GTReferences;
-import com.mojang.datafixers.types.Type;
+
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.util.datafix.schemas.NamespacedSchema;
 
 import com.mojang.datafixers.*;
 import com.mojang.datafixers.schemas.Schema;
+import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.util.Pair;
 
 import java.util.Objects;

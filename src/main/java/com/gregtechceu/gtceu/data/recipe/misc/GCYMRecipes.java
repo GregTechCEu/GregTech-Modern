@@ -104,8 +104,8 @@ public class GCYMRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "blast_alloy_smelter", BLAST_ALLOY_SMELTER.asStack(), "TCT",
                 "WXW", "TCT", 'C', CustomTags.EV_CIRCUITS, 'T', new MaterialEntry(plate, TantalumCarbide), 'W',
                 new MaterialEntry(cableGtSingle, Aluminium), 'X', ALLOY_SMELTER[EV].asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "rotary_hearth_furnace", ROTARY_HEARTH_FURNACE.asStack(), "PCP",
-                "FSF", "DWD", 'C', ZPM_CIRCUITS, 'S', GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(), 'F',
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "rotary_hearth_furnace", ROTARY_HEARTH_FURNACE.asStack(),
+                "PCP", "FSF", "DWD", 'C', ZPM_CIRCUITS, 'S', GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(), 'F',
                 FIELD_GENERATOR_ZPM.asStack(), 'P', new MaterialEntry(spring, Naquadah), 'D',
                 new MaterialEntry(plateDense, NaquadahAlloy), 'W',
                 new MaterialEntry(wireGtQuadruple, RutheniumTriniumAmericiumNeutronate));

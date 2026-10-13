@@ -23,7 +23,8 @@ public class FixedDataFixerUpper extends DataFixerUpper {
     private final List<DataFix> globalList;
     private final Long2ObjectMap<TypeRewriteRule> rules = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<>());
 
-    protected FixedDataFixerUpper(Int2ObjectSortedMap<Schema> schemas, List<DataFix> globalList, IntSortedSet fixerVersions) {
+    protected FixedDataFixerUpper(Int2ObjectSortedMap<Schema> schemas, List<DataFix> globalList,
+                                  IntSortedSet fixerVersions) {
         super(schemas, globalList, fixerVersions);
         this.globalList = globalList;
     }

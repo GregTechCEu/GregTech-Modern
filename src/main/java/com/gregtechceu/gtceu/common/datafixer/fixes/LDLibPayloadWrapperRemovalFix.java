@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.datafixer.fixes;
 
-import com.mojang.serialization.OptionalDynamic;
 import net.minecraft.util.datafix.fixes.References;
 
 import com.mojang.datafixers.*;

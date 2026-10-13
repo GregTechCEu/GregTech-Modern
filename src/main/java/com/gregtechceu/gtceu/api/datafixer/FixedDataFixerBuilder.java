@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 /// This class is a full copy of {@link DataFixerBuilder} because all of its fields are private and thus needed to be
 /// copied here. There was only one method that didn't need to be copied, so extending it is pointless.
 public class FixedDataFixerBuilder {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(FixedDataFixerBuilder.class);
 
     private final int dataVersion;
@@ -36,9 +37,11 @@ public class FixedDataFixerBuilder {
         return addSchema(version, 0, factory);
     }
 
-    public Schema addSchema(final int version, final int subVersion, final BiFunction<Integer, Schema, Schema> factory) {
+    public Schema addSchema(final int version, final int subVersion,
+                            final BiFunction<Integer, Schema, Schema> factory) {
         final int key = DataFixUtils.makeKey(version, subVersion);
-        final Schema parent = schemas.isEmpty() ? null : schemas.get(FixedDataFixerUpper.getLowestSchemaSameVersion(schemas, key - 1));
+        final Schema parent = schemas.isEmpty() ? null :
+                schemas.get(FixedDataFixerUpper.getLowestSchemaSameVersion(schemas, key - 1));
         final Schema schema = factory.apply(DataFixUtils.makeKey(version, subVersion), parent);
         addSchema(schema);
         return schema;
@@ -52,7 +55,8 @@ public class FixedDataFixerBuilder {
         final int version = DataFixUtils.getVersion(fix.getVersionKey());
 
         if (version > dataVersion) {
-            LOGGER.warn("Ignored fix registered for version: {} as the DataVersion of the game is: {}", version, dataVersion);
+            LOGGER.warn("Ignored fix registered for version: {} as the DataVersion of the game is: {}", version,
+                    dataVersion);
             return;
         }
 
@@ -70,7 +74,8 @@ public class FixedDataFixerBuilder {
         final Instant started = Instant.now();
         final List<CompletableFuture<Void>> futures = Lists.newArrayList();
 
-        final Set<String> requiredTypeNames = requiredTypes.stream().map(DSL.TypeReference::typeName).collect(Collectors.toSet());
+        final Set<String> requiredTypeNames = requiredTypes.stream().map(DSL.TypeReference::typeName)
+                .collect(Collectors.toSet());
 
         final IntBidirectionalIterator iterator = fixerUpper.fixerVersions().iterator();
         while (iterator.hasNext()) {
@@ -94,13 +99,15 @@ public class FixedDataFixerBuilder {
         }
 
         CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).thenAccept(ignored -> {
-            LOGGER.info("{} Datafixer optimizations took {} milliseconds", futures.size(), Duration.between(started, Instant.now()).toMillis());
+            LOGGER.info("{} Datafixer optimizations took {} milliseconds", futures.size(),
+                    Duration.between(started, Instant.now()).toMillis());
         });
 
         return fixerUpper;
     }
 
     private FixedDataFixerUpper build() {
-        return new FixedDataFixerUpper(new Int2ObjectAVLTreeMap<>(schemas), new ArrayList<>(globalList), new IntAVLTreeSet(fixerVersions));
+        return new FixedDataFixerUpper(new Int2ObjectAVLTreeMap<>(schemas), new ArrayList<>(globalList),
+                new IntAVLTreeSet(fixerVersions));
     }
 }

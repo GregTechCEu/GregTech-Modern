@@ -32,7 +32,8 @@ import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 /**
- * Register new datafixers in {@link #addFixers(FixedDataFixerBuilder)}. Remember to bump {@link GTCEu#GT_DATA_VERSION} in
+ * Register new datafixers in {@link #addFixers(FixedDataFixerBuilder)}. Remember to bump {@link GTCEu#GT_DATA_VERSION}
+ * in
  * every PR that changes existing save data and add a schema & fixer for it here.
  *
  * <p>
@@ -195,7 +196,6 @@ public class GTDataFixers {
                 createRenamer("gtceu:mega_blast_furnace", "gtceu:rotary_hearth_furnace"));
         createBlockItemEntityRenameFix(builder, v3_1, "Rename Bulk Blast Chiller",
                 createRenamer("gtceu:mega_vacuum_freezer", "gtceu:bulk_blast_chiller"));
-
     }
 
     private static void createBlockItemRenameFix(FixedDataFixerBuilder builder, Schema schema, String name,

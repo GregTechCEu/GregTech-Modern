@@ -3,11 +3,11 @@ package com.gregtechceu.gtceu.common.datafixer.schemas;
 import com.gregtechceu.gtceu.core.mixins.datafixer.V705Accessor;
 
 import net.minecraft.util.datafix.fixes.References;
+import net.minecraft.util.datafix.schemas.NamespacedSchema;
 
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.Hook;
 import com.mojang.datafixers.types.templates.TypeTemplate;
-import net.minecraft.util.datafix.schemas.NamespacedSchema;
 
 import java.util.Map;
 import java.util.function.Supplier;

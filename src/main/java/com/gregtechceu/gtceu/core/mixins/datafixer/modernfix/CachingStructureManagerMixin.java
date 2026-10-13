@@ -3,13 +3,15 @@ package com.gregtechceu.gtceu.core.mixins.datafixer.modernfix;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.datafixer.DataFixHelper;
 import com.gregtechceu.gtceu.common.data.datafixer.GTDataFixers;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+
 import com.llamalad7.mixinextras.expression.Definition;
 import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.datafixers.DataFixer;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import org.embeddedt.modernfix.structure.CachingStructureManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -40,7 +42,11 @@ public class CachingStructureManagerMixin {
         return original && cachedUpgraded.getInt(DataFixHelper.GT_DATA_VERSION_TAG) == GTCEu.GT_DATA_VERSION;
     }
 
-    @Inject(method = "readStructureTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/CompoundTag;putInt(Ljava/lang/String;I)V", remap = true, ordinal = 1))
+    @Inject(method = "readStructureTag",
+            at = @At(value = "INVOKE",
+                     target = "Lnet/minecraft/nbt/CompoundTag;putInt(Ljava/lang/String;I)V",
+                     remap = true,
+                     ordinal = 1))
     private static void gtceu$addGTDataVersion(ResourceLocation location, DataFixer datafixer, InputStream stream,
                                                CallbackInfoReturnable<CompoundTag> cir,
                                                @Local(name = "currentTag") CompoundTag currentTag) {

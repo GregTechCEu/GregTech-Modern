@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
-  "machine": "gtceu:mega_blast_furnace",
+  "machine": "gtceu:rotary_hearth_furnace",
   "texture_overrides": {
     "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing"
   },
@@ -11,8 +11,8 @@
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
           "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing",
-          "overlay_front": "gtceu:block/multiblock/gcym/mega_blast_furnace/overlay_front",
-          "overlay_front_emissive": "gtceu:block/multiblock/gcym/mega_blast_furnace/overlay_front_emissive"
+          "overlay_front": "gtceu:block/multiblock/gcym/rotary_hearth_furnace/overlay_front",
+          "overlay_front_emissive": "gtceu:block/multiblock/gcym/rotary_hearth_furnace/overlay_front_emissive"
         }
       }
     },
@@ -21,8 +21,8 @@
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
           "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing",
-          "overlay_front": "gtceu:block/multiblock/gcym/mega_blast_furnace/overlay_front_paused",
-          "overlay_front_emissive": "gtceu:block/multiblock/gcym/mega_blast_furnace/overlay_front_paused_emissive"
+          "overlay_front": "gtceu:block/multiblock/gcym/rotary_hearth_furnace/overlay_front_paused",
+          "overlay_front_emissive": "gtceu:block/multiblock/gcym/rotary_hearth_furnace/overlay_front_paused_emissive"
         }
       }
     },
@@ -31,8 +31,8 @@
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
           "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing",
-          "overlay_front": "gtceu:block/multiblock/gcym/mega_blast_furnace/overlay_front_active",
-          "overlay_front_emissive": "gtceu:block/multiblock/gcym/mega_blast_furnace/overlay_front_active_emissive"
+          "overlay_front": "gtceu:block/multiblock/gcym/rotary_hearth_furnace/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/gcym/rotary_hearth_furnace/overlay_front_active_emissive"
         }
       }
     },
@@ -41,8 +41,8 @@
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
           "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing",
-          "overlay_front": "gtceu:block/multiblock/gcym/mega_blast_furnace/overlay_front_active",
-          "overlay_front_emissive": "gtceu:block/multiblock/gcym/mega_blast_furnace/overlay_front_active_emissive"
+          "overlay_front": "gtceu:block/multiblock/gcym/rotary_hearth_furnace/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/gcym/rotary_hearth_furnace/overlay_front_active_emissive"
         }
       }
     }
