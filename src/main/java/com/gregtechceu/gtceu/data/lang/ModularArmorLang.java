@@ -113,7 +113,7 @@ public class ModularArmorLang {
                 "Reports machine explosions (for machines placed by the player)");
         provider.add("module.gtceu.wireless_charger", "Quantum Charger (%s)");
         provider.add("module.gtceu.wireless_charger.description",
-                "Links armor to a Battery Buffer or Power Substation across any distance and dimension (1A %s max). Right-click to link to storage.");
+                "Links armor to a Battery Buffer or Power Substation across any distance and dimension (up to %s, configurable 1-16A). Right-click to link to storage.");
         provider.add("module.gtceu.creative_flight", "Creative Flight Module");
         provider.add("module.gtceu.creative_flight.description",
                 "Allows creative flight (consumes %s EU/t while flying)");

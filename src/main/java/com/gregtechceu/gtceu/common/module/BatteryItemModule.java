@@ -53,7 +53,8 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
         if (!(batteryItem instanceof IComponentItem componentItem)) return null;
         for (var component : componentItem.getComponents()) {
             if (component instanceof ElectricStats stats) {
-                return new ElectricItem(stack, stats.maxCharge, stats.tier, stats.chargeable, stats.dischargeable);
+                return new ElectricItem(stack, stats.maxCharge, stats.tier, stats.chargeable,
+                        stats.dischargeable && !(stack.getItem() instanceof ArmorItem));
             }
         }
         return null;
