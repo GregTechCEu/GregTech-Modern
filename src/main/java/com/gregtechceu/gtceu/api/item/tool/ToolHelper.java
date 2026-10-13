@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -436,7 +437,8 @@ public class ToolHelper {
 
             RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
                     new DummyRecipeUtils.DummyEnergyContainer(GTValues.V[GTValues.LV], GTValues.V[GTValues.LV], 1),
-                    new DummyRecipeUtils.DummyItemHandler(IO.IN, NonNullList.of(silkTouchDrop)));
+                    new DummyRecipeUtils.DummyItemHandler(IO.IN,
+                            NonNullList.of(ItemStack.EMPTY, silkTouchDrop.copy())));
 
             RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
                     new DummyRecipeUtils.DummyItemHandler(IO.OUT, 2));
@@ -471,6 +473,11 @@ public class ToolHelper {
                 // only apply hammer drop conversion to ore blocks
                 if (!isOre) {
                     drops.add(output);
+                    continue;
+                }
+                // GT ore Fortune is applied once, after conversion, by the harvest handler.
+                if (state.getBlock() instanceof OreBlock) {
+                    drops.add(output.copy());
                     continue;
                 }
                 // Only apply fortune on ore -> crushed forge hammer recipes
