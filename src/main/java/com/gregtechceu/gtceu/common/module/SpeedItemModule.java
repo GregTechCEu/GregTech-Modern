@@ -15,7 +15,6 @@ import net.minecraft.world.phys.Vec3;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
