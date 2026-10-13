@@ -312,7 +312,8 @@ public class GTMuiWidgets {
                 }))
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder((r) -> r
-                        .addLine(Text.lang("item.gtceu.circuit.integrated.gui").append(": " + circuitTrait.getCurrentCircuit())));
+                        .addLine(Text.lang("item.gtceu.circuit.integrated.gui")
+                                .append(": " + circuitTrait.getCurrentCircuit())));
     }
 
     private static int nextCircuitValue(ItemStack stack, int current, double delta) {

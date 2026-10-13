@@ -195,12 +195,14 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
                 tooltipComponents.add(Component.translatable("tooltip.gtceu.spoilage.location",
                         ctx.level().dimensionTypeId().location().toString(),
                         ctx.pos().getX(), ctx.pos().getY(), ctx.pos().getZ()));
-            if (ctx.entity() != null) tooltipComponents.add(Component.translatable("tooltip.gtceu.spoilage.location_entity",
-                    ctx.entity().getType().getDescription()));
+            if (ctx.entity() != null)
+                tooltipComponents.add(Component.translatable("tooltip.gtceu.spoilage.location_entity",
+                        ctx.entity().getType().getDescription()));
             if (ctx.itemHandlerSource() != null) tooltipComponents
                     .add(Component.translatable("tooltip.gtceu.spoilage.item_handler_source", ctx.itemHandlerSource()));
             if (ctx.itemHandlerData() != null)
-                tooltipComponents.add(Component.translatable("tooltip.gtceu.spoilage.item_handler_data", ctx.itemHandlerData()));
+                tooltipComponents
+                        .add(Component.translatable("tooltip.gtceu.spoilage.item_handler_data", ctx.itemHandlerData()));
             if (ctx.slot() != -1)
                 tooltipComponents.add(Component.translatable("tooltip.gtceu.spoilage.location_slot", ctx.slot()));
         }

@@ -53,7 +53,6 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.EXPORT_ITEMS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_output_bus"))
-            .tooltipLang()
             .tooltips(
                     Component.translatable("machine.gtceu.item_bus.export.tooltip"),
                     Component.translatable("machine.gtceu.me.item_export.tooltip"),
@@ -115,6 +114,7 @@ public class GTAEMachines {
             .tooltipLang("§fAllows direct §6AE2 pattern storage §ffor GregTech Multiblocks.",
                     "§fAE2 Patterns can utilize anything stored in the §6shared inventory §fwidget.",
                     "§fLink §6Pattern Buffer Proxies §fwith a §bdatastick §fto link machines together!")
+            .defaultTooltip()
             .tooltips(Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
     public static final MachineDefinition ME_PATTERN_BUFFER_PROXY = REGISTRATE
@@ -128,6 +128,7 @@ public class GTAEMachines {
             .tooltipLang("§fAllows linking many machines to a singular §6ME Pattern Buffer§f.",
                     "§fAll connected proxies will share the patterns held within the §6original buffer§f.",
                     "§fLet the factory grow!")
+            .defaultTooltip()
             .tooltips(Component.translatable("multiblock.gtceu.part_sharing.enabled"))
             .register();
 

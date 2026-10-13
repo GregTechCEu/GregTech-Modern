@@ -957,8 +957,13 @@ public class GTMachineUtils {
                                         tankScalingFunction.applyAsInt(tier), true))
                                 .ui(panelFactory);
 
-                        if (tieredTooltipLang.containsKey(tier)) builder.tooltipLang(tieredTooltipLang.get(tier));
-                        else if (defaultTooltipLang != null) builder.tooltipLang(defaultTooltipLang);
+                        if (tieredTooltipLang.containsKey(tier)) {
+                            builder.tooltipLang(tieredTooltipLang.get(tier));
+                            builder.defaultTooltip();
+                        } else if (defaultTooltipLang != null) {
+                            builder.tooltipLang(defaultTooltipLang);
+                            builder.defaultTooltip();
+                        }
 
                         return builder.register();
                     },

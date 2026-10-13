@@ -88,6 +88,7 @@ public class GTMachines {
                     .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
                     .tooltipLang(pressure ? "Faster than the Small Steam Solid Fuel Boiler" :
                             "An early way to get Steam Power")
+                    .defaultTooltip()
                     .tooltips(Component.translatable("common.gtceu.tooltip.produces_fluid",
                             (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolidBoilerBaseOutput :
                                     ConfigHolder.INSTANCE.machines.smallBoilers.solidBoilerBaseOutput) *
@@ -105,6 +106,7 @@ public class GTMachines {
                     .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
                     .tooltipLang(pressure ? "Faster than the Small Steam Liquid Fuel Boiler" :
                             "A Boiler running off Liquids")
+                    .defaultTooltip()
                     .tooltips(Component.translatable("common.gtceu.tooltip.produces_fluid",
                             (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpLiquidBoilerBaseOutput :
                                     ConfigHolder.INSTANCE.machines.smallBoilers.liquidBoilerBaseOutput) *
@@ -121,6 +123,7 @@ public class GTMachines {
                     .workableSteamHullModel(pressure, GTCEu.id("block/generators/boiler/solar"))
                     .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
                     .tooltipLang("Steam Power by Sun")
+                    .defaultTooltip()
                     .tooltips(Component.translatable("common.gtceu.tooltip.produces_fluid",
                             (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolarBoilerBaseOutput :
                                     ConfigHolder.INSTANCE.machines.smallBoilers.solarBoilerBaseOutput) *
@@ -140,6 +143,7 @@ public class GTMachines {
                     .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
                     .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                     .tooltipLang("Macerating your Ores without Byproducts")
+                    .defaultTooltip()
                     .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                     .workableSteamHullModel(pressure, GTCEu.id("block/machines/macerator"))
                     .register());
@@ -167,6 +171,7 @@ public class GTMachines {
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(DUMMY_RECIPES)
                     .tooltipLang("Mines ores below the Miner!")
+                    .defaultTooltip()
                     .tooltips(Component.translatable("common.gtceu.tooltip.uses_per_tick_steam", isHP ? 32 : 16)
                             .append(ChatFormatting.GRAY + ", ")
                             .append(Component.translatable("machine.gtceu.miner.per_block",
@@ -223,6 +228,7 @@ public class GTMachines {
                         case IV, LuV, ZPM -> "Discharge Heater";
                         default -> "Short Circuit Heater";
                     })
+                    .defaultTooltip()
                     .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
                             GTRecipeTypes.ARC_FURNACE_RECIPES, defaultTankSizeFunction.applyAsInt(tier), true))
                     .register(),
@@ -465,6 +471,7 @@ public class GTMachines {
                     .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
                     .workableTieredHullModel(GTCEu.id("block/machines/macerator"))
+                    .defaultTooltip()
                     .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
                             GTRecipeTypes.MACERATOR_RECIPES, defaultTankSizeFunction.applyAsInt(tier), true))
                     .register(),
@@ -494,6 +501,7 @@ public class GTMachines {
                         case ZPM -> "Cryogenic Magma Solidifier R-10200";
                         default -> "Volcanic Formation Chamber";
                     })
+                    .defaultTooltip()
                     .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
                             GTRecipeTypes.ROCK_BREAKER_RECIPES, defaultTankSizeFunction.applyAsInt(tier), true))
                     .tooltips(explosion())
@@ -1123,6 +1131,7 @@ public class GTMachines {
             .simpleModel(GTCEu.id("block/machine/part/coke_oven_hatch"))
             .themeId(GTGuiTheme.PRIMITIVE.getId())
             .tooltipLang("Allows automation access for the Coke Oven.")
+            .defaultTooltip()
             .register();
 
     public static final MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)
@@ -1143,6 +1152,7 @@ public class GTMachines {
                     }))
             .themeId(GTGuiTheme.PRIMITIVE.getId())
             .tooltipLang("Primitive Fluid Output for Water Pump")
+            .defaultTooltip()
             .register();
 
     public static final MachineDefinition MAINTENANCE_HATCH = REGISTRATE

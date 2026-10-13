@@ -205,5 +205,4 @@ public class ItemLang {
         provider.add("tooltip.gtceu.spoilage.item_handler_data", "Handler data: %s");
         provider.add("tooltip.gtceu.spoilage.location_slot", "Slot: %s");
     }
-
 }
