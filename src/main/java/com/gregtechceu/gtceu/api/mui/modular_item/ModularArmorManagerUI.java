@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.common.mui.drawable.BorderDrawable;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -13,12 +12,12 @@ import net.minecraft.world.item.ItemStack;
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.IUIHolder;
 import brachy.modularui.api.drawable.Text;
-import brachy.modularui.drawable.DynamicDrawable;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.layout.Flow;
@@ -45,21 +44,17 @@ public class ModularArmorManagerUI implements IUIHolder<ModularArmorUIFactory.Ar
             int pageIndex = armorIndex + 1;
             ItemStack stack = data.armor[armorIndex];
             IModularItem modular = GTCapabilityHelper.getModularItem(stack);
-            ButtonWidget<?> button = new ButtonWidget<>().size(36)
+            ToggleButton button = new ToggleButton().size(36)
                     .overlay(stack.isEmpty() ? Text.str("-") : new ItemDrawable(stack).asIcon().size(20))
                     .tooltipDynamic(tooltip -> {
                         tooltip.add(Component.translatable("gui.gtceu.armor_config." + labels[pageIndex - 1]));
                         if (!stack.isEmpty()) tooltip.add(stack.getHoverName());
                     })
-                    .onMousePressed((ctx, mouseButton) -> {
-                        if (mouseButton != 0 || modular == null) return false;
+                    .value(new BoolValue.Dynamic(() -> pages.getCurrentPageIndex() == pageIndex, selected -> {
+                        if (!selected || modular == null) return;
                         popouts.forEach(IPanelHandler::closePanel);
                         pages.setPage(pageIndex);
-                        return true;
-                    });
-            button.playClickSound(modular != null);
-            button.backgroundOverlay(new DynamicDrawable(
-                    () -> new BorderDrawable(pages.getCurrentPageIndex() == pageIndex ? 0xFFFFFFFF : 0x00000000, 1)));
+                    }));
             armorList.child(button);
             Flow moduleList = Flow.col().size(224, 208).childPadding(2);
             moduleList.child(new TextWidget<>(Text.dynamic(stack::getHoverName))
@@ -75,7 +70,8 @@ public class ModularArmorManagerUI implements IUIHolder<ModularArmorUIFactory.Ar
                     popouts.add(handler);
                     moduleList.child(new ButtonWidget<>().size(224, 16)
                             .overlay(Text.dynamic(() -> applied.getModule().getDisplayName(applied)).scale(0.75f))
-                            .tooltipDynamic(tooltip -> GTMuiWidgets.addWrappedModuleDescription(tooltip, applied.getModule().getInfo()))
+                            .tooltipDynamic(tooltip -> GTMuiWidgets.addWrappedModuleDescription(tooltip,
+                                    applied.getModule().getInfo()))
                             .onMousePressed((ctx, mouseButton) -> {
                                 if (mouseButton != 0) return false;
                                 for (IPanelHandler other : popouts) {
