@@ -35,9 +35,11 @@ import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 import com.gregtechceu.gtceu.utils.LangUtil;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -785,7 +787,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.setRecipeOutputLimits(recipeOutputLimits);
         definition.setBlockEntityTypeSupplier(blockEntity::get);
         definition.setTooltipBuilder((itemStack, components) -> {
-            components.addAll(tooltips);
+            components.addAll(tooltips.stream().map(v -> v instanceof MutableComponent m
+                    && m.getStyle().getColor() == null ? m.withStyle(ChatFormatting.GRAY) : v).toList());
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
         });
         definition.setRecipeModifier(recipeModifier);
