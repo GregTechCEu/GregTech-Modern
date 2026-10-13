@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins.datafixer.modernfix;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.datafixer.DataFixHelper;
+import com.gregtechceu.gtceu.common.data.datafixer.GTDataFixers;
 import com.llamalad7.mixinextras.expression.Definition;
 import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -25,6 +26,7 @@ public class CachingStructureManagerMixin {
     @ModifyExpressionValue(method = "readStructureTag", at = @At("MIXINEXTRAS:EXPRESSION"))
     private static boolean gtceu$alsoRequireGTDataVersionToBeUpToDate1(boolean original,
                                                                        @Local CompoundTag currentTag) {
+        if (GTDataFixers.getDataFixer() == null) return original;
         return original || DataFixHelper.getGTDataVersion(currentTag) < GTCEu.GT_DATA_VERSION;
     }
 
@@ -34,6 +36,7 @@ public class CachingStructureManagerMixin {
     @ModifyExpressionValue(method = "readStructureTag", at = @At("MIXINEXTRAS:EXPRESSION"))
     private static boolean gtceu$alsoRequireGTDataVersionToBeUpToDate2(boolean original,
                                                                        @Local(name = "cachedUpgraded") CompoundTag cachedUpgraded) {
+        if (GTDataFixers.getDataFixer() == null) return original;
         return original && cachedUpgraded.getInt(DataFixHelper.GT_DATA_VERSION_TAG) == GTCEu.GT_DATA_VERSION;
     }
 

@@ -7,9 +7,9 @@ import net.minecraft.util.datafix.schemas.NamespacedSchema;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class V1_6 extends NamespacedSchema {
+public class V3_1 extends NamespacedSchema {
 
-    public V1_6(int versionKey, Schema parent) {
+    public V3_1(int versionKey, Schema parent) {
         super(versionKey, parent);
     }
 

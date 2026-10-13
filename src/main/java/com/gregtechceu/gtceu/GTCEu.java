@@ -42,13 +42,13 @@ public class GTCEu {
      * <p>
      * Versions:
      * <ul>
-     * <li>0: 1.3.0-7.5.3</li>
-     * <li>1.0: 8.0.0-SNAPSHOT+HASH1</li> // TODO set the correct hash(es) here
-     * <li>1.1-1.6: 8.0.0-SNAPSHOT+HASH2</li>
-     * <li>2.0: 8.0.1-SNAPSHOT+HASH3</li>
+     * <li>0: 1.3.0-7.5.2</li>
+     * <li>1: upgrade to 7.5.3</li>
+     * <li>2-3: upgrade to 8.0.0</li>
+     * <li>4: 8.0.1-SNAPSHOT-???????</li>
      * </ul>
      */
-    public static final int GT_DATA_VERSION = DataFixUtils.makeKey(1, 6);
+    public static final int GT_DATA_VERSION = 3;
 
     public GTCEu() {
         GTCEu.init();

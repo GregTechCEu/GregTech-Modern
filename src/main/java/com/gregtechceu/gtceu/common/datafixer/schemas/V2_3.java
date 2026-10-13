@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.ELECTRIC_TIERS;
-import static com.gregtechceu.gtceu.common.datafixer.schemas.V1_3.registerSimpleMachine;
+import static com.gregtechceu.gtceu.common.datafixer.schemas.V2_2.registerSimpleMachine;
 
-public class V1_4 extends NamespacedSchema {
+public class V2_3 extends NamespacedSchema {
 
-    public V1_4(int versionKey, Schema parent) {
+    public V2_3(int versionKey, Schema parent) {
         super(versionKey, parent);
     }
 

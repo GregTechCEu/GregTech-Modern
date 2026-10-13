@@ -14,9 +14,9 @@ import java.util.function.Supplier;
 
 import static com.mojang.datafixers.DSL.*;
 
-public class V1_5 extends NamespacedSchema {
+public class V3 extends NamespacedSchema {
 
-    public V1_5(int versionKey, Schema parent) {
+    public V3(int versionKey, Schema parent) {
         super(versionKey, parent);
     }
 

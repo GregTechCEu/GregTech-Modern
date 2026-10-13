@@ -20,9 +20,9 @@ import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.ALL_TIER
 import static com.gregtechceu.gtceu.common.datafixer.schemas.V0.*;
 import static com.mojang.datafixers.DSL.*;
 
-public class V1_3 extends NamespacedSchema {
+public class V2_2 extends NamespacedSchema {
 
-    public V1_3(int versionKey, Schema parent) {
+    public V2_2(int versionKey, Schema parent) {
         super(versionKey, parent);
     }
 
