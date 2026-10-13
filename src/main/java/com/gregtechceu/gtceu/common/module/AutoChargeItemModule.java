@@ -111,12 +111,11 @@ public class AutoChargeItemModule extends TieredItemModule {
             if (demand > 0) candidates.add(new Candidate(stack, demand));
         }
         if (candidates.isEmpty()) return;
-        // Rotate equal-demand candidates so rounding does not always favor the same slots.
+        // Evenly charge all items that can be charged.
         Collections.rotate(candidates, Math.floorMod(player.tickCount, candidates.size()));
         candidates.sort(Comparator.comparingLong(Candidate::demand));
         for (int i = 0; i < candidates.size() && remaining > 0; i++) {
             Candidate candidate = candidates.get(i);
-            // Satisfy small demands first; their unused share goes to the remaining candidates.
             long share = Math.min(candidate.demand(), remaining / (candidates.size() - i));
             if (share > 0) {
                 remaining -= chargeCarriedItem(share, sourceStack, source, candidate.stack(), voltageTier, false);
