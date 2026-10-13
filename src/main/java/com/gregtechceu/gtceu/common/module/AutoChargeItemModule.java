@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.module;
 
-import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -29,6 +28,15 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 
+import brachy.modularui.api.IPanelHandler;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.Dialog;
+import brachy.modularui.widgets.ListWidget;
+import brachy.modularui.widgets.layout.Flow;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
@@ -99,9 +107,9 @@ public class AutoChargeItemModule extends TieredItemModule {
         if (GTCEu.Mods.isCuriosLoaded()) {
             IItemHandler curios = CuriosApi.getCuriosInventory(player)
                     .<IItemHandler>map(ICuriosItemHandler::getEquippedCurios).orElse(null);
-             if (curios != null) {
-                 for (int i = 0; i < curios.getSlots(); i++) stacks.add(curios.getStackInSlot(i));
-             }
+            if (curios != null) {
+                for (int i = 0; i < curios.getSlots(); i++) stacks.add(curios.getStackInSlot(i));
+            }
         }
         var inventory = player.getInventory();
         for (int i = 0; i < inventory.getContainerSize(); i++) stacks.add(inventory.getItem(i));
@@ -275,7 +283,7 @@ public class AutoChargeItemModule extends TieredItemModule {
         }
 
         public AutoChargeModuleData(int slot, ItemModule module, ItemStack moduleItem) {
-            this(slot, module, moduleItem, true, (GlobalPos) null);
+            this(slot, module, moduleItem, true, null);
         }
 
         public Optional<GlobalPos> getLinkedPosOptional() {

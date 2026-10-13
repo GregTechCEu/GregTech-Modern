@@ -30,7 +30,7 @@ public class SpeedItemModule extends TieredItemModule {
     }
 
     @Override
-    public MapCodec<? extends ModuleData> moduleDataCodec() {
+    public Codec<? extends ModuleData> moduleDataCodec() {
         return SpeedModuleData.CODEC;
     }
 
@@ -112,7 +112,7 @@ public class SpeedItemModule extends TieredItemModule {
     public static class SpeedModuleData extends ModuleData {
 
         // spotless:off
-        public static final MapCodec<SpeedModuleData> CODEC = RecordCodecBuilder.mapCodec(instance -> baseCodec(instance).and(
+        public static final Codec<SpeedModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(
                 Codec.floatRange(0, 1).optionalFieldOf("strength", 1f).forGetter(SpeedModuleData::getStrength)
         ).apply(instance, SpeedModuleData::new));
         //spotless:on
@@ -128,11 +128,6 @@ public class SpeedItemModule extends TieredItemModule {
         @Override
         public ModuleData copy() {
             return new SpeedModuleData(slot, module, moduleItem.copy(), enabled, strength);
-        }
-
-        @Override
-        public ModuleData withModuleItem(ItemStack moduleItem) {
-            return new SpeedModuleData(slot, module, moduleItem, enabled, strength);
         }
 
         public SpeedModuleData withStrength(float strength) {
