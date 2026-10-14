@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.pattern.MultiblockState;
-import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
-
-import com.lowdragmc.lowdraglib.async.AsyncThreadData;
+import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -22,7 +20,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Mixin(Level.class)
@@ -40,7 +37,6 @@ public abstract class LevelMixin implements LevelAccessor {
     private void gtceu$getBlockEntityOffThread(BlockPos pos, CallbackInfoReturnable<BlockEntity> cir) {
         if (Thread.currentThread() == this.thread) return;
         if (this.isClientSide) return;
-        if (!MultiblockWorldSavedData.isThreadService() && !AsyncThreadData.isThreadService()) return;
 
         int chunkX = pos.getX() >> 4, chunkZ = pos.getZ() >> 4;
         if (!this.getChunkSource().hasChunk(chunkX, chunkZ)) return;
@@ -55,7 +51,6 @@ public abstract class LevelMixin implements LevelAccessor {
     private void gtceu$getBlockStateOffThread(BlockPos pos, CallbackInfoReturnable<BlockState> cir) {
         if (Thread.currentThread() == this.thread) return;
         if (this.isClientSide) return;
-        if (!MultiblockWorldSavedData.isThreadService() && !AsyncThreadData.isThreadService()) return;
 
         int chunkX = pos.getX() >> 4, chunkZ = pos.getZ() >> 4;
         if (!this.getChunkSource().hasChunk(chunkX, chunkZ)) return;
@@ -78,10 +73,11 @@ public abstract class LevelMixin implements LevelAccessor {
         if (!(((Object) this) instanceof ServerLevel serverLevel)) return;
 
         MultiblockWorldSavedData mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
-        Set<MultiblockState> defensiveCopy = new HashSet<>(mwsd.getControllersInChunk(chunk.getPos()));
-        for (MultiblockState structure : defensiveCopy) {
-            if (structure.isPosInCache(pos)) {
-                serverLevel.getServer().executeBlocking(() -> structure.onBlockStateChanged(pos, newState));
+        Set<PatternState> defensiveCopy = Set.of(mwsd.getPatternsInChunk(chunk.getPos()));
+        for (PatternState patternState : defensiveCopy) {
+            if (patternState.getCache().containsKey(pos.asLong())) {
+                serverLevel.getServer()
+                        .executeBlocking(() -> patternState.onBlockStateChanged(pos, oldState, newState));
             }
         }
     }

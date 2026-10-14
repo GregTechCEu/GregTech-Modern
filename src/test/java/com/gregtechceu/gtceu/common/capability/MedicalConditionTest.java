@@ -208,8 +208,9 @@ public class MedicalConditionTest {
                 .thenExecute(() -> {
                     // check if they were all consumed
                     helper.assertHeldItemCountIs(player, Items.AIR, 0, InteractionHand.MAIN_HAND);
-                    // check that the poisoning is gone
-                    helper.assertFreeOfCondition(player, GTMedicalConditions.WEAK_POISON);
+                    // each Paracetamol removes ceil(10%) of the remaining weak poisoning, so 16 pills
+                    // reduce 100 counts down to 15 (100 -> 90 -> 81 -> ... -> 17 -> 15)
+                    helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON, 15);
                 })
                 .thenSucceed();
     }

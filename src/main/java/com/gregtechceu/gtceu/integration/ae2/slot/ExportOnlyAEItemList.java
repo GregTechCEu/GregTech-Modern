@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.slot;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -84,7 +84,8 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
     @Override
     public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
                                               boolean simulate) {
-        return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, this.handlerIO, getHandler());
+        return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, this.handlerIO, getHandler(),
+                getMachine());
     }
 
     @Override

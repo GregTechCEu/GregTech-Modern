@@ -58,7 +58,7 @@ public class GTDynamicPackContents {
         void outputResources(String namespace, String path, PackResources.ResourceOutput output) {
             if (isTerminalNode()) {
                 // This is a terminal node.
-                ResourceLocation location = new ResourceLocation(namespace, path);
+                ResourceLocation location = ResourceLocation.fromNamespaceAndPath(namespace, path);
                 output.accept(location, this.createIoSupplier());
             } else {
                 for (var entry : getChildren().entrySet()) {

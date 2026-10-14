@@ -13,6 +13,7 @@ public class GTModelProperties {
 
     public static final ModelProperty<BlockAndTintGetter> LEVEL = new ModelProperty<>();
     public static final ModelProperty<BlockPos> POS = new ModelProperty<>();
+    public static final ModelProperty<ModelData> PARENT_MODEL_DATA = new ModelProperty<>();
 
     public static final ModelProperty<Map<Direction, ModelData>> COVER_MODEL_DATA = new ModelProperty<>();
 

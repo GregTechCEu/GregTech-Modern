@@ -1,7 +1,11 @@
 nav:
   - index.md
-  - Beyond-The-Docs.md
+  - Materials-and-Elements
+  - Multiblocks
+  - Recipes
+  - Ore-Generation
   - ...
   - Other-Topics
   - Examples
   - Changes
+  - Beyond-The-Docs.md

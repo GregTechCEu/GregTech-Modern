@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
-import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
+import com.gregtechceu.gtceu.client.model.runtimegen.TagPrefixItemModelGenerator;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -42,7 +42,7 @@ public class TagPrefixItem extends Item {
         this.tagPrefix = tagPrefix;
         this.material = material;
         if (GTCEu.isClientSide()) {
-            TagPrefixItemRenderer.create(this, tagPrefix.materialIconType(), material.getMaterialIconSet());
+            TagPrefixItemModelGenerator.add(this, tagPrefix.materialIconType(), material.getMaterialIconSet());
         }
     }
 
@@ -108,7 +108,7 @@ public class TagPrefixItem extends Item {
     }
 
     public int getItemBurnTime() {
-        DustProperty property = material.isNull() ? null : material.getProperty(PropertyKey.DUST);
+        DustProperty property = material == null ? null : material.getProperty(PropertyKey.DUST);
         if (property != null)
             return (int) (property.getBurnTime() * tagPrefix.getMaterialAmount(material) / GTValues.M);
         return -1;

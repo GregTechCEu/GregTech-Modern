@@ -4,19 +4,16 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalDataAccessHatch;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +37,7 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
     }
 
     @Override
-    public boolean isRecipeAvailable(@NotNull GTRecipe recipe, @NotNull Collection<IDataAccessHatch> seen) {
+    public boolean isRecipeAvailable(GTRecipe recipe, Collection<IDataAccessHatch> seen) {
         seen.add(this);
         if (!isFormed()) {
             return false;
@@ -48,13 +45,13 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
 
         if (isTransmitter()) {
             MultiblockControllerMachine controller = getControllers().first();
-            if (!(controller instanceof IWorkableMultiController workable) || !workable.getRecipeLogic().isWorking())
+            if (!(controller instanceof WorkableMultiblockMachine workable) || !workable.getRecipeLogic().isWorking())
                 return false;
 
             List<IDataAccessHatch> dataAccesses = new ArrayList<>();
             List<IDataAccessHatch> transmitters = new ArrayList<>();
             for (var part : controller.getParts()) {
-                Block block = part.self().getBlockState().getBlock();
+                Block block = part.getBlockState().getBlock();
                 if (part instanceof IDataAccessHatch hatch && PartAbility.DATA_ACCESS.isApplicable(block)) {
                     dataAccesses.add(hatch);
                 }
@@ -99,12 +96,7 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
     }
 
     @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        return false;
-    }
-
-    @Override
-    public boolean canShared() {
+    public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return false;
     }
 

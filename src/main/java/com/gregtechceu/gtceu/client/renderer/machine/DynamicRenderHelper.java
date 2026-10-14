@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.block.FluidBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
@@ -81,6 +81,10 @@ public class DynamicRenderHelper {
 
     public static DynamicRender<?, ?> createFusionRingRender() {
         return new FusionRingRender();
+    }
+
+    public static DynamicRender<?, ?> createAssemblyLineRender() {
+        return new AssemblyLineRender();
     }
 
     public static DynamicRender<?, ?> createQuantumChestRender() {

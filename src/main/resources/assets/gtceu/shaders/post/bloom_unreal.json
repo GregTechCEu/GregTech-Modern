@@ -1,0 +1,157 @@
+{
+    "targets": [
+        "final",
+        "filter",
+        { "name": "swap_b0", "bilinear": true },
+        { "name": "swap_b1", "bilinear": true },
+        { "name": "swap_b2", "bilinear": true },
+        { "name": "swap_b3", "bilinear": true },
+        { "name": "swap_b4", "bilinear": true }
+    ],
+    "passes": [
+        {
+            "name": "gtceu:filter_bloom_color",
+            "intarget": "final",
+            "outtarget": "filter",
+            "auxtargets": [
+                { "id": "final:depth",          "name": "DiffuseDepthSampler" },
+                { "id": "minecraft:main:depth", "name": "MainDepthSampler" }
+            ]
+        },
+        {
+            "name": "gtceu:blur",
+            "intarget": "filter",
+            "outtarget": "swap_b0",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 1.0, 0.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [3]
+                }
+            ]
+        },
+        {
+            "name": "gtceu:blur",
+            "intarget": "swap_b0",
+            "outtarget": "swap_b1",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 0.0, 1.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [3]
+                }
+            ]
+        },
+        {
+            "name": "gtceu:blur",
+            "intarget": "swap_b1",
+            "outtarget": "swap_b0",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 1.0, 0.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [5]
+                }
+            ]
+        },
+        {
+            "name": "gtceu:blur",
+            "intarget": "swap_b0",
+            "outtarget": "swap_b2",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 0.0, 1.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [5]
+                }
+            ]
+        },
+        {
+            "name": "gtceu:blur",
+            "intarget": "swap_b2",
+            "outtarget": "swap_b0",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 1.0, 0.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [7]
+                }
+            ]
+        },
+        {
+            "name": "gtceu:blur",
+            "intarget": "swap_b0",
+            "outtarget": "swap_b3",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 0.0, 1.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [7]
+                }
+            ]
+        },
+        {
+            "name": "gtceu:blur",
+            "intarget": "swap_b3",
+            "outtarget": "swap_b0",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 1.0, 0.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [9]
+                }
+            ]
+        },
+        {
+            "name": "gtceu:blur",
+            "intarget": "swap_b0",
+            "outtarget": "swap_b4",
+            "uniforms": [
+                {
+                    "name": "BlurDir",
+                    "values": [ 0.0, 1.0 ]
+                },
+                {
+                    "name": "Radius",
+                    "values": [9]
+                }
+            ]
+        },
+        {
+            "name": "gtceu:unreal_composite",
+            "intarget": "minecraft:main",
+            "outtarget": "final",
+            "auxtargets": [
+                { "id": "filter",  "name": "HighlightSampler" },
+                { "id": "swap_b1", "name": "BlurTexture1" },
+                { "id": "swap_b2", "name": "BlurTexture2" },
+                { "id": "swap_b3", "name": "BlurTexture3" },
+                { "id": "swap_b4", "name": "BlurTexture4" }
+            ],
+            "uniforms": [
+                { "name": "BloomRadius", "values": [1.0] }
+            ]
+        }
+    ]
+}

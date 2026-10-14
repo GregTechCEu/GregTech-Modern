@@ -1,0 +1,401 @@
+package com.gregtechceu.gtceu.api.multiblock;
+
+import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.multiblock.error.BlockMatchingError;
+import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
+import com.gregtechceu.gtceu.api.multiblock.error.PlaceholderError;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateBuilder;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.ITagManager;
+
+import dev.latvian.mods.rhino.util.HideFromJS;
+import dev.latvian.mods.rhino.util.RemapForJS;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+import java.util.stream.Stream;
+
+public class Predicates {
+
+    /**
+     * Return this for your pattern errors if you want them to be a default error with the pos of the BlockWorldState
+     * and candidates of the simple predicate's error.
+     */
+    public static final PlaceholderError PLACEHOLDER = PlaceholderError.instance();
+
+    public static MultiPredicate controller(MultiblockMachineDefinition def) {
+        return blocks(def.getBlock()).setController(true);
+    }
+
+    /// @deprecated use {@link #controller(MultiblockMachineDefinition)} instead
+    @Deprecated
+    public static MultiPredicate controller(MultiPredicate predicate) {
+        return predicate.setController(true);
+    }
+
+    public static MultiPredicate states(BlockState... allowedStates) {
+        return states(null, allowedStates);
+    }
+
+    @RemapForJS("statesDebug")
+    public static MultiPredicate states(@Nullable String debugName, BlockState... allowedStates) {
+        List<BlockState> states = new ArrayList<>();
+        BooleanProperty activeProp = GTBlockStateProperties.ACTIVE;
+        for (BlockState state : allowedStates) {
+            states.add(state);
+            if (state.hasProperty(activeProp)) {
+                states.add(state.setValue(activeProp, !state.getValue(activeProp)));
+            }
+        }
+        List<BasePredicate> predicates = new ArrayList<>();
+        for (BlockState state : states) {
+            predicates.add(builder(debugName == null ? "State" : debugName)
+                    .predicate(ctx -> ctx.state() == state)
+                    .states(state)
+                    .contents(builder -> builder.append(blockToString(state)))
+                    .build());
+        }
+        return MultiPredicate.or(predicates);
+    }
+
+    @HideFromJS
+    public static MultiPredicate blocks(Block block) {
+        return builder("Block")
+                .predicate(ctx -> ctx.state().is(block))
+                .errorFunction(ctx -> new BlockMatchingError(ctx.pos(), List.of(block)))
+                .candidates(Stream.of(BlockInfo.fromBlock(block)))
+                .contents(builder -> builder.append(blockToString(block)))
+                .toMultiPredicate();
+    }
+
+    public static MultiPredicate blocks(Block... blocks) {
+        return blocks(null, blocks);
+    }
+
+    @RemapForJS("blocksDebug")
+    public static MultiPredicate blocks(@Nullable String debugName, Block... blocks) {
+        return blocks(debugName, Arrays.asList(blocks));
+    }
+
+    @HideFromJS
+    public static MultiPredicate blocks(@Nullable String debugName,
+                                        List<Block> blocks) {
+        List<BasePredicate> predicates = new ArrayList<>();
+        for (Block block : blocks) {
+            predicates.add(builder(debugName == null ? "Block" : debugName)
+                    .predicate(ctx -> ctx.state().is(block))
+                    .errorFunction(ctx -> new BlockMatchingError(ctx.pos(), List.of(block)))
+                    .blocks(block)
+                    .contents(builder -> builder.append(blockToString(block)))
+                    .build());
+        }
+        return MultiPredicate.or(predicates);
+    }
+
+    // todo these two methods below should be moved into a util class
+    private static String blockToString(BlockState blockState) {
+        return blockToString(blockState.getBlock());
+    }
+
+    private static String blockToString(Block block) {
+        return ForgeRegistries.BLOCKS.getDelegate(block)
+                .map(r -> r.key().location().toString())
+                .orElse("unknown block");
+    }
+
+    public static MultiPredicate machines(@Nullable MachineDefinition... definitions) {
+        List<Block> blocks = new ArrayList<>();
+        for (MachineDefinition definition : definitions) {
+            if (definition != null) {
+                blocks.add(definition.get());
+            }
+        }
+        if (blocks.isEmpty()) {
+            throw new IllegalStateException("All machine definitions are null!");
+        }
+        return blocks("MachineDefinitions", blocks);
+    }
+
+    public static MultiPredicate blockTag(TagKey<Block> tag) {
+        Objects.requireNonNull(tag, "Block tag cannot be null");
+        ITagManager<Block> manager = Objects.requireNonNull(ForgeRegistries.BLOCKS.tags());
+        return builder("BlockTag")
+                .blockTag(tag)
+                .contents(builder -> builder.append(tag.location()))
+                .predicate(ctx -> ctx.state().is(tag))
+                .errorFunction(ctx -> new BlockMatchingError(ctx.pos(), manager.getTag(tag)
+                        .stream().toList()))
+                .toMultiPredicate();
+    }
+
+    public static MultiPredicate fluids(Fluid... fluids) {
+        return fluids(null, fluids);
+    }
+
+    @RemapForJS("fluidsDebug")
+    public static MultiPredicate fluids(@Nullable String debugName, Fluid... fluids) {
+        Validate.noNullElements(fluids, "Fluids array has null element at index %s");
+        return builder(debugName == null ? "Fluids" : debugName)
+                .predicate(ctx -> ArrayUtils.contains(fluids, ctx.fluid()))
+                // .errorConsumer(ctx -> ctx.appendError(PLACEHOLDER))
+                .candidates(Arrays.stream(fluids).map(BlockInfo::fromFluid))
+                .contents(builder -> {
+                    StringJoiner joiner = new StringJoiner(", ");
+                    for (Fluid fluid : fluids) {
+                        joiner.add(ForgeRegistries.FLUIDS.getDelegate(fluid)
+                                .map(r -> r.key().location().toString())
+                                .orElse("unknown"));
+                    }
+                    builder.append(joiner);
+                })
+                .toMultiPredicate();
+    }
+
+    public static MultiPredicate fluidTag(TagKey<Fluid> tag) {
+        Objects.requireNonNull(tag, "Fluid tag cannot be null");
+        return builder("FluidTag")
+                .predicate(ctx -> ctx.fluidState().is(tag))
+                // .errorConsumer(ctx -> ctx.appendError(PLACEHOLDER))
+                .fluidTag(tag)
+                .contents(builder -> builder.append(tag.location()))
+                .toMultiPredicate();
+    }
+
+    public static MultiPredicate any() {
+        return MultiPredicate.any();
+    }
+
+    public static MultiPredicate air() {
+        return MultiPredicate.air();
+    }
+
+    public static MultiPredicate abilities(PartAbility ability) {
+        return builder("Ability")
+                .predicate(ctx -> ability.isApplicable(ctx.state().getBlock()))
+                .errorFunction(ctx -> new PartAbilityError(ctx.pos(), ability))
+                .candidates(ability.getAllBlocks().stream().map(BlockInfo::fromBlock))
+                .contents(builder -> builder.append(ability.getName()))
+                .toMultiPredicate();
+    }
+
+    public static MultiPredicate abilities(PartAbility... abilities) {
+        List<BasePredicate> predicates = new ArrayList<>();
+        for (PartAbility ability : abilities) {
+            Validate.noNullElements(ability.getAllBlocks(), "Ability %s has null block at index %s", ability.getName());
+            predicates.add(builder("Ability")
+                    .predicate(ctx -> ability.isApplicable(ctx.state().getBlock()))
+                    .errorFunction(ctx -> new PartAbilityError(ctx.pos(), ability))
+                    .candidates(ability.getAllBlocks().stream().map(BlockInfo::fromBlock))
+                    .contents(builder -> builder.append(ability.getName()))
+                    .build());
+        }
+        return MultiPredicate.or(predicates);
+    }
+
+    public static MultiPredicate ability(PartAbility ability, int... tiers) {
+        StringJoiner sb = new StringJoiner("-");
+        for (int tier : tiers) {
+            sb.add(GTValues.VN[tier]);
+        }
+        return builder("TieredAbility")
+                .predicate(ctx -> ability.getBlocks(tiers).contains(ctx.state().getBlock()))
+                .errorFunction(ctx -> new PartAbilityError(ctx.pos(), ability))
+                .candidates(ability.getBlocks(tiers).stream().map(BlockInfo::fromBlock))
+                .contents(builder -> builder.append(ability.getName())
+                        .append("[").append(sb).append("]"))
+                .toMultiPredicate();
+    }
+
+    public static MultiPredicate autoAbilities(GTRecipeType... recipeType) {
+        return autoAbilities(recipeType, true, true, true, true, true, true);
+    }
+
+    public static MultiPredicate autoAbilities(GTRecipeType[] recipeType,
+                                               boolean checkEnergyIn, boolean checkEnergyOut,
+                                               boolean checkItemIn, boolean checkItemOut,
+                                               boolean checkFluidIn, boolean checkFluidOut) {
+        MultiPredicate predicate = MultiPredicate.empty();
+        if (checkEnergyIn) {
+            for (var type : recipeType) {
+                if (type.getMaxInputs(EURecipeCapability.CAP) > 0) {
+                    predicate = predicate.and(abilities(PartAbility.INPUT_ENERGY)
+                            .setGlobalMinMax(1, 2)
+                            .setPreviewCount(1).setPriority(1));
+                    break;
+                }
+            }
+        }
+        if (checkEnergyOut) {
+            for (var type : recipeType) {
+                if (type.getMaxOutputs(EURecipeCapability.CAP) > 0) {
+                    predicate = predicate.and(abilities(PartAbility.OUTPUT_ENERGY)
+                            .setGlobalMinMax(1, 2)
+                            .setPreviewCount(1)
+                            .setPriority(1));
+                    break;
+                }
+            }
+        }
+        if (checkItemIn) {
+            for (var type : recipeType) {
+                if (type.getMaxInputs(ItemRecipeCapability.CAP) > 0) {
+                    predicate = predicate.and(abilities(PartAbility.IMPORT_ITEMS)
+                            .setPreviewCount(1).setPriority(2));
+                    break;
+                }
+            }
+        }
+        if (checkItemOut) {
+            for (var type : recipeType) {
+                if (type.getMaxOutputs(ItemRecipeCapability.CAP) > 0) {
+                    predicate = predicate.and(abilities(PartAbility.EXPORT_ITEMS)
+                            .setPreviewCount(1).setPriority(2));
+                    break;
+                }
+            }
+        }
+        if (checkFluidIn) {
+            for (var type : recipeType) {
+                if (type.getMaxInputs(FluidRecipeCapability.CAP) > 0) {
+                    predicate = predicate.and(abilities(PartAbility.IMPORT_FLUIDS)
+                            .setPreviewCount(1).setPriority(3));
+                    break;
+                }
+            }
+        }
+        if (checkFluidOut) {
+            for (var type : recipeType) {
+                if (type.getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
+                    predicate = predicate.and(abilities(PartAbility.EXPORT_FLUIDS)
+                            .setPreviewCount(1).setPriority(3));
+                    break;
+                }
+            }
+        }
+        return predicate;
+    }
+
+    public static MultiPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler,
+                                               boolean checkParallel) {
+        MultiPredicate predicate = MultiPredicate.empty();
+        if (checkMaintenance) {
+            predicate = predicate.and(abilities(PartAbility.MAINTENANCE)
+                    .setMinCount(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
+                    .setMaxCount(1)
+                    .setPriority(1));
+        }
+        if (checkMuffler) {
+            predicate = predicate.and(abilities(PartAbility.MUFFLER)
+                    .setExactLimit(1)
+                    .setPriority(2));
+        }
+        if (checkParallel) {
+            predicate = predicate.and(abilities(PartAbility.PARALLEL_HATCH)
+                    .setMaxGlobalLimited(1, 1)
+                    .setPriority(3));
+        }
+        return predicate;
+    }
+
+    public static MultiPredicate heatingCoils() {
+        return blocks("HeatingCoils",
+                GTCEuAPI.HEATING_COILS.entrySet().stream()
+                        .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
+                        .map(e -> (Block) e.getValue().get()).toList())
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"))
+                .setPriority(0);
+    }
+
+    public static MultiPredicate cleanroomFilters() {
+        return blocks("CleanroomFilters",
+                GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream()
+                        .sorted(Comparator.comparingInt(e -> e.getKey().getCleanroomType().getTier()))
+                        .map(entry -> entry.getValue().get())
+                        .toList())
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.filters"));
+    }
+
+    public static MultiPredicate powerSubstationBatteries() {
+        return blocks("PSS-Batteries", GTCEuAPI.PSS_BATTERIES.entrySet()
+                .stream().sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
+                .map(e -> (Block) e.getValue().get())
+                .toList())
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
+    }
+
+    public static @Nullable MultiPredicate dataHatchPredicate() {
+        // if research is enabled, require the data hatch, otherwise use a grate instead
+        if (ConfigHolder.INSTANCE.machines.enableResearch) {
+            return abilities(PartAbility.DATA_ACCESS)
+                    .xor(abilities(PartAbility.OPTICAL_DATA_RECEPTION))
+                    .setExactLimit(1)
+                    .setPriority(1);
+        }
+        return null;
+    }
+
+    /**
+     * Use this predicate for Frames in your Multiblock. Allows for Framed Pipes as well as normal Frame blocks.
+     */
+    public static MultiPredicate frames(Material... frameMaterials) {
+        var frameBlocks = Arrays.stream(frameMaterials)
+                .map(m -> ChemicalHelper.getBlock(TagPrefix.frameGt, m))
+                .filter(Objects::nonNull)
+                .toArray(Block[]::new);
+        return blocks("Frames", frameBlocks)
+                .or(framedPipes(frameMaterials, frameBlocks));
+    }
+
+    public static MultiPredicate framedPipes(Material[] frameMaterials, Block[] frameBlocks) {
+        return builder("FramedPipes")
+                .predicate(ctx -> {
+                    BlockEntity tileEntity = ctx.blockEntity();
+                    if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
+                        return false;
+                    }
+                    return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial());
+                })
+                // .errorConsumer(ctx -> PLACEHOLDER)
+                .blocks(frameBlocks)
+                .contents(builder -> {
+                    StringJoiner joiner = new StringJoiner(", ");
+                    Arrays.stream(frameBlocks).forEach(block -> joiner.add(blockToString(block)));
+                    builder.append(joiner);
+                })
+                .toMultiPredicate();
+    }
+
+    public static PredicateBuilder builder(String debugName) {
+        return new PredicateBuilder(debugName);
+    }
+
+    public static PredicateBuilder builder() {
+        return builder("Predicate");
+    }
+}

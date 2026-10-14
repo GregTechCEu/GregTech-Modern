@@ -36,19 +36,17 @@ public interface IContentSerializer<T> {
 
     @SuppressWarnings("unchecked")
     default void toNetworkContent(FriendlyByteBuf buf, Content content) {
-        T inner = (T) content.getContent();
+        T inner = (T) content.content();
         toNetwork(buf, inner);
-        buf.writeVarInt(content.chance);
-        buf.writeVarInt(content.maxChance);
-        buf.writeVarInt(content.tierChanceBoost);
+        buf.writeVarInt(content.chance());
+        buf.writeVarInt(content.maxChance());
     }
 
     default Content fromNetworkContent(FriendlyByteBuf buf) {
         T inner = fromNetwork(buf);
         int chance = buf.readVarInt();
         int maxChance = buf.readVarInt();
-        int tierChanceBoost = buf.readVarInt();
-        return new Content(inner, chance, maxChance, tierChanceBoost);
+        return new Content(inner, chance, maxChance);
     }
 
     Class<T> contentClass();
@@ -58,10 +56,9 @@ public interface IContentSerializer<T> {
     @SuppressWarnings("unchecked")
     default JsonElement toJsonContent(Content content) {
         JsonObject json = new JsonObject();
-        json.add("content", toJson((T) content.getContent()));
-        json.addProperty("chance", content.chance);
-        json.addProperty("maxChance", content.maxChance);
-        json.addProperty("tierChanceBoost", content.tierChanceBoost);
+        json.add("content", toJson((T) content.content()));
+        json.addProperty("chance", content.chance());
+        json.addProperty("maxChance", content.maxChance());
         return json;
     }
 
@@ -71,8 +68,7 @@ public interface IContentSerializer<T> {
         int chance = jsonObject.has("chance") ? jsonObject.get("chance").getAsInt() : ChanceLogic.getMaxChancedValue();
         int maxChance = jsonObject.has("maxChance") ? jsonObject.get("maxChance").getAsInt() :
                 ChanceLogic.getMaxChancedValue();
-        int tierChanceBoost = jsonObject.has("tierChanceBoost") ? jsonObject.get("tierChanceBoost").getAsInt() : 0;
-        return new Content(inner, chance, maxChance, tierChanceBoost);
+        return new Content(inner, chance, maxChance);
     }
 
     default Tag toNbt(T content) {

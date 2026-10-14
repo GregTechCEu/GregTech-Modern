@@ -94,7 +94,7 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
         return (blockState, level, blockPos, index) -> {
             if (blockPos != null && level != null &&
                     level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?, ?> pipe) {
-                if (!pipe.getFrameMaterial().isNull()) {
+                if (pipe.getFrameMaterial() != null) {
                     if (index == 3) {
                         return pipe.getFrameMaterial().getMaterialRGB();
                     } else if (index == 4) {

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.model;
 
-import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
+import com.gregtechceu.gtceu.client.util.quad.transformers.GTQuadTransformers;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -14,7 +14,6 @@ import net.minecraftforge.client.model.IQuadTransformer;
 import net.minecraftforge.client.model.data.ModelData;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -23,7 +22,6 @@ public class TextureOverrideModel<T extends BakedModel> extends BakedModelWrappe
 
     public static final IQuadTransformer OVERLAY_OFFSET = GTQuadTransformers.offset(0.002f);
 
-    @NotNull
     @Getter
     protected final Map<String, TextureAtlasSprite> textureOverrides;
 
@@ -37,10 +35,9 @@ public class TextureOverrideModel<T extends BakedModel> extends BakedModelWrappe
     }
 
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-                                             @NotNull RandomSource rand, @NotNull ModelData extraData,
-                                             @Nullable RenderType renderType) {
-        return retextureQuads(super.getQuads(state, side, rand, extraData, renderType), textureOverrides);
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
+                                    RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
+        return retextureQuads(super.getQuads(state, side, rand, modelData, renderType), textureOverrides);
     }
 
     public static List<BakedQuad> retextureQuads(List<BakedQuad> quads, Map<String, TextureAtlasSprite> overrides) {

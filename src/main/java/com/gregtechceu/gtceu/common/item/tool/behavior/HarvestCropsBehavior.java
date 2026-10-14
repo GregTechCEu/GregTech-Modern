@@ -50,9 +50,6 @@ public class HarvestCropsBehavior implements IToolBehavior {
             blocks = List.of(pos);
         } else {
             blocks = ToolHelper.iterateAoE(aoeDefinition, HarvestCropsBehavior::isBlockCrops, context);
-            if (isBlockCrops(context)) {
-                blocks.add(0, context.getClickedPos());
-            }
         }
 
         boolean harvested = false;

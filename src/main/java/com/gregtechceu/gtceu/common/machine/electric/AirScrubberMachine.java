@@ -20,7 +20,7 @@ public class AirScrubberMachine extends SimpleTieredMachine {
 
     public static final float MIN_CLEANING_PER_OPERATION = 10;
 
-    private MedicalCondition currentRecipeMedicalCondition;
+    private @Nullable MedicalCondition currentRecipeMedicalCondition;
 
     @Getter
     private float removedLastSecond;
@@ -31,11 +31,7 @@ public class AirScrubberMachine extends SimpleTieredMachine {
     public AirScrubberMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier, GTMachineUtils.largeTankSizeFunction);
         this.cleanerTrait = attachTrait(new EnvironmentalHazardCleanerTrait(tier / 2, this::validateCleaningOperation));
-    }
-
-    @Override
-    public boolean regressWhenWaiting() {
-        return false;
+        recipeLogic.setRegressWhenWaiting(false);
     }
 
     public boolean validateCleaningOperation(MedicalCondition condition, float amount) {
@@ -59,25 +55,11 @@ public class AirScrubberMachine extends SimpleTieredMachine {
 
     @Override
     public boolean beforeWorking(@Nullable GTRecipe recipe) {
-        if (super.beforeWorking(recipe) && recipe != null) {
+        if (super.beforeWorking(recipe) && recipe != null && currentRecipeMedicalCondition != null) {
             // Sets the amount of hazard to clean based on the recipe tier, not the machine tier
             return cleanerTrait.beginCleaningOperation(currentRecipeMedicalCondition,
                     MIN_CLEANING_PER_OPERATION * (recipe.ocLevel + 1));
         }
         return false;
-    }
-
-    @Override
-    public boolean onWorking() {
-        if (!super.onWorking() || !ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
-            return false;
-        }
-        cleanerTrait.cleanHazard();
-        return true;
-    }
-
-    @Override
-    public void afterWorking() {
-        cleanerTrait.endCleaningOperation();
     }
 }

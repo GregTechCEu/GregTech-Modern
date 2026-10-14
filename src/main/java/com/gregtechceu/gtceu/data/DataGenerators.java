@@ -2,11 +2,10 @@ package com.gregtechceu.gtceu.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
-import com.gregtechceu.gtceu.common.data.GTBiomeModifiers;
-import com.gregtechceu.gtceu.common.data.GTConfiguredFeatures;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
-import com.gregtechceu.gtceu.common.data.GTPlacements;
-import com.gregtechceu.gtceu.common.data.GTWorldgen;
+import com.gregtechceu.gtceu.common.data.worldgen.*;
+import com.gregtechceu.gtceu.data.loot.GTLootModifications;
+import com.gregtechceu.gtceu.data.loot.GTLootTables;
 import com.gregtechceu.gtceu.data.tags.BiomeTagsLoader;
 import com.gregtechceu.gtceu.data.tags.DamageTagsLoader;
 
@@ -42,12 +41,14 @@ public class DataGenerators {
                     packOutput, registries, new RegistrySetBuilder()
                             .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
                             .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
-                            .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
-                            .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
+                            .add(Registries.PLACED_FEATURE, GTPlacedFeatures::bootstrap)
+                            .add(Registries.DENSITY_FUNCTION, GTDensityFunctions::bootstrap)
                             .add(ForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap),
                     set));
             generator.addProvider(true,
                     new DamageTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));
+            generator.addProvider(true, new GTLootTables(packOutput));
+            generator.addProvider(true, new GTLootModifications(packOutput));
         }
     }
 }

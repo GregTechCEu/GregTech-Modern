@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.journeymap;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.integration.map.layer.Layers;
 
 import journeymap.client.api.IClientAPI;
 import journeymap.client.api.option.BooleanOption;
@@ -14,14 +15,12 @@ public class JourneymapOptions {
     private final Map<String, BooleanOption> layerOptions = new HashMap<>();
 
     public JourneymapOptions() {
-        final String prefix = "gtceu.journeymap.options.layers.";
         final OptionCategory category = new OptionCategory(GTCEu.MOD_ID, "gtceu.journeymap.options.layers");
 
-        final BooleanOption oreLayer = new BooleanOption(category, "ore_veins", prefix + "ore_veins", false);
-        layerOptions.put(oreLayer.getFieldName(), oreLayer);
-        final BooleanOption fluidLayer = new BooleanOption(category, "bedrock_fluids", prefix + "bedrock_fluids",
-                false);
-        layerOptions.put(fluidLayer.getFieldName(), fluidLayer);
+        for (String layerName : Layers.allKeys()) {
+            final BooleanOption layer = new BooleanOption(category, layerName, "gtceu.button." + layerName, false);
+            layerOptions.put(layerName, layer);
+        }
     }
 
     public boolean showLayer(String name) {

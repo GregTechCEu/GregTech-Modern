@@ -1,0 +1,137 @@
+package com.gregtechceu.gtceu.api.multiblock.predicates;
+
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+
+import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.Getter;
+import org.jetbrains.annotations.ApiStatus;
+
+import java.util.*;
+import java.util.function.UnaryOperator;
+
+public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
+
+    private boolean mutable = true;
+
+    @Getter
+    protected PredicateSettings settings = PredicateSettings.create();
+
+    @Getter
+    private final List<Component> additionalTooltips = new ArrayList<>();
+
+    /// the main testing method
+    public abstract boolean test(PredicateContext ctx);
+
+    public abstract void onError(PredicateContext ctx);
+
+    /// @param root the top-most multi predicate for this multi predicate
+    /// @return a list of components to be displayed while hovering over a block in the Multiblock Preview
+    public abstract List<Component> getRecipeViewerTooltips(MultiPredicate root);
+
+    /// test against global max count
+    public boolean testGlobalMax(PredicateContext ctx) {
+        return TestType.GLOBAL_MAX.testWithError(this, ctx);
+    }
+
+    /// test against slice max count
+    public boolean testSliceMax(PredicateContext ctx) {
+        return TestType.SLICE_MAX.testWithError(this, ctx);
+    }
+
+    /// test against global min count
+    public boolean testGlobalMin(PredicateContext ctx) {
+        return TestType.GLOBAL_MIN.testWithError(this, ctx);
+    }
+
+    /// test against slice min count
+    public boolean testSliceMin(PredicateContext ctx) {
+        return TestType.SLICE_MIN.testWithError(this, ctx);
+    }
+
+    public abstract List<BlockInfo> getCandidates();
+
+    public List<ItemStack> getCandidateStacks() {
+        return getCandidates().stream()
+                .filter(BlockInfo::nonAir)
+                .map(BlockInfo::getItemStackForm)
+                .toList();
+    }
+
+    public Optional<BlockInfo> getFirstCandidate() {
+        return Optional.of(getCandidates())
+                .filter(c -> !c.isEmpty())
+                .map(c -> c.get(0));
+    }
+
+    /// the type of this predicate
+    public abstract String getTypeName();
+
+    /// the contents of this predicate
+    protected void appendContents(StringBuilder builder) {}
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder(getTypeName());
+        builder.append('{');
+        appendContents(builder);
+        builder.append('}');
+        return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BasePredicate predicate)) return false;
+        List<BlockInfo> thisCandidates = this.getCandidates();
+        List<BlockInfo> thatCandidates = predicate.getCandidates();
+        if (thisCandidates.size() != thatCandidates.size()) return false;
+        for (int i = 0; i < thisCandidates.size(); i++) {
+            if (!Objects.equals(thisCandidates.get(i), thatCandidates.get(i))) return false;
+        }
+        return true;
+    }
+
+    @HideFromJS
+    @ApiStatus.Internal
+    public BasePredicate markImmutable() {
+        this.mutable = false;
+        return this;
+    }
+
+    @Override
+    public boolean hasSettings() {
+        return true;
+    }
+
+    public abstract BasePredicate copy();
+
+    protected void copyTo(BasePredicate other) {
+        other.setSettings(this.settings.copy());
+        other.additionalTooltips.addAll(this.additionalTooltips);
+    }
+
+    // COPY AND MUTATE
+
+    @Override
+    public BasePredicate withSettings(UnaryOperator<PredicateSettings> configurator) {
+        BasePredicate copy = copy();
+        copy.updateSettings(configurator);
+        return copy;
+    }
+
+    // MUTATE ONLY
+
+    @Override
+    public void setSettings(PredicateSettings settings) {
+        if (mutable) this.settings = settings;
+    }
+
+    public void addTooltips(Component tooltip) {
+        if (mutable) this.additionalTooltips.add(tooltip);
+    }
+}

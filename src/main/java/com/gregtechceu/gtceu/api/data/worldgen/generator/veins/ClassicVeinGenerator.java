@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator.veins;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -230,7 +230,7 @@ public class ClassicVeinGenerator extends VeinGenerator {
     public static class Layer {
 
         public static final Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec())
+                Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.codec())
                         .fieldOf("targets").forGetter(layer -> layer.target),
                 ExtraCodecs.intRange(-1, Integer.MAX_VALUE).optionalFieldOf("layers", -1)
                         .forGetter(layer -> layer.layers))

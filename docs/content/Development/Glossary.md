@@ -38,7 +38,7 @@ connects to a dedicated server instead.
 The remote side is the part of the game that is **connected to** the game's server side.  
 It always runs on the [client](#client-side).
 
-This side may not have the same amount of data available to it as the server does (see [SyncData](../Development/SyncData/index.md) if you
+This side may not have the same amount of data available to it as the server does (see [SyncData](Data-Sync-System/index.md) if you
 need to automatically synchronize certain data to the remote side).
 It also does not perform any tick update logic.
 
@@ -58,5 +58,5 @@ This is therefore, where [TPS](#tps) impact becomes relevant. In general, use
 
 Short for "ticks per second". Should stay at exactly 20.
 
-See [Tick Updates](General-Topics/Tick-Updates.md) and [Optimization](General-Topics/Optimization.md) for techniques
+See [Tick Updates](General-Topics/Tick-Updates.md) for techniques
 on how to reduce performance impact.

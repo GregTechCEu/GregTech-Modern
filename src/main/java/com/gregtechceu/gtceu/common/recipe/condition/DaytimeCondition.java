@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
@@ -20,7 +20,7 @@ public class DaytimeCondition extends RecipeCondition<DaytimeCondition> {
 
     // spotless:off
     public static final Codec<DaytimeCondition> CODEC = RecipeCondition.simpleCodec(DaytimeCondition::new);
-    // spotless:off
+    // spotless:on
 
     public DaytimeCondition(boolean isReverse) {
         super(isReverse);

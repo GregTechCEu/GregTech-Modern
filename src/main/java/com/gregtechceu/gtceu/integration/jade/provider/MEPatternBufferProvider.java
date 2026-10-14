@@ -11,48 +11,44 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 
 import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.fluid.JadeFluidObject;
 import snownee.jade.api.ui.IElementHelper;
 
-public class MEPatternBufferProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public class MEPatternBufferProvider extends MachineInfoProvider<MEPatternBufferPartMachine, CompoundTag> {
 
-    @Override
-    public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
-        if (blockAccessor.getBlockEntity() instanceof MEPatternBufferPartMachine) {
-            CompoundTag serverData = blockAccessor.getServerData();
-            if (!serverData.getBoolean("formed")) return;
-
-            iTooltip.add(Component.translatable("gtceu.top.proxies_bound", serverData.getInt("proxies"))
-                    .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
-            readBufferTag(iTooltip, serverData);
-        }
+    public MEPatternBufferProvider() {
+        super(GTCEu.id("me_pattern_buffer"), MEPatternBufferPartMachine.class);
     }
 
     @Override
-    public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof MEPatternBufferPartMachine buffer) {
-            if (!buffer.isFormed()) {
-                compoundTag.putBoolean("formed", false);
-                return;
-            }
-            compoundTag.putBoolean("formed", true);
-            compoundTag.putInt("proxies", buffer.getProxies().size());
-            writeBufferTag(compoundTag, buffer);
+    protected CompoundTag write(MEPatternBufferPartMachine buffer) {
+        var tag = new CompoundTag();
+        if (!buffer.isFormed()) {
+            tag.putBoolean("formed", false);
+            return tag;
         }
+        tag.putBoolean("formed", true);
+        tag.putInt("proxies", buffer.getProxies().size());
+        writeBufferTag(tag, buffer);
+        return tag;
     }
 
     @Override
-    public ResourceLocation getUid() {
-        return GTCEu.id("me_pattern_buffer");
+    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
+        if (!data.getBoolean("formed")) return;
+
+        tooltip.add(Component.translatable("gtceu.top.proxies_bound", data.getInt("proxies"))
+                .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
+        readBufferTag(tooltip, data);
     }
 
     public static void writeBufferTag(CompoundTag compoundTag, MEPatternBufferPartMachine buffer) {

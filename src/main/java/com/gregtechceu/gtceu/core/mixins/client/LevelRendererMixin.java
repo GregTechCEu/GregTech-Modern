@@ -22,7 +22,6 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.util.FastColor;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -32,8 +31,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -55,7 +52,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.*;
 
 @Mixin(value = LevelRenderer.class, priority = 500)
-@OnlyIn(Dist.CLIENT)
 public abstract class LevelRendererMixin {
 
     @Shadow
@@ -72,9 +68,6 @@ public abstract class LevelRendererMixin {
 
     @Shadow
     private @Nullable ClientLevel level;
-
-    @Unique
-    private final RandomSource gtceu$modelRandom = RandomSource.create();
 
     @Inject(method = "renderLevel", at = @At("HEAD"))
     private void renderLevel(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline,
@@ -178,7 +171,7 @@ public abstract class LevelRendererMixin {
 
         // spotless:off
         MaterialEntry materialEntry = ChemicalHelper.getMaterialEntry(state.getBlock());
-        if (rendererCfg.coloredMaterialBlockOutline && !materialEntry.isEmpty()) {
+        if (rendererCfg.coloredMaterialBlockOutline && materialEntry != null) {
             renderColoredOutline = true;
             rgb = materialEntry.material().getMaterialRGB();
         } else if (rendererCfg.coloredTieredMachineOutline) {
@@ -191,7 +184,7 @@ public abstract class LevelRendererMixin {
                 }
         } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipe) {
             renderColoredOutline = true;
-            if (!pipe.getFrameMaterial().isNull()) {
+            if (pipe.getFrameMaterial() != null) {
                 rgb = pipe.getFrameMaterial().getMaterialRGB();
             } else if (pipe instanceof CableBlockEntity cable) {
                 rgb = GTValues.VCM[GTUtil.getTierByVoltage(cable.getNodeData().getVoltage())];

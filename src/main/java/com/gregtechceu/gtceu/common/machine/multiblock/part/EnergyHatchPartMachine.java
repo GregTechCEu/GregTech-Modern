@@ -4,14 +4,11 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.machine.trait.EnvironmentalExplosionTrait;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 
@@ -51,11 +48,6 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine {
             container.setCapabilityValidator(s -> s == null || s == getFrontFacing());
         }
         return container;
-    }
-
-    @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        return false;
     }
 
     @Override

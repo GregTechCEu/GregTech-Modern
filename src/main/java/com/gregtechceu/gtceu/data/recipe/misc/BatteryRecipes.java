@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -326,7 +325,7 @@ public class BatteryRecipes {
         // Lapotronic Energy Orb
         LASER_ENGRAVER_RECIPES.recipeBuilder("engraved_lapotron_chip")
                 .inputItems(LAPOTRON_CRYSTAL)
-                .notConsumable(lens, Color.Blue)
+                .notConsumable(CustomTags.BLUE_LENS)
                 .outputItems(ENGRAVED_LAPOTRON_CHIP, 3)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(256).EUt(VA[HV]).save(provider);

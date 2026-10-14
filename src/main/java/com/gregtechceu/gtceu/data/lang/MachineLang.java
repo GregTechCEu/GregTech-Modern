@@ -460,9 +460,9 @@ public class MachineLang {
                 "You can fill and empty any fluid containers with the Fluid Canner (e.g. Buckets or Fluid Cells)");
 
         provider.add("gtceu.machine.large_combustion_engine.tooltip.boost_regular",
-                "Supply §f20 mB/s§7 of Oxygen to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
+                "Supply §f20 mB/s§7 of §bOxygen§7 to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
         provider.add("gtceu.machine.large_combustion_engine.tooltip.boost_extreme",
-                "Supply §f80 mB/s§7 of Liquid Oxygen to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
+                "Supply §f80 mB/s§7 of §9Liquid Oxygen§7 to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
 
         provider.add("gtceu.machine.fusion_reactor.capacity", "§7Maximum Energy Storage: §e%sM EU");
         provider.add("gtceu.machine.fusion_reactor.overclocking",
@@ -476,12 +476,9 @@ public class MachineLang {
         provider.add("gtceu.machine.miner.fluid_usage", "Uses §f%d mB/t §7of §f%s§7, doubled per overclock.");
         provider.add("gtceu.machine.miner.multi.description",
                 "A multiblock mining machine that covers a large area and produces huge quantity of ore.");
-        provider.add("gtceu.machine.miner.startx", "sX: %d");
-        provider.add("gtceu.machine.miner.starty", "sY: %d");
-        provider.add("gtceu.machine.miner.startz", "sZ: %d");
-        provider.add("gtceu.machine.miner.minex", "mX: %d");
-        provider.add("gtceu.machine.miner.miney", "mY: %d");
-        provider.add("gtceu.machine.miner.minez", "mZ: %d");
+        provider.add("gtceu.machine.miner.x", "sX: %d, mX: %d");
+        provider.add("gtceu.machine.miner.y", "sY: %d, mY: %d");
+        provider.add("gtceu.machine.miner.z", "sZ: %d, mZ: %d");
         provider.add("gtceu.machine.miner.radius", "Radius: %d");
         provider.add("gtceu.machine.miner.chunkradius", "Chunk Radius: %d");
         provider.add("gtceu.machine.miner.progress", "Progress: %d/%d");
@@ -869,6 +866,14 @@ public class MachineLang {
         provider.add("gtceu.machine.object_holder.tooltip", "Advanced Holding Mechanism for Research Station");
 
         // Multiblock tooltips
+        provider.add("gtceu.multiblock.general.max_power", "Max Power: %s");
+        provider.add("gtceu.multiblock.general.energy_consumption", "Using %s");
+        provider.add("gtceu.multiblock.general.energy_production", "Producing %s");
+        provider.add("gtceu.multiblock.general.energy_consumption_waiting", "Trying to Use %s");
+        provider.add("gtceu.multiblock.general.energy_production_waiting", "Trying to Produce %s");
+        provider.add("gtceu.multiblock.general.amp_volt", "%s §cA§a @ %s §r");
+        provider.add("gtceu.multiblock.general.amp_volt_eut", "%s §cA§a @ %s §r(%s EU/t)");
+        provider.add("gtceu.multiblock.general.eut", "%s EU/t");
         provider.add("gtceu.multiblock.blast_furnace.max_temperature", "Heat Capacity: %s");
         provider.add("gtceu.multiblock.multi_furnace.heating_coil_level", "Heating Coil Level: %s");
         provider.add("gtceu.multiblock.multi_furnace.heating_coil_discount", "Heating Coil EU Boost: %sx");
@@ -879,20 +884,23 @@ public class MachineLang {
                 "Liquid Oxygen Amount: %sL");
         provider.add("gtceu.multiblock.large_combustion_engine.oxygen_boosted", "§bOxygen boosted.");
         provider.add("gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted",
-                "§bLiquid Oxygen boosted.");
+                "§9Liquid Oxygen boosted.");
         provider.add("gtceu.multiblock.large_combustion_engine.boost_disallowed",
                 "§bUpgrade the Dynamo Hatch to enable Oxygen Boosting.");
         provider.add("gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost",
-                "Supply Oxygen to boost.");
+                "Supply §bOxygen§7 to boost.");
         provider.add("gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost",
-                "Supply Liquid Oxygen to boost.");
+                "Supply §9Liquid Oxygen§7 to boost.");
+        provider.add("gtceu.multiblock.large_combustion_engine.output", "Producing %s EU/t");
         provider.add("gtceu.multiblock.large_combustion_engine.obstructed", "Engine Intakes Obstructed.");
+        provider.add("gtceu.multiblock.large_combustion_engine.no_lubricant", "Machine needs Lubricant to run");
         provider.add("gtceu.multiblock.turbine.fuel_amount", "Fuel Amount: %sL (%s)");
         provider.add("gtceu.multiblock.turbine.rotor_speed", "Rotor Speed: %s/%s RPM");
         provider.add("gtceu.multiblock.turbine.rotor_durability", "Rotor Durability: %s%%");
         provider.add("gtceu.multiblock.turbine.efficiency", "Turbine Efficiency: %s%%");
         provider.add("gtceu.multiblock.turbine.energy_per_tick", "Energy Output: %s/%s EU/t");
         provider.add("gtceu.multiblock.turbine.energy_per_tick_maxed", "Energy Output: %s EU/t");
+        provider.add("gtceu.multiblock.turbine.no_rotor", "Missing Rotor");
         provider.add("gtceu.multiblock.turbine.obstructed", "Turbine Face Obstructed");
         provider.add("gtceu.multiblock.turbine.efficiency_tooltip",
                 "Each Rotor Holder above %s§7 adds §f10%% efficiency and multiplies EU/t by 2§7.");
@@ -955,6 +963,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.active_transformer.max_output", "§cMax Output: §f%s EU/t");
         provider.add("gtceu.multiblock.active_transformer.danger_enabled", "§c§bDANGER: Explosive");
         provider.add("gtceu.multiblock.data_bank.providing", "Providing data.");
+        provider.add("gtceu.multiblock.data_bank.error_power", "Power low, no data provided!");
         provider.add("gtceu.multiblock.hpca.computation", "Providing: %s");
         provider.add("gtceu.multiblock.hpca.energy", "Using: %s / %s EU/t (%s)");
         provider.add("gtceu.multiblock.hpca.temperature", "Temperature: %s");
@@ -962,6 +971,8 @@ public class MachineLang {
         provider.add("gtceu.multiblock.hpca.error_damaged", "Damaged component in structure!");
         provider.add("gtceu.multiblock.hpca.error_temperature",
                 "Temperature above 100C, components may be damaged!");
+        provider.add("gtceu.multiblock.hpca.error_power",
+                "Power low, CWU generation halted!");
         provider.add("gtceu.multiblock.hpca.warning_temperature",
                 "Temperature above 50C, components may be damaged at 100C!");
         provider.add("gtceu.multiblock.hpca.warning_temperature_active_cool", "Fully utilizing active coolers");
@@ -971,8 +982,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.hpca.warning_no_computation", "- No computation providers");
         provider.add("gtceu.multiblock.hpca.warning_low_cooling", "- Not enough cooling");
         provider.add("gtceu.multiblock.hpca.info_max_computation", "Max CWU/t: %s");
-        provider.add("gtceu.multiblock.hpca.info_max_cooling_demand", "Cooling Demand: %s");
-        provider.add("gtceu.multiblock.hpca.info_max_cooling_available", "Cooling Available: %s");
+        provider.add("gtceu.multiblock.hpca.info_cooling_demand", "Cooling Demand: %s / %d");
         provider.add("gtceu.multiblock.hpca.info_max_coolant_required", "Coolant Needed: %s");
         provider.add("gtceu.multiblock.hpca.info_coolant_name", "PCB Coolant");
         provider.add("gtceu.multiblock.hpca.info_bridging_enabled", "Bridging Enabled");
@@ -988,7 +998,8 @@ public class MachineLang {
         provider.add("gtceu.creative.energy.voltage", "Voltage");
         provider.add("gtceu.creative.energy.sink", "Sink");
         provider.add("gtceu.creative.energy.source", "Source");
-        provider.add("gtceu.creative.computation.average", "Average Requested CWUt");
+        provider.add("gtceu.creative.computation.average", "Average CWU/tick: %d");
+        provider.add("gtceu.creative.computation.max_usage", "Max CWU/tick:");
         provider.add("gtceu.creative.activity.on", "Active");
         provider.add("gtceu.creative.activity.off", "Not active");
     }

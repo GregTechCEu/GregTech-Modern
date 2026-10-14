@@ -6,8 +6,9 @@ import com.gregtechceu.gtceu.api.block.BlockAttributes;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
 import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
-import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
+import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
@@ -17,7 +18,9 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -41,6 +44,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -54,12 +58,24 @@ public class ClientEventListener {
 
     @SubscribeEvent
     public static void onRenderLevelStageEvent(RenderLevelStageEvent event) {
+        Camera camera = event.getCamera();
+        PoseStack poseStack = event.getPoseStack();
+        float partialTick = event.getPartialTick();
+        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+
+        // render the preview in every stage; it filters itself
+        PatternPreviewRenderer.INSTANCE.draw(poseStack, bufferSource, camera, event.getStage(), partialTick);
+
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
-            // to render the preview after block entities, before the translucent. so it can be seen through the
+            // render the highlight after block entities but before translucent blocks so it can be seen through
             // transparent blocks.
-            MultiblockInWorldPreviewRenderer.renderInWorldPreview(event.getPoseStack(), event.getCamera(),
-                    event.getPartialTick());
+            AABBHighlightRenderer.INSTANCE.tick(poseStack, bufferSource, camera);
         }
+    }
+
+    @SubscribeEvent
+    public static void onLevelUnload(LevelEvent.Unload event) {
+        FacadeCoverRenderer.clearItemModelCache();
     }
 
     private static final Map<UUID, ResourceLocation> DEFAULT_CAPES = new Object2ObjectOpenHashMap<>();
@@ -137,15 +153,11 @@ public class ClientEventListener {
     public static void onClientTickEvent(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             TooltipHelper.onClientTick();
-            MultiblockInWorldPreviewRenderer.onClientTick();
             EnvironmentalHazardClientHandler.INSTANCE.onClientTick();
+            PatternPreviewRenderer.INSTANCE.clientTick();
+
             GTValues.CLIENT_TIME++;
         }
-    }
-
-    @SubscribeEvent
-    public static void onLevelUnloadEvent(LevelEvent.Unload event) {
-        FacadeCoverRenderer.clearItemModelCache();
     }
 
     private static final String BLOCK_INFO_LINE_START = ChatFormatting.UNDERLINE + "Targeted Block: ";

@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -32,6 +32,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -41,16 +42,21 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
 
     IGregtechBlockEntity getHolder();
 
+    @Override
+    default ISyncManaged getParentSyncObject() {
+        return getHolder();
+    }
+
     default Level getLevel() {
-        return getHolder().getLevel();
+        return getHolder().self().getLevel();
     }
 
     default BlockPos getBlockPos() {
-        return getHolder().getBlockPos();
+        return getHolder().self().getBlockPos();
     }
 
     default BlockState getBlockState() {
-        return getHolder().getBlockState();
+        return getHolder().self().getBlockState();
     }
 
     default long getOffsetTimer() {
@@ -58,14 +64,10 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
     }
 
     default boolean isRemoved() {
-        return getHolder().isRemoved();
+        return getHolder().self().isRemoved();
     }
 
     default void notifyBlockUpdate() {
-        getHolder().notifyBlockUpdate();
-    }
-
-    default void scheduleRenderUpdate() {
         getHolder().notifyBlockUpdate();
     }
 
@@ -73,13 +75,9 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
         getHolder().scheduleNeighborShapeUpdate();
     }
 
-    default void markAsChanged() {
-        getHolder().markAsChanged();
-    }
-
     @Nullable
     @Override
-    default TickableSubscription subscribeServerTick(Runnable runnable) {
+    default TickableSubscription subscribeServerTick(@NotNull Runnable runnable) {
         return getHolder().subscribeServerTick(runnable);
     }
 
@@ -308,13 +306,15 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
         var tag = new CompoundTag();
         tag.putString("id", GTRegistries.COVERS.getKey(cover.coverDefinition).toString());
         tag.put("item", cover.getAttachItem().serializeNBT());
-        tag.put("data", cover.copyConfig(new CompoundTag()));
+        var dataTag = new CompoundTag();
+        cover.copyConfig(dataTag);
+        tag.put("data", dataTag);
         return tag;
     }
 
     private void applyCoverConfigTag(ServerPlayer player, Direction dir, CompoundTag tag) {
         if (tag.isEmpty()) return;
-        var def = GTRegistries.COVERS.get(new ResourceLocation(tag.getString("id")));
+        var def = GTRegistries.COVERS.get(ResourceLocation.parse(tag.getString("id")));
         ItemStack stack = ItemStack.of(tag.getCompound("item"));
         if (def == null) return;
 
@@ -326,16 +326,14 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
     }
 
     @Override
-    default CompoundTag copyConfig(CompoundTag tag) {
+    default void copyConfig(@NotNull CompoundTag tag) {
         for (Direction dir : GTUtil.DIRECTIONS) {
             tag.put(dir.getName(), hasCover(dir) ? createCoverConfigTag(getCoverAtSide(dir)) : new CompoundTag());
         }
-
-        return tag;
     }
 
     @Override
-    default void pasteConfig(ServerPlayer player, CompoundTag tag) {
+    default void pasteConfig(@NotNull ServerPlayer player, @NotNull CompoundTag tag) {
         for (Direction side : GTUtil.DIRECTIONS) {
             removeCover(side, player);
         }
@@ -346,7 +344,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
     }
 
     @Override
-    default List<ItemStack> getItemsRequiredToPaste() {
+    default @NotNull List<ItemStack> getItemsRequiredToPaste() {
         Map<Item, Integer> allDrops = new HashMap<>();
         List<ItemStack> rawDrops = new ArrayList<>();
 

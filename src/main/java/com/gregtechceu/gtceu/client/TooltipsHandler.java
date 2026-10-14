@@ -6,9 +6,11 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.fluids.FluidConstants;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
@@ -32,8 +34,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
+import com.mojang.datafixers.util.Either;
+
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 @OnlyIn(Dist.CLIENT)
 public class TooltipsHandler {
@@ -44,7 +49,7 @@ public class TooltipsHandler {
     public static void appendTooltips(ItemStack stack, TooltipFlag flag, List<Component> tooltips) {
         // Formula
         var materialEntry = ChemicalHelper.getMaterialEntry(stack.getItem());
-        if (!materialEntry.isEmpty()) {
+        if (materialEntry != null) {
             var formula = materialEntry.material().getChemicalFormula();
             if (formula != null && !formula.isEmpty()) {
                 tooltips.add(1, Component.literal(formula).withStyle(ChatFormatting.YELLOW));
@@ -73,11 +78,11 @@ public class TooltipsHandler {
             }
         }
 
-        Material material = HazardProperty.getValidHazardMaterial(stack).material();
-        if (material.isNull()) {
+        Either<Material, MaterialEntry> material = HazardProperty.getValidHazardMaterial(stack);
+        if (material == null) {
             return;
         }
-        GTUtil.appendHazardTooltips(material, tooltips);
+        GTUtil.appendHazardTooltips(material.map(UnaryOperator.identity(), MaterialEntry::material), tooltips);
     }
 
     public static void appendFluidTooltips(FluidStack fluidStack, Consumer<Component> tooltips, TooltipFlag flag) {
@@ -94,7 +99,11 @@ public class TooltipsHandler {
         }
 
         var material = ChemicalHelper.getMaterial(fluid);
-        if (!material.isNull()) {
+        if (material != null) {
+            if (material.requiresMetalFreezing() && fluid.isSame(material.getFluid(FluidStorageKeys.LIQUID))) {
+                tooltips.accept(Component.translatable("gtceu.fluid.requires_metal_freezing")
+                        .withStyle(ChatFormatting.GOLD));
+            }
             var formula = material.getChemicalFormula();
             if (formula != null && !formula.isEmpty()) {
                 tooltips.accept(Component.literal(formula).withStyle(ChatFormatting.YELLOW));

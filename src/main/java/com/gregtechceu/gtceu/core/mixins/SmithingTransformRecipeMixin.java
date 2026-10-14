@@ -3,61 +3,39 @@ package com.gregtechceu.gtceu.core.mixins;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 
-import com.llamalad7.mixinextras.sugar.Share;
-import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-import org.spongepowered.asm.mixin.Final;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(SmithingTransformRecipe.class)
 public class SmithingTransformRecipeMixin {
 
-    @Shadow
-    @Final
-    ItemStack result;
-
-    @Inject(method = "assemble",
-            at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/world/item/ItemStack;setTag(Lnet/minecraft/nbt/CompoundTag;)V"))
-    private void gtceu$gtToolSmithingTransform1(Container container, RegistryAccess registryAccess,
-                                                CallbackInfoReturnable<ItemStack> cir,
-                                                @Share("newTag") LocalRef<CompoundTag> sharedTag) {
-        ItemStack output = this.result.copy();
-
-        if (!(output.getItem() instanceof IGTTool igtTool)) return;
-
-        CompoundTag originalTag = container.getItem(1).getTag();
-        CompoundTag newTag = originalTag != null ? originalTag.copy() : null;
-        if (newTag == null) return;
-
-        // Remove old tool stats
-        newTag.remove("GT.Tool");
+    @ModifyArg(method = "assemble",
+               at = @At(value = "INVOKE",
+                        target = "Lnet/minecraft/world/item/ItemStack;setTag(Lnet/minecraft/nbt/CompoundTag;)V"))
+    private CompoundTag gtceu$FixGtToolSmithing(CompoundTag newTag, @Local ItemStack output) {
+        if (!(output.getItem() instanceof IGTTool gtTool)) return newTag;
 
         // Copy stats from the upgraded tool
-        ItemStack newStack = ToolHelper.get(igtTool.getToolType(), igtTool.getMaterial());
-        Tag newStats = newStack.getTag() != null ? newStack.getTag().get("GT.Tool") : null;
-        if (newStats != null) {
-            newTag.put("GT.Tool", newStats);
-            sharedTag.set(newTag);
+        ItemStack newStack = ToolHelper.get(gtTool.getToolType(), gtTool.getMaterial());
+        if (!newStack.hasTag()) {
+            return newTag;
         }
-    }
 
-    @Redirect(method = "assemble",
-              at = @At(value = "INVOKE",
-                       target = "Lnet/minecraft/world/item/ItemStack;setTag(Lnet/minecraft/nbt/CompoundTag;)V"))
-    private void gtceu$gtToolSmithingTransform2(ItemStack itemStack, CompoundTag tag,
-                                                @Share("newTag") LocalRef<CompoundTag> sharedTag) {
-        itemStack.setTag(sharedTag.get());
+        Tag newStats = newStack.getTagElement("GT.Tool");
+        if (newStats != null) {
+            // newTag is already a copy of the original stack's tag, so we don't need to copy it again.
+
+            // put() removes the old entry in the NBT, so this also removes old tool stats
+            // do a defensive copy of the stat tag
+            newTag.put("GT.Tool", newStats.copy());
+        }
+        return newTag;
     }
 }

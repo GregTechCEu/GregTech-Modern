@@ -64,7 +64,7 @@ public class GTOreDefinition {
                     IntProvider.NON_NEGATIVE_CODEC.fieldOf("cluster_size").forGetter(ft -> ft.clusterSize),
                     Codec.floatRange(0.0F, 1.0F).fieldOf("density").forGetter(ft -> ft.density),
                     Codec.INT.fieldOf("weight").forGetter(ft -> ft.weight),
-                    IWorldGenLayer.CODEC.fieldOf("layer").forGetter(ft -> ft.layer),
+                    GTRegistries.WORLD_GEN_LAYERS.codec().fieldOf("layer").forGetter(ft -> ft.layer),
                     ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter")
                             .forGetter(ft -> new ArrayList<>(ft.dimensionFilter)),
                     HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(ft -> ft.range),

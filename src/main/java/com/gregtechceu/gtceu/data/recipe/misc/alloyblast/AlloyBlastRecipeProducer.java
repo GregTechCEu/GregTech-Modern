@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.level.material.Fluid;
@@ -23,8 +22,6 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
-
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ingotHot;
 
 public class AlloyBlastRecipeProducer {
 
@@ -46,22 +43,16 @@ public class AlloyBlastRecipeProducer {
         // ignore non-alloys
         if (componentAmount < 2) return;
 
-        // get the output fluid
-        Fluid molten;
-        if (ingotHot.doGenerateItem(material)) {
-            molten = GTUtil.getMoltenFluid(material);
-            addFreezerRecipes(material, molten, property.getBlastTemperature(), provider);
-        } else {
-            molten = material.getFluid();
-        }
-        if (molten == null) return;
+        // Casting and cooling recipes are generated alongside the material's other shapes.
+        Fluid liquid = material.getFluid(FluidStorageKeys.LIQUID);
+        if (liquid == null) return;
 
         GTRecipeBuilder builder = createBuilder(property, material);
 
         int outputAmount = addInputs(material, builder);
         if (outputAmount <= 0) return;
 
-        buildRecipes(property, molten, outputAmount, componentAmount, builder, provider);
+        buildRecipes(property, liquid, outputAmount, componentAmount, builder, provider);
     }
 
     /**
@@ -96,19 +87,26 @@ public class AlloyBlastRecipeProducer {
     protected int addInputs(@NotNull Material material, @NotNull GTRecipeBuilder builder) {
         // calculate the output amount and add inputs
         int outputAmount = 0;
-        int fluidAmount = 0;
+        int fluids = 0;
         for (MaterialStack materialStack : material.getMaterialComponents()) {
-            final Material msMat = materialStack.material();
+            final Material component = materialStack.material();
             final int msAmount = (int) materialStack.amount();
 
-            if (msMat.hasProperty(PropertyKey.DUST)) {
-                builder.inputItems(TagPrefix.dust, msMat, msAmount);
-            } else if (msMat.hasProperty(PropertyKey.FLUID)) {
-                if (fluidAmount >= 2) return -1; // more than 2 fluids won't fit in the machine
-                fluidAmount++;
+            if (component.hasProperty(PropertyKey.DUST)) {
+                builder.inputItems(TagPrefix.dust, component, msAmount);
+            } else if (component.hasProperty(PropertyKey.FLUID)) {
+                if (fluids >= 2) {
+                    // more than 2 fluids won't fit in the machine
+                    return -1;
+                }
+                fluids++;
+
                 // assume all fluids have 1000mB/mol, since other quantities should be as an item input
-                builder.inputFluids(msMat.getFluid(1000 * msAmount));
-            } else return -1; // no fluid or item prop means no valid recipe
+                builder.inputFluids(component.getFluid(1000 * msAmount));
+            } else {
+                // no fluid or item prop means no valid recipe
+                return -1;
+            }
             outputAmount += msAmount;
         }
         return outputAmount;
@@ -118,16 +116,17 @@ public class AlloyBlastRecipeProducer {
      * Builds the alloy blast recipes
      *
      * @param property        the blast property to utilize
-     * @param molten          the molten fluid
+     * @param liquid          the liquid fluid
      * @param outputAmount    the amount of material to output
      * @param componentAmount the amount of different components in the material
      * @param builder         the builder to continue
+     * @param provider        the recipe "provider"
      */
-    protected void buildRecipes(@NotNull BlastProperty property, @NotNull Fluid molten, int outputAmount,
-                                int componentAmount,
+    protected void buildRecipes(@NotNull BlastProperty property, @NotNull Fluid liquid,
+                                int outputAmount, int componentAmount,
                                 @NotNull GTRecipeBuilder builder, Consumer<FinishedRecipe> provider) {
         // add the fluid output with the correct amount
-        builder.outputFluids(new FluidStack(molten, GTValues.L * outputAmount));
+        builder.outputFluids(new FluidStack(liquid, GTValues.L * outputAmount));
 
         // apply alloy blast duration reduction: 3/4
         int duration = builder.duration * outputAmount * 3 / 4;
@@ -135,8 +134,7 @@ public class AlloyBlastRecipeProducer {
         // build the gas recipe if it exists
         if (property.getGasTier() != null) {
             GTRecipeBuilder builderGas = builder.copy(builder.id.getPath() + "_gas");
-            FluidIngredient gas = property.getGasTier().getFluid();
-            gas.setAmount(gas.getAmount() * outputAmount);
+            FluidIngredient gas = property.getGasTier().getFluid(outputAmount);
             builderGas.circuitMeta(getGasCircuitNum(componentAmount))
                     .inputFluids(gas)
                     .duration((int) (duration * 0.67))
@@ -166,18 +164,15 @@ public class AlloyBlastRecipeProducer {
     }
 
     /**
-     * Add the freezer recipes for the material
-     *
-     * @param material    the material to generate for
-     * @param molten      the molten fluid
-     * @param temperature the temperature of the material
+     * @deprecated Cooling is generated by the material casting handlers for every supported mold.
      */
+    @Deprecated
     @SuppressWarnings("MethodMayBeStatic")
-    protected void addFreezerRecipes(@NotNull Material material, @NotNull Fluid molten, int temperature,
+    protected void addFreezerRecipes(@NotNull Material material, @NotNull Fluid liquid, int temperature,
                                      Consumer<FinishedRecipe> provider) {
         // build the freezer recipe
         GTRecipeBuilder freezerBuilder = GTRecipeTypes.VACUUM_RECIPES.recipeBuilder(material.getName())
-                .inputFluids(new FluidStack(molten, GTValues.L))
+                .inputFluids(new FluidStack(liquid, GTValues.L))
                 .duration((int) material.getMass() * 3)
                 .notConsumable(GTItems.SHAPE_MOLD_INGOT.asStack())
                 .outputItems(TagPrefix.ingot, material);

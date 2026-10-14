@@ -8,6 +8,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.level.Level;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.function.BooleanSupplier;
 
 /**
@@ -22,7 +24,7 @@ public class ConditionalSubscriptionHandler {
     private final Runnable runnable;
     private final BooleanSupplier condition;
 
-    private TickableSubscription subscription;
+    private @Nullable TickableSubscription subscription;
 
     public ConditionalSubscriptionHandler(ITickSubscription handler, Runnable runnable, BooleanSupplier condition) {
         this.handler = handler;

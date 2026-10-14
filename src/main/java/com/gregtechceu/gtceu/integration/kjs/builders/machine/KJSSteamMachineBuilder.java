@@ -6,10 +6,10 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.resources.ResourceLocation;
@@ -30,8 +30,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
     @Setter
     public transient SteamDefinitionFunction definition = (isHP, def) -> def.tier(isHP ? 1 : 0);
 
-    private transient MachineBuilder<?, ?> lowPressureBuilder = null, highPressureBuilder = null;
-    private transient MachineDefinition hpValue = null;
+    private transient MachineBuilder<?, ?, ?> lowPressureBuilder = null, highPressureBuilder = null;
 
     public KJSSteamMachineBuilder(ResourceLocation id) {
         super(id);
@@ -39,8 +38,10 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
 
     @Override
     public MachineDefinition register() {
+        var registrate = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace());
+
         if (hasLowPressure) {
-            this.lowPressureBuilder = GTRegistration.REGISTRATE.machine(
+            this.lowPressureBuilder = registrate.machine(
                     String.format("lp_%s", this.id.getPath()),
                     holder -> machine.create(holder, false));
             lowPressureBuilder.langValue("Low Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
@@ -53,7 +54,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
         }
 
         if (hasHighPressure) {
-            this.highPressureBuilder = GTRegistration.REGISTRATE.machine(
+            this.highPressureBuilder = registrate.machine(
                     String.format("hp_%s", this.id.getPath()),
                     holder -> machine.create(holder, true));
             highPressureBuilder.langValue("High Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
@@ -62,10 +63,10 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
                     .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                     .workableSteamHullModel(true, id.withPrefix("block/machines/"));
             definition.apply(true, highPressureBuilder);
-            hpValue = highPressureBuilder.register();
+            value = highPressureBuilder.register();
         }
 
-        return value != null ? value : hpValue;
+        return value;
     }
 
     @Override
@@ -82,17 +83,12 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
     @Override
     public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
-        if (value != null) {
-            lang.add(GTCEu.MOD_ID, value.getDescriptionId(), value.getLangValue());
-        }
-        if (hpValue != null) {
-            lang.add(GTCEu.MOD_ID, hpValue.getDescriptionId(), hpValue.getLangValue());
-        }
+        lang.add(GTCEu.MOD_ID, value.getDescriptionId(), value.getLangValue());
     }
 
     @Override
     public MachineDefinition get() {
-        return value != null ? value : hpValue;
+        return value;
     }
 
     @FunctionalInterface
@@ -104,6 +100,6 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
     @FunctionalInterface
     public interface SteamDefinitionFunction {
 
-        void apply(boolean isHighPressure, MachineBuilder<?, ?> builder);
+        void apply(boolean isHighPressure, MachineBuilder<?, ?, ?> builder);
     }
 }

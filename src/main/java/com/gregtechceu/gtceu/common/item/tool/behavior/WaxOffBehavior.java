@@ -53,7 +53,6 @@ public class WaxOffBehavior implements IToolBehavior {
                 blocks = List.of(pos);
             } else {
                 blocks = getUnwaxableBlocks(aoeDefinition, context);
-                blocks.add(0, context.getClickedPos());
             }
         } else {
             return InteractionResult.PASS;

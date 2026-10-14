@@ -302,7 +302,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
             ResourceLocation id = GTCEu.id(zoneTag.getString("condition"));
-            if (!GTRegistries.MEDICAL_CONDITIONS.containKey(id)) {
+            if (!GTRegistries.MEDICAL_CONDITIONS.containsKey(id)) {
                 return null;
             }
             MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(id);
