@@ -59,7 +59,7 @@ public final class ResearchManager {
     public static boolean isStackDataItem(ItemStack stack, boolean isDataBank) {
         @Nullable
         DataItem dataItem = stack.get(GTDataComponents.DATA_ITEM);
-        return dataItem != null && dataItem.requireDataBank() || isDataBank;
+        return dataItem != null && (!dataItem.requireDataBank() || isDataBank);
     }
 
     /**
