@@ -6,7 +6,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -19,8 +18,8 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag> {
     protected static final String DESC_KEY = "description";
 
     @Setter
-    @NotNull
     private String description = "";
+    @Getter
     private int color = 0xFFFFFFFF;
     private String colorStr = DEFAULT_COLOR;
 
@@ -76,6 +75,6 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag> {
     }
 
     public boolean canRemove() {
-        return this.description.isEmpty();
+        return this.description.isBlank();
     }
 }

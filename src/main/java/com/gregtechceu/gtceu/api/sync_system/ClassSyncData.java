@@ -6,17 +6,18 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
-import lombok.SneakyThrows;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Static data for {@link ISyncManaged} classes.
@@ -40,28 +41,27 @@ public final class ClassSyncData {
     }
 
     @Getter
-    private final List<FieldSyncData> managedFields = new ObjectArrayList<>();
+    private final Map<String, FieldSyncData> managedFields = new Object2ObjectOpenHashMap<>();
     @Getter
-    private final Set<FieldSyncData> clientSyncFields = new ObjectOpenHashSet<>();
+    private final Map<String, FieldSyncData> clientSyncFields = new Object2ObjectOpenHashMap<>();
     @Getter
-    private final Set<FieldSyncData> serverSaveFields = new ObjectOpenHashSet<>();
+    private final Map<String, FieldSyncData> serverSaveFields = new Object2ObjectOpenHashMap<>();
+    @Getter
+    private @Nullable Supplier<?> clientsideConstructor = null;
 
-    @SneakyThrows
     private ClassSyncData(Class<?> clazz) {
         var isManaged = ISyncManaged.class.isAssignableFrom(clazz);
-        var isAnnotated = ISyncAnnotated.class.isAssignableFrom(clazz);
 
-        if (!isManaged && !isAnnotated)
-            throw new IllegalArgumentException("Cannot create class sync data for non-sync class");
-        if (isManaged && isAnnotated) throw new IllegalArgumentException(
-                "Class %s cannot inherit both ISyncAnnotated and ISyncManaged".formatted(clazz.getName()));
+        if (!isManaged)
+            throw new IllegalArgumentException(
+                    "Cannot create class sync data for non sync managed class " + clazz.getName());
 
         MethodHandles.Lookup privateLookup;
         try {
             privateLookup = MethodHandles.privateLookupIn(clazz, LOOKUP);
         } catch (IllegalAccessException e) {
             GTCEu.LOGGER.error("Sync: Failed to create method handle lookup for class {}", clazz);
-            throw e;
+            throw new RuntimeException(e);
         }
 
         Map<String, List<MethodHandle>> changeListeners = new HashMap<>();
@@ -103,22 +103,22 @@ public final class ClassSyncData {
             } catch (IllegalAccessException e) {
                 GTCEu.LOGGER.error("Sync: Failed to acquire variable handle for field {} {}", field.getName(),
                         clazz.getName());
-                throw e;
+                throw new RuntimeException(e);
             }
 
             FieldSyncData syncData = new FieldSyncData(field, handle, ValueTransformers.get(field.getGenericType()),
                     changeListeners.getOrDefault(field.getName(), List.of()));
-            managedFields.add(syncData);
-            if (hasClientSync) clientSyncFields.add(syncData);
-            if (hasSaveField) serverSaveFields.add(syncData);
+            managedFields.put(field.getName(), syncData);
+            if (hasClientSync) clientSyncFields.put(field.getName(), syncData);
+            if (hasSaveField) serverSaveFields.put(field.getName(), syncData);
         }
 
         Class<?> parent = clazz.getSuperclass();
-        if (ISyncManaged.class.isAssignableFrom(parent) || ISyncAnnotated.class.isAssignableFrom(parent)) {
+        if (ISyncManaged.class.isAssignableFrom(parent)) {
             ClassSyncData parentHandles = CACHE.get(parent);
-            managedFields.addAll(parentHandles.managedFields);
-            clientSyncFields.addAll(parentHandles.clientSyncFields);
-            serverSaveFields.addAll(parentHandles.serverSaveFields);
+            managedFields.putAll(parentHandles.managedFields);
+            clientSyncFields.putAll(parentHandles.clientSyncFields);
+            serverSaveFields.putAll(parentHandles.serverSaveFields);
         }
     }
 
@@ -130,8 +130,16 @@ public final class ClassSyncData {
      * @param transformer The custom value transformer
      */
     public void setCustomTransformerForField(String fieldName, ValueTransformer<?> transformer) {
-        managedFields.stream().filter(f -> Objects.equals(f.fieldName, fieldName))
-                .findFirst()
-                .ifPresent(fieldData -> fieldData.setTransformer(transformer));
+        Objects.requireNonNull(managedFields.get(fieldName), "Unknown save/sync field: " + fieldName)
+                .setTransformer(transformer);
+    }
+
+    /**
+     * Allows this class to be instantiated on the client when being synced.
+     * 
+     * @param ctor The constructor/supplier to be called when instantiating this class on the client.
+     */
+    public void setClientsideConstructor(@Nullable Supplier<?> ctor) {
+        clientsideConstructor = ctor;
     }
 }

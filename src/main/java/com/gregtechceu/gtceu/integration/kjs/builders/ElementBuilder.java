@@ -15,10 +15,14 @@ public class ElementBuilder extends BuilderBase<Element> {
 
     public transient final String name;
 
+    public transient final ResourceLocation id;
+
     @Setter
     public transient Component translatableName;
     @Setter
-    public transient long protons, neutrons, halfLifeSeconds = -1;
+    public transient long protons, neutrons;
+    @Setter
+    public transient double halfLifeSeconds = -1D;
     @Setter
     public transient String decayTo, symbol;
     @Setter
@@ -26,13 +30,14 @@ public class ElementBuilder extends BuilderBase<Element> {
 
     public ElementBuilder(ResourceLocation id) {
         super(id);
+        this.id = id;
         name = id.getPath();
         translatableName = Component.translatable(id.toLanguageKey("element"));
     }
 
     @Override
     public Element register() {
-        return value = GTElements.createAndRegister(protons, neutrons, halfLifeSeconds, decayTo, name, symbol,
+        return value = GTElements.createAndRegister(id, protons, neutrons, halfLifeSeconds, decayTo, name, symbol,
                 isIsotope);
     }
 }

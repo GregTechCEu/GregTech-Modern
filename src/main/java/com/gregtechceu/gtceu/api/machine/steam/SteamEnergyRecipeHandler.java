@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
@@ -13,13 +13,14 @@ import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraftforge.fluids.FluidStack;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
 
+    @Getter
     private final NotifiableFluidTank steamTank;
     private final double conversionRate; // mB steam per EU
 
@@ -29,7 +30,8 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
     }
 
     @Override
-    public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
+    public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left,
+                                               boolean simulate) {
         for (var it = left.listIterator(); it.hasNext();) {
             EnergyStack stack = it.next();
             if (stack.isEmpty()) {
@@ -45,7 +47,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
                 var list = new ArrayList<FluidIngredient>();
                 list.add(steam);
                 var leftSteam = steamTank.handleRecipeInner(io, recipe, list, simulate);
-                if (leftSteam == null || leftSteam.isEmpty()) {
+                if (leftSteam.isEmpty()) {
                     it.remove();
                 } else {
                     totalEU = (long) (leftSteam.get(0).getAmount() / conversionRate);
@@ -53,11 +55,11 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
                 }
             }
         }
-        return left.isEmpty() ? null : left;
+        return left;
     }
 
     @Override
-    public @NotNull List<Object> getContents() {
+    public List<Object> getContents() {
         List<FluidStack> tankContents = new ArrayList<>();
         for (int i = 0; i < steamTank.getTanks(); ++i) {
             FluidStack stack = steamTank.getFluidInTank(i);

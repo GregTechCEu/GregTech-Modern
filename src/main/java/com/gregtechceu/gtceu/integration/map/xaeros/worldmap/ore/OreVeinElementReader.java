@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.map.xaeros.worldmap.ore;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
+import com.gregtechceu.gtceu.integration.map.xaeros.common.ore.OreVeinElement;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -78,7 +79,7 @@ public class OreVeinElementReader extends
 
     @Override
     public String getMenuName(OreVeinElement element) {
-        return element.getName();
+        return element.getName().getString();
     }
 
     @Override

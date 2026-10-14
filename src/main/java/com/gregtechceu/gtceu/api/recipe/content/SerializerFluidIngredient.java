@@ -8,17 +8,20 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.FLUID_SERIALIZERS;
+import java.util.Map;
+import java.util.function.Function;
 
 public class SerializerFluidIngredient implements IContentSerializer<FluidIngredient> {
 
     public static SerializerFluidIngredient INSTANCE = new SerializerFluidIngredient();
 
+    public static final Map<String, Function<FriendlyByteBuf, FluidIngredient>> FLUID_SERIALIZERS = new Object2ObjectArrayMap<>();
+
     static {
-        FLUID_SERIALIZERS.unfreeze();
-        FLUID_SERIALIZERS.register("FluidIngredient", FluidIngredient::fromNetwork);
-        FLUID_SERIALIZERS.register("IntProviderFluidIngredient", IntProviderFluidIngredient::fromNetwork);
+        FLUID_SERIALIZERS.put("FluidIngredient", FluidIngredient::fromNetwork);
+        FLUID_SERIALIZERS.put("IntProviderFluidIngredient", IntProviderFluidIngredient::fromNetwork);
     };
 
     private SerializerFluidIngredient() {}
@@ -26,7 +29,7 @@ public class SerializerFluidIngredient implements IContentSerializer<FluidIngred
     @Override
     public void toNetwork(FriendlyByteBuf buf, FluidIngredient content) {
         String name = content.getClass().getSimpleName();
-        if (!FLUID_SERIALIZERS.containKey(name)) {
+        if (!FLUID_SERIALIZERS.containsKey(name)) {
             throw new IllegalArgumentException(
                     "SerializerFluidIngredient tried to serialize a FluidIngredient's subclass %s, which is not in the FluidSerializers registry!"
                             .formatted(name));

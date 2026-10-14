@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.capability;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
@@ -79,6 +80,12 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
         if (!medicalConditions.isEmpty()) {
             updateActiveSymptoms();
         }
+    }
+
+    public void progressRelatedCondition(@NotNull Material material, int count) {
+        HazardProperty materialHazard = material.getProperty(PropertyKey.HAZARD);
+        float strength = (float) count * materialHazard.progressionMultiplier;
+        progressCondition(materialHazard.condition, strength);
     }
 
     public void progressRelatedCondition(@NotNull MaterialEntry materialEntry, int count) {
@@ -246,7 +253,7 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
         for (int i = 0; i < medicalConditionsTag.size(); ++i) {
             CompoundTag compoundTag = medicalConditionsTag.getCompound(i);
             ResourceLocation id = GTCEu.id(compoundTag.getString("condition"));
-            if (!GTRegistries.MEDICAL_CONDITIONS.containKey(id)) {
+            if (!GTRegistries.MEDICAL_CONDITIONS.containsKey(id)) {
                 continue;
             }
             MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(id);
@@ -258,7 +265,7 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
         ListTag permanentConditionsTag = arg.getList("permanent_conditions", Tag.TAG_STRING);
         for (int i = 0; i < permanentConditionsTag.size(); ++i) {
             ResourceLocation id = GTCEu.id(permanentConditionsTag.getString(i));
-            if (!GTRegistries.MEDICAL_CONDITIONS.containKey(id)) {
+            if (!GTRegistries.MEDICAL_CONDITIONS.containsKey(id)) {
                 continue;
             }
             permanentConditions.add(GTRegistries.MEDICAL_CONDITIONS.get(id));

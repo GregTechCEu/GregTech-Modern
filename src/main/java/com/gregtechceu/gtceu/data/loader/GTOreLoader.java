@@ -72,7 +72,7 @@ public class GTOreLoader extends SimpleJsonResourceReloadListener {
                 } else if (ore.veinGenerator() instanceof NoopVeinGenerator) {
                     LOGGER.info("Removing ore vein {} as it's generator was marked as no-operation", location);
                     GTRegistries.ORE_VEINS.remove(location);
-                } else if (GTRegistries.ORE_VEINS.containKey(location)) {
+                } else if (GTRegistries.ORE_VEINS.containsKey(location)) {
                     GTRegistries.ORE_VEINS.replace(location, ore);
                 } else {
                     GTRegistries.ORE_VEINS.register(location, ore);

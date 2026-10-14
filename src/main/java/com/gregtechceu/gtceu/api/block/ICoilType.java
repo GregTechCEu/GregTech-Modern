@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.Lazy;
 
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +14,15 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public interface ICoilType {
+
+    Codec<ICoilType> CODEC = Codec.STRING.xmap(
+            (name) -> GTCEuAPI.HEATING_COILS.keySet()
+                    .stream()
+                    .filter(type -> type.getName().equals(name))
+                    .findFirst()
+                    .orElseThrow(
+                            () -> new RuntimeException("ICoilType " + name + " not found in GTCEuAPI.HEATING_COILS")),
+            ICoilType::getName);
 
     /**
      * @return The Unique Name of the Heating Coil
@@ -47,8 +57,9 @@ public interface ICoilType {
     int getTier();
 
     /**
-     * @return the {@link Material} of the Heating Coil if it has one, otherwise {@code GTMaterials.NULL}
+     * @return the {@link Material} of the Heating Coil if it has one, otherwise {@code null}
      */
+    @Nullable
     Material getMaterial();
 
     /**

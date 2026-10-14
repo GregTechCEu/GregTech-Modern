@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.block;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
+import com.gregtechceu.gtceu.client.model.runtimegen.OreBlockModelGenerator;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 
@@ -19,9 +19,9 @@ import net.minecraft.world.phys.BlockHitResult;
 public class OreBlock extends MaterialBlock {
 
     public OreBlock(Properties properties, TagPrefix tagPrefix, Material material) {
-        super(properties, tagPrefix, material, false);
+        super(properties, tagPrefix, material);
         if (GTCEu.isClientSide()) {
-            OreBlockRenderer.create(this);
+            OreBlockModelGenerator.add(this);
         }
     }
 

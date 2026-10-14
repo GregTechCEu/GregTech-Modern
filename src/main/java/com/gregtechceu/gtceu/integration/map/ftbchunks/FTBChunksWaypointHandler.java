@@ -17,10 +17,9 @@ public class FTBChunksWaypointHandler implements IWaypointHandler {
     private static final Map<String, Waypoint> waypoints = new Object2ObjectOpenHashMap<>();
 
     @Override
-    public void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, int x, int y, int z) {
+    public void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, BlockPos pos) {
         FTBChunksAPI.clientApi().getWaypointManager()
-                .map(manager -> manager.addWaypointAt(
-                        new BlockPos(x, y, z), name).setColor(color).setHidden(false))
+                .map(manager -> manager.addWaypointAt(pos, name).setColor(color).setHidden(false))
                 .map(waypoint -> waypoints.put(key, waypoint));
     }
 

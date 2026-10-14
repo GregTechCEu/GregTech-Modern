@@ -6,56 +6,83 @@ title: "Custom Parallel Hatch"
 # Custom Parallel Hatch Multi-Part (By Sparked)
 
 ## Parallel Hatch
-
-```js title="extra_parallel_hatch.js"
-const $ParallelHatchPartMachine = Java.loadClass(
-    "com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine"
-); // (1)
-
-GTCEuStartupEvents.registry("gtceu:machine", (event) => {
-  event
-      .create("parallel_hatch", "custom") // (2)
-      .tiers(GTValues.UHV, GTValues.UIV, GTValues.UEV, GTValues.UXV) // (3)
-      .machine((holder, tier, tankScaling) => {
-        return new $ParallelHatchPartMachine(holder, tier); // (4)
-      })
-      .definition((tier, builder) => {
-        let name = "Simple";
-        switch (tier) {
-          case GTValues.UHV:
-            name = "Epic";
-            break;
-          case GTValues.UIV:
-            name = "Legendary";
-            break;
-          case GTValues.UEV:
-            name = "Spectral";
-            break;
-          case GTValues.UXV:
-            name = "Universal";
-            break;
-        }
-
-        const $RecipeLogic = Java.loadClass(
-            "com.gregtechceu.gtceu.api.machine.trait.RecipeLogic"
-        );
-        builder
-            .langValue(name + " Parallel Control Hatch")
-            .rotationState(RotationState.ALL)
-            .abilities(PartAbility.PARALLEL_HATCH) // (5)
-            .modelProperty($RecipeLogic.STATUS_PROPERTY, $RecipeLogic.Status.IDLE)
-            .model(
-                GTMachineModels.createWorkableTieredHullMachineModel(
-                    GTCEu.id("block/machines/parallel_hatch_mk4") // (6)
-                )[
-                    "andThen(com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder$ModelInitializer)"
-                    ]((ctx, prov, model) => {
-                  model.addReplaceableTextures("bottom", "top", "side");
-                })
-            )
-      }); // (7)
-});
-```
+=== "Java"
+    ```java title="AddonMachines.java"
+        public static final MachineDefinition[] PARALLEL_HATCH = registerTieredMachines(ADDON_REGISTRATE, "custom_parallel_hatch",
+                ParallelHatchPartMachine::new,
+                (tier, builder) -> builder
+                        .langValue(switch (tier) {
+                            case GTValues.UHV -> "Epic";
+                            case GTValues.UIV -> "Legendary";
+                            case GTValues.UEV -> "Spectral";
+                            case GTValues.UXV -> "Universal";
+                            default -> "Simple"; // Should never be hit.
+                        } + " Parallel Control Hatch")
+                        .rotationState(RotationState.ALL)
+                        .abilities(PartAbility.PARALLEL_HATCH)
+                        .modelProperty(IS_FORMED, false)
+                        .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+                        .model(createWorkableTieredHullMachineModel(
+                                AddonMod.id("block/machines/parallel_hatch_mk" + (tier - 4)))
+                                .andThen((ctx, prov, model) -> {
+                                    model.addReplaceableTextures("bottom", "top", "side");
+                                }))
+                        .tooltips(Component.translatable("addon.machine.parallel_hatch_mk" + tier + ".tooltip"),
+                                Component.translatable("gtceu.part_sharing.disabled"))
+                        .register(),
+            GTValues.UHV, GTValues.UIV, GTValues.UEV, GTValues.UXV);
+    
+    ```
+=== "JavaScript"
+    ```js title="extra_parallel_hatch.js"
+    const $ParallelHatchPartMachine = Java.loadClass(
+        "com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine"
+    ); // (1)
+    
+    GTCEuStartupEvents.registry("gtceu:machine", (event) => {
+      event
+          .create("parallel_hatch", "custom") // (2)
+          .tiers(GTValues.UHV, GTValues.UIV, GTValues.UEV, GTValues.UXV) // (3)
+          .machine((holder, tier, tankScaling) => {
+            return new $ParallelHatchPartMachine(holder, tier); // (4)
+          })
+          .definition((tier, builder) => {
+            let name = "Simple";
+            switch (tier) {
+              case GTValues.UHV:
+                name = "Epic";
+                break;
+              case GTValues.UIV:
+                name = "Legendary";
+                break;
+              case GTValues.UEV:
+                name = "Spectral";
+                break;
+              case GTValues.UXV:
+                name = "Universal";
+                break;
+            }
+    
+            const $RecipeLogic = Java.loadClass(
+                "com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic"
+            );
+            builder
+                .langValue(name + " Parallel Control Hatch")
+                .rotationState(RotationState.ALL)
+                .abilities(PartAbility.PARALLEL_HATCH) // (5)
+                .modelProperty($RecipeLogic.STATUS_PROPERTY, $RecipeLogic.Status.IDLE)
+                .model(
+                    GTMachineModels.createWorkableTieredHullMachineModel(
+                        GTCEu.id("block/machines/parallel_hatch_mk4") // (6)
+                    )[
+                        "andThen(com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder$ModelInitializer)"
+                        ]((ctx, prov, model) => {
+                      model.addReplaceableTextures("bottom", "top", "side");
+                    })
+                )
+          }); // (7)
+    });
+    ```
 
 1. Loading the parallel hatch's java class is required
 2. Using the GT registry event to register a tiered custom machine
@@ -65,4 +92,4 @@ GTCEuStartupEvents.registry("gtceu:machine", (event) => {
 5. Specifying the multipart to use parallel hatch ability
 6. The texture to use for the multipart, this example just uses the t4 texture as a placeholder
   You can look at gtm's assets to see the animations and textures to edit
-7. You can just refer to the code in GCYMMachines.PARALLEL_HATCH here
+7. You can just refer to the code in GCYMMachines.PARALLEL_HATCH here.

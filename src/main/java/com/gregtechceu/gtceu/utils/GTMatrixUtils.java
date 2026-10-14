@@ -2,16 +2,23 @@ package com.gregtechceu.gtceu.utils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import com.mojang.blaze3d.platform.GlUtil;
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Contract;
 import org.joml.*;
+import org.lwjgl.opengl.GL11;
 
 import java.lang.Math;
+import java.nio.ByteBuffer;
 import java.security.InvalidParameterException;
 import java.util.EnumMap;
 import java.util.Map;
@@ -29,6 +36,9 @@ public class GTMatrixUtils {
     });
     private static final Table<Direction, Direction, Matrix4fc> rotations = Tables
             .synchronizedTable(HashBasedTable.create());
+
+    private static final ByteBuffer PIXEL_DEPTH_BUFFER = GlUtil.allocateMemory(4);
+    private static final int[] VIEWPORT_COORDS = { 0, 0, 0, 0 };
 
     /**
      * @param from the original vector
@@ -130,14 +140,35 @@ public class GTMatrixUtils {
         } * Mth.HALF_PI;
     }
 
+    /**
+     * Computes the roll angle around the {@code frontFacing} axis needed to orient a model - whose top points along
+     * {@code referenceUp} when no roll is applied - so that its top points toward the (global) {@code upwardsFacing}.
+     * <p>
+     * Unlike {@link #upwardFacingAngle(Direction)}, this works directly with the global upwards facing and therefore
+     * accepts any of the six directions (including {@link Direction#UP UP}/{@link Direction#DOWN DOWN}).
+     *
+     * @param frontFacing   the front facing of the machine
+     * @param upwardsFacing the global upwards facing of the machine
+     * @param referenceUp   the direction the model's top points in when no roll is applied
+     * @return the roll angle in radians around the front-facing axis
+     */
+    public static float frontAxisRollAngle(Direction frontFacing, Direction upwardsFacing, Direction referenceUp) {
+        Vector3fc frontAxis = getDirectionAxis(frontFacing);
+        Vector3f actualUp = upwardsFacing.step();
+        Vector3f reference = referenceUp.step();
+        float sin = reference.cross(actualUp, new Vector3f()).dot(frontAxis);
+        float cos = reference.dot(actualUp);
+        return (float) Math.atan2(sin, cos);
+    }
+
     public static Vector3f rotateMatrixToFront(Matrix4f matrix, Direction frontFace) {
         // rotate frontFacing to correct cardinal direction
-        var front = frontFace.step();
+        Vector3f front = frontFace.step();
         rotateMatrix(matrix, Direction.NORTH.step(), getDirectionAxis(frontFace), front);
         return front;
     }
 
-    public static void rotateMatrixToUp(Matrix4f matrix, Vector3f front, Direction upwardsFace) {
+    public static void rotateMatrixToUp(Matrix4f matrix, Vector3fc front, Direction upwardsFace) {
         // rotate upwards face to the correct orientation
         rotateMatrix(matrix, upwardFacingAngle(upwardsFace), front);
     }
@@ -151,12 +182,157 @@ public class GTMatrixUtils {
         var matrix = new Matrix4f();
         var front = rotateMatrixToFront(matrix, frontFace);
         front.absolute();
-        rotateMatrixToUp(matrix, front, upwardFace);
+        rotateMatrixToUp(matrix, front, adjustUpwardsToLocal(frontFace, upwardFace.getOpposite()));
         rotations.put(frontFace, upwardFace, matrix);
         return matrix;
     }
 
     public static Vector3fc getDirectionAxis(Direction dir) {
         return directionAxes.get(dir);
+    }
+
+    /**
+     * {@link Matrix4f#lookAt(Vector3fc, Vector3fc, Vector3fc) Matrix4f#lookAt} with an up axis of {@code (0, 1, 0)}
+     *
+     * @see Matrix4f#lookAt(Vector3fc, Vector3fc, Vector3fc)
+     */
+    public static Matrix4f lookAt(Vector3fc eyePos, Vector3fc target) {
+        return new Matrix4f().lookAt(eyePos, target, GTMath.UNIT_Y);
+    }
+
+    /**
+     * Make the pose stack's topmost transformation look at a point
+     *
+     * @param poseStack the pose stack to modify
+     * @param eyePos    the position of the camera
+     * @param target    the point to look at
+     */
+    public static void lookAt(PoseStack poseStack, Vector3fc eyePos, Vector3fc target) {
+        lookAt(poseStack.last(), eyePos, target);
+    }
+
+    /**
+     * Make the pose stack's topmost transformation look at a point
+     *
+     * @param pose   the pose stack layer to modify
+     * @param eyePos the position of the camera
+     * @param target the point to look at
+     */
+    public static void lookAt(PoseStack.Pose pose, Vector3fc eyePos, Vector3fc target) {
+        pose.pose().lookAt(eyePos, target, GTMath.UNIT_Y);
+        pose.normal().lookAlong(target, GTMath.UNIT_Y);
+    }
+
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
+     * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @param worldPos world space position
+     * @apiNote the Z component of the return value is the distance from the screen.
+     */
+    public static Vector3f projectWorldToScreen(Vector3fc worldPos) {
+        Window window = Minecraft.getInstance().getWindow();
+        return projectWorldToScreen(worldPos, window.getWidth(), window.getHeight());
+    }
+
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
+     * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @param worldPos   world space position
+     * @param viewWidth  the viewport's width
+     * @param viewHeight the viewport's height
+     * @apiNote the Z component of the return value is the distance from the screen.
+     */
+    public static Vector3f projectWorldToScreen(Vector3fc worldPos, int viewWidth, int viewHeight) {
+        // read projection and model view matrices
+        Matrix4f transform = new Matrix4f(RenderSystem.getProjectionMatrix()).mul(RenderSystem.getModelViewMatrix());
+        Vector3f screenPos = new Vector3f(worldPos).mulPosition(transform);
+        screenPos.x = viewWidth * (screenPos.x + 1.0f) / 2.0f;
+        screenPos.y = viewHeight * (screenPos.y + 1.0f) / 2.0f;
+        screenPos.z = (screenPos.z + 1.0f) / 2.0f;
+
+        return screenPos;
+    }
+
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
+     * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @param x X-coordinate in pixels
+     * @param y Y-coordinate in pixels
+     * @return world pos
+     */
+    public static Vector3f projectScreenToWorld(int x, int y) {
+        Window window = Minecraft.getInstance().getWindow();
+        return projectScreenToWorld(x, y, window.getWidth(), window.getHeight(), true);
+    }
+
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
+     * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @param x          X-coordinate in pixels
+     * @param y          Y-coordinate in pixels
+     * @param viewWidth  the viewport's width
+     * @param viewHeight the viewport's height
+     * @param checkDepth whether to read the depth value of the targeted position
+     * @return world pos
+     */
+    public static Vector3f projectScreenToWorld(int x, int y, int viewWidth, int viewHeight, boolean checkDepth) {
+        // update the viewport size array
+        VIEWPORT_COORDS[2] = viewWidth;
+        VIEWPORT_COORDS[3] = viewHeight;
+        return projectScreenToWorld(x, y, VIEWPORT_COORDS, checkDepth);
+    }
+
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrixinstead of
+     * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @param x          X-coordinate in pixels
+     * @param y          Y-coordinate in pixels
+     * @param viewport   the viewport described by {@code [x, y, width, height]}
+     * @param checkDepth whether to read the depth value of the targeted position
+     * @return world pos
+     */
+    public static Vector3f projectScreenToWorld(int x, int y, int[] viewport, boolean checkDepth) {
+        // read projection and model view matrices
+        Matrix4f transform = new Matrix4f(RenderSystem.getProjectionMatrix()).mul(RenderSystem.getModelViewMatrix());
+
+        float depth = 1.0f;
+        if (checkDepth) {
+            // read depth under mouse
+            RenderSystem.readPixels(x, y, 1, 1, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, PIXEL_DEPTH_BUFFER);
+            PIXEL_DEPTH_BUFFER.rewind();
+            depth = PIXEL_DEPTH_BUFFER.getFloat();
+            PIXEL_DEPTH_BUFFER.rewind();
+        }
+
+        return transform.unproject(x, y, depth, viewport, new Vector3f());
+    }
+
+    public static Direction adjustUpwardsToLocal(Direction frontFacing, Direction upwardFacing) {
+        if (frontFacing.getAxis() == Direction.Axis.Y) {
+            return frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE ?
+                    upwardFacing : upwardFacing.getOpposite();
+        } else if (frontFacing.getAxis() == Direction.Axis.Z) {
+            if (upwardFacing.getAxis() == Direction.Axis.Y) {
+                return Direction.fromAxisAndDirection(Direction.Axis.Z, upwardFacing.getAxisDirection());
+            } else if (upwardFacing.getAxis() == Direction.Axis.X) {
+                Direction.AxisDirection dir = frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE ?
+                        upwardFacing.getAxisDirection().opposite() : upwardFacing.getAxisDirection();
+                return Direction.fromAxisAndDirection(Direction.Axis.X, dir);
+            }
+        } else if (frontFacing.getAxis() == Direction.Axis.X) {
+            if (upwardFacing.getAxis() == Direction.Axis.Y) {
+                return Direction.fromAxisAndDirection(Direction.Axis.Z, upwardFacing.getAxisDirection());
+            } else if (upwardFacing.getAxis() == Direction.Axis.Z) {
+                Direction.AxisDirection dir = frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE ?
+                        upwardFacing.getAxisDirection().opposite() : upwardFacing.getAxisDirection();
+                return Direction.fromAxisAndDirection(Direction.Axis.X, dir);
+            }
+        }
+        return Direction.NORTH;
     }
 }

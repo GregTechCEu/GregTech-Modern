@@ -294,7 +294,8 @@ public class GeodeVeinGenerator extends VeinGenerator {
     protected BlockState getStateFromEither(Either<BlockStateProvider, Material> either, GeodeBlockSettings settings,
                                             RandomSource random, BlockPos pos) {
         return either.map(provider -> provider.getState(random, pos),
-                material -> ChemicalHelper.getBlock(settings.providerMaterialPrefix, material).defaultBlockState());
+                material -> ChemicalHelper.getBlockOrThrow(settings.providerMaterialPrefix, material)
+                        .defaultBlockState());
     }
 
     @Override
@@ -341,7 +342,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
                         .forGetter(config -> config.cannotReplace),
                 TagKey.hashedCodec(Registries.BLOCK).fieldOf("invalid_blocks")
                         .forGetter(config -> config.invalidBlocks),
-                TagPrefix.CODEC.optionalFieldOf("provider_material_prefix", TagPrefix.block)
+                GTRegistries.TAG_PREFIXES.codec().optionalFieldOf("provider_material_prefix", TagPrefix.block)
                         .forGetter(config -> config.providerMaterialPrefix))
                 .apply(instance, GeodeBlockSettings::new));
     }

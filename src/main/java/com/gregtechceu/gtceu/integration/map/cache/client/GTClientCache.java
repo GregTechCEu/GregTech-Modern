@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.cache.client;
 
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 import com.gregtechceu.gtceu.integration.map.cache.DimensionCache;
@@ -38,7 +38,7 @@ public class GTClientCache extends WorldCache implements IClientCache {
             var name = Component.translatable(veinId.replace("gtceu:", "gtceu.jei.ore_vein."));
             var material = OreRenderLayer.getMaterial(vein);
 
-            if (!material.isNull()) {
+            if (material != null) {
                 var center = vein.center();
                 name.setStyle(name.getStyle().withColor(material.getMaterialRGB()).withHoverEvent(new HoverEvent(
                         HoverEvent.Action.SHOW_TEXT,
@@ -56,7 +56,7 @@ public class GTClientCache extends WorldCache implements IClientCache {
     public boolean addVein(ResourceKey<Level> dim, int gridX, int gridZ, GeneratedVeinMetadata vein) {
         GenericMapRenderer renderer = GroupingMapRenderer.getInstance();
         if (renderer != null) {
-            renderer.addMarker(OreRenderLayer.getName(vein).getString(), dim, vein, OreRenderLayer.getId(vein));
+            renderer.addMarker(OreRenderLayer.getName(vein), dim, vein, OreRenderLayer.getId(vein));
         }
         boolean added = super.addVein(dim, gridX, gridZ, vein);
         if (added) {
@@ -93,7 +93,7 @@ public class GTClientCache extends WorldCache implements IClientCache {
         if (renderer != null) {
             for (GridCache grid : cache.get(dim).getCache().values()) {
                 for (GeneratedVeinMetadata vein : grid.getVeins()) {
-                    renderer.addMarker(OreRenderLayer.getName(vein).getString(), dim, vein, OreRenderLayer.getId(vein));
+                    renderer.addMarker(OreRenderLayer.getName(vein), dim, vein, OreRenderLayer.getId(vein));
                 }
             }
         }

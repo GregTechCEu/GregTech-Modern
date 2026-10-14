@@ -8,42 +8,73 @@ title: "Greenhouse"
 
 ## Recipe Type
 
+=== "Java"
+    ```java title="RecipeTypes.java"
+        public final static GTRecipeType GREENHOUSE_RECIPES = register(AddonMod.id("greenhouse"), MULTIBLOCK)
+            .setMaxIOSize(2, 1, 1, 1)
+            .setEUIO(IO.IN)
+            .UI(ui -> ui.setProgressBar(GTGuiTextures.PROGRESS_ARROW))
+            .setSound(GTSoundEntries.BATH);
+    ```
 === "JavaScript"
     ```js title="greenhouse_recipe_type.js"
     GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
         event.create('greenhouse')
-            .category('drack')
             .setEUIO('in')
             .setMaxIOSize(3, 4, 1, 0)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, FillDirection.LEFT_TO_RIGHT)
+            .setProgressBar(GTGuiTextures.PROGRESS_ARROW)
             .setSound(GTSoundEntries.BATH)
     })
     ```
 
-=== "Java"
-    ```java title="RecipeTypes.java"
-        public final static GTRecipeType GREENHOUSE_RECIPES = register("greenhouse", MULTIBLOCK)
-            .setMaxIOSize(2, 1, 1, 1)
-            .setEUIO(IO.IN)
-            .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, ProgressTexture.FillDirection.LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.BATH);
-    ```
-
 ## Multiblock
+
+=== "Java"
+    ```java title="MultiMachines.java"
+        public static final MultiblockMachineDefinition GREENHOUSE = REGISTRATE
+            .multiblock("greenhouse", WorkableElectricMultiblockMachine::new)
+            .langValue("Greenhouse")
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(RecipeTypes.GREENHOUSE_RECIPES)
+            .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
+            .pattern(definition -> MultiblockPatternBuilder.start()
+                    .slice("CKC", "CGC", "CGC", "CLC", "CNC")
+                    .slice("CMC", "G#G", "G#G", "LIL", "COC")
+                    .slice("CCC", "CGC", "CGC", "CLC", "CCC")
+                    .where('K', Predicates.controller(Predicates.blocks(definition.get())))
+                    .where('M', Predicates.blocks(Blocks.MOSS_BLOCK)
+                            .or(Predicates.blocks(Blocks.DIRT))
+                            .or(Predicates.blocks(Blocks.GRASS_BLOCK)))
+                    .where('G', Predicates.blocks(AEBlocks.QUARTZ_GLASS.block()))
+                    .where('I', Predicates.blocks(Blocks.GLOWSTONE))
+                    .where('L', Predicates.blocks(GTBlocks.CASING_GRATE.get()))
+                    .where('C', Predicates.blocks(GTBlocks.CASING_STEEL_SOLID.get())
+                            .and(Predicates.autoAbilities(definition.getRecipeTypes())))
+                    .where('O', Predicates.abilities(PartAbility.MUFFLER)
+                            .setExactLimit(1))
+                    .where('N', Predicates.abilities(PartAbility.MAINTENANCE))
+                    .where('#', Predicates.air())
+                    .build())
+            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+            .model(GTMachineModels.createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/implosion_compressor"))
+                .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper.makeGrowingPlantRender(List.of(new Vector3f(0, 1, -1))))))
+            .register();
+    ```
 === "JavaScript"
     ```js title="greenhouse_multiblock.js"
-    const $RecipeLogic = Java.loadClass('com.gregtechceu.gtceu.api.machine.trait.RecipeLogic')
+    const $RecipeLogic = Java.loadClass('com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic')
     const $List = Java.loadClass('java.util.List')
 
     GTCEuStartupEvents.registry('gtceu:machine', event => {
         event.create('greenhouse', 'multiblock')
+            .langValue("Greenhouse")
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType('greenhouse')
+            .recipeType('gtceu:greenhouse')
             .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
-            .pattern(definition => FactoryBlockPattern.start()
-                .aisle('CCC', 'CGC', 'CGC', 'CLC', 'CCC')
-                .aisle('CMC', 'G#G', 'G#G', 'LIL', 'COC')
-                .aisle('CKC', 'CGC', 'CGC', 'CLC', 'CNC')
+            .pattern(definition => MultiblockPatternBuilder.start()
+                 .slice("CKC", "CGC", "CGC", "CLC", "CNC")
+                 .slice("CMC", "G#G", "G#G", "LIL", "COC")
+                 .slice("CCC", "CGC", "CGC", "CLC", "CCC")
                 .where('K', Predicates.controller(Predicates.blocks(definition.get())))
                 .where('M', Predicates.blocks('moss_block')
                     .or(Predicates.blocks('dirt'))
@@ -53,7 +84,7 @@ title: "Greenhouse"
                 .where('I', Predicates.blocks('glowstone'))
                 .where('L', Predicates.blocks(GTBlocks.CASING_GRATE.get()))
                 .where('C', Predicates.blocks(GTBlocks.CASING_STEEL_SOLID.get())
-                    .or(Predicates.autoAbilities(definition.getRecipeTypes()))
+                    .and(Predicates.autoAbilities(definition.getRecipeTypes()))
                 )
                 .where('O', Predicates.abilities(PartAbility.MUFFLER)
                     .setExactLimit(1)
@@ -64,55 +95,148 @@ title: "Greenhouse"
             )
             .modelProperty(GTModelProperties.RECIPE_LOGIC_STATUS, $RecipeLogic.Status.IDLE)
             .model(GTMachineModels.createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/implosion_compressor"))
-                ["andThen(java.util.function.Consumer)"](b => b.addDynamicRenderer(() => GTDynamicRenders.makeGrowingPlantRender($List.of(new Vector3f(0, 1, -1)))))
+                    ["andThen(java.util.function.Consumer)"](b => b.addDynamicRenderer(() => GTDynamicRenders.makeGrowingPlantRender($List.of(new Vector3f(0, 1, -1)))))
             )
-    })
+        })
     ```
-=== "Java"
-    ```java title="MultiMachines.java"
-        public static final MultiblockMachineDefinition GREENHOUSE = REGISTRATE
-            .multiblock("greenhouse", WorkableElectricMultiblockMachine::new)
-            .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(RecipeTypes.GREENHOUSE_RECIPES)
-            .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
-            .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("CCC", "CGC", "CGC", "CLC", "CCC")
-                    .aisle("CMC", "G#G", "G#G", "LIL", "COC")
-                    .aisle("CKC", "CGC", "CGC", "CLC", "CNC")
-                    .where('K', Predicates.controller(Predicates.blocks(definition.get())))
-                    .where('M', Predicates.blocks(Blocks.MOSS_BLOCK)
-                            .or(Predicates.blocks(Blocks.DIRT))
-                            .or(Predicates.blocks(Blocks.GRASS_BLOCK)))
-                    .where('G', Predicates.blocks(AEBlocks.QUARTZ_GLASS.block()))
-                    .where('I', Predicates.blocks(Blocks.GLOWSTONE))
-                    .where('L', Predicates.blocks(GTBlocks.CASING_GRATE.get()))
-                    .where('C', Predicates.blocks(GTBlocks.CASING_STEEL_SOLID.get())
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes())))
-                    .where('O', Predicates.abilities(PartAbility.MUFFLER)
-                            .setExactLimit(1))
-                    .where('N', Predicates.abilities(PartAbility.MAINTENANCE))
-                    .where('#', Predicates.air())
-                    .build())
-            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
-            .model(GTMachineModels.createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/implosion_compressor"))
-                .andThen(b -> b.addDynamicRenderer(() -> GTDynamicRenders.makeGrowingPlantRender(List.of(new Vector3f(0, 1, -1))))))
-            .register();
-    ```
-
-
-
-## Lang
-
-```json title="en_us.json"
-{
-    "block.gtceu.greenhouse": "Greenhouse",
-    "gtceu.greenhouse": "Greenhouse"
-}
-```
-
 
 ## Recipes
 
+=== "Java"
+    ```java title="Recipes.java"
+    private static void greenhouseHelper(Consumer<FinishedRecipe> provider, String id, Item input, ItemStack output_normal, ItemStack output_boosted) {
+        greenhouseHelper(provider, AddonMod.id(id), input, List.of(output_normal), List.of(output_boosted));
+    }
+
+    private static void greenhouseHelper(Consumer<FinishedRecipe> provider, String id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
+        greenhouseHelper(provider, AddonMod.id(id), input, output_normal, output_boosted);
+    }
+
+    private static void greenhouseHelper(Consumer<FinishedRecipe> provider, ResourceLocation id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
+         GREENHOUSE_RECIPES.recipeBuilder(id)
+                .circuitMeta(2)
+                .notConsumable(input)
+                .inputItems(FERTILIZER.get(), 4)
+                .inputFluids(Water, 1000)
+                .outputItems(output_normal)
+                .duration(320)
+                .EUt(MV)
+                .save(provider);
+        GREENHOUSE_RECIPES.recipeBuilder(id.withSuffix("_boosted"))
+                .circuitMeta(1)
+                .notConsumable(input)
+                .inputFluids(Water, 1000)
+                .outputItems(output_boosted)
+                .duration(320)
+                .EUt(MV)
+                .save(provider);
+    }
+
+            private static void loadGreenhouseRecipes(Consumer<FinishedRecipe> provider){
+               VanillaRecipeHelper.addShapedRecipe(provider, true, GTCEu.id("greenhouse"),
+                       GTMultiMachines.GREENHOUSE.asStack(),
+                       "AWA",
+                       "ASA",
+                       "WAW",
+                       "A", CustomTags.MV_CIRCUITS,
+                       "W", ChemicalHelper.get(TagPrefix.wireGtSingle, GTMaterials.Copper),
+                       "S", GTBlocks.CASING_STEEL_SOLID.asItem());
+       
+               // Rubber
+               greenhouseHelper(provider, "rubber_sapling", GTBlocks.RUBBER_SAPLING.asItem(),
+                       List.of(new ItemStack(GTBlocks.RUBBER_LOG.get(), 64), new ItemStack(GTItems.STICKY_RESIN.get(), 8), new ItemStack(GTBlocks.RUBBER_SAPLING.asItem(), 4)),
+                       List.of(new ItemStack(GTBlocks.RUBBER_LOG.get(), 64), new ItemStack(GTItems.STICKY_RESIN.get(), 16), new ItemStack(GTBlocks.RUBBER_SAPLING.asItem(), 4)));
+       
+               // Oak
+               greenhouseHelper(provider, "oak_sapling", Blocks.OAK_SAPLING.asItem(),
+                       List.of(new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.OAK_SAPLING.asItem(), 4)),
+                       List.of(new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.OAK_SAPLING.asItem(), 4)));
+       
+               // Dark Oak
+               greenhouseHelper(provider, "dark_oak_sapling", Blocks.DARK_OAK_SAPLING.asItem(),
+                       List.of(new ItemStack(Blocks.DARK_OAK_LOG, 64), new ItemStack(Blocks.DARK_OAK_SAPLING.asItem(), 4)),
+                       List.of(new ItemStack(Blocks.DARK_OAK_LOG, 64), new ItemStack(Blocks.DARK_OAK_LOG, 64), new ItemStack(Blocks.DARK_OAK_SAPLING.asItem(), 4)));
+       
+               // Spruce
+               greenhouseHelper(provider, "spruce_sapling", Blocks.SPRUCE_SAPLING.asItem(),
+                       List.of(new ItemStack(Blocks.SPRUCE_LOG, 64), new ItemStack(Blocks.SPRUCE_SAPLING.asItem(), 4)),
+                       List.of(new ItemStack(Blocks.SPRUCE_LOG, 64), new ItemStack(Blocks.SPRUCE_LOG, 64), new ItemStack(Blocks.SPRUCE_SAPLING.asItem(), 4)));
+       
+               // Birch
+               greenhouseHelper(provider, "birch_sapling", Blocks.BIRCH_SAPLING.asItem(),
+                       List.of(new ItemStack(Blocks.BIRCH_LOG, 64), new ItemStack(Blocks.BIRCH_SAPLING.asItem(), 4)),
+                       List.of(new ItemStack(Blocks.BIRCH_LOG, 64), new ItemStack(Blocks.BIRCH_LOG, 64), new ItemStack(Blocks.BIRCH_SAPLING.asItem(), 4)));
+       
+               // Acacia
+               greenhouseHelper(provider, "acacia_sapling", Blocks.ACACIA_SAPLING.asItem(),
+                       List.of(new ItemStack(Blocks.ACACIA_LOG, 64), new ItemStack(Blocks.ACACIA_SAPLING.asItem(), 4)),
+                       List.of(new ItemStack(Blocks.ACACIA_LOG, 64), new ItemStack(Blocks.ACACIA_LOG, 64), new ItemStack(Blocks.ACACIA_SAPLING.asItem(), 4)));
+       
+               // Jungle
+               greenhouseHelper(provider, "jungle_sapling", Blocks.JUNGLE_SAPLING.asItem(),
+                       List.of(new ItemStack(Blocks.JUNGLE_LOG, 64), new ItemStack(Blocks.JUNGLE_SAPLING.asItem(), 4)),
+                       List.of(new ItemStack(Blocks.JUNGLE_LOG, 64), new ItemStack(Blocks.JUNGLE_LOG, 64), new ItemStack(Blocks.JUNGLE_SAPLING.asItem(), 4)));
+       
+       
+               // Azalea
+               greenhouseHelper(provider, "azalea_sapling", Blocks.AZALEA.asItem(),
+                       List.of(new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.AZALEA.asItem(), 4)),
+                       List.of(new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.AZALEA.asItem(), 4)));
+       
+       
+               // Flowering Azalea
+               greenhouseHelper(provider, "flowering_azalea", Blocks.FLOWERING_AZALEA.asItem(),
+                       List.of(new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.FLOWERING_AZALEA.asItem(), 4)),
+                       List.of(new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.AZALEA.asItem(), 4)));
+       
+               // Mangrove
+               greenhouseHelper(provider, "mangrove_propagule", Blocks.MANGROVE_PROPAGULE.asItem(),
+                       List.of(new ItemStack(Blocks.MANGROVE_LOG, 64), new ItemStack(Blocks.MANGROVE_PROPAGULE.asItem(), 4)),
+                       List.of(new ItemStack(Blocks.MANGROVE_LOG, 64), new ItemStack(Blocks.MANGROVE_LOG, 64), new ItemStack(Blocks.MANGROVE_PROPAGULE.asItem(), 4)));
+       
+       
+               ////// Crops //////
+       
+               // Sugarcane
+               greenhouseHelper(provider, "sugar_cane", Items.SUGAR_CANE, new ItemStack(Items.SUGAR_CANE, 24), new ItemStack(Items.SUGAR_CANE, 48));
+       
+               // Kelp
+               greenhouseHelper(provider, "kelp", Items.KELP, new ItemStack(Items.KELP, 24), new ItemStack(Items.KELP, 48));
+       
+               // Bamboo
+               greenhouseHelper(provider, "bamboo", Items.BAMBOO, new ItemStack(Items.BAMBOO, 24), new ItemStack(Items.BAMBOO, 48));
+       
+               // Cactus
+               greenhouseHelper(provider, "cactus", Items.CACTUS, new ItemStack(Items.CACTUS, 24), new ItemStack(Items.CACTUS, 48));
+       
+               // Wheat
+               greenhouseHelper(provider, "wheat", Items.WHEAT_SEEDS, new ItemStack(Items.WHEAT, 24), new ItemStack(Items.WHEAT, 48));
+       
+               // Carrot
+               greenhouseHelper(provider, "carrot", Items.CARROT, new ItemStack(Items.CARROT, 24), new ItemStack(Items.CARROT, 48));
+       
+               // Potato
+               greenhouseHelper(provider, "potato", Items.POTATO, new ItemStack(Items.POTATO, 24), new ItemStack(Items.POTATO, 48));
+       
+               // Beetroot
+               greenhouseHelper(provider, "beetroot", Items.BEETROOT_SEEDS, new ItemStack(Items.BEETROOT, 24), new ItemStack(Items.BEETROOT, 48));
+       
+               // Mellon
+               greenhouseHelper(provider, "melon", Items.MELON_SEEDS, new ItemStack(Items.MELON, 12), new ItemStack(Items.MELON, 24));
+       
+               // Pumpkin
+               greenhouseHelper(provider, "pumpkin", Items.PUMPKIN_SEEDS, new ItemStack(Items.PUMPKIN, 12), new ItemStack(Items.PUMPKIN, 24));
+       
+               // Nether Wart
+               greenhouseHelper(provider, "nether_wart", Items.NETHER_WART, new ItemStack(Items.NETHER_WART, 12), new ItemStack(Items.NETHER_WART, 24));
+       
+               // Red Mushroom
+               greenhouseHelper(provider, "red_mushroom", Items.RED_MUSHROOM, new ItemStack(Items.RED_MUSHROOM, 12), new ItemStack(Items.RED_MUSHROOM, 24));
+       
+               // Brown Mushroom
+               greenhouseHelper(provider, "brown_mushroom", Items.BROWN_MUSHROOM, new ItemStack(Items.BROWN_MUSHROOM, 12), new ItemStack(Items.BROWN_MUSHROOM, 24));
+           }
+   ```
 === "JavaScript"
     ```js title="greenhouse_recipes.js"
     ServerEvents.recipes(event => {
@@ -250,137 +374,4 @@ title: "Greenhouse"
         Greenhouse('brown_mushroom', 'minecraft:brown_mushroom', 1000, '12x minecraft:brown_mushroom', false)
         Greenhouse('brown_mushroom_boosted', 'minecraft:brown_mushroom', 1000, '24x minecraft:brown_mushroom', true)
     })
-    ```
-
-=== "Java"
-    ```java title="Recipes.java"
-        private static void greenhouseHelper(Consumer<FinishedRecipe> provider, String id, Item input, ItemStack output_normal, ItemStack output_boosted) {
-            greenhouseHelper(provider, id, input, List.of(output_normal), List.of(output_boosted));
-    
-        }
-        private static void greenhouseHelper(Consumer<FinishedRecipe> provider, String id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
-    
-            GREENHOUSE_RECIPES.recipeBuilder(id)
-                    .circuitMeta(2)
-                    .notConsumable(input)
-                    .inputItems(FERTILIZER.get(), 4)
-                    .inputFluids(Water, 1000)
-                    .outputItems(output_normal)
-                    .duration(320)
-                    .EUt(MV)
-                    .save(provider);
-            GREENHOUSE_RECIPES.recipeBuilder(id + "_boosted")
-                    .circuitMeta(1)
-                    .notConsumable(input)
-                    .inputFluids(Water, 1000)
-                    .outputItems(output_boosted)
-                    .duration(320)
-                    .EUt(MV)
-                    .save(provider);
-        }
-    
-        private static void loadGreenhouseRecipes(Consumer<FinishedRecipe> provider){
-            VanillaRecipeHelper.addShapedRecipe(provider, true, GTCEu.id("greenhouse"),
-                    GTMultiMachines.GREENHOUSE.asStack(),
-                    "AWA",
-                    "ASA",
-                    "WAW",
-                    "A", CustomTags.MV_CIRCUITS,
-                    "W", ChemicalHelper.get(TagPrefix.wireGtSingle, GTMaterials.Copper),
-                    "S", GTBlocks.CASING_STEEL_SOLID.asItem());
-    
-            // Rubber
-            greenhouseHelper(provider, "rubber_sapling", GTBlocks.RUBBER_SAPLING.asItem(),
-                    List.of(new ItemStack(GTBlocks.RUBBER_LOG.get(), 64), new ItemStack(GTItems.STICKY_RESIN.get(), 8), new ItemStack(GTBlocks.RUBBER_SAPLING.asItem(), 4)),
-                    List.of(new ItemStack(GTBlocks.RUBBER_LOG.get(), 64), new ItemStack(GTItems.STICKY_RESIN.get(), 16), new ItemStack(GTBlocks.RUBBER_SAPLING.asItem(), 4)));
-    
-            // Oak
-            greenhouseHelper(provider, "oak_sapling", Blocks.OAK_SAPLING.asItem(),
-                    List.of(new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.OAK_SAPLING.asItem(), 4)),
-                    List.of(new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.OAK_SAPLING.asItem(), 4)));
-    
-            // Dark Oak
-            greenhouseHelper(provider, "dark_oak_sapling", Blocks.DARK_OAK_SAPLING.asItem(),
-                    List.of(new ItemStack(Blocks.DARK_OAK_LOG, 64), new ItemStack(Blocks.DARK_OAK_SAPLING.asItem(), 4)),
-                    List.of(new ItemStack(Blocks.DARK_OAK_LOG, 64), new ItemStack(Blocks.DARK_OAK_LOG, 64), new ItemStack(Blocks.DARK_OAK_SAPLING.asItem(), 4)));
-    
-            // Spruce
-            greenhouseHelper(provider, "spruce_sapling", Blocks.SPRUCE_SAPLING.asItem(),
-                    List.of(new ItemStack(Blocks.SPRUCE_LOG, 64), new ItemStack(Blocks.SPRUCE_SAPLING.asItem(), 4)),
-                    List.of(new ItemStack(Blocks.SPRUCE_LOG, 64), new ItemStack(Blocks.SPRUCE_LOG, 64), new ItemStack(Blocks.SPRUCE_SAPLING.asItem(), 4)));
-    
-            // Birch
-            greenhouseHelper(provider, "birch_sapling", Blocks.BIRCH_SAPLING.asItem(),
-                    List.of(new ItemStack(Blocks.BIRCH_LOG, 64), new ItemStack(Blocks.BIRCH_SAPLING.asItem(), 4)),
-                    List.of(new ItemStack(Blocks.BIRCH_LOG, 64), new ItemStack(Blocks.BIRCH_LOG, 64), new ItemStack(Blocks.BIRCH_SAPLING.asItem(), 4)));
-    
-            // Acacia
-            greenhouseHelper(provider, "acacia_sapling", Blocks.ACACIA_SAPLING.asItem(),
-                    List.of(new ItemStack(Blocks.ACACIA_LOG, 64), new ItemStack(Blocks.ACACIA_SAPLING.asItem(), 4)),
-                    List.of(new ItemStack(Blocks.ACACIA_LOG, 64), new ItemStack(Blocks.ACACIA_LOG, 64), new ItemStack(Blocks.ACACIA_SAPLING.asItem(), 4)));
-    
-            // Jungle
-            greenhouseHelper(provider, "jungle_sapling", Blocks.JUNGLE_SAPLING.asItem(),
-                    List.of(new ItemStack(Blocks.JUNGLE_LOG, 64), new ItemStack(Blocks.JUNGLE_SAPLING.asItem(), 4)),
-                    List.of(new ItemStack(Blocks.JUNGLE_LOG, 64), new ItemStack(Blocks.JUNGLE_LOG, 64), new ItemStack(Blocks.JUNGLE_SAPLING.asItem(), 4)));
-    
-    
-            // Azalea
-            greenhouseHelper(provider, "azalea_sapling", Blocks.AZALEA.asItem(),
-                    List.of(new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.AZALEA.asItem(), 4)),
-                    List.of(new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.AZALEA.asItem(), 4)));
-    
-    
-            // Flowering Azalea
-            greenhouseHelper(provider, "flowering_azalea", Blocks.FLOWERING_AZALEA.asItem(),
-                    List.of(new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.FLOWERING_AZALEA.asItem(), 4)),
-                    List.of(new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.OAK_LOG, 64), new ItemStack(Blocks.AZALEA.asItem(), 4)));
-    
-            // Mangrove
-            greenhouseHelper(provider, "mangrove_propagule", Blocks.MANGROVE_PROPAGULE.asItem(),
-                    List.of(new ItemStack(Blocks.MANGROVE_LOG, 64), new ItemStack(Blocks.MANGROVE_PROPAGULE.asItem(), 4)),
-                    List.of(new ItemStack(Blocks.MANGROVE_LOG, 64), new ItemStack(Blocks.MANGROVE_LOG, 64), new ItemStack(Blocks.MANGROVE_PROPAGULE.asItem(), 4)));
-    
-    
-            ////// Crops //////
-    
-            // Sugarcane
-            greenhouseHelper(provider, "sugar_cane", Items.SUGAR_CANE, new ItemStack(Items.SUGAR_CANE, 24), new ItemStack(Items.SUGAR_CANE, 48));
-    
-            // Kelp
-            greenhouseHelper(provider, "kelp", Items.KELP, new ItemStack(Items.KELP, 24), new ItemStack(Items.KELP, 48));
-    
-            // Bamboo
-            greenhouseHelper(provider, "bamboo", Items.BAMBOO, new ItemStack(Items.BAMBOO, 24), new ItemStack(Items.BAMBOO, 48));
-    
-            // Cactus
-            greenhouseHelper(provider, "cactus", Items.CACTUS, new ItemStack(Items.CACTUS, 24), new ItemStack(Items.CACTUS, 48));
-    
-            // Wheat
-            greenhouseHelper(provider, "wheat", Items.WHEAT_SEEDS, new ItemStack(Items.WHEAT, 24), new ItemStack(Items.WHEAT, 48));
-    
-            // Carrot
-            greenhouseHelper(provider, "carrot", Items.CARROT, new ItemStack(Items.CARROT, 24), new ItemStack(Items.CARROT, 48));
-    
-            // Potato
-            greenhouseHelper(provider, "potato", Items.POTATO, new ItemStack(Items.POTATO, 24), new ItemStack(Items.POTATO, 48));
-    
-            // Beetroot
-            greenhouseHelper(provider, "beetroot", Items.BEETROOT_SEEDS, new ItemStack(Items.BEETROOT, 24), new ItemStack(Items.BEETROOT, 48));
-    
-            // Mellon
-            greenhouseHelper(provider, "melon", Items.MELON_SEEDS, new ItemStack(Items.MELON, 12), new ItemStack(Items.MELON, 24));
-    
-            // Pumpkin
-            greenhouseHelper(provider, "pumpkin", Items.PUMPKIN_SEEDS, new ItemStack(Items.PUMPKIN, 12), new ItemStack(Items.PUMPKIN, 24));
-    
-            // Nether Wart
-            greenhouseHelper(provider, "nether_wart", Items.NETHER_WART, new ItemStack(Items.NETHER_WART, 12), new ItemStack(Items.NETHER_WART, 24));
-    
-            // Red Mushroom
-            greenhouseHelper(provider, "red_mushroom", Items.RED_MUSHROOM, new ItemStack(Items.RED_MUSHROOM, 12), new ItemStack(Items.RED_MUSHROOM, 24));
-    
-            // Brown Mushroom
-            greenhouseHelper(provider, "brown_mushroom", Items.BROWN_MUSHROOM, new ItemStack(Items.BROWN_MUSHROOM, 12), new ItemStack(Items.BROWN_MUSHROOM, 24))
-        }
     ```

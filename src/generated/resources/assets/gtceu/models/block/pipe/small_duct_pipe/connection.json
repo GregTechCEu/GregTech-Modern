@@ -20,10 +20,6 @@
           "texture": "#side",
           "tintindex": 0
         },
-        "up": {
-          "texture": "#end",
-          "tintindex": 1
-        },
         "west": {
           "texture": "#side",
           "tintindex": 0

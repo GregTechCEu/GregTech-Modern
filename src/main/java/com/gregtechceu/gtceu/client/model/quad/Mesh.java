@@ -63,4 +63,12 @@ public class Mesh {
         forEach(qv -> result.add(qv.toBakedQuad(finder.find(qv))));
         return result;
     }
+
+    @SuppressWarnings("deprecation")
+    public void asBlockBakedQuads(Consumer<BakedQuad> consumer) {
+        SpriteFinder finder = SpriteFinder.get(Minecraft.getInstance().getModelManager()
+                .getAtlas(TextureAtlas.LOCATION_BLOCKS));
+
+        forEach(qv -> consumer.accept(qv.toBakedQuad(finder.find(qv))));
+    }
 }

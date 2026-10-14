@@ -2,41 +2,41 @@ package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.model.ctm.GTTextureMetadata;
+import com.gregtechceu.gtceu.client.util.quad.transformers.GTQuadTransformers;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.TriState;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.experimental.UtilityClass;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @UtilityClass
 public class TextureMetadataHelper {
 
-    private static final Map<ResourceLocation, @Nullable GTTextureMetadata> metadataCache = new HashMap<>();
+    private static final Map<ResourceLocation, Optional<GTTextureMetadata>> metadataCache = new ConcurrentHashMap<>();
 
     public static Optional<GTTextureMetadata> getMetadata(ResourceLocation res) {
-        // Note, semantically different from computeIfAbsent, as we DO care about keys mapped to null values
-        if (metadataCache.containsKey(res)) {
-            return Optional.ofNullable(metadataCache.get(res));
-        }
-        Optional<GTTextureMetadata> ret;
-        try {
-            ret = Minecraft.getInstance().getResourceManager().getResource(res)
-                    .flatMap(GTTextureMetadata::getForResourceUnsafe);
-        } catch (Exception e) {
-            // the real exception that's caught should always be an IOException,
-            // but @SneakyThrows hides that from us so we catch all exceptions instead.
-            ret = Optional.empty();
-            GTCEu.LOGGER.error("Error loading metadata for location {}", res, e);
-        }
-        ret.ifPresentOrElse(r -> metadataCache.put(res, r), () -> metadataCache.put(res, null));
-        return ret;
+        return metadataCache.computeIfAbsent(res, loc -> {
+            try {
+                return Minecraft.getInstance().getResourceManager().getResource(res)
+                        .flatMap(GTTextureMetadata::getForResourceUnsafe);
+            } catch (Exception e) {
+                // the real exception that's caught should always be an IOException,
+                // but @SneakyThrows hides that from us so we catch all exceptions instead.
+                GTCEu.LOGGER.error("Error loading metadata for location {}", res, e);
+
+                return Optional.empty();
+            }
+        });
     }
 
     public static Optional<GTTextureMetadata> getMetadata(TextureAtlasSprite sprite) {
@@ -59,6 +59,41 @@ public class TextureMetadataHelper {
             sprite = sprite.withSuffix(".png");
         }
         return sprite;
+    }
+
+    public static boolean hasBloom(BakedQuad quad, int[] ambientPackedLights) {
+        var metadata = getMetadata(quad.getSprite());
+        if (metadata.isPresent()) {
+            TriState bloomValue = metadata.get().bloom();
+            if (bloomValue == TriState.TRUE) return true;
+            // Explicitly disable bloom if it's set to FALSE in the metadata
+            else if (bloomValue == TriState.FALSE) return false;
+
+            // fall through to emissivity config check if default
+        }
+
+        if (ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom) {
+            return isEmissive(quad, ambientPackedLights);
+        }
+
+        return false;
+    }
+
+    public static boolean isEmissive(BakedQuad quad, int[] ambientPackedLights) {
+        int[] quadPackedLights = GTQuadTransformers.getPackedLights(quad);
+
+        for (int i = 0; i < 4; i++) {
+            int quadLight = quadPackedLights[i];
+            int qBlock = LightTexture.block(quadLight), qSky = LightTexture.sky(quadLight);
+
+            int ambientLight = ambientPackedLights[i];
+            int aBlock = LightTexture.block(ambientLight), aSky = LightTexture.sky(ambientLight);
+
+            if (qBlock > aBlock || qSky > aSky) {
+                return true;
+            }
+        }
+        return false;
     }
 
     static void invalidateCaches() {

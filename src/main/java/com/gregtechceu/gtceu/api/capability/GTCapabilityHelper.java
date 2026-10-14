@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
+import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 
 import net.minecraft.core.BlockPos;
@@ -17,16 +17,17 @@ import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("DataFlowIssue")
 public class GTCapabilityHelper {
 
     @Nullable
     public static IElectricItem getElectricItem(ItemStack itemStack) {
-        return itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+        return itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).orElse(null);
     }
 
     @Nullable
     public static IEnergyStorage getForgeEnergyItem(ItemStack itemStack) {
-        return itemStack.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
+        return itemStack.getCapability(ForgeCapabilities.ENERGY).orElse(null);
     }
 
     @Nullable
@@ -66,18 +67,7 @@ public class GTCapabilityHelper {
 
     @Nullable
     public static IEnergyStorage getForgeEnergy(Level level, BlockPos pos, @Nullable Direction side) {
-        if (level.getBlockState(pos).hasBlockEntity()) {
-            var blockEntity = level.getBlockEntity(pos);
-            if (blockEntity != null) {
-                return blockEntity.getCapability(ForgeCapabilities.ENERGY, side).resolve().orElse(null);
-            }
-        }
-        return null;
-    }
-
-    @Nullable
-    public static IMaintenanceMachine getMaintenanceMachine(Level level, BlockPos pos, @Nullable Direction side) {
-        return getBlockEntityCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, level, pos, side);
+        return getBlockEntityCapability(ForgeCapabilities.ENERGY, level, pos, side);
     }
 
     @Nullable
@@ -112,7 +102,7 @@ public class GTCapabilityHelper {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                return blockEntity.getCapability(capability, side).resolve().orElse(null);
+                return blockEntity.getCapability(capability, side).orElse(null);
             }
         }
         return null;
@@ -120,6 +110,11 @@ public class GTCapabilityHelper {
 
     @Nullable
     public static MedicalConditionTracker getMedicalConditionTracker(@NotNull Entity entity) {
-        return entity.getCapability(GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER, null).resolve().orElse(null);
+        return entity.getCapability(GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER, null).orElse(null);
+    }
+
+    @Nullable
+    public static ISpoilableItem getSpoilable(ItemStack stack) {
+        return stack.getCapability(GTCapability.CAPABILITY_SPOILABLE_ITEM).resolve().orElse(null);
     }
 }

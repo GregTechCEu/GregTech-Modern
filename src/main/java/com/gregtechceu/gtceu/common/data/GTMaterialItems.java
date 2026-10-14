@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -25,6 +26,7 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,6 +55,11 @@ public class GTMaterialItems {
     }
 
     // Reference Tables
+
+    /**
+     * Use {@link ChemicalHelper#getItem(TagPrefix, Material)} instead.
+     */
+    @ApiStatus.Internal
     public static Table<TagPrefix, Material, ItemEntry<? extends Item>> MATERIAL_ITEMS;
     public static final Table<Material, GTToolType, ItemProviderEntry<IGTTool>> TOOL_ITEMS = ArrayTable.create(
             GTRegistries.MATERIALS.values().stream()
@@ -68,9 +75,9 @@ public class GTMaterialItems {
     // Material Items
     public static void generateMaterialItems() {
         REGISTRATE.creativeModeTab(() -> MATERIAL_ITEM);
-        for (var tagPrefix : TagPrefix.values()) {
+        for (var tagPrefix : GTRegistries.TAG_PREFIXES) {
             if (tagPrefix.doGenerateItem()) {
-                for (Material material : GTRegistries.MATERIALS.values()) {
+                for (Material material : GTRegistries.MATERIALS) {
                     if (tagPrefix.doGenerateItem(material)) {
                         generateMaterialItem(tagPrefix, material,
                                 GTRegistrate.createIgnoringListenerErrors(material.getModid()));
@@ -100,7 +107,7 @@ public class GTMaterialItems {
     public static void generateTools() {
         REGISTRATE.creativeModeTab(() -> TOOL);
         for (GTToolType toolType : GTToolType.getTypes().values()) {
-            for (Material material : GTRegistries.MATERIALS.values()) {
+            for (Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.TOOL)) {
                     var property = material.getProperty(PropertyKey.TOOL);
                     if (property.hasType(toolType)) {
@@ -130,7 +137,7 @@ public class GTMaterialItems {
     public static void generateArmors() {
         REGISTRATE.creativeModeTab(() -> TOOL);
         for (ArmorItem.Type type : ArmorItem.Type.values()) {
-            for (Material material : GTRegistries.MATERIALS.values()) {
+            for (Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.ARMOR)) {
                     generateArmor(material, type, GTRegistrate.createIgnoringListenerErrors(material.getModid()));
                 }

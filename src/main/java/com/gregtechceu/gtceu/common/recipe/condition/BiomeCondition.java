@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
@@ -30,7 +30,8 @@ public class BiomeCondition extends RecipeCondition<BiomeCondition> {
     // spotless:on
 
     @Getter
-    private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME, new ResourceLocation("dummy"));
+    private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME,
+            ResourceLocation.withDefaultNamespace("dummy"));
 
     public BiomeCondition(boolean isReverse, ResourceKey<Biome> biome) {
         super(isReverse);

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.model.ctm;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.utils.TriState;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
@@ -18,10 +19,12 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
 
-public record GTTextureMetadata(@Nullable ResourceLocation connectionTexture) {
+public record GTTextureMetadata(@Nullable ResourceLocation connectionTexture, TriState bloom) {
 
     public static final String SECTION_NAME = GTCEu.MOD_ID;
     public static final MetadataSectionSerializer<GTTextureMetadata> SERIALIZER = new Serializer();
+
+    public static final GTTextureMetadata EMPTY = new GTTextureMetadata(null, TriState.DEFAULT);
 
     /**
      * @apiNote This method throws {@link IOException} even though it isn't specified in the method definition.
@@ -40,11 +43,12 @@ public record GTTextureMetadata(@Nullable ResourceLocation connectionTexture) {
 
     public static class Serializer implements MetadataSectionSerializer<GTTextureMetadata> {
 
-        protected static final ResourceLocation EMPTY_CONNECTION = new ResourceLocation("", "");
+        protected static final ResourceLocation EMPTY_CONNECTION = ResourceLocation.fromNamespaceAndPath("", "");
 
         // spotless:off
         public static final Codec<GTTextureMetadata> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ResourceLocation.CODEC.optionalFieldOf("connection_texture", EMPTY_CONNECTION).forGetter(GTTextureMetadata::connectionTexture)
+                ResourceLocation.CODEC.optionalFieldOf("connection_texture", EMPTY_CONNECTION).forGetter(GTTextureMetadata::connectionTexture),
+                TriState.CODEC.optionalFieldOf("bloom", TriState.DEFAULT).forGetter(GTTextureMetadata::bloom)
         ).apply(instance, GTTextureMetadata::new));
         // spotless:on
 

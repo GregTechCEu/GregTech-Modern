@@ -1,0 +1,23 @@
+{
+	"blend": {
+		"func": "add",
+		"srcrgb": "srcalpha",
+		"dstrgb": "1-srcalpha",
+		"srcalpha": "zero",
+		"dstalpha": "one"
+	},
+	"vertex": "blit",
+	"fragment": "gtceu:filter_bloom_color",
+	"attributes": [ "Position" ],
+	"samplers": [
+		{ "name": "DiffuseSampler" },
+		{ "name": "DiffuseDepthSampler" },
+		{ "name": "MainDepthSampler" }
+	],
+	"uniforms": [
+		{ "name": "ProjMat",      "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+		{ "name": "OutSize",      "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
+		{ "name": "DepthNear",    "type": "float",     "count": 1,  "values": [ 0.05 ] },
+		{ "name": "DepthFar",     "type": "float",     "count": 1,  "values": [ 512.0 ] }
+	]
+}

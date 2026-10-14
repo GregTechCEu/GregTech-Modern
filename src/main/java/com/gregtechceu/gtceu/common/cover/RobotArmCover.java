@@ -1,18 +1,13 @@
 package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
-import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
-
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -21,9 +16,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.EnumSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -34,18 +34,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class RobotArmCover extends ConveyorCover {
 
+    @Setter
     @SaveField
-    @SyncToClient
     @Getter
     protected TransferMode transferMode;
-
+    @Setter
     @SaveField
     @Getter
-    @Setter
     protected int globalTransferLimit;
     protected int itemsTransferBuffered;
-
-    private IntInputWidget stackSizeInput;
 
     public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
                          int maxTransferRate) {
@@ -59,12 +56,6 @@ public class RobotArmCover extends ConveyorCover {
 
     @Override
     protected int doTransferItems(IItemHandler itemHandler, IItemHandler myItemHandler, int maxTransferAmount) {
-        if (io == IO.OUT && itemHandler instanceof ItemNetHandler && transferMode == TransferMode.KEEP_EXACT) {
-            return 0;
-        }
-        if (io == IO.IN && myItemHandler instanceof ItemNetHandler && transferMode == TransferMode.KEEP_EXACT) {
-            return 0;
-        }
         return switch (transferMode) {
             case TRANSFER_ANY -> moveInventoryItems(itemHandler, myItemHandler, maxTransferAmount);
             case TRANSFER_EXACT -> doTransferExact(itemHandler, myItemHandler, maxTransferAmount);
@@ -111,36 +102,18 @@ public class RobotArmCover extends ConveyorCover {
     }
 
     protected int doKeepExact(IItemHandler sourceInventory, IItemHandler targetInventory, int maxTransferAmount) {
-        Map<ItemStack, GroupItemInfo> targetItemAmounts = countInventoryItemsByMatchSlot(targetInventory);
-        Map<ItemStack, GroupItemInfo> sourceItemAmounts = countInventoryItemsByMatchSlot(sourceInventory);
-
-        Iterator<ItemStack> iterator = sourceItemAmounts.keySet().iterator();
-        while (iterator.hasNext()) {
-            ItemStack filteredItem = iterator.next();
-            GroupItemInfo sourceInfo = sourceItemAmounts.get(filteredItem);
-            int itemToKeepAmount = getFilteredItemAmount(sourceInfo.itemStack);
-
-            int itemAmount = 0;
-            if (targetItemAmounts.containsKey(filteredItem)) {
-                GroupItemInfo destItemInfo = targetItemAmounts.get(filteredItem);
-                itemAmount = destItemInfo.totalCount;
-            }
-            if (itemAmount < itemToKeepAmount) {
-                sourceInfo.totalCount = itemToKeepAmount - itemAmount;
-            } else {
-                iterator.remove();
-            }
-        }
-
-        return moveInventoryItems(sourceInventory, targetInventory, sourceItemAmounts, maxTransferAmount);
+        return GTTransferUtils.stockInventoryItems(sourceInventory, targetInventory, maxTransferAmount,
+                this::getFilteredItemAmount);
     }
 
     private int getFilteredItemAmount(ItemStack itemStack) {
         if (!filterHandler.isFilterPresent())
             return globalTransferLimit;
 
-        ItemFilter filter = filterHandler.getFilter();
-        return filter.supportsAmounts() ? filter.testItemCount(itemStack) : globalTransferLimit;
+        Filter<ItemStack> filter = filterHandler.getFilter();
+        if (!filter.test(itemStack))
+            return 0;
+        return filter.supportsAmounts() ? filter.testAmount(itemStack) : globalTransferLimit;
     }
 
     public int getBuffer() {
@@ -157,53 +130,23 @@ public class RobotArmCover extends ConveyorCover {
 
     //////////////////////////////////////
     // *********** GUI ***********//
-    //////////////////////////////////////
 
     @Override
-    @NotNull
-    protected String getUITitle() {
-        return "cover.robotic_arm.title";
-    }
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        super.createCoverUIRows(column, data, syncManager, settings);
 
-    @Override
-    protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(
-                new EnumSelectorWidget<>(146, 45, 20, 20, TransferMode.values(), transferMode, this::setTransferMode));
+        var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode)
+                .allowC2S();
+        var transferSize = new IntSyncValue(this::getGlobalTransferLimit, this::setGlobalTransferLimit).allowC2S();
 
-        this.stackSizeInput = new IntInputWidget(64, 45, 80, 20,
-                () -> globalTransferLimit, val -> globalTransferLimit = val);
-        configureStackSizeInput();
+        syncManager.syncValue("transferMode", transferMode);
+        syncManager.syncValue("transferSize", transferSize);
 
-        group.addWidget(this.stackSizeInput);
-    }
+        GTMuiCoverUtil.addTransferModeRow(column, transferMode);
 
-    public void setTransferMode(TransferMode transferMode) {
-        this.transferMode = transferMode;
-
-        configureStackSizeInput();
-
-        if (!this.isRemote()) {
-            syncDataHolder.markClientSyncFieldDirty("transferMode");
-            configureFilter();
-        }
-    }
-
-    @Override
-    protected void configureFilter() {
-        if (filterHandler.getFilter() instanceof SimpleItemFilter filter) {
-            filter.setMaxStackSize(filter.isBlackList() ? 1 : transferMode.maxStackSize);
-        }
-
-        configureStackSizeInput();
-    }
-
-    private void configureStackSizeInput() {
-        if (this.stackSizeInput == null)
-            return;
-
-        this.stackSizeInput.setVisible(shouldShowStackSize());
-        this.stackSizeInput.setMin(1);
-        this.stackSizeInput.setMax(this.transferMode.maxStackSize);
+        column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> getTransferMode().maxStackSize)
+                .setEnabledIf($ -> shouldShowStackSize()));
     }
 
     private boolean shouldShowStackSize() {
@@ -217,10 +160,10 @@ public class RobotArmCover extends ConveyorCover {
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
+        super.copyConfig(tag);
         tag.putInt("transferMode", transferMode.ordinal());
         tag.putInt("transferLimit", globalTransferLimit);
-        return super.copyConfig(tag);
     }
 
     @Override

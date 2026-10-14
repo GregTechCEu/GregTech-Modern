@@ -50,7 +50,7 @@ By default, the mod doesn't include any bedrock ore veins. You can add them in e
     With this done, you can reference said variables in the `BedrockOreDefinition` builder. Let's use `DIM_OVERWORLD` in this example.  
     
     ```java title="ExampleBedrockOreVeins.java"
-    pubic class ExampleBedrockOreVeins {
+    public class ExampleBedrockOreVeins {
         public static void init() {}
         
         public static final Set<ResourceKey<Level>> DIM_OVERWORLD = Set.of(Level.OVERWORLD);
@@ -84,5 +84,46 @@ By default, the mod doesn't include any bedrock ore veins. You can add them in e
             ExampleBedrockOreVeins.init();
         }
         // ...
+    }
+    ```
+
+## Modifying a Bedrock Ore Vein
+
+=== "JavaScript"
+    ```js title="ore_veins.js"
+    // In server events
+    GTCEuServerEvents.bedrockOreVeins(event => {
+        event.modify('gtceu:example_ore', vein => {
+            vein.weight(9999)
+        });
+    });
+    ```
+
+=== "Java"
+    ```java title="ExampleBedrockOreVeins.java"
+    public class ExampleBedrockOreVeins {
+        public static void init() {
+            GTRegistries.BEDROCK_ORE_DEFINITIONS.get(GTCEu.id('example_ore')).weight(9999);
+        }
+    }
+    ```
+
+
+## Removing a Bedrock Ore Vein
+
+=== "JavaScript"
+    ```js title="ore_veins.js"
+    // In server events
+    GTCEuServerEvents.bedrockOreVeins(event => {
+        event.remove('gtceu:example_ore');
+    });
+    ```
+
+=== "Java"
+    ```java title="ExampleBedrockOreVeins.java"
+    public class ExampleBedrockOreVeins {
+        public static void init() {
+            GTRegistries.BEDROCK_ORE_DEFINITIONS.remove(GTCEu.id("example_ore"));
+        }
     }
     ```

@@ -2,43 +2,49 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.BlockableSlotWidget;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.Position;
-
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.slot.SlotGroup;
 import lombok.Getter;
 
-public class ObjectHolderMachine extends MultiblockPartMachine {
+import javax.annotation.ParametersAreNonnullByDefault;
 
-    // purposefully not exposed to automation or capabilities
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class ObjectHolderMachine extends MultiblockPartMachine implements IMuiMachine {
+
     @SaveField
-    private final ObjectHolderHandler heldItems;
+    private final NotifiableItemStackHandler heldItems;
     @Getter
     @SaveField
     @SyncToClient
     private boolean isLocked;
 
-    @Getter
-    private NotifiableItemStackHandler handler;
-
     public ObjectHolderMachine(BlockEntityCreationInfo info) {
         super(info);
-        heldItems = attachTrait(new ObjectHolderHandler());
+        heldItems = attachTrait(new NotifiableItemStackHandler(2, IO.IN, IO.BOTH, ObjectHolderStorage::new));
     }
 
     public void setLocked(boolean locked) {
@@ -71,15 +77,31 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
     }
 
     @Override
-    public Widget createUIWidget() {
-        return new WidgetGroup(new Position(0, 0))
-                .addWidget(new ImageWidget(46, 15, 84, 60, GuiTextures.PROGRESS_BAR_RESEARCH_STATION_BASE))
-                .addWidget(new BlockableSlotWidget(heldItems, 0, 79, 36)
-                        .setIsBlocked(this::isLocked)
-                        .setBackground(GuiTextures.SLOT, GuiTextures.RESEARCH_STATION_OVERLAY))
-                .addWidget(new BlockableSlotWidget(heldItems, 1, 15, 36)
-                        .setIsBlocked(this::isLocked)
-                        .setBackground(GuiTextures.SLOT, GuiTextures.DATA_ORB_OVERLAY));
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        SlotGroup objectGroup = new SlotGroup("object_slot", 1);
+        SlotGroup orbGroup = new SlotGroup("orb_slot", 1);
+
+        mainWidget.child(Flow.row()
+                .center()
+                .coverChildren()
+                .child(new ItemSlot()
+                        .slot(new ModularSlot(heldItems.storage, 1).slotGroup(orbGroup))
+                        .background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY)
+                        .marginLeft(30)
+                        .marginRight(30)
+                        .verticalCenter())
+
+                .child(GTGuiTextures.PROGRESS_BAR_RESEARCH_STATION_BASE.asWidget()
+                        .size(84, 60)
+                        .pos(75, 0))
+
+                .child(new ItemSlot()
+                        .slot(new ModularSlot(heldItems.storage, 0).slotGroup(objectGroup))
+                        .background(GTGuiTextures.SLOT, GTGuiTextures.RESEARCH_STATION_OVERLAY)
+                        .marginLeft(30)
+                        .marginRight(30)
+                        .verticalCenter()));
     }
 
     @Override
@@ -87,22 +109,19 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
         super.setFrontFacing(frontFacing);
         var controllers = getControllers();
         for (var controller : controllers) {
-            if (controller != null && controller.isFormed()) {
-                controller.checkPatternWithLock();
+            if (controller.isFormed()) {
+                PatternState patternState = controller.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE);
+                if (!patternState.getState().isValid()) {
+                    controller.checkDefaultStructurePattern();
+                }
             }
         }
     }
 
-    private class ObjectHolderHandler extends NotifiableItemStackHandler {
+    private class ObjectHolderStorage extends CustomItemStackHandler {
 
-        public ObjectHolderHandler() {
-            super(2, IO.IN, IO.BOTH, size -> new CustomItemStackHandler(size) {
-
-                @Override
-                public int getSlotLimit(int slot) {
-                    return 1;
-                }
-            });
+        public ObjectHolderStorage(int size) {
+            super(size);
         }
 
         // only allow a single item, no stack size
@@ -114,15 +133,18 @@ public class ObjectHolderMachine extends MultiblockPartMachine {
         // prevent extracting the item while running
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (!isLocked()) {
-                return super.extractItem(slot, amount, simulate);
+            if (isLocked()) {
+                return ItemStack.EMPTY;
             }
-            return ItemStack.EMPTY;
+            return super.extractItem(slot, amount, simulate);
         }
 
-        // only allow data items in the second slot
+        // only allow data items in the second slot, and nothing at all while running
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
+            if (isLocked()) {
+                return false;
+            }
             if (stack.isEmpty()) {
                 return true;
             }

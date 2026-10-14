@@ -4,21 +4,21 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.ClassSyncData;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHostTrait;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.drawable.GuiTextures;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -104,11 +104,23 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
             }
             return null;
         }
+
+        // No-op as this isn't synced to client
+        @Override
+        public void writeToPacket(FriendlyByteBuf buf, Object value, TransformerContext<Object> context) {}
+
+        // No-op as this isn't synced to client
+        @Override
+        public @Nullable Object readFromPacket(FriendlyByteBuf buf, TransformerContext<Object> context) {
+            return null;
+        }
     }
 
     static {
-        ClassSyncData.getClassData(HullMachine.class).setCustomTransformerForField("gridNodeHost",
-                new GridNodeHostTransformer());
+        if (GTCEu.Mods.isAE2Loaded()) {
+            ClassSyncData.getClassData(HullMachine.class).setCustomTransformerForField("gridNodeHost",
+                    new GridNodeHostTransformer());
+        }
     }
 
     @Override
@@ -120,7 +132,7 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     }
 
     @Override
-    public IGuiTexture getComponentIcon() {
-        return GuiTextures.BUTTON_CHECK; // temporary (until there's a texture that is not fully 16x16 for this)
+    public IDrawable getIcon() {
+        return GuiTextures.CROSS;
     }
 }

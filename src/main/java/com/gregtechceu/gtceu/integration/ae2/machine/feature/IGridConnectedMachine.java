@@ -25,7 +25,7 @@ public interface IGridConnectedMachine extends IMachineFeature, IGridConnectedBl
      * @return {@code true} if current machine should interact with ME network, {@code false} otherwise.
      */
     default boolean shouldSyncME() {
-        return self().getOffsetTimer() % ConfigHolder.INSTANCE.compat.ae2.updateIntervals == 0;
+        return getOffsetTimer() % ConfigHolder.INSTANCE.compat.ae2.updateIntervals == 0;
     }
 
     default AECableType getCableConnectionType(Direction dir) {

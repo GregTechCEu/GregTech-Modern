@@ -34,7 +34,7 @@ public interface IMachineRendererModel<T extends IMachineFeature> {
     default @NotNull List<BakedQuad> getRenderQuads(@Nullable T machine, @Nullable BlockAndTintGetter level,
                                                     @Nullable BlockPos pos, @Nullable BlockState blockState,
                                                     @Nullable Direction side, RandomSource rand,
-                                                    @NotNull ModelData modelData, @Nullable RenderType renderType) {
+                                                    ModelData modelData, @Nullable RenderType renderType) {
         return Collections.emptyList();
     }
 

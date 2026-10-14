@@ -4,7 +4,11 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
+import java.util.Objects;
 
+import static org.apache.commons.lang3.ArrayUtils.*;
+
+@SuppressWarnings("ForLoopReplaceableByForEach")
 public class ArrayHelpers {
 
     /**
@@ -41,5 +45,193 @@ public class ArrayHelpers {
         }
 
         return copy;
+    }
+
+    public static boolean allMatch(boolean[] array) {
+        if (isEmpty(array) || array.length == 1) {
+            return true;
+        }
+
+        boolean firstElement = array[0];
+        if (array.length == 2) return firstElement == array[1];
+
+        for (int i = 0; i < array.length; ++i) {
+            if (array[i] != firstElement) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean allMatch(byte[] array) {
+        if (isEmpty(array) || array.length == 1) {
+            return true;
+        }
+
+        byte firstElement = array[0];
+        if (array.length == 2) return firstElement == array[1];
+
+        for (int i = 0; i < array.length; ++i) {
+            if (array[i] != firstElement) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean allMatch(char[] array) {
+        if (isEmpty(array) || array.length == 1) {
+            return true;
+        }
+
+        char firstElement = array[0];
+        if (array.length == 2) return firstElement == array[1];
+
+        for (int i = 0; i < array.length; ++i) {
+            if (array[i] != firstElement) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean allMatch(double[] array) {
+        if (isEmpty(array) || array.length == 1) {
+            return true;
+        }
+
+        double firstElement = array[0];
+        boolean searchNaN = Double.isNaN(firstElement);
+
+        if (array.length == 2) return array[1] == firstElement || searchNaN && Double.isNaN(array[1]);
+
+        for (int i = 0; i < array.length; ++i) {
+            if (array[i] != firstElement && !(searchNaN && Double.isNaN(array[i]))) {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean allMatch(double[] array, double tolerance) {
+        if (isEmpty(array) || array.length == 1) {
+            return true;
+        }
+
+        double firstElement = array[0];
+        double min = firstElement - tolerance;
+        double max = firstElement + tolerance;
+
+        if (array.length == 2) return array[1] >= min && array[1] <= max;
+
+        for (int i = 0; i < array.length; ++i) {
+            if (array[i] < min || array[i] > max) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean allMatch(float[] array) {
+        if (isEmpty(array) || array.length == 1) {
+            return true;
+        }
+
+        float firstElement = array[0];
+        boolean searchNaN = Float.isNaN(firstElement);
+
+        if (array.length == 2) return array[1] == firstElement || searchNaN && Float.isNaN(array[1]);
+
+        for (int i = 0; i < array.length; ++i) {
+            if (array[i] != firstElement && !(searchNaN && Float.isNaN(array[i]))) {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean allMatch(float[] array, float tolerance) {
+        if (isEmpty(array) || array.length == 1) {
+            return true;
+        }
+
+        float firstElement = array[0];
+        float min = firstElement - tolerance;
+        float max = firstElement + tolerance;
+
+        if (array.length == 2) return array[1] >= min && array[1] <= max;
+
+        for (int i = 0; i < array.length; ++i) {
+            if (array[i] < min && array[i] > max) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean allMatch(int[] array) {
+        if (isEmpty(array) || array.length == 1) {
+            return true;
+        }
+
+        int firstElement = array[0];
+        if (array.length == 2) return firstElement == array[1];
+
+        for (int i = 0; i < array.length; ++i) {
+            if (array[i] != firstElement) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean allMatch(long[] array) {
+        if (isEmpty(array) || array.length == 1) {
+            return true;
+        }
+
+        long firstElement = array[0];
+        if (array.length == 2) return firstElement == array[1];
+
+        for (int i = 0; i < array.length; ++i) {
+            if (array[i] != firstElement) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean allMatch(Object[] array) {
+        if (isEmpty(array) || array.length == 1) {
+            return true;
+        }
+
+        Object firstElement = array[0];
+        if (array.length == 2) return Objects.equals(array[1], firstElement);
+
+        for (int i = 0; i < array.length; ++i) {
+            if (!Objects.equals(array[i], firstElement)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean allMatch(short[] array) {
+        if (isEmpty(array) || array.length == 1) {
+            return true;
+        }
+
+        short firstElement = array[0];
+        if (array.length == 2) return firstElement == array[1];
+
+        for (int i = 0; i < array.length; ++i) {
+            if (array[i] != firstElement) {
+                return false;
+            }
+        }
+        return true;
     }
 }
