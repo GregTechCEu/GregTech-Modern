@@ -37,6 +37,7 @@ import brachy.modularui.utils.Color;
 import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.*;
+import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.*;
@@ -119,7 +120,7 @@ public class GTMuiWidgets {
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
                 .child(icon.size(iconSize).asWidget().size(iconSize))
                 .child(Text.str(text).asWidget().size(Math.min(minPanelWidth, textTitleWidth), textHeight))
-                .childIf(end != null, end);
+                .childIf(end != null, () -> end);
     }
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture texture,
