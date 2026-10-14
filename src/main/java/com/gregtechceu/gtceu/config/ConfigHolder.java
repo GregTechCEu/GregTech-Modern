@@ -792,6 +792,11 @@ public class ConfigHolder {
     public static class GameplayConfigs {
 
         @Configurable
+        @Configurable.Comment({ "Allow Fortune to multiply GregTech ore drops after base yields and hammer conversion.",
+                "Does not affect Silk Touch drops. Default: false" })
+        public boolean enableOreFortune = false;
+
+        @Configurable
         @Configurable.Comment({ "Enable hazardous materials", "Default: true" })
         @Configurable.Synchronized
         public boolean hazardsEnabled = true;
