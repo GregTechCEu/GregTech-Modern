@@ -37,8 +37,8 @@ public abstract class BlockMixin {
                                                      BlockPos pos, @Nullable BlockEntity blockEntity,
                                                      @Nullable Entity entity, ItemStack tool,
                                                      @Local LootParams.Builder lootParams) {
-        if (!tool.isEmpty() && entity instanceof Player player) {
-            return ToolEventHandlers.onHarvestDrops(player, tool, level, pos, state, original, lootParams);
+        if (!tool.isEmpty()) {
+            return ToolEventHandlers.onHarvestDrops(entity, tool, level, pos, state, original, lootParams);
         }
         return original;
     }

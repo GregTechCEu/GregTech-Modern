@@ -261,24 +261,24 @@ public class ToolHelper {
         int maximumDurability = stack.getMaxDamage();
         int remainingUses = maximumDurability - currentDurability;
         List<BlockPos> harvestableBlocks = getHarvestableBlocks(stack, player);
-        if (!harvestableBlocks.isEmpty()) {
-            for (BlockPos pos : harvestableBlocks) {
-                if (!destroyBlock(player, stack, pos, pos.equals(targeted))) {
-                    return true;
-                }
-
-                remainingUses--;
-                if (stack.getItem() instanceof IGTTool gtTool && !gtTool.isElectric() && remainingUses == 0) {
-                    return true;
-                }
-                // If the tool is an electric tool, catch the tool breaking and cancel the remaining AOE
-                else if (!ItemStack.isSameItem(player.getMainHandItem(), stack)) {
-                    return true;
-                }
-            }
-            return true;
+        if (harvestableBlocks.isEmpty()) {
+            return false;
         }
-        return false;
+        for (BlockPos pos : harvestableBlocks) {
+            if (!destroyBlock(player, stack, pos, pos.equals(targeted))) {
+                break;
+            }
+
+            remainingUses--;
+            if (stack.getItem() instanceof IGTTool gtTool && !gtTool.isElectric() && remainingUses == 0) {
+                break;
+            }
+            // If the tool is an electric tool, catch the tool breaking and cancel the remaining AOE
+            else if (!ItemStack.isSameItem(player.getMainHandItem(), stack)) {
+                break;
+            }
+        }
+        return true;
     }
 
     public static AoESymmetrical getAoEDefinition(ItemStack stack) {
@@ -382,7 +382,7 @@ public class ToolHelper {
         LootContext lootContext = null;
         boolean cleared = false;
 
-        List<ItemStack> silkTouchDrops = getSilkTouchDrop(level, pos, state);
+        List<ItemStack> silkTouchDrops = getSilkTouchDrops(level, pos, state);
         for (ItemStack silkTouchDrop : silkTouchDrops) {
             if (silkTouchDrop.isEmpty()) continue;
             // Stack lists can be immutable going into Recipe#matches barring no rewrites
@@ -699,8 +699,8 @@ public class ToolHelper {
      * @param state the BlockState of the block
      * @return the silk touch drop
      */
-    public static List<ItemStack> getSilkTouchDrop(ServerLevel level, BlockPos pos, BlockState state) {
-        ItemStack tool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
+    public static List<ItemStack> getSilkTouchDrops(ServerLevel level, BlockPos pos, BlockState state) {
+        ItemStack tool = ToolHelper.get(GTToolType.PICKAXE, GTMaterials.Neutronium);
         // oh wow, this exists now. cool!
         EnchantmentHelper.enchantItemFromProvider(
                 tool,
@@ -709,7 +709,8 @@ public class ToolHelper {
                 CONSTANT_DIFFICULTY,
                 level.getRandom());
 
-        return state.getDrops(new LootParams.Builder(level).withParameter(LootContextParams.BLOCK_STATE, state)
+        return state.getDrops(new LootParams.Builder(level)
+                .withParameter(LootContextParams.BLOCK_STATE, state)
                 .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
                 .withParameter(LootContextParams.TOOL, tool)
                 .withOptionalParameter(LootContextParams.BLOCK_ENTITY, level.getBlockEntity(pos)));

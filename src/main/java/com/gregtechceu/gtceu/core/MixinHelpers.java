@@ -327,6 +327,7 @@ public class MixinHelpers {
                                     // .apply(ApplyBonusCount.addUniformBonusCount(fortune))
                                     .apply(LimitCount.limitCount(IntRange.range(0, 2)))
                                     .apply(ApplyExplosionDecay.explosionDecay()));
+
                             isEmpty = false;
                         }
                     }

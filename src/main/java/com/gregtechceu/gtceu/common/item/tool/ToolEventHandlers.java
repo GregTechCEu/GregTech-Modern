@@ -40,6 +40,8 @@ import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -107,11 +109,13 @@ public class ToolEventHandlers {
     }
 
     /**
-     * Handles saws harvesting ice without leaving water behind
-     * Handles mined blocks teleporting straight into inventory
-     * Handles drop conversion when a hammer tool (or tool with hard hammer enchantment) is used
+     * <ul>
+     *     <li>Handles saws harvesting ice without leaving water behind</li>
+     *     <li>Handles mined blocks teleporting straight into the player's inventory</li>
+     *     <li>Handles drop conversion when a hammer tool (or tool with the Hard Hammer enchantment) is used</li>
+     * </ul>
      */
-    public static List<ItemStack> onHarvestDrops(Player player, ItemStack tool, ServerLevel level,
+    public static List<ItemStack> onHarvestDrops(@Nullable Entity entity, ItemStack tool, ServerLevel level,
                                                  BlockPos pos, BlockState state,
                                                  List<ItemStack> drops, LootParams.Builder lootParams) {
         if (!EnchantmentHelper.hasTag(tool, CustomTags.PREVENTS_HAMMER_CRUSHING)) {
@@ -121,7 +125,7 @@ public class ToolEventHandlers {
         ToolBehaviors behaviors = ToolHelper.getBehaviorsComponent(tool);
         Block block = state.getBlock();
         if (state.is(BlockTags.ICE) && !EnchantmentHelper.hasTag(tool, EnchantmentTags.PREVENTS_ICE_MELTING) &&
-                behaviors.hasBehavior(GTToolBehaviors.HARVEST_ICE.value())) {
+                behaviors.hasBehavior(GTToolBehaviors.HARVEST_ICE)) {
             Item iceBlock = block.asItem();
             if (drops.stream().noneMatch(drop -> drop.getItem() == iceBlock)) {
                 drops.add(new ItemStack(iceBlock));
@@ -135,12 +139,12 @@ public class ToolEventHandlers {
                         level.setBlockAndUpdate(pos, newState);
                     }
                 }));
-                if (tool.getItem() instanceof IGTTool gtTool) {
-                    gtTool.playSound(player);
+                if (entity != null && tool.getItem() instanceof IGTTool gtTool) {
+                    gtTool.playSound(entity);
                 }
             }
         }
-        if (tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS)) {
+        if (tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS) && entity instanceof Player player) {
             drops = new ArrayList<>(drops);
             Iterator<ItemStack> dropItr = drops.iterator();
             while (dropItr.hasNext()) {

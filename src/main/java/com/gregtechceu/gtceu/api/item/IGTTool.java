@@ -40,6 +40,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -277,9 +278,9 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
             return;
         }
         if (!areaOfEffectBlockBreakRoutine(stack, serverPlayer, pos)) {
-            var behavior = getBehaviorsComponent(stack).getBehavior(GTToolBehaviors.TREE_FELLING.value());
+            var behavior = getBehaviorsComponent(stack).getBehavior(GTToolBehaviors.TREE_FELLING);
             if (behavior != null && behavior.isEnabled() && state.is(BlockTags.LOGS)) {
-                TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
+                TreeFellingHelper.fellTree(stack, state, pos, serverPlayer);
             }
         }
         if (playSoundOnBlockDestroy()) {
@@ -298,11 +299,11 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         if (state.getDestroySpeed(level, pos) != 0.0) {
             damageItem(stack, entity, getToolStats().getToolDamagePerBlockBreak(stack));
         }
-        if (entity instanceof Player player && playSoundOnBlockDestroy()) {
+        if (playSoundOnBlockDestroy()) {
             // sneaking disables AOE, which means it is okay to play the sound
             // not checking this means the sound will play for every AOE broken block, which is very loud
             if (entity.isShiftKeyDown()) {
-                playSound(player);
+                playSound(entity);
             }
         }
     }
@@ -494,12 +495,12 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         return InteractionResult.PASS;
     }
 
-    default InteractionResultHolder<ItemStack> definition$use(Level world, Player player, InteractionHand hand) {
+    default InteractionResultHolder<ItemStack> definition$use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        // TODO: relocate to keybind action when keybind PR happens
         for (IToolBehavior<?> behavior : getBehaviorsComponent(stack).behaviors().values()) {
-            if (behavior.onItemRightClick(world, player, hand).getResult() == InteractionResult.SUCCESS) {
-                return InteractionResultHolder.success(stack);
+            var behaviorResult = behavior.onItemRightClick(level, player, hand);
+            if (behaviorResult.getResult().consumesAction()) {
+                return behaviorResult;
             }
         }
         return InteractionResultHolder.pass(stack);
@@ -698,9 +699,9 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         return Math.abs((int) System.currentTimeMillis() - lastUse) > 1000;
     }
 
-    default void playSound(Player player) {
+    default void playSound(Entity source) {
         if (ConfigHolder.INSTANCE.client.toolUseSounds && getSound() != null) {
-            player.level().playSound(null, player, getSound().value().getMainEvent(), SoundSource.PLAYERS, 1F, 1F);
+            source.level().playSound(null, source, getSound().value().getMainEvent(), SoundSource.PLAYERS, 1F, 1F);
         }
     }
 
