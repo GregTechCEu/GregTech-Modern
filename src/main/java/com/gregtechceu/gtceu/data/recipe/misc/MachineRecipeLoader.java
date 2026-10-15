@@ -860,23 +860,31 @@ public class MachineRecipeLoader {
                 .duration(100).cleanroom(CleanroomType.CLEANROOM)
                 .addMaterialInfo(true, true).save(provider);
 
-        WELDER_RECIPES.recipeBuilder("casing_steel_turbine").EUt(16).inputItems(plate, Magnalium, 6)
-                .inputItems(frameGt, BlueSteel, 1).circuitMeta(6)
-                .outputItems(GTBlocks.CASING_STEEL_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
+        WELDER_RECIPES.recipeBuilder("casing_magnalium_turbine").EUt(16)
+                .inputItems(plate, Magnalium, 6)
+                .inputItems(frameGt, BlueSteel, 1)
+                .circuitMeta(6)
+                .outputItems(GTBlocks.CASING_MAGNALIUM_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
         WELDER_RECIPES.recipeBuilder("casing_stainless_steel_turbine").EUt(16)
-                .inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(plate, StainlessSteel, 6).circuitMeta(6)
+                .inputItems(GTBlocks.CASING_MAGNALIUM_TURBINE.asStack())
+                .inputItems(plate, StainlessSteel, 6)
+                .circuitMeta(6)
                 .outputItems(GTBlocks.CASING_STAINLESS_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
         WELDER_RECIPES.recipeBuilder("casing_titanium_turbine").EUt(16)
-                .inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(plate, Titanium, 6).circuitMeta(6)
+                .inputItems(GTBlocks.CASING_MAGNALIUM_TURBINE.asStack())
+                .inputItems(plate, Titanium, 6)
+                .circuitMeta(6)
                 .outputItems(GTBlocks.CASING_TITANIUM_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
                 .addMaterialInfo(true).save(provider);
         WELDER_RECIPES.recipeBuilder("casing_tungstensteel_turbine").EUt(16)
-                .inputItems(GTBlocks.CASING_STEEL_TURBINE.asStack()).inputItems(plate, TungstenSteel, 6).circuitMeta(6)
+                .inputItems(GTBlocks.CASING_MAGNALIUM_TURBINE.asStack())
+                .inputItems(plate, TungstenSteel, 6)
+                .circuitMeta(6)
                 .outputItems(
                         GTBlocks.CASING_TUNGSTENSTEEL_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50)
@@ -936,22 +944,22 @@ public class MachineRecipeLoader {
                 .outputItems(CASING_EXTREME_ENGINE_INTAKE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_grate_casing")
+        ASSEMBLER_RECIPES.recipeBuilder("assembly_line_grating")
                 .inputItems(Items.IRON_BARS, 6)
                 .inputItems(frameGt, Steel)
                 .inputItems(ELECTRIC_MOTOR_MV)
                 .inputItems(rotor, Steel)
-                .outputItems(GTBlocks.CASING_GRATE, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+                .outputItems(GTBlocks.CASING_ASSEMBLY_GRATE, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
                 .duration(800)
                 .EUt(VA[IV])
                 .save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("assembly_line_casing")
+        ASSEMBLER_RECIPES.recipeBuilder("assembly_line_unit")
                 .inputItems(gear, Ruridit, 2)
                 .inputItems(plate, Steel, 4)
                 .inputItems(ROBOT_ARM_IV, 2)
                 .inputItems(frameGt, TungstenSteel)
-                .outputItems(GTBlocks.CASING_ASSEMBLY_LINE, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+                .outputItems(GTBlocks.CASING_ASSEMBLY_UNIT, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
                 .duration(650)
                 .EUt(VA[IV])
                 .save(provider);
@@ -1353,8 +1361,8 @@ public class MachineRecipeLoader {
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_red_granite")
-                .inputItems(rock, GraniteRed)
-                .outputItems(dust, GraniteRed)
+                .inputItems(rock, RedGranite)
+                .outputItems(dust, RedGranite)
                 .chancedOutput(dust, Uranium238, 25)
                 .duration(150).EUt(2)
                 .save(provider);

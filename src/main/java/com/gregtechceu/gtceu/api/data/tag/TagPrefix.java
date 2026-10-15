@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.item.TurbineRotorItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
@@ -122,7 +123,7 @@ public class TagPrefix {
 
     public static final TagPrefix oreRedGranite = oreTagPrefix("red_granite", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Red Granite %s Ore")
-            .registerOre(() -> GTBlocks.RED_GRANITE.getDefaultState(), () -> GTMaterials.GraniteRed,
+            .registerOre(() -> GTBlocks.RED_GRANITE.getDefaultState(), () -> GTMaterials.RedGranite,
                     BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_RED).requiresCorrectToolForDrops()
                             .strength(3.0F, 3.0F),
                     GTCEu.id("block/red_granite"));
@@ -201,7 +202,7 @@ public class TagPrefix {
                             .requiresCorrectToolForDrops().strength(4.5F, 9.0F),
                     ResourceLocation.withDefaultNamespace("block/end_stone"), true, false, true);
 
-    public static final TagPrefix rawOre = new TagPrefix(GTCEu.id("raw"), true)
+    public static final TagPrefix rawOre = new TagPrefix(GTCEu.id("raw"))
             .idPattern("raw_%s")
             .defaultTagPath("raw_materials/%s")
             .unformattedTagPath("raw_materials")
@@ -574,7 +575,7 @@ public class TagPrefix {
             .generateItem(true)
             .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_FINE_WIRE));
 
-    // consisting out of 4 Plates, 1 Ring and 1 Screw.
+    // consisting out of 4 Plates and 1 Ring.
     public static final TagPrefix rotor = new TagPrefix(GTCEu.id("rotor"))
             .defaultTagPath("rotors/%s")
             .unformattedTagPath("rotors")
@@ -698,17 +699,30 @@ public class TagPrefix {
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
                     .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WIRE_CUTTER_LV)));
 
-    // made of 5 Ingots.
-    public static final TagPrefix turbineBlade = new TagPrefix(GTCEu.id("turbineBlade"))
+    // made of 5 Double Plates and 2 Screws.
+    public static final TagPrefix turbineBlade = new TagPrefix(GTCEu.id("turbine_blade"))
             .langValue("%s Turbine Blade")
-            .materialAmount(GTValues.M * 10)
+            .materialAmount(GTValues.M * 92 / 9)
             .materialIconType(MaterialIconType.turbineBlade)
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasRotorProperty
-                    .and(m -> m.hasFlags(MaterialFlags.GENERATE_BOLT_SCREW, MaterialFlags.GENERATE_PLATE) &&
-                            !m.hasProperty(PropertyKey.GEM)));
+                    .and(m -> m.hasFlags(MaterialFlags.GENERATE_BOLT_SCREW, MaterialFlags.GENERATE_PLATE))
+                    .and(hasGemProperty.negate()));
+
+    // made of 8 Turbine Blades.
+    public static final TagPrefix turbineRotor = new TagPrefix(GTCEu.id("turbine_rotor"))
+            .langValue("%s Turbine Rotor")
+            .materialAmount(GTValues.M * 736 / 9)
+            .materialIconType(MaterialIconType.turbineRotor)
+            .unificationEnabled(true)
+            .generateItem(true)
+            .itemConstructor(TurbineRotorItem::new)
+            .generationCondition(hasRotorProperty
+                    .and(m -> m.hasFlags(MaterialFlags.GENERATE_BOLT_SCREW, MaterialFlags.GENERATE_PLATE))
+                    .and(hasGemProperty.negate()))
+            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("item.gtceu.turbine_rotor.tooltip")));
 
     // Storage Block consisting out of 9 Ingots/Gems/Dusts.
     public static final TagPrefix block = new TagPrefix(GTCEu.id("block"))
@@ -978,8 +992,6 @@ public class TagPrefix {
     @Getter
     @Setter
     private String idPattern;
-    @Getter
-    public final boolean invertedName;
 
     protected final List<TagType> tags = new ArrayList<>();
     @Setter
@@ -1048,26 +1060,21 @@ public class TagPrefix {
      */
     @Deprecated(since = "8.0.0")
     public TagPrefix(String name) {
-        this(name, false);
+        this(GTCEu.id(name));
     }
 
     /**
-     * @deprecated Use {@link TagPrefix#TagPrefix(ResourceLocation, boolean)}
+     * @deprecated Use {@link TagPrefix#TagPrefix(ResourceLocation)}
      */
     @Deprecated(since = "8.0.0")
     public TagPrefix(String name, boolean invertedName) {
-        this(GTCEu.id(name), invertedName);
+        this(name);
     }
 
     public TagPrefix(ResourceLocation id) {
-        this(id, false);
-    }
-
-    public TagPrefix(ResourceLocation id, boolean invertedName) {
         this.id = id;
         this.name = id.getPath();
         this.idPattern = "%s_" + getLowerCaseName();
-        this.invertedName = invertedName;
         this.langValue = "%s " + FormattingUtil.toEnglishName(getLowerCaseName());
         GTRegistries.TAG_PREFIXES.register(id, this);
     }

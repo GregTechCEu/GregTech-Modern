@@ -433,11 +433,11 @@ public class GTMultiMachines {
                             blocks(CASING_STEEL_SOLID.get()).and(Predicates.abilities(PartAbility.INPUT_ENERGY)
                                     .setMinGlobalLimited(1).setMaxGlobalLimited(2)))
                     .where('I', blocks(ITEM_IMPORT_BUS[0].getBlock()))
-                    .where('G', blocks(CASING_GRATE.get()))
+                    .where('G', blocks(CASING_ASSEMBLY_GRATE.get()))
                     .where('A', blocks(CASING_ASSEMBLY_CONTROL.get()))
                     .where('R', blocks(CASING_LAMINATED_GLASS.get()))
-                    .where('T', blocks(CASING_ASSEMBLY_LINE.get()))
-                    .where('D', blocks(CASING_GRATE.get()).and(dataHatchPredicate()))
+                    .where('T', blocks(CASING_ASSEMBLY_UNIT.get()))
+                    .where('D', blocks(CASING_ASSEMBLY_GRATE.get()).and(dataHatchPredicate()))
                     .where('#', Predicates.any())
                     .build())
             .partSorter(AssemblyLineMachine::partSorter)
@@ -734,7 +734,7 @@ public class GTMultiMachines {
             "steam_large_turbine",
             HV,
             GTRecipeTypes.STEAM_TURBINE_FUELS,
-            CASING_STEEL_TURBINE, CASING_STEEL_GEARBOX,
+            CASING_MAGNALIUM_TURBINE, CASING_STEEL_GEARBOX,
             GTCEu.id("block/casings/mechanic/machine_casing_turbine_steel"),
             GTCEu.id("block/multiblock/generator/large_steam_turbine"),
             false);

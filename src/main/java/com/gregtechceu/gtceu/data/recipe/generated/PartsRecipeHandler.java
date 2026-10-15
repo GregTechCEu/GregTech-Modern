@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
-import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
 import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -547,14 +546,10 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        ItemStack rotorStack = GTItems.TURBINE_ROTOR.asStack();
-        // noinspection ConstantConditions
-        TurbineRotorBehaviour.getBehaviour(rotorStack).setPartMaterial(rotorStack, material);
-
         ASSEMBLER_RECIPES.recipeBuilder("assemble_" + material.getName() + "_turbine_blade")
                 .inputItems(turbineBlade, material, 8)
                 .inputItems(rodLong, GTMaterials.Magnalium)
-                .outputItems(rotorStack)
+                .outputItems(ChemicalHelper.get(turbineRotor, material))
                 .duration(200)
                 .EUt(400)
                 .save(provider);
@@ -567,7 +562,7 @@ public final class PartsRecipeHandler {
                 .EUt(256)
                 .save(provider);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, String.format("turbine_blade_%s", material.getName()),
+        VanillaRecipeHelper.addShapedRecipe(provider, material.getName() + "_turbine_blade",
                 ChemicalHelper.get(turbineBlade, material),
                 "PPP", "SPS", "fPd",
                 'P', new MaterialEntry(plateDouble, material),

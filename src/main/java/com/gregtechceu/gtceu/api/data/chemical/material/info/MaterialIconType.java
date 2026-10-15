@@ -89,6 +89,7 @@ public record MaterialIconType(String name) {
     public static final MaterialIconType toolHeadWireCutter = new MaterialIconType("toolHeadWireCutter");
 
     public static final MaterialIconType turbineBlade = new MaterialIconType("turbineBlade");
+    public static final MaterialIconType turbineRotor = new MaterialIconType("turbineRotor");
 
     // BLOCK TEXTURES
     public static final MaterialIconType liquid = new MaterialIconType("liquid");
