@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
+import com.gregtechceu.gtceu.common.data.worldgen.GTVeinGenerators;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -288,8 +289,8 @@ public class CuboidVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public MapCodec<? extends VeinGenerator> codec() {
-        return CODEC;
+    public VeinGeneratorType<?> type() {
+        return GTVeinGenerators.CUBOID.value();
     }
 
     public CuboidVeinGenerator top(Consumer<ClassicVeinGenerator.Layer.Builder> builder) {

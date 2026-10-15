@@ -15,8 +15,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
 import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
@@ -50,6 +48,8 @@ import com.gregtechceu.gtceu.common.data.loot.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.data.worldgen.*;
+import com.gregtechceu.gtceu.common.data.worldgen.GTIndicatorGenerators;
+import com.gregtechceu.gtceu.common.data.worldgen.GTVeinGenerators;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
@@ -108,6 +108,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.neoforged.neoforge.fluids.crafting.*;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
@@ -122,6 +123,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
@@ -198,13 +200,14 @@ public class CommonProxy {
         GTPlacementModifiers.init(modBus);
         GTLootConditions.init(modBus);
         GTLootFunctions.init(modBus);
-        VeinGenerators.registerAddonGenerators();
-        IndicatorGenerators.registerAddonGenerators();
+        GTVeinGenerators.init(modBus);
+        GTIndicatorGenerators.init(modBus);
         WaypointManager.init();
 
         CustomBlockRotations.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
+        SpoilableBehavior.init();
 
         GTCreativeModeTabs.init();
         GTAttachmentTypes.init(modBus);
@@ -219,7 +222,6 @@ public class CommonProxy {
         GuiManager.registerFactory(CoverUIFactory.INSTANCE);
 
         GTGuiTheme.registerThemes();
-        SpoilableBehavior.init();
     }
 
     // Fire post material events after all other material registry events.
@@ -292,36 +294,41 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public static void registerDevSpoilables(RegisterSpoilablesEvent event) {
-        if (GTCEu.isDev()) { // for testing purposes
+    public static void registerSpoilables(RegisterSpoilablesEvent event) {
+        if (GTCEu.isDev()) {
             event.getBuilder()
                     .ticks(10)
-                    .result(Items.DIRT)
+                    .result(GTItems.SPOILABLE_2)
                     .build()
-                    .attachTo(Items.JIGSAW);
-            event.getBuilder()
-                    .ticks(10)
-                    .result(Items.STRUCTURE_BLOCK)
-                    .build()
-                    .attachTo(Items.APPLE);
+                    .attachTo(GTItems.SPOILABLE_1);
             event.getBuilder()
                     .ticks(40)
-                    .result(Items.STRUCTURE_VOID)
+                    .result(GTItems.SPOILABLE_3)
                     .build()
-                    .attachTo(Items.STRUCTURE_BLOCK);
+                    .attachTo(GTItems.SPOILABLE_2);
             event.getBuilder()
                     .ticks(10)
-                    .result(Items.JIGSAW)
+                    .result(GTItems.SPOILABLE_4)
                     .build()
-                    .attachTo(Items.STRUCTURE_VOID);
+                    .attachTo(GTItems.SPOILABLE_3);
+            event.getBuilder()
+                    .ticks(10)
+                    .result(GTItems.SPOILABLE_5)
+                    .build()
+                    .attachTo(GTItems.SPOILABLE_4);
             event.getBuilder()
                     .ticks(10)
                     .result(Items.DRAGON_EGG)
                     .result(EntityType.PIG)
                     .multiplyResult(3)
                     .build()
-                    .attachTo(Items.EGG);
+                    .attachTo(GTItems.ENTITY_SPOILABLE);
         }
+        event.getBuilder()
+                .ticks(20 * 60 * 30)
+                .result(Items.GOLDEN_CARROT)
+                .build()
+                .attachTo(GTItems.MAGNETIC_GOLDEN_CARROT);
     }
 
     @SubscribeEvent
@@ -518,6 +525,72 @@ public class CommonProxy {
 
         public static void materialModification() {
             GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());
+        }
+    }
+
+    /** Migrate Legacy GT Molten fluids, strictly blind to addons to allow them to fail loudly. */
+    private static final Set<String> LEGACY_MOLTEN_MATERIALS = Set.of(
+            "bismuth_bronze",
+            "black_bronze",
+            "black_steel",
+            "blue_steel",
+            "enriched_naquadah_trinium_europium_duranide",
+            "gallium_arsenide",
+            "hastelloy_c_276",
+            "hastelloy_x",
+            "hsla_steel",
+            "hsse",
+            "hssg",
+            "hsss",
+            "incoloy_ma_956",
+            "indium_tin_barium_titanium_cuprate",
+            "kanthal",
+            "magnesium_diboride",
+            "manganese_phosphide",
+            "maraging_steel_300",
+            "mercury_barium_calcium_cuprate",
+            "molybdenum_disilicide",
+            "naquadah_alloy",
+            "nichrome",
+            "niobium_nitride",
+            "niobium_titanium",
+            "osmiridium",
+            "red_steel",
+            "rhodium_plated_palladium",
+            "rose_gold",
+            "rtm_alloy",
+            "ruridit",
+            "ruthenium_trinium_americium_neutronate",
+            "samarium_iron_arsenic_oxide",
+            "stainless_steel",
+            "stellite_100",
+            "sterling_silver",
+            "tantalum_carbide",
+            "titanium_carbide",
+            "titanium_tungsten_carbide",
+            "tungsten_carbide",
+            "tungsten_steel",
+            "ultimet",
+            "uranium_rhodium_dinaquadide",
+            "uranium_triplatinum",
+            "vanadium_gallium",
+            "vanadium_steel",
+            "watertight_steel",
+            "yttrium_barium_cuprate",
+            "zeron_100");
+
+    @SubscribeEvent
+    public static void registerLegacyMoltenAliases(RegisterEvent event) {
+        var key = event.getRegistryKey();
+        boolean fluid = key.equals(Registries.FLUID);
+        boolean item = key.equals(Registries.ITEM);
+        if (!fluid && !item && !key.equals(NeoForgeRegistries.Keys.FLUID_TYPES)) return;
+        for (String material : LEGACY_MOLTEN_MATERIALS) {
+            String suffix = item ? "_bucket" : "";
+            event.getRegistry().addAlias(GTCEu.id("molten_" + material + suffix), GTCEu.id(material + suffix));
+            if (fluid) {
+                event.getRegistry().addAlias(GTCEu.id("flowing_molten_" + material), GTCEu.id("flowing_" + material));
+            }
         }
     }
 }

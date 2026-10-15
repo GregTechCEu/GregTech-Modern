@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
@@ -25,7 +26,7 @@ public record ToolBehaviors(@Unmodifiable Map<ToolBehaviorType<?>, IToolBehavior
 
     public static final ToolBehaviors EMPTY = new ToolBehaviors(Map.of());
     // spotless:off
-    public static final Codec<Map<ToolBehaviorType<?>, IToolBehavior<?>>> MAP_CODEC = Codec
+    private static final Codec<Map<ToolBehaviorType<?>, IToolBehavior<?>>> MAP_CODEC = Codec
             .dispatchedMap(GTRegistries.TOOL_BEHAVIORS.byNameCodec(), ToolBehaviorType::getCodec);
     public static final Codec<ToolBehaviors> CODEC = MAP_CODEC.xmap(ToolBehaviors::new, ToolBehaviors::behaviors);
 
@@ -41,17 +42,33 @@ public record ToolBehaviors(@Unmodifiable Map<ToolBehaviorType<?>, IToolBehavior
         this(behaviors.stream().collect(Collectors.toMap(IToolBehavior::getType, Function.identity())));
     }
 
+    public ToolBehaviors(Map<ToolBehaviorType<?>, IToolBehavior<?>> behaviors) {
+        this.behaviors = Collections.unmodifiableMap(behaviors);
+    }
+
+    public boolean isEmpty() {
+        return this.behaviors.isEmpty();
+    }
+
     public boolean hasBehavior(ToolBehaviorType<?> type) {
         return behaviors.containsKey(type);
+    }
+
+    public boolean hasBehavior(Supplier<? extends ToolBehaviorType<?>> type) {
+        return hasBehavior(type.get());
     }
 
     public <T extends IToolBehavior<T>> @Nullable T getBehavior(ToolBehaviorType<T> type) {
         return (T) this.behaviors.get(type);
     }
 
+    public <T extends IToolBehavior<T>> @Nullable T getBehavior(Supplier<ToolBehaviorType<T>> type) {
+        return getBehavior(type.get());
+    }
+
     public ToolBehaviors withBehavior(IToolBehavior<?> behavior) {
         Map<ToolBehaviorType<?>, IToolBehavior<?>> behaviors = new HashMap<>(this.behaviors);
         behaviors.put(behavior.getType(), behavior);
-        return new ToolBehaviors(Collections.unmodifiableMap(behaviors));
+        return new ToolBehaviors(behaviors);
     }
 }

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidget;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class GTOreVeinEmiCategory extends EmiRecipeCategory {
 
@@ -29,10 +31,8 @@ public class GTOreVeinEmiCategory extends EmiRecipeCategory {
     }
 
     public static void registerDisplays(EmiRegistry registry) {
-        for (GTOreDefinition oreDefinition : Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.Keys.ORE_VEIN)) {
-            registry.addRecipe(new GTEmiOreVein(oreDefinition));
-        }
+        Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.ORE_VEIN).holders()
+                .forEach(h -> registry.addRecipe(new GTEmiOreVein(h)));
     }
 
     public static void registerWorkStations(EmiRegistry registry) {
@@ -48,12 +48,11 @@ public class GTOreVeinEmiCategory extends EmiRecipeCategory {
 
     public static class GTEmiOreVein extends ModularUIEmiRecipe {
 
-        private final GTOreDefinition oreDefinition;
+        private final Holder<GTOreDefinition> oreDefinition;
 
-        public GTEmiOreVein(GTOreDefinition oreDefinition) {
-            super(Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.ORE_VEIN)
-                    .getKey(oreDefinition).withPrefix("/ore_vein_diagram/"),
-                    () -> new OreVeinRecipeWidget(oreDefinition));
+        public GTEmiOreVein(Holder<GTOreDefinition> oreDefinition) {
+            super(Objects.requireNonNull(oreDefinition.getKey()).location().withPrefix("/ore_vein_diagram/"),
+                    () -> new OreVeinRecipeWidget(oreDefinition.value()));
             this.oreDefinition = oreDefinition;
         }
 
@@ -64,13 +63,13 @@ public class GTOreVeinEmiCategory extends EmiRecipeCategory {
 
         @Override
         public List<EmiIngredient> getInputs() {
-            return Arrays.stream(OreVeinRecipeWidget.getDimensionMarkers(oreDefinition.dimensionFilter()))
+            return Arrays.stream(OreVeinRecipeWidget.getDimensionMarkers(oreDefinition.value().dimensionFilter()))
                     .map(v -> (EmiIngredient) EmiStack.of(v.getIcon())).toList();
         }
 
         @Override
         public @NotNull List<EmiStack> getOutputs() {
-            return OreVeinRecipeWidget.getContainedOresAndBlocks(oreDefinition)
+            return OreVeinRecipeWidget.getContainedOresAndBlocks(oreDefinition.value())
                     .stream()
                     .map(EmiStack::of)
                     .toList();

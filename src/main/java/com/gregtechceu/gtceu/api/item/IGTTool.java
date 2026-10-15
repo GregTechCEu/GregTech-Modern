@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.item.datacomponents.ResolvableItemEnchantments;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -33,13 +34,13 @@ import net.minecraft.core.component.*;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -63,9 +64,6 @@ import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -93,7 +91,6 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
 
     boolean playSoundOnBlockDestroy();
 
-    @NotNull
     default Item asItem() {
         return (Item) this;
     }
@@ -102,19 +99,17 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         ItemStack stack = new ItemStack(asItem());
         stack.set(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
         stack.set(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+        stack.set(GTDataComponents.INNATE_ENCHANTMENTS, ResolvableItemEnchantments.EMPTY);
+        stack.set(GTDataComponents.AOE, AoESymmetrical.ZERO);
+        stack.set(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO);
+        stack.set(GTDataComponents.GT_TOOL, GTTool.EMPTY);
+
         stack.remove(DataComponents.MAX_DAMAGE);
         stack.remove(DataComponents.DAMAGE);
         stack.remove(DataComponents.UNBREAKABLE);
-        stack.remove(GTDataComponents.GT_TOOL);
-        stack.remove(GTDataComponents.AOE);
         stack.remove(GTDataComponents.RELOCATE_MINED_BLOCKS);
         stack.remove(GTDataComponents.RELOCATE_MOB_DROPS);
-        stack.remove(GTDataComponents.INNATE_ENCHANTMENTS);
         return stack;
-    }
-
-    private <T> void seTypedComponent(TypedDataComponent<T> component, PatchedDataComponentMap map) {
-        component.applyTo(map);
     }
 
     default ItemStack get() {
@@ -283,9 +278,9 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
             return;
         }
         if (!areaOfEffectBlockBreakRoutine(stack, serverPlayer, pos)) {
-            var behavior = getBehaviorsComponent(stack).getBehavior(GTToolBehaviors.TREE_FELLING.value());
+            var behavior = getBehaviorsComponent(stack).getBehavior(GTToolBehaviors.TREE_FELLING);
             if (behavior != null && behavior.isEnabled() && state.is(BlockTags.LOGS)) {
-                TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
+                TreeFellingHelper.fellTree(stack, state, pos, serverPlayer);
             }
         }
         if (playSoundOnBlockDestroy()) {
@@ -304,11 +299,11 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         if (state.getDestroySpeed(level, pos) != 0.0) {
             damageItem(stack, entity, getToolStats().getToolDamagePerBlockBreak(stack));
         }
-        if (entity instanceof Player player && playSoundOnBlockDestroy()) {
+        if (playSoundOnBlockDestroy()) {
             // sneaking disables AOE, which means it is okay to play the sound
             // not checking this means the sound will play for every AOE broken block, which is very loud
             if (entity.isShiftKeyDown()) {
-                playSound(player);
+                playSound(entity);
             }
         }
     }
@@ -341,39 +336,22 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         return false;
     }
 
-    default ItemEnchantments definition$getAllEnchantments(ItemStack stack,
-                                                           HolderLookup.RegistryLookup<Enchantment> lookup) {
-        ItemEnchantments existing = stack.getOrDefault(GTDataComponents.INNATE_ENCHANTMENTS, ItemEnchantments.EMPTY);
-        if (!existing.isEmpty()) {
-            return IGTTool.joinEnchants(stack, existing);
-        }
-
-        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        ToolProperty toolProperty = this.getMaterial().getProperty(PropertyKey.TOOL);
-
-        // Set tool and material enchantments
-        Object2IntMap<ResourceKey<Enchantment>> innateEnchantments = new Object2IntOpenHashMap<>();
-        innateEnchantments.putAll(getToolStats().getDefaultEnchantments());
-        innateEnchantments.putAll(toolProperty.getEnchantments());
-
-        if (innateEnchantments.isEmpty()) {
-            return stack.getTagEnchantments();
-        }
-        innateEnchantments.forEach((enchantKey, level) -> {
-            lookup.get(enchantKey).ifPresent(enchant -> enchantments.upgrade(enchant, level));
-        });
-        existing = enchantments.toImmutable();
-        stack.set(GTDataComponents.INNATE_ENCHANTMENTS, existing);
-        return IGTTool.joinEnchants(stack, existing);
+    default boolean definition$isFoil(ItemStack stack) {
+        return stack.isEnchanted() ||
+                !stack.getOrDefault(GTDataComponents.INNATE_ENCHANTMENTS, ResolvableItemEnchantments.EMPTY).isEmpty();
     }
 
-    private static ItemEnchantments joinEnchants(ItemStack stackWithEnchants, ItemEnchantments additional) {
-        ItemEnchantments original = stackWithEnchants.getTagEnchantments();
-        if (additional.isEmpty()) {
+    default ItemEnchantments definition$getAllEnchantments(ItemStack stack,
+                                                           HolderLookup.RegistryLookup<Enchantment> registry) {
+        ResolvableItemEnchantments innate = stack.getOrDefault(GTDataComponents.INNATE_ENCHANTMENTS,
+                ResolvableItemEnchantments.EMPTY);
+
+        ItemEnchantments original = stack.getTagEnchantments();
+        if (innate.isEmpty()) {
             return original;
         }
         ItemEnchantments.Mutable joined = new ItemEnchantments.Mutable(original);
-        for (var entry : additional.entrySet()) {
+        for (var entry : innate.resolve(registry).entrySet()) {
             joined.upgrade(entry.getKey(), entry.getIntValue());
         }
         return joined.toImmutable();
@@ -483,7 +461,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         getToolStats().getBehaviors().forEach(behavior -> behavior.init(this));
     }
 
-    default boolean definition$canPerformAction(@NotNull ItemStack stack, @NotNull ItemAbility action) {
+    default boolean definition$canPerformAction(ItemStack stack, ItemAbility action) {
         if (getToolType().defaultAbilities.contains(action)) {
             return true;
         }
@@ -517,12 +495,12 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         return InteractionResult.PASS;
     }
 
-    default InteractionResultHolder<ItemStack> definition$use(Level world, Player player, InteractionHand hand) {
+    default InteractionResultHolder<ItemStack> definition$use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        // TODO: relocate to keybind action when keybind PR happens
         for (IToolBehavior<?> behavior : getBehaviorsComponent(stack).behaviors().values()) {
-            if (behavior.onItemRightClick(world, player, hand).getResult() == InteractionResult.SUCCESS) {
-                return InteractionResultHolder.success(stack);
+            var behaviorResult = behavior.onItemRightClick(level, player, hand);
+            if (behaviorResult.getResult().consumesAction()) {
+                return behaviorResult;
             }
         }
         return InteractionResultHolder.pass(stack);
@@ -631,11 +609,17 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
                     aoeDefinition.column() * 2 + 1, aoeDefinition.row() * 2 + 1, aoeDefinition.layer() + 1));
         }
 
-        if (stack.has(GTDataComponents.RELOCATE_MINED_BLOCKS)) {
+        if (stack.has(GTDataComponents.RELOCATE_MINED_BLOCKS) || stack.has(GTDataComponents.RELOCATE_MOB_DROPS)) {
             if (!addedBehaviorNewLine) {
                 addedBehaviorNewLine = tooltip.add(CommonComponents.EMPTY);
             }
-            tooltip.add(Component.translatable("item.gtceu.tool.behavior.relocate_mining"));
+            if (stack.has(GTDataComponents.RELOCATE_MINED_BLOCKS) && stack.has(GTDataComponents.RELOCATE_MOB_DROPS)) {
+                tooltip.add(Component.translatable("item.gtceu.tool.behavior.relocate_mining_and_mob_drops"));
+            } else if (stack.has(GTDataComponents.RELOCATE_MINED_BLOCKS)) {
+                tooltip.add(Component.translatable("item.gtceu.tool.behavior.relocate_mining_drops"));
+            } else if (stack.has(GTDataComponents.RELOCATE_MOB_DROPS)) {
+                tooltip.add(Component.translatable("item.gtceu.tool.behavior.relocate_mob_drops"));
+            }
         }
 
         if (!toolStats.getBehaviors().isEmpty()) {
@@ -721,9 +705,9 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         return Math.abs((int) System.currentTimeMillis() - lastUse) > 1000;
     }
 
-    default void playSound(Player player) {
+    default void playSound(Entity source) {
         if (ConfigHolder.INSTANCE.client.toolUseSounds && getSound() != null) {
-            player.level().playSound(null, player, getSound().value().getMainEvent(), SoundSource.PLAYERS, 1F, 1F);
+            source.level().playSound(null, source, getSound().value().getMainEvent(), SoundSource.PLAYERS, 1F, 1F);
         }
     }
 
@@ -737,10 +721,13 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
     default @Nullable ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager,
                                               UISettings settings) {
         for (var behavior : getToolStats().getBehaviors()) {
-            if (!(behavior instanceof IToolUIBehavior uiBehavior) ||
-                    !uiBehavior.shouldOpenUI(data.getPlayer(), data.getPlayer().getUsedItemHand())) {
+            if (!(behavior instanceof IToolUIBehavior<?> uiBehavior)) {
                 continue;
             }
+            if (!uiBehavior.shouldOpenUI(data.getPlayer(), data.getPlayer().getUsedItemHand())) {
+                continue;
+            }
+
             return uiBehavior.buildUI(data, syncManager, settings);
         }
         return null;

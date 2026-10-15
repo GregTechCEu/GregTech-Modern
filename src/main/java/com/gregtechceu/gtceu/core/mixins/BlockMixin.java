@@ -35,8 +35,8 @@ public abstract class BlockMixin {
     private static List<ItemStack> gtceu$modifyDrops(List<ItemStack> original, BlockState state, ServerLevel level,
                                                      BlockPos pos, @Nullable BlockEntity blockEntity,
                                                      @Nullable Entity entity, ItemStack tool) {
-        if (!tool.isEmpty() && entity instanceof Player player) {
-            return ToolEventHandlers.onHarvestDrops(player, tool, level, pos, state, original);
+        if (!tool.isEmpty()) {
+            return ToolEventHandlers.onHarvestDrops(entity, tool, level, pos, state, original);
         }
         return original;
     }
@@ -47,6 +47,6 @@ public abstract class BlockMixin {
                                 target = "Lnet/minecraft/world/level/block/Block;spawnDestroyParticles(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"))
     private boolean gtceu$disableAoeBlockParticles(Block instance, Level level, Player player,
                                                    BlockPos pos, BlockState state) {
-        return ToolHelper.DO_BLOCK_BREAK_SOUND_PARTICLES.get();
+        return ToolHelper.DO_BLOCK_BREAK_SOUND_PARTICLES.getValue();
     }
 }

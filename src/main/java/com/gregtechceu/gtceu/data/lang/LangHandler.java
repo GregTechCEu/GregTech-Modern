@@ -205,7 +205,10 @@ public class LangHandler {
         provider.add("item.gtceu.tool.behavior.scrape", "§bPolisher: §fRemoves Oxidation");
         provider.add("item.gtceu.tool.behavior.remove_wax", "§6Cleaner: §fRemoves Wax");
         provider.add("item.gtceu.tool.behavior.shield_disable", "§cBrute: §fDisables Shields");
-        provider.add("item.gtceu.tool.behavior.relocate_mining", "§2Magnetic: §fRelocates Mined Blocks and Mob Drops");
+        provider.add("item.gtceu.tool.behavior.relocate_mining_and_mob_drops",
+                "§2Magnetic: §fRelocates Mined Blocks and Mob Drops");
+        provider.add("item.gtceu.tool.behavior.relocate_mining_drops", "§2Magnetic: §fRelocates Mined Blocks");
+        provider.add("item.gtceu.tool.behavior.relocate_mob_drops", "§2Magnetic: §fRelocates Mob Drops");
         provider.add("item.gtceu.tool.behavior.aoe_mining", "§5Area-of-Effect: §f%sx%sx%s");
         provider.add("item.gtceu.tool.behavior.ground_tilling", "§eFarmer: §fTills Ground");
         provider.add("item.gtceu.tool.behavior.grass_path", "§eLandscaper: §fCreates Grass Paths");
@@ -294,7 +297,7 @@ public class LangHandler {
                 "§9Duranium", "§cNeutronium");
         provider.add("item.gtceu.tool.tooltip.repair_info", "§8Hold SHIFT to show Repair Info");
         provider.add("item.gtceu.tool.tooltip.repair_material", "§8Repair with: §f§a%s");
-        provider.add("item.gtceu.tool.tooltip.default_enchantments", "§5Default Enchantments:");
+        provider.add("item.gtceu.tool.tooltip.innate_enchantments", "§5Innate Enchantments:");
         provider.add("item.gtceu.tool.aoe.rows", "Rows");
         provider.add("item.gtceu.tool.aoe.columns", "Columns");
         provider.add("item.gtceu.tool.aoe.layers", "Layers");
@@ -1033,6 +1036,7 @@ public class LangHandler {
         provider.add("gtceu.fluid.gas_vapor", "%s Vapor");
         provider.add("gtceu.fluid.plasma", "%s Plasma");
         provider.add("gtceu.fluid.molten", "Molten %s");
+        provider.add("gtceu.fluid.requires_metal_freezing", "Requires metal freezing");
         provider.add("gtceu.fluid.empty", "Empty");
         provider.add("gtceu.fluid.amount", "§9Amount: %d/%d mB");
         provider.add("gtceu.fluid.temperature", "§cTemperature: %s");
@@ -1063,6 +1067,19 @@ public class LangHandler {
         provider.add("gtceu.gui.item_auto_input.tooltip.disabled", "Item Auto-Input Disabled");
         multilineLang(provider, "gtceu.gui.charger_slot.tooltip",
                 "§fCharger Slot§r\n§7Draws power from %s batteries§r\n§7Charges %s tools and batteries");
+        provider.add("gtceu.machine.wireless_charger.tooltip",
+                "Wirelessly charges EU and FE items carried by you and your team, including equipment.");
+        provider.add("gtceu.machine.wireless_charger.range.standard",
+                "§7Standard: §7%s §7block range, 1A input, charges each item once per second");
+        provider.add("gtceu.machine.wireless_charger.range.turbo",
+                "§7Turbo: §7%s §7block range, 4A input, charges each item every 4 ticks");
+        provider.add("gtceu.machine.wireless_charger.toggle",
+                "§7Use a screwdriver to switch between standard and turbo mode");
+        provider.add("gtceu.machine.wireless_charger.mode.standard", "Standard charging mode: %s block range");
+        provider.add("gtceu.machine.wireless_charger.mode.turbo", "Turbo charging mode: %s block range");
+        provider.add("gtceu.machine.wireless_charger.enter_range",
+                "§aYou have entered wireless charging range");
+        provider.add("gtceu.machine.wireless_charger.left_range", "§cYou have left wireless charging range");
         multilineLang(provider, "gtceu.gui.configurator_slot.tooltip",
                 "§fConfigurator Slot§r\n§7Place a §6Programmed Circuit§7 in this slot to\n§7change its configured value.\n§7Hold §6Shift§7 when clicking buttons to change by §65.\n§aA Programmed Circuit in this slot is also valid for recipe inputs.§r");
         provider.add("gtceu.gui.fluid_lock.tooltip.enabled", "Fluid Locking Enabled");

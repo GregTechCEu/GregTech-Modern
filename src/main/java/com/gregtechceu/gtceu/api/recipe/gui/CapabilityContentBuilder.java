@@ -16,6 +16,8 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import brachy.modularui.api.drawable.Text;
@@ -49,39 +51,36 @@ public interface CapabilityContentBuilder {
     void buildWidgetContent(IWidget widget, Content content, IO io, boolean perTick,
                             GTRecipeType recipeType, GTRecipe recipe, int chanceTier, int recipeTier);
 
+    @SuppressWarnings("unchecked")
     CapabilityContentBuilder ITEM = (widget, content, io, perTick,
                                      recipeType, recipe, chanceTier, recipeTier) -> {
-        if (!(widget instanceof RecipeViewerSlotWidget<?> recipeViewerSlotWidget)) return;
+        if (!(widget instanceof RecipeViewerSlotWidget<?, ?> recipeViewerSlotWidget)) return;
+
+        var itemSlotWidget = (RecipeViewerSlotWidget<ItemStack, ?>) recipeViewerSlotWidget;
 
         float chance = (float) content.chance() / content.maxChance();
         var innerContent = ItemRecipeCapability.CAP.of(content.content());
 
-        recipeViewerSlotWidget.value(ItemRecipeCapability.mapIngredientToEntryList(innerContent));
-        recipeViewerSlotWidget
+        itemSlotWidget.value(ItemRecipeCapability.mapIngredientToEntryList(innerContent));
+        itemSlotWidget
                 .overlay(new ContentOverlay(content, perTick));
-        recipeViewerSlotWidget.chance(chance);
+        itemSlotWidget.chance(chance);
 
         if (io == IO.IN && (content.chance() == 0 ||
                 innerContent.ingredient().getCustomIngredient() instanceof IntCircuitIngredient)) {
-            recipeViewerSlotWidget.recipeSlotRole(RecipeSlotRole.CATALYST);
+            itemSlotWidget.recipeSlotRole(RecipeSlotRole.CATALYST);
         } else if (io == IO.IN) {
-            recipeViewerSlotWidget.recipeSlotRole(RecipeSlotRole.INPUT);
+            itemSlotWidget.recipeSlotRole(RecipeSlotRole.INPUT);
         } else {
-            recipeViewerSlotWidget.recipeSlotRole(RecipeSlotRole.OUTPUT);
+            itemSlotWidget.recipeSlotRole(RecipeSlotRole.OUTPUT);
         }
 
-        recipeViewerSlotWidget.tooltipBuilder((tooltip) -> {
+        itemSlotWidget.tooltipBuilder((tooltip) -> {
 
             Content.addChanceTooltips(tooltip, content,
                     recipe.getChanceLogicForCapability(ItemRecipeCapability.CAP, io, perTick));
 
             if (innerContent.ingredient().getCustomIngredient() instanceof IntProviderIngredient ingredient) {
-                IntProvider countProvider = ingredient.getCountProvider();
-                tooltip.add(Component.translatable("gtceu.gui.content.count_range",
-                        countProvider.getMinValue(), countProvider.getMaxValue())
-                        .withStyle(ChatFormatting.GOLD));
-            } else if (innerContent.ingredient().getCustomIngredient() instanceof IntProviderIngredient ingredient) {
-
                 IntProvider countProvider = ingredient.getCountProvider();
                 tooltip.add(Component.translatable("gtceu.gui.content.count_range",
                         countProvider.getMinValue(), countProvider.getMaxValue())
@@ -93,19 +92,21 @@ public interface CapabilityContentBuilder {
         });
     };
 
+    @SuppressWarnings("unchecked")
     CapabilityContentBuilder FLUID = (widget, content, io, perTick,
                                       recipeType, recipe, chanceTier, recipeTier) -> {
-        if (!(widget instanceof RecipeViewerSlotWidget<?> recipeViewerSlotWidget)) return;
+        if (!(widget instanceof RecipeViewerSlotWidget<?, ?> recipeViewerSlotWidget)) return;
+        var fluidSlotWidget = (RecipeViewerSlotWidget<FluidStack, ?>) recipeViewerSlotWidget;
 
         float chance = (float) content.chance() / content.maxChance();
         SizedFluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content());
 
-        recipeViewerSlotWidget.value(FluidRecipeCapability.mapIngredientToEntryList(ingredient));
-        recipeViewerSlotWidget
+        fluidSlotWidget.value(FluidRecipeCapability.mapIngredientToEntryList(ingredient));
+        fluidSlotWidget
                 .overlay(new ContentOverlay(content, perTick));
-        recipeViewerSlotWidget.chance(chance);
+        fluidSlotWidget.chance(chance);
 
-        recipeViewerSlotWidget.tooltipBuilder((tooltip) -> {
+        fluidSlotWidget.tooltipBuilder((tooltip) -> {
             if (ingredient.ingredient() instanceof IRangedIngredient provider) {
                 IntProvider countProvider = provider.getCountProvider();
                 tooltip.addLine(Component.translatable("gtceu.gui.content.fluid_range",
@@ -118,11 +119,11 @@ public interface CapabilityContentBuilder {
         });
 
         if (io == IO.IN && (content.chance() == 0)) {
-            recipeViewerSlotWidget.recipeSlotRole(RecipeSlotRole.CATALYST);
+            fluidSlotWidget.recipeSlotRole(RecipeSlotRole.CATALYST);
         } else if (io == IO.IN) {
-            recipeViewerSlotWidget.recipeSlotRole(RecipeSlotRole.INPUT);
+            fluidSlotWidget.recipeSlotRole(RecipeSlotRole.INPUT);
         } else {
-            recipeViewerSlotWidget.recipeSlotRole(RecipeSlotRole.OUTPUT);
+            fluidSlotWidget.recipeSlotRole(RecipeSlotRole.OUTPUT);
         }
     };
 

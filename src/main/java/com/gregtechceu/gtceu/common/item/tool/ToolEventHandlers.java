@@ -31,15 +31,16 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
-import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 @EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class ToolEventHandlers {
@@ -104,16 +105,18 @@ public class ToolEventHandlers {
     }
 
     /**
-     * Handles saws harvesting ice without leaving water behind
-     * Handles mined blocks teleporting straight into inventory
-     * Handles drop conversion when a hammer tool (or tool with hard hammer enchantment) is used
+     * <ul>
+     * <li>Handles saws harvesting ice without leaving water behind</li>
+     * <li>Handles mined blocks teleporting straight into the player's inventory</li>
+     * <li>Handles drop conversion when a hammer tool (or tool with the Hard Hammer enchantment) is used</li>
+     * </ul>
      */
-    public static List<ItemStack> onHarvestDrops(Player player, ItemStack tool, ServerLevel level,
+    public static List<ItemStack> onHarvestDrops(@Nullable Entity entity, ItemStack tool, ServerLevel level,
                                                  BlockPos pos, BlockState state, List<ItemStack> drops) {
         ToolBehaviors behaviors = ToolHelper.getBehaviorsComponent(tool);
         Block block = state.getBlock();
         if (state.is(BlockTags.ICE) && !EnchantmentHelper.hasTag(tool, EnchantmentTags.PREVENTS_ICE_MELTING) &&
-                behaviors.hasBehavior(GTToolBehaviors.HARVEST_ICE.value())) {
+                behaviors.hasBehavior(GTToolBehaviors.HARVEST_ICE)) {
             Item iceBlock = block.asItem();
             if (drops.stream().noneMatch(drop -> drop.is(iceBlock))) {
                 drops.add(iceBlock.getDefaultInstance());
@@ -127,35 +130,40 @@ public class ToolEventHandlers {
                         level.setBlockAndUpdate(pos, newState);
                     }
                 });
-                if (tool.getItem() instanceof IGTTool gtTool) {
-                    gtTool.playSound(player);
+                if (entity != null && tool.getItem() instanceof IGTTool gtTool) {
+                    gtTool.playSound(entity);
                 }
             }
         }
 
-        if (tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS)) {
+        if (tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS) && entity instanceof Player player) {
             drops = new ArrayList<>(drops);
-            Iterator<ItemStack> dropItr = drops.iterator();
+            ListIterator<ItemStack> dropItr = drops.listIterator();
             while (dropItr.hasNext()) {
                 ItemStack dropStack = dropItr.next();
+
                 // Place close to the player for sanity reasons (Instead of XYZ=0,0,0)
-                ItemEntity drop = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), dropStack);
+                ItemEntity drop = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), dropStack);
+                // make the player attempt picking the item up immediately
+                drop.pickupDelay = 0;
+                drop.setTarget(player.getUUID());
+                drop.playerTouch(player);
 
-                if (isPickupAllowedByEvent(drop, player) && player.addItem(dropStack)) {
-                    EventHooks.fireItemPickupPost(drop, player, dropStack.copy());
+                // item entities discard themselves if they're picked up completely
+                if (drop.isRemoved()) {
+                    // if the whole stack was picked up, remove the item from the list of drops
                     dropItr.remove();
+                } else {
+                    // otherwise replace it with the new item
+                    dropStack = drop.getItem();
+                    dropItr.set(dropStack);
+                    // and destroy the item entity ourselves
+                    drop.discard();
                 }
-
-                // destroy it just in case
-                drop.discard();
             }
         }
 
         return drops;
-    }
-
-    public static boolean isPickupAllowedByEvent(ItemEntity drop, Player player) {
-        return !EventHooks.fireItemPickupPre(drop, player).canPickup().isFalse();
     }
 
     /**
@@ -189,15 +197,19 @@ public class ToolEventHandlers {
         if (!tool.has(GTDataComponents.RELOCATE_MOB_DROPS)) {
             return;
         }
-        Iterator<ItemEntity> dropItr = event.getDrops().iterator();
 
-        while (dropItr.hasNext()) {
-            ItemEntity drop = dropItr.next();
-            ItemStack dropStack = drop.getItem();
+        // copy the list of drops so we can remove discarded entities from the original safely
+        List<ItemEntity> dropsCopy = new ArrayList<>(event.getDrops());
+        for (ItemEntity drop : dropsCopy) {
+            // make the player attempt picking the item up immediately
+            drop.pickupDelay = 0;
+            drop.setTarget(player.getUUID());
+            drop.playerTouch(player);
 
-            if (isPickupAllowedByEvent(drop, player) && player.addItem(dropStack)) {
-                EventHooks.fireItemPickupPost(drop, player, dropStack.copy());
-                dropItr.remove();
+            // item entities discard themselves if they're picked up completely
+            if (drop.isRemoved()) {
+                // if the whole stack was picked up, remove the item from the list of drops
+                event.getDrops().remove(drop);
             }
         }
     }

@@ -93,6 +93,7 @@ public final class PipeRecipeHandler {
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()) / 2)
                     .EUt(6L * getVoltageMultiplier(material))
+                    .onSave((builder, output) -> MaterialRecipeHandler.prepareCastingRecipe(builder, material, L / 2))
                     .save(provider);
         }
         if (material.hasFlag(NO_SMASHING)) {
@@ -134,6 +135,7 @@ public final class PipeRecipeHandler {
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()))
                     .EUt(6L * getVoltageMultiplier(material))
+                    .onSave((builder, output) -> MaterialRecipeHandler.prepareCastingRecipe(builder, material, L))
                     .save(provider);
         }
         if (material.hasFlag(NO_SMASHING)) {
@@ -175,6 +177,7 @@ public final class PipeRecipeHandler {
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()) * 3)
                     .EUt(6L * getVoltageMultiplier(material))
+                    .onSave((builder, output) -> MaterialRecipeHandler.prepareCastingRecipe(builder, material, L * 3))
                     .save(provider);
         }
         if (material.hasFlag(NO_SMASHING)) {
@@ -216,6 +219,7 @@ public final class PipeRecipeHandler {
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()) * 6)
                     .EUt(6L * getVoltageMultiplier(material))
+                    .onSave((builder, output) -> MaterialRecipeHandler.prepareCastingRecipe(builder, material, L * 6))
                     .save(provider);
         }
         if (material.hasFlag(NO_SMASHING)) {
@@ -256,6 +260,7 @@ public final class PipeRecipeHandler {
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()) * 24)
                     .EUt(6L * getVoltageMultiplier(material))
+                    .onSave((builder, output) -> MaterialRecipeHandler.prepareCastingRecipe(builder, material, L * 12))
                     .save(provider);
         }
         if (material.hasFlag(NO_SMASHING)) {
@@ -287,11 +292,11 @@ public final class PipeRecipeHandler {
                 quadPipe, "XX", "XX",
                 'X', smallPipe);
 
-        PACKER_RECIPES.recipeBuilder("package_" + material.getName() + "_quadruple_pipe")
+        WELDER_RECIPES.recipeBuilder("weld_" + material.getName() + "_quadruple_pipe")
                 .inputItems(smallPipe.copyWithCount(4))
                 .circuitMeta(4)
                 .outputItems(quadPipe)
-                .duration(30)
+                .duration(120)
                 .EUt(VA[ULV])
                 .save(provider);
     }
@@ -310,11 +315,11 @@ public final class PipeRecipeHandler {
                 nonuplePipe, "XXX", "XXX", "XXX",
                 'X', smallPipe);
 
-        PACKER_RECIPES.recipeBuilder("package_" + material.getName() + "_nonuple_pipe")
+        WELDER_RECIPES.recipeBuilder("weld_" + material.getName() + "_nonuple_pipe")
                 .inputItems(smallPipe.copyWithCount(9))
                 .circuitMeta(9)
                 .outputItems(nonuplePipe)
-                .duration(40)
+                .duration(160)
                 .EUt(VA[ULV])
                 .save(provider);
     }

@@ -76,6 +76,10 @@ public class TagFilter<T, S> extends Filter<T> {
                 .map(ResourceLocation::toString)
                 .collect(Collectors.toSet());
 
+        if (matchExpr == null && !filterString.isEmpty()) {
+            matchExpr = TagExprFilter.parseExpression(filterString);
+        }
+
         return matchExpr != null && matchExpr.matches(tags);
     }
 
@@ -89,6 +93,11 @@ public class TagFilter<T, S> extends Filter<T> {
         var result = testTagExpr(t);
         matchResultCache.put(tagHolder, result);
         return result;
+    }
+
+    @Override
+    public Filter<T> createCopy() {
+        return new TagFilter<>(filterString, tagHolderObject, tagsSupplier);
     }
 
     @Override

@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.core.mixins.LootTableAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.DummyRecipeUtils;
+import com.gregtechceu.gtceu.utils.ScopedValue;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -54,6 +55,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.context.UseOnContext;
@@ -74,6 +76,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.level.BlockEvent;
 
 import it.unimi.dsi.fastutil.chars.Char2ReferenceMap;
 import it.unimi.dsi.fastutil.chars.Char2ReferenceOpenHashMap;
@@ -124,8 +127,9 @@ public class ToolHelper {
         return stack.getOrDefault(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean hasBehaviorsComponent(ItemStack stack) {
-        return stack.has(GTDataComponents.TOOL_BEHAVIORS);
+        return !getBehaviorsComponent(stack).isEmpty();
     }
 
     public static ItemStack get(GTToolType toolType, Material material) {
@@ -258,28 +262,38 @@ public class ToolHelper {
         int maximumDurability = stack.getMaxDamage();
         int remainingUses = maximumDurability - currentDurability;
         List<BlockPos> harvestableBlocks = getHarvestableBlocks(stack, player);
-        if (!harvestableBlocks.isEmpty()) {
-            for (BlockPos pos : harvestableBlocks) {
-                if (!destroyBlock(player, stack, pos, pos.equals(targeted))) {
-                    return true;
-                }
-
-                remainingUses--;
-                if (stack.getItem() instanceof IGTTool gtTool && !gtTool.isElectric() && remainingUses == 0) {
-                    return true;
-                }
-                // If the tool is an electric tool, catch the tool breaking and cancel the remaining AOE
-                else if (!ItemStack.isSameItem(player.getMainHandItem(), stack)) {
-                    return true;
-                }
-            }
-            return true;
+        if (harvestableBlocks.isEmpty()) {
+            return false;
         }
-        return false;
+        for (BlockPos pos : harvestableBlocks) {
+            if (!destroyBlock(player, stack, pos, pos.equals(targeted))) {
+                break;
+            }
+
+            remainingUses--;
+            if (stack.getItem() instanceof IGTTool gtTool && !gtTool.isElectric() && remainingUses == 0) {
+                break;
+            }
+            // If the tool is an electric tool, catch the tool breaking and cancel the remaining AOE
+            else if (!ItemStack.isSameItem(player.getMainHandItem(), stack)) {
+                break;
+            }
+        }
+        return true;
     }
 
     public static AoESymmetrical getAoEDefinition(ItemStack stack) {
-        return stack.getOrDefault(GTDataComponents.AOE, AoESymmetrical.ZERO);
+        AoESymmetrical value = stack.getOrDefault(GTDataComponents.AOE, AoESymmetrical.ZERO);
+        if (stack.has(GTDataComponents.MAX_AOE)) {
+            AoESymmetrical max = stack.getOrDefault(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO);
+            return value.min(max);
+        } else {
+            return value;
+        }
+    }
+
+    public static AoESymmetrical.Mutable getAoEStateMutable(ItemStack stack) {
+        return getAoEDefinition(stack).toMutable(stack.getOrDefault(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO));
     }
 
     public static List<BlockPos> iterateAoE(AoESymmetrical aoeDefinition, Predicate<UseOnContext> predicate,
@@ -362,7 +376,7 @@ public class ToolHelper {
         LootItemFunction fortuneDropMultiplier = null;
         boolean cleared = false;
 
-        List<ItemStack> silkTouchDrops = getSilkTouchDrop(lootContext);
+        List<ItemStack> silkTouchDrops = getSilkTouchDrops(lootContext);
         for (ItemStack silkTouchDrop : silkTouchDrops) {
             if (silkTouchDrop.isEmpty()) continue;
             // Stack lists can be immutable going into Recipe#matches barring no rewrites
@@ -370,7 +384,8 @@ public class ToolHelper {
 
             RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
                     new DummyRecipeUtils.DummyEnergyContainer(GTValues.V[GTValues.LV], GTValues.V[GTValues.LV], 1),
-                    new DummyRecipeUtils.DummyItemHandler(IO.IN, NonNullList.of(silkTouchDrop)));
+                    new DummyRecipeUtils.DummyItemHandler(IO.IN,
+                            NonNullList.of(ItemStack.EMPTY, silkTouchDrop.copy())));
 
             RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
                     new DummyRecipeUtils.DummyItemHandler(IO.OUT, 2));
@@ -383,7 +398,7 @@ public class ToolHelper {
             // find the first valid recipe
             while (hammerRecipes.hasNext()) {
                 GTRecipe recipe = hammerRecipes.next();
-                if (recipe != null && RecipeHelper.handleRecipeIO(capHolder, hammerRecipe, IO.IN,
+                if (recipe != null && RecipeHelper.handleRecipeIO(capHolder, recipe, IO.IN,
                         capHolder.getCacheChances()).isSuccess()) {
                     hammerRecipe = recipe;
                     break;
@@ -404,7 +419,7 @@ public class ToolHelper {
                 ItemStack output = ItemRecipeCapability.CAP.of(content.content()).getItems()[0];
                 // only apply hammer drop conversion to ore blocks
                 if (!isOre) {
-                    drops.add(output);
+                    drops.add(output.copy());
                     continue;
                 }
                 // Only apply fortune on ore -> crushed forge hammer recipes
@@ -412,7 +427,7 @@ public class ToolHelper {
                     continue;
                 }
                 if (fortuneDropMultiplier == null) {
-                    fortuneDropMultiplier = getOrInitUniformDropMultiplier(lootContext.getLevel().registryAccess());
+                    fortuneDropMultiplier = getOrInitOreDropMultiplier(lootContext.getLevel().registryAccess());
                 }
                 drops.add(fortuneDropMultiplier.apply(output.copy(), lootContext));
             }
@@ -443,22 +458,23 @@ public class ToolHelper {
         return new LootContext.Builder(params).create(((LootTableAccessor) lootTable).getRandomSequence());
     }
 
-    public static final ThreadLocal<Boolean> DO_BLOCK_BREAK_SOUND_PARTICLES = ThreadLocal.withInitial(() -> true);
-    public static final ThreadLocal<Boolean> IS_AOE_BREAKING_BLOCKS = ThreadLocal.withInitial(() -> false);
+    public static final ScopedValue.Boolean DO_BLOCK_BREAK_SOUND_PARTICLES = new ScopedValue.Boolean(true);
+    public static final ScopedValue.Boolean AOE_BREAKING_BLOCKS = new ScopedValue.Boolean(false);
 
     public static boolean destroyBlock(ServerPlayer player, ItemStack tool, BlockPos pos, boolean playSound) {
-        DO_BLOCK_BREAK_SOUND_PARTICLES.set(playSound);
         Level level = player.level();
-
-        // we set this flag when firing the event so the event listener that starts this whole thing doesn't cascade
-        IS_AOE_BREAKING_BLOCKS.set(true);
         BlockState state = level.getBlockState(pos);
-        var event = CommonHooks.fireBlockBreak(level, player.gameMode.getGameModeForPlayer(), player, pos, state);
-        // ...and the easiest way to make sure it's false after is to set it before we return at all.
-        IS_AOE_BREAKING_BLOCKS.set(false);
-        if (event.isCanceled()) {
-            return false;
-        } else {
+
+        try (var $ = DO_BLOCK_BREAK_SOUND_PARTICLES.with(playSound)) {
+            // we set this flag when firing the event so the event listener that starts this whole thing doesn't cascade
+            try (var $_ = AOE_BREAKING_BLOCKS.setActive()) {
+                BlockEvent.BreakEvent event = CommonHooks.fireBlockBreak(level, player.gameMode.getGameModeForPlayer(),
+                        player, pos, state);
+                if (event.isCanceled()) {
+                    return false;
+                }
+            }
+
             Block block = state.getBlock();
             if (block instanceof GameMasterBlock && !player.canUseGameMasterBlocks()) {
                 level.sendBlockUpdated(pos, state, state, 3);
@@ -672,11 +688,15 @@ public class ToolHelper {
     /**
      * {@return the silk touch drop(s)}
      */
-    public static List<ItemStack> getSilkTouchDrop(LootContext lootContext) {
+    public static List<ItemStack> getSilkTouchDrops(LootContext lootContext) {
         ServerLevel level = lootContext.getLevel();
         Vec3 origin = lootContext.getParam(LootContextParams.ORIGIN);
 
-        ItemStack tool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
+        ItemStack tool = ToolHelper.get(GTToolType.PICKAXE, GTMaterials.Neutronium);
+        if (tool.isEmpty()) {
+            // fallback if someone removed the neutronium pickaxe or something
+            tool = new ItemStack(Items.NETHERITE_PICKAXE);
+        }
         // oh wow, this exists now. cool!
         EnchantmentHelper.enchantItemFromProvider(
                 tool,
