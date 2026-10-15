@@ -104,8 +104,11 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         if (io != IO.IN && io != IO.OUT) return left;
 
         // Temporarily remove listener so that we can broadcast the entire set of transactions once
-        Runnable listener = storage.getOnContentsChanged();
-        storage.setOnContentsChanged(() -> {});
+        Runnable listener = null;
+        if (!simulate) {
+            listener = storage.getOnContentsChanged();
+            storage.setOnContentsChanged(() -> {});
+        }
         boolean changed = false;
 
         // Store the ItemStack in each slot after an operation
@@ -199,8 +202,10 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
             }
         }
 
-        storage.setOnContentsChanged(listener);
-        if (changed && !simulate) listener.run();
+        if (!simulate) {
+            storage.setOnContentsChanged(listener);
+            if (changed) listener.run();
+        }
 
         return left;
     }
