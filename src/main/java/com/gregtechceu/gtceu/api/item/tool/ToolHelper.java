@@ -57,6 +57,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.context.UseOnContext;
@@ -704,6 +705,10 @@ public class ToolHelper {
      */
     public static List<ItemStack> getSilkTouchDrops(ServerLevel level, BlockPos pos, BlockState state) {
         ItemStack tool = ToolHelper.get(GTToolType.PICKAXE, GTMaterials.Neutronium);
+        if (tool.isEmpty()) {
+            // fallback if someone removed the neutronium pickaxe or something
+            tool = new ItemStack(Items.NETHERITE_PICKAXE);
+        }
         // oh wow, this exists now. cool!
         EnchantmentHelper.enchantItemFromProvider(
                 tool,
