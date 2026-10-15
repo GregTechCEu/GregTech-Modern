@@ -411,7 +411,7 @@ public class MetaTileEntityLoader {
 
         // TODO Access Interface
         // VanillaRecipeHelper.addShapedRecipe(provider, true, "machine_access_interface",
-        // GTMachines.MACHINE_HATCH.getStackForm(), "CHS", 'C', CustomTags.IV), 'H',
+        // GTMachines.MACHINE_HATCH.getStackForm(), "CHS", 'C', GTTags.Items.CIRCUITS_IV), 'H',
         // GTMachines.HULL[GTValues.IV].getStackForm(), 'S', MetaItems.SENSOR_IV.getStackForm());
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "passthrough_hatch_item",

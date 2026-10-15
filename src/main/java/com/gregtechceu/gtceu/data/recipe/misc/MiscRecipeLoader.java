@@ -303,7 +303,7 @@ public class MiscRecipeLoader {
          * ASSEMBLER_RECIPES.recipeBuilder("cover_digital_interface").duration(100).EUt(VA[HV])
          * .inputItems(COVER_SCREEN)
          * .inputItems(plate, Aluminium)
-         * .inputItems(CustomTags.CIRCUITS_MV)
+         * .inputItems(GTTags.Items.CIRCUITS_MV)
          * .inputItems(screw, StainlessSteel, 4)
          * .inputFluids(Polyethylene.getFluid(L))
          * .outputItems(COVER_DIGITAL_INTERFACE)
