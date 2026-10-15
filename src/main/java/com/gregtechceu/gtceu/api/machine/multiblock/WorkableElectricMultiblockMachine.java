@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -95,8 +96,10 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
         List<IWidget> widgets = new ArrayList<>();
+
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager));
         widgets.addAll(super.getWidgetsForDisplay(syncManager));
         return widgets;
     }
@@ -222,6 +225,17 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
             return power;
         }
         return -1;
+    }
+
+    public long getDisplayWorkingVoltage() {
+        return this.isGenerator() ? getDisplayGeneratorPower() : getDisplayRecipeVoltage();
+    }
+
+    public long getRecipeEUt() {
+        if (!isActive()) return 0L;
+        GTRecipe lastRecipe = recipeLogic.getLastUnrolledRecipe();
+        if (lastRecipe == null) return 0L;
+        return this.isGenerator() ? lastRecipe.getOutputEUt().getTotalEU() : lastRecipe.getInputEUt().getTotalEU();
     }
 
     /**

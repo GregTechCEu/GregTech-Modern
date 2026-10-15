@@ -115,7 +115,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
     public long getCurrentProduction() {
         return isActive() && recipeLogic.getLastUnrolledRecipe() != null ?
-                recipeLogic.getLastUnrolledRecipe().getOutputEUt().voltage() : 0;
+                recipeLogic.getLastUnrolledRecipe().getOutputEUt().getTotalEU() : 0;
     }
 
     public int getRotorDurabilityPercent() {
@@ -132,50 +132,31 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
-        List<IWidget> widgets = new ArrayList<>();
-
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
-        widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
-
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isFormed));
-
         BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive",
                 BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isActive));
-        BooleanSyncValue hasRotor = syncManager.getOrCreateSyncHandler("hasRotor",
-                BooleanSyncValue.class,
-                () -> new BooleanSyncValue(() -> this.getRotorHolder() != null && this.getRotorHolder().hasRotor()));
-        LongSyncValue currentOutput = syncManager.getOrCreateSyncHandler("currentOutput",
-                LongSyncValue.class,
-                () -> new LongSyncValue(this::getCurrentProduction));
-        LongSyncValue maxOutput = syncManager.getOrCreateSyncHandler("maxOutput",
-                LongSyncValue.class,
-                () -> new LongSyncValue(this::getOverclockVoltage));
-        IntSyncValue rotorSpeed = syncManager.getOrCreateSyncHandler("rotorSpeed",
-                IntSyncValue.class,
-                () -> new IntSyncValue(
-                        getRotorHolder() != null ?
-                                getRotorHolder()::getRotorSpeed :
-                                () -> 0));
-        IntSyncValue maxRotorSpeed = syncManager.getOrCreateSyncHandler("maxRotorSpeed",
-                IntSyncValue.class,
-                () -> new IntSyncValue(
-                        getRotorHolder() != null ?
-                                getRotorHolder()::getMaxRotorHolderSpeed :
-                                () -> 0));
-        IntSyncValue totalEfficiency = syncManager.getOrCreateSyncHandler("totalEfficiency",
-                IntSyncValue.class,
-                () -> new IntSyncValue(
-                        getRotorHolder() != null ?
-                                getRotorHolder()::getTotalEfficiency :
-                                () -> 0));
-        IntSyncValue rotorDurability = syncManager.getOrCreateSyncHandler("rotorDurability",
-                IntSyncValue.class,
-                () -> new IntSyncValue(
-                        getRotorHolder() != null ?
-                                getRotorHolder()::getRotorDurabilityPercent :
-                                () -> 0));
+
+        BooleanSyncValue hasRotor = new BooleanSyncValue(this::hasRotor);
+        IntSyncValue rotorSpeed = new IntSyncValue(this::getRotorSpeed);
+        IntSyncValue maxRotorSpeed = new IntSyncValue(this::getMaxRotorHolderSpeed);
+        IntSyncValue efficiency = new IntSyncValue(this::getTotalEfficiency);
+        IntSyncValue rotorDurability = new IntSyncValue(this::getRotorDurabilityPercent);
+
+        LongSyncValue euOutput = new LongSyncValue(this::getCurrentProduction);
+        LongSyncValue maxOutput = new LongSyncValue(this::getOverclockVoltage);
+        LongSyncValue turbineVoltage = new LongSyncValue(this::getDisplayRecipeVoltage);
+
+        syncManager.syncValue("hasRotor", hasRotor);
+        syncManager.syncValue("rotorSpeed", rotorSpeed);
+        syncManager.syncValue("maxRotorSpeed", maxRotorSpeed);
+        syncManager.syncValue("efficiency", efficiency);
+        syncManager.syncValue("rotorDurability", rotorDurability);
+
+        syncManager.syncValue("euOutput", euOutput);
+        syncManager.syncValue("maxOutput", maxOutput);
+        syncManager.syncValue("turbineVoltage", turbineVoltage);
 
         var hasNoRotorWarning = Text.dynamic(() -> (Component.translatable("gtceu.multiblock.turbine.no_rotor"))
                 .withStyle(ChatFormatting.RED))
@@ -188,12 +169,12 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue());
         var turbineEfficiencyDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.efficiency",
-                totalEfficiency.getIntValue())
+                efficiency.getIntValue())
                 .withStyle(ChatFormatting.WHITE))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue());
         var turbinePowerDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
-                FormattingUtil.formatNumbers(currentOutput.getIntValue()),
+                FormattingUtil.formatNumbers(euOutput.getIntValue()),
                 FormattingUtil.formatNumbers(maxOutput.getIntValue()))
                 .withStyle(ChatFormatting.WHITE))
                 .asWidget()
@@ -207,6 +188,12 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue());
 
+        List<IWidget> widgets = new ArrayList<>();
+
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
+
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, euOutput, turbineVoltage, true));
         widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addRecipeTypeField(this, syncManager));

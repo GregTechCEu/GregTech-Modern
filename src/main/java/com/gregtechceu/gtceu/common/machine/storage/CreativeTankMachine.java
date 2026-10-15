@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
@@ -17,14 +18,17 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 
@@ -159,7 +163,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
                                 .child(Text.lang("gtceu.creative.tank.fluid").asWidget()
                                         .marginRight(4)
                                         .verticalCenter())
-                                .child(createPhantomLockedFluidSlot(syncManager)))
+                                .child(createFluidSlot(syncManager)))
                         .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
@@ -186,7 +190,18 @@ public class CreativeTankMachine extends QuantumTankMachine {
                                         .value(ticksPerCycle))));
     }
 
+    @Override
+    protected IWidget createFluidSlot(PanelSyncManager syncManager) {
+        FluidCacheTankWrapper fluidTank = new FluidCacheTankWrapper(((InfiniteCache) cache).getInternal());
+        syncManager.syncValue("fluid_slot", SyncHandlers.fluidSlot(fluidTank)
+                .controlsAmount(false).phantom(true));
+        return new FluidSlot().syncHandler("fluid_slot", 0).background(GTGuiTextures.FLUID_SLOT);
+    }
+
     private class InfiniteCache extends FluidCache {
+
+        @Getter
+        private final FluidCache internal = new FluidCache();
 
         public InfiniteCache() {
             super();
