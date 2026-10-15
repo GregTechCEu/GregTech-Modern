@@ -47,6 +47,7 @@ import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.value.sync.GenericSyncValue;
+import brachy.modularui.value.sync.LongSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Grid;
@@ -261,12 +262,16 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 })
                 .build();
         syncManager.syncValue("text", text);
+
+        LongSyncValue currentEUt = new LongSyncValue(hpcaHandler::getCurrentEUt);
+        syncManager.syncValue("currentEUt", currentEUt);
+
         List<IWidget> widgets = new ArrayList<>();
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
                 () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
                 () -> Component.translatable("gtceu.multiblock.hpca.error_power").withStyle(ChatFormatting.RED)));
-        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, currentEUt));
         widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
         widgets.add(new TextWidget<>(Text.dynamic(text::getValue)));
         widgets.add(new Grid()

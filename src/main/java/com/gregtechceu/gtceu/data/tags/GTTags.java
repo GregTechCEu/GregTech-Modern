@@ -306,10 +306,14 @@ public class GTTags {
         // region misc
         public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createModFluidTag("lighter_fluids");
         public static final TagKey<Fluid> HPCA_COOLANTS = TagUtil.createModFluidTag("hpca_coolants");
+        public static final TagKey<Fluid> FREEZABLE_FLUIDS = TagUtil.createModFluidTag("freezable_fluids");
+
         public static final TagKey<Fluid> POTION = TagUtil.createFluidTag("potion");
         // endregion misc
 
         // region state
+        /** @deprecated Use {@link FREEZABLE_FLUIDS} for fluids requiring metal freezing. */
+        @Deprecated(forRemoval = true)
         public static final TagKey<Fluid> MOLTEN = TagUtil.createFluidTag("molten");
         public static final TagKey<Fluid> LIQUID = TagUtil.createFluidTag("liquid");
         public static final TagKey<Fluid> PLASMATIC = TagUtil.createFluidTag("plasmatic");

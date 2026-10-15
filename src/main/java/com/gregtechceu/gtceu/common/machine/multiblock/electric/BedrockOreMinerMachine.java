@@ -13,13 +13,27 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.trait.BedrockOreMinerLogic;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.Icon;
+import brachy.modularui.utils.serialization.network.ByteBufAdapters;
+import brachy.modularui.value.sync.*;
+import brachy.modularui.widgets.ListWidget;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -47,47 +61,60 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
         return Math.min(this.tier + 1, Math.max(this.tier, GTUtil.getFloorTierByVoltage(energyCont.getInputVoltage())));
     }
 
-    // @Override
-    // public void addDisplayText(List<Component> textList) {
-    // if (isFormed()) {
-    // int energyContainer = getEnergyTier();
-    // long maxVoltage = GTValues.V[energyContainer];
-    // String voltageName = GTValues.VNF[energyContainer];
-    // textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));
-    //
-    // if (getRecipeLogic().getVeinMaterials() != null) {
-    // // Ore names
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ores_list")
-    // .withStyle(ChatFormatting.GREEN));
-    // List<WeightedMaterial> drilledOres = getRecipeLogic().getVeinMaterials();
-    // for (var entry : drilledOres) {
-    // Component fluidInfo = entry.material().getLocalizedName().withStyle(ChatFormatting.GREEN);
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ore_entry", fluidInfo)
-    // .withStyle(ChatFormatting.GRAY));
-    // }
-    //
-    // // Ore amount
-    // Component amountInfo = Component.literal(FormattingUtil.formatNumbers(
-    // getRecipeLogic().getOreToProduce() * 20L / BedrockOreMinerLogic.MAX_PROGRESS) +
-    // "/s").withStyle(ChatFormatting.BLUE);
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.ore_amount", amountInfo)
-    // .withStyle(ChatFormatting.GRAY));
-    // } else {
-    // Component noOre = Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area")
-    // .withStyle(ChatFormatting.RED);
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ores_list")
-    // .withStyle(ChatFormatting.GREEN));
-    // textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ore_entry", noOre)
-    // .withStyle(ChatFormatting.GRAY));
-    // }
-    // } else {
-    // Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
-    // .withStyle(ChatFormatting.GRAY);
-    // textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
-    // .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
-    // .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
-    // }
-    // }
+    @Override
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        List<IWidget> widgets = new ArrayList<>();
+
+        GenericListSyncHandler<Component> veinMaterialList = new GenericListSyncHandler.Builder<Component>()
+                .adapter(ByteBufAdapters.COMPONENT)
+                .getter(() -> {
+                    var materials = getRecipeLogic().getVeinMaterials();
+                    if (materials == null) return List.of();
+                    return materials.stream()
+                            .map(m -> (Component) m.material().getLocalizedName().withStyle(ChatFormatting.GREEN))
+                            .toList();
+                })
+                .build();
+
+        DynamicLinkedSyncHandler<GenericListSyncHandler<Component>> materialListWidgetHandler = new DynamicLinkedSyncHandler<>(
+                veinMaterialList)
+                .widgetProvider((psm, list) -> {
+                    var listWidget = new ListWidget<>()
+                            .widthRel(1)
+                            .childSeparator(Icon.EMPTY_2PX);
+                    var values = list.getValue();
+                    if (values.isEmpty()) {
+                        listWidget.child(Text.lang("gtceu.multiblock.ore_rig.drilled_ore_entry",
+                                Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area")
+                                        .withStyle(ChatFormatting.RED))
+                                .asWidget());
+                    }
+                    for (var value : values) {
+                        listWidget.child(Text.lang("gtceu.multiblock.ore_rig.drilled_ore_entry", value).asWidget());
+                    }
+                    return listWidget;
+                });
+
+        IntSyncValue oreAmount = new IntSyncValue(() -> getRecipeLogic().getOreToProduce());
+
+        syncManager.syncValue("veinMaterials", veinMaterialList);
+        syncManager.syncValue("oreAmount", oreAmount);
+
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
+
+        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.ore_rig.ore_amount",
+                Component.literal(FormattingUtil.formatNumbers(
+                        getRecipeLogic().getOreToProduce() * 20L / BedrockOreMinerLogic.MAX_PROGRESS) + "/s")
+                        .withStyle(ChatFormatting.BLUE)))
+                .asWidget());
+
+        widgets.add(Text.lang("gtceu.multiblock.ore_rig.drilled_ores_list").asWidget());
+
+        widgets.add(new DynamicWidget<>().syncHandler(materialListWidgetHandler));
+
+        return widgets;
+    }
 
     public static int getDepletionChance(int tier) {
         if (tier == GTValues.MV)

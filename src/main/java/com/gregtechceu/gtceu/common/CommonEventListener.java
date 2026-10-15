@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -75,6 +76,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.*;
@@ -92,12 +94,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.MissingMappingsEvent;
 
 import com.mojang.datafixers.util.Either;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
+import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -529,8 +533,103 @@ public class CommonEventListener {
         }
     }
 
+    /** Migrate Legacy GT Molten fluids, strictly blind to addons to allow them to fail loudly. */
+    private static final Set<String> LEGACY_MOLTEN_MATERIALS = Set.of(
+            "bismuth_bronze",
+            "black_bronze",
+            "black_steel",
+            "blue_steel",
+            "enriched_naquadah_trinium_europium_duranide",
+            "gallium_arsenide",
+            "hastelloy_c_276",
+            "hastelloy_x",
+            "hsla_steel",
+            "hsse",
+            "hssg",
+            "hsss",
+            "incoloy_ma_956",
+            "indium_tin_barium_titanium_cuprate",
+            "kanthal",
+            "magnesium_diboride",
+            "manganese_phosphide",
+            "maraging_steel_300",
+            "mercury_barium_calcium_cuprate",
+            "molybdenum_disilicide",
+            "naquadah_alloy",
+            "nichrome",
+            "niobium_nitride",
+            "niobium_titanium",
+            "osmiridium",
+            "red_steel",
+            "rhodium_plated_palladium",
+            "rose_gold",
+            "rtm_alloy",
+            "ruridit",
+            "ruthenium_trinium_americium_neutronate",
+            "samarium_iron_arsenic_oxide",
+            "stainless_steel",
+            "stellite_100",
+            "sterling_silver",
+            "tantalum_carbide",
+            "titanium_carbide",
+            "titanium_tungsten_carbide",
+            "tungsten_carbide",
+            "tungsten_steel",
+            "ultimet",
+            "uranium_rhodium_dinaquadide",
+            "uranium_triplatinum",
+            "vanadium_gallium",
+            "vanadium_steel",
+            "watertight_steel",
+            "yttrium_barium_cuprate",
+            "zeron_100");
+
+    private static void remapLegacyMoltenFluids(MissingMappingsEvent event) {
+        event.getMappings(Registries.FLUID, GTCEu.MOD_ID).forEach(mapping -> {
+            String path = mapping.getKey().getPath();
+            boolean flowing = path.startsWith("flowing_");
+            String materialName = legacyMoltenMaterial(flowing ? path.substring("flowing_".length()) : path);
+            if (materialName == null) return;
+            var liquid = GTMaterials.get(materialName).getFluid(FluidStorageKeys.LIQUID);
+            if (flowing && liquid instanceof FlowingFluid fluid) {
+                mapping.remap(fluid.getFlowing());
+            } else if (!flowing && liquid != null) {
+                mapping.remap(liquid);
+            } else {
+                mapping.warn();
+            }
+        });
+        event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
+            String path = mapping.getKey().getPath();
+            if (!path.endsWith("_bucket")) return;
+            String materialName = legacyMoltenMaterial(path.substring(0, path.length() - "_bucket".length()));
+            if (materialName == null) return;
+            var liquid = GTMaterials.get(materialName).getFluid(FluidStorageKeys.LIQUID);
+            if (liquid != null && liquid.getBucket() != Items.AIR) {
+                mapping.remap(liquid.getBucket());
+            } else {
+                mapping.warn();
+            }
+        });
+        event.getMappings(ForgeRegistries.Keys.FLUID_TYPES, GTCEu.MOD_ID).forEach(mapping -> {
+            String materialName = legacyMoltenMaterial(mapping.getKey().getPath());
+            if (materialName == null) return;
+            var liquid = GTMaterials.get(materialName).getFluid(FluidStorageKeys.LIQUID);
+            if (liquid != null) mapping.remap(liquid.getFluidType());
+            else mapping.warn();
+        });
+        // We never defined placable moltens, no need to handle them!
+    }
+
+    private static String legacyMoltenMaterial(String path) {
+        if (!path.startsWith("molten_")) return null;
+        String materialName = path.substring("molten_".length());
+        return LEGACY_MOLTEN_MATERIALS.contains(materialName) ? materialName : null;
+    }
+
     @SubscribeEvent
     public static void remapIds(MissingMappingsEvent event) {
+        remapLegacyMoltenFluids(event);
         event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
                 mapping.remap(GTBlocks.COIL_RTMALLOY.get());
