@@ -790,6 +790,10 @@ public class MetaTileEntityLoader {
                 CABLE, 'C', COIL_HEATING_DOUBLE);
         registerMachineRecipe(provider, GTMachines.ASSEMBLER, "ACA", "VMV", "WCW", 'M', HULL, 'V', CONVEYOR, 'A',
                 ROBOT_ARM, 'C', CIRCUIT, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.WELDER, "PCP", "EMA", "WCW", 'M', HULL, 'P', PLATE, 'C', CIRCUIT,
+                'E', MOTOR, 'A', ROBOT_ARM, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.SPOOLING, "CPC", "VMV", "WBW", 'M', HULL, 'P', PISTON, 'C', CIRCUIT,
+                'V', CONVEYOR, 'W', CABLE, 'B', PLATE);
         registerMachineRecipe(provider, GTMachines.BENDER, "PBP", "CMC", "EWE", 'M', HULL, 'E', MOTOR, 'P', PISTON, 'C',
                 CIRCUIT, 'W', CABLE, 'B', PLATE);
         registerMachineRecipe(provider, GTMachines.CANNER, "WPW", "CMC", "GGG", 'M', HULL, 'P', PUMP, 'C', CIRCUIT, 'W',
@@ -908,6 +912,9 @@ public class MetaTileEntityLoader {
 
         registerMachineRecipe(provider, GTMachines.CHARGER_4, "WTW", "WMW", "BCB", 'M', HULL, 'W', WIRE_QUAD, 'T',
                 Tags.Items.CHESTS_WOODEN, 'B', CABLE, 'C', CIRCUIT);
+
+        registerMachineRecipe(provider, GTMachines.WIRELESS_CHARGER, "FEF", "CMC", "WBW", 'M', HULL, 'W', CABLE_QUAD,
+                'E', EMITTER, 'C', CIRCUIT, 'B', PLATE, 'F', FIELD_GENERATOR);
 
         Material[] fluidMap = new Material[] { GTMaterials.Glue, GTMaterials.Polyethylene,
                 GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole };

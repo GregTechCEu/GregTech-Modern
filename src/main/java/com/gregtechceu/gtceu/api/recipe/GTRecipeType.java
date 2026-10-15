@@ -90,6 +90,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
         this.maxInputs.putAll(properties.maxInputs());
         this.maxOutputs.putAll(properties.maxOutputs());
+        this.customRecipeLogicRunners.addAll(properties.customRecipeLogicRunners());
         this.iconSupplier = properties.iconSupplier();
         this.hasResearchSlot = properties.hasResearchSlot();
         this.isScanner = properties.isScanner();

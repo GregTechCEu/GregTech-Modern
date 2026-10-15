@@ -780,6 +780,7 @@ public class GCYMMachines {
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                     SPOOLING_RECIPES.getName()))
+            .tooltips(Component.translatable("gtceu.multiblock.exact_hatch_1.tooltip"))
             .rotationState(RotationState.ALL)
             .recipeType(SPOOLING_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
@@ -792,7 +793,8 @@ public class GCYMMachines {
                     .slice("AAAAA", "AAAAA", "AAAAA", "AAA##", "AAA##", "AAA##")
                     .where('B', controller(definition))
                     .where('A', blocks(CASING_HSSE_STURDY.get()).setMinGlobalLimited(50)
-                            .and(autoAbilities(definition.getRecipeTypes()))
+                            .and(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
+                            .and(abilities(INPUT_ENERGY).setExactLimit(1))
                             .and(autoAbilities(true, false, true)))
                     .where('C', blocks(CASING_LAMINATED_GLASS.get()))
                     .where('D', blocks(CASING_STEEL_GEARBOX.get()))
@@ -852,7 +854,7 @@ public class GCYMMachines {
                         .build();
             })
             .workableCasingModel(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
-                    GTCEu.id("block/multiblock/gcym/mega_blast_furnace"))
+                    GTCEu.id("block/multiblock/gcym/rotary_hearth_furnace"))
             .additionalDisplay((controller, syncManager) -> {
                 if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
                     return Collections.emptyList();

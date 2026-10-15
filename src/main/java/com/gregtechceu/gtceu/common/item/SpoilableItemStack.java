@@ -101,14 +101,6 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
         }
     }
 
-    /**
-     * Consider frozen and non-frozen spoilables equal. This is done to allow filtering by ticks remaining until
-     * spoiled.<br>
-     * If you want the player to have frozen stacks in their inventory, set this to {@code false} to prevent players
-     * from
-     * entirely bypassing the spoilage system.
-     */
-    public static boolean FROZEN_EQUALITY = true;
     @Getter
     private final ItemStack stack;
 

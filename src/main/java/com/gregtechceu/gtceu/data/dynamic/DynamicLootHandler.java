@@ -139,8 +139,7 @@ public final class DynamicLootHandler {
                                 .apply(SetItemCountFunction.setCount(ConstantValue.exactly(oreMultiplier)))
                 )
         );
-        // disable fortune for balance reasons. (for now, until we can think of a better solution.)
-        //.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))));
+        // Optional Fortune is applied by the harvest handler after hammer conversion.
         // spotless:on
 
         LootPool.Builder pool = LootPool.lootPool();

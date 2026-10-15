@@ -350,11 +350,6 @@ public class GTMachines {
                     .langValue("%s Macerator %s".formatted(VLVH[tier], VLVT[tier]))
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
-                    .addOutputLimit(ItemRecipeCapability.CAP, switch (tier) {
-                        case 1, 2 -> 1;
-                        case 3 -> 3;
-                        default -> 4;
-                    })
                     .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                     .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
                     .workableTieredHullModel(GTCEu.id("block/machines/macerator"))
@@ -472,6 +467,24 @@ public class GTMachines {
     public static final MachineEntry<MachineDefinition>[] BATTERY_BUFFER_16 = registerBatteryBuffer(REGISTRATE, 16);
 
     public static final MachineEntry<MachineDefinition>[] CHARGER_4 = registerCharger(REGISTRATE, 4);
+
+    public static final MachineEntry<MachineDefinition>[] WIRELESS_CHARGER = registerTieredMachines(REGISTRATE,
+            "wireless_charger", WirelessChargerMachine::new,
+            (tier, builder) -> builder
+                    .langValue("%s Wireless Charger".formatted(VN[tier]))
+                    .tooltips(Component.translatable("gtceu.machine.wireless_charger.tooltip"),
+                            Component.translatable("gtceu.machine.wireless_charger.range.standard",
+                                    FormattingUtil.formatNumbers(WirelessChargerMachine.getRange(tier, false))),
+                            Component.translatable("gtceu.machine.wireless_charger.range.turbo",
+                                    FormattingUtil.formatNumbers(WirelessChargerMachine.getRange(tier, true))),
+                            Component.translatable("gtceu.machine.wireless_charger.toggle"),
+                            Component.translatable("gtceu.universal.tooltip.voltage_in",
+                                    FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
+                            Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                                    FormattingUtil.formatNumbers(V[tier] * 64L)))
+                    .overlayTieredHullModel(GTCEu.id("block/machine/wireless_charger"))
+                    .register(),
+            GTMachineUtils.ELECTRIC_TIERS);
 
     public static final MachineEntry<MachineDefinition>[] PUMP = registerTieredMachines(REGISTRATE, "pump",
             PumpMachine::new,
@@ -601,7 +614,7 @@ public class GTMachines {
                     .tooltips(
                             Component.translatable("gtceu.machine.item_collector.tooltip"),
                             Component.translatable("gtceu.machine.item_collector.gui.collect_range",
-                                    IntMath.pow(2, tier + 2), IntMath.pow(2, tier + 2)),
+                                    2 * IntMath.pow(2, tier + 2) + 1, 2 * IntMath.pow(2, tier + 2) + 1),
                             Component.translatable("gtceu.universal.tooltip.voltage_in",
                                     FormattingUtil.formatNumbers(GTValues.V[tier]),
                                     GTValues.VNF[tier]),

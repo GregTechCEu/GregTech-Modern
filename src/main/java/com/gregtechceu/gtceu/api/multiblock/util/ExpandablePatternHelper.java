@@ -89,7 +89,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         // this basically means the x val of the iter is aisle count, y is str count, and z is char count.
         for (BlockPos pos : betweenClosed(corners.bounds())) {
             BlockPos.MutableBlockPos mutablePos = pos.mutable();
-            MultiPredicate predicate = predicateProvider.apply(mutablePos, userRepeats);
+            char key = predicateProvider.getPredicateKey(mutablePos, userRepeats);
+            MultiPredicate predicate = expandablePattern.getSymbolMap().get(key);
 
             // this basically reshuffles the coordinates into absolute form from relative form
             setFromDirection(mutablePos, absolutes[0], pos.getX());
@@ -166,7 +167,9 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         int relX = getOffsetFromDirection(absolutes[0], pos);
         int relY = getOffsetFromDirection(absolutes[1], pos);
         int relZ = getOffsetFromDirection(absolutes[2], pos);
-        return expandablePattern.getPredicateProvider().apply(new BlockPos(relX, relY, relZ).mutable(), userRepeats);
+        char key = expandablePattern.getPredicateProvider().getPredicateKey(new BlockPos(relX, relY, relZ).mutable(),
+                userRepeats);
+        return expandablePattern.getSymbolMap().get(key);
     }
 
     private static int getOffsetFromDirection(Direction dir, BlockPos pos) {

@@ -156,7 +156,7 @@ public class ConfigHolder {
         @Configurable.Comment({
                 "Whether tools should have enchants or not. Like the flint sword getting fire aspect.",
                 "Default: false" })
-        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
         public boolean enchantedTools = false;
 
         @Configurable
@@ -790,6 +790,11 @@ public class ConfigHolder {
     }
 
     public static class GameplayConfigs {
+
+        @Configurable
+        @Configurable.Comment({ "Allow Fortune to multiply GregTech ore drops after base yields and hammer conversion.",
+                "Does not affect Silk Touch drops. Default: false" })
+        public boolean enableOreFortune = false;
 
         @Configurable
         @Configurable.Comment({ "Enable hazardous materials", "Default: true" })
