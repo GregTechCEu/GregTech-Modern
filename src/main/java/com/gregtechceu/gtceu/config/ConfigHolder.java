@@ -188,8 +188,8 @@ public class ConfigHolder {
     public static class CompatibilityConfigs {
 
         @Configurable
-        @Configurable.Comment({ "Whether to run datafixers on world load.",
-                "Do note that mods like ModernFix will interfere with this.",
+        @Configurable.Comment({ "Whether to apply datafixers when necessary.",
+                "Do note that mods like ModernFix might interfere with this.",
                 "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean doDataFixers = true;
