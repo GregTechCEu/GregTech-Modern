@@ -34,7 +34,6 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
-import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -43,8 +42,8 @@ import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 @EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class ToolEventHandlers {
@@ -146,26 +145,31 @@ public class ToolEventHandlers {
         }
         if (tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS) && entity instanceof Player player) {
             drops = new ArrayList<>(drops);
-            Iterator<ItemStack> dropItr = drops.iterator();
+            ListIterator<ItemStack> dropItr = drops.listIterator();
             while (dropItr.hasNext()) {
                 ItemStack dropStack = dropItr.next();
+
                 // Place close to the player for sanity reasons (Instead of XYZ=0,0,0)
                 ItemEntity drop = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), dropStack);
+                // make the player attempt picking the item up immediately
+                drop.pickupDelay = 0;
+                drop.setTarget(player.getUUID());
+                drop.playerTouch(player);
 
-                if (isPickupAllowedByEvent(drop, player) && player.addItem(dropStack)) {
-                    EventHooks.fireItemPickupPost(drop, player, dropStack.copy());
+                // item entities discard themselves if they're picked up completely
+                if (drop.isRemoved()) {
+                    // if the whole stack was picked up, remove the item from the list of drops
                     dropItr.remove();
+                } else {
+                    // otherwise replace it with the new item
+                    dropStack = drop.getItem();
+                    dropItr.set(dropStack);
+                    // and destroy the item entity ourselves
+                    drop.discard();
                 }
-
-                // Just in case, destroy it
-                drop.discard();
             }
         }
         return drops;
-    }
-
-    public static boolean isPickupAllowedByEvent(ItemEntity drop, Player player) {
-        return !EventHooks.fireItemPickupPre(drop, player).canPickup().isFalse();
     }
 
     /**
@@ -199,15 +203,19 @@ public class ToolEventHandlers {
         if (!tool.has(GTDataComponents.RELOCATE_MOB_DROPS)) {
             return;
         }
-        Iterator<ItemEntity> dropItr = event.getDrops().iterator();
 
-        while (dropItr.hasNext()) {
-            ItemEntity drop = dropItr.next();
-            ItemStack dropStack = drop.getItem();
+        // copy the list of drops so we can remove discarded entities from the original safely
+        List<ItemEntity> dropsCopy = new ArrayList<>(event.getDrops());
+        for (ItemEntity drop : dropsCopy) {
+            // make the player attempt picking the item up immediately
+            drop.pickupDelay = 0;
+            drop.setTarget(player.getUUID());
+            drop.playerTouch(player);
 
-            if (isPickupAllowedByEvent(drop, player) && player.addItem(dropStack)) {
-                EventHooks.fireItemPickupPost(drop, player, dropStack.copy());
-                dropItr.remove();
+            // item entities discard themselves if they're picked up completely
+            if (drop.isRemoved()) {
+                // if the whole stack was picked up, remove the item from the list of drops
+                event.getDrops().remove(drop);
             }
         }
     }
