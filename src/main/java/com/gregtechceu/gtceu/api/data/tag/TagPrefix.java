@@ -714,7 +714,7 @@ public class TagPrefix {
     // made of 8 Turbine Blades.
     public static final TagPrefix turbineRotor = new TagPrefix(GTCEu.id("turbine_rotor"))
             .langValue("%s Turbine Rotor")
-            .materialAmount(GTValues.M * 92 / 9)
+            .materialAmount(GTValues.M * 736 / 9)
             .materialIconType(MaterialIconType.turbineRotor)
             .unificationEnabled(true)
             .generateItem(true)

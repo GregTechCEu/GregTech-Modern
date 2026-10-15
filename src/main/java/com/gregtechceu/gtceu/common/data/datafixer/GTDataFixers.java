@@ -96,7 +96,7 @@ public class GTDataFixers {
                 }
             } catch (Exception ex) {
                 DataFixHelper.LOGGER.warn(
-                        "Failed to initialize! Either someone stopped DFU from initializing, or this Minecraft build is hosed.");
+                        "Failed to initialize! Either someone stopped DFU from initializing, or this Minecraft instance is broken.");
                 DataFixHelper.LOGGER.warn("Using no-op implementation.");
                 DataFixHelper.LOGGER.warn("Full error: ", ex);
 
