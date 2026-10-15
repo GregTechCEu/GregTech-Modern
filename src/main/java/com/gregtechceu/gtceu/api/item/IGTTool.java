@@ -609,11 +609,17 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
                     aoeDefinition.column() * 2 + 1, aoeDefinition.row() * 2 + 1, aoeDefinition.layer() + 1));
         }
 
-        if (stack.has(GTDataComponents.RELOCATE_MINED_BLOCKS)) {
+        if (stack.has(GTDataComponents.RELOCATE_MINED_BLOCKS) || stack.has(GTDataComponents.RELOCATE_MOB_DROPS)) {
             if (!addedBehaviorNewLine) {
                 addedBehaviorNewLine = tooltip.add(CommonComponents.EMPTY);
             }
-            tooltip.add(Component.translatable("item.gtceu.tool.behavior.relocate_mining"));
+            if (stack.has(GTDataComponents.RELOCATE_MINED_BLOCKS) && stack.has(GTDataComponents.RELOCATE_MOB_DROPS)) {
+                tooltip.add(Component.translatable("item.gtceu.tool.behavior.relocate_mining_and_mob_drops"));
+            } else if (stack.has(GTDataComponents.RELOCATE_MINED_BLOCKS)) {
+                tooltip.add(Component.translatable("item.gtceu.tool.behavior.relocate_mining_drops"));
+            } else if (stack.has(GTDataComponents.RELOCATE_MOB_DROPS)) {
+                tooltip.add(Component.translatable("item.gtceu.tool.behavior.relocate_mob_drops"));
+            }
         }
 
         if (!toolStats.getBehaviors().isEmpty()) {

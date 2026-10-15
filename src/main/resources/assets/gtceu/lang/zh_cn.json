@@ -4841,7 +4841,7 @@
     "item.gtceu.tool.behavior.prospecting.ore": "找到矿石：%s",
     "item.gtceu.tool.behavior.prospecting.water": "找到了水",
     "item.gtceu.tool.behavior.rail_rotation": "§e铁路技工：§f旋转轨道",
-    "item.gtceu.tool.behavior.relocate_mining": "§2磁力吸引：§f吸入采掘的方块与生物掉落物",
+    "item.gtceu.tool.behavior.relocate_mining_and_mob_drops": "§2磁力吸引：§f吸入采掘的方块与生物掉落物",
     "item.gtceu.tool.behavior.remove_wax": "§6清洁试剂：§f脱蜡",
     "item.gtceu.tool.behavior.scrape": "§b抛光工艺：§f除锈",
     "item.gtceu.tool.behavior.shears": "§a园艺修剪：§f剪断方块和生物",
