@@ -151,7 +151,11 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
             var player = syncManager.getPlayer();
             ItemStack held = player.containerMenu.getCarried();
             FluidUtil.getFluidContained(held).ifPresent(fluid -> {
-                slot.setConfig(AEUtil.fromFluidStack(fluid));
+                GenericStack newStack = AEUtil.fromFluidStack(fluid);
+                if (!aeFluidHandler.isConfigStackAllowed(newStack)) {
+                    return;
+                }
+                slot.setConfig(newStack);
             });
         });
 
@@ -178,7 +182,11 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
             if (isFluidGhost) {
                 FluidStack fluid = FluidStack.readFromPacket(packet);
                 if (!fluid.isEmpty()) {
-                    aeFluidHandler.getInventory()[index].setConfig(AEUtil.fromFluidStack(fluid));
+                    GenericStack newStack = AEUtil.fromFluidStack(fluid);
+                    if (!aeFluidHandler.isConfigStackAllowed(newStack)) {
+                        return;
+                    }
+                    aeFluidHandler.getInventory()[index].setConfig(newStack);
                 }
             }
         });

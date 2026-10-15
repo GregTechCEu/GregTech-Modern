@@ -6,8 +6,15 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.ae2.gridservice.IStockingService;
+import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IManagedGridNode;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.Text;
@@ -22,7 +29,12 @@ import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
 
@@ -44,6 +56,113 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
     }
 
     IConfigurableSlotList getSlotList();
+
+    IManagedGridNode getMainNode();
+
+    IActionSource getActionSource();
+
+    boolean isOnline();
+
+    default Set<AEKey> getStockingKeys() {
+        Set<AEKey> keys = new HashSet<>();
+        IConfigurableSlotList slots = getSlotList();
+        for (int i = 0; i < slots.getConfigurableSlots(); i++) {
+            GenericStack config = slots.getConfigurableSlot(i).getConfig();
+            // Don't trust IntelliJ here, it surely CAN be null
+            if (config != null) {
+                keys.add(config.what());
+            }
+        }
+        return keys;
+    }
+
+    default boolean applyStockSilent(Object2LongMap<AEKey> changed) {
+        IConfigurableSlotList slots = getSlotList();
+        int min = getMinStackSize();
+        boolean anyChanged = false;
+        for (int i = 0; i < slots.getConfigurableSlots(); i++) {
+            IConfigurableSlot slot = slots.getConfigurableSlot(i);
+            GenericStack config = slot.getConfig();
+            // Don't trust IntelliJ here, it surely CAN be null
+            if (config == null) {
+                continue;
+            }
+            AEKey key = config.what();
+            if (!changed.containsKey(key)) {
+                continue;
+            }
+            long amount = changed.getLong(key);
+            GenericStack newStock;
+            if (amount >= min) {
+                newStock = new GenericStack(key, amount);
+            } else {
+                newStock = null;
+            }
+            if (slot.setStockSilent(newStock)) {
+                anyChanged = true;
+            }
+        }
+        return anyChanged;
+    }
+
+    default void notifyStockChanged() {
+        getSlotList().onContentsChanged();
+    }
+
+    default boolean isCycleDue() {
+        int interval = getTicksPerCycle();
+        if (interval <= 0) {
+            interval = ConfigHolder.INSTANCE.compat.ae2.updateIntervals;
+        }
+        return self().getOffsetTimer() % interval == 0;
+    }
+
+    boolean isAutoPullValid(AEKey what, long amount);
+
+    default void applyAutoPull(List<GenericStack> selection) {
+        IConfigurableSlotList slots = getSlotList();
+        int slotCount = slots.getConfigurableSlots();
+        int filled = 0;
+        boolean changed = false;
+        for (GenericStack stack : selection) {
+            if (filled >= slotCount) {
+                break;
+            }
+            IConfigurableSlot slot = slots.getConfigurableSlot(filled++);
+            GenericStack newConfig = new GenericStack(stack.what(), 1);
+            if (!newConfig.equals(slot.getConfig())) {
+                changed = true;
+            }
+            slot.setConfig(newConfig);
+            if (slot.setStockSilent(stack)) {
+                changed = true;
+            }
+        }
+        slots.clearInventory(filled);
+        if (changed) {
+            slots.onContentsChanged();
+        }
+    }
+
+    default void markForRefresh() {
+        if (self().isRemote()) {
+            return;
+        }
+        IGrid grid = getMainNode().getGrid();
+        if (grid != null) {
+            grid.getService(IStockingService.class).markForRefresh(this);
+        }
+    }
+
+    default void markForAutoPull() {
+        if (self().isRemote()) {
+            return;
+        }
+        IGrid grid = getMainNode().getGrid();
+        if (grid != null) {
+            grid.getService(IStockingService.class).markForAutoPull(this);
+        }
+    }
 
     /**
      * @return True if the passed stack is found as a configuration in any other stocking buses on the multiblock.
