@@ -158,8 +158,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         syncManager.syncValue("maxOutput", maxOutput);
         syncManager.syncValue("turbineVoltage", turbineVoltage);
 
-        var hasNoRotorWarning = Text.dynamic(() -> (Component.translatable("gtceu.multiblock.turbine.no_rotor"))
-                .withStyle(ChatFormatting.RED))
+        var hasNoRotorWarning = Text.lang("gtceu.multiblock.turbine.no_rotor")
+                .withStyle(ChatFormatting.RED)
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && !hasRotor.getBoolValue());
         var rotorSpeedDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_speed",
