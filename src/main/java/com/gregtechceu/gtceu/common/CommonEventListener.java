@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
+import com.gregtechceu.gtceu.common.capability.PlayerJetpackHandler;
 import com.gregtechceu.gtceu.common.capability.WorldIDSaveData;
 import com.gregtechceu.gtceu.common.commands.GTCommands;
 import com.gregtechceu.gtceu.common.commands.HazardCommands;
@@ -32,7 +33,6 @@ import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
-import com.gregtechceu.gtceu.common.item.armor.IJetpack;
 import com.gregtechceu.gtceu.common.item.armor.QuarkTechSuite;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -72,12 +72,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.FlowingFluid;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.living.*;
@@ -89,7 +87,6 @@ import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
@@ -126,6 +123,7 @@ public class CommonEventListener {
         if (event.getObject() instanceof Player entity) {
             final MedicalConditionTracker tracker = new MedicalConditionTracker(entity);
             event.addCapability(GTCEu.id("medical_condition_tracker"), tracker);
+            event.addCapability(GTCEu.id("jetpack_handler"), new PlayerJetpackHandler(entity));
         }
     }
 
@@ -348,31 +346,6 @@ public class CommonEventListener {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onEntityLivingFallEvent(LivingFallEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) {
-            if (player.fallDistance < 3.2f)
-                return;
-
-            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-            ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-
-            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor) {
-                armor.getArmorLogic().damageArmor(player, boots, player.damageSources().fall(),
-                        (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
-                player.fallDistance = 0;
-                event.setCanceled(true);
-            } else if (chest.getItem() instanceof ArmorComponentItem armor &&
-                    armor.getArmorLogic() instanceof IJetpack jetpack &&
-                    jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
-                    player.fallDistance >= player.getHealth() + 3.2f) {
-                        IJetpack.performEHover(chest, player);
-                        player.fallDistance = 0;
-                        event.setCanceled(true);
-                    }
-        }
-    }
-
     @SubscribeEvent
     public static void playerTickEvent(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
@@ -408,6 +381,17 @@ public class CommonEventListener {
                         new AttributeModifier(BlockAttributes.BLOCK_SPEED_BOOST, "GT Block Speed Boost",
                                 speedBoost, AttributeModifier.Operation.MULTIPLY_BASE));
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void tickPlayerJetpack(TickEvent.PlayerTickEvent event) {
+        if (event.side == LogicalSide.CLIENT || event.phase != TickEvent.Phase.END) {
+            return;
+        }
+        PlayerJetpackHandler jetpackHandler = GTCapabilityHelper.getPlayerJetpackHandler(event.player);
+        if (jetpackHandler != null) {
+            jetpackHandler.serverTick();
         }
     }
 
@@ -455,13 +439,18 @@ public class CommonEventListener {
 
     @SubscribeEvent
     public static void onPlayerLevelChange(PlayerEvent.PlayerChangedDimensionEvent event) {
-        if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
-            return;
+        // Reset synced data on dimension change, since client will reset it due to player entity recreation
+        PlayerJetpackHandler jetpackHandler = GTCapabilityHelper.getPlayerJetpackHandler(event.getEntity());
+        if (jetpackHandler != null) {
+            jetpackHandler.reset();
         }
 
-        ServerLevel newLevel = event.getEntity().getServer().getLevel(event.getTo());
-        var data = EnvironmentalHazardSavedData.getOrCreate(newLevel);
-        GTNetwork.sendToPlayer((ServerPlayer) event.getEntity(), new SPacketSyncLevelHazards(data.getHazardZones()));
+        if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
+            ServerLevel newLevel = event.getEntity().getServer().getLevel(event.getTo());
+            var data = EnvironmentalHazardSavedData.getOrCreate(newLevel);
+            GTNetwork.sendToPlayer((ServerPlayer) event.getEntity(),
+                    new SPacketSyncLevelHazards(data.getHazardZones()));
+        }
     }
 
     @SubscribeEvent
@@ -504,23 +493,6 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void modifyBreakSpeed(PlayerEvent.BreakSpeed event) {
         Player player = event.getEntity();
-        for (ItemStack stack : player.getArmorSlots()) {
-            if (!(stack.getItem() instanceof ArmorComponentItem componentItem)) {
-                continue;
-            }
-            if (!(componentItem.getArmorLogic() instanceof IJetpack jetpack) || !jetpack.removeMiningSpeedPenalty()) {
-                continue;
-            }
-            // undo flight mining speed debuff
-            if (!player.onGround()) {
-                event.setNewSpeed(event.getNewSpeed() * 5);
-            }
-            // and also underwater debuff
-            if (player.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) && !EnchantmentHelper.hasAquaAffinity(player)) {
-                event.setNewSpeed(event.getNewSpeed() * 5);
-            }
-        }
-
         MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
         if (tracker == null || !ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
             return;

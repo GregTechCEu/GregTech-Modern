@@ -67,7 +67,6 @@ import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
-import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveWorkableMachine;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
@@ -504,7 +503,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             }
         }
 
-        PowerlessJetpack.FUELS.clear();
         // Must run recycling recipes very last
         RecyclingRecipes.init(builtRecipe -> recipesByName.put(builtRecipe.getId(),
                 GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));

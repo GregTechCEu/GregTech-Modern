@@ -90,6 +90,8 @@ public class GTJEIPlugin implements IModPlugin {
             GTBedrockOreInfoCategory.registerRecipeCatalysts(registration);
         registration.addRecipeCatalyst(GTMultiMachines.LARGE_CHEMICAL_REACTOR.asStack(),
                 GTRecipeJEICategory.TYPES.apply(GTRecipeTypes.CHEMICAL_RECIPES.getCategory()));
+        registration.addRecipeCatalyst(GTItems.LIQUID_FUEL_JETPACK.asStack(),
+                GTRecipeJEICategory.TYPES.apply(GTRecipeTypes.COMBUSTION_GENERATOR_FUELS.getCategory()));
         registration.addRecipeCatalyst(IntCircuitBehaviour.stack(0), ProgrammedCircuitJeiCategory.RECIPE_TYPE);
     }
 

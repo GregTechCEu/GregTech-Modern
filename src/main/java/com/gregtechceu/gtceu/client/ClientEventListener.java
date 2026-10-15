@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -157,6 +158,13 @@ public class ClientEventListener {
             PatternPreviewRenderer.INSTANCE.clientTick();
 
             GTValues.CLIENT_TIME++;
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerTickEvent(TickEvent.PlayerTickEvent event) {
+        if (event.phase == TickEvent.Phase.END && event.player instanceof LocalPlayer localPlayer) {
+            ClientJetpackHandler.tick(localPlayer);
         }
     }
 

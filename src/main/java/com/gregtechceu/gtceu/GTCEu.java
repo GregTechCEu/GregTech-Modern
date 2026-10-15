@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -20,6 +21,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import dev.emi.emi.config.EmiConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 
@@ -144,6 +146,27 @@ public class GTCEu {
         var server = getMinecraftServer();
         return server != null &&
                 !(server.isStopped() || server.isShutdown() || !server.isRunning() || server.isCurrentlySaving());
+    }
+
+    /**
+     * Returns recipe manager for the currently running thread. If we are in a client thread, this will
+     * return client server manager, otherwise, it will return the recipe manager of the running server.
+     * 
+     * @return recipe manager for the current thread
+     */
+    public static @Nullable RecipeManager getRunningThreadRecipeManager() {
+        if (isClientThread()) {
+            var severConnection = Minecraft.getInstance().getConnection();
+            if (severConnection != null) {
+                return severConnection.getRecipeManager();
+            }
+        } else {
+            var currentServer = ServerLifecycleHooks.getCurrentServer();
+            if (currentServer != null) {
+                return currentServer.getRecipeManager();
+            }
+        }
+        return null;
     }
 
     /**

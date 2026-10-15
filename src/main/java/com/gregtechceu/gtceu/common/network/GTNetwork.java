@@ -103,6 +103,8 @@ public class GTNetwork {
         register(SPacketImageResponse.class, SPacketImageResponse::new, NetworkDirection.PLAY_TO_CLIENT);
 
         register(CPacketKeyDown.class, CPacketKeyDown::new, NetworkDirection.PLAY_TO_SERVER);
+        register(CPacketPlayerCommand.class, CPacketPlayerCommand::new, NetworkDirection.PLAY_TO_SERVER);
+        register(CPacketJetpackConfiguration.class, CPacketJetpackConfiguration::new, NetworkDirection.PLAY_TO_SERVER);
 
         register(SPacketSyncOreVeins.class, SPacketSyncOreVeins::new, NetworkDirection.PLAY_TO_CLIENT);
         register(SPacketSyncFluidVeins.class, SPacketSyncFluidVeins::new, NetworkDirection.PLAY_TO_CLIENT);

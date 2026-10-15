@@ -5,6 +5,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -26,7 +28,7 @@ public interface IItemHUDProvider extends IItemComponent {
      * @param stack the ItemStack to retrieve information from
      */
     @OnlyIn(Dist.CLIENT)
-    default void drawHUD(ItemStack stack, GuiGraphics guiGraphics) {}
+    default void drawHUD(ItemStack stack, GuiGraphics guiGraphics, MutableInt drawOffsetY) {}
 
     /**
      * Checks and draws the hud for a provider
@@ -35,7 +37,8 @@ public interface IItemHUDProvider extends IItemComponent {
      * @param stack    the stack the provider should use
      */
     @OnlyIn(Dist.CLIENT)
-    static void tryDrawHud(@Nonnull IItemHUDProvider provider, @Nonnull ItemStack stack, GuiGraphics guiGraphics) {
-        if (provider.shouldDrawHUD()) provider.drawHUD(stack, guiGraphics);
+    static void tryDrawHud(@Nonnull IItemHUDProvider provider, @Nonnull ItemStack stack, GuiGraphics guiGraphics,
+                           MutableInt drawOffsetY) {
+        if (provider.shouldDrawHUD()) provider.drawHUD(stack, guiGraphics, drawOffsetY);
     }
 }
