@@ -231,7 +231,6 @@ public class CustomTags {
     public static final TagKey<EntityType<?>> SPIDERS = TagUtil.createTag(Registries.ENTITY_TYPE, "spiders", false);
 
     public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createModFluidTag("lighter_fluids");
-    public static final TagKey<Fluid> POTION_FLUIDS = TagUtil.createFluidTag("potion");
 
     public static final TagKey<Fluid> FREEZABLE_FLUIDS = TagUtil.createModFluidTag("freezable_fluids");
     /** @deprecated Use FREEZABLE_FLUIDS for fluids requiring metal freezing. */

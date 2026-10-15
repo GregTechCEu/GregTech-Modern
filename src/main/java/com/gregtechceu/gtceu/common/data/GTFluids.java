@@ -7,11 +7,11 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.common.Tags;
 
 import com.tterrag.registrate.util.entry.FluidEntry;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +28,7 @@ public class GTFluids {
                     PotionFluid.PotionFluidType::new, PotionFluid::new)
             .lang("Potion")
             .source(PotionFluid::new).noBlock().noBucket()
-            .tag(CustomTags.POTION_FLUIDS)
+            .tag(Tags.Fluids.POTION)
             .register();
 
     public static void init() {
