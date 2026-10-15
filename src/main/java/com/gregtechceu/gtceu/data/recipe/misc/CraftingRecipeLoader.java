@@ -337,7 +337,8 @@ public class CraftingRecipeLoader {
     }
 
     private static void netheritePlatingRecipes(Consumer<FinishedRecipe> provider) {
-        for (var armor : List.of(NANO_HELMET, NANO_CHESTPLATE, NANO_LEGGINGS, NANO_BOOTS,
+        for (var armor : List.of(HYDRAULIC_HELMET, HYDRAULIC_CHESTPLATE, HYDRAULIC_LEGGINGS, HYDRAULIC_BOOTS,
+                NANO_HELMET, NANO_CHESTPLATE, NANO_LEGGINGS, NANO_BOOTS,
                 QUANTUM_HELMET, QUANTUM_CHESTPLATE, QUANTUM_LEGGINGS, QUANTUM_BOOTS)) {
             ItemStack result = new ItemStack(armor.get());
             result.getOrCreateTag().putBoolean(ModularArmorItem.NETHERITE_PLATED_TAG, true);
