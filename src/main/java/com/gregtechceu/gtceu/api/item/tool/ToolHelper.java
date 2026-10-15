@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.core.mixins.LootTableAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.DummyRecipeUtils;
+import com.gregtechceu.gtceu.utils.ScopedValue;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -76,6 +77,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.level.BlockEvent;
 
 import it.unimi.dsi.fastutil.chars.Char2ReferenceMap;
 import it.unimi.dsi.fastutil.chars.Char2ReferenceOpenHashMap;
@@ -467,22 +469,23 @@ public class ToolHelper {
         return new LootContext.Builder(params).create(((LootTableAccessor) lootTable).getRandomSequence());
     }
 
-    public static final ThreadLocal<Boolean> DO_BLOCK_BREAK_SOUND_PARTICLES = ThreadLocal.withInitial(() -> true);
-    public static final ThreadLocal<Boolean> IS_AOE_BREAKING_BLOCKS = ThreadLocal.withInitial(() -> false);
+    public static final ScopedValue.Boolean DO_BLOCK_BREAK_SOUND_PARTICLES = new ScopedValue.Boolean(true);
+    public static final ScopedValue.Boolean AOE_BREAKING_BLOCKS = new ScopedValue.Boolean(false);
 
     public static boolean destroyBlock(ServerPlayer player, ItemStack tool, BlockPos pos, boolean playSound) {
-        DO_BLOCK_BREAK_SOUND_PARTICLES.set(playSound);
         Level level = player.level();
-
-        // we set this flag when firing the event so the event listener that starts this whole thing doesn't cascade
-        IS_AOE_BREAKING_BLOCKS.set(true);
         BlockState state = level.getBlockState(pos);
-        var event = CommonHooks.fireBlockBreak(level, player.gameMode.getGameModeForPlayer(), player, pos, state);
-        // ...and the easiest way to make sure it's false after is to set it before we return at all.
-        IS_AOE_BREAKING_BLOCKS.set(false);
-        if (event.isCanceled()) {
-            return false;
-        } else {
+
+        try (var $ = DO_BLOCK_BREAK_SOUND_PARTICLES.with(playSound)) {
+            // we set this flag when firing the event so the event listener that starts this whole thing doesn't cascade
+            try (var $_ = AOE_BREAKING_BLOCKS.setActive()) {
+                BlockEvent.BreakEvent event = CommonHooks.fireBlockBreak(level, player.gameMode.getGameModeForPlayer(),
+                        player, pos, state);
+                if (event.isCanceled()) {
+                    return false;
+                }
+            }
+
             Block block = state.getBlock();
             if (block instanceof GameMasterBlock && !player.canUseGameMasterBlocks()) {
                 level.sendBlockUpdated(pos, state, state, 3);
