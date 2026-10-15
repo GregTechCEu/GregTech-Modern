@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
@@ -20,9 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait<Integer>
                                             implements IOpticalComputationHatch, IOpticalComputationReceiver {
@@ -32,24 +31,47 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     @Getter
     protected boolean transmitter;
 
-    protected long lastTimeStamp;
-    private int currentOutputCwu = 0, lastOutputCwu = 0;
+    private ComputationTransferContext transferContext = ComputationTransferContext.create();
+
+    private record ComputationTransferContext(long lastTimeStamp, int currentOutputCwu, int lastOutputCwu) {
+
+        public static ComputationTransferContext create() {
+            return new ComputationTransferContext(Long.MIN_VALUE, 0, 0);
+        }
+
+        public ComputationTransferContext conditionalTimedUpdate(MetaMachine machine) {
+            var latestTimeStamp = machine.getOffsetTimer();
+            if (lastTimeStamp < latestTimeStamp) {
+                return new ComputationTransferContext(latestTimeStamp, 0, currentOutputCwu());
+            }
+            return this;
+        }
+
+        public ComputationTransferContext subtractLastOutput(int transferred) {
+            return new ComputationTransferContext(lastTimeStamp(), currentOutputCwu(), lastOutputCwu() - transferred);
+        }
+
+        public ComputationTransferContext setOutput(int newOutputCwu) {
+            return new ComputationTransferContext(lastTimeStamp(), newOutputCwu, lastOutputCwu());
+        }
+    }
 
     public NotifiableComputationContainer(IO handlerIO, boolean transmitter) {
         super();
         this.handlerIO = handlerIO;
         this.transmitter = transmitter;
-
-        this.lastTimeStamp = Long.MIN_VALUE;
     }
 
     @Override
-    public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
-        var latestTimeStamp = getMachine().getOffsetTimer();
-        if (lastTimeStamp < latestTimeStamp) {
-            lastOutputCwu = currentOutputCwu;
-            currentOutputCwu = 0;
-            lastTimeStamp = latestTimeStamp;
+    public int requestCWUt(int cwut, boolean simulate, Set<IOpticalComputationProvider> seen,
+                           Map<IOpticalComputationProvider, Object> simulationState) {
+        ComputationTransferContext localTransferContext = (ComputationTransferContext) simulationState
+                .getOrDefault(this, this.transferContext);
+        localTransferContext = localTransferContext.conditionalTimedUpdate(getMachine());
+        if (!simulate) {
+            this.transferContext = localTransferContext;
+        } else {
+            simulationState.put(this, localTransferContext);
         }
 
         seen.add(this);
@@ -58,18 +80,18 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                 var machine = getMachine();
                 // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
                 if (machine instanceof IOpticalComputationProvider provider) {
-                    return provider.requestCWUt(cwut, simulate, seen);
+                    return provider.requestCWUt(cwut, simulate, seen, simulationState);
                 } else if (machine instanceof MultiblockPartMachine part) {
                     if (!part.isFormed()) {
                         return 0;
                     }
                     for (MultiblockControllerMachine controller : part.getControllers()) {
                         if (controller instanceof IOpticalComputationProvider provider) {
-                            return provider.requestCWUt(cwut, simulate, seen);
+                            return provider.requestCWUt(cwut, simulate, seen, simulationState);
                         }
                         for (MachineTrait trait : controller.getAllTraits()) {
                             if (trait instanceof IOpticalComputationProvider provider) {
-                                return provider.requestCWUt(cwut, simulate, seen);
+                                return provider.requestCWUt(cwut, simulate, seen, simulationState);
                             }
                         }
                     }
@@ -84,23 +106,30 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                 // Ask the attached Transmitter hatch, if it exists
                 IOpticalComputationProvider provider = getOpticalNetProvider();
                 if (provider == null) return 0;
-                return provider.requestCWUt(cwut, simulate, seen);
+                return provider.requestCWUt(cwut, simulate, seen, simulationState);
             }
         } else {
-            lastOutputCwu = lastOutputCwu - cwut;
-            return Math.min(lastOutputCwu, cwut);
+            localTransferContext = localTransferContext.subtractLastOutput(cwut);
+            localTransferContext = localTransferContext.conditionalTimedUpdate(getMachine());
+            if (!simulate) {
+                this.transferContext = localTransferContext;
+            } else {
+                simulationState.put(this, localTransferContext);
+            }
+            return Math.min(localTransferContext.lastOutputCwu(), cwut);
         }
     }
 
     @Override
-    public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
+    public int getMaxCWUt(Set<IOpticalComputationProvider> seen,
+                          Map<IOpticalComputationProvider, Object> simulationState) {
         seen.add(this);
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {
                 var machine = getMachine();
                 // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
                 if (machine instanceof IOpticalComputationProvider provider) {
-                    return provider.getMaxCWUt(seen);
+                    return provider.getMaxCWUt(seen, simulationState);
                 } else if (machine instanceof MultiblockPartMachine part) {
                     if (!part.isFormed()) {
                         return 0;
@@ -110,11 +139,11 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                             continue;
                         }
                         if (controller instanceof IOpticalComputationProvider provider) {
-                            return provider.getMaxCWUt(seen);
+                            return provider.getMaxCWUt(seen, simulationState);
                         }
                         for (MachineTrait trait : controller.getAllTraits()) {
                             if (trait instanceof IOpticalComputationProvider provider) {
-                                return provider.getMaxCWUt(seen);
+                                return provider.getMaxCWUt(seen, simulationState);
                             }
                         }
                     }
@@ -129,22 +158,25 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                 // Ask the attached Transmitter hatch, if it exists
                 IOpticalComputationProvider provider = getOpticalNetProvider();
                 if (provider == null) return 0;
-                return provider.getMaxCWUt(seen);
+                return provider.getMaxCWUt(seen, simulationState);
             }
         } else {
-            return lastOutputCwu;
+            ComputationTransferContext localTransferContext = (ComputationTransferContext) simulationState
+                    .getOrDefault(this, this.transferContext);
+            return localTransferContext.lastOutputCwu();
         }
     }
 
     @Override
-    public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
+    public boolean canBridge(Set<IOpticalComputationProvider> seen,
+                             Map<IOpticalComputationProvider, Object> simulationState) {
         seen.add(this);
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {
                 var machine = getMachine();
                 // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
                 if (machine instanceof IOpticalComputationProvider provider) {
-                    return provider.canBridge(seen);
+                    return provider.canBridge(seen, simulationState);
                 } else if (machine instanceof MultiblockPartMachine part) {
                     if (!part.isFormed()) {
                         return false;
@@ -154,11 +186,11 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                             continue;
                         }
                         if (controller instanceof IOpticalComputationProvider provider) {
-                            return provider.canBridge(seen);
+                            return provider.canBridge(seen, simulationState);
                         }
                         for (MachineTrait trait : controller.getAllTraits()) {
                             if (trait instanceof IOpticalComputationProvider provider) {
-                                return provider.canBridge(seen);
+                                return provider.canBridge(seen, simulationState);
                             }
                         }
                     }
@@ -173,7 +205,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                 // Ask the attached Transmitter hatch, if it exists
                 IOpticalComputationProvider provider = getOpticalNetProvider();
                 if (provider == null) return true; // nothing found, so don't report a problem, just pass quietly
-                return provider.canBridge(seen);
+                return provider.canBridge(seen, simulationState);
             }
         } else {
             return false;
@@ -211,9 +243,10 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                 }
             }
         } else if (io == IO.OUT) {
-            int canInput = this.getMaxCWUt() - this.lastOutputCwu;
+            int canInput = this.getMaxCWUt() - this.transferContext.lastOutputCwu();
             if (!simulate) {
-                this.currentOutputCwu = Math.min(canInput, sum);
+                int newOutputCwu = Math.min(canInput, sum);
+                this.transferContext = this.transferContext.setOutput(newOutputCwu);
             }
             sum = sum - canInput;
         }
@@ -222,12 +255,12 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
 
     @Override
     public List<Object> getContents() {
-        return List.of(lastOutputCwu);
+        return List.of(this.transferContext.lastOutputCwu());
     }
 
     @Override
     public double getTotalContentAmount() {
-        return lastOutputCwu;
+        return this.transferContext.lastOutputCwu();
     }
 
     @Override
