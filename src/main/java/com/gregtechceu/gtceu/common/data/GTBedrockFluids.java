@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +32,7 @@ public class GTBedrockFluids {
             .depletionChance(100)
             .depletedYield(20)
             .biomes(5, BiomeTags.IS_OCEAN)
-            .biomes(10, CustomTags.IS_SANDY)
+            .biomes(10, GTTags.Biomes.IS_SANDY)
             .dimensions(overworld()));
 
     public static BedrockFluidDefinition LIGHT_OIL = create(GTCEu.id("light_oil_deposit"), builder -> builder
@@ -61,7 +61,7 @@ public class GTBedrockFluids {
             .depletionChance(100)
             .depletedYield(25)
             .biomes(5, BiomeTags.IS_OCEAN)
-            .biomes(5, CustomTags.IS_SANDY)
+            .biomes(5, GTTags.Biomes.IS_SANDY)
             .dimensions(overworld()));
 
     public static BedrockFluidDefinition RAW_OIL = create(GTCEu.id("raw_oil_deposit"), builder -> builder

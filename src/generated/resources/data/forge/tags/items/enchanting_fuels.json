@@ -1,6 +1,12 @@
 {
   "values": [
-    "gtceu:lazurite_gem",
-    "gtceu:sodalite_gem"
+    {
+      "id": "gtceu:lazurite_gem",
+      "required": false
+    },
+    {
+      "id": "gtceu:sodalite_gem",
+      "required": false
+    }
   ]
 }
