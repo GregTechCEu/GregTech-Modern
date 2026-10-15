@@ -4,11 +4,10 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,7 +15,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -26,19 +24,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public abstract class VeinGenerator {
 
-    public static final Codec<MapCodec<? extends VeinGenerator>> REGISTRY_CODEC = ResourceLocation.CODEC
-            .flatXmap(rl -> Optional.ofNullable(WorldGeneratorUtils.VEIN_GENERATORS.get(rl))
-                    .map(DataResult::success)
-                    .orElseGet(() -> DataResult.error(() -> "No VeinGenerator with id " + rl + " registered")),
-                    obj -> Optional.ofNullable(WorldGeneratorUtils.VEIN_GENERATORS.inverse().get(obj))
-                            .map(DataResult::success)
-                            .orElseGet(() -> DataResult.error(() -> "VeinGenerator " + obj + " not registered")));
-    public static final Codec<VeinGenerator> DIRECT_CODEC = REGISTRY_CODEC.dispatchStable(VeinGenerator::codec,
-            Function.identity());
+    public static final Codec<VeinGenerator> DIRECT_CODEC = GTRegistries.VEIN_GENERATORS.byNameCodec()
+            .dispatch(VeinGenerator::type, VeinGeneratorType::codec);
 
     public VeinGenerator() {}
 
@@ -88,7 +80,7 @@ public abstract class VeinGenerator {
 
     public abstract VeinGenerator copy();
 
-    public abstract MapCodec<? extends VeinGenerator> codec();
+    public abstract VeinGeneratorType<?> type();
 
     public record VeinEntry(Either<BlockState, Material> vein, int chance) {
 
@@ -124,4 +116,6 @@ public abstract class VeinGenerator {
                                               int weight) {
         return mapTarget(target).map(entry -> new VeinEntry(entry, weight));
     }
+
+    public record VeinGeneratorType<T extends VeinGenerator>(MapCodec<T> codec, Supplier<T> defaultInstance) {}
 }

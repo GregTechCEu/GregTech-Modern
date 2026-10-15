@@ -23,7 +23,6 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -52,6 +51,9 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<AoESymmetrical>> AOE = DATA_COMPONENTS
             .registerComponentType("aoe", builder -> builder.persistent(AoESymmetrical.CODEC)
                     .networkSynchronized(AoESymmetrical.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<AoESymmetrical>> MAX_AOE = DATA_COMPONENTS
+            .registerComponentType("max_aoe", builder -> builder.persistent(AoESymmetrical.CODEC)
+                    .networkSynchronized(AoESymmetrical.STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> DISALLOW_CONTAINER_ITEM = DATA_COMPONENTS
             .registerComponentType("disallow_container_item", builder -> builder.persistent(Unit.CODEC)
                     .networkSynchronized(UNIT_STREAM_CODEC));
@@ -68,10 +70,10 @@ public class GTDataComponents {
             .registerComponentType("tool_mode", builder -> builder
                     .persistent(ToolModeSwitchBehavior.ModeType.CODEC)
                     .networkSynchronized(ToolModeSwitchBehavior.ModeType.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemEnchantments>> INNATE_ENCHANTMENTS = DATA_COMPONENTS
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResolvableItemEnchantments>> INNATE_ENCHANTMENTS = DATA_COMPONENTS
             .registerComponentType("innate_enchantments", builder -> builder
-                    .persistent(ItemEnchantments.CODEC)
-                    .networkSynchronized(ItemEnchantments.STREAM_CODEC)
+                    .persistent(ResolvableItemEnchantments.CODEC)
+                    .networkSynchronized(ResolvableItemEnchantments.STREAM_CODEC)
                     .cacheEncoding());
 
     // Material-related

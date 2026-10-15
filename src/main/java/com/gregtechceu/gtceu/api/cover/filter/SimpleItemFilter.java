@@ -59,7 +59,14 @@ public class SimpleItemFilter extends Filter<ItemStack> {
     public SimpleItemFilter(boolean isBlackList, boolean ignoreNbt, List<ItemStack> matches) {
         this.isBlackList = isBlackList;
         this.ignoreNbt = ignoreNbt;
-        this.matches = matches.toArray(ItemStack[]::new);
+
+        Arrays.setAll(this.matches, i -> {
+            if (i < matches.size()) {
+                return matches.get(i);
+            } else {
+                return ItemStack.EMPTY;
+            }
+        });
     }
 
     public static SimpleItemFilter forItems(boolean ignoreNbt, ItemStack... items) {
@@ -177,6 +184,11 @@ public class SimpleItemFilter extends Filter<ItemStack> {
         }
 
         return totalItemCount;
+    }
+
+    @Override
+    public Filter<ItemStack> createCopy() {
+        return new SimpleItemFilter(isBlackList, ignoreNbt, Arrays.asList(matches));
     }
 
     public int getTotalConfiguredItemCount(ItemStack itemStack) {

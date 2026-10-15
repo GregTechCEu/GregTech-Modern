@@ -117,6 +117,7 @@ public class ToolEventHandlers {
         if (!EnchantmentHelper.hasTag(tool, CustomTags.PREVENTS_HAMMER_CRUSHING)) {
             ToolHelper.applyHammerDropConversion(level, pos, tool, state, drops, lootParams);
         }
+
         ToolBehaviors behaviors = ToolHelper.getBehaviorsComponent(tool);
         Block block = state.getBlock();
         if (state.is(BlockTags.ICE) && !EnchantmentHelper.hasTag(tool, EnchantmentTags.PREVENTS_ICE_MELTING) &&

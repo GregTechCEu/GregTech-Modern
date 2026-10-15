@@ -12,8 +12,10 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -38,7 +40,7 @@ public class RecipeAddition {
         hardRedstoneRecipes(provider);
         disableManualCompression(provider);
         hardToolArmorRecipes(provider);
-        harderRods(provider);
+        stoneRods(provider);
         harderBrickRecipes(provider);
         steelSteamMultiblocks(provider);
         if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) hardWoodRecipes(provider);
@@ -766,32 +768,18 @@ public class RecipeAddition {
         }
     }
 
-    private static void harderRods(RecipeOutput provider) {
-        if (ConfigHolder.INSTANCE.recipes.harderRods) {
-            LATHE_RECIPES.recipeBuilder("stone_rod_from_cobblestone")
-                    .inputItems(ItemTags.STONE_CRAFTING_MATERIALS)
-                    .outputItems(rod, Stone, 1)
+    private static void stoneRods(RecipeOutput provider) {
+        var cobblestone = LATHE_RECIPES.recipeBuilder("stone_rod_from_cobblestone")
+                .inputItems(ItemTags.STONE_CRAFTING_MATERIALS)
+                .duration(20).EUt(VA[ULV]);
+        var stone = LATHE_RECIPES.recipeBuilder("stone_rod_from_stone")
+                .inputItems(new ItemStack(Blocks.STONE))
+                .duration(20).EUt(VA[ULV]);
+        for (var builder : new GTRecipeBuilder[] { cobblestone, stone }) {
+            builder.addData(LatheRecipeLogic.LUBRICATED_ROD,
+                    BuiltInRegistries.ITEM.getKey(ChemicalHelper.get(rod, Stone).getItem()).toString())
+                    .outputItems(rod, Stone)
                     .outputItems(dustSmall, Stone, 2)
-                    .duration(20).EUt(VA[ULV])
-                    .save(provider);
-
-            LATHE_RECIPES.recipeBuilder("stone_rod_from_stone")
-                    .inputItems(new ItemStack(Blocks.STONE))
-                    .outputItems(rod, Stone, 1)
-                    .outputItems(dustSmall, Stone, 2)
-                    .duration(20).EUt(VA[ULV])
-                    .save(provider);
-        } else {
-            LATHE_RECIPES.recipeBuilder("stone_rod_from_cobblestone")
-                    .inputItems(ItemTags.STONE_CRAFTING_MATERIALS)
-                    .outputItems(rod, Stone, 2)
-                    .duration(20).EUt(VA[ULV])
-                    .save(provider);
-
-            LATHE_RECIPES.recipeBuilder("stone_rod_from_stone")
-                    .inputItems(new ItemStack(Blocks.STONE))
-                    .outputItems(rod, Stone, 2)
-                    .duration(20).EUt(VA[ULV])
                     .save(provider);
         }
     }

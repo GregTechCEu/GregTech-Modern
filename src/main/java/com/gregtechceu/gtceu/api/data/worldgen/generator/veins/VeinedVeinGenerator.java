@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.worldgen.GTDensityFunctions;
+import com.gregtechceu.gtceu.common.data.worldgen.GTVeinGenerators;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.WeightedEntry;
 
@@ -276,8 +277,8 @@ public class VeinedVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public MapCodec<? extends VeinGenerator> codec() {
-        return CODEC;
+    public VeinGeneratorType<?> type() {
+        return GTVeinGenerators.VEINED.value();
     }
 
     public VeinedVeinGenerator oreBlock(Material block, int weight) {

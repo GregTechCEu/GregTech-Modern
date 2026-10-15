@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.storage;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.item.datacomponents.LargeFluidContent;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
@@ -10,6 +11,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
@@ -20,6 +22,7 @@ import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -95,8 +98,20 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
+    protected void applyImplicitComponents(DataComponentInput componentInput) {
+        super.applyImplicitComponents(componentInput);
+        LargeFluidContent storage = componentInput.get(GTDataComponents.LARGE_FLUID_CONTENT);
+        if (storage != null) {
+            stored = storage.stored();
+            storedAmount = storage.amount();
+        }
+    }
+
+    @Override
+    public void collectImplicitComponents(DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        if (!stored.isEmpty() && storedAmount != 0)
+            components.set(GTDataComponents.LARGE_FLUID_CONTENT, new LargeFluidContent(stored, storedAmount));
     }
 
     protected void onFluidChanged() {
