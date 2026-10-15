@@ -1,19 +1,18 @@
 package com.gregtechceu.gtceu.common.data.materials;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.misc.alloyblast.CustomAlloyBlastRecipeProducer;
 
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +22,7 @@ import java.util.List;
  * Listen to PostMaterialEvent instead of adding the property to all materials manually because it's a lot cleaner this
  * way.
  */
+@EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class AlloyBlastPropertyAddition {
 
     @SubscribeEvent
@@ -55,8 +55,6 @@ public class AlloyBlastPropertyAddition {
         }
 
         material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty());
-        material.getProperty(PropertyKey.FLUID)
-                .enqueueRegistration(FluidStorageKeys.MOLTEN, new FluidBuilder().state(MaterialFluidState.LIQUID));
     }
 
     private static boolean isMaterialStackFluidOnly(@NotNull MaterialStack ms) {

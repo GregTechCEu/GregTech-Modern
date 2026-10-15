@@ -395,7 +395,11 @@ public class FluidBuilder {
 
     @ApiStatus.Internal
     public void determineTextures(Material material, FluidStorageKey key) {
-        MaterialIconType iconType = customIconType != null ? customIconType : key.getIconType();
+        MaterialIconType iconType;
+        if (customIconType != null) iconType = customIconType;
+        else if (key == FluidStorageKeys.LIQUID && material.requiresMetalFreezing()) iconType = MaterialIconType.molten;
+        else iconType = key.getIconType();
+
         MaterialIconSet iconSet = customIconSet != null ? customIconSet : material.getMaterialIconSet();
 
         boolean usesSameTextureForStillAndFlowing = false;

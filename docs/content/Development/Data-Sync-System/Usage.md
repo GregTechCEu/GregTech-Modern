@@ -65,20 +65,24 @@ See [Annotations](Annotations.md)
 
 ### Type compatibility
 The following field types are supported by default:
+
 - Any class implementing `ISyncManaged`
 - Any class implementing `INBTSerializable<Tag>`
 - All primitive types
 - If `T`, `K` are supported types:
-   - `T[]`
-   - `Set<T>`
-   - `List<T>`,
-   - `Map<T, K>`
+    - `T[]`
+    - `Set<T>`
+    - `List<T>`
+    - `Map<T, K>`
 - `String`
+- `Item`
 - `ItemStack`
+- `Fluid`
 - `FluidStack`
 - `UUID`
 - `BlockPos`
 - `CompoundTag`
+- `ResourceLocation`
 - `GTRecipe`
 - `GTRecipeType`
 - `MachineRenderState`
@@ -89,7 +93,13 @@ The following field types are supported by default:
 
 The `ValueTransformer<T>` abstract class defines how a value of type `T` should be serialized.
 
-To add support for an additional type, call `ValueTransformers.registerTransformer(Class<T> cls, ValueTransformer<T> transformer)` or `ValueTransformers.registerGenericTransformerSupplier(Class<T> cls, Supplier<ValueTransformer<T>> func)`
+To add support for an additional type, call one of the following:
+
+- `ValueTransformers.registerTransformer(Class<T> cls, ValueTransformer<T> transformer)`
+- `ValueTransformers.registerGenericTransformerSupplier(Class<T> cls, Supplier<ValueTransformer<T>> func)`
+- `ValueTransformers.registerCodecTransformer(Class<T> type, Codec<T> codec)`
+- `ValueTransformers.registerCodecTransformer(Class<T> type, Codec<T> codec, BiConsumer<FriendlyByteBuf, T> writePacket, Function<FriendlyByteBuf, @Nullable T> readPacket)`
+- `ValueTransformers.registerRegistryTransformer(Class<T> type, Registry<T> registry)`
 
 Additionally, fields can be explicitly directed to use a specific value transformer:
 ```java

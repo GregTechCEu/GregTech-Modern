@@ -39,6 +39,20 @@ public final class MaterialRecipeHandler {
 
     private MaterialRecipeHandler() {}
 
+    static void prepareCastingRecipe(GTRecipeBuilder builder, Material material, int amount) {
+        if (!material.requiresMetalFreezing()) return;
+
+        builder.recipeType(VACUUM_RECIPES.get()).category(VACUUM_RECIPES.getCategory())
+                .EUt(VA[MV]);
+        if (material.getBlastTemperature() >= 5000) {
+            // Round input up and recovery down, never undercut coolants!
+            int liquidHelium = (int) ((500L * amount + L - 1) / L);
+            int helium = (int) (250L * amount / L);
+            builder.inputFluids(GTMaterials.Helium.getFluid(FluidStorageKeys.LIQUID, liquidHelium));
+            if (helium > 0) builder.outputFluids(GTMaterials.Helium.getFluid(helium));
+        }
+    }
+
     public static void run(@NotNull RecipeOutput provider, @NotNull Material material) {
         processIngot(provider, material);
         processNugget(provider, material);
@@ -327,15 +341,6 @@ public final class MaterialRecipeHandler {
                     ChemicalHelper.get(rod, magMaterial),
                     "f ", " X",
                     'X', new MaterialEntry(ingot, material));
-            if (!material.hasFlag(NO_WORKING)) {
-                EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_to_rod")
-                        .inputItems(ingot, material)
-                        .notConsumable(GTItems.SHAPE_EXTRUDER_ROD)
-                        .outputItems(rod, magMaterial, 2)
-                        .duration((int) material.getMass() * 2)
-                        .EUt(6L * getVoltageMultiplier(material))
-                        .save(provider);
-            }
         }
 
         if (material.hasFluid()) {
@@ -346,6 +351,8 @@ public final class MaterialRecipeHandler {
                         .inputFluids(stack)
                         .outputItems(ingot, material)
                         .duration(20).EUt(VA[ULV])
+                        .onSave((builder, output) -> MaterialRecipeHandler.prepareCastingRecipe(builder, material,
+                                stack.getAmount()))
                         .save(provider);
             }
         }
@@ -529,6 +536,8 @@ public final class MaterialRecipeHandler {
                             .outputItems(nugget, material, 9)
                             .duration(20)
                             .EUt(VA[ULV])
+                            .onSave((builder, output) -> MaterialRecipeHandler.prepareCastingRecipe(builder, material,
+                                    stack.getAmount()))
                             .save(provider);
                 }
             }
@@ -562,9 +571,9 @@ public final class MaterialRecipeHandler {
                     "SSS", isWoodenFrame ? "SsS" : "SwS", "SSS",
                     'S', new MaterialEntry(rod, material));
 
-            ASSEMBLER_RECIPES.recipeBuilder("assemble_" + material.getName() + "_frame")
+            WELDER_RECIPES.recipeBuilder("weld_" + material.getName() + "_frame")
                     .inputItems(rod, material, 4)
-                    .circuitMeta(4)
+                    .circuitMeta(2)
                     .outputItems(frameGt, material)
                     .EUt(VA[ULV]).duration(64)
                     .save(provider);
@@ -593,6 +602,8 @@ public final class MaterialRecipeHandler {
                         .inputFluids(stack)
                         .outputItems(blockStack)
                         .duration(180).EUt(VA[ULV])
+                        .onSave((builder, output) -> MaterialRecipeHandler.prepareCastingRecipe(builder, material,
+                                stack.getAmount()))
                         .save(provider);
             }
         }

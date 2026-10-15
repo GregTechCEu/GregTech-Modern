@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Range;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class SmartItemFilter extends Filter<ItemStack> {
@@ -122,6 +123,11 @@ public class SmartItemFilter extends Filter<ItemStack> {
         return filterMode.cache.computeIfAbsent(itemStack, this::lookup);
     }
 
+    @Override
+    public Filter<ItemStack> createCopy() {
+        return new SmartItemFilter(filterMode);
+    }
+
     private int lookup(ItemStack itemStack) {
         ItemStack copy = itemStack.copyWithCount(Integer.MAX_VALUE);
         var recipe = filterMode.recipeType.get().db()
@@ -145,6 +151,19 @@ public class SmartItemFilter extends Filter<ItemStack> {
                 return;
             }
         }
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SmartItemFilter that)) return false;
+
+        return filterMode == that.filterMode;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(filterMode);
     }
 
     @MethodsReturnNonnullByDefault

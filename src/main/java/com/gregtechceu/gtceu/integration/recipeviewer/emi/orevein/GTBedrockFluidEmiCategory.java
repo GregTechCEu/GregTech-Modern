@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidget;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
 
@@ -33,7 +35,7 @@ public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
                 .registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID);
         fluids.holders()
                 .filter(fluid -> fluid.value().canGenerate())
-                .forEach(fluid -> registry.addRecipe(new GTBedrockFluid(fluid.value())));
+                .forEach(fluid -> registry.addRecipe(new GTBedrockFluid(fluid)));
     }
 
     public static void registerWorkStations(EmiRegistry registry) {
@@ -48,12 +50,11 @@ public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
 
     public static class GTBedrockFluid extends ModularUIEmiRecipe {
 
-        private final BedrockFluidDefinition fluid;
+        private final Holder<BedrockFluidDefinition> fluid;
 
-        public GTBedrockFluid(BedrockFluidDefinition fluid) {
-            super(Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID)
-                    .getKey(fluid).withPrefix("/bedrock_fluid_diagram/"),
-                    () -> new OreVeinRecipeWidget(fluid));
+        public GTBedrockFluid(Holder<BedrockFluidDefinition> fluid) {
+            super(Objects.requireNonNull(fluid.getKey()).location().withPrefix("/bedrock_fluid_diagram/"),
+                    () -> new OreVeinRecipeWidget(fluid.value()));
             this.fluid = fluid;
         }
 
@@ -64,13 +65,13 @@ public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
 
         @Override
         public List<EmiIngredient> getInputs() {
-            return Arrays.stream(OreVeinRecipeWidget.getDimensionMarkers(fluid.dimensionFilter))
+            return Arrays.stream(OreVeinRecipeWidget.getDimensionMarkers(fluid.value().dimensionFilter))
                     .map(v -> (EmiIngredient) EmiStack.of(v.getIcon())).toList();
         }
 
         @Override
         public @NotNull List<EmiStack> getOutputs() {
-            return List.of(EmiStack.of(fluid.getStoredFluid()));
+            return List.of(EmiStack.of(fluid.value().getStoredFluid()));
         }
     }
 }

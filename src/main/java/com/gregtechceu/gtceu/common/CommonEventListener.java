@@ -7,26 +7,17 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
-import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
@@ -38,7 +29,6 @@ import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
 import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.data.GTAttributeModifierIds;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
 import com.gregtechceu.gtceu.common.item.armor.IStepAssist;
@@ -53,7 +43,6 @@ import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncLevelHazar
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.loader.PostRegistryListener;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.gregtechceu.gtceu.data.recipe.misc.alloyblast.CustomAlloyBlastRecipeProducer;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
@@ -106,7 +95,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import com.mojang.datafixers.util.Either;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -573,43 +561,5 @@ public class CommonEventListener {
                     new AttributeModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST,
                             speedBoost, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
         }
-    }
-
-    public static void addAlloyBlastProperties(PostMaterialEvent event) {
-        for (Material material : GTRegistries.MATERIALS) {
-            if (!material.hasFlag(MaterialFlags.DISABLE_ALLOY_PROPERTY)) {
-                addAlloyBlastProperty(material);
-            }
-        }
-        // Alloy Blast Overriding
-        GTMaterials.NiobiumNitride.getProperty(PropertyKey.ALLOY_BLAST)
-                .setRecipeProducer(new CustomAlloyBlastRecipeProducer(1, 11, -1));
-
-        GTMaterials.IndiumTinBariumTitaniumCuprate.getProperty(PropertyKey.ALLOY_BLAST)
-                .setRecipeProducer(new CustomAlloyBlastRecipeProducer(-1, -1, 16));
-    }
-
-    private static void addAlloyBlastProperty(@NotNull Material material) {
-        final List<MaterialStack> components = material.getMaterialComponents();
-        // ignore materials which are not alloys
-        if (components.size() < 2) return;
-
-        BlastProperty blastProperty = material.getProperty(PropertyKey.BLAST);
-        if (blastProperty == null) return;
-
-        if (!material.hasProperty(PropertyKey.FLUID)) return;
-
-        // if there are more than 2 fluid-only components in the material, do not generate a hot fluid
-        if (components.stream().filter(CommonEventListener::isMaterialStackFluidOnly).limit(3).count() > 2) {
-            return;
-        }
-
-        material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty());
-        material.getProperty(PropertyKey.FLUID).getStorage().enqueueRegistration(FluidStorageKeys.MOLTEN,
-                new FluidBuilder().state(MaterialFluidState.LIQUID));
-    }
-
-    private static boolean isMaterialStackFluidOnly(@NotNull MaterialStack ms) {
-        return !ms.material().hasProperty(PropertyKey.DUST) && ms.material().hasProperty(PropertyKey.FLUID);
     }
 }

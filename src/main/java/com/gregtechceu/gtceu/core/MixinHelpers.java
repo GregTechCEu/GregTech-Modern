@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
@@ -248,6 +249,10 @@ public class MixinHelpers {
                         tagMap.computeIfAbsent(state.getTagKey().location(), path -> new ArrayList<>()).add(entry);
                     }
 
+                    if (key == FluidStorageKeys.LIQUID && material.requiresMetalFreezing()) {
+                        tagMap.computeIfAbsent(CustomTags.FREEZABLE_FLUIDS.location(), path -> new ArrayList<>())
+                                .add(entry);
+                    }
                     if (key.getExtraTag() != null) {
                         tagMap.computeIfAbsent(key.getExtraTag().location(), path -> new ArrayList<>()).add(entry);
                     }
@@ -307,8 +312,7 @@ public class MixinHelpers {
                                     LootItem.lootTableItem(dropItem.getItem())
                                             .apply(SetItemCountFunction
                                                     .setCount(ConstantValue.exactly(oreMultiplier)))));
-                    // disable fortune for balance reasons. (for now, until we can think of a better solution.)
-                    // .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))));
+                    // Optional Fortune is applied by the harvest handler after hammer conversion.
 
                     LootPool.Builder pool = LootPool.lootPool();
                     boolean isEmpty = true;

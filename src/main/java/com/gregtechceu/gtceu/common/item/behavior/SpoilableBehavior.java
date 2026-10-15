@@ -14,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.fml.ModLoader;
@@ -41,7 +40,7 @@ public class SpoilableBehavior {
     private final ToLongFunction<ItemStack> ticks;
     private final SpoilResultProvider spoilResult;
     private final Function<ItemStack, Component> spoilsIntoTooltip;
-    private final List<Item> attachedTo = new ArrayList<>();
+    private final List<ItemLike> attachedTo = new ArrayList<>();
 
     public static void init() {
         RegisterSpoilablesEvent event = new RegisterSpoilablesEvent(SpoilableBehavior::builder);
@@ -73,13 +72,13 @@ public class SpoilableBehavior {
         if (attachedTo.isEmpty()) {
             GTCEu.gtModBus.addListener(this::registerCapabilities);
         }
-        attachedTo.add(item.asItem());
+        attachedTo.add(item);
         return this;
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerItem(GTCapability.CAPABILITY_SPOILABLE_ITEM, (stack, ctx) -> new SpoilableBehaviourStack(stack),
-                attachedTo.toArray(Item[]::new));
+                attachedTo.toArray(ItemLike[]::new));
     }
 
     /**

@@ -44,7 +44,6 @@ import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.factory.PlayerInventoryGuiData;
-import brachy.modularui.factory.UIFactories;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
@@ -91,14 +90,14 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         MagnetComponent magnetData = held.getOrDefault(GTDataComponents.MAGNET, MagnetComponent.EMPTY);
         FilterMode selectedFilter = magnetData.filterType();
 
-        Map<FilterMode, ItemStack> stacks = new EnumMap<>(FilterMode.class);
-        for (FilterMode filter : FilterMode.values()) {
-            ItemStack stack = filter.getFilter(held);
-            stacks.put(filter, stack);
+        Map<FilterMode, Filter<ItemStack>> filters = new EnumMap<>(FilterMode.class);
+        for (FilterMode mode : FilterMode.values()) {
+            Filter<ItemStack> filter = mode.loadFilter(held);
+            filters.put(mode, filter);
         }
 
         EnumSyncValue<FilterMode> filterSync = new EnumSyncValue<>(FilterMode.class,
-                magnetData::filterType,
+                () -> held.getOrDefault(GTDataComponents.MAGNET, MagnetComponent.EMPTY).filterType(),
                 filter -> held.set(GTDataComponents.MAGNET, new MagnetComponent(magnetData.active, filter)))
                 .allowC2S();
 
@@ -108,9 +107,9 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                 .size(150, 55)
                 .initialPage(selectedFilter.ordinal())
                 .addPage(createSimpleFilterPage(
-                        (SimpleItemFilter) Filters.loadItemFilter(stacks.get(FilterMode.SIMPLE))))
+                        (SimpleItemFilter) filters.get(FilterMode.SIMPLE)))
                 .addPage(createTagFilterPage(
-                        (TagFilter<ItemStack, Item>) Filters.loadItemFilter(stacks.get(FilterMode.TAG))));
+                        (TagFilter<ItemStack, Item>) filters.get(FilterMode.TAG)));
         pages.onUpdateListener(widget -> {
             int selected = filterSync.getIntValue();
             if (selected != widget.getCurrentPageIndex()) {
@@ -120,7 +119,9 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
 
         syncManager.addCloseListener(player -> {
             held.update(GTDataComponents.MAGNET, MagnetComponent.EMPTY,
-                    c -> new MagnetComponent(c.active(), selectedFilter));
+                    c -> new MagnetComponent(c.active(), filterSync.getValue()));
+            held.set(GTDataComponents.SIMPLE_ITEM_FILTER, (SimpleItemFilter) filters.get(FilterMode.SIMPLE));
+            held.set(GTDataComponents.ITEM_TAG_FILTER, (TagFilter<ItemStack, Item>) filters.get(FilterMode.TAG));
         });
 
         return new ModularPanel<>("item_magnet")
@@ -193,17 +194,17 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level world, @NotNull Player player,
-                                                  InteractionHand hand) {
-        if (!player.level().isClientSide) {
-            if (player.isShiftKeyDown()) {
-                player.displayClientMessage(Component.translatable(toggleActive(player.getItemInHand(hand)) ?
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, @NotNull Player player,
+                                                  InteractionHand usedHand) {
+        ItemStack heldItem = player.getItemInHand(usedHand);
+        if (player.isShiftKeyDown()) {
+            if (!level.isClientSide) {
+                player.displayClientMessage(Component.translatable(toggleActive(heldItem) ?
                         "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"), true);
-            } else {
-                UIFactories.playerInventory().openFromHand(player, hand);
             }
+            return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide);
         }
-        return InteractionResultHolder.pass(player.getItemInHand(hand));
+        return IItemUIHolder.super.use(item, level, player, usedHand);
     }
 
     private static boolean isActive(ItemStack stack) {

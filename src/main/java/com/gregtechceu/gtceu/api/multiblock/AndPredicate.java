@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.TestType;
 
 import java.util.List;
 
@@ -12,31 +13,25 @@ public class AndPredicate extends MultiPredicate {
 
     @Override
     protected boolean testGlobalMin(PredicateContext ctx) {
+        boolean result = TestType.GLOBAL_MIN.testCounts(this, ctx);
         for (BasePredicate predicate : predicates()) {
-            if (!predicate.testGlobalMin(ctx)) {
-                return false;
-            }
+            result &= predicate.testSliceMin(ctx);
         }
         for (MultiPredicate child : children()) {
-            if (!child.testGlobalMin(ctx)) {
-                return false;
-            }
+            result &= child.testSliceMin(ctx);
         }
-        return true;
+        return result;
     }
 
     @Override
     protected boolean testSliceMin(PredicateContext ctx) {
+        boolean result = TestType.SLICE_MIN.testCounts(this, ctx);
         for (BasePredicate predicate : predicates()) {
-            if (!predicate.testSliceMin(ctx)) {
-                return false;
-            }
+            result &= predicate.testSliceMin(ctx);
         }
         for (MultiPredicate child : children()) {
-            if (!child.testSliceMin(ctx)) {
-                return false;
-            }
+            result &= child.testSliceMin(ctx);
         }
-        return true;
+        return result;
     }
 }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -126,8 +127,9 @@ public class ToolHelper {
         return stack.getOrDefault(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean hasBehaviorsComponent(ItemStack stack) {
-        return stack.has(GTDataComponents.TOOL_BEHAVIORS);
+        return !getBehaviorsComponent(stack).isEmpty();
     }
 
     public static ItemStack get(GTToolType toolType, Material material) {
@@ -281,7 +283,17 @@ public class ToolHelper {
     }
 
     public static AoESymmetrical getAoEDefinition(ItemStack stack) {
-        return stack.getOrDefault(GTDataComponents.AOE, AoESymmetrical.ZERO);
+        AoESymmetrical value = stack.getOrDefault(GTDataComponents.AOE, AoESymmetrical.ZERO);
+        if (stack.has(GTDataComponents.MAX_AOE)) {
+            AoESymmetrical max = stack.getOrDefault(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO);
+            return value.min(max);
+        } else {
+            return value;
+        }
+    }
+
+    public static AoESymmetrical.Mutable getAoEStateMutable(ItemStack stack) {
+        return getAoEDefinition(stack).toMutable(stack.getOrDefault(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO));
     }
 
     public static List<BlockPos> iterateAoE(AoESymmetrical aoeDefinition, Predicate<UseOnContext> predicate,
@@ -379,7 +391,8 @@ public class ToolHelper {
 
             RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
                     new DummyRecipeUtils.DummyEnergyContainer(GTValues.V[GTValues.LV], GTValues.V[GTValues.LV], 1),
-                    new DummyRecipeUtils.DummyItemHandler(IO.IN, NonNullList.of(silkTouchDrop)));
+                    new DummyRecipeUtils.DummyItemHandler(IO.IN,
+                            NonNullList.of(ItemStack.EMPTY, silkTouchDrop.copy())));
 
             RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
                     new DummyRecipeUtils.DummyItemHandler(IO.OUT, 2));
@@ -392,7 +405,7 @@ public class ToolHelper {
             // find the first valid recipe
             while (hammerRecipes.hasNext()) {
                 GTRecipe recipe = hammerRecipes.next();
-                if (recipe != null && RecipeHelper.handleRecipeIO(capHolder, hammerRecipe, IO.IN,
+                if (recipe != null && RecipeHelper.handleRecipeIO(capHolder, recipe, IO.IN,
                         capHolder.getCacheChances()).isSuccess()) {
                     hammerRecipe = recipe;
                     break;
@@ -414,6 +427,11 @@ public class ToolHelper {
                 // only apply hammer drop conversion to ore blocks
                 if (!isOre) {
                     drops.add(output);
+                    continue;
+                }
+                // GT ore Fortune is applied once, after conversion, by the harvest handler.
+                if (state.getBlock() instanceof OreBlock) {
+                    drops.add(output.copy());
                     continue;
                 }
                 // Only apply fortune on ore -> crushed forge hammer recipes
