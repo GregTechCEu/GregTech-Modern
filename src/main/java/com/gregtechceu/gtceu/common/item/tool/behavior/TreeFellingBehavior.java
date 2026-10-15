@@ -74,7 +74,8 @@ public class TreeFellingBehavior implements IToolBehavior<TreeFellingBehavior> {
 
         if (level.isClientSide) {
             player.displayClientMessage(Component.translatable("item.gtceu.tool.behavior.tree_felling").append(" - ")
-                    .append(Component.translatable("cover.voiding.label." + (!enabled ? "enabled" : "disabled"))), true);
+                    .append(Component.translatable("cover.voiding.label." + (!enabled ? "enabled" : "disabled"))),
+                    true);
         }
         return InteractionResultHolder.sidedSuccess(held, level.isClientSide);
     }

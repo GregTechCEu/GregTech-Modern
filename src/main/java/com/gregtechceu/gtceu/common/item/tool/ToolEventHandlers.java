@@ -109,9 +109,9 @@ public class ToolEventHandlers {
 
     /**
      * <ul>
-     *     <li>Handles saws harvesting ice without leaving water behind</li>
-     *     <li>Handles mined blocks teleporting straight into the player's inventory</li>
-     *     <li>Handles drop conversion when a hammer tool (or tool with the Hard Hammer enchantment) is used</li>
+     * <li>Handles saws harvesting ice without leaving water behind</li>
+     * <li>Handles mined blocks teleporting straight into the player's inventory</li>
+     * <li>Handles drop conversion when a hammer tool (or tool with the Hard Hammer enchantment) is used</li>
      * </ul>
      */
     public static List<ItemStack> onHarvestDrops(@Nullable Entity entity, ItemStack tool, ServerLevel level,
