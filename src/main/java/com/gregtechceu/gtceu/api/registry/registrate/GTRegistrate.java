@@ -357,6 +357,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     @SuppressWarnings("NullableProblems")
     public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(@NotNull P parent, String name,
                                                                                        Consumer<CreativeModeTab.Builder> config) {
+        defaultCreativeTab(ResourceKey.create(Registries.CREATIVE_MODE_TAB, makeResourceLocation(name)));
         return createCreativeModeTab(parent, name, config);
     }
 }
