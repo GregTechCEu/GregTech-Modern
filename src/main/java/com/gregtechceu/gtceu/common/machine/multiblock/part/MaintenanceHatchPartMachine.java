@@ -479,8 +479,9 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                                                         "gtceu.maintenance.configurable_duration.unchanged_description") :
                                                 Component.translatable(
                                                         "gtceu.maintenance.configurable_duration.changed_description")))))
-                        .child(new TextWidget<>(Text.lang("gtceu.maintenance.configurable_time",
-                                this.getTimeMultiplier()))
+                        .child(new TextWidget<>(Text.dynamic(() -> Component.translatable(
+                                "gtceu.maintenance.configurable_time",
+                                this.getTimeMultiplier())))
                                 .leftRel(0)))
                 .child(Flow.row()
                         .leftRel(0.5f)
