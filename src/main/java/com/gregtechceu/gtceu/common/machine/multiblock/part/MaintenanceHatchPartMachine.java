@@ -505,7 +505,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     }
 
     @Override
-    public Component getFailReason(){
+    public Component getFailReason() {
         return Component.translatable("gtceu.multiblock.universal.has_problems");
     }
 }

@@ -20,9 +20,9 @@ import com.gregtechceu.gtceu.common.machine.trait.ExhaustVentMachineTrait;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 
 import lombok.Getter;
-import net.minecraft.network.chat.Component;
 
 import java.util.*;
 
@@ -151,7 +151,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
         if (!(machine instanceof SimpleSteamMachine steamMachine)) {
             return RecipeModifier.nullWrongType(SimpleSteamMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV){
+        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) {
             return ModifierFunction.cancel(Component.translatable("gtceu.recipe_modifier.insufficient_voltage"));
         }
         if (!steamMachine.exhaustVentTrait.checkVenting()) {

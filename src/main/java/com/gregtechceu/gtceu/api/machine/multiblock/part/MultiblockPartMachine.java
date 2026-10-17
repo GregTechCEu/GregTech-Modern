@@ -298,7 +298,7 @@ public class MultiblockPartMachine extends MetaMachine {
         return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
     }
 
-    public Component getFailReason(){
+    public Component getFailReason() {
         GTCEu.LOGGER.warn(String.format("Multiblock Part failed without a failure reason! Part: %s", this.getClass()));
         return ModifierFunction.DEFAULT_FAILURE;
     }

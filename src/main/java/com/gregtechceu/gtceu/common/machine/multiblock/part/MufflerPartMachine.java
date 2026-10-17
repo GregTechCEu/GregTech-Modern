@@ -209,7 +209,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
     }
 
     @Override
-    public Component getFailReason(){
+    public Component getFailReason() {
         return Component.translatable("gtceu.multiblock.universal.muffler_obstructed");
     }
 }

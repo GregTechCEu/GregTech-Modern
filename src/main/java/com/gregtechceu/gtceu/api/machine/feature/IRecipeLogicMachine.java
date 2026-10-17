@@ -56,7 +56,8 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
         recipe = recipeModifier.apply(recipe);
         if (recipe == null) {
             if (recipeModifier.getFailReason() == ModifierFunction.DEFAULT_FAILURE)
-                GTCEu.LOGGER.warn(String.format("Recipe Logic Machine failed without a failure reason! Machine: %s", this.getClass()));
+                GTCEu.LOGGER.warn(String.format("Recipe Logic Machine failed without a failure reason! Machine: %s",
+                        this.getClass()));
             return null;
         }
 
@@ -64,7 +65,9 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
             recipe = rlTrait.modifyRecipe(recipe);
             if (recipe == null) {
                 if (rlTrait.getFailReason() == ModifierFunction.DEFAULT_FAILURE)
-                    GTCEu.LOGGER.warn(String.format("Recipe Logic Machine Trait failed without a failure reason! Machine: %s, Trait: %s", this.getClass(), rlTrait.getClass()));
+                    GTCEu.LOGGER.warn(String.format(
+                            "Recipe Logic Machine Trait failed without a failure reason! Machine: %s, Trait: %s",
+                            this.getClass(), rlTrait.getClass()));
                 return null;
             }
         }
