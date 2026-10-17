@@ -4780,7 +4780,7 @@
     "item.gtceu.tool.behavior.prospecting.ore": "找到礦：%s",
     "item.gtceu.tool.behavior.prospecting.water": "找到了水",
     "item.gtceu.tool.behavior.rail_rotation": "§e鐵路技工：§f旋轉軌道",
-    "item.gtceu.tool.behavior.relocate_mining": "§2磁力吸引：§f採掘的方塊進入物品欄",
+    "item.gtceu.tool.behavior.relocate_mining_and_mob_drops": "§2磁力吸引：§f採掘的方塊進入物品欄",
     "item.gtceu.tool.behavior.remove_wax": "§6清潔試劑：§f脫蠟",
     "item.gtceu.tool.behavior.scrape": "§b拋光工藝：§f除鏽",
     "item.gtceu.tool.behavior.shield_disable": "§c野獸蠻攻：§f無視盾牌",

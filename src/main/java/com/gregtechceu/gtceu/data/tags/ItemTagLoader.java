@@ -194,6 +194,10 @@ public class ItemTagLoader {
         provider.addTag(CustomTags.TOOLS_IGNITER)
                 .addTag(ItemTags.CREEPER_IGNITERS);
 
+        provider.addTag(CustomTags.MINING_LOOT_ENCHANTABLE_EXCEPT_HAMMERS)
+                .addTag(ItemTags.MINING_LOOT_ENCHANTABLE)
+                .remove(CustomTags.TOOLS_HAMMER);
+
         // Add sodalite and lazurite as enchanting fuels
         provider.addTag(Tags.Items.ENCHANTING_FUELS)
                 .add(ChemicalHelper.getItemOrThrow(gem, Lazurite))
