@@ -213,7 +213,10 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
         for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
             recipe = rlTrait.modifyRecipe(recipe);
-            if (recipe == null) return null;
+            if (recipe == null) {
+                RecipeLogic.putFailureReason(this, recipe, rlTrait.getFailReason());
+                return null;
+            }
         }
         return recipe;
     }
