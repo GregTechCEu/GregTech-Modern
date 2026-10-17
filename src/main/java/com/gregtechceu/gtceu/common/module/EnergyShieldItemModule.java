@@ -109,7 +109,7 @@ public class EnergyShieldItemModule extends TieredItemModule {
         public static final Codec<EnergyShieldModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(
                 Codec.DOUBLE.fieldOf("energyPercent").forGetter(EnergyShieldModuleData::getEnergyPercent)
         ).apply(instance, EnergyShieldModuleData::new));
-        //spotless:on
+        // spotless:on
 
         /**
          * A double from 0 to 1. Determines the max percentage of energy the shield will deplete.

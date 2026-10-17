@@ -114,7 +114,7 @@ public class SpeedItemModule extends TieredItemModule {
         public static final Codec<SpeedModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(
                 Codec.floatRange(0, 1).optionalFieldOf("strength", 1f).forGetter(SpeedModuleData::getStrength)
         ).apply(instance, SpeedModuleData::new));
-        //spotless:on
+        // spotless:on
 
         @Getter
         private final float strength;

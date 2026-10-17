@@ -69,7 +69,7 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
         public static final Codec<JumpBoostModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(
                 Codec.FLOAT.fieldOf("jump_boost").forGetter(JumpBoostModuleData::getJumpBoost)
         ).apply(instance, JumpBoostModuleData::new));
-        //spotless:on
+        // spotless:on
 
         @Getter
         private float jumpBoost;

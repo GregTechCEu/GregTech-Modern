@@ -187,7 +187,7 @@ public abstract class AttributeItemModule extends ItemModule {
         public static final Codec<AttributeModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(
                 Codec.DOUBLE.fieldOf("modifier_amount").forGetter(AttributeModuleData::getModifierAmount)
         ).apply(instance, AttributeModuleData::new));
-        //spotless:on
+        // spotless:on
 
         @Getter
         private final double modifierAmount;

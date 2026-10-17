@@ -32,7 +32,7 @@ public abstract class ModuleData {
                 Codec.BOOL.fieldOf("enabled").forGetter(ModuleData::isEnabled)
         );
     }
-    //spotless:on
+    // spotless:on
 
     @Getter
     protected final int slot;

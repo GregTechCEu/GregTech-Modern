@@ -114,7 +114,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
 
     @Override
     public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
-        if (armorLogic == null) return super.damageItem(stack, amount, entity, onBroken);
+        if (armorLogic == null) return 0;
         return armorLogic.damageArmor(entity, stack, entity.getLastDamageSource(), amount, this.getEquipmentSlot());
     }
 

@@ -252,7 +252,7 @@ public class AutoChargeItemModule extends TieredItemModule {
                 Codec.intRange(0, GTValues.TIER_COUNT - 1).optionalFieldOf("voltage_tier").forGetter(data -> Optional.of(data.getVoltageTier())),
                 Codec.intRange(1, 16).optionalFieldOf("amperage", 1).forGetter(AutoChargeModuleData::getAmperage)
         )).apply(instance, AutoChargeModuleData::new));
-        //spotless:on
+        // spotless:on
 
         @Getter
         private final @Nullable GlobalPos linkedPos;

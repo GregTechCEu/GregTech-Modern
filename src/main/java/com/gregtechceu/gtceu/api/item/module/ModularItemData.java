@@ -18,7 +18,7 @@ public class ModularItemData {
     public static final Codec<ModularItemData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(ModuleData.DISPATCH_CODEC).fieldOf("modules").forGetter(ModularItemData::getModules)
     ).apply(instance, ModularItemData::new));
-    //spotless:on
+    // spotless:on
 
     @Getter
     private final Int2ObjectMap<ModuleData> moduleMap;

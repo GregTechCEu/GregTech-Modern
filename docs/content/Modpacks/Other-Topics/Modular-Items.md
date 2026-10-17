@@ -42,7 +42,7 @@ a component, module-related tooltips won't be displayed, and `onUse` and related
 ### ItemModuleSlot
 
 An `ItemModuleSlot` is basically a `Predicate<ItemModule>` (a function that accepts an `ItemModule` and returns a `boolean`) with some other methods.
-It has 2 abstract methods for your subclasses to implement:
+It has 3 abstract methods for your subclasses to implement:
 
 - `acceptsModule(ItemModule)` -> `boolean`
     returns whether the provided module can be put into this slot

@@ -125,7 +125,7 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
                 Codec.BYTE.fieldOf("toggle_timer").forGetter(NightVisionModuleData::getToggleTimer),
                 Codec.INT.fieldOf("night_vision_timer").forGetter(NightVisionModuleData::getNightVisionTimer))
         ).apply(instance, NightVisionModuleData::new));
-        //spotless:on
+        // spotless:on
 
         @Getter
         private boolean nightVision = false;
