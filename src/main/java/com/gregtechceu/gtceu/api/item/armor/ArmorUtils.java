@@ -219,20 +219,19 @@ public class ArmorUtils {
             this.stringList = new ArrayList<>();
         }
 
-        public void newString(Component string) {
+        public void newLine(Component string) {
             this.stringAmount++;
             this.stringList.add(string);
         }
 
-        public void draw(GuiGraphics poseStack) {
+        public void draw(GuiGraphics guiGraphics) {
             for (int i = 0; i < stringAmount; i++) {
                 IntIntPair coords = this.getStringCoord(i);
-                poseStack.drawString(mc.font, stringList.get(i), coords.firstInt(), coords.secondInt(), 0xFFFFFF,
+                guiGraphics.drawString(mc.font, stringList.get(i), coords.firstInt(), coords.secondInt(), 0xFFFFFF,
                         false);
             }
         }
 
-        @Nonnull
         private IntIntPair getStringCoord(int index) {
             int posX;
             int posY;
@@ -242,8 +241,8 @@ public class ArmorUtils {
             int stringWidth = mc.font.width(stringList.get(index));
             switch (ConfigHolder.INSTANCE.client.armorHud.hudLocation) {
                 case 1 -> {
-                    posX = 1 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetX;
-                    posY = 1 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetY + (fontHeight * index);
+                    posX = 10 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetX;
+                    posY = 10 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetY + (fontHeight * index);
                 }
                 case 2 -> {
                     posX = windowWidth - (1 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetX) - stringWidth;

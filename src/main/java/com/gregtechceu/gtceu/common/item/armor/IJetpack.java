@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.item.armor;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.common.module.CreativeFlightModule;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.core.particles.ParticleOptions;
@@ -71,7 +73,29 @@ public interface IJetpack {
 
     boolean hasEnergy(ItemStack stack);
 
+    default boolean updateHoverMode(Player player, ItemStack stack, boolean hover, boolean toggle) {
+        var modular = GTCapabilityHelper.getModularItem(stack);
+        boolean creativeFlight = modular != null && modular.getAllModuleInstances().stream()
+                .anyMatch(context -> context.getModule() instanceof CreativeFlightModule &&
+                        context.getModule().isEnabled(context));
+        if (!creativeFlight) return toggle != hover;
+
+        // The server owns flight changes; vanilla's ability packet also covers double-tap jump.
+        if (toggle && !player.level().isClientSide && !player.isSpectator()) {
+            var abilities = player.getAbilities();
+            var electric = GTCapabilityHelper.getElectricItem(stack);
+            if (abilities.flying || (abilities.mayfly && electric != null &&
+                    electric.canUse(CreativeFlightModule.ENERGY_PER_TICK))) {
+                abilities.flying = !abilities.flying;
+                player.onUpdateAbilities();
+            }
+        }
+        return player.getAbilities().flying;
+    }
+
     default void performFlying(@NotNull Player player, boolean flightEnabled, boolean hover, ItemStack stack) {
+        if (player.getAbilities().flying) return;
+
         double deltaY = player.getDeltaMovement().y();
 
         if ((!flightEnabled || !hover) && player.getY() < player.level().getMinBuildHeight() - 5) {
@@ -172,7 +196,7 @@ public interface IJetpack {
         CompoundTag tag = stack.getOrCreateTag();
         tag.putBoolean("enabled", true);
         tag.putBoolean("hover", true);
-        player.displayClientMessage(Component.translatable("metaarmor.jetpack.emergency_hover_mode"), true);
+        player.displayClientMessage(Component.translatable("armor.gtceu.jetpack.emergency_hover"), true);
         player.fallDistance = 0;
 
         if (!player.level().isClientSide) {
