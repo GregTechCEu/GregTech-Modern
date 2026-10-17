@@ -116,7 +116,7 @@ public class AOEConfigUIBehavior implements IToolUIBehavior<AOEConfigUIBehavior>
                                                 .background(GuiTextures.MC_BUTTON, removeOverlay)
                                                 .hoverBackground(GuiTextures.MC_BUTTON_HOVERED, removeOverlay)
                                                 .syncHandler(minusLayers))
-                                        .child(Text.dynamic(() -> Component.literal(Integer.toString(2 * definition.layer + 1)))
+                                        .child(Text.dynamic(() -> Component.literal(Integer.toString(definition.layer + 1)))
                                                 .asWidget())
                                         .child(new ButtonWidget<>()
                                                 .size(12)
