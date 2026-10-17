@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 import net.minecraft.core.Direction;
 
 import lombok.Getter;
+import net.minecraft.network.chat.Component;
 
 import java.util.*;
 
@@ -150,8 +151,11 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
         if (!(machine instanceof SimpleSteamMachine steamMachine)) {
             return RecipeModifier.nullWrongType(SimpleSteamMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.exhaustVentTrait.checkVenting()) {
-            return ModifierFunction.NULL;
+        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV){
+            return ModifierFunction.cancel(Component.translatable("gtceu.recipe_modifier.insufficient_voltage"));
+        }
+        if (!steamMachine.exhaustVentTrait.checkVenting()) {
+            return ModifierFunction.cancel(Component.translatable("gtceu.multiblock.large_miner.vent"));
         }
 
         var builder = ModifierFunction.builder().conditions(VentCondition.INSTANCE);

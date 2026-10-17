@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
@@ -11,12 +12,14 @@ import com.gregtechceu.gtceu.api.machine.trait.recipe.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -293,5 +296,10 @@ public class MultiblockPartMachine extends MetaMachine {
             if (appearance != null) return appearance;
         }
         return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
+    }
+
+    public Component getFailReason(){
+        GTCEu.LOGGER.warn(String.format("Multiblock Part failed without a failure reason! Part: %s", this.getClass()));
+        return ModifierFunction.DEFAULT_FAILURE;
     }
 }

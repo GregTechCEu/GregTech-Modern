@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRecipeLogicModifierTrait;
@@ -7,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
 
@@ -50,12 +52,21 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      */
     @Nullable
     default GTRecipe doModifyRecipe(GTRecipe recipe) {
-        recipe = self().getDefinition().getRecipeModifier().applyModifier(self(), recipe);
-        if (recipe == null) return null;
+        ModifierFunction recipeModifier = self().getDefinition().getRecipeModifier().getModifier(self(), recipe);
+        recipe = recipeModifier.apply(recipe);
+        if (recipe == null) {
+            if (recipeModifier.getFailReason() == ModifierFunction.DEFAULT_FAILURE)
+                GTCEu.LOGGER.warn(String.format("Recipe Logic Machine failed without a failure reason! Machine: %s", this.getClass()));
+            return null;
+        }
 
         for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
             recipe = rlTrait.modifyRecipe(recipe);
-            if (recipe == null) return null;
+            if (recipe == null) {
+                if (rlTrait.getFailReason() == ModifierFunction.DEFAULT_FAILURE)
+                    GTCEu.LOGGER.warn(String.format("Recipe Logic Machine Trait failed without a failure reason! Machine: %s, Trait: %s", this.getClass(), rlTrait.getClass()));
+                return null;
+            }
         }
         return recipe;
     }

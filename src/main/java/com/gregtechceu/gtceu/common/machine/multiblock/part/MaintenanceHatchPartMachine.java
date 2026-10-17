@@ -503,4 +503,9 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                                 .syncHandler(syncHandler)))
                 .child(maintenanceStatusWidget));
     }
+
+    @Override
+    public Component getFailReason(){
+        return Component.translatable("gtceu.multiblock.universal.has_problems");
+    }
 }
