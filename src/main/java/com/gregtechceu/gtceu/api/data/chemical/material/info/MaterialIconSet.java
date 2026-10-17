@@ -1,39 +1,39 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.info;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
+
 public class MaterialIconSet {
 
-    public static final MaterialIconSet DULL = new MaterialIconSet(GTCEu.id("dull"), null, true);
-    public static final MaterialIconSet METALLIC = new MaterialIconSet(GTCEu.id("metallic"));
-    public static final MaterialIconSet MAGNETIC = new MaterialIconSet(GTCEu.id("magnetic"), METALLIC);
-    public static final MaterialIconSet SHINY = new MaterialIconSet(GTCEu.id("shiny"), METALLIC);
-    public static final MaterialIconSet BRIGHT = new MaterialIconSet(GTCEu.id("bright"), SHINY);
-    public static final MaterialIconSet DIAMOND = new MaterialIconSet(GTCEu.id("diamond"), SHINY);
-    public static final MaterialIconSet EMERALD = new MaterialIconSet(GTCEu.id("emerald"), DIAMOND);
-    public static final MaterialIconSet GEM_HORIZONTAL = new MaterialIconSet(GTCEu.id("gem_horizontal"), EMERALD);
-    public static final MaterialIconSet GEM_VERTICAL = new MaterialIconSet(GTCEu.id("gem_vertical"), EMERALD);
-    public static final MaterialIconSet RUBY = new MaterialIconSet(GTCEu.id("ruby"), EMERALD);
-    public static final MaterialIconSet OPAL = new MaterialIconSet(GTCEu.id("opal"), RUBY);
-    public static final MaterialIconSet GLASS = new MaterialIconSet(GTCEu.id("glass"), RUBY);
-    public static final MaterialIconSet NETHERSTAR = new MaterialIconSet(GTCEu.id("netherstar"), GLASS);
-    public static final MaterialIconSet FINE = new MaterialIconSet(GTCEu.id("fine"));
-    public static final MaterialIconSet SAND = new MaterialIconSet(GTCEu.id("sand"), FINE);
-    public static final MaterialIconSet WOOD = new MaterialIconSet(GTCEu.id("wood"), FINE);
-    public static final MaterialIconSet ROUGH = new MaterialIconSet(GTCEu.id("rough"), FINE);
-    public static final MaterialIconSet FLINT = new MaterialIconSet(GTCEu.id("flint"), ROUGH);
-    public static final MaterialIconSet LIGNITE = new MaterialIconSet(GTCEu.id("lignite"), ROUGH);
-    public static final MaterialIconSet QUARTZ = new MaterialIconSet(GTCEu.id("quartz"), ROUGH);
-    public static final MaterialIconSet CERTUS = new MaterialIconSet(GTCEu.id("certus"), QUARTZ);
-    public static final MaterialIconSet LAPIS = new MaterialIconSet(GTCEu.id("lapis"), QUARTZ);
-    public static final MaterialIconSet FLUID = new MaterialIconSet(GTCEu.id("fluid"));
-    public static final MaterialIconSet RADIOACTIVE = new MaterialIconSet(GTCEu.id("radioactive"), METALLIC);
+    public static final Holder<MaterialIconSet> DULL = REGISTRATE.materialIconSet("dull", null);
+    public static final Holder<MaterialIconSet> METALLIC = REGISTRATE.materialIconSet("metallic");
+    public static final Holder<MaterialIconSet> MAGNETIC = REGISTRATE.materialIconSet("magnetic", METALLIC);
+    public static final Holder<MaterialIconSet> SHINY = REGISTRATE.materialIconSet("shiny", METALLIC);
+    public static final Holder<MaterialIconSet> BRIGHT = REGISTRATE.materialIconSet("bright", SHINY);
+    public static final Holder<MaterialIconSet> DIAMOND = REGISTRATE.materialIconSet("diamond", SHINY);
+    public static final Holder<MaterialIconSet> EMERALD = REGISTRATE.materialIconSet("emerald", DIAMOND);
+    public static final Holder<MaterialIconSet> GEM_HORIZONTAL = REGISTRATE.materialIconSet("gem_horizontal", EMERALD);
+    public static final Holder<MaterialIconSet> GEM_VERTICAL = REGISTRATE.materialIconSet("gem_vertical", EMERALD);
+    public static final Holder<MaterialIconSet> RUBY = REGISTRATE.materialIconSet("ruby", EMERALD);
+    public static final Holder<MaterialIconSet> OPAL = REGISTRATE.materialIconSet("opal", RUBY);
+    public static final Holder<MaterialIconSet> GLASS = REGISTRATE.materialIconSet("glass", RUBY);
+    public static final Holder<MaterialIconSet> NETHERSTAR = REGISTRATE.materialIconSet("netherstar", GLASS);
+    public static final Holder<MaterialIconSet> FINE = REGISTRATE.materialIconSet("fine");
+    public static final Holder<MaterialIconSet> SAND = REGISTRATE.materialIconSet("sand", FINE);
+    public static final Holder<MaterialIconSet> WOOD = REGISTRATE.materialIconSet("wood", FINE);
+    public static final Holder<MaterialIconSet> ROUGH = REGISTRATE.materialIconSet("rough", FINE);
+    public static final Holder<MaterialIconSet> FLINT = REGISTRATE.materialIconSet("flint", ROUGH);
+    public static final Holder<MaterialIconSet> LIGNITE = REGISTRATE.materialIconSet("lignite", ROUGH);
+    public static final Holder<MaterialIconSet> QUARTZ = REGISTRATE.materialIconSet("quartz", ROUGH);
+    public static final Holder<MaterialIconSet> CERTUS = REGISTRATE.materialIconSet("certus", QUARTZ);
+    public static final Holder<MaterialIconSet> LAPIS = REGISTRATE.materialIconSet("lapis", QUARTZ);
+    public static final Holder<MaterialIconSet> FLUID = REGISTRATE.materialIconSet("fluid");
+    public static final Holder<MaterialIconSet> RADIOACTIVE = REGISTRATE.materialIconSet("radioactive", METALLIC);
 
     // Implementation -----------------------------------------------------------------------------------------------
 
@@ -46,43 +46,7 @@ public class MaterialIconSet {
      * otherwise it will be Nonnull
      */
     @Nullable
-    public final MaterialIconSet parentIconset;
-
-    /**
-     * Create a new MaterialIconSet whose parent is {@link MaterialIconSet#DULL}
-     *
-     * @deprecated Use {@link MaterialIconSet#MaterialIconSet(ResourceLocation)} instead
-     * @param name the name of the iconset
-     */
-    @Deprecated(since = "8.0.0")
-    public MaterialIconSet(@NotNull String name) {
-        this(name, MaterialIconSet.DULL);
-    }
-
-    /**
-     * Create a new MaterialIconSet whose parent is one of your choosing
-     *
-     * @deprecated Use {@link MaterialIconSet#MaterialIconSet(ResourceLocation, MaterialIconSet)} instead
-     * @param name          the name of the iconset
-     * @param parentIconset the parent iconset
-     */
-    @Deprecated(since = "8.0.0")
-    public MaterialIconSet(@NotNull String name, @NotNull MaterialIconSet parentIconset) {
-        this(name, parentIconset, false);
-    }
-
-    /**
-     * Create a new MaterialIconSet which is a root
-     * 
-     * @deprecated Use {@link MaterialIconSet#MaterialIconSet(ResourceLocation, MaterialIconSet, boolean)} instead
-     * @param name          the name of the iconset
-     * @param parentIconset the parent iconset, should be null if this should be a root iconset
-     * @param isRootIconset true if this should be a root iconset, otherwise false
-     */
-    @Deprecated(since = "8.0.0")
-    public MaterialIconSet(@NotNull String name, @Nullable MaterialIconSet parentIconset, boolean isRootIconset) {
-        this(GTCEu.id(name), parentIconset, isRootIconset);
-    }
+    public final Holder<MaterialIconSet> parentIconset;
 
     /**
      * Create a new MaterialIconSet whose parent is {@link MaterialIconSet#DULL}
@@ -99,7 +63,7 @@ public class MaterialIconSet {
      * @param id            the id of the iconset
      * @param parentIconset the parent iconset
      */
-    public MaterialIconSet(@NotNull ResourceLocation id, @NotNull MaterialIconSet parentIconset) {
+    public MaterialIconSet(@NotNull ResourceLocation id, @NotNull Holder<MaterialIconSet> parentIconset) {
         this(id, parentIconset, false);
     }
 
@@ -110,7 +74,7 @@ public class MaterialIconSet {
      * @param parentIconset the parent iconset, should be null if this should be a root iconset
      * @param isRootIconset true if this should be a root iconset, otherwise false
      */
-    public MaterialIconSet(@NotNull ResourceLocation id, @Nullable MaterialIconSet parentIconset,
+    public MaterialIconSet(@NotNull ResourceLocation id, @Nullable Holder<MaterialIconSet> parentIconset,
                            boolean isRootIconset) {
         this.id = id;
 
@@ -120,8 +84,6 @@ public class MaterialIconSet {
         this.name = id.getPath();
         this.isRootIconset = isRootIconset;
         this.parentIconset = parentIconset;
-
-        GTRegistries.register(GTRegistries.MATERIAL_ICON_SETS, this.id, this);
     }
 
     public String getName() {

@@ -33,7 +33,7 @@ GTCEuStartupEvents.registry('gtceu:tag_prefix', event => {
 
 ```json title="assets/gtceu/lang/en_us.json"
 {
-    "tagprefix.blockium": "Blockium %s Ore"
+    "tag_prefix.gtceu.blockium": "Blockium %s Ore"
 }
 ```
 

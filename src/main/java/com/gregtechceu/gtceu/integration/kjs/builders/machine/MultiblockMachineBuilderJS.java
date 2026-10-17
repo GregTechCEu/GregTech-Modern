@@ -40,302 +40,302 @@ import java.util.List;
 import java.util.function.*;
 
 @SuppressWarnings("unused")
-public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachineDefinition>
-                                             implements IMachineBuilderKJS {
+public class MultiblockMachineBuilderJS extends BuilderBase<MultiblockMachineDefinition>
+                                        implements IMachineBuilderKJS {
 
     private final MultiblockMachineBuilder<?> internal;
 
-    public MultiblockMachineBuilderWrapper(ResourceLocation id,
-                                           MultiblockMachineBuilder<?> internal) {
+    public MultiblockMachineBuilderJS(ResourceLocation id,
+                                      MultiblockMachineBuilder<?> internal) {
         super(id);
         this.internal = internal;
         this.dummyBuilder = true;
     }
 
-    public MultiblockMachineBuilderWrapper generator(boolean generator) {
+    public MultiblockMachineBuilderJS generator(boolean generator) {
         internal.generator(generator);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper pattern(Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
+    public MultiblockMachineBuilderJS pattern(Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
         internal.pattern(pattern);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper allowFlip(boolean allowFlip) {
+    public MultiblockMachineBuilderJS allowFlip(boolean allowFlip) {
         internal.allowFlip(allowFlip);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper partSorter(Comparator<MultiblockPartMachine> partSorter) {
+    public MultiblockMachineBuilderJS partSorter(Comparator<MultiblockPartMachine> partSorter) {
         internal.partSorter(partSorter);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper partAppearance(@Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
+    public MultiblockMachineBuilderJS partAppearance(@Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
         internal.partAppearance(partAppearance);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper recoveryItems(Supplier<ItemLike[]> items) {
+    public MultiblockMachineBuilderJS recoveryItems(Supplier<ItemLike[]> items) {
         internal.recoveryItems(items);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper recoveryStacks(Supplier<ItemStack[]> stacks) {
+    public MultiblockMachineBuilderJS recoveryStacks(Supplier<ItemStack[]> stacks) {
         internal.recoveryStacks(stacks);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper blockEntityFactory(MachineInstanceFactory machine) {
+    public MultiblockMachineBuilderJS blockEntityFactory(MachineInstanceFactory machine) {
         internal.instanceFactory(machine);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper model(@Nullable MachineBuilder.ModelInitializer model) {
+    public MultiblockMachineBuilderJS model(@Nullable MachineBuilder.ModelInitializer model) {
         internal.model(model);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper blockModel(@Nullable NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
+    public MultiblockMachineBuilderJS blockModel(@Nullable NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
         internal.blockModel(blockModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper shape(VoxelShape shape) {
+    public MultiblockMachineBuilderJS shape(VoxelShape shape) {
         internal.shape(shape);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper multiblockPreviewRenderer(boolean multiBlockWorldPreview,
-                                                                     boolean multiBlockXEIPreview) {
+    public MultiblockMachineBuilderJS multiblockPreviewRenderer(boolean multiBlockWorldPreview,
+                                                                boolean multiBlockXEIPreview) {
         internal.multiblockPreviewRenderer(multiBlockWorldPreview, multiBlockXEIPreview);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper rotationState(RotationState rotationState) {
+    public MultiblockMachineBuilderJS rotationState(RotationState rotationState) {
         internal.rotationState(rotationState);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper hasBER(boolean hasBER) {
+    public MultiblockMachineBuilderJS hasBER(boolean hasBER) {
         internal.hasBER(hasBER);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper recipeTypes(GTRecipeType... recipeTypes) {
+    public MultiblockMachineBuilderJS recipeTypes(GTRecipeType... recipeTypes) {
         for (var type : recipeTypes) {
             recipeType(type);
         }
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper recipeType(GTRecipeType recipeTypes) {
+    public MultiblockMachineBuilderJS recipeType(GTRecipeType recipeTypes) {
         internal.recipeType(() -> recipeTypes);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper tier(int tier) {
+    public MultiblockMachineBuilderJS tier(int tier) {
         internal.tier(tier);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper recipeOutputLimits(Reference2IntMap<RecipeCapability<?>> map) {
+    public MultiblockMachineBuilderJS recipeOutputLimits(Reference2IntMap<RecipeCapability<?>> map) {
         internal.recipeOutputLimits(map);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper addOutputLimit(RecipeCapability<?> capability, int limit) {
+    public MultiblockMachineBuilderJS addOutputLimit(RecipeCapability<?> capability, int limit) {
         internal.addOutputLimit(capability, limit);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper simpleModel(ResourceLocation model) {
+    public MultiblockMachineBuilderJS simpleModel(ResourceLocation model) {
         internal.simpleModel(model);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper defaultModel() {
+    public MultiblockMachineBuilderJS defaultModel() {
         internal.defaultModel();
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper tieredHullModel(ResourceLocation model) {
+    public MultiblockMachineBuilderJS tieredHullModel(ResourceLocation model) {
         internal.tieredHullModel(model);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper overlayTieredHullModel(ResourceLocation overlayModel) {
+    public MultiblockMachineBuilderJS overlayTieredHullModel(ResourceLocation overlayModel) {
         internal.overlayTieredHullModel(overlayModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper colorOverlayTieredHullModel(ResourceLocation overlay) {
+    public MultiblockMachineBuilderJS colorOverlayTieredHullModel(ResourceLocation overlay) {
         internal.colorOverlayTieredHullModel(overlay);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper colorOverlayTieredHullModel(ResourceLocation overlay,
-                                                                       @Nullable ResourceLocation pipeOverlay,
-                                                                       @Nullable ResourceLocation emissiveOverlay) {
+    public MultiblockMachineBuilderJS colorOverlayTieredHullModel(ResourceLocation overlay,
+                                                                  @Nullable ResourceLocation pipeOverlay,
+                                                                  @Nullable ResourceLocation emissiveOverlay) {
         internal.colorOverlayTieredHullModel(overlay, pipeOverlay, emissiveOverlay);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper workableTieredHullModel(ResourceLocation workableModel) {
+    public MultiblockMachineBuilderJS workableTieredHullModel(ResourceLocation workableModel) {
         internal.workableTieredHullModel(workableModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper simpleGeneratorModel(ResourceLocation workableModel) {
+    public MultiblockMachineBuilderJS simpleGeneratorModel(ResourceLocation workableModel) {
         internal.simpleGeneratorModel(workableModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper workableCasingModel(ResourceLocation baseCasing,
-                                                               ResourceLocation overlayModel) {
+    public MultiblockMachineBuilderJS workableCasingModel(ResourceLocation baseCasing,
+                                                          ResourceLocation overlayModel) {
         internal.workableCasingModel(baseCasing, overlayModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper sidedOverlayCasingModel(ResourceLocation baseCasing,
-                                                                   ResourceLocation workableModel) {
+    public MultiblockMachineBuilderJS sidedOverlayCasingModel(ResourceLocation baseCasing,
+                                                              ResourceLocation workableModel) {
         internal.sidedOverlayCasingModel(baseCasing, workableModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper sidedWorkableCasingModel(ResourceLocation baseCasing,
-                                                                    ResourceLocation workableModel) {
+    public MultiblockMachineBuilderJS sidedWorkableCasingModel(ResourceLocation baseCasing,
+                                                               ResourceLocation workableModel) {
         internal.sidedWorkableCasingModel(baseCasing, workableModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper overlaySteamHullModel(ResourceLocation overlayModel) {
+    public MultiblockMachineBuilderJS overlaySteamHullModel(ResourceLocation overlayModel) {
         internal.overlaySteamHullModel(overlayModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper colorOverlaySteamHullModel(ResourceLocation overlay,
-                                                                      @Nullable ResourceLocation pipeOverlay,
-                                                                      @Nullable ResourceLocation emissiveOverlay) {
+    public MultiblockMachineBuilderJS colorOverlaySteamHullModel(ResourceLocation overlay,
+                                                                 @Nullable ResourceLocation pipeOverlay,
+                                                                 @Nullable ResourceLocation emissiveOverlay) {
         internal.colorOverlaySteamHullModel(overlay, pipeOverlay, emissiveOverlay);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper colorOverlaySteamHullModel(ResourceLocation overlay) {
+    public MultiblockMachineBuilderJS colorOverlaySteamHullModel(ResourceLocation overlay) {
         internal.colorOverlaySteamHullModel(overlay);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper workableSteamHullModel(boolean isHighPressure,
-                                                                  ResourceLocation workableModel) {
+    public MultiblockMachineBuilderJS workableSteamHullModel(boolean isHighPressure,
+                                                             ResourceLocation workableModel) {
         internal.workableSteamHullModel(isHighPressure, workableModel);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper tooltipBuilder(@Nullable BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
+    public MultiblockMachineBuilderJS tooltipBuilder(@Nullable BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
         internal.tooltipBuilder(tooltipBuilder);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper appearance(@Nullable Supplier<BlockState> state) {
+    public MultiblockMachineBuilderJS appearance(@Nullable Supplier<BlockState> state) {
         internal.appearance(state);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper appearanceBlock(Supplier<? extends Block> block) {
+    public MultiblockMachineBuilderJS appearanceBlock(Supplier<? extends Block> block) {
         internal.appearanceBlock(block);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper langValue(@Nullable String langValue) {
+    public MultiblockMachineBuilderJS langValue(@Nullable String langValue) {
         internal.langValue(langValue);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper tooltips(Component... components) {
+    public MultiblockMachineBuilderJS tooltips(Component... components) {
         internal.tooltips(components);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper conditionalTooltip(Component component, Supplier<Boolean> condition) {
+    public MultiblockMachineBuilderJS conditionalTooltip(Component component, Supplier<Boolean> condition) {
         internal.conditionalTooltip(component, condition.get());
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper conditionalTooltip(Component component, boolean condition) {
+    public MultiblockMachineBuilderJS conditionalTooltip(Component component, boolean condition) {
         internal.conditionalTooltip(component, condition);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper abilities(PartAbility... abilities) {
+    public MultiblockMachineBuilderJS abilities(PartAbility... abilities) {
         internal.abilities(abilities);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper paintingColor(int paintingColor) {
-        internal.paintingColor(paintingColor);
+    public MultiblockMachineBuilderJS paintingColor(int paintingColor) {
+        internal.paintingColor(() -> paintingColor);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper recipeModifier(RecipeModifier recipeModifier) {
+    public MultiblockMachineBuilderJS recipeModifier(RecipeModifier recipeModifier) {
         internal.recipeModifier(recipeModifier);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper recipeModifier(RecipeModifier recipeModifier,
-                                                          boolean alwaysTryModifyRecipe) {
+    public MultiblockMachineBuilderJS recipeModifier(RecipeModifier recipeModifier,
+                                                     boolean alwaysTryModifyRecipe) {
         internal.recipeModifier(recipeModifier, alwaysTryModifyRecipe);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper recipeModifiers(RecipeModifier... recipeModifiers) {
+    public MultiblockMachineBuilderJS recipeModifiers(RecipeModifier... recipeModifiers) {
         internal.recipeModifiers(recipeModifiers);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper recipeModifiers(boolean alwaysTryModifyRecipe,
-                                                           RecipeModifier... recipeModifiers) {
+    public MultiblockMachineBuilderJS recipeModifiers(boolean alwaysTryModifyRecipe,
+                                                      RecipeModifier... recipeModifiers) {
         internal.recipeModifiers(alwaysTryModifyRecipe, recipeModifiers);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper noRecipeModifier() {
+    public MultiblockMachineBuilderJS noRecipeModifier() {
         internal.noRecipeModifier();
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
+    public MultiblockMachineBuilderJS alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
         internal.alwaysTryModifyRecipe(alwaysTryModifyRecipe);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper beforeWorking(BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking) {
+    public MultiblockMachineBuilderJS beforeWorking(BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking) {
         internal.beforeWorking(beforeWorking);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper onWorking(Predicate<IRecipeLogicMachine> onWorking) {
+    public MultiblockMachineBuilderJS onWorking(Predicate<IRecipeLogicMachine> onWorking) {
         internal.onWorking(onWorking);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper onWaiting(Consumer<IRecipeLogicMachine> onWaiting) {
+    public MultiblockMachineBuilderJS onWaiting(Consumer<IRecipeLogicMachine> onWaiting) {
         internal.onWaiting(onWaiting);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper afterWorking(Consumer<IRecipeLogicMachine> afterWorking) {
+    public MultiblockMachineBuilderJS afterWorking(Consumer<IRecipeLogicMachine> afterWorking) {
         internal.afterWorking(afterWorking);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper regressWhenWaiting(boolean regressWhenWaiting) {
+    public MultiblockMachineBuilderJS regressWhenWaiting(boolean regressWhenWaiting) {
         internal.regressWhenWaiting(regressWhenWaiting);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper allowExtendedFacing(boolean allowExtendedFacing) {
+    public MultiblockMachineBuilderJS allowExtendedFacing(boolean allowExtendedFacing) {
         internal.allowExtendedFacing(allowExtendedFacing);
         return this;
     }
@@ -363,16 +363,16 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return null;
     }
 
-    public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id) {
+    public static MultiblockMachineBuilderJS createKJSMulti(ResourceLocation id) {
         var baseBuilder = GTRegistrate.createIgnoringListenerErrors(id.getNamespace())
                 .multiblock(id.getPath(), WorkableElectricMultiblockMachine::new);
-        return new MultiblockMachineBuilderWrapper(id, baseBuilder);
+        return new MultiblockMachineBuilderJS(id, baseBuilder);
     }
 
-    public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id,
-                                                                 MachineInstanceFactory<? extends MultiblockControllerMachine> machine) {
+    public static MultiblockMachineBuilderJS createKJSMulti(ResourceLocation id,
+                                                            MachineInstanceFactory<? extends MultiblockControllerMachine> machine) {
         var baseBuilder = GTRegistrate.createIgnoringListenerErrors(id.getNamespace())
                 .multiblock(id.getPath(), machine);
-        return new MultiblockMachineBuilderWrapper(id, baseBuilder);
+        return new MultiblockMachineBuilderJS(id, baseBuilder);
     }
 }
