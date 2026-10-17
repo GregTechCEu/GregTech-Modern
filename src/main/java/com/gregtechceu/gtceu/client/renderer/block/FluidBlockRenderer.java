@@ -59,6 +59,8 @@ public class FluidBlockRenderer {
                            int combinedOverlay, int combinedLight) {
         var fluidClientInfo = IClientFluidTypeExtensions.of(fluid);
         var sprite = texture.map(fluidClientInfo);
+        if (sprite == null) return;
+
         float u0 = sprite.getU0(), v0 = sprite.getV0(), u1 = sprite.getU1(), v1 = sprite.getV1();
         int color = fluidClientInfo.getTintColor();
 
@@ -95,6 +97,8 @@ public class FluidBlockRenderer {
                           int combinedOverlay, BlockPos origin, @Nullable BlockAndTintGetter level) {
         var fluidClientInfo = IClientFluidTypeExtensions.of(fluid);
         var sprite = texture.map(fluidClientInfo);
+        if (sprite == null) return;
+
         float u0 = sprite.getU0(), v0 = sprite.getV0(), u1 = sprite.getU1(), v1 = sprite.getV1();
         int color = fluidClientInfo.getTintColor();
         Vector3fc normal = getNormal(face);
@@ -114,6 +118,8 @@ public class FluidBlockRenderer {
                           Fluid fluid, RenderUtil.FluidTextureType texture, int combinedOverlay, int combinedLight) {
         var fluidClientInfo = IClientFluidTypeExtensions.of(fluid);
         var sprite = texture.map(fluidClientInfo);
+        if (sprite == null) return;
+
         float u0 = sprite.getU0(), v0 = sprite.getV0(), u1 = sprite.getU1(), v1 = sprite.getV1();
         int color = fluidClientInfo.getTintColor();
         Vector3fc normal = getNormal(face);
@@ -133,6 +139,8 @@ public class FluidBlockRenderer {
                          int combinedOverlay, int combinedLight) {
         var fluidClientInfo = IClientFluidTypeExtensions.of(fluid);
         var sprite = texture.map(fluidClientInfo);
+        if (sprite == null) return;
+
         float u0 = sprite.getU0(), v0 = sprite.getV0(), u1 = sprite.getU1(), v1 = sprite.getV1();
         int color = fluidClientInfo.getTintColor();
         Vector3fc normal = getNormal(face);
