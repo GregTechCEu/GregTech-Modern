@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.modifier;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -39,6 +40,8 @@ public final class RecipeModifierList implements RecipeModifier {
             var func = modifier.getModifier(machine, runningRecipe);
             runningRecipe = func.apply(runningRecipe);
             if (runningRecipe == null) {
+                if (func.getFailReason() == ModifierFunction.DEFAULT_FAILURE)
+                    GTCEu.LOGGER.warn("Recipe modifier failed without a failure reason!");
                 RecipeLogic.putFailureReason(machine, recipe, func.getFailReason());
                 return ModifierFunction.NULL;
             }
