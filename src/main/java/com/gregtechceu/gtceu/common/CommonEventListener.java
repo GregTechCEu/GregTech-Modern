@@ -437,6 +437,8 @@ public class CommonEventListener {
         final ItemStack old = event.getFrom();
         final ItemStack current = event.getTo();
 
+        if (ItemStack.isSameItem(old, current)) return;
+
         if (entity instanceof Player player) {
             if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor &&
                     armor.getArmorLogic() != null) {
@@ -446,10 +448,6 @@ public class CommonEventListener {
                     armor.getArmorLogic() != null) {
                 armor.getArmorLogic().onEquip(player);
             }
-        }
-
-        if (ItemStack.matches(old, current)) {
-            return;
         }
 
         if (!old.isEmpty()) {
@@ -547,19 +545,6 @@ public class CommonEventListener {
         var zone = data.getZoneByPos(pos);
         if (zone != null) {
             GTNetwork.sendToPlayer(player, new SPacketRemoveHazardZone(pos));
-        }
-    }
-
-    @SubscribeEvent
-    public static void onEquipmentChange(LivingEquipmentChangeEvent event) {
-        if (!event.getSlot().isArmor()) return;
-        if (!(event.getEntity() instanceof Player player)) return;
-
-        if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor) {
-            armor.getArmorLogic().onUnequip(player);
-        }
-        if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor) {
-            armor.getArmorLogic().onEquip(player);
         }
     }
 

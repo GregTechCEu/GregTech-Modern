@@ -292,10 +292,6 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
                 lifeCycle.inventoryTick(stack, level, entity, slotId, isSelected);
             }
         }
-        if (slotId >= 36 && slotId <= 39 && entity instanceof Player player) {
-            if (armorLogic == null) return;
-            this.armorLogic.onArmorTick(level, player, stack);
-        }
     }
 
     @Override
