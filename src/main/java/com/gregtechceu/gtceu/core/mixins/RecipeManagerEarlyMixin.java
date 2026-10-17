@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.common.data.GTRecipes;
+import com.gregtechceu.gtceu.data.dynamic.DynamicRecipeHandler;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.crafting.RecipeManager;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,12 +18,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Map;
 
 @Mixin(value = RecipeManager.class, priority = 500)
-public abstract class RecipeManagerEarlyMixin {
+public abstract class RecipeManagerEarlyMixin extends SimpleJsonResourceReloadListener {
+
+    private RecipeManagerEarlyMixin(Gson gson, String directory) {
+        super(gson, directory);
+    }
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
             at = @At("HEAD"))
-    private void gtceu$removeRecipes(Map<ResourceLocation, JsonElement> map, ResourceManager pResourceManager,
-                                     ProfilerFiller pProfiler, CallbackInfo ci) {
-        GTRecipes.recipeRemoval(map::remove);
+    private void gtceu$handleDynamicRecipesEarly(Map<ResourceLocation, JsonElement> map,
+                                                 ResourceManager resourceManager, ProfilerFiller profiler,
+                                                 CallbackInfo ci) {
+        DynamicRecipeHandler.handleRecipesEarly(map, this.getRegistryLookup(), this.getContext());
     }
 }

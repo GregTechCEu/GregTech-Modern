@@ -102,7 +102,7 @@ public class ChemicalHelper {
             Set<TagKey<Fluid>> allFluidTags = BuiltInRegistries.FLUID.getTagNames().collect(Collectors.toSet());
             for (final Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.FLUID)) {
-                    FluidProperty property = material.getProperty(PropertyKey.FLUID);
+                    FluidProperty property = material.getPropertyOrThrow(PropertyKey.FLUID);
                     FluidStorageKey.allKeys().stream()
                             .map(property::get)
                             .filter(Objects::nonNull)
@@ -204,11 +204,10 @@ public class ChemicalHelper {
             // guess an entry based on the item's tags if none are pre-registered.
             materialEntry = ITEM_MATERIAL_ENTRY_COLLECTED.computeIfAbsent(itemKey, item -> {
                 for (TagKey<Item> itemTag : item.asItem().builtInRegistryHolder().tags().toList()) {
-                    MaterialEntry materialEntry1 = getMaterialEntry(itemTag);
+                    MaterialEntry e = getMaterialEntry(itemTag);
                     // check that it's null and that it's not a parent tag
-                    if (materialEntry1 != null &&
-                            materialEntry1.tagPrefix().getItemParentTags().stream().noneMatch(itemTag::equals)) {
-                        return materialEntry1;
+                    if (e != null && e.tagPrefix().getItemParentTags().stream().noneMatch(itemTag::equals)) {
+                        return e;
                     }
                 }
                 ITEMS_WITHOUT_MATERIAL.add(item);
@@ -306,8 +305,8 @@ public class ChemicalHelper {
             TagPrefix prefix = entry.tagPrefix();
             var blocks = new ArrayList<Supplier<? extends Block>>();
             for (TagKey<Block> tag : prefix.getBlockTags(entry.material())) {
-                for (Holder<Block> itemHolder : BuiltInRegistries.BLOCK.getTagOrEmpty(tag)) {
-                    blocks.add(itemHolder::value);
+                for (Holder<Block> holder : BuiltInRegistries.BLOCK.getTagOrEmpty(tag)) {
+                    blocks.add(holder::value);
                 }
             }
             if (!blocks.isEmpty()) return blocks;
