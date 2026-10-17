@@ -12,7 +12,7 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
 === "Java"
     ```java title="MultiMachines.java"
     
-        public static final MultiblockMachineDefinition SUPERHEATED_PYROLYZING_OVEN = REGISTRATE
+        public static final MachineEntry<MultiblockMachineDefinition> SUPERHEATED_PYROLYZING_OVEN = REGISTRATE
                 .multiblock("superheated_pyrolyzing_oven", (holder) -> new CoilWorkableElectricMultiblockMachine(holder))
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(GTRecipeTypes.PYROLYSE_RECIPES)

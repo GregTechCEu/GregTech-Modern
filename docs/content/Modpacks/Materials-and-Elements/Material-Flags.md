@@ -10,11 +10,9 @@ can influence how the material behaves, as well as which items are generated for
 
 === "Java"
     ```java
-      public static Material MY_MATERIAL = new Material.Builder(
-        ADDON_MOD.id("my_material"))
+      public static MaterialRegistryEntry MY_MATERIAL = ADDON_REGISTRATE.material("my_material", builder -> builder
         // ...
-        .flags(MaterialFlags.FLAMMABLE)
-        .buildAndRegister();
+        .flags(MaterialFlags.FLAMMABLE));
     ```
 === "Javascript"
     ```js
@@ -26,9 +24,6 @@ can influence how the material behaves, as well as which items are generated for
     ```
 
 # Generic Flags
-
-- `NO_UNIFICATION`
-  - Description: Add to material to disable automatic recipe generation for it fully. This flag is deprecated, please use DISABLE_MATERIAL_RECIPES instead.
 
 - `DISABLE_MATERIAL_RECIPES`
   - Description: Add to material to disable automatic recipe generation for it fully. This replaces NO_UNIFICATION.
