@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.IUIHolder;
+import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.screen.ModularPanel;
@@ -87,7 +88,7 @@ public class ModularArmorManagerUI implements IUIHolder<ModularArmorUIFactory.Ar
             }
             pages.addPage(moduleList);
         }
-        return panel.child(GTMuiWidgets.createTitleBar(null,
+        return panel.child(GTMuiWidgets.createTitleBar(IDrawable.EMPTY.asIcon(),
                 Component.translatable("gui.gtceu.armor_config.title").getString(), 284,
                 GTGuiTextures.BACKGROUND)).child(armorList).child(pages);
     }

@@ -99,35 +99,33 @@ public class GTMuiWidgets {
         return createTitleBar(new ItemDrawable(stack).asIcon(), name, panelWidth, background);
     }
 
-    public static Flow createTitleBar(@Nullable Icon icon, String text, int panelWidth, UITexture background) {
-        int borderRadius = 5;
-        int iconSize = icon == null ? 0 : 16;
-        int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 3));
+    public static Flow createTitleBar(Icon icon, String text, int panelWidth, UITexture background) {
+        int sidePadding = 5;
+        int topPadding = 3;
+
+        int iconSize = 12;
+        int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (sidePadding * 3));
         int textTitleWidth = GTCEu.isClientThread() ? TextRenderer.getFont().width(text) : 1;
 
         int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
         int textHeightPerRow = GTCEu.isClientThread() ? (int) (Text.renderer.getFontHeight()) : 9;
-        int textHeight = textHeightPerRow * textRows + borderRadius;
+        int textHeight = textHeightPerRow * textRows + topPadding;
 
-        int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + (borderRadius * 4) + textTitleWidth));
-        TextWidget<?> textWidget = Text.str(text)
-                .asWidget()
-                .margin(borderRadius, borderRadius, borderRadius, 1)
-                .size(Math.min(minPanelWidth, textTitleWidth), textHeight);
-        if (icon == null) textWidget.center();
+        int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + (sidePadding * 4) + textTitleWidth));
+
         return Flow.row()
                 .decoration()
-                .coverChildrenHeight()
+                .coverChildren()
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .width(rowWidth)
-                .top(-(textHeight + borderRadius))
+                .bottomRel(1f)
+                .childPadding(1)
                 .horizontalCenter()
+                .padding(sidePadding, sidePadding, topPadding, 1)
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
-                .childIf(icon != null, () -> icon.size(iconSize)
-                        .asWidget()
-                        .marginLeft(borderRadius))
-                .child(textWidget);
+                .child(icon.size(iconSize).asWidget().size(12))
+                .child(Text.str(text).asWidget().size(Math.min(minPanelWidth, textTitleWidth), textHeight));
     }
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture texture,

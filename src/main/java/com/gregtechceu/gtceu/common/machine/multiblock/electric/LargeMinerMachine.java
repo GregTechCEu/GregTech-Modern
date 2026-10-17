@@ -195,7 +195,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var panelBuilder = getPanelBuilder(data, syncManager, settings);
         panelBuilder.mainContents(parent -> buildMainUI(parent, data, syncManager, settings));
-        var machinePanel = panelBuilder.build(syncManager, settings);
+        var machinePanel = panelBuilder.build(data, syncManager, settings);
 
         BooleanSyncValue silk = syncManager.getOrCreateSyncHandler("silkTouch", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(() -> getRecipeLogic().isSilkTouchMode(),

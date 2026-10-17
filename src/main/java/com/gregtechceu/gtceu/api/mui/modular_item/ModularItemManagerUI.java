@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.IUIHolder;
+import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.PlayerInventoryGuiData;
 import brachy.modularui.screen.ModularPanel;
@@ -73,7 +74,7 @@ public class ModularItemManagerUI implements IUIHolder<PlayerInventoryGuiData<?>
                 .horizontalCenter()
                 .coverChildren()
                 .padding(6)
-                .child(GTMuiWidgets.createTitleBar(null, "Modules", 250,
+                .child(GTMuiWidgets.createTitleBar(IDrawable.EMPTY.asIcon(), "Modules", 250,
                         GTGuiTextures.BACKGROUND))
                 .child(moduleList);
     }

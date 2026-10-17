@@ -362,7 +362,7 @@ public class CommonEventListener {
                         IJetpack.performEHover(chest, player);
                         player.fallDistance = 0;
                         event.setCanceled(true);
-            }
+                    }
         }
     }
 

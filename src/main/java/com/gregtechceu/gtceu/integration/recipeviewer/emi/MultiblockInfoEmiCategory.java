@@ -44,13 +44,17 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
     public static class MultiblockInfoEmiWrapper extends ModularUIEmiRecipe {
 
         private final MultiblockMachineDefinition definition;
-        private final List<EmiIngredient> containedBlocks;
+        private List<EmiIngredient> containedBlocks;
 
         public MultiblockInfoEmiWrapper(MultiblockMachineDefinition definition) {
             super(definition.getId(), () -> new MultiblockPreviewWidget(definition, null, 200, 180));
             this.definition = definition;
-            containedBlocks = MultiblockPreviewWidget.initializeContainedBlocks(definition).stream()
-                    .map(v -> (EmiIngredient) EmiStack.of(v)).toList();
+            try {
+                containedBlocks = MultiblockPreviewWidget.initializeContainedBlocks(definition).stream()
+                        .map(v -> (EmiIngredient) EmiStack.of(v)).toList();
+            } catch (Exception e) {
+                containedBlocks = List.of();
+            }
         }
 
         @Override
