@@ -188,7 +188,7 @@ public class CommonEventListener {
 
     @SubscribeEvent
     public static void onBlockStartBreak(BlockEvent.BreakEvent event) {
-        if (ToolHelper.IS_AOE_BREAKING_BLOCKS.get()) {
+        if (ToolHelper.AOE_BREAKING_BLOCKS.isActive()) {
             return;
         }
 
