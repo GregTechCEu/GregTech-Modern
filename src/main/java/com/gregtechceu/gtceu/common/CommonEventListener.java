@@ -414,6 +414,8 @@ public class CommonEventListener {
         final ItemStack old = event.getFrom();
         final ItemStack current = event.getTo();
 
+        if (ItemStack.isSameItem(old, current)) return;
+
         if (entity instanceof Player player) {
             if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor &&
                     armor.getArmorLogic() != null) {
@@ -423,10 +425,6 @@ public class CommonEventListener {
                     armor.getArmorLogic() != null) {
                 armor.getArmorLogic().onEquip(player);
             }
-        }
-
-        if (ItemStack.matches(old, current)) {
-            return;
         }
 
         if (!old.isEmpty()) {
