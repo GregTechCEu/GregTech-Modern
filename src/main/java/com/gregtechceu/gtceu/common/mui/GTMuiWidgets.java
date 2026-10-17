@@ -17,7 +17,9 @@ import com.gregtechceu.gtceu.common.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +32,7 @@ import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.text.TextRenderer;
 import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
 import brachy.modularui.utils.Alignment;
@@ -52,9 +55,25 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.*;
 
 public class GTMuiWidgets {
+
+    public static void addWrappedModuleDescription(RichTooltip tooltip,
+                                                   Component description) {
+        var minecraft = Minecraft.getInstance();
+        int width = Math.max(1, Math.min(220, minecraft.getWindow().getGuiScaledWidth() - 24));
+        for (var line : minecraft.font.getSplitter().splitLines(description, width,
+                Style.EMPTY)) {
+            var wrapped = Component.empty();
+            line.visit((style, text) -> {
+                wrapped.append(Component.literal(text).withStyle(style));
+                return Optional.empty();
+            }, Style.EMPTY);
+            tooltip.addLine(wrapped);
+        }
+    }
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth) {
         UITexture background = GTGuiTextures.BACKGROUND;
@@ -80,9 +99,9 @@ public class GTMuiWidgets {
         return createTitleBar(new ItemDrawable(stack).asIcon(), name, panelWidth, background);
     }
 
-    public static Flow createTitleBar(Icon icon, String text, int panelWidth, UITexture background) {
+    public static Flow createTitleBar(@Nullable Icon icon, String text, int panelWidth, UITexture background) {
         int borderRadius = 5;
-        int iconSize = 16;
+        int iconSize = icon == null ? 0 : 16;
         int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 3));
         int textTitleWidth = GTCEu.isClientThread() ? TextRenderer.getFont().width(text) : 1;
 
@@ -91,7 +110,11 @@ public class GTMuiWidgets {
         int textHeight = textHeightPerRow * textRows + borderRadius;
 
         int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + (borderRadius * 4) + textTitleWidth));
-
+        TextWidget<?> textWidget = Text.str(text)
+                .asWidget()
+                .margin(borderRadius, borderRadius, borderRadius, 1)
+                .size(Math.min(minPanelWidth, textTitleWidth), textHeight);
+        if (icon == null) textWidget.center();
         return Flow.row()
                 .decoration()
                 .coverChildrenHeight()
@@ -101,13 +124,10 @@ public class GTMuiWidgets {
                 .top(-(textHeight + borderRadius))
                 .horizontalCenter()
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
-                .child(icon.size(iconSize)
+                .childIf(icon != null, () -> icon.size(iconSize)
                         .asWidget()
                         .marginLeft(borderRadius))
-                .child(Text.str(text)
-                        .asWidget()
-                        .margin(borderRadius, borderRadius, borderRadius, 1)
-                        .size(Math.min(minPanelWidth, textTitleWidth), textHeight));
+                .child(textWidget);
     }
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture texture,

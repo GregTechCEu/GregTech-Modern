@@ -41,6 +41,10 @@ public final class GTCodecUtils {
         return either.map(Function.identity(), Function.identity());
     }
 
+    public static <T, A> DataResult<A> encodeMap(T value, MapCodec<T> codec, DynamicOps<A> ops) {
+        return codec.encode(value, ops, ops.mapBuilder()).build(ops.empty());
+    }
+
     public static <T> MapCodec<T> quietExceptionCodec(Codec<T> codec, String field, boolean isKubeLoaded) {
         return codec.optionalFieldOf(field, null).flatXmap(
                 val -> {

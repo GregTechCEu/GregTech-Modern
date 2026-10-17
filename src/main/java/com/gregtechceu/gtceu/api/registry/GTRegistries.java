@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
+import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternErrorType;
@@ -103,7 +104,7 @@ public final class GTRegistries {
         public static final ResourceKey<Registry<ToolBehaviorType<?>>> TOOL_BEHAVIOR = makeRegistryKey(GTCEu.id("tool_behavior"));
         public static final ResourceKey<Registry<PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(GTCEu.id("pattern_error_type"));
         public static final ResourceKey<Registry<Placeholder>> PLACEHOLDER = makeRegistryKey(GTCEu.id("placeholder"));
-
+        public static final ResourceKey<Registry<ItemModule>> ITEM_MODULE = makeRegistryKey(GTCEu.id("item_module"));
         private static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
             return ResourceKey.createRegistryKey(registryId);
         }
@@ -142,6 +143,7 @@ public final class GTRegistries {
     public static final Registry<IWorldGenLayer> WORLD_GEN_LAYERS = makeRegistry(Keys.WORLD_GEN_LAYER);
     public static final Registry<MapCodec<? extends IndicatorGenerator>> INDICATOR_GENERATORS = makeRegistry(Keys.INDICATOR_GENERATOR);
     public static final Registry<VeinGenerator.VeinGeneratorType<?>> VEIN_GENERATORS = makeRegistry(Keys.VEIN_GENERATOR);
+    public static final Registry<ItemModule> ITEM_MODULES = makeRegistry(Keys.ITEM_MODULE);
 
     // spotless:on
 

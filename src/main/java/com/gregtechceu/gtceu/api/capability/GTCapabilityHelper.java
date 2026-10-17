@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
-import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.data.GTAttachmentTypes;
 
@@ -66,11 +66,6 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static RecipeLogic getRecipeLogic(Level level, BlockPos pos, @Nullable Direction side) {
-        return level.getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC, pos, side);
-    }
-
-    @Nullable
     public static IEnergyStorage getForgeEnergy(Level level, BlockPos pos, @Nullable Direction side) {
         return level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, side);
     }
@@ -103,6 +98,11 @@ public class GTCapabilityHelper {
     @Nullable
     public static IMonitorComponent getMonitorComponent(Level level, BlockPos pos, @Nullable Direction side) {
         return level.getCapability(GTCapability.CAPABILITY_MONITOR_COMPONENT, pos, side);
+    }
+
+    @Nullable
+    public static IModularItem getModularItem(ItemStack stack) {
+        return stack.getCapability(GTCapability.CAPABILITY_MODULAR_ITEM);
     }
 
     @Nullable
