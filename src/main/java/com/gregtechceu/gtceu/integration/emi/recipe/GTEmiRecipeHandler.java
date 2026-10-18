@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import com.lowdragmc.lowdraglib.gui.modular.IUIHolder;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUIContainer;
@@ -15,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 
 import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.recipe.handler.EmiCraftContext;
 import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +43,7 @@ public class GTEmiRecipeHandler implements StandardRecipeHandler<ModularUIContai
 
     @Override
     public boolean supportsRecipe(EmiRecipe recipe) {
-        return recipe instanceof GTEmiRecipe;
+        return (recipe instanceof GTEmiRecipe) || (recipe.getCategory() == VanillaEmiRecipeCategories.SMELTING);
     }
 
     @Override
@@ -62,6 +64,10 @@ public class GTEmiRecipeHandler implements StandardRecipeHandler<ModularUIContai
     private static @Nullable GTRecipeType getGTRecipeType(EmiRecipe recipe) {
         if (recipe instanceof GTEmiRecipe gtRecipe) {
             return gtRecipe.recipe.recipeType;
+        }
+        // Needed to fill vanilla smelting recipes in GT furnaces.
+        if (recipe.getCategory() == VanillaEmiRecipeCategories.SMELTING) {
+            return GTRecipeTypes.FURNACE_RECIPES;
         }
         return null;
     }
