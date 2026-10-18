@@ -12,7 +12,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.Level;
 
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
@@ -79,14 +78,5 @@ public class ModularArmorItem extends ArmorComponentItem implements IComponentIt
             if (texture != null) return texture.toString();
         }
         return super.getArmorTexture(stack, entity, slot, type);
-    }
-
-    @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        for (IItemComponent component : components) {
-            if (component instanceof IItemLifeCycle lifeCycle) {
-                lifeCycle.inventoryTick(stack, level, entity, slotId, isSelected);
-            }
-        }
     }
 }

@@ -69,16 +69,6 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public ArmorItem.Type getType() {
-        return super.getType();
-    }
-
-    @Override
-    public EquipmentSlot getEquipmentSlot() {
-        return super.getEquipmentSlot();
-    }
-
-    @Override
     public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
         return false;
     }
