@@ -54,6 +54,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
 
             @Override
             public void onContentsChanged(int slot) {
+                super.onContentsChanged(slot);
                 onEquipmentSlotChanged();
             }
         };

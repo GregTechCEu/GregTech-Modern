@@ -308,4 +308,14 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     public boolean canWalkOnPowderedSnow(ItemStack stack, LivingEntity wearer) {
         return stack.is(GTItems.NANO_BOOTS.asItem()) || stack.is(GTItems.QUANTUM_BOOTS.asItem());
     }
+
+    @Override
+    public void onArmorTick(ItemStack stack, Level level, Player player) {
+        if (armorLogic != null) armorLogic.onArmorTick(level, player, stack);
+    }
+
+    public boolean isPPE(ItemStack stack) {
+        if (armorLogic != null) return armorLogic.isPPE(stack);
+        return false;
+    }
 }

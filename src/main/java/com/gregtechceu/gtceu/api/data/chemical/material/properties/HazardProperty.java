@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
@@ -9,8 +8,6 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
-import com.gregtechceu.gtceu.api.item.module.IModularItem;
-import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -122,16 +119,8 @@ public class HazardProperty implements IMaterialProperty {
             for (ArmorItem.Type equipmentType : equipmentTypes) {
                 ItemStack armor = livingEntity.getItemBySlot(equipmentType.getSlot());
 
-                IModularItem modularItem = GTCapabilityHelper.getModularItem(armor);
-                if (modularItem != null) {
-                    for (ModuleContext moduleData : modularItem.getAllModuleInstances()) {
-                        if (moduleData.getModule().isPPE(moduleData)) correctArmorItems.add(equipmentType);
-                    }
-                }
-
                 if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
-                        armorItem.getArmorLogic() != null &&
-                        armorItem.getArmorLogic().isPPE(armor)) ||
+                        armorItem.isPPE(armor)) ||
                         armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
                     correctArmorItems.add(equipmentType);
                 }
@@ -150,8 +139,7 @@ public class HazardProperty implements IMaterialProperty {
             for (SlotResult result : results) {
                 ItemStack armor = result.stack();
                 if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
-                        armorItem.getArmorLogic() != null &&
-                        armorItem.getArmorLogic().isPPE(armor)) ||
+                        armorItem.isPPE(armor)) ||
                         armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
                     correctCurios.add(result.slotContext().identifier());
                 }
@@ -165,8 +153,7 @@ public class HazardProperty implements IMaterialProperty {
                 for (ArmorItem.Type type : this.getEquipmentTypes()) {
                     ItemStack armor = player.getItemBySlot(type.getSlot());
                     if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
-                            armorItem.getArmorLogic() != null &&
-                            armorItem.getArmorLogic().isPPE(armor)) ||
+                            armorItem.isPPE(armor)) ||
                             armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
                         armor.hurtAndBreak(amount, player, p -> p.broadcastBreakEvent(type.getSlot()));
                     }
@@ -182,8 +169,7 @@ public class HazardProperty implements IMaterialProperty {
                                 for (int i = 0; i < handler.getSlots(); ++i) {
                                     ItemStack armor = stackHandler.getStackInSlot(i);
                                     if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
-                                            armorItem.getArmorLogic() != null &&
-                                            armorItem.getArmorLogic().isPPE(armor)) ||
+                                            armorItem.isPPE(armor)) ||
                                             armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
                                         armor.hurtAndBreak(amount, player, p -> {});
                                     }

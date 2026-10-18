@@ -350,7 +350,7 @@ public class CommonEventListener {
             ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 
-            if (boots.getItem() instanceof ArmorComponentItem armor) {
+            if (boots.getItem() instanceof ArmorComponentItem armor && armor.getArmorLogic() != null) {
                 armor.getArmorLogic().damageArmor(player, boots, player.damageSources().fall(),
                         (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
                 player.fallDistance = 0;
@@ -436,6 +436,8 @@ public class CommonEventListener {
         final LivingEntity entity = event.getEntity();
         final ItemStack old = event.getFrom();
         final ItemStack current = event.getTo();
+
+        if (!event.getSlot().isArmor()) return;
 
         if (ItemStack.isSameItem(old, current)) return;
 

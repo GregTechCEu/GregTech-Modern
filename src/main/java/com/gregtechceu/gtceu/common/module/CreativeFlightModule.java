@@ -37,6 +37,7 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
 
     private void setMayFly(LivingEntity entity, boolean mayFly) {
         if (entity instanceof Player player) {
+            if (player.isCreative() || player.isSpectator()) return;
             player.getAbilities().mayfly = mayFly;
             if (!mayFly) player.getAbilities().flying = false;
         }

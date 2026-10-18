@@ -79,4 +79,15 @@ public class ModularArmorItem extends ArmorComponentItem implements IComponentIt
         }
         return super.getArmorTexture(stack, entity, slot, type);
     }
+
+    @Override
+    public boolean isPPE(ItemStack stack) {
+        var modular = GTCapabilityHelper.getModularItem(stack);
+        if (modular != null) {
+            for (var ctx : modular.getAllModuleInstances()) {
+                if (ctx.getModule().isPPE(ctx)) return true;
+            }
+        }
+        return super.isPPE(stack);
+    }
 }
