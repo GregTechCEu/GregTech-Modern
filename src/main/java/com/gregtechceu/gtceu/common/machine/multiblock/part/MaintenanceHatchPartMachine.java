@@ -396,8 +396,11 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
      * The lower time multiplier means more likely causing problems.
      */
     public float getTimeMultiplier() {
-        var result = 1f;
-        if (durationMultiplier < 1.0)
+        if (!isConfigurable) return 1f;
+        if (!isFormed()) return 1f;
+        var controller = getControllers().getFirst();
+        float result;
+        if (durationMultiplier < 1.0 ^ controller.getDefinition().isGenerator())
             result = -20 * durationMultiplier + 21;
         else
             result = -8 * durationMultiplier + 9;
