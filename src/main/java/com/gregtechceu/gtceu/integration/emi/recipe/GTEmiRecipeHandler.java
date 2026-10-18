@@ -10,6 +10,8 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUIContainer;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 
 import dev.emi.emi.api.recipe.EmiRecipe;
@@ -46,6 +48,15 @@ public class GTEmiRecipeHandler implements StandardRecipeHandler<ModularUIContai
     public boolean canCraft(EmiRecipe recipe, EmiCraftContext<ModularUIContainer> context) {
         return machineSupportsRecipe(context.getScreenHandler(), recipe) &&
                 StandardRecipeHandler.super.canCraft(recipe, context);
+    }
+
+    @Override
+    public List<ClientTooltipComponent> getTooltip(EmiRecipe recipe, EmiCraftContext<ModularUIContainer> context) {
+        if (!machineSupportsRecipe(context.getScreenHandler(), recipe)) {
+            return List.of(ClientTooltipComponent.create(
+                    Component.translatable("emi.inapplicable").getVisualOrderText()));
+        }
+        return StandardRecipeHandler.super.getTooltip(recipe, context);
     }
 
     private static @Nullable GTRecipeType getGTRecipeType(EmiRecipe recipe) {
