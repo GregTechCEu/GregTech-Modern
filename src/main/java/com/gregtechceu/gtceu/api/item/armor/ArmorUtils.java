@@ -36,9 +36,9 @@ import java.util.List;
 public class ArmorUtils {
 
     public static final int MIN_NIGHTVISION_CHARGE = 4;
-    public static final int NIGHTVISION_DURATION = 20; // 20 seconds
+    public static final int NIGHTVISION_DURATION = 20 * 20; // 20 seconds
     // Flashing starts at 10 seconds + two second buffer to prevent flicker
-    public static final int NIGHT_VISION_RESET = 12;
+    public static final int NIGHT_VISION_RESET = 12 * 20;
 
     /**
      * Check is possible to charge item

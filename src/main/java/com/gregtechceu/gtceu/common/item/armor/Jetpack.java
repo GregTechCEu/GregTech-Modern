@@ -114,6 +114,8 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void drawHUD(ItemStack item, ArmorUtils.ModularHUD hud, GuiGraphics guiGraphics) {
+        addCapacityHUD(item, hud);
+
         GTArmor data = item.get(GTDataComponents.ARMOR_DATA);
         if (data != null) {
             Component status = data.enabled() ?

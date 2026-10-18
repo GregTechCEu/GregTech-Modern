@@ -680,7 +680,8 @@ public class GTItems {
     private static ItemEntry<ComponentItem> registerElectricMotor(int tier) {
         var builder = REGISTRATE
                 .item("%s_electric_motor".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
-                .lang("%s Electric Motor".formatted(GTValues.VN[tier]));
+                .lang("%s Electric Motor".formatted(GTValues.VN[tier]))
+                .onRegister(attach(new TieredBehaviour(tier)));
         if (tier <= GTValues.UV) builder.tag(CustomTags.ELECTRIC_MOTORS);
         return builder.register();
     }
@@ -1921,6 +1922,7 @@ public class GTItems {
                     (p) -> new NanoMuscleArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.BOOTS, p))
             .lang("Nano-Fiber Suit Boots")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
+            .transform(addArmorClientExtensions())
             .tag(ItemTags.FOOT_ARMOR)
             .onRegister(attach(new ModularItemComponent(4, GTValues.EV)))
             .register();
