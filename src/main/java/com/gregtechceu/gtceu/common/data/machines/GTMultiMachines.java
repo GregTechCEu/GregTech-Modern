@@ -627,8 +627,8 @@ public class GTMultiMachines {
                             Component.translatable("machine.gtceu.fluid_drilling_rig.description"),
                             Component.translatable("machine.gtceu.fluid_drilling_rig.depletion",
                                     FormattingUtil.formatNumbers(100.0 / FluidDrillMachine.getDepletionChance(tier))),
-                            Component.translatable("common.gtceu.tooltip.energy_tier_range", GTValues.VNF[tier],
-                                    GTValues.VNF[tier + 1]),
+                            Component.translatable("common.gtceu.tooltip.energy_tier_range", GTValues.VNC[tier],
+                                    GTValues.VNC[tier + 1]),
                             Component.translatable("machine.gtceu.fluid_drilling_rig.production",
                                     FluidDrillMachine.getRigMultiplier(tier),
                                     FormattingUtil.formatNumbers(FluidDrillMachine.getRigMultiplier(tier) * 1.5)))
@@ -637,7 +637,7 @@ public class GTMultiMachines {
                             .slice("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
                             .slice("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
                             .slice("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
-                            .where('S', controller(blocks(definition.get())))
+                            .where('S', controller(definition))
                             .where('X', blocks(FluidDrillMachine.getCasingState(tier)).setMinGlobalLimited(3)
                                     .and(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
                                             .setMaxGlobalLimited(2))
@@ -708,7 +708,7 @@ public class GTMultiMachines {
                         tooltip.add(Component.translatable("machine.gtceu.miner.working_area_chunks",
                                 workingAreaChunks, workingAreaChunks));
                         tooltip.add(Component.translatable("common.gtceu.tooltip.energy_tier_range",
-                                GTValues.VNF[tier], GTValues.VNF[tier + 1]));
+                                GTValues.VNC[tier], GTValues.VNC[tier + 1]));
                     })
                     .register(),
             EV, IV, LuV);
@@ -896,7 +896,7 @@ public class GTMultiMachines {
                                     FormattingUtil.formatNumbers(
                                             100.0 / BedrockOreMinerMachine.getDepletionChance(tier))),
                             Component.translatable("common.gtceu.tooltip.energy_tier_range",
-                                    GTValues.VNF[tier], GTValues.VNF[tier + 1]),
+                                    GTValues.VNC[tier], GTValues.VNC[tier + 1]),
                             Component.translatable("machine.gtceu.bedrock_ore_miner.production",
                                     BedrockOreMinerMachine.getRigMultiplier(tier),
                                     FormattingUtil.formatNumbers(

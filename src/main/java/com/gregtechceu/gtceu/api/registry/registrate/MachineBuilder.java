@@ -787,8 +787,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.setRecipeOutputLimits(recipeOutputLimits);
         definition.setBlockEntityTypeSupplier(blockEntity::get);
         definition.setTooltipBuilder((itemStack, components) -> {
-            components.addAll(tooltips.stream().map(v -> v instanceof MutableComponent m
-                    && m.getStyle().getColor() == null ? m.withStyle(ChatFormatting.GRAY) : v).toList());
+            components.addAll(
+                    tooltips.stream().map(v -> v instanceof MutableComponent m && m.getStyle().getColor() == null ?
+                            m.withStyle(ChatFormatting.GRAY) : v).toList());
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
         });
         definition.setRecipeModifier(recipeModifier);

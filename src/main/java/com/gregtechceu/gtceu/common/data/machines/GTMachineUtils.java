@@ -274,13 +274,13 @@ public class GTMachineUtils {
                                 Component.translatable("machine.gtceu.transformer.tooltip_tool_usage"),
                                 Component.translatable("machine.gtceu.transformer.tooltip_transform_down",
                                         baseAmp, FormattingUtil.formatNumbers(GTValues.V[tier + 1]),
-                                        GTValues.VNF[tier + 1],
+                                        GTValues.VNC[tier + 1],
                                         baseAmp * 4, FormattingUtil.formatNumbers(GTValues.V[tier]),
-                                        GTValues.VNF[tier]),
+                                        GTValues.VNC[tier]),
                                 Component.translatable("machine.gtceu.transformer.tooltip_transform_up",
-                                        baseAmp * 4, FormattingUtil.formatNumbers(GTValues.V[tier]), GTValues.VNF[tier],
+                                        baseAmp * 4, FormattingUtil.formatNumbers(GTValues.V[tier]), GTValues.VNC[tier],
                                         baseAmp, FormattingUtil.formatNumbers(GTValues.V[tier + 1]),
-                                        GTValues.VNF[tier + 1]))
+                                        GTValues.VNC[tier + 1]))
                         .register(),
                 GTValues.tiersBetween(ULV, GTCEuAPI.isHighTier() ? OpV : UV));
         // UHV not needed, as a UV transformer transforms up to UHV
@@ -365,7 +365,7 @@ public class GTMachineUtils {
                                         batterySlotSize),
                                 Component.translatable("common.gtceu.tooltip.voltage_in_out",
                                         FormattingUtil.formatNumbers(GTValues.V[tier]),
-                                        GTValues.VNF[tier]),
+                                        GTValues.VNC[tier]),
                                 Component.translatable("common.gtceu.tooltip.amperage_in_till",
                                         batterySlotSize * AMPS_PER_BATTERY_NORMAL),
                                 Component.translatable("common.gtceu.tooltip.amperage_out_till", batterySlotSize))
@@ -387,7 +387,7 @@ public class GTMachineUtils {
                         .tooltips(Component.translatable("common.gtceu.tooltip.item_storage_capacity", itemSlotSize),
                                 Component.translatable("common.gtceu.tooltip.voltage_in_out",
                                         FormattingUtil.formatNumbers(GTValues.V[tier]),
-                                        GTValues.VNF[tier]),
+                                        VNC[tier]),
                                 Component.translatable("common.gtceu.tooltip.amperage_in_till",
                                         itemSlotSize * BatteryBufferMachine.AMPS_PER_BATTERY_CHARGER))
                         .register(),
@@ -414,9 +414,9 @@ public class GTMachineUtils {
                                 Component.translatable("machine.gtceu.energy_converter.tooltip_conversion_native",
                                         FeCompat.toFeLong(V[tier] * amperage,
                                                 FeCompat.ratio(true)),
-                                        amperage, V[tier], GTValues.VNF[tier]),
+                                        amperage, V[tier], VNC[tier]),
                                 Component.translatable("machine.gtceu.energy_converter.tooltip_conversion_eu", amperage,
-                                        V[tier], GTValues.VNF[tier],
+                                        V[tier], VNC[tier],
                                         FeCompat.toFeLong(V[tier] * amperage,
                                                 FeCompat.ratio(false))))
                         .register(),
@@ -439,7 +439,7 @@ public class GTMachineUtils {
                         .tooltips(Component.translatable("machine.gtceu.laser_hatch." + name + ".tooltip"),
                                 Component.translatable("machine.gtceu.laser_hatch.both.tooltip"),
                                 Component.translatable("common.gtceu.tooltip.voltage_" + (io == IN ? "in" : "out"),
-                                        FormattingUtil.formatNumbers(V[tier]), VNF[tier]),
+                                        FormattingUtil.formatNumbers(V[tier]), VNC[tier]),
                                 Component.translatable("common.gtceu.tooltip.amperage_in", amperage),
                                 Component.translatable("common.gtceu.tooltip.energy_storage_capacity",
                                         FormattingUtil
@@ -647,7 +647,7 @@ public class GTMachineUtils {
                             .slice("XXX", "CCC", "CCC", "CCC")
                             .slice("XXX", "CPC", "CPC", "CCC")
                             .slice("XXX", "CSC", "CCC", "CCC")
-                            .where('S', Predicates.controller(blocks(definition.getBlock())))
+                            .where('S', Predicates.controller(definition))
                             .where('P', blocks(pipe.get()))
                             .where('X', fireboxPred)
                             .where('C', blocks(casing.get()).setMinGlobalLimited(20)
@@ -706,7 +706,7 @@ public class GTMachineUtils {
                         .where('A',
                                 blocks(intake.get())
                                         .addTooltips(Component.translatable("multiblock.gtceu.pattern.clear_amount", 1,
-                                                1, 1)))
+                                                1, 1).withStyle(ChatFormatting.GOLD)))
                         .where('Y', controller(definition))
                         .build())
                 .recoveryItems(
@@ -768,7 +768,6 @@ public class GTMachineUtils {
                                                                    boolean needsMuffler) {
         var multi = registrate.multiblock(name, holder -> new LargeTurbineMachine(holder, tier))
                 .rotationState(RotationState.ALL)
-                .langValue(langName)
                 .recipeType(recipeType)
                 .generator(true)
                 .recipeModifier(LargeTurbineMachine::recipeModifier, true)
@@ -792,7 +791,7 @@ public class GTMachineUtils {
                 .workableCasingModel(casingTexture, overlayModel)
                 .tooltips(
                         Component.translatable("common.gtceu.tooltip.base_production_eut", V[tier] * 2),
-                        Component.translatable("gui.gtceu.machine.large_turbine.efficiency_tooltip", VNF[tier]));
+                        Component.translatable("gui.gtceu.machine.large_turbine.efficiency_tooltip", VNC[tier]));
         if (langName != null) multi.langValue(langName);
         return multi.register();
     }
@@ -809,9 +808,10 @@ public class GTMachineUtils {
                 .blocks(PartAbility.ROTOR_HOLDER.getAllBlocks())
                 .contents(builder -> builder.append(PartAbility.ROTOR_HOLDER.getName()))
                 .toMultiPredicate()
-                .addTooltips(Component.translatable("multiblock.gtceu.pattern.clear_amount", 3, 3, 3))
+                .addTooltips(Component.translatable("multiblock.gtceu.pattern.clear_amount", 3, 3, 3)
+                        .withStyle(ChatFormatting.GOLD))
                 // todo lang: must be of tier %s
-                .addTooltips(Component.literal("Can only be of tier: %s".formatted(VN[tier])));
+                .addTooltips(Component.translatable("multiblock.gtceu.predicate.tier_must_match", VNC[tier]));
     }
 
     // Tooltips
@@ -856,9 +856,9 @@ public class GTMachineUtils {
         tooltipComponents
                 .add(input ?
                         Component.translatable("common.gtceu.tooltip.voltage_in",
-                                FormattingUtil.formatNumbers(voltage), GTValues.VNF[tier]) :
+                                FormattingUtil.formatNumbers(voltage), GTValues.VNC[tier]) :
                         Component.translatable("common.gtceu.tooltip.voltage_out",
-                                FormattingUtil.formatNumbers(voltage), GTValues.VNF[tier]));
+                                FormattingUtil.formatNumbers(voltage), GTValues.VNC[tier]));
         tooltipComponents
                 .add(Component.translatable("common.gtceu.tooltip.energy_storage_capacity",
                         FormattingUtil.formatNumbers(energyCapacity)));

@@ -8,6 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 
 import com.demonwav.mcdev.annotations.Translatable;
@@ -310,9 +311,9 @@ public class FormattingUtil {
                 Component.literal(" @ "));
 
         if (tier < GTValues.TIER_COUNT) {
-            MutableComponent voltageComponent = Component.literal(GTValues.VNF[tier]);
-            if (color) voltageComponent = voltageComponent.withStyle(style -> style.withColor(GTValues.VC[tier]));
-            text = voltageComponent.append(voltageComponent);
+            MutableComponent voltageComponent = GTValues.VNC[tier].copy();
+            if (!color) voltageComponent.setStyle(Style.EMPTY);
+            text.append(voltageComponent);
         } else {
             int oc = Mth.clamp(tier - GTValues.TIER_COUNT - 1, 0, GTValues.TIER_COUNT);
             MutableComponent maxComponent = Component.literal("MAX");

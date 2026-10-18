@@ -1139,7 +1139,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.max_recipe_tier_hover", "The maximum tier of recipes that can be run");
 
         // Energy Consumption/Generation
-        provider.add("gui.gtceu.machine.max_eut", "Max EU/t: §a%s (%s§r)");
+        provider.add("gui.gtceu.machine.max_eut", "Max EU/t: §a%s (%s)");
         provider.add("gui.gtceu.machine.max_eut_hover",
                 "The maximum EU/t available for running recipes or overclocking");
         provider.add("gui.gtceu.machine.max_eut_amps", "Max EU/t: %s (%sA %s)");

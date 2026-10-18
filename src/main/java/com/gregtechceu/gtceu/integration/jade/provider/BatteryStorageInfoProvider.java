@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -72,9 +73,12 @@ public class BatteryStorageInfoProvider extends MachineInfoProvider<BatteryBuffe
                     tooltip.add(helper.smallItem(stack));
                     IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
                     if (item == null) continue;
-                    tooltip.append(Component.literal(
-                            GTValues.VNF[item.getTier()] + "§r " + formatLongNumber(item.getCharge()) +
-                                    " / " + formatLongNumber(item.getMaxCharge()) + " EU"));
+                    tooltip.append(GTValues.VNC[item.getTier()].copy()
+                            .append(CommonComponents.SPACE)
+                            .append(Component.literal(formatLongNumber(item.getCharge())))
+                            .append(" / ")
+                            .append(Component.literal(formatLongNumber(item.getMaxCharge())))
+                            .append(Component.literal(" EU")));
                 }
             }
         }

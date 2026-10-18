@@ -128,8 +128,7 @@ public class GTMultiblockTextUtil {
             String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
 
             byte voltageTier = GTUtil.getFloorTierByVoltage(energyUsage.getLongValue());
-            Component voltageName = Component.literal(
-                    GTValues.VNF[voltageTier]);
+            Component voltageName = GTValues.VNC[voltageTier];
 
             MutableComponent bodyText = Component.translatable("gui.gtceu.machine.max_eut",
                     energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
@@ -164,8 +163,7 @@ public class GTMultiblockTextUtil {
             if (energyUsage.getLongValue() <= 0) return Component.empty();
             String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
             // wrap in text component to keep it from being formatted
-            Component voltageName = Component.literal(
-                    GTValues.VNF[GTUtil.getTierByVoltage(energyUsage.getLongValue())]);
+            Component voltageName = GTValues.VNC[GTUtil.getTierByVoltage(energyUsage.getLongValue())];
 
             return Component.translatable("gui.gtceu.machine.energy_consumption",
                     energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
@@ -178,7 +176,7 @@ public class GTMultiblockTextUtil {
         if (!formed || tier < GTValues.ULV || tier > GTValues.MAX)
             return Text.EMPTY;
 
-        Component voltageName = Component.literal(GTValues.VNF[tier]);
+        Component voltageName = GTValues.VNC[tier];
         MutableComponent bodyText = Component.translatable(
                 "gui.gtceu.machine.max_recipe_tier",
                 voltageName).withStyle(ChatFormatting.GRAY);
@@ -240,7 +238,7 @@ public class GTMultiblockTextUtil {
                 () -> new IntSyncValue(rlMachine::getTier));
 
         return Text.dynamic(() -> {
-            Component voltageName = Component.literal(GTValues.VNF[tier.getIntValue()]);
+            Component voltageName = GTValues.VNC[tier.getIntValue()];
             return Component.translatable(
                     "gui.gtceu.machine.max_recipe_tier",
                     voltageName).withStyle(ChatFormatting.GRAY);

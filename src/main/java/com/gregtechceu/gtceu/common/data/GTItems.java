@@ -2200,7 +2200,7 @@ public class GTItems {
                     nameAndMultilineTooltipLang("Solar Panel Cover",
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
             .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("common.gtceu.tooltip.voltage_out", 1, GTValues.VNF[GTValues.ULV]));
+                lines.add(Component.translatable("common.gtceu.tooltip.voltage_out", 1, GTValues.VNC[GTValues.ULV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL_BASIC)))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ULV = REGISTRATE
@@ -2210,7 +2210,7 @@ public class GTItems {
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("common.gtceu.tooltip.voltage_out", GTValues.V[GTValues.ULV],
-                        GTValues.VNF[GTValues.ULV]));
+                        GTValues.VNC[GTValues.ULV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[0])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LV = REGISTRATE
@@ -2220,7 +2220,7 @@ public class GTItems {
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("common.gtceu.tooltip.voltage_out", GTValues.V[GTValues.LV],
-                        GTValues.VNF[GTValues.LV]));
+                        GTValues.VNC[GTValues.LV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[1])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_MV = REGISTRATE
@@ -2231,7 +2231,7 @@ public class GTItems {
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("common.gtceu.tooltip.voltage_out", GTValues.V[GTValues.MV],
-                        GTValues.VNF[GTValues.MV]));
+                        GTValues.VNC[GTValues.MV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[2])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_HV = REGISTRATE
@@ -2241,7 +2241,7 @@ public class GTItems {
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("common.gtceu.tooltip.voltage_out", GTValues.V[GTValues.HV],
-                        GTValues.VNF[GTValues.HV]));
+                        GTValues.VNC[GTValues.HV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[3])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_EV = REGISTRATE
@@ -2251,7 +2251,7 @@ public class GTItems {
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("common.gtceu.tooltip.voltage_out", GTValues.V[GTValues.EV],
-                        GTValues.VNF[GTValues.EV]));
+                        GTValues.VNC[GTValues.EV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[4])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_IV = REGISTRATE
@@ -2261,7 +2261,7 @@ public class GTItems {
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("common.gtceu.tooltip.voltage_out", GTValues.V[GTValues.IV],
-                        GTValues.VNF[GTValues.IV]));
+                        GTValues.VNC[GTValues.IV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[5])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LuV = REGISTRATE
@@ -2271,7 +2271,7 @@ public class GTItems {
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("common.gtceu.tooltip.voltage_out", GTValues.V[GTValues.LuV],
-                        GTValues.VNF[GTValues.LuV]));
+                        GTValues.VNC[GTValues.LuV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[6])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ZPM = REGISTRATE
@@ -2281,7 +2281,7 @@ public class GTItems {
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("common.gtceu.tooltip.voltage_out", GTValues.V[GTValues.ZPM],
-                        GTValues.VNF[GTValues.ZPM]));
+                        GTValues.VNC[GTValues.ZPM]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[7])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_UV = REGISTRATE
@@ -2291,7 +2291,7 @@ public class GTItems {
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("common.gtceu.tooltip.voltage_out", GTValues.V[GTValues.UV],
-                        GTValues.VNF[GTValues.UV]));
+                        GTValues.VNC[GTValues.UV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[8])))
             .register();
 

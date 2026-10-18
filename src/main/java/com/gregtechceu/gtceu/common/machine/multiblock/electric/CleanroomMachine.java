@@ -468,7 +468,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
 
         widgets.add(Text.dynamic(() -> {
-            String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage.getLongValue())];
+            Component voltageName = GTValues.VNC[GTUtil.getFloorTierByVoltage(maxVoltage.getLongValue())];
             return Component.translatable("gui.gtceu.machine.max_eut", maxVoltage.getLongValue(),
                     voltageName);
         })

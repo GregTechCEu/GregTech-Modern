@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
@@ -63,22 +64,26 @@ class TestablePredicate extends BasePredicate {
         int minCount = getMinCount();
         int maxCount = getMaxCount();
         if (minCount == maxCount && maxCount != -1) {
-            tooltips.add(Component.translatable("multiblock.gtceu.predicate.count.exact", minCount));
+            tooltips.add(Component.translatable("multiblock.gtceu.predicate.count.exact", minCount)
+                    .withStyle(ChatFormatting.RED));
         } else if (minCount != maxCount && minCount != -1 && maxCount != -1) {
-            tooltips.add(Component.translatable("multiblock.gtceu.predicate.count.range", minCount, maxCount));
+            tooltips.add(Component.translatable("multiblock.gtceu.predicate.count.range", minCount, maxCount)
+                    .withStyle(ChatFormatting.RED));
         } else {
             if (minCount > 0) {
-                tooltips.add(Component.translatable("multiblock.gtceu.predicate.limit_min", minCount));
+                tooltips.add(Component.translatable("multiblock.gtceu.predicate.limit_min", minCount)
+                        .withStyle(ChatFormatting.RED));
             }
             if (maxCount != -1) {
-                tooltips.add(Component.translatable("multiblock.gtceu.predicate.limit_max", maxCount));
+                tooltips.add(Component.translatable("multiblock.gtceu.predicate.limit_max", maxCount)
+                        .withStyle(ChatFormatting.RED));
             }
         }
         if (root.isSingle()) {
             tooltips.add(Component.translatable("multiblock.gtceu.pattern.replaceable_air"));
         }
         if (root.hasAir()) {
-            tooltips.add(Component.translatable("multiblock.gtceu.predicate.single"));
+            tooltips.add(Component.translatable("multiblock.gtceu.predicate.single").withStyle(ChatFormatting.GOLD));
         }
         return tooltips;
     }

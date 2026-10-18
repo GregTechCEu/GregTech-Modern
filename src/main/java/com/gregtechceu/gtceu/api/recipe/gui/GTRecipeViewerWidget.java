@@ -198,9 +198,9 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                 .hoverBackground(IDrawable.NONE)
                 .size(22, 12)
                 .rightRel(0.0f)
-                .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))
+                .overlay(Text.dynamic(() -> GTValues.VNC[tier]))
                 .tooltipBuilder(tooltip -> {
-                    tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.0", GTValues.VNF[minTier]));
+                    tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.0", GTValues.VNC[minTier]));
                     tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.1"));
                     tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.2"));
                     tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.3"));
