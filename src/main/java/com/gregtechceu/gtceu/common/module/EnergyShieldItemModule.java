@@ -124,6 +124,7 @@ public class EnergyShieldItemModule extends TieredItemModule {
         public EnergyShieldModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
                                       double energyPercent) {
             super(slot, module, moduleItem, enabled);
+            this.energyPercent = energyPercent;
         }
 
         public EnergyShieldModuleData withEnergyPercent(double percent) {

@@ -101,6 +101,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.MissingMappingsEvent;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Either;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -350,7 +351,8 @@ public class CommonEventListener {
             ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 
-            if (boots.getItem() instanceof ArmorComponentItem armor && armor.getArmorLogic() != null) {
+            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() != null) {
                 armor.getArmorLogic().damageArmor(player, boots, player.damageSources().fall(),
                         (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
                 player.fallDistance = 0;
@@ -381,14 +383,17 @@ public class CommonEventListener {
             modularItem.runForEachModule((m, a) -> m.onArmorTick(a, entity));
         }
 
-        if (entity instanceof Player player && !player.isLocalPlayer()) {
-            for (ItemStack stack : entity.getAllSlots()) {
-                IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
-                if (modularItem == null) continue;
-                modularItem.runForEachModule((m, a) -> {
-                    if (m.isEnabled(a)) m.onInventoryTick(a, player);
-                    m.onTickRaw(a, player, player.level(), player.getOnPos());
-                });
+        if (entity instanceof Player player) {
+            var inv = player.getInventory();
+            for (var group : ImmutableList.of(inv.items, inv.offhand)) {
+                for (ItemStack stack : group) {
+                    IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+                    if (modularItem == null) continue;
+                    modularItem.runForEachModule((m, a) -> {
+                        if (m.isEnabled(a)) m.onInventoryTick(a, player);
+                        m.onTickRaw(a, player, player.level(), player.getOnPos());
+                    });
+                }
             }
         }
     }
@@ -438,8 +443,6 @@ public class CommonEventListener {
         final ItemStack current = event.getTo();
 
         if (!event.getSlot().isArmor()) return;
-
-        if (ItemStack.isSameItem(old, current)) return;
 
         if (entity instanceof Player player) {
             if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor &&
