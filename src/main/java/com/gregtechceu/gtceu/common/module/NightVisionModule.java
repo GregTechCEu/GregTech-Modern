@@ -104,7 +104,8 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
                                 false));
                 item.discharge(2, item.getTier(), true, false, false);
 
-                data = data.withNightVisionToggleTick(levelTick + ArmorUtils.NIGHT_VISION_RESET);
+                data = data.withNightVisionToggleTick(
+                        levelTick + ArmorUtils.NIGHTVISION_DURATION - ArmorUtils.NIGHT_VISION_RESET);
                 moduleContext.setData(data);
             }
         } else {
