@@ -39,7 +39,6 @@ import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
-import brachy.modularui.value.sync.FloatSyncValue;
 import brachy.modularui.value.sync.InteractionSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
@@ -48,13 +47,10 @@ import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
-import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -63,17 +59,11 @@ import java.util.stream.Stream;
 public class MaintenanceHatchPartMachine extends TieredPartMachine
                                          implements IMuiMachine {
 
-    private static final float MAX_DURATION_MULTIPLIER = 1.1f;
-    private static final float MIN_DURATION_MULTIPLIER = 0.9f;
-    private static final float DURATION_ACTION_AMOUNT = 0.01f;
-
     public static final byte ALL_PROBLEMS = 0;
     public static final byte NO_PROBLEMS = 0b111111;
 
-    @Getter
-    private final boolean isConfigurable;
     @SaveField
-    private final NotifiableItemStackHandler itemStackHandler;
+    protected final NotifiableItemStackHandler itemStackHandler;
     @Getter
     @SaveField
     @SyncToClient
@@ -86,25 +76,17 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @SaveField
     @SyncToClient
     protected byte maintenanceProblems = startProblems();
-    /**
-     * Duration modifier for recipe.
-     * It's configurable in the Configurable Maintenance Part.
-     */
-    @Getter
-    @SaveField
-    private float durationMultiplier = 1f;
     @Nullable
     protected TickableSubscription maintenanceSubs;
 
-    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info, int tier, boolean isConfigurable) {
+    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
-        this.isConfigurable = isConfigurable;
         this.itemStackHandler = attachTrait(createInventory());
         this.itemStackHandler.setFilter(itemStack -> itemStack.is(GTItems.DUCT_TAPE.get()));
     }
 
-    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info, boolean isConfigurable) {
-        this(info, isConfigurable ? GTValues.HV : GTValues.LV, isConfigurable);
+    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info) {
+        this(info, GTValues.LV);
     }
 
     public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
@@ -122,11 +104,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         return ALL_PROBLEMS;
     }
 
-    public void setDurationMultiplier(float durationMultiplier) {
-        this.durationMultiplier = durationMultiplier;
-        syncDataHolder.markClientSyncFieldDirty("durationMultiplier");
-    }
-
     //////////////////////////////////////
     // ********* Logic **********//
     //////////////////////////////////////
@@ -142,7 +119,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         }
 
         setTimeActive(getTimeActive() + duration);
-        float rate = ConfigHolder.INSTANCE.machines.maintenanceCheckRate / getTimeMultiplier();
+        float rate = ConfigHolder.INSTANCE.machines.maintenanceCheckRate;
         if (getTimeActive() >= rate) {
             setTimeActive(0);
             if (GTValues.RNG.nextInt(6000) == 0) {
@@ -187,16 +164,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
 
     @Override
     public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
-        if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
-            if (hasMaintenanceProblems()) {
-                return null;
-            }
-            var durationMultiplier = getDurationMultiplier();
-            if (durationMultiplier != 1) {
-                recipe = recipe.copy();
-                recipe.duration = Math.max(1, Math.round(recipe.duration * durationMultiplier));
-            }
-        }
+        if (ConfigHolder.INSTANCE.machines.enableMaintenance && hasMaintenanceProblems())
+            return null;
         return recipe;
     }
 
@@ -248,7 +217,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
      * 
      * @param entityPlayer the player performing the fixing
      */
-    private void fixMaintenanceProblems(@Nullable Player entityPlayer) {
+    protected void fixMaintenanceProblems(@Nullable Player entityPlayer) {
         if (!hasMaintenanceProblems())
             return;
 
@@ -365,7 +334,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         }
     }
 
-    private void fixProblemWithTool(int problemIndex, ItemStack stack, Player player) {
+    protected void fixProblemWithTool(int problemIndex, ItemStack stack, Player player) {
         setMaintenanceFixed(problemIndex);
         if (player instanceof ServerPlayer serverPlayer) {
             ToolHelper.damageItem(stack, serverPlayer, 1);
@@ -389,24 +358,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
             this.isTaped = isTaped;
             setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
         }
-    }
-
-    /**
-     * Higher {@link #getDurationMultiplier()} refers to a lower time multiplier.
-     * The lower time multiplier means more likely causing problems.
-     */
-    public float getTimeMultiplier() {
-        if (!isConfigurable) return 1f;
-        if (!isFormed()) return 1f;
-        var controller = getControllers().getFirst();
-        float result;
-        if (durationMultiplier < 1.0 ^ controller.getDefinition().isGenerator())
-            result = -20 * durationMultiplier + 21;
-        else
-            result = -8 * durationMultiplier + 9;
-        return BigDecimal.valueOf(result)
-                .setScale(2, RoundingMode.HALF_UP)
-                .floatValue();
     }
 
     //////////////////////////////////////
@@ -457,39 +408,10 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
             updateWidget.run();
         });
         updateWidget.run();
-        FloatSyncValue durationSyncValue = new FloatSyncValue(this::getDurationMultiplier,
-                this::setDurationMultiplier);
-        durationSyncValue.allowC2S();
-        FloatSyncValue timeMultiplierSyncValue = new FloatSyncValue(this::getTimeMultiplier);
-        syncManager.syncValue("timeMultiplier", timeMultiplierSyncValue);
+
         mainWidget.child(Flow.column()
                 .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
-                .childIf(this.isConfigurable, () -> Flow.column()
-                        .coverChildren()
-                        .padding(5)
-                        .paddingLeft(0)
-                        .marginLeft(5)
-                        .child(Flow.row()
-                                .coverChildren()
-                                .childPadding(5)
-                                .leftRel(0)
-                                .child(new TextWidget<>(
-                                        Text.lang("gtceu.maintenance.configurable_duration.modify")))
-                                .child(new TextFieldWidget()
-                                        .setNumbersDouble(() -> MIN_DURATION_MULTIPLIER,
-                                                () -> MAX_DURATION_MULTIPLIER)
-                                        .setDefaultNumber(1)
-                                        .value(durationSyncValue)
-                                        .addTooltipElement(Text.dynamic(() -> getDurationMultiplier() == 1.0 ?
-                                                Component.translatable(
-                                                        "gtceu.maintenance.configurable_duration.unchanged_description") :
-                                                Component.translatable(
-                                                        "gtceu.maintenance.configurable_duration.changed_description")))))
-                        .child(new TextWidget<>(Text.dynamic(() -> Component.translatable(
-                                "gtceu.maintenance.configurable_time",
-                                timeMultiplierSyncValue.getValue())))
-                                .leftRel(0)))
                 .child(Flow.row()
                         .leftRel(0.5f)
                         .coverChildren()

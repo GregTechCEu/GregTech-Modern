@@ -1069,7 +1069,7 @@ public class GTMachines {
             .register();
 
     public static final MachineEntry<MachineDefinition> MAINTENANCE_HATCH = REGISTRATE
-            .machine("maintenance_hatch", (blockEntity) -> new MaintenanceHatchPartMachine(blockEntity, false))
+            .machine("maintenance_hatch", MaintenanceHatchPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .modelProperty(IS_FORMED, false)
@@ -1081,7 +1081,7 @@ public class GTMachines {
 
     public static final MachineEntry<MachineDefinition> CONFIGURABLE_MAINTENANCE_HATCH = REGISTRATE
             .machine("configurable_maintenance_hatch",
-                    (blockEntity) -> new MaintenanceHatchPartMachine(blockEntity, true))
+                    ConfigurableMaintenanceHatchPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.part_sharing.disabled"))

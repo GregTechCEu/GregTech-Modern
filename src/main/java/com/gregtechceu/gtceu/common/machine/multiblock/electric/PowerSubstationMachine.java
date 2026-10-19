@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ConfigurableMaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -255,7 +256,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             }
             if (maintenance == null) return 0;
             int multiplier = 1 + maintenance.getNumMaintenanceProblems();
-            double modifier = maintenance.getDurationMultiplier();
+            double modifier = (maintenance instanceof ConfigurableMaintenanceHatchPartMachine configurable ?
+                    configurable.getDurationMultiplier() : 1.0);
             return (long) (passiveDrain * multiplier * modifier);
         }
         return passiveDrain;
