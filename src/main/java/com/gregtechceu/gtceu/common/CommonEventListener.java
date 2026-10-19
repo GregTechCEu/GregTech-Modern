@@ -380,8 +380,6 @@ public class CommonEventListener {
             return;
         }
 
-        if (entity instanceof LocalPlayer) return;
-
         if (entity.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ModularArmorItem armor &&
                 armor.protectsAgainstFire()) {
             entity.clearFire();

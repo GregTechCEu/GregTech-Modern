@@ -25,6 +25,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
@@ -220,8 +221,13 @@ public class AutoChargeItemModule extends TieredItemModule {
         var linkedPos = moduleContext.getData(AutoChargeModuleData.class).getLinkedPos();
         if (linkedPos == null) return null;
         Level level = server.getLevel(linkedPos.dimension());
-        if (level == null) return null;
-        return MetaMachine.getMachine(level, linkedPos.pos());
+
+        var chunkPos = new ChunkPos(linkedPos.pos());
+        if (level == null || !level.hasChunk(chunkPos.x, chunkPos.z)) return null;
+        if (level.getBlockEntity(linkedPos.pos()) instanceof MetaMachine m) {
+            return m;
+        }
+        return null;
     }
 
     @Override

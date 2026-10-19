@@ -57,8 +57,8 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static RecipeLogic getRecipeLogic(Level level, BlockPos pos) {
-        return level.getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC, pos, null);
+    public static RecipeLogic getRecipeLogic(Level level, BlockPos pos, @Nullable Direction side) {
+        return level.getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC, pos, side);
     }
 
     @Nullable

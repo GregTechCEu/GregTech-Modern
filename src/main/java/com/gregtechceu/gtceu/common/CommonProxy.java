@@ -605,5 +605,7 @@ public class CommonProxy {
             event.getRegistry().addAlias(GTCEu.id("nanomuscle_" + piece), GTCEu.id("nano_fiber_" + piece));
             event.getRegistry().addAlias(GTCEu.id("quarktech_" + piece), GTCEu.id("quark_matter_" + piece));
         }
+        event.getRegistry().addAlias(GTCEu.id("advanced_nanomuscle_chestplate"), GTCEu.id("nano_fiber_chestplate"));
+        event.getRegistry().addAlias(GTCEu.id("advanced_quarktech_chestplate"), GTCEu.id("quark_matter_chestplate"));
     }
 }
