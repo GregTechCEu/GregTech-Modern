@@ -47,6 +47,12 @@ public class CommonLang {
         provider.add("common.gtceu.empty", "Empty");
 
         provider.add("common.gtceu.fluid_amount", "Fluid Amount: ");
+        provider.add("common.gtceu.fluid_stored", "Fluid Stored: ");
+        provider.add("common.gtceu.transfer_rate", "Transfer Rate: ");
+        provider.add("common.gtceu.item_slots", "Item Slots: ");
+        provider.add("common.gtceu.item_capacity", "Item Capacity: ");
+        provider.add("common.gtceu.item_stored", "Item Stored: ");
+        provider.add("common.gtceu.energy_capacity", "Energy Capacity: ");
 
         // Units & Amounts
 
@@ -67,36 +73,34 @@ public class CommonLang {
     private static void generateCommonTooltips(GTLangProvider provider) {
 
         // EU Tooltips
-        provider.add("common.gtceu.tooltip.voltage_in", "§aVoltage IN: §f%d EU/t (%s§f)");
-        provider.add("common.gtceu.tooltip.max_voltage_in", "§aMax Voltage IN: §f%d (%s§f)");
-        provider.add("common.gtceu.tooltip.voltage_out", "§aVoltage OUT: §f%d EU/t (%s§f)");
-        provider.add("common.gtceu.tooltip.max_voltage_out", "§aMax Voltage OUT: §f%d (%s§f)");
-        provider.add("common.gtceu.tooltip.voltage_in_out", "§aVoltage IN/OUT: §f%d EU/t (%s§f)");
-        provider.add("common.gtceu.tooltip.max_voltage_in_out", "§aMax Voltage IN/OUT: §f%d EU/t (%s§f)");
+        provider.add("common.gtceu.tooltip.voltage_in", "Voltage IN: ");
+        provider.add("common.gtceu.tooltip.voltage_out", "Voltage OUT: ");
+        provider.add("common.gtceu.tooltip.voltage_both", "Voltage IN/OUT: ");
+
+        provider.add("common.gtceu.tooltip.max_voltage_in", "Max Voltage IN: ");
+        provider.add("common.gtceu.tooltip.max_voltage_out", "Max Voltage OUT: ");
+        provider.add("common.gtceu.tooltip.max_voltage_both", "Max Voltage IN/OUT: ");
+
         provider.add("common.gtceu.tooltip.amperage_in", "§eAmperage IN: §f%dA");
-        provider.add("common.gtceu.tooltip.amperage_in_till", "§eAmperage IN up to: §f%dA");
         provider.add("common.gtceu.tooltip.amperage_out", "§eAmperage OUT: §f%dA");
+        provider.add("common.gtceu.tooltip.amperage_both", "§eAmperage IN/OUT: §f%dA");
+
+        provider.add("common.gtceu.tooltip.amperage_in_till", "§eAmperage IN up to: §f%dA");
         provider.add("common.gtceu.tooltip.amperage_out_till", "§eAmperage OUT up to: §f%dA");
-        provider.add("common.gtceu.tooltip.amperage_in_out", "§eAmperage IN/OUT: §f%dA");
-        provider.add("common.gtceu.tooltip.amperage_in_out_till", "§eAmperage IN/OUT up to: §f%dA");
+        provider.add("common.gtceu.tooltip.amperage_both_till", "§eAmperage IN/OUT up to: §f%dA");
 
         // EU Storage
         provider.add("common.gtceu.tooltip.energy_storage_capacity", "§cEnergy Capacity: §r%d EU");
         provider.add("common.gtceu.tooltip.energy_tier_range", "§aAllowed Voltage Tiers: §f%s §f- %s");
 
         // Item Storage/Transfer
-        provider.add("common.gtceu.tooltip.item_storage_capacity", "§6Item Slots: §f%d");
-        provider.add("common.gtceu.tooltip.item_storage_total", "§6Item Capacity: §f%d items");
-        provider.add("common.gtceu.tooltip.item_stored", "§dItem Stored: §f%s, %d items");
+        provider.add("common.gtceu.tooltip.item_stored", "%s items");
         provider.add("common.gtceu.tooltip.item_transfer_rate", "§bTransfer Rate: §f%d items/s");
         provider.add("common.gtceu.tooltip.item_transfer_rate_stacks", "§bTransfer Rate: §f%d stacks/s");
 
         // Fluid Storage/Transfer
-        provider.add("common.gtceu.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d mB");
         provider.add("common.gtceu.tooltip.fluid_storage_capacity_mult",
-                "§9Fluid Capacity: §f%d §7Tanks, §f%d mB §7each");
-        provider.add("common.gtceu.tooltip.fluid_stored", "§2Fluid Stored: §f%s, %d mB");
-        provider.add("common.gtceu.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d mB/t");
+                "%s §7Tanks, §f%s mB §7each");
 
         // General Consumption
         provider.add("common.gtceu.tooltip.uses_per_tick", "Uses §f%d EU/t §7while working");

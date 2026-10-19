@@ -55,6 +55,7 @@ import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -240,15 +241,9 @@ public class GTMachineUtils {
                             .tooltips(Component.translatable("machine.gtceu." + tooltip + ".tooltip"))
                             .allowCoverOnFront(true);
 
-                    if (slots == 1) {
-                        builder.tooltips(Component.translatable("common.gtceu.tooltip.fluid_storage_capacity",
-                                FormattingUtil
-                                        .formatNumbers(FluidHatchPartMachine.getTankCapacity(initialCapacity, tier))));
-                    } else {
-                        builder.tooltips(Component.translatable("common.gtceu.tooltip.fluid_storage_capacity_mult",
-                                slots, FormattingUtil
-                                        .formatNumbers(FluidHatchPartMachine.getTankCapacity(initialCapacity, tier))));
-                    }
+                    builder.tooltips(GTCommonComponents.fluidStorageCapacity(
+                            FluidHatchPartMachine.getTankCapacity(initialCapacity, tier), slots));
+
                     return builder.register();
                 },
                 tiers);
@@ -311,7 +306,7 @@ public class GTMachineUtils {
                         .simpleGeneratorModel(GTCEu.id("block/generators/" + name))
                         .tooltips(Streams
                                 .concat(machineTooltips.stream(),
-                                        Arrays.stream(workableTiered(tier, V[tier], V[tier] * 64, recipeType,
+                                        Arrays.stream(workableTiered(tier, V[tier] * 64, recipeType,
                                                 tankScalingFunction.applyAsInt(tier), false)))
                                 .toArray(Component[]::new))
                         .register(),
@@ -361,9 +356,8 @@ public class GTMachineUtils {
                                 VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
                                 batterySlotSize))
                         .tooltips(
-                                Component.translatable("common.gtceu.tooltip.item_storage_capacity",
-                                        batterySlotSize),
-                                Component.translatable("common.gtceu.tooltip.voltage_in_out",
+                                GTCommonComponents.itemSlots(batterySlotSize),
+                                Component.translatable("common.gtceu.tooltip.voltage_both",
                                         FormattingUtil.formatNumbers(GTValues.V[tier]),
                                         GTValues.VNC[tier]),
                                 Component.translatable("common.gtceu.tooltip.amperage_in_till",
@@ -384,8 +378,8 @@ public class GTMachineUtils {
                         .langValue("%s %sx Turbo Charger".formatted(
                                 VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
                                 itemSlotSize))
-                        .tooltips(Component.translatable("common.gtceu.tooltip.item_storage_capacity", itemSlotSize),
-                                Component.translatable("common.gtceu.tooltip.voltage_in_out",
+                        .tooltips(GTCommonComponents.itemSlots(itemSlotSize),
+                                Component.translatable("common.gtceu.tooltip.voltage_both",
                                         FormattingUtil.formatNumbers(GTValues.V[tier]),
                                         VNC[tier]),
                                 Component.translatable("common.gtceu.tooltip.amperage_in_till",
@@ -462,7 +456,7 @@ public class GTMachineUtils {
                         info -> new CrateMachine(info, material, capacity, rowLength))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
-                .tooltips(Component.translatable("common.gtceu.tooltip.item_storage_capacity", capacity))
+                .tooltips(GTCommonComponents.itemSlots(capacity))
                 .modelProperty(GTMachineModelProperties.IS_TAPED, false)
                 .model(GTMachineModels.createCrateModel(wooden))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
@@ -489,8 +483,7 @@ public class GTMachineUtils {
                     }
                 })
                 .tooltips(Component.translatable("machine.gtceu.quantum_tank.tooltip"),
-                        Component.translatable("common.gtceu.tooltip.fluid_storage_capacity",
-                                FormattingUtil.formatNumbers(capacity)))
+                        GTCommonComponents.fluidStorageCapacity(capacity))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .register();
@@ -516,8 +509,7 @@ public class GTMachineUtils {
                     .hasBER(true)
                     .tooltipBuilder(TANK_TOOLTIPS)
                     .tooltips(Component.translatable("machine.gtceu.quantum_tank.tooltip"),
-                            Component.translatable("common.gtceu.tooltip.fluid_storage_capacity",
-                                    FormattingUtil.formatNumbers(maxAmount)))
+                            GTCommonComponents.fluidStorageCapacity(maxAmount))
                     .tier(tier)
                     .register();
             TANK_CAPACITY.put(register, maxAmount);
@@ -540,9 +532,8 @@ public class GTMachineUtils {
                         .hasBER(true)
                         .tooltipBuilder(CHEST_TOOLTIPS)
                         .tooltips(Component.translatable("machine.gtceu.quantum_chest.tooltip"),
-                                Component.translatable("common.gtceu.tooltip.item_storage_total",
-                                        FormattingUtil.formatNumbers(tier == MAX ? Long.MAX_VALUE :
-                                                4_000_000 * (long) Math.pow(2, tier - 1))))
+                                GTCommonComponents.itemCapacity(tier == MAX ? Long.MAX_VALUE :
+                                                4_000_000 * (long) Math.pow(2, tier - 1)))
                         .register(),
                 tiers);
     }
@@ -563,7 +554,7 @@ public class GTMachineUtils {
                 .langValue(displayName)
                 .tooltips(
                         Component.translatable("machine.gtceu.multiblock.tank.tooltip"),
-                        Component.translatable("common.gtceu.tooltip.fluid_storage_capacity", capacity),
+                        GTCommonComponents.fluidStorageCapacity(capacity),
                         (filter != null) ? Component.translatable("tooltip.gtceu.fluid_pipe.max_temperature",
                                 FormattingUtil.formatTemperature(filter.getMaxFluidTemperature())) : null)
                 .rotationState(RotationState.ALL)
@@ -836,8 +827,7 @@ public class GTMachineUtils {
             FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement(key));
             long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
             if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
-            list.add(1, Component.translatable("common.gtceu.tooltip.fluid_stored", stored.getDisplayName(),
-                    FormattingUtil.formatNumbers(storedAmount)));
+            list.add(1, GTCommonComponents.fluidStored(stored.getFluid(), storedAmount));
         }
     };
 
@@ -845,28 +835,20 @@ public class GTMachineUtils {
         if (stack.hasTag()) {
             ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
             long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
-            list.add(1, Component.translatable("common.gtceu.tooltip.item_stored", itemStack.getHoverName(),
-                    FormattingUtil.formatNumbers(storedAmount)));
+            list.add(1, GTCommonComponents.itemStored(itemStack.getItem(), storedAmount));
         }
     };
 
-    public static Component[] workableTiered(int tier, long voltage, long energyCapacity, GTRecipeType recipeType,
+    public static Component[] workableTiered(int tier, long energyCapacity, GTRecipeType recipeType,
                                              long tankCapacity, boolean input) {
         List<Component> tooltipComponents = new ArrayList<>();
         tooltipComponents
-                .add(input ?
-                        Component.translatable("common.gtceu.tooltip.voltage_in",
-                                FormattingUtil.formatNumbers(voltage), GTValues.VNC[tier]) :
-                        Component.translatable("common.gtceu.tooltip.voltage_out",
-                                FormattingUtil.formatNumbers(voltage), GTValues.VNC[tier]));
+                .add(GTCommonComponents.voltage(input ? IO.IN : IO.OUT, tier));
         tooltipComponents
-                .add(Component.translatable("common.gtceu.tooltip.energy_storage_capacity",
-                        FormattingUtil.formatNumbers(energyCapacity)));
+                .add(GTCommonComponents.energyCapacity(energyCapacity));
         if (recipeType.getMaxInputs(FluidRecipeCapability.CAP) > 0 ||
                 recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0)
-            tooltipComponents
-                    .add(Component.translatable("common.gtceu.tooltip.fluid_storage_capacity",
-                            FormattingUtil.formatNumbers(tankCapacity)));
+            tooltipComponents.add(GTCommonComponents.fluidStorageCapacity(tankCapacity));
         return tooltipComponents.toArray(Component[]::new);
     }
 
@@ -956,7 +938,7 @@ public class GTMachineUtils {
                                 .recipeType(recipeType)
                                 .workableTieredHullModel(
                                         registrate.makeResourceLocation("block/machines/" + name))
-                                .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
+                                .tooltips(workableTiered(tier, GTValues.V[tier] * 64, recipeType,
                                         tankScalingFunction.applyAsInt(tier), true))
                                 .ui(panelFactory);
 
