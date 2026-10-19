@@ -97,6 +97,6 @@ public class EquipmentFoundryRecipeBuilder {
 
     public void save(RecipeOutput consumer) {
         var finalId = (id == null ? defaultId() : id).withPrefix("equipment_foundry/");
-        consumer.accept(finalId, new EquipmentFoundryRecipe(finalId, equipment, ingredients, modules), null);
+        consumer.accept(finalId, new EquipmentFoundryRecipe(equipment, ingredients, modules), null);
     }
 }

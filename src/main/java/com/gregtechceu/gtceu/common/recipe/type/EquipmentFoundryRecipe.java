@@ -14,7 +14,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -36,13 +35,11 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
 
     // spotless:off
     public static final MapCodec<EquipmentFoundryRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("id").forGetter(EquipmentFoundryRecipe::getId),
             Ingredient.CODEC.fieldOf("equipment").forGetter(EquipmentFoundryRecipe::getEquipment),
             TierEntry.CODEC.listOf(0, GTValues.TIER_COUNT).fieldOf("entries").forGetter(EquipmentFoundryRecipe::getEntries)
     ).apply(instance, EquipmentFoundryRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EquipmentFoundryRecipe> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC, EquipmentFoundryRecipe::getId,
             Ingredient.CONTENTS_STREAM_CODEC, EquipmentFoundryRecipe::getEquipment,
             TierEntry.STREAM_CODEC.apply(ByteBufCodecs.list()), EquipmentFoundryRecipe::getEntries,
             EquipmentFoundryRecipe::new
@@ -50,25 +47,22 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
     //spotless:on
 
     @Getter
-    private final ResourceLocation id;
-    @Getter
     private final Ingredient equipment;
     @Getter
     private final boolean isTiered;
     @Getter
     private final List<TierEntry> entries;
 
-    public EquipmentFoundryRecipe(ResourceLocation id, Ingredient equipment, List<TierEntry> entries) {
+    public EquipmentFoundryRecipe(Ingredient equipment, List<TierEntry> entries) {
         if (entries.isEmpty())
             throw new IllegalArgumentException("Equipment foundry recipe must have at least one entry");
 
-        this.id = id;
         this.entries = entries;
         this.equipment = equipment;
         this.isTiered = entries.size() == 1;
     }
 
-    public EquipmentFoundryRecipe(ResourceLocation id, Ingredient equipment, @Nullable Ingredient[] moduleIngredients,
+    public EquipmentFoundryRecipe(Ingredient equipment, @Nullable Ingredient[] moduleIngredients,
                                   @Nullable Holder<ItemModule>[] modules) {
         if (moduleIngredients.length != modules.length)
             throw new IllegalArgumentException("Ingredient and module array length must match");
@@ -81,7 +75,11 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
             entries.add(new TierEntry(ingredient, module));
         }
 
-        this.id = id;
+        if (entries.isEmpty()) {
+            throw new IllegalArgumentException("Equipment foundry recipe must have at least one entry");
+        }
+
+
         this.equipment = equipment;
         this.entries = entries;
         this.isTiered = moduleIngredients.length == 1;

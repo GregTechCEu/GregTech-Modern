@@ -96,11 +96,14 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
         if (electricItem == null) return;
         Equipable equipable = Equipable.get(moduleContext.getAppliedTo());
         Component displayName = moduleContext.getData().getModuleItem().getHoverName();
-        switch (equipable.getEquipmentSlot()) {
-            case HEAD -> hud.newLine(Component.translatable("module.gtceu.battery.hud.helmet", displayName));
-            case CHEST -> hud.newLine(Component.translatable("module.gtceu.battery.hud.chestplate", displayName));
-            case LEGS -> hud.newLine(Component.translatable("module.gtceu.battery.hud.leggings", displayName));
-            case FEET -> hud.newLine(Component.translatable("module.gtceu.battery.hud.boots", displayName));
+
+        if (equipable != null) {
+            switch (equipable.getEquipmentSlot()) {
+                case HEAD -> hud.newLine(Component.translatable("module.gtceu.battery.hud.helmet", displayName));
+                case CHEST -> hud.newLine(Component.translatable("module.gtceu.battery.hud.chestplate", displayName));
+                case LEGS -> hud.newLine(Component.translatable("module.gtceu.battery.hud.leggings", displayName));
+                case FEET -> hud.newLine(Component.translatable("module.gtceu.battery.hud.boots", displayName));
+            }
         }
         hud.newLine(Component.translatable("module.gtceu.battery.hud.info", electricItem.getCharge(),
                 electricItem.getMaxCharge()));

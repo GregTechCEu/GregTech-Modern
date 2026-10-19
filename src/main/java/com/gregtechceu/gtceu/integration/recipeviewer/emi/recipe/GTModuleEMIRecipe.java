@@ -27,7 +27,7 @@ public class GTModuleEMIRecipe extends ModularUIEmiRecipe {
     private final EquipmentFoundryRecipe recipe;
 
     public GTModuleEMIRecipe(RecipeHolder<EquipmentFoundryRecipe> recipe) {
-        super(recipe.value().getId(), () -> new ModuleRecipeWidget(recipe.value()));
+        super(recipe.id(), () -> new ModuleRecipeWidget(recipe.value()));
         this.recipe = recipe.value();
     }
 
