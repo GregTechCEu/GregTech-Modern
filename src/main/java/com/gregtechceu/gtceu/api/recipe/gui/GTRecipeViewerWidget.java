@@ -74,7 +74,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         Flow mainColumn = Flow.col().widthRel(1f).coverChildrenHeight();
 
         child(mainColumn);
-        padding(3);
+        margin(3);
         coverChildrenWidth(150);
         coverChildrenHeight(60);
 
@@ -106,7 +106,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                 .horizontalCenter()
                 .coverChildrenHeight()
                 .widthRel(1.f)
-                .childPadding((recipeType.getUiLayout().getProgressBar().progressSize() / 2) + 2)
+                .childPadding((recipeType.getUiLayout().getProgressBar().progressSize() / 3) + 2)
                 .child(inputColumn)
                 .child(uiLayout.getProgressWidgetSupplier()
                         .get(uiLayout, DoubleValue.simulateProgress(2000), null))

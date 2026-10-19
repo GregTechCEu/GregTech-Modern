@@ -152,28 +152,6 @@ public class FormattingUtil {
                 .replace("DCD", "CM");
     }
 
-    /**
-     * Does almost the same thing as LOWER_UNDERSCORE.to(UPPER_CAMEL, string), but it also removes underscores before
-     * numbers.
-     *
-     * @param string Any string with ASCII characters.
-     * @return A string that is all lowercase, with underscores inserted before word/number boundaries:
-     *         "maraging_steel_300" -> "maragingSteel300"
-     */
-    public static String lowerUnderscoreToUpperCamel(String string) {
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < string.length(); i++) {
-            if (string.charAt(i) == '_')
-                continue;
-            if (i == 0 || string.charAt(i - 1) == '_') {
-                result.append(Character.toUpperCase(string.charAt(i)));
-            } else {
-                result.append(string.charAt(i));
-            }
-        }
-        return result.toString();
-    }
-
     public static String formatPercent(double number) {
         return String.format("%,.2f", number);
     }
