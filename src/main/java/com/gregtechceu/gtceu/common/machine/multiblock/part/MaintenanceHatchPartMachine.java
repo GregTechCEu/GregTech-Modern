@@ -389,20 +389,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                 .coverChildren()
                 .padding(5)
                 .childPadding(2);
-        Runnable updateWidget = () -> {
-            while (!maintenanceStatusWidget.getChildren().isEmpty()) maintenanceStatusWidget.remove(0);
-            maintenanceStatusWidget.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems() ?
-                    Component.translatable("gtceu.top.maintenance_broken") :
-                    Component.translatable("gtceu.top.maintenance_fixed"))))
-                    .child(Flow.row()
-                            .coverChildren()
-                            .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
-                                    .filter(i -> ((getMaintenanceProblems() >> i) & 1) == 0)
-                                    .map(GTUtil::getMaintenanceText)
-                                    .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getFirst())).size(16))
-                                    .map(IWidget.class::cast)
-                                    .toList()));
-        };
+        Runnable updateWidget = maintenanceUpdateWidget(maintenanceStatusWidget);
         syncHandler.setOnMousePressed((button) -> {
             fixMaintenanceProblems(guiData.getPlayer());
             updateWidget.run();
@@ -412,20 +399,40 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         mainWidget.child(Flow.column()
                 .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
-                .child(Flow.row()
-                        .leftRel(0.5f)
-                        .coverChildren()
-                        .padding(5)
-                        .child(new ItemSlot()
-                                .slot(new ModularSlot(itemStackHandler, 0).changeListener(
-                                        (newItem, onlyAmountChanged, client, init) -> updateWidget.run()))
-                                .background(GTGuiTextures.SLOT, GTGuiTextures.DUCT_TAPE_OVERLAY))
-                        .child(new ButtonWidget<>()
-                                .background(GTGuiTextures.BUTTON_MAINTENANCE)
-                                .disableHoverBackground()
-                                .addTooltipElement(
-                                        Text.lang("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))
-                                .syncHandler(syncHandler)))
+                .child(manualMaintenancePanel(syncHandler, updateWidget))
                 .child(maintenanceStatusWidget));
+    }
+
+    protected Runnable maintenanceUpdateWidget(Flow maintenanceStatusWidget){
+        return () -> {
+            while (!maintenanceStatusWidget.getChildren().isEmpty()) maintenanceStatusWidget.remove(0);
+            maintenanceStatusWidget.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems() ?
+                            Component.translatable("gtceu.top.maintenance_broken") :
+                            Component.translatable("gtceu.top.maintenance_fixed"))))
+                    .child(Flow.row()
+                            .coverChildren()
+                            .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
+                                    .filter(i -> ((getMaintenanceProblems() >> i) & 1) == 0)
+                                    .map(GTUtil::getMaintenanceText)
+                                    .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getFirst())).size(16))
+                                    .map(IWidget.class::cast)
+                                    .toList()));
+        };
+    }
+    protected Flow manualMaintenancePanel(InteractionSyncHandler syncHandler, Runnable updateWidget){
+        return Flow.row()
+                .leftRel(0.5f)
+                .coverChildren()
+                .padding(5)
+                .child(new ItemSlot()
+                        .slot(new ModularSlot(itemStackHandler, 0).changeListener(
+                                (newItem, onlyAmountChanged, client, init) -> updateWidget.run()))
+                        .background(GTGuiTextures.SLOT, GTGuiTextures.DUCT_TAPE_OVERLAY))
+                .child(new ButtonWidget<>()
+                        .background(GTGuiTextures.BUTTON_MAINTENANCE)
+                        .disableHoverBackground()
+                        .addTooltipElement(
+                                Text.lang("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))
+                        .syncHandler(syncHandler));
     }
 }

@@ -126,20 +126,7 @@ public class ConfigurableMaintenanceHatchPartMachine extends MaintenanceHatchPar
                 .coverChildren()
                 .padding(5)
                 .childPadding(2);
-        Runnable updateWidget = () -> {
-            while (!maintenanceStatusWidget.getChildren().isEmpty()) maintenanceStatusWidget.remove(0);
-            maintenanceStatusWidget.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems() ?
-                    Component.translatable("gtceu.top.maintenance_broken") :
-                    Component.translatable("gtceu.top.maintenance_fixed"))))
-                    .child(Flow.row()
-                            .coverChildren()
-                            .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
-                                    .filter(i -> ((getMaintenanceProblems() >> i) & 1) == 0)
-                                    .map(GTUtil::getMaintenanceText)
-                                    .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getFirst())).size(16))
-                                    .map(IWidget.class::cast)
-                                    .toList()));
-        };
+        Runnable updateWidget = maintenanceUpdateWidget(maintenanceStatusWidget);
         syncHandler.setOnMousePressed((button) -> {
             fixMaintenanceProblems(guiData.getPlayer());
             updateWidget.run();
@@ -177,16 +164,11 @@ public class ConfigurableMaintenanceHatchPartMachine extends MaintenanceHatchPar
                                 .leftRel(0)
                                 .child(new TextWidget<>(
                                         Text.lang("gtceu.maintenance.configurable_duration.modify")))
-
                                 .child(
                                         GTMuiWidgets
                                                 .createDecimalInputWithButtons(durationSyncValue,
                                                         () -> MIN_DURATION_MULTIPLIER,
-                                                        () -> MAX_DURATION_MULTIPLIER, 1, 2)
-
-                                )
-
-                        )
+                                                        () -> MAX_DURATION_MULTIPLIER, 1, 2)))
                         .tooltip(frequencyTooltip)
                         .child(new TextWidget<>(Text.dynamic(() -> Component.translatable(
                                 "gtceu.maintenance.configurable_frequency",
@@ -194,20 +176,7 @@ public class ConfigurableMaintenanceHatchPartMachine extends MaintenanceHatchPar
                                 .leftRel(0)
                                 .paddingTop(5))
                         .tooltip(frequencyTooltip))
-                .child(Flow.row()
-                        .leftRel(0.5f)
-                        .coverChildren()
-                        .padding(5)
-                        .child(new ItemSlot()
-                                .slot(new ModularSlot(itemStackHandler, 0).changeListener(
-                                        (newItem, onlyAmountChanged, client, init) -> updateWidget.run()))
-                                .background(GTGuiTextures.SLOT, GTGuiTextures.DUCT_TAPE_OVERLAY))
-                        .child(new ButtonWidget<>()
-                                .background(GTGuiTextures.BUTTON_MAINTENANCE)
-                                .disableHoverBackground()
-                                .addTooltipElement(
-                                        Text.lang("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))
-                                .syncHandler(syncHandler)))
+                .child(manualMaintenancePanel(syncHandler, updateWidget))
                 .child(maintenanceStatusWidget));
     }
 }
