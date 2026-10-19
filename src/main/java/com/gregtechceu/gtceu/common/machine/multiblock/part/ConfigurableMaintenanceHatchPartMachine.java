@@ -136,7 +136,7 @@ public class ConfigurableMaintenanceHatchPartMachine extends MaintenanceHatchPar
                             .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
                                     .filter(i -> ((getMaintenanceProblems() >> i) & 1) == 0)
                                     .map(GTUtil::getMaintenanceText)
-                                    .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getFirst())))
+                                    .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getFirst())).size(16))
                                     .map(IWidget.class::cast)
                                     .toList()));
         };
