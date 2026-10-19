@@ -52,7 +52,7 @@ public abstract class AttributeItemModule extends ItemModule {
         return Math.max(neutral, original);
     }
 
-    public @Nullable AttributeModifier getAttributeModifier(ModuleContext moduleContext) {
+    public @Nullable AttributeModifier getModifierToAdd(ModuleContext moduleContext) {
         if (!isEnabled(moduleContext)) return null;
         if (!moduleContext.getData(AttributeModuleData.class).isKeepActive()) return null;
 
@@ -106,7 +106,7 @@ public abstract class AttributeItemModule extends ItemModule {
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
         var keepActive = keepAttributeActive(moduleContext, entity);
         if (keepActive == moduleContext.getData(AttributeModuleData.class).keepActive) return;
-        moduleContext.setData(moduleContext.getData(AttributeModuleData.class).witKeepActive(keepActive));
+        moduleContext.setData(moduleContext.getData(AttributeModuleData.class).withKeepActive(keepActive));
     }
 
     public static class AttributeModuleData extends ModuleData {
@@ -155,7 +155,7 @@ public abstract class AttributeItemModule extends ItemModule {
             return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount, keepActive);
         }
 
-        public AttributeModuleData witKeepActive(boolean keepActive) {
+        public AttributeModuleData withKeepActive(boolean keepActive) {
             return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount, keepActive);
         }
 

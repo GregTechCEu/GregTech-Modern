@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
@@ -478,6 +479,20 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
             }
             return null;
         }, this);
+        event.registerBlock(GTCapability.CAPABILITY_RECIPE_LOGIC, (level, pos, state, blockEntity, $) -> {
+            if (blockEntity instanceof MetaMachine machine) {
+                if (machine instanceof IRecipeLogicMachine rlMachine) {
+                    return rlMachine.getRecipeLogic();
+                }
+                var list = getCapabilitiesFromTraits(machine.getTraitHolder().getAllTraits(), null,
+                        RecipeLogic.class);
+                if (!list.isEmpty()) {
+                    return list.getFirst();
+                }
+            }
+            return null;
+        }, this);
+
         event.registerBlock(GTCapability.CAPABILITY_LASER, (level, pos, state, blockEntity, side) -> {
             if (blockEntity instanceof MetaMachine machine) {
                 if (machine instanceof ILaserContainer laserContainer) {

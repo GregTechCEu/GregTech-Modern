@@ -63,6 +63,7 @@ import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -78,6 +79,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ChunkPos;
@@ -361,13 +363,7 @@ public class CommonEventListener {
             ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 
-            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor &&
-                    armor.getArmorLogic() != null) {
-                armor.getArmorLogic().damageArmor(player, boots,
-                        (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
-                player.fallDistance = 0;
-                event.setCanceled(true);
-            } else if (chest.getItem() instanceof ArmorComponentItem armor &&
+            if (chest.getItem() instanceof ArmorComponentItem armor &&
                     armor.getArmorLogic() instanceof IJetpack jetpack &&
                     jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
                     player.fallDistance >= player.getHealth() + 3.2f) {
@@ -383,6 +379,8 @@ public class CommonEventListener {
         if (!(event.getEntity() instanceof LivingEntity entity)) {
             return;
         }
+
+        if (entity instanceof LocalPlayer) return;
 
         if (entity.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ModularArmorItem armor &&
                 armor.protectsAgainstFire()) {
@@ -429,6 +427,8 @@ public class CommonEventListener {
             }
         }
 
+        if (IModularItem.isSameItemSameModules(old, current)) return;
+
         if (!old.isEmpty()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(old);
             if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onUnequip(a, entity));
@@ -446,15 +446,13 @@ public class CommonEventListener {
         if (modular == null) return;
 
         for (var ctx : modular.getAllModuleInstances()) {
-
             if (ctx.getModule() instanceof AttributeItemModule attributeModule) {
                 var attribute = attributeModule.getAttribute(ctx);
-                var modifier = attributeModule.getAttributeModifier(ctx);
+                var modifier = attributeModule.getModifierToAdd(ctx);
                 if (modifier != null) {
 
-                    var item = (ModularArmorItem)modifierEvent.getItemStack().getItem();
-
-                    modifierEvent.addModifier(attribute, modifier, EquipmentSlotGroup.bySlot(item.getEquipmentSlot()));
+                    var equipable = Equipable.get(modifierEvent.getItemStack());
+                    modifierEvent.addModifier(attribute, modifier, equipable == null ? EquipmentSlotGroup.ANY : EquipmentSlotGroup.bySlot(equipable.getEquipmentSlot()));
                 }
             }
         }

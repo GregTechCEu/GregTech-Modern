@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.data.GTAttachmentTypes;
 
@@ -53,6 +54,11 @@ public class GTCapabilityHelper {
     @Nullable
     public static ICoverable getCoverable(Level level, BlockPos pos, @Nullable Direction side) {
         return level.getCapability(GTCapability.CAPABILITY_COVERABLE, pos, side);
+    }
+
+    @Nullable
+    public static RecipeLogic getRecipeLogic(Level level, BlockPos pos) {
+        return level.getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC, pos, null);
     }
 
     @Nullable

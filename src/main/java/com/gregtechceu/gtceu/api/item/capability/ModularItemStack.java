@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -19,6 +20,7 @@ public class ModularItemStack implements IModularItem {
 
     public ModularItemStack(ItemStack stack, Function<ItemStack, List<ItemModuleSlot>> slotsGetter) {
         this.stack = stack;
+        
         slots = slotsGetter.apply(stack);
     }
 
@@ -58,7 +60,7 @@ public class ModularItemStack implements IModularItem {
 
     @Override
     public @Nullable ModuleContext attach(ItemModule module, ItemStack itemToApply, boolean simulate) {
-        for (int i = 0; i < getSlots().size(); i++) {
+        for (int i = 0; i < IModularItem.MAX_MODULE_SLOTS; i++) {
             if (getModuleContextForSlot(i) == null) return attach(module, itemToApply, i, simulate);
         }
         return null;
