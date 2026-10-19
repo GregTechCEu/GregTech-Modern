@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item.module;
 
 import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 
@@ -68,7 +69,7 @@ public interface IModularItem {
 
         if (firstModules.getModules().size() != secondModules.getModules().size()) return false;
 
-        for (var moduleData: firstModules.getModules()) {
+        for (var moduleData : firstModules.getModules()) {
             var secondData = secondModules.getModuleDataForSlot(moduleData.slot);
             if (secondData == null) return false;
             if (moduleData.getModule() != secondData.getModule()) return false;

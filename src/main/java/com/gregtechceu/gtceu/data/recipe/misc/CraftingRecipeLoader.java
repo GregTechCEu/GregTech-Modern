@@ -24,12 +24,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.DifferenceIngredient;
 
 import com.google.gson.JsonObject;
-import net.minecraftforge.common.crafting.DifferenceIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -349,7 +348,8 @@ public class CraftingRecipeLoader {
 
             var armorItem = armor.get().getDefaultInstance();
             Ingredient base = DifferenceIngredient.of(Ingredient.of(armorItem),
-                    NBTPredicateIngredient.of(armorItem, new EqualsNBTPredicate(ModularArmorItem.NETHERITE_PLATED_TAG, ByteTag.valueOf(true))));
+                    NBTPredicateIngredient.of(armorItem,
+                            new EqualsNBTPredicate(ModularArmorItem.NETHERITE_PLATED_TAG, ByteTag.valueOf(true))));
 
             provider.accept(new FinishedRecipe() {
 

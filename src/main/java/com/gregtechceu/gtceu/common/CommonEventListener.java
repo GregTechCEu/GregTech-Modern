@@ -59,7 +59,6 @@ import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -353,10 +352,10 @@ public class CommonEventListener {
                     armor.getArmorLogic() instanceof IJetpack jetpack &&
                     jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
                     player.fallDistance >= player.getHealth() + 3.2f) {
-                        IJetpack.performEHover(chest, player);
-                        player.fallDistance = 0;
-                        event.setCanceled(true);
-                    }
+                IJetpack.performEHover(chest, player);
+                player.fallDistance = 0;
+                event.setCanceled(true);
+            }
         }
     }
 
@@ -742,7 +741,6 @@ public class CommonEventListener {
             if (mapping.getKey().equals(GTCEu.id("advanced_quarktech_chestplate"))) {
                 mapping.remap(GTItems.QUANTUM_CHESTPLATE.get());
             }
-
 
             if (mapping.getKey().equals(GTCEu.id("quarktech_leggings"))) {
                 mapping.remap(GTItems.QUANTUM_LEGGINGS.get());

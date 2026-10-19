@@ -25,10 +25,10 @@ public class SmithingTransformRecipeMixin {
                at = @At(value = "INVOKE",
                         target = "Lnet/minecraft/world/item/ItemStack;setTag(Lnet/minecraft/nbt/CompoundTag;)V"))
     private CompoundTag gtceu$applyTagsOnAssemble(CompoundTag newTag, @Local ItemStack output) {
+        var recipe = (SmithingTransformRecipe) (Object) this;
 
-        var recipe = (SmithingTransformRecipe)(Object)this;
-
-        if (recipe.getId().getPath().startsWith("netherite_plated_") && recipe.getId().getNamespace().equals(GTCEu.MOD_ID)) {
+        if (recipe.getId().getPath().startsWith("netherite_plated_") &&
+                recipe.getId().getNamespace().equals(GTCEu.MOD_ID)) {
             newTag.putBoolean(ModularArmorItem.NETHERITE_PLATED_TAG, true);
             return newTag;
         }
@@ -52,5 +52,4 @@ public class SmithingTransformRecipeMixin {
         }
         return newTag;
     }
-
 }

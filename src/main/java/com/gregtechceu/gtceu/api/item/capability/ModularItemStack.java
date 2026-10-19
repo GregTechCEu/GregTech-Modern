@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.api.item.capability;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.module.*;
 
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
