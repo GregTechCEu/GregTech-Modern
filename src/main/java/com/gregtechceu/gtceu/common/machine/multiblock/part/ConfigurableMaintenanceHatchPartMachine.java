@@ -117,7 +117,7 @@ public class ConfigurableMaintenanceHatchPartMachine extends MaintenanceHatchPar
                 .coverChildren()
                 .padding(5)
                 .childPadding(2);
-        Runnable updateWidget = maintenanceUpdateWidget(maintenanceStatusWidget);
+        Runnable updateWidget = () -> {};// maintenanceUpdateWidget(maintenanceStatusWidget);
         syncHandler.setOnMousePressed((button) -> {
             fixMaintenanceProblems(guiData.getPlayer());
             updateWidget.run();
@@ -177,7 +177,7 @@ public class ConfigurableMaintenanceHatchPartMachine extends MaintenanceHatchPar
                                 .leftRel(0)
                                 .paddingTop(5))
                         .tooltip(frequencyTooltip))
-                .child(manualMaintenancePanel(syncHandler, updateWidget))
+                .child(manualMaintenancePanel(syncHandler))
                 .child(maintenanceStatusWidget));
     }
 }
