@@ -67,31 +67,28 @@ public class SpeedItemModule extends TieredItemModule {
     }
 
     @Override
-    public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
+    public void clientSideArmorTick(ModuleContext moduleContext, Player player) {
         if (!isEnabled(moduleContext) || getStrength(moduleContext) <= 0) return;
-        super.onArmorTick(moduleContext, entity);
-        if (entity instanceof Player player) {
-            float strength = getStrength(moduleContext);
-            float mul = (getTier() / 4f + 1) * strength;
-            boolean sprinting = SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isSprinting();
-            boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
-            boolean sneaking = SyncedKeyMappings.VANILLA_SNEAK.isKeyDown(player);
+        float strength = getStrength(moduleContext);
+        float mul = (getTier() / 4f + 1) * strength;
+        boolean sprinting = SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isSprinting();
+        boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
+        boolean sneaking = SyncedKeyMappings.VANILLA_SNEAK.isKeyDown(player);
 
-            if ((player.onGround() || player.isInWater()) && sprinting) {
-                float speed = 0.25F * mul;
-                if (player.isInWater()) {
-                    speed = 0.1F * mul;
-                    if (jumping) {
-                        player.push(0.0, 0.1 * strength, 0.0);
-                    }
+        if ((player.onGround() || player.isInWater()) && sprinting) {
+            float speed = 0.25F * mul;
+            if (player.isInWater()) {
+                speed = 0.1F * mul;
+                if (jumping) {
+                    player.push(0.0, 0.1 * strength, 0.0);
                 }
-                player.moveRelative(speed, new Vec3(0, 0, 1));
-            } else if (player.isInWater() && (sneaking || jumping)) {
-                if (sneaking)
-                    player.push(0.0, -SPEED_ACCEL * mul, 0.0);
-                if (jumping)
-                    player.push(0.0, SPEED_ACCEL * mul, 0.0);
             }
+            player.moveRelative(speed, new Vec3(0, 0, 1));
+        } else if (player.isInWater() && (sneaking || jumping)) {
+            if (sneaking)
+                player.push(0.0, -SPEED_ACCEL * mul, 0.0);
+            if (jumping)
+                player.push(0.0, SPEED_ACCEL * mul, 0.0);
         }
     }
 

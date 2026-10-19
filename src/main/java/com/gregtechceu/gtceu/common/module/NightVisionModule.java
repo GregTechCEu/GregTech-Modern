@@ -81,6 +81,11 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
         if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
             nightVision = !nightVision;
             toggleTimer = 5;
+
+            if (!nightVision) {
+                data = data.withNightVisionToggleTick(0);
+            }
+
             if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                 nightVision = false;
                 player.displayClientMessage(Component.translatable("armor.gtceu.night_vision.error"), true);
@@ -94,13 +99,13 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
 
         if (nightVision) {
             player.removeEffect(MobEffects.BLINDNESS);
-            if (nightVisionToggleTick >= levelTick + ArmorUtils.NIGHT_VISION_RESET) {
+            if (levelTick > nightVisionToggleTick && item.canUse(2)) {
                 player.addEffect(
                         new MobEffectInstance(MobEffects.NIGHT_VISION, ArmorUtils.NIGHTVISION_DURATION, 0, true,
                                 false));
                 item.discharge(2, item.getTier(), true, false, false);
 
-                data = data.withNightVisionToggleTick(nightVisionToggleTick);
+                data = data.withNightVisionToggleTick(levelTick + ArmorUtils.NIGHT_VISION_RESET);
                 moduleContext.setData(data);
             }
         } else {
@@ -144,7 +149,7 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
             super(slot, module, moduleItem, true);
             this.nightVision = false;
             this.toggleTimer = 0;
-            this.nightVisionToggleTick = Long.MAX_VALUE;
+            this.nightVisionToggleTick = 0;
         }
 
         public NightVisionModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,

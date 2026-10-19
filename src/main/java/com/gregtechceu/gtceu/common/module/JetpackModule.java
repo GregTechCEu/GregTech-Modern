@@ -49,11 +49,6 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
     }
 
     @Override
-    public void onArmorTick(ModuleContext context, LivingEntity entity) {
-        if (isEnabled(context)) super.onArmorTick(context, entity);
-    }
-
-    @Override
     public int getTier() {
         return GTValues.MV;
     }

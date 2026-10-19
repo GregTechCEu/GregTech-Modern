@@ -481,13 +481,10 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
         }, this);
         event.registerBlock(GTCapability.CAPABILITY_RECIPE_LOGIC, (level, pos, state, blockEntity, side) -> {
             if (blockEntity instanceof MetaMachine machine) {
-                if (machine instanceof IRecipeLogicMachine rlMachine) {
-                    return rlMachine.getRecipeLogic();
-                }
-                var list = getCapabilitiesFromTraits(machine.getTraitHolder().getAllTraits(), side,
-                        RecipeLogic.class);
-                if (!list.isEmpty()) {
-                    return list.getFirst();
+                for (MachineTrait trait : machine.getTraitHolder().getAllTraits()) {
+                    if (trait instanceof RecipeLogic recipeLogic) {
+                        return recipeLogic;
+                    }
                 }
             }
             return null;

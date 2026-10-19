@@ -82,7 +82,7 @@ public class AutoChargeItemModule extends TieredItemModule {
     @Override
     public void onInventoryTick(ModuleContext moduleContext, Player player) {
         super.onInventoryTick(moduleContext, player);
-        if (player.level().isClientSide || !isEnabled(moduleContext)) return;
+        if (!isEnabled(moduleContext)) return;
         MetaMachine machine = getLinkedMachine(player.getServer(), moduleContext);
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return;
