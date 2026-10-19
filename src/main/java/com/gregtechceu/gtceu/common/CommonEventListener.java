@@ -386,7 +386,7 @@ public class CommonEventListener {
 
         if (entity instanceof Player player) {
             var inv = player.getInventory();
-            for (var group : ImmutableList.of(inv.items, inv.offhand)) {
+            for (var group : ImmutableList.of(inv.items, inv.armor, inv.offhand)) {
                 for (ItemStack stack : group) {
                     IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
                     if (modularItem == null) continue;
