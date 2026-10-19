@@ -104,11 +104,6 @@ public class SpeedItemModule extends TieredItemModule {
         return 0;
     }
 
-    @Override
-    public boolean useEnergyInInventory(ModuleContext moduleContext, LivingEntity entity) {
-        return false;
-    }
-
     public static class SpeedModuleData extends ModuleData {
 
         // spotless:off

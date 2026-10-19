@@ -60,8 +60,8 @@ public class NightvisionGoggles extends ArmorLogicSuite {
             if (nightVision) {
                 player.removeEffect(MobEffects.BLINDNESS);
                 float tickRate = level.tickRateManager().tickrate();
-                if (nightVisionTimer <= ArmorUtils.NIGHT_VISION_RESET * tickRate) {
-                    nightVisionTimer = Mth.floor(ArmorUtils.NIGHTVISION_DURATION * tickRate);
+                if (nightVisionTimer <= ArmorUtils.NIGHT_VISION_RESET) {
+                    nightVisionTimer = Mth.floor(ArmorUtils.NIGHTVISION_DURATION);
                     player.addEffect(
                             new MobEffectInstance(MobEffects.NIGHT_VISION, nightVisionTimer, 0, true,
                                     false));

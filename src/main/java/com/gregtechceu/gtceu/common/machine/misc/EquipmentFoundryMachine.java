@@ -88,7 +88,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
 
         return getLevel().getRecipeManager()
                 .getAllRecipesFor(GTRecipeTypes.EQUIPMENT_FOUNDRY_RECIPES.get())
-                .stream().anyMatch(recipe -> recipe.value().matches(equipmentSlot.getStackInSlot(0), stack));
+                .stream().anyMatch(recipe -> recipe.value().matches(equipmentSlot.getStackInSlot(0), stack, slot));
     }
 
     @Override
@@ -186,8 +186,9 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         var equipmentItem = equipmentSlot.getStackInSlot(0);
         for (var recipe : getLevel().getRecipeManager()
                 .getAllRecipesFor(GTRecipeTypes.EQUIPMENT_FOUNDRY_RECIPES.get())) {
-            if (recipe.value().matches(equipmentItem, newModule)) {
+            if (recipe.value().matches(equipmentItem, newModule, slot)) {
                 recipe.value().applyToItem(equipmentItem, newModule, slot);
+                break;
             }
         }
     }

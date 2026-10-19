@@ -81,15 +81,6 @@ public class ModularArmorItem extends ArmorComponentItem implements IComponentIt
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        for (IItemComponent component : components) {
-            if (component instanceof IItemLifeCycle lifeCycle) {
-                lifeCycle.inventoryTick(stack, level, entity, slotId, isSelected);
-            }
-        }
-    }
-
-    @Override
     public boolean isPPE(ItemStack stack) {
         var modular = GTCapabilityHelper.getModularItem(stack);
         if (modular != null) {

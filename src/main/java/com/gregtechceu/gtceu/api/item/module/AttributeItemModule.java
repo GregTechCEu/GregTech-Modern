@@ -3,16 +3,11 @@ package com.gregtechceu.gtceu.api.item.module;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -20,6 +15,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -44,45 +40,6 @@ public abstract class AttributeItemModule extends ItemModule {
         return new AttributeModuleData(slot, module, moduleStack, getMaxAttributeAmount());
     }
 
-    protected void attachAttribute(ModuleContext moduleContext) {
-        if (!isEnabled(moduleContext)) return;
-        AttributeModifier attributeModifier = getAttributeModifier(moduleContext);
-        var modifiers = moduleContext.getAppliedTo().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS,
-                ItemAttributeModifiers.EMPTY);
-
-        if (modifiers.modifiers().stream().anyMatch(v -> v.modifier().id().equals(getId()))) return;
-
-        modifiers = modifiers.withModifierAdded(getAttribute(moduleContext), attributeModifier,
-                EquipmentSlotGroup.bySlot(getSlot(moduleContext.getAppliedTo())));
-
-        moduleContext.getAppliedTo().set(DataComponents.ATTRIBUTE_MODIFIERS, modifiers);
-    }
-
-    private EquipmentSlot getSlot(ItemStack stack) {
-        Equipable equipable = Equipable.get(stack);
-        if (equipable != null) return equipable.getEquipmentSlot();
-        return EquipmentSlot.MAINHAND;
-    }
-
-    protected boolean attributeAttached(ModuleContext moduleContext) {
-        var modifiers = moduleContext.getAppliedTo().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS,
-                ItemAttributeModifiers.EMPTY);
-        return modifiers.modifiers().stream().anyMatch(v -> v.modifier().id().equals(getId()));
-    }
-
-    protected void detachAttribute(ModuleContext moduleContext) {
-        var modifiers = moduleContext.getAppliedTo().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS,
-                ItemAttributeModifiers.EMPTY);
-
-        ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
-        modifiers.modifiers().forEach(v -> {
-            if (v.modifier().id().equals(getId())) return;
-            builder.add(v.attribute(), v.modifier(), v.slot());
-        });
-
-        moduleContext.getAppliedTo().set(DataComponents.ATTRIBUTE_MODIFIERS, builder.build());
-    }
-
     public double getMinModifier(ModuleContext moduleContext) {
         double original = getMaxAttributeAmount();
         double neutral = getNeutralModifier(moduleContext);
@@ -95,7 +52,10 @@ public abstract class AttributeItemModule extends ItemModule {
         return Math.max(neutral, original);
     }
 
-    protected AttributeModifier getAttributeModifier(ModuleContext moduleContext) {
+    public @Nullable AttributeModifier getAttributeModifier(ModuleContext moduleContext) {
+        if (!isEnabled(moduleContext)) return null;
+        if (!moduleContext.getData(AttributeModuleData.class).isKeepActive()) return null;
+
         double modifiedAmount = getModifier(moduleContext);
         return new AttributeModifier(getId(), modifiedAmount, getModifierOperation());
     }
@@ -106,8 +66,6 @@ public abstract class AttributeItemModule extends ItemModule {
 
     public void setModifier(ModuleContext moduleContext, double modifier) {
         moduleContext.setData(moduleContext.getData(AttributeModuleData.class).withModifierAmount(modifier));
-        detachAttribute(moduleContext);
-        attachAttribute(moduleContext);
     }
 
     protected String getSliderString(ModuleContext moduleContext, double value) {
@@ -125,26 +83,6 @@ public abstract class AttributeItemModule extends ItemModule {
                         x -> setModifier(moduleContext, x),
                         getMinModifier(moduleContext), getMaxModifier(moduleContext),
                         x -> getSliderString(moduleContext, x));
-    }
-
-    @Override
-    public void onAttach(ModuleContext moduleContext) {
-        super.onAttach(moduleContext);
-        attachAttribute(moduleContext);
-    }
-
-    @Override
-    public void onRemove(ModuleContext moduleContext) {
-        super.onRemove(moduleContext);
-        detachAttribute(moduleContext);
-    }
-
-    @Override
-    public void setEnabled(ModuleContext moduleContext, boolean enabled) {
-        super.setEnabled(moduleContext, enabled);
-        if (this.isEnabled(moduleContext)) {
-            this.attachAttribute(moduleContext);
-        } else this.detachAttribute(moduleContext);
     }
 
     public abstract Holder<Attribute> getAttribute(ModuleContext moduleContext);
@@ -166,62 +104,70 @@ public abstract class AttributeItemModule extends ItemModule {
 
     @Override
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
-        var currentlyAttached = attributeAttached(moduleContext);
-        var shouldKeepAttached = isEnabled(moduleContext) && keepAttributeActive(moduleContext, entity);
-        if (shouldKeepAttached && !currentlyAttached) attachAttribute(moduleContext);
-        if (!shouldKeepAttached && currentlyAttached) detachAttribute(moduleContext);
+        var keepActive = keepAttributeActive(moduleContext, entity);
+        if (keepActive == moduleContext.getData(AttributeModuleData.class).keepActive) return;
+        moduleContext.setData(moduleContext.getData(AttributeModuleData.class).witKeepActive(keepActive));
     }
 
     public static class AttributeModuleData extends ModuleData {
 
         // spotless:off
-        public static final MapCodec<AttributeModuleData> CODEC = RecordCodecBuilder.mapCodec(instance -> baseCodec(instance).and(
-                Codec.DOUBLE.fieldOf("modifier_amount").forGetter(AttributeModuleData::getModifierAmount)
-        ).apply(instance, AttributeModuleData::new));
+        public static final MapCodec<AttributeModuleData> CODEC = RecordCodecBuilder.mapCodec(instance -> baseCodec(instance).and(instance.group(
+                Codec.DOUBLE.fieldOf("modifier_amount").forGetter(AttributeModuleData::getModifierAmount),
+                Codec.BOOL.fieldOf("keep_active").forGetter(AttributeModuleData::isKeepActive)
+        )).apply(instance, AttributeModuleData::new));
         //spotless:on
 
         @Getter
         private final double modifierAmount;
+        @Getter
+        private final boolean keepActive;
 
         public AttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
-                                   double modifierAmount) {
+                                   double modifierAmount, boolean keepActive) {
             super(slot, module, moduleItem, enabled);
             this.modifierAmount = modifierAmount;
+            this.keepActive = keepActive;
         }
 
         public AttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, double modifierAmount) {
             super(slot, module, moduleItem, true);
             this.modifierAmount = modifierAmount;
+            this.keepActive = true;
         }
 
         public AttributeModuleData withModifierAmount(double modifierAmount) {
-            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount);
+            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount, keepActive);
         }
 
         @Override
         public ModuleData copy() {
-            return new AttributeModuleData(slot, module, moduleItem.copy(), enabled, modifierAmount);
+            return new AttributeModuleData(slot, module, moduleItem.copy(), enabled, modifierAmount, keepActive);
         }
 
         @Override
         public ModuleData withModuleItem(ItemStack moduleItem) {
-            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount);
+            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount, keepActive);
         }
 
         @Override
         public ModuleData withEnabled(boolean enabled) {
-            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount);
+            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount, keepActive);
+        }
+
+        public AttributeModuleData witKeepActive(boolean keepActive) {
+            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount, keepActive);
         }
 
         @Override
         public boolean equals(Object obj) {
             if (!(obj instanceof AttributeModuleData other)) return false;
-            return super.equals(obj) && modifierAmount == other.modifierAmount;
+            return super.equals(obj) && modifierAmount == other.modifierAmount && keepActive == other.keepActive;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(slot, module, moduleItem, enabled, modifierAmount);
+            return Objects.hash(slot, module, moduleItem, enabled, modifierAmount, keepActive);
         }
     }
 }

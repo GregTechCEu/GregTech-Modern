@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
+import com.gregtechceu.gtceu.api.item.module.AttributeItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -70,6 +71,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -88,6 +90,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.event.AddAttributeTooltipsEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
@@ -358,7 +361,8 @@ public class CommonEventListener {
             ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 
-            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor && armor.getArmorLogic() != null) {
+            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() != null) {
                 armor.getArmorLogic().damageArmor(player, boots,
                         (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
                 player.fallDistance = 0;
@@ -367,10 +371,10 @@ public class CommonEventListener {
                     armor.getArmorLogic() instanceof IJetpack jetpack &&
                     jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
                     player.fallDistance >= player.getHealth() + 3.2f) {
-                IJetpack.performEHover(chest, player);
-                player.fallDistance = 0;
-                event.setCanceled(true);
-            }
+                        IJetpack.performEHover(chest, player);
+                        player.fallDistance = 0;
+                        event.setCanceled(true);
+                    }
         }
     }
 
@@ -393,7 +397,7 @@ public class CommonEventListener {
 
         if (entity instanceof Player player) {
             var inv = player.getInventory();
-            for (var group : ImmutableList.of(inv.items, inv.offhand)) {
+            for (var group : ImmutableList.of(inv.items, inv.armor, inv.offhand)) {
                 for (ItemStack stack : group) {
                     IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
                     if (modularItem == null) continue;
@@ -433,6 +437,26 @@ public class CommonEventListener {
         if (!current.isEmpty()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(current);
             if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onEquip(a, entity));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onItemStackAttributeQuery(ItemAttributeModifierEvent modifierEvent) {
+        var modular = GTCapabilityHelper.getModularItem(modifierEvent.getItemStack());
+        if (modular == null) return;
+
+        for (var ctx : modular.getAllModuleInstances()) {
+
+            if (ctx.getModule() instanceof AttributeItemModule attributeModule) {
+                var attribute = attributeModule.getAttribute(ctx);
+                var modifier = attributeModule.getAttributeModifier(ctx);
+                if (modifier != null) {
+
+                    var item = (ModularArmorItem)modifierEvent.getItemStack().getItem();
+
+                    modifierEvent.addModifier(attribute, modifier, EquipmentSlotGroup.bySlot(item.getEquipmentSlot()));
+                }
+            }
         }
     }
 
