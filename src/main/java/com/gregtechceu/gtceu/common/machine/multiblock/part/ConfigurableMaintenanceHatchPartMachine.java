@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 
@@ -129,14 +130,23 @@ public class ConfigurableMaintenanceHatchPartMachine extends MaintenanceHatchPar
         FloatSyncValue timeMultiplierSyncValue = new FloatSyncValue(this::getTimeMultiplier);
         syncManager.syncValue("timeMultiplier", timeMultiplierSyncValue);
 
-        RichTooltip frequencyTooltip = new RichTooltip().autoUpdate(true).tooltipBuilder(builder -> {
+        RichTooltip speedTooltip = new RichTooltip().autoUpdate(true).tooltipBuilder(builder -> {
             builder.addLine(
                     Text.dynamic(() -> durationSyncValue.getIntValue() == 100 ?
                             Component.translatable(
                                     "gtceu.maintenance.configurable_duration.unchanged_description") :
                             Component.translatable(
                                     "gtceu.maintenance.configurable_duration.changed_description",
-                                    timeMultiplierSyncValue.getValue())));
+                                    FormattingUtil.formatNumbers(durationSyncValue.getIntValue() / 100f))));
+        });
+        RichTooltip frequencyTooltip = new RichTooltip().autoUpdate(true).tooltipBuilder(builder -> {
+            builder.addLine(
+                    Text.dynamic(() -> durationSyncValue.getIntValue() == 100 ?
+                            Component.translatable(
+                                    "gtceu.maintenance.configurable_time.unchanged_description") :
+                            Component.translatable(
+                                    "gtceu.maintenance.configurable_time.changed_description",
+                                    FormattingUtil.formatNumbers(timeMultiplierSyncValue.getFloatValue()))));
         });
 
         mainWidget.child(Flow.column()
@@ -154,12 +164,13 @@ public class ConfigurableMaintenanceHatchPartMachine extends MaintenanceHatchPar
                                 .leftRel(0)
                                 .child(new TextWidget<>(
                                         Text.lang("gtceu.maintenance.configurable_duration.modify")))
+                                .tooltip(speedTooltip)
                                 .child(
                                         GTMuiWidgets
                                                 .createDecimalInputWithButtons(durationSyncValue,
                                                         () -> MIN_DURATION_MULTIPLIER,
                                                         () -> MAX_DURATION_MULTIPLIER, 1, 2)))
-                        .tooltip(frequencyTooltip)
+
                         .child(new TextWidget<>(Text.dynamic(() -> Component.translatable(
                                 "gtceu.maintenance.configurable_frequency",
                                 timeMultiplierSyncValue.getValue())))
