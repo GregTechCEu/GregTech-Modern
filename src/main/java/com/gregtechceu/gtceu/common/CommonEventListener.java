@@ -176,38 +176,6 @@ public class CommonEventListener {
         }
     }
 
-    /*
-     * 
-     * public static final Reference2IntMap<Holder<MobEffect>> potionRemovalCost = new Reference2IntOpenHashMap<>();
-     * potionRemovalCost.put(MobEffects.POISON, 10000);
-     * potionRemovalCost.put(MobEffects.WITHER, 25000);
-     * potionRemovalCost.put(MobEffects.CONFUSION, 8000);
-     * potionRemovalCost.put(MobEffects.DIG_SLOWDOWN, 12500);
-     * // potionRemovalCost.put(MobEffects.BAD_OMEN, 30000);
-     * potionRemovalCost.put(MobEffects.MOVEMENT_SLOWDOWN, 9000);
-     * potionRemovalCost.put(MobEffects.UNLUCK, 5000);
-     * }
-     * 
-     * @SubscribeEvent
-     * public static void onMobEffectEvent(MobEffectEvent.Applicable event) {
-     * if (event.getEntity() instanceof Player player) {
-     * ItemStack item = player.getItemBySlot(EquipmentSlot.HEAD);
-     * IElectricItem helmet = GTCapabilityHelper.getElectricItem(item);
-     * if (item.is(GTItems.QUANTUM_HELMET.asItem()) && helmet != null) {
-     * MobEffectInstance effect = event.getEffectInstance();
-     * int cost = QuarkTechSuite.potionRemovalCost.getOrDefault(effect.getEffect(), -1);
-     * if (cost != -1) {
-     * cost = cost * (effect.getAmplifier() + 1);
-     * if (helmet.canUse(cost)) {
-     * helmet.discharge(cost, helmet.getTier(), true, false, false);
-     * event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
-     * }
-     * }
-     * }
-     * }
-     * }
-     */
-
     @SubscribeEvent
     public static void onBlockStartBreak(BlockEvent.BreakEvent event) {
         if (ToolHelper.IS_AOE_BREAKING_BLOCKS.get()) {
