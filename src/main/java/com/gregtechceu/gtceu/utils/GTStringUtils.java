@@ -189,15 +189,6 @@ public class GTStringUtils {
         return "%.2f%s".formatted(((double) n) / max, suffixes.get(max));
     }
 
-    public static MutableComponent toComponent(FormattedCharSequence charSequence) {
-        MutableComponent component = MutableComponent.create(ComponentContents.EMPTY);
-        charSequence.accept((pos, style, codePoint) -> {
-            component.append(Component.literal(Character.toString(codePoint)).withStyle(style));
-            return true;
-        });
-        return component;
-    }
-
     public static String getPropertyValueString(Map.Entry<Property<?>, Comparable<?>> entry) {
         Property<?> property = entry.getKey();
         Comparable<?> value = entry.getValue();

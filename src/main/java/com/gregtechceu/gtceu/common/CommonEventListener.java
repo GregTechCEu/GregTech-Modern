@@ -75,10 +75,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
@@ -372,8 +369,6 @@ public class CommonEventListener {
             entity.clearFire();
         }
 
-        if (entity instanceof LocalPlayer) return;
-
         for (ItemStack stack : entity.getArmorSlots()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) continue;
@@ -470,7 +465,8 @@ public class CommonEventListener {
         var modular = GTCapabilityHelper.getModularItem(modifierEvent.getItemStack());
         if (modular == null) return;
 
-        if (!modifierEvent.getSlotType().isArmor()) return;
+        var equipable = Equipable.get(modifierEvent.getItemStack());
+        if (equipable != null && equipable.getEquipmentSlot() != modifierEvent.getSlotType()) return;
 
         for (var ctx : modular.getAllModuleInstances()) {
             if (ctx.getModule() instanceof AttributeItemModule attributeModule) {
@@ -722,6 +718,10 @@ public class CommonEventListener {
                 mapping.remap(GTItems.NANO_CHESTPLATE.get());
             }
 
+            if (mapping.getKey().equals(GTCEu.id("advanced_nanomuscle_chestplate"))) {
+                mapping.remap(GTItems.NANO_CHESTPLATE.get());
+            }
+
             if (mapping.getKey().equals(GTCEu.id("nanomuscle_leggings"))) {
                 mapping.remap(GTItems.NANO_LEGGINGS.get());
             }
@@ -737,8 +737,12 @@ public class CommonEventListener {
 
             if (mapping.getKey().equals(GTCEu.id("quarktech_chestplate"))) {
                 mapping.remap(GTItems.QUANTUM_CHESTPLATE.get());
-
             }
+
+            if (mapping.getKey().equals(GTCEu.id("advanced_quarktech_chestplate"))) {
+                mapping.remap(GTItems.QUANTUM_CHESTPLATE.get());
+            }
+
 
             if (mapping.getKey().equals(GTCEu.id("quarktech_leggings"))) {
                 mapping.remap(GTItems.QUANTUM_LEGGINGS.get());

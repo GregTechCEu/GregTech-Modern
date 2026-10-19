@@ -93,9 +93,4 @@ public class ModularArmorItem extends ArmorComponentItem implements IComponentIt
         }
         return super.isPPE(stack);
     }
-
-    @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        return super.getAttributeModifiers(slot, stack);
-    }
 }

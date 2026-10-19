@@ -40,9 +40,10 @@ public class ModularItemStack implements IModularItem {
         ItemModuleSlot moduleSlot = getSlots().get(slot);
         if (!moduleSlot.acceptsModule(module) || !module.canApplyTo(stack)) return null;
 
-        for (int i = 0; i < getData().getModules().size(); i++) {
+        for (int i = 0; i < MAX_MODULE_SLOTS; i++) {
             if (i == slot) continue;
-            var existingModule = getData().getModules().get(i);
+            var existingModule = getData().getModuleDataForSlot(i);
+            if (existingModule == null) continue;
             if (existingModule.getModule() == module) return null;
         }
 
@@ -59,8 +60,11 @@ public class ModularItemStack implements IModularItem {
 
     @Override
     public @Nullable ModuleContext attach(ItemModule module, ItemStack itemToApply, boolean simulate) {
-        for (int i = 0; i < getSlots().size(); i++) {
-            if (getModuleContextForSlot(i) == null) return attach(module, itemToApply, i, simulate);
+        for (int i = 0; i < MAX_MODULE_SLOTS; i++) {
+            if (getModuleContextForSlot(i) == null) {
+                var result = attach(module, itemToApply, i, simulate);
+                if (result != null) return result;
+            }
         }
         return null;
     }
