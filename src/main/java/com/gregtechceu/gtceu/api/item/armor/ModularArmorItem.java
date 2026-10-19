@@ -14,7 +14,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.Level;
 
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;

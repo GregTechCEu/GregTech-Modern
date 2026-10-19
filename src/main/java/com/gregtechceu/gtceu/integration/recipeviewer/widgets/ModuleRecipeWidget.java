@@ -40,9 +40,12 @@ public class ModuleRecipeWidget extends Flow {
 
         IntValue tier = new IntValue(0);
 
-        List<EquipmentFoundryRecipe.TierEntry> orderedEntries = recipe.getEntries().stream().sorted(Comparator.comparingInt(
-                v -> v.moduleForTier() instanceof ITieredItemModule tieredItemModule ? tieredItemModule.getTier() :
-                        -1)).toList();
+        List<EquipmentFoundryRecipe.TierEntry> orderedEntries = recipe.getEntries().stream()
+                .sorted(Comparator.comparingInt(
+                        v -> v.moduleForTier() instanceof ITieredItemModule tieredItemModule ?
+                                tieredItemModule.getTier() :
+                                -1))
+                .toList();
 
         var cycleWidget = new CycleButtonWidget()
                 .length(orderedEntries.size())

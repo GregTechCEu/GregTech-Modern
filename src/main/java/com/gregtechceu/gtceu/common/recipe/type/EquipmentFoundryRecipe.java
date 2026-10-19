@@ -79,7 +79,6 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
             throw new IllegalArgumentException("Equipment foundry recipe must have at least one entry");
         }
 
-
         this.equipment = equipment;
         this.entries = entries;
         this.isTiered = moduleIngredients.length == 1;

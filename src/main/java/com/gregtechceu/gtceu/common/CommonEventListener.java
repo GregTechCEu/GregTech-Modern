@@ -63,7 +63,6 @@ import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -335,10 +334,10 @@ public class CommonEventListener {
                     armor.getArmorLogic() instanceof IJetpack jetpack &&
                     jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
                     player.fallDistance >= player.getHealth() + 3.2f) {
-                        IJetpack.performEHover(chest, player);
-                        player.fallDistance = 0;
-                        event.setCanceled(true);
-                    }
+                IJetpack.performEHover(chest, player);
+                player.fallDistance = 0;
+                event.setCanceled(true);
+            }
         }
     }
 
@@ -418,7 +417,8 @@ public class CommonEventListener {
                 if (modifier != null) {
 
                     var equipable = Equipable.get(modifierEvent.getItemStack());
-                    modifierEvent.addModifier(attribute, modifier, equipable == null ? EquipmentSlotGroup.ANY : EquipmentSlotGroup.bySlot(equipable.getEquipmentSlot()));
+                    modifierEvent.addModifier(attribute, modifier, equipable == null ? EquipmentSlotGroup.ANY :
+                            EquipmentSlotGroup.bySlot(equipable.getEquipmentSlot()));
                 }
             }
         }
