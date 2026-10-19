@@ -355,22 +355,22 @@ public class CommonEventListener {
             if (player.fallDistance < 3.2f)
                 return;
 
-            // todo emergency hover
-            /*
-             * if (boots.getItem() instanceof ArmorComponentItem armor) {
-             * armor.getArmorLogic().damageArmor(player, boots,
-             * (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
-             * player.fallDistance = 0;
-             * event.setCanceled(true);
-             * } else if (chest.getItem() instanceof ArmorComponentItem armor &&
-             * armor.getArmorLogic() instanceof IJetpack jetpack &&
-             * jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
-             * player.fallDistance >= player.getHealth() + 3.2f) {
-             * IJetpack.performEHover(chest, player);
-             * player.fallDistance = 0;
-             * event.setCanceled(true);
-             * }
-             */
+            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+            ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+
+            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor && armor.getArmorLogic() != null) {
+                armor.getArmorLogic().damageArmor(player, boots,
+                        (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
+                player.fallDistance = 0;
+                event.setCanceled(true);
+            } else if (chest.getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() instanceof IJetpack jetpack &&
+                    jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
+                    player.fallDistance >= player.getHealth() + 3.2f) {
+                IJetpack.performEHover(chest, player);
+                player.fallDistance = 0;
+                event.setCanceled(true);
+            }
         }
     }
 
@@ -391,9 +391,9 @@ public class CommonEventListener {
             modularItem.runForEachModule((m, a) -> m.onArmorTick(a, entity));
         }
 
-        if (entity instanceof Player player && !player.isLocalPlayer()) {
+        if (entity instanceof Player player) {
             var inv = player.getInventory();
-            for (var group : ImmutableList.of(inv.items, inv.armor, inv.offhand)) {
+            for (var group : ImmutableList.of(inv.items, inv.offhand)) {
                 for (ItemStack stack : group) {
                     IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
                     if (modularItem == null) continue;
@@ -413,8 +413,6 @@ public class CommonEventListener {
         final LivingEntity entity = event.getEntity();
         final ItemStack old = event.getFrom();
         final ItemStack current = event.getTo();
-
-        if (ItemStack.isSameItem(old, current)) return;
 
         if (entity instanceof Player player) {
             if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor &&

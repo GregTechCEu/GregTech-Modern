@@ -280,4 +280,6 @@ public class CustomTags {
             RED_LENS,
             BLACK_LENS
     };
+
+    public static final TagKey<Item> STEP_BOOTS = TagUtil.createModItemTag("step_boots");
 }

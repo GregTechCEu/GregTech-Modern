@@ -172,11 +172,6 @@ public abstract class AttributeItemModule extends ItemModule {
         if (!shouldKeepAttached && currentlyAttached) detachAttribute(moduleContext);
     }
 
-    @Override
-    public void onUnequip(ModuleContext moduleContext, LivingEntity entity) {
-        if (!attributeAttached(moduleContext)) attributeAttached(moduleContext);
-    }
-
     public static class AttributeModuleData extends ModuleData {
 
         // spotless:off
