@@ -108,9 +108,7 @@ public abstract class ItemModule {
     /**
      * Called each tick this item is in a player's armor slots on the client.
      */
-    public void clientSideArmorTick(ModuleContext moduleContext, Player entity) {
-
-    }
+    public void clientSideArmorTick(ModuleContext moduleContext, Player entity) {}
 
     /**
      * Called each tick this item is in a player's inventory or equipment slots.

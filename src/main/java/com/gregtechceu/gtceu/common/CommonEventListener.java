@@ -355,7 +355,8 @@ public class CommonEventListener {
         for (ItemStack stack : entity.getArmorSlots()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) continue;
-            if (entity.level().isClientSide() && entity instanceof Player player) modularItem.runForEachModule((m, a) -> m.clientSideArmorTick(a, player));
+            if (entity.level().isClientSide() && entity instanceof Player player)
+                modularItem.runForEachModule((m, a) -> m.clientSideArmorTick(a, player));
             else modularItem.runForEachModule((m, a) -> m.onArmorTick(a, entity));
         }
 
