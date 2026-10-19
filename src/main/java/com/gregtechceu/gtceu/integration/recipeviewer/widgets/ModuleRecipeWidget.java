@@ -23,6 +23,7 @@ import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class ModuleRecipeWidget extends Flow {
@@ -39,15 +40,19 @@ public class ModuleRecipeWidget extends Flow {
 
         IntValue tier = new IntValue(0);
 
+        List<EquipmentFoundryRecipe.TierEntry> orderedEntries = recipe.getEntries().stream().sorted(Comparator.comparingInt(
+                v -> v.moduleForTier() instanceof ITieredItemModule tieredItemModule ? tieredItemModule.getTier() :
+                        -1)).toList();
+
         var cycleWidget = new CycleButtonWidget()
-                .length(recipe.getEntries().size())
+                .length(orderedEntries.size())
                 .background(IDrawable.NONE)
                 .hoverBackground(IDrawable.NONE)
                 .value(tier)
                 .coverChildrenHeight()
                 .fullWidth();
-        for (int i = 0; i < recipe.getEntries().size(); i++) {
-            cycleWidget.stateChild(i, getUIForTier(recipe.getEntries().get(i)));
+        for (int i = 0; i < orderedEntries.size(); i++) {
+            cycleWidget.stateChild(i, getUIForTier(orderedEntries.get(i)));
         }
         this.child(cycleWidget);
     }

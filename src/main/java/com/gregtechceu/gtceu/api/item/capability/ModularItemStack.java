@@ -15,8 +15,6 @@ import java.util.function.Function;
 
 public class ModularItemStack implements IModularItem {
 
-    public static final String MODULES_TAG = "Modules";
-
     private final ItemStack stack;
     private final List<ItemModuleSlot> slots;
 
@@ -27,15 +25,12 @@ public class ModularItemStack implements IModularItem {
 
     @Override
     public void setData(ModularItemData data) {
-        stack.getOrCreateTag().put(MODULES_TAG,
-                ModularItemData.CODEC.encodeStart(NbtOps.INSTANCE, data).getOrThrow(false, GTCEu.LOGGER::error));
+        IModularItem.setModularItemData(stack, data);
     }
 
     @Override
     public ModularItemData getData() {
-        if (!stack.getOrCreateTag().contains(MODULES_TAG)) return new ModularItemData(List.of());
-        return ModularItemData.CODEC.decode(NbtOps.INSTANCE, stack.getOrCreateTagElement(MODULES_TAG))
-                .getOrThrow(false, GTCEu.LOGGER::error).getFirst();
+        return IModularItem.getModularItemData(stack);
     }
 
     @Override

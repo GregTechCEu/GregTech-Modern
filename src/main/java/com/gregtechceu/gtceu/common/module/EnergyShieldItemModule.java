@@ -142,6 +142,11 @@ public class EnergyShieldItemModule extends TieredItemModule {
         }
 
         @Override
+        public ModuleData withModuleItem(ItemStack moduleItem) {
+            return new EnergyShieldModuleData(slot, module, moduleItem, enabled, energyPercent);
+        }
+
+        @Override
         public boolean equals(Object obj) {
             if (!(obj instanceof EnergyShieldModuleData other)) return false;
             return super.equals(obj) && energyPercent == other.energyPercent;

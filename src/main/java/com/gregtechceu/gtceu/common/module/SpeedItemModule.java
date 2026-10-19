@@ -129,6 +129,11 @@ public class SpeedItemModule extends TieredItemModule {
         }
 
         @Override
+        public ModuleData withModuleItem(ItemStack moduleItem) {
+            return new SpeedModuleData(slot, module, moduleItem, enabled, strength);
+        }
+
+        @Override
         public ModuleData withEnabled(boolean enabled) {
             return new SpeedModuleData(slot, module, moduleItem, enabled, strength);
         }

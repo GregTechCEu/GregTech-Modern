@@ -65,6 +65,7 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
             if (ingredient == null || module == null) continue;
             entries.add(new TierEntry(ingredient, module));
         }
+
         if (entries.isEmpty()) {
             throw new IllegalArgumentException("Equipment foundry recipe must have at least one entry");
         }
@@ -168,10 +169,6 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
                         .get(ResourceLocation.parse(obj.getAsJsonPrimitive("module").getAsString())));
                 entries.add(new TierEntry(ing, module));
             }
-
-            entries.sort(Comparator.comparingInt(
-                    v -> v.moduleForTier() instanceof ITieredItemModule tieredItemModule ? tieredItemModule.getTier() :
-                            -1));
 
             return new EquipmentFoundryRecipe(recipeId, equipment, entries);
         }

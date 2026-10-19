@@ -295,6 +295,11 @@ public class AutoChargeItemModule extends TieredItemModule {
             return new AutoChargeModuleData(slot, module, moduleItem, enabled, linkedPos, voltageTier, amperage);
         }
 
+        @Override
+        public ModuleData withModuleItem(ItemStack moduleItem) {
+            return new AutoChargeModuleData(slot, module, moduleItem, enabled, linkedPos, voltageTier, amperage);
+        }
+
         public ModuleData withLinkedPos(GlobalPos linkedPos) {
             return new AutoChargeModuleData(slot, module, moduleItem, enabled, linkedPos, voltageTier, amperage);
         }

@@ -51,6 +51,8 @@ public abstract class ModuleData {
 
     public abstract ModuleData withEnabled(boolean enabled);
 
+    public abstract ModuleData withModuleItem(ItemStack moduleItem);
+
     /**
      * Must create a copy of most object fields, rather than using the same reference.
      */
@@ -89,6 +91,11 @@ public abstract class ModuleData {
         @Override
         public ModuleData withEnabled(boolean enabled) {
             return new BaseData(getSlot(), getModule(), getModuleItem(), enabled);
+        }
+
+        @Override
+        public ModuleData withModuleItem(ItemStack moduleItem) {
+            return new BaseData(slot, module, moduleItem, enabled);
         }
     }
 }

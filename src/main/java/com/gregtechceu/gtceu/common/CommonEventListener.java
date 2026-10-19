@@ -59,6 +59,7 @@ import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -349,16 +350,9 @@ public class CommonEventListener {
             if (player.fallDistance < 3.2f)
                 return;
 
-            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 
-            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor &&
-                    armor.getArmorLogic() != null) {
-                armor.getArmorLogic().damageArmor(player, boots, player.damageSources().fall(),
-                        (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
-                player.fallDistance = 0;
-                event.setCanceled(true);
-            } else if (chest.getItem() instanceof ArmorComponentItem armor &&
+            if (chest.getItem() instanceof ArmorComponentItem armor &&
                     armor.getArmorLogic() instanceof IJetpack jetpack &&
                     jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
                     player.fallDistance >= player.getHealth() + 3.2f) {
@@ -377,6 +371,8 @@ public class CommonEventListener {
                 armor.protectsAgainstFire()) {
             entity.clearFire();
         }
+
+        if (entity instanceof LocalPlayer) return;
 
         for (ItemStack stack : entity.getArmorSlots()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
@@ -456,6 +452,8 @@ public class CommonEventListener {
             }
         }
 
+        if (IModularItem.isSameItemSameModules(old, current)) return;
+
         if (!old.isEmpty()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(old);
             if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onUnequip(a, entity));
@@ -471,6 +469,8 @@ public class CommonEventListener {
     public static void onItemStackAttributeQuery(ItemAttributeModifierEvent modifierEvent) {
         var modular = GTCapabilityHelper.getModularItem(modifierEvent.getItemStack());
         if (modular == null) return;
+
+        if (!modifierEvent.getSlotType().isArmor()) return;
 
         for (var ctx : modular.getAllModuleInstances()) {
             if (ctx.getModule() instanceof AttributeItemModule attributeModule) {

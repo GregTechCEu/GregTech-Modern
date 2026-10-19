@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
 import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.NBTPredicateIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.EqualsNBTPredicate;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
@@ -15,6 +17,7 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.nbt.ByteTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +29,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
 import com.google.gson.JsonObject;
+import net.minecraftforge.common.crafting.DifferenceIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -343,11 +347,10 @@ public class CraftingRecipeLoader {
             ItemStack result = new ItemStack(armor.get());
             result.getOrCreateTag().putBoolean(ModularArmorItem.NETHERITE_PLATED_TAG, true);
 
-            Ingredient base = Ingredient.of(armor.get().getDefaultInstance());
+            var armorItem = armor.get().getDefaultInstance();
+            Ingredient base = DifferenceIngredient.of(Ingredient.of(armorItem),
+                    NBTPredicateIngredient.of(armorItem, new EqualsNBTPredicate(ModularArmorItem.NETHERITE_PLATED_TAG, ByteTag.valueOf(true))));
 
-            var recipe = new SmithingTransformRecipe(GTCEu.id("netherite_plated_" + armor.getId().getPath()),
-                    Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), base,
-                    Ingredient.of(Items.NETHERITE_INGOT), result);
             provider.accept(new FinishedRecipe() {
 
                 @Override

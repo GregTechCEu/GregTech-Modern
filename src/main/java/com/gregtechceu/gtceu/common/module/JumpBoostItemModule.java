@@ -95,6 +95,11 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
         }
 
         @Override
+        public ModuleData withModuleItem(ItemStack moduleItem) {
+            return new JumpBoostModuleData(slot, module, moduleItem, enabled, jumpBoost);
+        }
+
+        @Override
         public boolean equals(Object obj) {
             if (!(obj instanceof JumpBoostModuleData other)) return false;
             return super.equals(obj) && jumpBoost == other.jumpBoost;

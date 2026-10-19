@@ -36,8 +36,6 @@ import java.util.List;
 
 public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine {
 
-    public static final int MAX_MODIFIER_SLOTS = 10;
-
     @SaveField
     private final CustomItemStackHandler equipmentSlot;
     @SaveField
@@ -62,7 +60,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         this.equipmentSlot.setFilter(
                 stack -> GTCapabilityHelper.getModularItem(stack) != null);
 
-        this.moduleSlots = new CustomItemStackHandler(MAX_MODIFIER_SLOTS) {
+        this.moduleSlots = new CustomItemStackHandler(IModularItem.MAX_MODULE_SLOTS) {
 
             @Override
             public int getSlotLimit(int slot) {
@@ -101,7 +99,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
 
         // The 24px decorative frames surround the 18px interactive slots.
         List<ItemSlot> moduleSlots = new ArrayList<>();
-        for (int i = 0; i < MAX_MODIFIER_SLOTS; i++) {
+        for (int i = 0; i < IModularItem.MAX_MODULE_SLOTS; i++) {
             ItemSlot moduleSlot = new ItemSlot()
                     .left(36 + (i % 5) * 26)
                     .top(9 + (i / 5) * 40)
@@ -161,7 +159,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         } else {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) return;
-            for (int i = 0; i < MAX_MODIFIER_SLOTS; i++) {
+            for (int i = 0; i < IModularItem.MAX_MODULE_SLOTS; i++) {
                 var data = modularItem.getModuleContextForSlot(i);
                 moduleSlots.setStackInSlotNoCallback(i,
                         data == null ? ItemStack.EMPTY : data.getData().getModuleItem());

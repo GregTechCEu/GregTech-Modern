@@ -153,6 +153,12 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
         }
 
         @Override
+        public ModuleData withModuleItem(ItemStack moduleItem) {
+            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
+                    nightVisionTimer);
+        }
+
+        @Override
         public ModuleData copy() {
             return new NightVisionModuleData(slot, module, moduleItem.copy(), enabled, nightVision, toggleTimer,
                     nightVisionTimer);
