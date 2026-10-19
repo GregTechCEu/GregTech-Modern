@@ -54,6 +54,8 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
     @Override
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
         if (!(entity instanceof Player player)) return;
+        if (entity.level().isClientSide) return;
+
         if (!isEnabled(moduleContext)) {
             var data = moduleContext.getData(NightVisionModuleData.class);
             if (data.isNightVision()) {
@@ -70,8 +72,9 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
         }
         NightVisionModuleData data = moduleContext.getData(NightVisionModuleData.class);
 
+        long levelTick = entity.level().getGameTime();
         byte toggleTimer = data.getToggleTimer();
-        int nightVisionTimer = data.getNightVisionTimer();
+        long nightVisionToggleTick = data.getNightVisionToggleTick();
         boolean nightVision = data.isNightVision();
 
         if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
@@ -84,27 +87,29 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
                 player.displayClientMessage(Component
                         .translatable(LangUtils.enabledBoolean("armor.gtceu.night_vision", nightVision)), true);
             }
+            data = data.withNightVision(nightVision).withToggleTimer(toggleTimer);
+            moduleContext.setData(data);
         }
 
         if (nightVision) {
             player.removeEffect(MobEffects.BLINDNESS);
-            if (nightVisionTimer <= ArmorUtils.NIGHT_VISION_RESET) {
-                nightVisionTimer = ArmorUtils.NIGHTVISION_DURATION;
+            if (nightVisionToggleTick >= levelTick + ArmorUtils.NIGHT_VISION_RESET) {
                 player.addEffect(
                         new MobEffectInstance(MobEffects.NIGHT_VISION, ArmorUtils.NIGHTVISION_DURATION, 0, true,
                                 false));
                 item.discharge(2, item.getTier(), true, false, false);
+
+                data = data.withNightVisionToggleTick(nightVisionToggleTick);
+                moduleContext.setData(data);
             }
         } else {
             player.removeEffect(MobEffects.NIGHT_VISION);
         }
 
-        if (nightVisionTimer > 0) nightVisionTimer--;
-        if (toggleTimer > 0) toggleTimer--;
-
-        var newData = new NightVisionModuleData(data.getSlot(), data.getModule(), data.getModuleItem(),
-                data.isEnabled(), nightVision, toggleTimer, nightVisionTimer);
-        moduleContext.setData(newData);
+        if (toggleTimer > 0) {
+            toggleTimer--;
+            moduleContext.setData(data.withToggleTimer(toggleTimer));
+        }
     }
 
     @Override
@@ -123,7 +128,7 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
         public static final Codec<NightVisionModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(instance.group(
                 Codec.BOOL.fieldOf("night_vision").forGetter(NightVisionModuleData::isNightVision),
                 Codec.BYTE.fieldOf("toggle_timer").forGetter(NightVisionModuleData::getToggleTimer),
-                Codec.INT.fieldOf("night_vision_timer").forGetter(NightVisionModuleData::getNightVisionTimer))
+                Codec.LONG.fieldOf("night_vision_tick").forGetter(NightVisionModuleData::getNightVisionToggleTick))
         ).apply(instance, NightVisionModuleData::new));
         // spotless:on
 
@@ -132,48 +137,66 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
         @Getter
         private byte toggleTimer = 0;
         @Getter
-        private int nightVisionTimer = ArmorUtils.NIGHTVISION_DURATION;
+        private final long nightVisionToggleTick;
 
         public NightVisionModuleData(int slot, ItemModule module, ItemStack moduleItem) {
             super(slot, module, moduleItem, true);
+            this.nightVision = false;
+            this.toggleTimer = 0;
+            this.nightVisionToggleTick = Long.MAX_VALUE;
         }
 
         public NightVisionModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
-                                     boolean nightVision, byte toggleTimer, int nightVisionTimer) {
+                                     boolean nightVision, byte toggleTimer, long nightVisionToggleTick) {
             super(slot, module, moduleItem, enabled);
             this.nightVision = nightVision;
             this.toggleTimer = toggleTimer;
-            this.nightVisionTimer = nightVisionTimer;
+            this.nightVisionToggleTick = nightVisionToggleTick;
         }
 
         @Override
         public ModuleData withEnabled(boolean enabled) {
             return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
-                    nightVisionTimer);
+                    nightVisionToggleTick);
         }
 
         @Override
         public ModuleData withModuleItem(ItemStack moduleItem) {
             return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
-                    nightVisionTimer);
+                    nightVisionToggleTick);
+        }
+
+        public NightVisionModuleData withNightVision(boolean nightVision) {
+            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
+                    nightVisionToggleTick);
+        }
+
+        public NightVisionModuleData withToggleTimer(byte toggleTimer) {
+            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
+                    nightVisionToggleTick);
+        }
+
+        public NightVisionModuleData withNightVisionToggleTick(long nightVisionToggleTick) {
+            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
+                    nightVisionToggleTick);
         }
 
         @Override
         public ModuleData copy() {
             return new NightVisionModuleData(slot, module, moduleItem.copy(), enabled, nightVision, toggleTimer,
-                    nightVisionTimer);
+                    nightVisionToggleTick);
         }
 
         @Override
         public boolean equals(Object obj) {
             if (!(obj instanceof NightVisionModuleData other)) return false;
             return super.equals(obj) && nightVision == other.nightVision && toggleTimer == other.toggleTimer &&
-                    nightVisionTimer == other.nightVisionTimer;
+                    nightVisionToggleTick == other.nightVisionToggleTick;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(slot, module, moduleItem, enabled, nightVision, toggleTimer, nightVisionTimer);
+            return Objects.hash(slot, module, moduleItem, enabled, nightVision, toggleTimer, nightVisionToggleTick);
         }
     }
 }
