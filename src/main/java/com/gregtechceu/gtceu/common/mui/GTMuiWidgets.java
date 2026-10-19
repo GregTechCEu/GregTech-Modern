@@ -647,7 +647,7 @@ public class GTMuiWidgets {
 
     public static int decimalFromFormattedValue(String uiInput, int decimalPlaces) {
         int multiplier = (int) Math.pow(10, decimalPlaces);
-        if (!uiInput.contains(".")) return Integer.parseInt(uiInput) * multiplier;
+        if (!uiInput.contains(".") || decimalPlaces == 0) return Integer.parseInt(uiInput) * multiplier;
         String[] splitInput = uiInput.split("\\.");
         if (splitInput.length > 1 && splitInput[1].length() > decimalPlaces)
             splitInput[1] = splitInput[1].substring(0, decimalPlaces);
