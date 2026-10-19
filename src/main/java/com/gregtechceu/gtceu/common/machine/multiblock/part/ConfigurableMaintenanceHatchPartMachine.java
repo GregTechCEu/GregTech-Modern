@@ -5,17 +5,12 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.network.chat.Component;
 
-import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
@@ -25,17 +20,13 @@ import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.InteractionSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.widgets.slot.ItemSlot;
-import brachy.modularui.widgets.slot.ModularSlot;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.stream.Stream;
 
 public class ConfigurableMaintenanceHatchPartMachine extends MaintenanceHatchPartMachine {
 
@@ -119,7 +110,6 @@ public class ConfigurableMaintenanceHatchPartMachine extends MaintenanceHatchPar
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-
         InteractionSyncHandler syncHandler = new InteractionSyncHandler();
         Flow maintenanceStatusWidget = Flow.column()
                 .crossAxisAlignment(Alignment.CrossAxis.START)

@@ -403,12 +403,12 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                 .child(maintenanceStatusWidget));
     }
 
-    protected Runnable maintenanceUpdateWidget(Flow maintenanceStatusWidget){
+    protected Runnable maintenanceUpdateWidget(Flow maintenanceStatusWidget) {
         return () -> {
             while (!maintenanceStatusWidget.getChildren().isEmpty()) maintenanceStatusWidget.remove(0);
             maintenanceStatusWidget.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems() ?
-                            Component.translatable("gtceu.top.maintenance_broken") :
-                            Component.translatable("gtceu.top.maintenance_fixed"))))
+                    Component.translatable("gtceu.top.maintenance_broken") :
+                    Component.translatable("gtceu.top.maintenance_fixed"))))
                     .child(Flow.row()
                             .coverChildren()
                             .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
@@ -419,7 +419,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                                     .toList()));
         };
     }
-    protected Flow manualMaintenancePanel(InteractionSyncHandler syncHandler, Runnable updateWidget){
+
+    protected Flow manualMaintenancePanel(InteractionSyncHandler syncHandler, Runnable updateWidget) {
         return Flow.row()
                 .leftRel(0.5f)
                 .coverChildren()
