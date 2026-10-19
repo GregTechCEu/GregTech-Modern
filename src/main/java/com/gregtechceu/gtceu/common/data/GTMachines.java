@@ -32,6 +32,7 @@ import com.gregtechceu.gtceu.common.machine.steam.SteamMinerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolarBoiler;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.*;
+import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
@@ -235,6 +236,28 @@ public class GTMachines {
             .tooltipLang("NOT a Crafting Table", IV, LuV, ZPM)
             .tooltipLang("Assembly Constructor")
             .register();
+    public static final MachineDefinition[] WELDER = registerTieredMachines(REGISTRATE,
+            "welder",
+            SimpleTieredMachine::new, (tier, builder) -> builder
+                    .langValue("%s Welder %s".formatted(VLVH[tier], VLVT[tier]))
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(GTRecipeTypes.WELDER_RECIPES)
+                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
+                    .workableTieredHullModel(GTCEu.id("block/machines/welder"))
+                    .register(),
+            ELECTRIC_TIERS);
+    public static final MachineDefinition[] SPOOLING = registerTieredMachines(REGISTRATE,
+            "spooler",
+            SimpleTieredMachine::new, (tier, builder) -> builder
+                    .langValue("%s Spooler %s".formatted(VLVH[tier], VLVT[tier]))
+                    .rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(GTRecipeTypes.SPOOLING_RECIPES)
+                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
+                    .workableTieredHullModel(GTCEu.id("block/machines/spooling"))
+                    .register(),
+            ELECTRIC_TIERS);
     public static final MachineDefinition[] AUTOCLAVE = new SimpleMachineBuilder(REGISTRATE, "autoclave",
             GTRecipeTypes.AUTOCLAVE_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
@@ -365,6 +388,7 @@ public class GTMachines {
             .register();
     public static final MachineDefinition[] LATHE = new SimpleMachineBuilder(REGISTRATE, "lathe",
             GTRecipeTypes.LATHE_RECIPES)
+            .recipeLogic(LatheRecipeLogic::new)
             .tooltipLang("§7Produces Rods more efficiently", LV, MV, HV, EV)
             .tooltipLang("§7Turn-O-Matic L-5906", IV)
             .tooltipLang("§7Turn-O-Matic L-5907", LuV)
@@ -449,14 +473,8 @@ public class GTMachines {
                     .langValue("%s Macerator %s".formatted(VLVH[tier], VLVT[tier]))
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
-                    .addOutputLimit(ItemRecipeCapability.CAP, switch (tier) {
-                        case 1, 2 -> 1;
-                        case 3 -> 3;
-                        default -> 4;
-                    })
                     .tooltipLang(switch (tier) {
-                        case LV, MV -> "§7Shredding your Ores without Byproducts";
-                        case HV, EV -> "§7Shredding your Ores with Byproducts";
+                        case LV, MV, HV, EV -> "§7Shredding your Ores with Byproducts";
                         case IV -> "§7Blend-O-Matic 9001";
                         case LuV -> "§7Blend-O-Matic 9002";
                         case ZPM -> "§7Blend-O-Matic 9003";

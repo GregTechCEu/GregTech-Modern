@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.fluids.FluidConstants;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
@@ -98,6 +99,10 @@ public class TooltipsHandler {
 
         var material = ChemicalHelper.getMaterial(fluid);
         if (material != null) {
+            if (material.requiresMetalFreezing() && fluid.isSame(material.getFluid(FluidStorageKeys.LIQUID))) {
+                tooltips.accept(Component.translatable("gtceu.fluid.requires_metal_freezing")
+                        .withStyle(ChatFormatting.GOLD));
+            }
             var formula = material.getChemicalFormula();
             if (formula != null && !formula.isEmpty()) {
                 tooltips.accept(Component.literal(formula).withStyle(ChatFormatting.YELLOW));

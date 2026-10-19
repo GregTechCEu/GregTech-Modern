@@ -28,7 +28,7 @@ import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.text.TextRenderer;
-import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.factory.GuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
@@ -82,33 +82,32 @@ public class GTMuiWidgets {
     }
 
     public static Flow createTitleBar(Icon icon, String text, int panelWidth, UITexture background) {
-        int borderRadius = 5;
-        int iconSize = 16;
-        int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 3));
+        int sidePadding = 5;
+        int topPadding = 3;
+
+        int iconSize = 12;
+        int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (sidePadding * 3));
         int textTitleWidth = GTCEu.isClientThread() ? TextRenderer.getFont().width(text) : 1;
 
         int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
         int textHeightPerRow = GTCEu.isClientThread() ? (int) (Text.renderer.getFontHeight()) : 9;
-        int textHeight = textHeightPerRow * textRows + borderRadius;
+        int textHeight = textHeightPerRow * textRows + topPadding;
 
-        int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + (borderRadius * 4) + textTitleWidth));
+        int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + (sidePadding * 4) + textTitleWidth));
 
         return Flow.row()
                 .decoration()
-                .coverChildrenHeight()
+                .coverChildren()
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .width(rowWidth)
-                .top(-(textHeight + borderRadius))
+                .bottomRel(1f)
+                .childPadding(1)
                 .horizontalCenter()
+                .padding(sidePadding, sidePadding, topPadding, 1)
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
-                .child(icon.size(iconSize)
-                        .asWidget()
-                        .marginLeft(borderRadius))
-                .child(Text.str(text)
-                        .asWidget()
-                        .margin(borderRadius, borderRadius, borderRadius, 1)
-                        .size(Math.min(minPanelWidth, textTitleWidth), textHeight));
+                .child(icon.size(iconSize).asWidget().size(12))
+                .child(Text.str(text).asWidget().size(Math.min(minPanelWidth, textTitleWidth), textHeight));
     }
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture texture,
@@ -393,7 +392,7 @@ public class GTMuiWidgets {
 
     public static <T> ParentWidget<?> createFilterRow(Flow existingRow,
                                                       FilterHandler<T> filterHandler,
-                                                      SidedPosGuiData data,
+                                                      GuiData data,
                                                       PanelSyncManager syncManager,
                                                       UISettings settings) {
         var filterSlot = filterHandler.getFilterSlot();
@@ -413,7 +412,8 @@ public class GTMuiWidgets {
             panelHandler.deleteCachedPanel();
         });
         return existingRow
-                .child(new ItemSlot().syncHandler(filterSlotHandler))
+                .child(new ItemSlot().syncHandler(filterSlotHandler)
+                        .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY))
                 .child(new ButtonWidget<>()
                         .background(GuiTextures.MC_BUTTON)
                         .size(16)
@@ -425,7 +425,7 @@ public class GTMuiWidgets {
     }
 
     public static <T> ParentWidget<?> createFilterRow(FilterHandler<T> filterHandler,
-                                                      SidedPosGuiData data,
+                                                      GuiData data,
                                                       PanelSyncManager syncManager,
                                                       UISettings settings) {
         Flow row = Flow.row().coverChildrenHeight().childPadding(2);
@@ -576,8 +576,8 @@ public class GTMuiWidgets {
                                                                EnumSyncValue<BucketMode> bucketModeSyncValue,
                                                                IntSupplier maxMB) {
         StringSyncValue formattedValue = new StringSyncValue(
-                () -> String.valueOf(intSyncValue.getValue()),
-                (v) -> intSyncValue.setValue(Integer.parseInt(v), true,
+                () -> formattedBucketValue(intSyncValue.getIntValue(), bucketModeSyncValue.getValue()),
+                (v) -> intSyncValue.setValue(bucketsFromFormattedValue(v, bucketModeSyncValue.getValue()), true,
                         true))
                 .allowC2S();
 
@@ -630,6 +630,21 @@ public class GTMuiWidgets {
                         .background(GTGuiTextures.BUTTON)
                         .stateOverlay(0, BucketMode.BUCKET.icon.asIcon().size(16))
                         .stateOverlay(1, BucketMode.MILLI_BUCKET.icon.asIcon().size(16)));
+    }
+
+    public static String formattedBucketValue(int millibuckets, BucketMode bucketMode) {
+        if (bucketMode == BucketMode.MILLI_BUCKET) return String.valueOf(millibuckets);
+        StringBuilder buckets = new StringBuilder(String.format("%04d", millibuckets));
+        buckets.insert(buckets.length() - 3, '.');
+        return buckets.toString();
+    }
+
+    public static int bucketsFromFormattedValue(String uiInput, BucketMode bucketMode) {
+        if (bucketMode == BucketMode.MILLI_BUCKET) return Integer.parseInt(uiInput);
+        if (!uiInput.contains(".")) return Integer.parseInt(uiInput) * 1000;
+        String[] splitInput = uiInput.split("\\.");
+        if (splitInput.length > 1 && splitInput[1].length() > 3) splitInput[1] = splitInput[1].substring(0, 3);
+        return (Integer.parseInt(splitInput[0]) * 1000) + Integer.parseInt(splitInput[1]);
     }
 
     public static SlotGroupWidget verticalPlayerInventory(SlotGroupWidget.SlotConsumer slotConsumer) {

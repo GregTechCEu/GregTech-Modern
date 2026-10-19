@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.trait.notifiable;
 
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IFilteredHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -12,7 +11,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
@@ -20,7 +18,6 @@ import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -43,10 +40,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                                        // while creating tanks.
     private @Nullable Boolean isEmpty;
 
-    @SaveField
-    @SyncToClient
-    @Getter
-    protected final CustomFluidTank lockedFluid = new CustomFluidTank(FluidType.BUCKET_VOLUME);
     @Getter
     protected Predicate<FluidStack> filter = f -> true;
 
@@ -59,7 +52,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             this.storages[i] = new CustomFluidTank(capacity);
             this.storages[i].setOnContentsChanged(this::onContentsChanged);
         }
-        this.lockedFluid.setOnContentsChanged(this::onLockedFluidChanged);
     }
 
     public NotifiableFluidTank(List<CustomFluidTank> storages, IO io, IO capabilityIO) {
@@ -73,7 +65,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         if (io == IO.IN) {
             this.allowSameFluids = true;
         }
-        this.lockedFluid.setOnContentsChanged(this::onLockedFluidChanged);
     }
 
     public NotifiableFluidTank(int slots, int capacity, IO io) {
@@ -88,26 +79,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         isEmpty = null;
         syncDataHolder.markClientSyncFieldDirty("storages");
         notifyListeners();
-    }
-
-    protected void onLockedFluidChanged() {
-        syncDataHolder.markClientSyncFieldDirty("lockedFluid");
-        var newFluid = this.lockedFluid.getFluid();
-        if (newFluid.isEmpty()) {
-            this.setFilter(stack -> true);
-            this.onContentsChanged();
-            return;
-        }
-        for (int i = 0; i < this.getTanks(); i++) {
-            if (this.getFluidInTank(i).isEmpty()) continue;
-            if (!this.getFluidInTank(i).isFluidEqual(newFluid)) {
-                // Fluid in a tank that doesn't equal the new locked fluid
-                this.lockedFluid.setFluid(FluidStack.EMPTY);
-                return;
-            }
-        }
-        this.setFilter(stack -> stack.isFluidEqual(newFluid));
-        this.onContentsChanged();
     }
 
     @Override
@@ -250,39 +221,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         }
 
         return left;
-    }
-
-    @Override
-    public boolean test(FluidIngredient ingredient) {
-        return !this.isLocked() || ingredient.test(this.lockedFluid.getFluid());
-    }
-
-    @Override
-    public int getPriority() {
-        return !isLocked() || lockedFluid.getFluid().isEmpty() ? super.getPriority() :
-                IFilteredHandler.HIGH - getTanks();
-    }
-
-    public boolean isLocked() {
-        return !lockedFluid.getFluid().isEmpty();
-    }
-
-    public void setLocked(boolean locked) {
-        setLocked(locked, storages[0].getFluid());
-    }
-
-    public void setLocked(boolean locked, FluidStack fluidStack) {
-        if (this.isLocked() == locked) return;
-        if (locked && !fluidStack.isEmpty()) {
-            this.lockedFluid.setFluid(fluidStack.copy());
-            this.lockedFluid.getFluid().setAmount(1);
-            setFilter(stack -> stack.isFluidEqual(this.lockedFluid.getFluid()));
-        } else {
-            this.lockedFluid.setFluid(FluidStack.EMPTY);
-            setFilter(stack -> true);
-        }
-        syncDataHolder.markClientSyncFieldDirty("lockedFluid");
-        onContentsChanged();
     }
 
     public NotifiableFluidTank setFilter(Predicate<FluidStack> filter) {
@@ -472,13 +410,5 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             if (maxDrain <= 0) break;
         }
         return totalDrained == null ? FluidStack.EMPTY : totalDrained;
-    }
-
-    @Override
-    public void onMachineLoad() {
-        super.onMachineLoad();
-        if (this.isLocked()) {
-            setFilter(stack -> stack.isFluidEqual(this.lockedFluid.getFluid()));
-        }
     }
 }

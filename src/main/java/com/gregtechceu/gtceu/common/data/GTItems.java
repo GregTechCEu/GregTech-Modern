@@ -231,8 +231,6 @@ public class GTItems {
 
     public static final ItemEntry<Item>[] SHAPE_EXTRUDERS = new ItemEntry[27];
     public static ItemEntry<Item> SHAPE_EXTRUDER_PLATE;
-    public static ItemEntry<Item> SHAPE_EXTRUDER_ROD;
-    public static ItemEntry<Item> SHAPE_EXTRUDER_BOLT;
     public static ItemEntry<Item> SHAPE_EXTRUDER_RING;
     public static ItemEntry<Item> SHAPE_EXTRUDER_CELL;
     public static ItemEntry<Item> SHAPE_EXTRUDER_INGOT;
@@ -243,26 +241,13 @@ public class GTItems {
     public static ItemEntry<Item> SHAPE_EXTRUDER_PIPE_LARGE;
     public static ItemEntry<Item> SHAPE_EXTRUDER_PIPE_HUGE;
     public static ItemEntry<Item> SHAPE_EXTRUDER_BLOCK;
-    public static ItemEntry<Item> SHAPE_EXTRUDER_GEAR;
     public static ItemEntry<Item> SHAPE_EXTRUDER_BOTTLE;
     public static ItemEntry<Item> SHAPE_EXTRUDER_FOIL;
-    public static ItemEntry<Item> SHAPE_EXTRUDER_GEAR_SMALL;
-    public static ItemEntry<Item> SHAPE_EXTRUDER_ROTOR;
 
     static {
         SHAPE_EXTRUDERS[0] = SHAPE_EXTRUDER_PLATE = REGISTRATE.item("plate_extruder_mold", Item::new)
                 .setData(ProviderType.LANG,
                         nameAndTooltipLang("Extruder Mold (Plate)", "§7Extruder Shape for making Plates"))
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
-                .register();
-        SHAPE_EXTRUDERS[1] = SHAPE_EXTRUDER_ROD = REGISTRATE.item("rod_extruder_mold", Item::new)
-                .setData(ProviderType.LANG,
-                        nameAndTooltipLang("Extruder Mold (Rod)", "§7Extruder Shape for making Rods"))
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
-                .register();
-        SHAPE_EXTRUDERS[2] = SHAPE_EXTRUDER_BOLT = REGISTRATE.item("bolt_extruder_mold", Item::new)
-                .setData(ProviderType.LANG,
-                        nameAndTooltipLang("Extruder Mold (Bolt)", "§7Extruder Shape for making Bolts"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[3] = SHAPE_EXTRUDER_RING = REGISTRATE.item("ring_extruder_mold", Item::new)
@@ -317,11 +302,6 @@ public class GTItems {
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         // Extruder Shapes index 13-20 (inclusive), id 44-51 (inclusive) are unused
-        SHAPE_EXTRUDERS[21] = SHAPE_EXTRUDER_GEAR = REGISTRATE.item("gear_extruder_mold", Item::new)
-                .setData(ProviderType.LANG,
-                        nameAndTooltipLang("Extruder Mold (Gear)", "§7Extruder Shape for making Gears"))
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
-                .register();
         SHAPE_EXTRUDERS[22] = SHAPE_EXTRUDER_BOTTLE = REGISTRATE.item("bottle_extruder_mold", Item::new)
                 .setData(ProviderType.LANG,
                         nameAndTooltipLang("Extruder Mold (Bottle)", "§7Extruder Shape for making Bottles"))
@@ -330,16 +310,6 @@ public class GTItems {
         SHAPE_EXTRUDERS[23] = SHAPE_EXTRUDER_FOIL = REGISTRATE.item("foil_extruder_mold", Item::new)
                 .setData(ProviderType.LANG,
                         nameAndTooltipLang("Extruder Mold (Foil)", "§7Extruder Shape for making Foils from Non-Metals"))
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
-                .register();
-        SHAPE_EXTRUDERS[24] = SHAPE_EXTRUDER_GEAR_SMALL = REGISTRATE.item("small_gear_extruder_mold", Item::new)
-                .setData(ProviderType.LANG,
-                        nameAndTooltipLang("Extruder Mold (Small Gear)", "§7Extruder Shape for making Small Gears"))
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
-                .register();
-        SHAPE_EXTRUDERS[26] = SHAPE_EXTRUDER_ROTOR = REGISTRATE.item("rotor_extruder_mold", Item::new)
-                .setData(ProviderType.LANG,
-                        nameAndTooltipLang("Extruder Mold (Rotor)", "§7Extruder Shape for making Rotors"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
     }
