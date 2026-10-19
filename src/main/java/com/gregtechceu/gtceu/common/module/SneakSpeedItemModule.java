@@ -44,11 +44,6 @@ public class SneakSpeedItemModule extends TieredItemModule {
     }
 
     @Override
-    public boolean useEnergyInInventory(ModuleContext moduleContext, LivingEntity entity) {
-        return false;
-    }
-
-    @Override
     public long energyUsagePerTick(ModuleContext moduleContext, LivingEntity entity) {
         if (entity instanceof Player player) {
             return SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isShiftKeyDown() ? 819 : 0;

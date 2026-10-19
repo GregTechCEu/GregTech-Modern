@@ -93,7 +93,7 @@ public abstract class ItemModule {
         if (!isEnabled(moduleContext)) return;
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         long energy = energyUsagePerTick(moduleContext, entity);
-        if (electricItem != null) {
+        if (electricItem != null && !useEnergyInInventory(moduleContext, entity)) {
             electricItem.discharge(energy, electricItem.getTier(), true, false, false);
         }
     }
@@ -120,7 +120,7 @@ public abstract class ItemModule {
                                 TooltipFlag isAdvanced) {}
 
     public boolean useEnergyInInventory(ModuleContext moduleContext, LivingEntity entity) {
-        return true;
+        return false;
     }
 
     public long energyUsagePerTick(ModuleContext moduleContext, LivingEntity entity) {
