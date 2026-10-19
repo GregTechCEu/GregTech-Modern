@@ -26,8 +26,8 @@ import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.PipeTankList;
 import com.gregtechceu.gtceu.utils.*;
-
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

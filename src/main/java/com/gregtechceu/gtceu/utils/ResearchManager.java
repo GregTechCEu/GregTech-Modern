@@ -14,8 +14,8 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;

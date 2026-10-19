@@ -21,8 +21,8 @@ import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.data.lang.LangGenerationHandler;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
-import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

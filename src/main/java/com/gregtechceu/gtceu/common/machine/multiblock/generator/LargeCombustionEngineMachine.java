@@ -222,7 +222,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         syncManager.syncValue("engineVoltage", engineVoltage);
 
         var hasLubricantWarning = Text.dynamic(() -> Component.translatable(
-                "gtceu.multiblock.large_combustion_engine.no_lubricant"))
+                "gui.gtceu.machine.large_combustion_engine.no_lubricant").withStyle(ChatFormatting.RED))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && !hasLubricant.getBoolValue());
         var boostDisallowed = Text.dynamic(() -> Component.translatable(

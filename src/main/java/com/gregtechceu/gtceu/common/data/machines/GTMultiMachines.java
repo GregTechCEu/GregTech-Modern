@@ -31,8 +31,8 @@ import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultib
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.factory.CentralMonitorUIFactory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

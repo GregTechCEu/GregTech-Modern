@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
-import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;

@@ -23,8 +23,8 @@ import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.Util;
 import net.minecraft.client.color.item.ItemColor;

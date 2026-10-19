@@ -19,8 +19,8 @@ import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.cable.LevelEnergyNet;
-import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;

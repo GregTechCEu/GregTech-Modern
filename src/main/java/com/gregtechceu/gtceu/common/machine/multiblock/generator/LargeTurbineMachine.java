@@ -158,29 +158,31 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         syncManager.syncValue("maxOutput", maxOutput);
         syncManager.syncValue("turbineVoltage", turbineVoltage);
 
-        var hasNoRotorWarning = Text.lang("gtceu.multiblock.turbine.no_rotor")
+        var hasNoRotorWarning = Text.lang("gui.gtceu.machine.large_turbine.missing_rotor")
                 .withStyle(ChatFormatting.RED)
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && !hasRotor.getBoolValue());
-        var rotorSpeedDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_speed",
+        var rotorSpeedDisplay = Text.dynamic(() -> Component.translatable("gui.gtceu.machine.large_turbine.rotor_speed",
                 FormattingUtil.formatNumbers(rotorSpeed.getIntValue()),
                 FormattingUtil.formatNumbers(maxRotorSpeed.getIntValue()))
                 .withStyle(ChatFormatting.WHITE))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue());
-        var turbineEfficiencyDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.efficiency",
-                efficiency.getIntValue())
-                .withStyle(ChatFormatting.WHITE))
+        var turbineEfficiencyDisplay = Text
+                .dynamic(() -> Component.translatable("gui.gtceu.machine.large_turbine.efficiency",
+                        efficiency.getIntValue())
+                        .withStyle(ChatFormatting.WHITE))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue());
-        var turbinePowerDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
-                FormattingUtil.formatNumbers(euOutput.getIntValue()),
-                FormattingUtil.formatNumbers(maxOutput.getIntValue()))
-                .withStyle(ChatFormatting.WHITE))
+        var turbinePowerDisplay = Text
+                .dynamic(() -> Component.translatable("gui.gtceu.machine.large_turbine.energy_per_tick",
+                        FormattingUtil.formatNumbers(euOutput.getIntValue()),
+                        FormattingUtil.formatNumbers(maxOutput.getIntValue()))
+                        .withStyle(ChatFormatting.WHITE))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue() && isActive.getBoolValue());
         var rotorDurabilityDisplay = Text
-                .dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_durability",
+                .dynamic(() -> Component.translatable("gui.gtceu.machine.large_turbine.rotor_durability",
                         rotorDurability.getIntValue())
                         .withStyle(rotorDurability.getIntValue() > MIN_DURABILITY_TO_WARN ?
                                 ChatFormatting.WHITE :

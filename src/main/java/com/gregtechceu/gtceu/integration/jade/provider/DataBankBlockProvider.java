@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
-import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.nbt.LongTag;
 import net.minecraft.network.chat.Component;

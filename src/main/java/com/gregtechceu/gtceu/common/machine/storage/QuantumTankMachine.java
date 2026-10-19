@@ -14,9 +14,9 @@ import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
-import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;

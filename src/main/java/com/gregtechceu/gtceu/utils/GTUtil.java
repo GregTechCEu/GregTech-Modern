@@ -588,7 +588,8 @@ public class GTUtil {
         tooltipComponents.add(
                 Component.translatable("medical_condition.gtceu.tooltip.description").append(CommonComponents.SPACE)
                         .withStyle(ChatFormatting.BOLD, ChatFormatting.RED)
-                        .append(Component.translatable("common.gtceu.tooltip.hold_shift").withStyle(ChatFormatting.GRAY)));
+                        .append(Component.translatable("common.gtceu.tooltip.hold_shift")
+                                .withStyle(ChatFormatting.GRAY)));
     }
 
     public static CompoundTag saveItemStack(ItemStack itemStack, CompoundTag compoundTag) {

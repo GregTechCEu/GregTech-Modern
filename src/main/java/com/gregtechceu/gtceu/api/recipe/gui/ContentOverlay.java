@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
-import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GradientUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;

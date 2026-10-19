@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.RandomSource;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
@@ -137,6 +138,7 @@ public class GTValues {
             MODID_CCTWEAKED = "computercraft",
             MODID_ENDERIO = "enderio",
             MODID_ENSORCELLATION = "ensorcellation";
+
 
     /**
      * The short names for the voltages, used for registration primarily
@@ -281,7 +283,7 @@ public class GTValues {
             "III",
             "IV",
             "",
-            ""};
+            "" };
 
     public static final String[] LVT = new String[] {
             "",

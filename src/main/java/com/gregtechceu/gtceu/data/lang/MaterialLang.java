@@ -35,5 +35,6 @@ public class MaterialLang {
         provider.add("material.gtceu.fluid_property.temperature", "Temperature: %s");
         provider.add("material.gtceu.fluid_property.cryogenic", "Cryogenic! Handle with care!");
         provider.add("material.gtceu.fluid_property.acid", "Acidic! Handle with care!");
+        provider.add("material.gtceu.fluid_requires_metal_freezing", "Requires metal freezing");
     }
 }

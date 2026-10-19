@@ -71,7 +71,6 @@ public class CommonLang {
     }
 
     private static void generateCommonTooltips(GTLangProvider provider) {
-
         // EU Tooltips
         provider.add("common.gtceu.tooltip.voltage_in", "Voltage IN: ");
         provider.add("common.gtceu.tooltip.voltage_out", "Voltage OUT: ");
@@ -81,13 +80,13 @@ public class CommonLang {
         provider.add("common.gtceu.tooltip.max_voltage_out", "Max Voltage OUT: ");
         provider.add("common.gtceu.tooltip.max_voltage_both", "Max Voltage IN/OUT: ");
 
-        provider.add("common.gtceu.tooltip.amperage_in", "§eAmperage IN: §f%dA");
-        provider.add("common.gtceu.tooltip.amperage_out", "§eAmperage OUT: §f%dA");
-        provider.add("common.gtceu.tooltip.amperage_both", "§eAmperage IN/OUT: §f%dA");
+        provider.add("common.gtceu.tooltip.amperage_in", "Amperage IN: ");
+        provider.add("common.gtceu.tooltip.amperage_out", "Amperage OUT: ");
+        provider.add("common.gtceu.tooltip.amperage_both", "Amperage IN/OUT: ");
 
-        provider.add("common.gtceu.tooltip.amperage_in_till", "§eAmperage IN up to: §f%dA");
-        provider.add("common.gtceu.tooltip.amperage_out_till", "§eAmperage OUT up to: §f%dA");
-        provider.add("common.gtceu.tooltip.amperage_both_till", "§eAmperage IN/OUT up to: §f%dA");
+        provider.add("common.gtceu.tooltip.amperage_up_to_in", "Amperage IN up to: ");
+        provider.add("common.gtceu.tooltip.amperage_up_to_out", "Amperage OUT up to: ");
+        provider.add("common.gtceu.tooltip.amperage_up_to_both", "Amperage IN/OUT up to: ");
 
         // EU Storage
         provider.add("common.gtceu.tooltip.energy_storage_capacity", "§cEnergy Capacity: §r%d EU");

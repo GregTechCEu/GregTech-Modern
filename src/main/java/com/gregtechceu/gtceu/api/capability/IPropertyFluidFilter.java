@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.capability;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
-import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -100,9 +100,11 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
             getContainedAttributes().forEach(a -> a.appendContainerTooltips(tooltip::add));
         } else if (isGasProof() || isCryoProof() || isPlasmaProof() || !getContainedAttributes().isEmpty()) {
             if (showToolsInfo) {
-                tooltip.add(Component.translatable("common.gtceu.tooltip.tool_fluid_hold_shift").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("common.gtceu.tooltip.tool_fluid_hold_shift")
+                        .withStyle(ChatFormatting.GRAY));
             } else {
-                tooltip.add(Component.translatable("common.gtceu.tooltip.fluid_pipe_hold_shift").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("common.gtceu.tooltip.fluid_pipe_hold_shift")
+                        .withStyle(ChatFormatting.GRAY));
             }
         }
     }

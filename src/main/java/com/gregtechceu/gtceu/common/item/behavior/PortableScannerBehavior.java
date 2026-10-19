@@ -22,8 +22,8 @@ import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectBedrockFluid;
-import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;

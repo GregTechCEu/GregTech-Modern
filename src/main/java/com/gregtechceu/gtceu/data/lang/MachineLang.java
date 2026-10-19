@@ -374,6 +374,8 @@ public class MachineLang {
         provider.add("machine.gtceu.steam_large_turbine.tooltip", "Do not put your Head in it");
         provider.add("machine.gtceu.gas_large_turbine.tooltip", "Not a Jet Engine");
         provider.add("machine.gtceu.plasma_large_turbine.tooltip", "Plasma Energy Siphon");
+
+        provider.add("gui.gtceu.machine.large_turbine.missing_rotor", "Missing Rotor");
         provider.add("gui.gtceu.machine.large_turbine.fuel_amount", "Fuel Amount: %sL (%s)");
         provider.add("gui.gtceu.machine.large_turbine.rotor_speed", "Rotor Speed: %s/%s RPM");
         provider.add("gui.gtceu.machine.large_turbine.rotor_durability", "Rotor Durability: %s%%");
