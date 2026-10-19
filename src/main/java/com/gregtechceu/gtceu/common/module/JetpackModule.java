@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.Text;
@@ -44,11 +43,6 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
         return super.canApplyTo(stack) && modular.getAllModuleInstances().stream()
                 .noneMatch(context -> context.getModule() instanceof JetpackModule ||
                         context.getModule() instanceof LiquidFuelJetpackModule);
-    }
-
-    @Override
-    public void onArmorTick(ModuleContext context, LivingEntity entity) {
-        if (isEnabled(context)) super.onArmorTick(context, entity);
     }
 
     @Override

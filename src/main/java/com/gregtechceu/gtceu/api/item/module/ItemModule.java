@@ -89,14 +89,24 @@ public abstract class ItemModule {
 
     public void onUnequip(ModuleContext moduleContext, LivingEntity entity) {}
 
+    /**
+     * Called each tick this item is in an entity's armor slots.
+     */
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
         if (!isEnabled(moduleContext)) return;
+        if (entity.level().isClientSide) return;
+
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         long energy = energyUsagePerTick(moduleContext, entity);
         if (electricItem != null && !useEnergyInInventory(moduleContext, entity)) {
             electricItem.discharge(energy, electricItem.getTier(), true, false, false);
         }
     }
+
+    /**
+     * Called each tick this item is in a player's armor slots on the client.
+     */
+    public void clientSideArmorTick(ModuleContext moduleContext, Player entity) {}
 
     /**
      * Called each tick this item is in a player's inventory or equipment slots

@@ -30,6 +30,14 @@ public abstract class ArmorLogicItemModule extends ItemModule implements IHUDPro
     }
 
     @Override
+    public void clientSideArmorTick(ModuleContext moduleContext, Player player) {
+        if (!isEnabled(moduleContext)) return;
+        IArmorLogic armorLogic = getArmorLogic(moduleContext);
+        if (armorLogic == null) return;
+        armorLogic.onArmorTick(player.level(), player, moduleContext.getAppliedTo());
+    }
+
+    @Override
     public void onEquip(ModuleContext moduleContext, LivingEntity entity) {
         super.onEquip(moduleContext, entity);
         IArmorLogic armorLogic = getArmorLogic(moduleContext);

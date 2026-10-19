@@ -371,10 +371,12 @@ public class CommonEventListener {
         for (ItemStack stack : entity.getArmorSlots()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) continue;
-            modularItem.runForEachModule((m, a) -> m.onArmorTick(a, entity));
+            if (entity.level().isClientSide() && entity instanceof Player player)
+                modularItem.runForEachModule((m, a) -> m.clientSideArmorTick(a, player));
+            else modularItem.runForEachModule((m, a) -> m.onArmorTick(a, entity));
         }
 
-        if (entity instanceof Player player) {
+        if (entity instanceof Player player && !entity.level().isClientSide()) {
             var inv = player.getInventory();
             for (var group : ImmutableList.of(inv.items, inv.armor, inv.offhand)) {
                 for (ItemStack stack : group) {
@@ -429,11 +431,13 @@ public class CommonEventListener {
 
     @SubscribeEvent
     public static void onLivingEquipmentChange(LivingEquipmentChangeEvent event) {
+        if (!event.getSlot().isArmor()) return;
+
         final LivingEntity entity = event.getEntity();
         final ItemStack old = event.getFrom();
         final ItemStack current = event.getTo();
 
-        if (!event.getSlot().isArmor()) return;
+        if (IModularItem.isSameItemSameModules(old, current)) return;
 
         if (entity instanceof Player player) {
             if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor &&
@@ -445,8 +449,6 @@ public class CommonEventListener {
                 armor.getArmorLogic().onEquip(player);
             }
         }
-
-        if (IModularItem.isSameItemSameModules(old, current)) return;
 
         if (!old.isEmpty()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(old);

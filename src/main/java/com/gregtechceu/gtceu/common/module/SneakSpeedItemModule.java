@@ -22,24 +22,21 @@ public class SneakSpeedItemModule extends TieredItemModule {
     }
 
     @Override
-    public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
+    public void clientSideArmorTick(ModuleContext moduleContext, Player player) {
         if (!isEnabled(moduleContext)) return;
-        super.onArmorTick(moduleContext, entity);
-        if (entity instanceof Player player) {
-            float mul = getTier() / 8f + 1;
-            boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
-            boolean sneaking = SyncedKeyMappings.VANILLA_SNEAK.isKeyDown(player);
+        float mul = getTier() / 8f + 1;
+        boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
+        boolean sneaking = SyncedKeyMappings.VANILLA_SNEAK.isKeyDown(player);
 
-            if (player.onGround() && sneaking) {
-                float speed = 0.25F * mul;
-                if (player.isInWater()) {
-                    speed = 0.1F * mul;
-                    if (jumping) {
-                        player.push(0.0, 0.1, 0.0);
-                    }
+        if (player.onGround() && sneaking) {
+            float speed = 0.25F * mul;
+            if (player.isInWater()) {
+                speed = 0.1F * mul;
+                if (jumping) {
+                    player.push(0.0, 0.1, 0.0);
                 }
-                player.moveRelative(speed, new Vec3(0, 0, 1));
             }
+            player.moveRelative(speed, new Vec3(0, 0, 1));
         }
     }
 
