@@ -3974,7 +3974,7 @@
   "common.gtceu.tooltip.requires_redstone": "§4Requer energia Redstone",
   "machine.gtceu.miner.silk_touch": "Toque Suave: ",
   "machine.gtceu.tooltip.terrain_resist": "Esta Máquina não explodirá quando exposta aos Elementos",
-  "common.gtceu.tooltip.uses_per_hour_lubricant": "Usa §f%d mB/hr §7de §6Lubrificante §7enquanto trabalha",
+  "machine.gtceu.large_combustion_engine.tooltip.lubricant_use": "Usa §f%d mB/hr §7de §6Lubrificante §7enquanto trabalha",
   "common.gtceu.tooltip.uses_per_op": "Usa §f%d EU/operação",
   "common.gtceu.tooltip.uses_per_second": "Usa §f%d EU/s §7enquanto trabalha",
   "common.gtceu.tooltip.uses_per_tick": "Usa §f%d EU/t §7enquanto trabalha",

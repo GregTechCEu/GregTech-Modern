@@ -3960,7 +3960,7 @@
     "common.gtceu.tooltip.requires_redstone": "§4需要红石信号",
     "machine.gtceu.miner.silk_touch": "精准采集：",
     "machine.gtceu.tooltip.terrain_resist": "该机器不会在暴露于恶劣天气时爆炸",
-    "common.gtceu.tooltip.uses_per_hour_lubricant": "工作时消耗§f%d mB/hr§7§6润滑油§7",
+    "machine.gtceu.large_combustion_engine.tooltip.lubricant_use": "工作时消耗§f%d mB/hr§7§6润滑油§7",
     "common.gtceu.tooltip.uses_per_op": "每次工作时消耗§f%d EU§7",
     "common.gtceu.tooltip.uses_per_second": "工作时消耗§f%d EU/s§7",
     "common.gtceu.tooltip.uses_per_tick": "工作时消耗§f%d EU/t§7",

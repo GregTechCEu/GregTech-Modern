@@ -65,6 +65,7 @@ public class CommonLang {
     }
 
     private static void generateCommonTooltips(GTLangProvider provider) {
+
         // EU Tooltips
         provider.add("common.gtceu.tooltip.voltage_in", "§aVoltage IN: §f%d EU/t (%s§f)");
         provider.add("common.gtceu.tooltip.max_voltage_in", "§aMax Voltage IN: §f%d (%s§f)");
@@ -100,10 +101,6 @@ public class CommonLang {
         // General Consumption
         provider.add("common.gtceu.tooltip.uses_per_tick", "Uses §f%d EU/t §7while working");
         provider.add("common.gtceu.tooltip.uses_per_tick_steam", "Uses §f%d mB/t §7of §fSteam §7while working");
-        provider.add("common.gtceu.tooltip.uses_per_hour_lubricant",
-                "Uses §f%d mB/hr §7of §6Lubricant §7while working");
-        provider.add("common.gtceu.tooltip.uses_per_second", "Uses §f%d EU/s §7while working");
-        provider.add("common.gtceu.tooltip.uses_per_op", "Uses §f%d EU/operation");
 
         // General Production
         provider.add("common.gtceu.tooltip.base_production_eut", "§eBase Production: §f%d EU/t");
@@ -111,11 +108,10 @@ public class CommonLang {
         provider.add("common.gtceu.tooltip.produces_fluid", "§eProduces: §f%d mB/t");
 
         // Tooltip Keybinds
-        provider.add("common.gtceu.tooltip.hold_shift", "§7Hold SHIFT for more info");
-        provider.add("common.gtceu.tooltip.hold_ctrl", "§7Hold CTRL for more info");
-        provider.add("common.gtceu.tooltip.fluid_pipe_hold_shift", "§7Hold SHIFT to show Fluid Containment Info");
+        provider.add("common.gtceu.tooltip.hold_shift", "Hold SHIFT for more info");
+        provider.add("common.gtceu.tooltip.fluid_pipe_hold_shift", "Hold SHIFT to show Fluid Containment Info");
         provider.add("common.gtceu.tooltip.tool_fluid_hold_shift",
-                "§7Hold SHIFT to show Fluid Containment and Tool Info");
+                "Hold SHIFT to show Fluid Containment and Tool Info");
     }
 
     private static void generateKeybindKeys(GTLangProvider provider) {

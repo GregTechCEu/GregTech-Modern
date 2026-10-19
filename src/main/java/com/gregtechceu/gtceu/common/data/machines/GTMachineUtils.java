@@ -53,7 +53,7 @@ import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -91,7 +91,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 import static com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine.AMPS_PER_BATTERY_NORMAL;
 import static com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine.TANK_CAPACITY;
-import static com.gregtechceu.gtceu.utils.FormattingUtil.*;
+import static com.gregtechceu.gtceu.utils.lang.FormattingUtil.*;
 
 public class GTMachineUtils {
 
@@ -715,7 +715,7 @@ public class GTMachineUtils {
                 .workableCasingModel(casingTexture, overlayModel)
                 .tooltips(
                         Component.translatable("common.gtceu.tooltip.base_production_eut", V[tier]),
-                        Component.translatable("common.gtceu.tooltip.uses_per_hour_lubricant",
+                        Component.translatable("machine.gtceu.large_combustion_engine.tooltip.lubricant_use",
                                 FluidType.BUCKET_VOLUME),
                         tier > EV ?
                                 Component.translatable("machine.gtceu.large_combustion_engine.tooltip.boost_extreme",

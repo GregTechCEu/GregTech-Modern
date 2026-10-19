@@ -490,7 +490,7 @@
   "common.gtceu.tooltip.max_voltage_out": "§aMax Voltage OUT: §f%d (%s§f)",
   "common.gtceu.tooltip.produces_fluid": "§eProduces: §f%d mB/t",
   "common.gtceu.tooltip.tool_fluid_hold_shift": "§7Hold SHIFT to show Fluid Containment and Tool Info",
-  "common.gtceu.tooltip.uses_per_hour_lubricant": "Uses §f%d mB/hr §7of §6Lubricant §7while working",
+  "machine.gtceu.large_combustion_engine.tooltip.lubricant_use": "Uses §f%d mB/hr §7of §6Lubricant §7while working",
   "common.gtceu.tooltip.uses_per_op": "Uses §f%d EU/operation",
   "common.gtceu.tooltip.uses_per_second": "Uses §f%d EU/s §7while working",
   "common.gtceu.tooltip.uses_per_tick": "Uses §f%d EU/t §7while working",

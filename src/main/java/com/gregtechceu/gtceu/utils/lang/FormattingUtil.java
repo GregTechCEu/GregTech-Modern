@@ -1,9 +1,10 @@
-package com.gregtechceu.gtceu.utils;
+package com.gregtechceu.gtceu.utils.lang;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;

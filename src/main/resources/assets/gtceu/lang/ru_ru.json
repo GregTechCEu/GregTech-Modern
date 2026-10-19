@@ -2220,7 +2220,7 @@
     "common.gtceu.tooltip.requires_redstone": "§4Требуется сигнал Красного камня",
     "machine.gtceu.miner.silk_touch": "Шелковое касание: ",
     "machine.gtceu.tooltip.terrain_resist": "Эта машина не взорвется",
-    "common.gtceu.tooltip.uses_per_hour_lubricant": "Использует §f%d мВ/ч §6Смазки §7когда работает",
+    "machine.gtceu.large_combustion_engine.tooltip.lubricant_use": "Использует §f%d мВ/ч §6Смазки §7когда работает",
     "common.gtceu.tooltip.uses_per_op": "Использует §f%d EU/операцию",
     "common.gtceu.tooltip.uses_per_second": "Потребляет §f%d EU/с §7когда работает",
     "common.gtceu.tooltip.uses_per_tick": "Потребляет §f%d EU/т §7когда работает",

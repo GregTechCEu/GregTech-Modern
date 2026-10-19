@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
@@ -99,7 +99,7 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
             if (acidProof) tooltipComponents
                     .add(Component.translatable("tooltip.gtceu.fluid_pipe.acid_proof").withStyle(ChatFormatting.GOLD));
         } else if (gasProof || cryoProof || plasmaProof || acidProof) {
-            tooltipComponents.add(Component.translatable("common.gtceu.tooltip.fluid_pipe_hold_shift"));
+            tooltipComponents.add(Component.translatable("common.gtceu.tooltip.fluid_pipe_hold_shift").withStyle(ChatFormatting.GRAY));
         }
     }
 }

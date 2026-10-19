@@ -267,21 +267,21 @@ public class GTValues {
             RED.toString() + BOLD + "MAX" };
 
     public static final String[] VLVT = new String[] {
-            "" + RESET,
-            "" + RESET,
-            "" + RESET,
-            "II" + RESET,
-            "III" + RESET,
-            "" + RESET,
-            "II" + RESET,
-            "III" + RESET,
-            "" + RESET,
-            "" + RESET,
-            "II" + RESET,
-            "III" + RESET,
-            "IV" + RESET,
-            "" + RESET,
-            "" + RESET };
+            "",
+            "",
+            "",
+            "II",
+            "III",
+            "",
+            "II",
+            "III",
+            "",
+            "",
+            "II",
+            "III",
+            "IV",
+            "",
+            ""};
 
     public static final String[] LVT = new String[] {
             "",

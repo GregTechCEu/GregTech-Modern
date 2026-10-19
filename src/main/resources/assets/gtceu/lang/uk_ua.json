@@ -3928,7 +3928,7 @@
   "common.gtceu.tooltip.requires_redstone": "§4Потребує заживлення редстоуном",
   "machine.gtceu.miner.silk_touch": "Шовковий дотик: ",
   "machine.gtceu.tooltip.terrain_resist": "Ця машина не вибухне під час контакту з хім. елементами",
-  "common.gtceu.tooltip.uses_per_hour_lubricant": "Використовує§f %d мВ/год§7§6 мастила§7 під час роботи",
+  "machine.gtceu.large_combustion_engine.tooltip.lubricant_use": "Використовує§f %d мВ/год§7§6 мастила§7 під час роботи",
   "common.gtceu.tooltip.uses_per_op": "Використовує§f %d EU на операцію",
   "common.gtceu.tooltip.uses_per_second": "Використовує§f %d EU/c§7 під час роботи",
   "common.gtceu.tooltip.uses_per_tick": "Використовує§f %d EU/т§7  під час роботи",

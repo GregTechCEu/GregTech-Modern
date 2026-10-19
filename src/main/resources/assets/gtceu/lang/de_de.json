@@ -3975,7 +3975,7 @@
     "common.gtceu.tooltip.requires_redstone": "§4Erfordert Redstone-Power",
     "machine.gtceu.miner.silk_touch": "Seiden-Touch:",
     "machine.gtceu.tooltip.terrain_resist": "Diese Maschine explodiert nicht, wenn sie den Elementen ausgesetzt wird",
-    "common.gtceu.tooltip.uses_per_hour_lubricant": "Verbraucht während der Arbeit §f%d mB/h §7§6Schmiermittel §7.",
+    "machine.gtceu.large_combustion_engine.tooltip.lubricant_use": "Verbraucht während der Arbeit §f%d mB/h §7§6Schmiermittel §7.",
     "common.gtceu.tooltip.uses_per_op": "Verwendet §f%d EU/Operation",
     "common.gtceu.tooltip.uses_per_second": "Verbraucht während der Arbeit §f%d EU/s §7.",
     "common.gtceu.tooltip.uses_per_tick": "Verbraucht während der Arbeit §f%d EU/t §7.",

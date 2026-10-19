@@ -3897,7 +3897,7 @@
   "common.gtceu.tooltip.requires_redstone": "§4赤石信号が必要",
   "machine.gtceu.miner.silk_touch": "シルクタッチ: ",
   "machine.gtceu.tooltip.terrain_resist": "この機械は環境の影響で爆発しません",
-  "common.gtceu.tooltip.uses_per_hour_lubricant": "稼働に§f%d mB/時§7の§6潤滑油§7を消費",
+  "machine.gtceu.large_combustion_engine.tooltip.lubricant_use": "稼働に§f%d mB/時§7の§6潤滑油§7を消費",
   "common.gtceu.tooltip.uses_per_op": "動作ごとに§f%d EU消費",
   "common.gtceu.tooltip.uses_per_second": "稼働に§f%d EU/s§7消費",
   "common.gtceu.tooltip.uses_per_tick": "稼働に§f%d EU/t §7消費",

@@ -14,8 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -202,23 +201,19 @@ public class GTMultiblockTextUtil {
         long EUt = energyUsage.getLongValue();
         long V = voltage.getLongValue();
         float minAmperage = (V == 0 ? 0 : (float) EUt / V);
-        int tier = GTUtil.getTierByVoltage(V);
 
-        return Component.translatable("gtceu.multiblock.general.amp_volt", // A @ V
-                Component.literal(FormattingUtil.formatNumber2Places(minAmperage))
-                        .withStyle(ChatFormatting.RED),
-                tier < GTValues.TIER_COUNT ? Component.literal(GTValues.VNF[tier]) : V);
+        return FormattingUtil.formattedEUt(minAmperage, V, true);
     }
 
     public static RichTooltip buildEutHoverTooltip(LongSyncValue energyUsage, boolean isMaxAvailable) {
         return new RichTooltip().autoUpdate(true).tooltipBuilder(builder -> {
             String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
 
-            builder.addLine(Component.translatable("gtceu.multiblock.general.eut",
+            builder.addLine(FormattingUtil.prepend("common.gtceu.eu_per_tick",
                     energyFormatted).withStyle(ChatFormatting.GRAY)
                     .withStyle(ChatFormatting.WHITE));
             if (isMaxAvailable)
-                builder.addLine(Component.translatable("gtceu.multiblock.max_energy_per_tick_hover")
+                builder.addLine(Component.translatable("gui.gtceu.machine.max_eut_hover")
                         .withStyle(ChatFormatting.GRAY));
         });
     }

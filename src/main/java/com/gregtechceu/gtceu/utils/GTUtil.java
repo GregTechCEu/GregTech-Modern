@@ -77,7 +77,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
-import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
+import static com.gregtechceu.gtceu.utils.lang.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
 
 public class GTUtil {
 
@@ -588,7 +588,7 @@ public class GTUtil {
         tooltipComponents.add(
                 Component.translatable("medical_condition.gtceu.tooltip.description").append(CommonComponents.SPACE)
                         .withStyle(ChatFormatting.BOLD, ChatFormatting.RED)
-                        .append(Component.translatable("common.gtceu.tooltip.hold_shift")));
+                        .append(Component.translatable("common.gtceu.tooltip.hold_shift").withStyle(ChatFormatting.GRAY)));
     }
 
     public static CompoundTag saveItemStack(ItemStack itemStack, CompoundTag compoundTag) {

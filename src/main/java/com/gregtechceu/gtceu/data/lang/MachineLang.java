@@ -345,6 +345,10 @@ public class MachineLang {
         // Combustion Engine
         provider.add("machine.gtceu.large_combustion_engine.tooltip", "Fuel Ignition Chamber");
         provider.add("machine.gtceu.extreme_combustion_engine.tooltip", "Extreme Chemical Energy Releaser");
+
+        provider.add("machine.gtceu.large_combustion_engine.tooltip.lubricant_use",
+                "Uses §f%d mB/hr §7of §6Lubricant §7while working");
+
         provider.add("machine.gtceu.large_combustion_engine.tooltip.boost_regular",
                 "Supply §f20 mB/s§r of §bOxygen§r to produce up to §f%s EU/t§r at §f2x§r fuel consumption.");
         provider.add("machine.gtceu.large_combustion_engine.tooltip.boost_extreme",
