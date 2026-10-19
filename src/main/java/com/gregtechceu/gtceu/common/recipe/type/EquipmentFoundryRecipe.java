@@ -77,10 +77,10 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
 
     @Override
     public boolean matches(RecipeWrapper container, Level level) {
-        return matches(container.getItem(0), container.getItem(1));
+        return matches(container.getItem(0), container.getItem(1), 0);
     }
 
-    public boolean matches(ItemStack equipmentItem, ItemStack itemToApply) {
+    public boolean matches(ItemStack equipmentItem, ItemStack itemToApply, int slot) {
         if (!equipment.test(equipmentItem)) return false;
 
         for (var entry : entries) {
@@ -89,7 +89,7 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
             if (ingredient.test(itemToApply)) {
                 IModularItem modularItem = GTCapabilityHelper.getModularItem(equipmentItem);
                 if (modularItem == null) continue;
-                if (modularItem.attach(moduleToApply, itemToApply, true) != null) return true;
+                if (modularItem.attach(moduleToApply, itemToApply, slot, true) != null) return true;
 
             }
         }

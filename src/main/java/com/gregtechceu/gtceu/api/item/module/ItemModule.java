@@ -87,6 +87,8 @@ public abstract class ItemModule {
 
     public void onEquip(ModuleContext moduleContext, LivingEntity entity) {}
 
+    public void onUnequip(ModuleContext moduleContext, LivingEntity entity) {}
+
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
         if (!isEnabled(moduleContext)) return;
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
@@ -95,8 +97,6 @@ public abstract class ItemModule {
             electricItem.discharge(energy, electricItem.getTier(), true, false, false);
         }
     }
-
-    public void onUnequip(ModuleContext moduleContext, LivingEntity entity) {}
 
     /**
      * Called each tick this item is in a player's inventory or equipment slots

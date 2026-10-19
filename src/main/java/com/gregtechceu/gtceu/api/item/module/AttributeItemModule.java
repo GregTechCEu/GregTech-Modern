@@ -2,11 +2,7 @@ package com.gregtechceu.gtceu.api.item.module;
 
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -17,10 +13,9 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
 import java.util.Objects;
-import java.util.UUID;
 
 public abstract class AttributeItemModule extends ItemModule {
 
@@ -43,47 +38,12 @@ public abstract class AttributeItemModule extends ItemModule {
         return new AttributeModuleData(slot, module, moduleStack, getMaxAttributeAmount());
     }
 
-    protected void attachAttribute(ModuleContext moduleContext) {
-        if (!isEnabled(moduleContext)) return;
+    public @Nullable AttributeModifier getModifierToAdd(ModuleContext moduleContext) {
+        if (!isEnabled(moduleContext)) return null;
+        if (!moduleContext.getData(AttributeModuleData.class).isKeepActive()) return null;
 
-        if (attributeAttached(moduleContext)) return;
-
-        EquipmentSlot slot = LivingEntity.getEquipmentSlotForItem(moduleContext.getAppliedTo());
-
-        AttributeModifier attributeModifier = applySettingsToModifier(moduleContext,
+        return applySettingsToModifier(moduleContext,
                 getAttributeModifier(moduleContext));
-
-        moduleContext.getAppliedTo().addAttributeModifier(getAttribute(moduleContext), attributeModifier, slot);
-    }
-
-    protected boolean attributeAttached(ModuleContext moduleContext) {
-        ListTag listTag = moduleContext.getAppliedTo().getOrCreateTag().getList("AttributeModifiers",
-                Tag.TAG_COMPOUND);
-        for (Tag tag : listTag) {
-            if (tag instanceof CompoundTag compoundTag) {
-                AttributeModifier attributeModifier = AttributeModifier.load(compoundTag);
-                if (attributeModifier != null &&
-                        attributeModifier.getId().equals(getAttributeModifier(moduleContext).getId()))
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    private void detachAttribute(ModuleContext moduleContext) {
-        UUID uuid = getAttributeModifier(moduleContext).getId();
-        ListTag listTag = moduleContext.getAppliedTo().getOrCreateTag().getList("AttributeModifiers",
-                Tag.TAG_COMPOUND);
-        Iterator<Tag> it = listTag.iterator();
-        while (it.hasNext()) {
-            Tag tag = it.next();
-            if (tag instanceof CompoundTag compoundTag) {
-                AttributeModifier attributeModifier = AttributeModifier.load(compoundTag);
-                if (attributeModifier != null && attributeModifier.getId().equals(uuid)) {
-                    it.remove();
-                } ;
-            }
-        }
     }
 
     protected double getNeutralModifier(ModuleContext moduleContext) {
@@ -114,8 +74,6 @@ public abstract class AttributeItemModule extends ItemModule {
 
     public void setModifier(ModuleContext moduleContext, double modifier) {
         moduleContext.setData(moduleContext.getData(AttributeModuleData.class).withModifierAmount(modifier));
-        detachAttribute(moduleContext);
-        attachAttribute(moduleContext);
     }
 
     protected String getSliderString(ModuleContext moduleContext, double value) {
@@ -135,26 +93,6 @@ public abstract class AttributeItemModule extends ItemModule {
                         x -> getSliderString(moduleContext, x));
     }
 
-    @Override
-    public void onAttach(ModuleContext moduleContext) {
-        super.onAttach(moduleContext);
-        attachAttribute(moduleContext);
-    }
-
-    @Override
-    public void onRemove(ModuleContext moduleContext) {
-        super.onRemove(moduleContext);
-        detachAttribute(moduleContext);
-    }
-
-    @Override
-    public void setEnabled(ModuleContext moduleContext, boolean enabled) {
-        super.setEnabled(moduleContext, enabled);
-        if (this.isEnabled(moduleContext)) {
-            this.attachAttribute(moduleContext);
-        } else this.detachAttribute(moduleContext);
-    }
-
     public abstract Attribute getAttribute(ModuleContext moduleContext);
 
     public abstract double getMaxAttributeAmount();
@@ -170,63 +108,66 @@ public abstract class AttributeItemModule extends ItemModule {
 
     @Override
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
-        var currentlyAttached = attributeAttached(moduleContext);
-        var shouldKeepAttached = isEnabled(moduleContext) && keepAttributeActive(moduleContext, entity);
-        if (shouldKeepAttached && !currentlyAttached) attachAttribute(moduleContext);
-        if (!shouldKeepAttached && currentlyAttached) detachAttribute(moduleContext);
-    }
-
-    @Override
-    public void onUnequip(ModuleContext moduleContext, LivingEntity entity) {
-        if (!attributeAttached(moduleContext)) attributeAttached(moduleContext);
+        var keepActive = keepAttributeActive(moduleContext, entity);
+        if (keepActive == moduleContext.getData(AttributeModuleData.class).keepActive) return;
+        moduleContext.setData(moduleContext.getData(AttributeModuleData.class).witKeepActive(keepActive));
     }
 
     public static class AttributeModuleData extends ModuleData {
 
         // spotless:off
-        public static final Codec<AttributeModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(
-                Codec.DOUBLE.fieldOf("modifier_amount").forGetter(AttributeModuleData::getModifierAmount)
-        ).apply(instance, AttributeModuleData::new));
+        public static final Codec<AttributeModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(instance.group(
+                Codec.DOUBLE.fieldOf("modifier_amount").forGetter(AttributeModuleData::getModifierAmount),
+                Codec.BOOL.fieldOf("keep_active").forGetter(AttributeModuleData::isKeepActive)
+        )).apply(instance, AttributeModuleData::new));
         // spotless:on
 
         @Getter
         private final double modifierAmount;
+        @Getter
+        private final boolean keepActive;
 
         public AttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
-                                   double modifierAmount) {
+                                   double modifierAmount, boolean keepActive) {
             super(slot, module, moduleItem, enabled);
             this.modifierAmount = modifierAmount;
+            this.keepActive = keepActive;
         }
 
         public AttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, double modifierAmount) {
             super(slot, module, moduleItem, true);
             this.modifierAmount = modifierAmount;
+            this.keepActive = true;
         }
 
         public AttributeModuleData withModifierAmount(double modifierAmount) {
-            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount);
+            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount, keepActive);
         }
 
         @Override
         public ModuleData withEnabled(boolean enabled) {
-            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount);
+            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount, keepActive);
+        }
+
+        public AttributeModuleData witKeepActive(boolean keepActive) {
+            return new AttributeModuleData(slot, module, moduleItem, enabled, modifierAmount, keepActive);
         }
 
         @Override
         public ModuleData copy() {
             return new AttributeModuleData(slot, module, moduleItem.copy(), enabled,
-                    modifierAmount);
+                    modifierAmount, keepActive);
         }
 
         @Override
         public boolean equals(Object obj) {
             if (!(obj instanceof AttributeModuleData other)) return false;
-            return super.equals(obj) && modifierAmount == other.modifierAmount;
+            return super.equals(obj) && modifierAmount == other.modifierAmount && keepActive == other.keepActive;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(slot, module, moduleItem, enabled, modifierAmount);
+            return Objects.hash(slot, module, moduleItem, enabled, modifierAmount, keepActive);
         }
     }
 }

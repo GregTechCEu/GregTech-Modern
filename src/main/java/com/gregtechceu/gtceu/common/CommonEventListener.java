@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
+import com.gregtechceu.gtceu.api.item.module.AttributeItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -463,6 +464,22 @@ public class CommonEventListener {
         if (!current.isEmpty()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(current);
             if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onEquip(a, entity));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onItemStackAttributeQuery(ItemAttributeModifierEvent modifierEvent) {
+        var modular = GTCapabilityHelper.getModularItem(modifierEvent.getItemStack());
+        if (modular == null) return;
+
+        for (var ctx : modular.getAllModuleInstances()) {
+            if (ctx.getModule() instanceof AttributeItemModule attributeModule) {
+                var attribute = attributeModule.getAttribute(ctx);
+                var modifier = attributeModule.getModifierToAdd(ctx);
+                if (modifier != null) {
+                    modifierEvent.addModifier(attribute, modifier);
+                }
+            }
         }
     }
 

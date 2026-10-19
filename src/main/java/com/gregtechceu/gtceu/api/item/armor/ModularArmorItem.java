@@ -11,8 +11,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.*;
 
+import com.google.common.collect.Multimap;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
@@ -89,5 +92,10 @@ public class ModularArmorItem extends ArmorComponentItem implements IComponentIt
             }
         }
         return super.isPPE(stack);
+    }
+
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        return super.getAttributeModifiers(slot, stack);
     }
 }
