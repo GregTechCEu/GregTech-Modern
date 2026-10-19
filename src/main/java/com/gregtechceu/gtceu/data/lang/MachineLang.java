@@ -1069,7 +1069,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.central_monitor.data_hatch_target",
                 "If you select a data hatch as a target, you will be prompted to enter a slot number. Then the block that the data stick in the specified slot is linked to (via right-clicking a wireless transmitter cover) will be considered the target instead.");
         provider.add("gui.gtceu.machine.central_monitor.group_name", "Name:");
-        provider.add("gui.gtceu.machine.central_monitor.module_editor_button", "Edit module");;
+        provider.add("gui.gtceu.machine.central_monitor.module_editor_button", "Edit module");
         provider.add("gui.gtceu.machine.central_monitor.group_editor", "Editing monitor group");
         provider.add("gui.gtceu.machine.central_monitor.monitor_groups", "Monitor Groups");
         provider.add("gui.gtceu.machine.central_monitor.create_group", "Create group");

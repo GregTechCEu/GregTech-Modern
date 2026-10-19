@@ -47,6 +47,7 @@ public class CommonLang {
         provider.add("common.gtceu.empty", "Empty");
 
         provider.add("common.gtceu.fluid_amount", "Fluid Amount: ");
+        provider.add("common.gtceu.fluid_capacity", "Fluid Capacity: ");
         provider.add("common.gtceu.fluid_stored", "Fluid Stored: ");
         provider.add("common.gtceu.transfer_rate", "Transfer Rate: ");
         provider.add("common.gtceu.item_slots", "Item Slots: ");

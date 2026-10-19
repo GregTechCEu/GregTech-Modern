@@ -27,8 +27,6 @@ public class ItemLang {
         // Turbines
         provider.add("item.gtceu.turbine_rotor.tooltip", "Turbine Rotors for your power station");
 
-        provider.add("item.gtceu.fluid_container.tooltip", "%d/%dL %s");
-
         // General Electric Tools
         provider.add("item.gtceu.electric.tooltip", "%d/%d EU - Tier %s");
         provider.add("item.gtceu.electric.stored", "%d/%d EU (%s)");
