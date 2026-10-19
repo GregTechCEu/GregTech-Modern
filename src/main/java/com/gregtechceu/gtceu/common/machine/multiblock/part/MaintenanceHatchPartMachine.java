@@ -430,7 +430,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                 .coverChildren()
                 .padding(5)
                 .child(new ItemSlot()
-                        .slot(new ModularSlot(itemStackHandler.storage, 0))
+                        .slot(new ModularSlot(itemStackHandler.storage, 0).singletonSlotGroup())
                         .background(GTGuiTextures.SLOT, GTGuiTextures.DUCT_TAPE_OVERLAY))
                 .child(new ButtonWidget<>()
                         .background(GTGuiTextures.BUTTON_MAINTENANCE)
