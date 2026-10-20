@@ -19,12 +19,8 @@ public class CoverLang {
         provider.add("cover.gtceu.filter.mode.filter_both", "Filter Insert/Extract");
 
         provider.add("cover.gtceu.ender_item_link.title", "Ender Item Link");
-        provider.add("cover.gtceu.ender_item_link.tooltip",
-                "§7Transports §fItems§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
         provider.add("cover.gtceu.ender_redstone_link.title", "Ender Redstone Link");
         provider.add("cover.gtceu.ender_redstone_link.label", "Redstone power: %d");
-        provider.add("cover.gtceu.ender_redstone_link.tooltip",
-                "§7Transmits §fRedstone signals§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
 
         // Common cover key entries
 

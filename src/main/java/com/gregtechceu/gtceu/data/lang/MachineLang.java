@@ -357,10 +357,6 @@ public class MachineLang {
                 "The Large Combustion Engine is a multiblock structure that acts as a Combustion Generator for EV power.");
         provider.add("gui.gtceu.machine.extreme_combustion_engine.description",
                 "The Extreme Combustion Engine is a multiblock structure that acts as a Combustion Generator for IV power.");
-        provider.add("gui.gtceu.machine.large_combustion_engine.lubricant_amount", "Lubricant Amount: %sL");
-        provider.add("gui.gtceu.machine.large_combustion_engine.oxygen_amount", "Oxygen Amount: %sL");
-        provider.add("gui.gtceu.machine.large_combustion_engine.liquid_oxygen_amount",
-                "Liquid Oxygen Amount: %sL");
         provider.add("gui.gtceu.machine.large_combustion_engine.oxygen_boosted", "Oxygen boosted.");
         provider.add("gui.gtceu.machine.large_combustion_engine.liquid_oxygen_boosted",
                 "Liquid Oxygen boosted.");

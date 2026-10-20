@@ -2131,7 +2131,7 @@ public class GTItems {
             .item("ender_redstone_link_cover", ComponentItem::create)
             .setData(ProviderType.LANG,
                     nameAndTooltipLang("Ender Redstone Link Cover",
-                            "Transports §fRedstone Signal§r with a §fWireless §dEnder§f Connection§r as §fCover§r."))
+                            "Transmits §fRedstone Signal§r with a §fWireless §dEnder§f Connection§r as §fCover§r."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_REDSTONE_LINK)))
             .register();
 

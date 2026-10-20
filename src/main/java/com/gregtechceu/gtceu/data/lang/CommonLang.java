@@ -73,6 +73,7 @@ public class CommonLang {
 
     private static void generateCommonTooltips(GTLangProvider provider) {
         // EU Tooltips
+
         provider.add("common.gtceu.tooltip.voltage_in", "Voltage IN: ");
         provider.add("common.gtceu.tooltip.voltage_out", "Voltage OUT: ");
         provider.add("common.gtceu.tooltip.voltage_both", "Voltage IN/OUT: ");

@@ -16,9 +16,6 @@ public class RecipeLang {
 
     private static void generateCapabilityLang(GTLangProvider provider) {
         provider.add("gui.gtceu.recipe.show_recipes", "Show Recipes");
-        provider.add("gui.gtceu.recipe.condition_fails", "Condition Fails");
-        provider.add("gui.gtceu.recipe.no_contents", "Recipe has no Contents");
-        provider.add("gui.gtceu.recipe.no_capabilities", "Machine has no Capabilities");
 
         provider.add("gui.gtceu.recipe.setup_fail", "Failed to setup recipe: ");
         provider.add("gui.gtceu.recipe.recipe_waiting", "Recipe Waiting");
@@ -116,7 +113,7 @@ public class RecipeLang {
         provider.add("gui.gtceu.recipe.duration", "Duration: %s secs");
         provider.add("gui.gtceu.recipe.total_eu", "Total Usage: %s EU/t");
 
-        provider.add("gui.gtceu.recipe.byproduct_tier", "Byproducts from %s§r+");
+        provider.add("gui.gtceu.recipe.byproduct_tier", "Byproducts from %s+");
 
         provider.add("gui.gtceu.recipe.temperature", "Temp: %s");
         provider.add("gui.gtceu.recipe.coil.tier", "Coil: %s");
