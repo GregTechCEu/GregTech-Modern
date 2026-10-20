@@ -74,10 +74,9 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
                 "See GTMachines for examples");
         MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[TIER_COUNT];
         for (final int tier : tiers) {
-            String tierName = VNL[tier];
             MultiblockMachineBuilder<?, ?, ?> builder = GTRegistrate
                     .createIgnoringListenerErrors(this.id.getNamespace()).multiblock(
-                            String.format("%s_%s", tierName, this.id.getPath()),
+                            String.format("%s_%s", VNL[tier], this.id.getPath()),
                             holder -> machine.create(holder, tier));
 
             builder.workableTieredHullModel(id.withPrefix("block/machines/"))
