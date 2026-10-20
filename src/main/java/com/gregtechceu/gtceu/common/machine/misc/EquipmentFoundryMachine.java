@@ -196,6 +196,11 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
     }
 
     @Override
+    public void onMachineDestroyed() {
+        equipmentSlot.dropInventoryInWorld(getLevel(), getBlockPos());
+    }
+
+    @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER && side != null) {
             if (side.getAxis().isVertical())

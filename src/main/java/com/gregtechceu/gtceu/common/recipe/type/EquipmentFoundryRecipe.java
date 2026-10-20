@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.recipe.type;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
-import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -28,7 +27,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,8 +37,6 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
     @Getter
     private final Ingredient equipment;
     @Getter
-    private final boolean isTiered;
-    @Getter
     private final List<TierEntry> entries;
 
     public EquipmentFoundryRecipe(ResourceLocation id, Ingredient equipment, List<TierEntry> entries) {
@@ -50,7 +46,6 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
         this.id = id;
         this.entries = entries;
         this.equipment = equipment;
-        this.isTiered = entries.size() == 1;
     }
 
     public EquipmentFoundryRecipe(ResourceLocation id, Ingredient equipment, @Nullable Ingredient[] moduleIngredients,
@@ -73,7 +68,6 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
         this.id = id;
         this.equipment = equipment;
         this.entries = entries;
-        this.isTiered = moduleIngredients.length == 1;
     }
 
     @Override
@@ -180,9 +174,6 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
                 ItemModule moduleType = GTRegistries.ITEM_MODULES.get(buffer.readResourceLocation());
                 return new TierEntry(ing, Objects.requireNonNull(moduleType));
             });
-            entries.sort(Comparator.comparingInt(
-                    v -> v.moduleForTier() instanceof ITieredItemModule tieredItemModule ? tieredItemModule.getTier() :
-                            -1));
             return new EquipmentFoundryRecipe(recipeId, equipment, entries);
         }
 

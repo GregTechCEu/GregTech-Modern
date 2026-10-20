@@ -165,7 +165,7 @@ public class ModularItemTest {
         attachFullBattery(armor);
         Player player = helper.makeMockSurvivalPlayer();
         helper.assertFalse(player.getAbilities().mayfly, "default survival player had ability to fly");
-        player.getInventory().setItem(0, armor);
+        player.setItemSlot(EquipmentSlot.CHEST, armor);
         player.tick();
         helper.assertTrue(player.getAbilities().mayfly, "player could not fly with creative flight module");
         helper.succeed();
@@ -180,15 +180,13 @@ public class ModularItemTest {
         modular.attach(GTItemModules.DAMAGE_BLOCK[GTValues.LuV], ItemStack.EMPTY, false);
         attachFullBattery(armor);
 
-        helper.setBlock(0, 0, 0, Blocks.SMOOTH_QUARTZ);
-        helper.setBlock(0, 3, 0, Blocks.SMOOTH_QUARTZ);
-        helper.setBlock(2, 0, 0, Blocks.SMOOTH_QUARTZ);
+        helper.setBlock(3, 3, 3, Blocks.SMOOTH_QUARTZ);
 
-        Zombie entity = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, 0, 1, 0);
+        Zombie entity = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, 3, 1, 3);
         // noinspection DataFlowIssue
         entity.getAttribute(Attributes.KNOCKBACK_RESISTANCE).addPermanentModifier(
-                new AttributeModifier("no_knockback", 1000, AttributeModifier.Operation.ADDITION));
-        helper.spawn(EntityType.IRON_GOLEM, 2, 1, 0);
+                new AttributeModifier("gtceu:no_knockback", 1000, AttributeModifier.Operation.ADDITION));
+        helper.spawn(EntityType.IRON_GOLEM, 2, 1, 2);
         entity.equipItemIfPossible(armor);
 
         TestUtils.assertEqual(helper, entity.getHealth(), entity.getMaxHealth(),

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.item.module;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -73,6 +74,7 @@ public abstract class AttributeItemModule extends ItemModule {
     }
 
     public void setModifier(ModuleContext moduleContext, double modifier) {
+        modifier = Mth.clamp(modifier, getNeutralModifier(moduleContext), getMaxModifier(moduleContext));
         moduleContext.setData(moduleContext.getData(AttributeModuleData.class).withModifierAmount(modifier));
     }
 

@@ -23,6 +23,7 @@ import net.minecraftforge.fml.ModLoader;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
+import java.util.Locale;
 import java.util.function.Supplier;
 
 public class GTCovers {
@@ -141,7 +142,7 @@ public class GTCovers {
                                                    int... tiers) {
         CoverDefinition[] definitions = new CoverDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
-            definitions[tier] = register(id.withSuffix("." + GTValues.VN[tier].toLowerCase()),
+            definitions[tier] = register(id.withSuffix("." + GTValues.VN[tier].toLowerCase(Locale.ROOT)),
                     (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
                     () -> () -> coverRenderer.get().apply(tier));
         }
@@ -153,7 +154,7 @@ public class GTCovers {
                                                    int... tiers) {
         CoverDefinition[] definitions = new CoverDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
-            definitions[tier] = register(id.withSuffix("." + GTValues.VN[tier].toLowerCase()),
+            definitions[tier] = register(id.withSuffix("." + GTValues.VN[tier].toLowerCase(Locale.ROOT)),
                     (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier));
         }
         return definitions;

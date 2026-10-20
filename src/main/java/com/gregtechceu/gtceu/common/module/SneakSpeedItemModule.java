@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.module;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
@@ -11,6 +12,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class SneakSpeedItemModule extends TieredItemModule {
+
+    private static final int ENERGY_USAGE = 819;
 
     public SneakSpeedItemModule(ResourceLocation id, int tier) {
         super(id, tier);
@@ -27,8 +30,12 @@ public class SneakSpeedItemModule extends TieredItemModule {
         float mul = getTier() / 8f + 1;
         boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
         boolean sneaking = SyncedKeyMappings.VANILLA_SNEAK.isKeyDown(player);
+        boolean movingForward = SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player);
 
-        if (player.onGround() && sneaking) {
+        var battery = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
+        if (battery == null || !battery.canUse(ENERGY_USAGE)) return;
+
+        if (player.onGround() && sneaking && movingForward) {
             float speed = 0.25F * mul;
             if (player.isInWater()) {
                 speed = 0.1F * mul;
@@ -43,7 +50,7 @@ public class SneakSpeedItemModule extends TieredItemModule {
     @Override
     public long energyUsagePerTick(ModuleContext moduleContext, LivingEntity entity) {
         if (entity instanceof Player player) {
-            return SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isShiftKeyDown() ? 819 : 0;
+            return SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isShiftKeyDown() ? ENERGY_USAGE : 0;
         }
         return 0;
     }

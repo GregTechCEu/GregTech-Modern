@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
@@ -128,6 +129,7 @@ public class EnergyShieldItemModule extends TieredItemModule {
         }
 
         public EnergyShieldModuleData withEnergyPercent(double percent) {
+            percent = Mth.clamp(percent, 0, 1);
             return new EnergyShieldModuleData(slot, module, moduleItem, enabled, percent);
         }
 

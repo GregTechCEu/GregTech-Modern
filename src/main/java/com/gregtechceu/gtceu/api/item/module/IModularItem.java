@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 public interface IModularItem {
@@ -56,7 +57,8 @@ public interface IModularItem {
     }
 
     static ModularItemData getModularItemData(ItemStack stack) {
-        if (!stack.getOrCreateTag().contains(MODULES_TAG)) return new ModularItemData(List.of());
+        if (!stack.hasTag() || !Objects.requireNonNull(stack.getTag()).contains(MODULES_TAG))
+            return new ModularItemData(List.of());
         return ModularItemData.CODEC.decode(NbtOps.INSTANCE, stack.getOrCreateTagElement(MODULES_TAG))
                 .getOrThrow(false, GTCEu.LOGGER::error).getFirst();
     }

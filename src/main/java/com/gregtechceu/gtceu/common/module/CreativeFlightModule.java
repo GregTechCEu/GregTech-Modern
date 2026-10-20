@@ -40,6 +40,7 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
             if (player.isCreative() || player.isSpectator()) return;
             player.getAbilities().mayfly = mayFly;
             if (!mayFly) player.getAbilities().flying = false;
+            player.onUpdateAbilities();
         }
     }
 
