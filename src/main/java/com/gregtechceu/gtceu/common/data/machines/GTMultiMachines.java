@@ -51,7 +51,6 @@ import brachy.modularui.value.sync.IntSyncValue;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.multiblock.Predicates.*;
@@ -549,7 +548,7 @@ public class GTMultiMachines {
                                     FusionReactorMachine.calculateEnergyStorageFactor(tier, 16) / 1000000L),
                             Component.translatable("gtceu.machine.fusion_reactor.overclocking"),
                             Component.translatable("gtceu.multiblock.%s_fusion_reactor.description"
-                                    .formatted(VN[tier].toLowerCase(Locale.ROOT))))
+                                    .formatted(VNL[tier])))
                     .appearanceBlock(() -> FusionReactorMachine.getCasingState(tier))
                     .pattern((definition) -> {
                         var casing = blocks(FusionReactorMachine.getCasingState(tier));
@@ -666,7 +665,7 @@ public class GTMultiMachines {
                             }))
                     .tooltips(
                             Component.translatable("gtceu.machine.large_miner.%s.tooltip"
-                                    .formatted(VN[tier].toLowerCase(Locale.ROOT))),
+                                    .formatted(VNL[tier])),
                             Component.translatable("gtceu.machine.miner.multi.description"))
                     .tooltipBuilder((stack, tooltip) -> {
                         int workingAreaChunks = (2 * tier - 5);
