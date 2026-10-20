@@ -192,6 +192,11 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
     }
 
     @Override
+    public void onMachineDestroyed() {
+        equipmentSlot.dropInventoryInWorld(getLevel(), getBlockPos());
+    }
+
+    @Override
     public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         if (side == null) return super.getItemHandlerCap(null, useCoverCapability);
         if (side.getAxis().isVertical()) return equipmentSlot;

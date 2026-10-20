@@ -49,8 +49,6 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
     @Getter
     private final Ingredient equipment;
     @Getter
-    private final boolean isTiered;
-    @Getter
     private final List<TierEntry> entries;
 
     public EquipmentFoundryRecipe(Ingredient equipment, List<TierEntry> entries) {
@@ -59,7 +57,6 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
 
         this.entries = entries;
         this.equipment = equipment;
-        this.isTiered = entries.size() == 1;
     }
 
     public EquipmentFoundryRecipe(Ingredient equipment, @Nullable Ingredient[] moduleIngredients,
@@ -81,7 +78,6 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
 
         this.equipment = equipment;
         this.entries = entries;
-        this.isTiered = moduleIngredients.length == 1;
     }
 
     @Override

@@ -21,6 +21,7 @@ import net.minecraft.core.Holder;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
+import java.util.Locale;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
@@ -130,7 +131,7 @@ public class GTCovers {
                                                                                    int... tiers) {
         RegistryEntry<CoverDefinition, CoverDefinition>[] covers = new RegistryEntry[GTValues.TIER_COUNT];
         for (int tier : tiers) {
-            var name = id + "." + GTValues.VN[tier].toLowerCase();
+            var name = id + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT);
             covers[tier] = registrate.cover(name,
                     (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
                     () -> () -> coverRenderer.get().apply(tier));

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.Text;
@@ -52,6 +53,7 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
     }
 
     public void setJumpBoost(ModuleContext moduleContext, float jumpBoost) {
+        jumpBoost = Mth.clamp(jumpBoost, 0, getMaxJumpBoost());
         moduleContext.setData(moduleContext.getData(JumpBoostModuleData.class).withJumpBoost(jumpBoost));
     }
 

@@ -67,8 +67,8 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
                                                   InteractionHand usedHand) {
         var electricItem = GTCapabilityHelper.getElectricItem(item);
-        if (electricItem != null) electricItem.use(item, level, player, usedHand);
-        return InteractionResultHolder.success(item);
+        if (electricItem != null) return electricItem.use(item, level, player, usedHand);
+        return InteractionResultHolder.pass(item);
     }
 
     @Override

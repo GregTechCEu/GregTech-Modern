@@ -80,7 +80,6 @@ import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -2236,11 +2235,14 @@ public class GTItems {
             builder.clientExtension(item -> () -> () -> new IClientItemExtensions() {
 
                 @Override
-                public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NonNull LivingEntity livingEntity,
-                                                                       @NonNull ItemStack itemStack,
-                                                                       @NonNull EquipmentSlot equipmentSlot,
-                                                                       @NonNull HumanoidModel<?> original) {
-                    return original;
+                public HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack,
+                                                              EquipmentSlot equipmentSlot,
+                                                              HumanoidModel<?> original) {
+                    if (!(item instanceof ArmorComponentItem armorComponentItem) ||
+                            armorComponentItem.getArmorLogic() == null)
+                        return original;
+                    return armorComponentItem.getArmorLogic().getArmorModel(livingEntity, itemStack, equipmentSlot,
+                            original);
                 }
             });
             return builder;

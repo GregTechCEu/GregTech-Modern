@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
 import com.gregtechceu.gtceu.api.item.module.AttributeItemModule;
 import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
+import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import net.minecraft.ChatFormatting;
@@ -25,6 +26,9 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
+
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.value.sync.PanelSyncManager;
 
 @EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class CreativeFlightModule extends AttributeItemModule implements ITieredItemModule {
@@ -82,6 +86,14 @@ public class CreativeFlightModule extends AttributeItemModule implements ITiered
         var modular = GTCapabilityHelper.getModularItem(stack);
         return super.canApplyTo(stack) && modular.getAllModuleInstances().stream()
                 .noneMatch(context -> context.getModule() instanceof LiquidFuelJetpackModule);
+    }
+
+    @Override
+    public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
+        ItemModuleSettingsBuilder settings = new ItemModuleSettingsBuilder(psm, id);
+        return settings
+                .bool(Text.lang("gui.gtceu.item_module.enabled"), () -> isEnabled(moduleContext),
+                        b -> setEnabled(moduleContext, b));
     }
 
     @Override

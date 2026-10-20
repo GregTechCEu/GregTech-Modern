@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.module;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
@@ -24,6 +25,7 @@ import java.util.Objects;
 public class SpeedItemModule extends TieredItemModule {
 
     private static final double SPEED_ACCEL = 0.085D;
+    private static final int ENERGY_USAGE = 819;
 
     public SpeedItemModule(ResourceLocation id, int tier) {
         super(id, tier);
@@ -69,6 +71,10 @@ public class SpeedItemModule extends TieredItemModule {
     @Override
     public void clientSideArmorTick(ModuleContext moduleContext, Player player) {
         if (!isEnabled(moduleContext) || getStrength(moduleContext) <= 0) return;
+
+        var battery = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
+        if (battery == null || !battery.canUse(ENERGY_USAGE)) return;
+
         float strength = getStrength(moduleContext);
         float mul = (getTier() / 4f + 1) * strength;
         boolean sprinting = SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isSprinting();
@@ -96,7 +102,7 @@ public class SpeedItemModule extends TieredItemModule {
     public long energyUsagePerTick(ModuleContext moduleContext, LivingEntity entity) {
         if (!isEnabled(moduleContext) || getStrength(moduleContext) <= 0) return 0;
         if (entity instanceof Player player) {
-            return SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isSprinting() ? 819 : 0;
+            return SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isSprinting() ? ENERGY_USAGE : 0;
         }
         return 0;
     }
