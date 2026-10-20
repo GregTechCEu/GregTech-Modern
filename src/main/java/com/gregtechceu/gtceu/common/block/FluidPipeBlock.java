@@ -103,7 +103,7 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
         }
 
         if (!GTUtil.isShiftDown()) {
-            tooltip.add(Component.translatable("common.gtceu.tooltip.fluid_pipe_hold_shift")
+            tooltip.add(Component.translatable("common.gtceu.tooltip.hold_shift.fluid_pipe")
                     .withStyle(ChatFormatting.GRAY));
             return;
         }

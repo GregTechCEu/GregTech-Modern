@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -588,8 +589,7 @@ public class GTUtil {
         tooltipComponents.add(
                 Component.translatable("medical_condition.gtceu.tooltip.description").append(CommonComponents.SPACE)
                         .withStyle(ChatFormatting.BOLD, ChatFormatting.RED)
-                        .append(Component.translatable("common.gtceu.tooltip.hold_shift")
-                                .withStyle(ChatFormatting.GRAY)));
+                        .append(GTCommonComponents.HOLD_SHIFT_FOR_INFO));
     }
 
     public static CompoundTag saveItemStack(ItemStack itemStack, CompoundTag compoundTag) {

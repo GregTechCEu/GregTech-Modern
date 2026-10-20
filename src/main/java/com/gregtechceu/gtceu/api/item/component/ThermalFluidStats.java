@@ -98,7 +98,7 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
             if (acidProof) tooltipComponents
                     .add(Component.translatable("tooltip.gtceu.fluid_pipe.acid_proof").withStyle(ChatFormatting.GOLD));
         } else if (gasProof || cryoProof || plasmaProof || acidProof) {
-            tooltipComponents.add(Component.translatable("common.gtceu.tooltip.fluid_pipe_hold_shift")
+            tooltipComponents.add(Component.translatable("common.gtceu.tooltip.hold_shift.fluid_pipe")
                     .withStyle(ChatFormatting.GRAY));
         }
     }

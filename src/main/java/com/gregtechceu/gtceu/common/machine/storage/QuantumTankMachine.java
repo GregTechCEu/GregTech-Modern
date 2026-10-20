@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -208,7 +209,7 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
                         .background(GTGuiTextures.DISPLAY)
                         .size(90, 63)
                         .center()
-                        .child(Text.lang("common.gtceu.fluid_amount").asWidget()
+                        .child(Text.of(GTCommonComponents.FLUID_AMOUNT).asWidget()
                                 .color(0xffffff)
                                 .margin(8, 0, 8, 0))
                         .child(Text.dynamic(

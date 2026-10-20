@@ -79,7 +79,7 @@ public class GCYMMachines {
                             }))
                     .tooltips(Component.translatable("machine.gtceu.parallel_hatch.tooltip",
                             ParallelHatchPartMachine.getMaxParallel(tier)),
-                            GTCommonComponents.MULTI_SHARING_DISABLED)
+                            GTCommonComponents.PART_SHARING_DISABLED)
                     .register(),
             IV, LuV, ZPM, UV);
 

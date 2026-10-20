@@ -24,7 +24,7 @@ public class MultiblockLang {
 
         provider.add("multiblock.gtceu.pattern.clear_amount", "§6Must have a clear %dx%dx%d space in front§r");
         provider.add("multiblock.gtceu.pattern.location_end", "§cVery End§r");
-        provider.add("multiblock.gtceu.pattern.replaceable_air", "Replaceable by Air");
+        provider.add("multiblock.gtceu.predicate.replaceable_air", "Replaceable by Air");
 
         provider.add("multiblock.gtceu.pattern.coils_must_match", "All heating coils must be the same");
         provider.add("multiblock.gtceu.pattern.filters_must_match", "All filters must be the same");

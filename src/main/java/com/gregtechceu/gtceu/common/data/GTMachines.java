@@ -666,7 +666,7 @@ public class GTMachines {
                         int tickSpeed = ConfigHolder.INSTANCE.machines.minerSpeed / (tier * 2);
                         tooltip.add(Component.translatable("machine.gtceu.miner.tooltip", maxArea, maxArea));
                         tooltip.add(Component.translatable("common.gtceu.tooltip.uses_per_tick", energyPerTick)
-                                .append(Component.literal(", ").withStyle(ChatFormatting.GRAY))
+                                .append(GTCommonComponents.COMMA_SPACE.copy().withStyle(ChatFormatting.GRAY))
                                 .append(Component.translatable("machine.gtceu.miner.per_block", tickSpeed / 20)));
                         tooltip.add(GTCommonComponents.voltage(IO.IN, tier));
                         tooltip.add(GTCommonComponents.energyCapacity(GTValues.V[tier] * 64L));
@@ -1048,7 +1048,7 @@ public class GTMachines {
                             Component.translatable("gui.gtceu.machine.muffler.recovery_chance", Math.max(1, tier * 10)),
                             LangUtil.getFromMultiLang("machine.gtceu.muffler_hatch.tooltip", 1)
                                     .withStyle(ChatFormatting.DARK_RED),
-                            GTCommonComponents.MULTI_SHARING_ENABLED)
+                            GTCommonComponents.PART_SHARING_ENABLED)
                     .register(),
             ELECTRIC_TIERS);
 
@@ -1095,7 +1095,7 @@ public class GTMachines {
     public static final MachineDefinition COKE_OVEN_HATCH = REGISTRATE.machine("coke_oven_hatch", CokeOvenHatch::new)
             .rotationState(RotationState.ALL)
             .modelProperty(IS_FORMED, false)
-            .tooltips(GTCommonComponents.MULTI_SHARING_DISABLED)
+            .tooltips(GTCommonComponents.PART_SHARING_DISABLED)
             .simpleModel(GTCEu.id("block/machine/part/coke_oven_hatch"))
             .themeId(GTGuiTheme.PRIMITIVE.getId())
             .tooltipLang("Allows automation access for the Coke Oven.")
@@ -1128,7 +1128,7 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .modelProperty(IS_FORMED, false)
-            .tooltips(GTCommonComponents.MULTI_SHARING_DISABLED)
+            .tooltips(GTCommonComponents.PART_SHARING_DISABLED)
             .modelProperty(GTMachineModelProperties.IS_TAPED, false)
             .model(createMaintenanceModel(GTCEu.id("block/machine/part/maintenance_hatch")))
             .tier(LV)
@@ -1139,7 +1139,7 @@ public class GTMachines {
                     (blockEntity) -> new MaintenanceHatchPartMachine(blockEntity, true))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
-            .tooltips(GTCommonComponents.MULTI_SHARING_DISABLED)
+            .tooltips(GTCommonComponents.PART_SHARING_DISABLED)
             .modelProperty(IS_FORMED, false)
             .modelProperty(GTMachineModelProperties.IS_TAPED, false)
             .model(createMaintenanceModel(GTCEu.id("block/machine/part/configurable_maintenance_hatch")))
@@ -1152,7 +1152,7 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .modelProperty(IS_FORMED, false)
-            .tooltips(GTCommonComponents.MULTI_SHARING_DISABLED,
+            .tooltips(GTCommonComponents.PART_SHARING_DISABLED,
                     Component.translatable("machine.gtceu.maintenance_hatch_cleanroom_auto.tooltip.0"),
                     Component.translatable("machine.gtceu.maintenance_hatch_cleanroom_auto.tooltip.1"))
             .tooltipBuilder((stack, tooltips) -> {
@@ -1168,7 +1168,7 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .modelProperty(IS_FORMED, false)
-            .tooltips(GTCommonComponents.MULTI_SHARING_DISABLED)
+            .tooltips(GTCommonComponents.PART_SHARING_DISABLED)
             .overlayTieredHullModel(GTCEu.id("block/machine/part/auto_maintenance_hatch"))
             .tier(HV)
             .register();
@@ -1184,7 +1184,7 @@ public class GTMachines {
                     .overlayTieredHullModel("item_passthrough_hatch")
                     .tooltips(
                             GTCommonComponents.itemSlots((1 + Math.min(9, tier)) * (1 + Math.min(9, tier))),
-                            GTCommonComponents.MULTI_SHARING_ENABLED)
+                            GTCommonComponents.PART_SHARING_ENABLED)
                     .register(),
             ELECTRIC_TIERS);
 
@@ -1201,7 +1201,7 @@ public class GTMachines {
                     .tooltips(
                             GTCommonComponents.fluidStorageCapacity(
                                     FluidHatchPartMachine.getTankCapacity(8, tier) * (long) FluidType.BUCKET_VOLUME),
-                            GTCommonComponents.MULTI_SHARING_ENABLED)
+                            GTCommonComponents.PART_SHARING_ENABLED)
                     .register(),
             ELECTRIC_TIERS);
 
@@ -1214,7 +1214,7 @@ public class GTMachines {
             .modelProperty(IS_FORMED, false)
             .tooltips(
                     GTCommonComponents.fluidStorageCapacity(ReservoirHatchPartMachine.FLUID_AMOUNT),
-                    GTCommonComponents.MULTI_SHARING_ENABLED)
+                    GTCommonComponents.PART_SHARING_ENABLED)
             .overlayTieredHullModel("reservoir_hatch")
             .register();
 
@@ -1234,7 +1234,7 @@ public class GTMachines {
                                     DualHatchPartMachine.getTankCapacity(DualHatchPartMachine.INITIAL_TANK_CAPACITY,
                                             tier),
                                     tier - 4),
-                            GTCommonComponents.MULTI_SHARING_ENABLED)
+                            GTCommonComponents.PART_SHARING_ENABLED)
                     .register(),
             DUAL_HATCH_TIERS);
 
@@ -1254,7 +1254,7 @@ public class GTMachines {
                                     DualHatchPartMachine.getTankCapacity(DualHatchPartMachine.INITIAL_TANK_CAPACITY,
                                             tier),
                                     tier - 4),
-                            GTCommonComponents.MULTI_SHARING_ENABLED)
+                            GTCommonComponents.PART_SHARING_ENABLED)
                     .register(),
             DUAL_HATCH_TIERS);
 
@@ -1287,7 +1287,7 @@ public class GTMachines {
                     .model(createRotorHolderModel())
                     .tooltips(LangUtil.getFromMultiLang("machine.gtceu.rotor_holder.tooltip", 0),
                             LangUtil.getFromMultiLang("machine.gtceu.rotor_holder.tooltip", 1),
-                            GTCommonComponents.MULTI_SHARING_DISABLED)
+                            GTCommonComponents.PART_SHARING_DISABLED)
                     .register(),
             GTValues.tiersBetween(HV, GTCEuAPI.isHighTier() ? OpV : UV));
 

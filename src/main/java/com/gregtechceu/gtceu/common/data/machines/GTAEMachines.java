@@ -26,7 +26,7 @@ public class GTAEMachines {
                     Component.translatable("machine.gtceu.item_bus.import.tooltip"),
                     Component.translatable("machine.gtceu.me.item_import.tooltip"),
                     Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
-                    GTCommonComponents.MULTI_SHARING_ENABLED)
+                    GTCommonComponents.PART_SHARING_ENABLED)
             .register();
 
     public final static MachineDefinition STOCKING_IMPORT_BUS_ME = REGISTRATE
@@ -42,7 +42,7 @@ public class GTAEMachines {
                     Component.translatable("machine.gtceu.me.stocking_item.tooltip.1"),
                     Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
                     Component.translatable("machine.gtceu.me.stocking_item.tooltip.2"),
-                    GTCommonComponents.MULTI_SHARING_ENABLED)
+                    GTCommonComponents.PART_SHARING_ENABLED)
             .register();
 
     public final static MachineDefinition ITEM_EXPORT_BUS_ME = REGISTRATE
@@ -56,7 +56,7 @@ public class GTAEMachines {
                     Component.translatable("machine.gtceu.item_bus.export.tooltip"),
                     Component.translatable("machine.gtceu.me.item_export.tooltip"),
                     Component.translatable("machine.gtceu.me.export.tooltip"),
-                    GTCommonComponents.MULTI_SHARING_ENABLED)
+                    GTCommonComponents.PART_SHARING_ENABLED)
             .register();
 
     public final static MachineDefinition FLUID_IMPORT_HATCH_ME = REGISTRATE
@@ -70,7 +70,7 @@ public class GTAEMachines {
                     Component.translatable("machine.gtceu.fluid_hatch.import.tooltip"),
                     Component.translatable("machine.gtceu.me.fluid_import.tooltip"),
                     Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
-                    GTCommonComponents.MULTI_SHARING_ENABLED)
+                    GTCommonComponents.PART_SHARING_ENABLED)
             .register();
 
     public final static MachineDefinition STOCKING_IMPORT_HATCH_ME = REGISTRATE
@@ -86,7 +86,7 @@ public class GTAEMachines {
                     Component.translatable("machine.gtceu.me.stocking_fluid.tooltip.1"),
                     Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
                     Component.translatable("machine.gtceu.me.stocking_fluid.tooltip.2"),
-                    GTCommonComponents.MULTI_SHARING_ENABLED)
+                    GTCommonComponents.PART_SHARING_ENABLED)
             .register();
 
     public final static MachineDefinition FLUID_EXPORT_HATCH_ME = REGISTRATE
@@ -100,7 +100,7 @@ public class GTAEMachines {
                     Component.translatable("machine.gtceu.fluid_hatch.export.tooltip"),
                     Component.translatable("machine.gtceu.me.fluid_export.tooltip"),
                     Component.translatable("machine.gtceu.me.export.tooltip"),
-                    GTCommonComponents.MULTI_SHARING_ENABLED)
+                    GTCommonComponents.PART_SHARING_ENABLED)
             .register();
     public static final MachineDefinition ME_PATTERN_BUFFER = REGISTRATE
             .machine("me_pattern_buffer", MEPatternBufferPartMachine::new)
@@ -114,7 +114,7 @@ public class GTAEMachines {
                     "§fAE2 Patterns can utilize anything stored in the §6shared inventory §fwidget.",
                     "§fLink §6Pattern Buffer Proxies §fwith a §bdatastick §fto link machines together!")
             .defaultTooltip()
-            .tooltips(GTCommonComponents.MULTI_SHARING_ENABLED)
+            .tooltips(GTCommonComponents.PART_SHARING_ENABLED)
             .register();
     public static final MachineDefinition ME_PATTERN_BUFFER_PROXY = REGISTRATE
             .machine("me_pattern_buffer_proxy", MEPatternBufferProxyPartMachine::new)
@@ -128,7 +128,7 @@ public class GTAEMachines {
                     "§fAll connected proxies will share the patterns held within the §6original buffer§f.",
                     "§fLet the factory grow!")
             .defaultTooltip()
-            .tooltips(GTCommonComponents.MULTI_SHARING_ENABLED)
+            .tooltips(GTCommonComponents.PART_SHARING_ENABLED)
             .register();
 
     public static void init() {}

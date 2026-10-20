@@ -80,10 +80,11 @@ class TestablePredicate extends BasePredicate {
             }
         }
         if (root.isSingle()) {
-            tooltips.add(Component.translatable("multiblock.gtceu.pattern.replaceable_air"));
+            tooltips.add(Component.translatable("multiblock.gtceu.predicate.single"));
         }
         if (root.hasAir()) {
-            tooltips.add(Component.translatable("multiblock.gtceu.predicate.single").withStyle(ChatFormatting.GOLD));
+            tooltips.add(Component.translatable("multiblock.gtceu.predicate.replaceable_air")
+                    .withStyle(ChatFormatting.GOLD));
         }
         return tooltips;
     }

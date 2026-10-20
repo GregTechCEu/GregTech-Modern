@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -246,7 +247,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
 
     private Component getFluidNameText() {
         return this.tank.getFluidInTank(0).isEmpty() ?
-                Component.translatable("common.gtceu.empty") :
+                GTCommonComponents.EMPTY :
                 this.tank.getFluidInTank(0).getDisplayName();
     }
 

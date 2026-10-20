@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.Item;
@@ -15,10 +16,18 @@ public final class GTCommonComponents {
 
     private GTCommonComponents() {}
 
-    public static final Component MULTI_SHARING_ENABLED = Component
+    public static final Component EMPTY = Component.translatable("common.gtceu.empty");
+
+    public static final Component PART_SHARING_ENABLED = Component
             .translatable("multiblock.gtceu.part_sharing.enabled");
-    public static final Component MULTI_SHARING_DISABLED = Component
+    public static final Component PART_SHARING_DISABLED = Component
             .translatable("multiblock.gtceu.part_sharing.disabled");
+
+    public static final Component COMMA_SPACE = Component.literal(", ");
+    public static final Component HOLD_SHIFT_FOR_INFO = Component.translatable("common.gtceu.tooltip.hold_shift")
+            .withStyle(ChatFormatting.GRAY);
+
+    public static final Component FLUID_AMOUNT = Component.translatable("common.gtceu.fluid_amount");
 
     // Energy
 
@@ -36,7 +45,8 @@ public final class GTCommonComponents {
                 .append(Component.translatable(key).withStyle(ChatFormatting.GREEN))
                 .append(FormattingUtil.prepend("common.gtceu.eu_per_tick",
                         FormattingUtil.formatNumbers(GTValues.VEX[tier])))
-                .append(FormattingUtil.wrap(GTValues.VNC[tier], " (", ")"));
+                .append(CommonComponents.SPACE)
+                .append(FormattingUtil.wrap(GTValues.VNC[tier], "(", ")"));
     }
 
     /**
@@ -136,7 +146,7 @@ public final class GTCommonComponents {
         return Component.empty().append(Component.translatable("common.gtceu.item_stored")
                 .withStyle(ChatFormatting.LIGHT_PURPLE))
                 .append(stack.getDisplayName())
-                .append(Component.literal(", "))
+                .append(GTCommonComponents.COMMA_SPACE)
                 .append(Component.translatable("common.gtceu.tooltip.item_stored",
                         FormattingUtil.formatNumbers(stack.getCount())));
     }
@@ -152,7 +162,7 @@ public final class GTCommonComponents {
         return Component.empty().append(Component.translatable("common.gtceu.item_stored")
                 .withStyle(ChatFormatting.LIGHT_PURPLE))
                 .append(item.getDefaultInstance().getDisplayName())
-                .append(Component.literal(", "))
+                .append(GTCommonComponents.COMMA_SPACE)
                 .append(Component.translatable("common.gtceu.tooltip.item_stored",
                         FormattingUtil.formatNumbers(amount)));
     }
@@ -199,7 +209,7 @@ public final class GTCommonComponents {
         return Component.empty().append(Component.translatable("common.gtceu.fluid_stored")
                 .withStyle(ChatFormatting.DARK_GREEN))
                 .append(stack.getDisplayName())
-                .append(Component.literal(", "))
+                .append(GTCommonComponents.COMMA_SPACE)
                 .append(FormattingUtil.prepend("common.gtceu.millibucket",
                         FormattingUtil.formatNumbers(stack.getAmount())));
     }
@@ -215,7 +225,7 @@ public final class GTCommonComponents {
         return Component.empty().append(Component.translatable("common.gtceu.fluid_stored")
                 .withStyle(ChatFormatting.DARK_GREEN))
                 .append(new FluidStack(fluid, 1).getDisplayName())
-                .append(Component.literal(", "))
+                .append(GTCommonComponents.COMMA_SPACE)
                 .append(FormattingUtil.prepend("common.gtceu.millibucket",
                         FormattingUtil.formatNumbers(amount)));
     }

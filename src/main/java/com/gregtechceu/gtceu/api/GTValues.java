@@ -136,7 +136,8 @@ public class GTValues {
             MODID_FTB_QUEST = "ftbquests",
             MODID_CCTWEAKED = "computercraft",
             MODID_ENDERIO = "enderio",
-            MODID_ENSORCELLATION = "ensorcellation";
+            MODID_ENSORCELLATION = "ensorcellation",
+            MODID_TINTED = "tinted";
 
     /**
      * The short names for the voltages, used for registration primarily

@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -547,7 +548,7 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
                         .background(GTGuiTextures.DISPLAY)
                         .size(90, 63)
                         .center()
-                        .child(Text.lang("common.gtceu.fluid_amount").asWidget()
+                        .child(Text.of(GTCommonComponents.FLUID_AMOUNT).asWidget()
                                 .color(0xffffff)
                                 .margin(8, 0, 8, 0))
                         .child(Text.dynamic(

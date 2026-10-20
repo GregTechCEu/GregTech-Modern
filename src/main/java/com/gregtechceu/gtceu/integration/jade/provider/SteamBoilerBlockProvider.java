@@ -60,9 +60,8 @@ public class SteamBoilerBlockProvider extends MachineInfoProvider<SteamBoilerMac
         MutableComponent extra;
         if (makingSteam) {
             // Producing some amount of steam
-            extra = Component.translatable("gui.gtceu.machine.boiler.production",
-                    Component.literal(FormattingUtil.formatNumbers(production / 10))
-                            .withStyle(ChatFormatting.GREEN))
+            extra = Component
+                    .translatable("gui.gtceu.machine.boiler.production", FormattingUtil.formatNumbers(production / 10))
                     .withStyle(ChatFormatting.GREEN);
             if (root != null) {
                 // append some nice separation here to the root

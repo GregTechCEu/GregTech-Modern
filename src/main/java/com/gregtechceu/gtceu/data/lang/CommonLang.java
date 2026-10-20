@@ -114,8 +114,8 @@ public class CommonLang {
 
         // Tooltip Keybinds
         provider.add("common.gtceu.tooltip.hold_shift", "Hold SHIFT for more info");
-        provider.add("common.gtceu.tooltip.fluid_pipe_hold_shift", "Hold SHIFT to show Fluid Containment Info");
-        provider.add("common.gtceu.tooltip.tool_fluid_hold_shift",
+        provider.add("common.gtceu.tooltip.hold_shift.fluid_pipe", "Hold SHIFT to show Fluid Containment Info");
+        provider.add("common.gtceu.tooltip.hold_shift.tool_fluid",
                 "Hold SHIFT to show Fluid Containment and Tool Info");
     }
 

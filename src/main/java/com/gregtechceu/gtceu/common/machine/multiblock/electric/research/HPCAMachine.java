@@ -697,28 +697,28 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             MutableComponent data = Component.literal(Integer.toString(getMaxCoolingDemand())).withStyle(coolingColor);
             textList.add(
                     Component
-                            .translatable("gui.gtceu.machine.hpca.info_max_cooling_demand", data, getMaxCoolingAmount())
+                            .translatable("gui.gtceu.machine.hpca.info.max_cooling_demand", data, getMaxCoolingAmount())
                             .withStyle(ChatFormatting.GRAY));
 
             // Coolant Required
             if (getMaxCoolantDemand() > 0) {
                 data = FormattingUtil.prepend("common.gtceu.millibucket", getMaxCoolantDemand())
                         .withStyle(ChatFormatting.YELLOW).append(CommonComponents.SPACE);
-                Component coolantName = Component.translatable("gui.gtceu.machine.hpca.info_coolant_name")
+                Component coolantName = Component.translatable("gui.gtceu.machine.hpca.info.coolant_name")
                         .withStyle(ChatFormatting.YELLOW);
                 data.append(coolantName);
             } else {
                 data = Component.literal("0").withStyle(ChatFormatting.GREEN);
             }
-            textList.add(Component.translatable("gui.gtceu.machine.hpca.info_max_coolant_required", data)
+            textList.add(Component.translatable("gui.gtceu.machine.hpca.info.max_coolant_required", data)
                     .withStyle(ChatFormatting.GRAY));
 
             // Bridging
             if (numBridges > 0) {
-                textList.add(Component.translatable("gui.gtceu.machine.hpca.info_bridging_enabled")
+                textList.add(Component.translatable("gui.gtceu.machine.hpca.info.bridging_enabled")
                         .withStyle(ChatFormatting.GREEN));
             } else {
-                textList.add(Component.translatable("gui.gtceu.machine.hpca.info_bridging_disabled")
+                textList.add(Component.translatable("gui.gtceu.machine.hpca.info.bridging_disabled")
                         .withStyle(ChatFormatting.RED));
             }
         }

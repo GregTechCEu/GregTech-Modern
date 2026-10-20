@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.ChatFormatting;
@@ -120,7 +121,7 @@ public class TooltipsHandler {
                     if (remainder != 0) {
                         fluidAmount += String.format(" + %d mB", remainder);
                     }
-                    tooltips.accept(Component.translatable("common.gtceu.fluid_amount").withStyle(ChatFormatting.GRAY)
+                    tooltips.accept(GTCommonComponents.FLUID_AMOUNT.copy().withStyle(ChatFormatting.GRAY)
                             .append(Component.literal(fluidAmount)));
                 }
             }

@@ -431,7 +431,7 @@ public class GTMachineUtils {
                                 GTCommonComponents.amperage(IN, amperage),
                                 GTCommonComponents
                                         .energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, amperage)),
-                                GTCommonComponents.MULTI_SHARING_DISABLED)
+                                GTCommonComponents.PART_SHARING_DISABLED)
                         .abilities(ability)
                         .modelProperty(IS_FORMED, false)
                         .overlayTieredHullModel("laser_" + name + "_hatch")
@@ -572,7 +572,7 @@ public class GTMachineUtils {
                 .machine(name, holder -> new TankValvePartMachine(holder, isMetal))
                 .langValue(displayName)
                 .tooltips(Component.translatable("machine.gtceu.tank_valve.tooltip"),
-                        GTCommonComponents.MULTI_SHARING_DISABLED)
+                        GTCommonComponents.PART_SHARING_DISABLED)
                 .rotationState(RotationState.ALL);
         rendererSetup.accept(builder, GTCEu.id("block/multiblock/tank_valve"));
         return builder.register();

@@ -233,7 +233,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.large_miner.needspower", "Needs Power!");
         provider.add("gui.gtceu.machine.large_miner.vent", "Venting Blocked!");
         provider.add("gui.gtceu.machine.large_miner.steam", "Needs Steam!");
-        provider.add("gui.gtceu.machine.large_miner.errorradius", "Cannot change radius while working!");
+        provider.add("gui.gtceu.machine.large_miner.error_radius", "Cannot change radius while working!");
         provider.add("gui.gtceu.machine.large_miner.needsfluid", "Needs Drilling Fluid");
 
         // Buffer
@@ -485,13 +485,13 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.hpca.warning_low_cooling", "- Not enough cooling");
         provider.add("gui.gtceu.machine.hpca.warning_power",
                 "Power low, CWU generation halted!");
-        provider.add("gui.gtceu.machine.hpca.info_max_computation", "Max CWU/t: %s");
-        provider.add("gui.gtceu.machine.hpca.info_max_cooling_demand", "Cooling Demand: %s");
-        provider.add("gui.gtceu.machine.hpca.info_max_cooling_available", "Cooling Available: %s");
-        provider.add("gui.gtceu.machine.hpca.info_max_coolant_required", "Coolant Needed: %s");
-        provider.add("gui.gtceu.machine.hpca.info_coolant_name", "PCB Coolant");
-        provider.add("gui.gtceu.machine.hpca.info_bridging_enabled", "Bridging Enabled");
-        provider.add("gui.gtceu.machine.hpca.info_bridging_disabled", "Bridging Disabled");
+        provider.add("gui.gtceu.machine.hpca.info.max_computation", "Max CWU/t: %s");
+        provider.add("gui.gtceu.machine.hpca.info.max_cooling_demand", "Cooling Demand: %s");
+        provider.add("gui.gtceu.machine.hpca.info.max_cooling_available", "Cooling Available: %s");
+        provider.add("gui.gtceu.machine.hpca.info.max_coolant_required", "Coolant Needed: %s");
+        provider.add("gui.gtceu.machine.hpca.info.coolant_name", "PCB Coolant");
+        provider.add("gui.gtceu.machine.hpca.info.bridging_enabled", "Bridging Enabled");
+        provider.add("gui.gtceu.machine.hpca.info.bridging_disabled", "Bridging Disabled");
 
         // Multiblock Tanks
         provider.add("machine.gtceu.multiblock.tank.tooltip",
