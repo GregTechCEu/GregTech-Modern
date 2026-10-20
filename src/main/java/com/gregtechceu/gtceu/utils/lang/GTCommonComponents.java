@@ -26,7 +26,7 @@ public final class GTCommonComponents {
      * Creates a voltage tooltip in the format {@code Voltage [IN/OUT]: [tier EU/t] EU/t ([tier name])}<br>
      * Colour formatting is applied to the label & tier name.
      *
-     * @param io The voltage IO. Can be import/export/both.
+     * @param io   The voltage IO. Can be import/export/both.
      * @param tier The voltage tier.
      */
     public static MutableComponent voltage(IO io, int tier) {
@@ -43,7 +43,7 @@ public final class GTCommonComponents {
      * Creates a max voltage tooltip in the format {@code Max Voltage [IN/OUT]: [tier EU/t] EU/t ([tier name])}<br>
      * Colour formatting is applied to the label & tier name.
      *
-     * @param io The voltage IO. Can be import/export/both.
+     * @param io   The voltage IO. Can be import/export/both.
      * @param tier The voltage tier.
      */
     public static MutableComponent maxVoltage(IO io, int tier) {
@@ -60,7 +60,7 @@ public final class GTCommonComponents {
      * Creates an amperage tooltip in the format {@code Amperage [IN/OUT]: [amps]A}<br>
      * Colour formatting is applied to the label.
      *
-     * @param io The voltage IO. Can be import/export/both.
+     * @param io   The voltage IO. Can be import/export/both.
      * @param amps The number of amps.
      */
     public static MutableComponent amperage(IO io, long amps) {
@@ -76,7 +76,7 @@ public final class GTCommonComponents {
      * Creates an amperage limit tooltip in the format {@code Amperage [IN/OUT] up to: [amps]A}<br>
      * Colour formatting is applied to the label.
      *
-     * @param io The voltage IO. Can be import/export/both.
+     * @param io   The voltage IO. Can be import/export/both.
      * @param amps The number of amps.
      */
     public static MutableComponent amperageUpTo(IO io, long amps) {
@@ -145,7 +145,7 @@ public final class GTCommonComponents {
      * Creates an item stored tooltip in the format {@code Item Stored: [item name], [count] items}<br>
      * Colour formatting is applied to the label.
      *
-     * @param item The stored item.
+     * @param item   The stored item.
      * @param amount The amount of items stored.
      */
     public static MutableComponent itemStored(Item item, long amount) {
@@ -208,7 +208,7 @@ public final class GTCommonComponents {
      * Creates a fluid stored tooltip in the format {@code Fluid Stored: [fluid name], [count] mB}<br>
      * Colour formatting is applied to the label.
      *
-     * @param fluid The stored fluid.
+     * @param fluid  The stored fluid.
      * @param amount The stored amount.
      */
     public static MutableComponent fluidStored(Fluid fluid, long amount) {
