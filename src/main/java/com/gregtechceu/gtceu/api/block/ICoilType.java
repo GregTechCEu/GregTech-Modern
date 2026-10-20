@@ -3,15 +3,14 @@ package com.gregtechceu.gtceu.api.block;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.core.Holder;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -28,7 +27,8 @@ public interface ICoilType {
                             () -> new RuntimeException("ICoilType " + name + " not found in GTCEuAPI.HEATING_COILS")),
             ICoilType::getName);
 
-    StreamCodec<ByteBuf, ICoilType> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map((name) -> GTCEuAPI.HEATING_COILS.keySet()
+    StreamCodec<ByteBuf, ICoilType> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map(
+            (name) -> GTCEuAPI.HEATING_COILS.keySet()
                     .stream()
                     .filter(type -> type.getName().equals(name))
                     .findFirst()

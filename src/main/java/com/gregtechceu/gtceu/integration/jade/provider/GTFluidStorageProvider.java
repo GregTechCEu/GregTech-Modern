@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.misc.LockableFluidTank;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
@@ -111,9 +110,10 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<CompoundT
                     if (hatch.tank.getTanks() == 1 && hatch.tank.getFluidInTank(0).isEmpty() &&
                             lockableFluidTank.isLocked()) {
                         FluidStack stored = lockableFluidTank.getLockedFluid().getFluid();
-                        CompoundTag tag = FluidView.writeDefault(JadeForgeUtils.fromFluidStack(stored.copyWithAmount(1000)),
-                        hatch.tank.getTankCapacity(0));
-                tag.putBoolean("special", true);
+                        CompoundTag tag = FluidView.writeDefault(
+                                JadeForgeUtils.fromFluidStack(stored.copyWithAmount(1000)),
+                                hatch.tank.getTankCapacity(0));
+                        tag.putBoolean("special", true);
                         return List.of(new ViewGroup<>(List.of(tag)));
                     }
                 }

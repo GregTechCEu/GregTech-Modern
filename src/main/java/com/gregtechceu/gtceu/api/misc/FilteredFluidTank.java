@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import lombok.Getter;
-import net.neoforged.neoforge.fluids.FluidStack;
 
 public class FilteredFluidTank extends NotifiableFluidTank {
 

@@ -19,8 +19,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Locale;
-
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
 @Accessors(fluent = true, chain = true)
@@ -90,7 +88,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
         Preconditions.checkNotNull(definition, "You must set a definition function! " +
                 "See GTMachines for examples");
         for (final int tier : tiers) {
-            String tierName = VN[tier].toLowerCase(Locale.ROOT);
+            String tierName = VNL[tier];
             MultiblockMachineBuilder<?> builder = GTRegistrate
                     .createIgnoringListenerErrors(this.id.getNamespace())
                     .multiblock(String.format("%s_%s", tierName, this.id.getPath()),
