@@ -44,6 +44,13 @@ public abstract class CapabilityProviderItemModule<T> extends ItemModule {
     public abstract void applyInitialCapabilityData(T newCap, ModuleContext context);
 
     /**
+     * Called when the module item needs to be updated with capability data from the modular item.
+     *
+     * @return An item stack with updated data
+     */
+    public abstract ItemStack copyCapabilityDataToModuleItem(T cap, ModuleContext context);
+
+    /**
      * Returns the capability, or {@code null} if not available.
      */
     public abstract @Nullable T createCapabilityForStack(ModuleContext context, ItemStack stack);
@@ -53,6 +60,14 @@ public abstract class CapabilityProviderItemModule<T> extends ItemModule {
      * content NBT from the item stack).
      */
     public abstract void clearCapabilityFromStack(ModuleContext context, ItemStack stack);
+
+    @Override
+    public void updateModuleItem(ModuleContext moduleContext) {
+        T capability = moduleContext.getAppliedTo().getCapability(getCapability());
+        if (capability == null) return;
+        var newModuleItem = copyCapabilityDataToModuleItem(capability, moduleContext);
+        moduleContext.setData(moduleContext.getData().withModuleItem(newModuleItem));
+    }
 
     @SuppressWarnings("unchecked")
     public <Q> LazyOptional<Q> getCapability(ModuleContext context, @NotNull Capability<Q> cap) {

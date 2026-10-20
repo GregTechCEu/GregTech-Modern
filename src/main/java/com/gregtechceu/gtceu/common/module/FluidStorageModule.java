@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -42,6 +43,16 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
     }
 
     @Override
+    public ItemStack copyCapabilityDataToModuleItem(IFluidHandlerItem cap, ModuleContext context) {
+        var newItem = context.getData().getModuleItem().copy();
+
+        CompoundTag fluidTag = new CompoundTag();
+        cap.getFluidInTank(0).writeToNBT(fluidTag);
+        newItem.getOrCreateTag().put(FluidHandlerItemStack.FLUID_NBT_KEY, fluidTag);
+        return newItem;
+    }
+
+    @Override
     public @Nullable IFluidHandlerItem createCapabilityForStack(ModuleContext context, ItemStack stack) {
         if (!(context.getData().getModuleItem().getItem() instanceof IComponentItem componentItem)) return null;
         ThermalFluidStats thermalStats = null;
@@ -69,7 +80,7 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, List<Component> tooltips,
+    public void appendHoverText(ModuleContext moduleContext, @Nullable Level level, List<Component> tooltips,
                                 TooltipFlag isAdvanced) {
         super.appendHoverText(moduleContext, level, tooltips, isAdvanced);
         tooltips.add(moduleContext.getData().getModuleItem().getHoverName());
