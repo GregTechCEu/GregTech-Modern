@@ -1,8 +1,10 @@
-package com.gregtechceu.gtceu.utils;
+package com.gregtechceu.gtceu.utils.lang;
 
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
+import com.demonwav.mcdev.annotations.Translatable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +60,8 @@ public class LangUtil {
      * @param key Base key of the multi lang. E.g. {@code "terminal.fluid_prospector.tier"}
      * @return Returns all translation components from a multi lang's sub-keys
      */
-    public static Component[] getMultiLang(String key) {
-        return getListMultiLang(key).toArray(Component[]::new);
+    public static MutableComponent[] getMultiLang(@Translatable(suffix = ".0") String key) {
+        return getListMultiLang(key).toArray(MutableComponent[]::new);
     }
 
     /**
@@ -69,7 +71,7 @@ public class LangUtil {
      * @return Returns all translation components from a multi lang's sub-keys
      * @see #getMultiLang(String)
      */
-    public static List<Component> getListMultiLang(String key) {
+    public static List<MutableComponent> getListMultiLang(@Translatable(suffix = ".0") String key) {
         return getMultiLangKeys(key).map(Component::translatable).collect(Collectors.toList());
     }
 
@@ -96,8 +98,8 @@ public class LangUtil {
      * @param args The arguments to pass to each {@link Component} of this multi lang
      * @return Returns all translation components from a multi lang's sub-keys
      */
-    public static Component[] getMultiLang(String key, Object... args) {
-        return getMultiLangKeys(key).map(k -> Component.translatable(k, args)).toArray(Component[]::new);
+    public static MutableComponent[] getMultiLang(@Translatable(suffix = ".0") String key, Object... args) {
+        return getMultiLangKeys(key).map(k -> Component.translatable(k, args)).toArray(MutableComponent[]::new);
     }
 
     /**
@@ -108,7 +110,7 @@ public class LangUtil {
      * @return Returns all translation components from a multi lang's sub-keys
      * @see #getMultiLang(String, Object...)
      */
-    public static List<Component> getListMultiLang(String key, Object... args) {
+    public static List<MutableComponent> getListMultiLang(@Translatable(suffix = ".0") String key, Object... args) {
         return getMultiLangKeys(key).map(k -> Component.translatable(k, args)).collect(Collectors.toList());
     }
 
@@ -129,14 +131,14 @@ public class LangUtil {
      * @return Returns all translation components from a multi lang's sub-keys
      * @see #getMultiLang(String)
      */
-    public static Component[] getSingleOrMultiLang(String key) {
-        Component[] multiLang = getMultiLang(key);
+    public static MutableComponent[] getSingleOrMultiLang(String key) {
+        MutableComponent[] multiLang = getMultiLang(key);
 
         if (multiLang.length > 0) {
             return multiLang;
         }
 
-        return new Component[] { Component.translatable(key) };
+        return new MutableComponent[] { Component.translatable(key) };
     }
 
     /**

@@ -19,8 +19,8 @@ import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.cable.LevelEnergyNet;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -108,7 +108,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
         if (wireProperties.isSuperconductor())
             tooltip.add(Component.translatable("tooltip.gtceu.cable.superconductor", GTValues.VN[tier]));
         tooltip.add(Component.translatable("tooltip.gtceu.cable.voltage",
-                FormattingUtil.formatNumbers(wireProperties.getVoltage()), GTValues.VNF[tier]));
+                FormattingUtil.formatNumbers(wireProperties.getVoltage()), GTValues.VNC[tier]));
         tooltip.add(Component.translatable("tooltip.gtceu.cable.amperage",
                 FormattingUtil.formatNumbers(wireProperties.getAmperage())));
         tooltip.add(Component.translatable("tooltip.gtceu.cable.loss_per_block",

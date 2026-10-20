@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -208,7 +209,8 @@ public class MEInputBusPartMachine extends MEBusPartMachine
             CompoundTag tag = new CompoundTag();
             tag.put("MEInputBus", writeConfigToTag());
             dataStick.setTag(tag);
-            dataStick.setHoverName(Component.translatable("machine.gtceu.me.item_import.data_stick.name"));
+            dataStick.setHoverName(Component.translatable("machine.gtceu.me.item_import.data_stick.name")
+                    .withStyle(ChatFormatting.ITALIC));
             player.sendSystemMessage(Component.translatable("machine.gtceu.me.import_copy_settings"));
         }
         return InteractionResult.SUCCESS;

@@ -23,8 +23,9 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.LangUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -48,6 +49,7 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.NaquadahAlloy;
 import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.getAvailableRecipeMapTooltip;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.registerTieredMachines;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
@@ -77,7 +79,7 @@ public class GCYMMachines {
                             }))
                     .tooltips(Component.translatable("machine.gtceu.parallel_hatch.tooltip",
                             ParallelHatchPartMachine.getMaxParallel(tier)),
-                            Component.translatable("multiblock.gtceu.part_sharing.disabled"))
+                            GTCommonComponents.PART_SHARING_DISABLED)
                     .register(),
             IV, LuV, ZPM, UV);
 
@@ -723,9 +725,8 @@ public class GCYMMachines {
     public static final MultiblockMachineDefinition LARGE_WELDER = REGISTRATE
             .multiblock("large_welder", WorkableElectricMultiblockMachine::new)
             .langValue("Large Welder")
-            .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
-                    Component.translatable("gtceu.welder")))
+            .tooltips(Component.translatable("gui.gtceu.supports_parallel"))
+            .tooltips(getAvailableRecipeMapTooltip(WELDER_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeType(WELDER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
@@ -752,9 +753,8 @@ public class GCYMMachines {
     public static final MultiblockMachineDefinition LARGE_SPOOLER = REGISTRATE
             .multiblock("large_spooler", WorkableElectricMultiblockMachine::new)
             .langValue("Large Spooler")
-            .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
-                    Component.translatable("gtceu.spooling")))
+            .tooltips(Component.translatable("gui.gtceu.supports_parallel"))
+            .tooltips(getAvailableRecipeMapTooltip(SPOOLING_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeType(SPOOLING_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)

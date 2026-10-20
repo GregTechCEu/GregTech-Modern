@@ -5,8 +5,9 @@ import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -77,13 +78,11 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
         if (stack.hasTag()) {
             FluidUtil.getFluidContained(stack).ifPresent(tank -> {
                 tooltipComponents
-                        .add(Component.translatable("common.gtceu.tooltip.fluid_stored", tank.getDisplayName(),
-                                tank.getAmount()));
+                        .add(GTCommonComponents.fluidStored(tank));
                 TooltipsHandler.appendFluidTooltips(tank, tooltipComponents::add, null);
             });
         } else {
-            tooltipComponents.add(Component.translatable("common.gtceu.tooltip.fluid_storage_capacity",
-                    FormattingUtil.formatNumbers(capacity)));
+            tooltipComponents.add(GTCommonComponents.fluidStorageCapacity(capacity));
         }
         if (GTUtil.isShiftDown()) {
             tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.max_temperature",
@@ -99,7 +98,8 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
             if (acidProof) tooltipComponents
                     .add(Component.translatable("tooltip.gtceu.fluid_pipe.acid_proof").withStyle(ChatFormatting.GOLD));
         } else if (gasProof || cryoProof || plasmaProof || acidProof) {
-            tooltipComponents.add(Component.translatable("common.gtceu.tooltip.fluid_pipe_hold_shift"));
+            tooltipComponents.add(Component.translatable("common.gtceu.tooltip.hold_shift.fluid_pipe")
+                    .withStyle(ChatFormatting.GRAY));
         }
     }
 }

@@ -16,8 +16,8 @@ import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.LevelFluidPipeNet;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -103,7 +103,8 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
         }
 
         if (!GTUtil.isShiftDown()) {
-            tooltip.add(Component.translatable("common.gtceu.tooltip.fluid_pipe_hold_shift"));
+            tooltip.add(Component.translatable("common.gtceu.tooltip.hold_shift.fluid_pipe")
+                    .withStyle(ChatFormatting.GRAY));
             return;
         }
 

@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.widgets.textfield.TextEditorWidget;
-import com.gregtechceu.gtceu.utils.LangUtil;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;

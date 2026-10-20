@@ -35,11 +35,11 @@ public class DiodeModeProvider extends MachineInfoProvider<DiodePartMachine, Com
         if (block.getHitResult().getDirection() ==
                 Direction.from3DDataValue(data.getInt("side"))) {
             tooltip.add(Component.translatable(
-                    "gtceu.top.transform_output",
+                    "integration.gtceu.jade.transform_output",
                     (GTValues.VNF[data.getInt("voltage")] + " §r(" + data.getInt("amps") + "A)")));
         } else {
             tooltip.add(Component.translatable(
-                    "gtceu.top.transform_input",
+                    "integration.gtceu.jade.transform_input",
                     (GTValues.VNF[data.getInt("voltage")] + " §r(16A)")));
         }
     }

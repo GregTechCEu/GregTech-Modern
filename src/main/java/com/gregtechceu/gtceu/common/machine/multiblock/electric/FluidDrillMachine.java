@@ -14,8 +14,8 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.trait.FluidDrillLogic;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -74,7 +74,7 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
                         return getRecipeLogic().getVeinFluid().getFluidType()
                                 .getDescription().copy().withStyle(ChatFormatting.GREEN);
                     } else {
-                        return Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area")
+                        return Component.translatable("gui.gtceu.machine.fluid_rig.no_fluid_in_area")
                                 .withStyle(ChatFormatting.RED);
                     }
                 }).build();
@@ -85,14 +85,14 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
 
-        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.ore_rig.ore_amount",
+        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.fluid_rig.fluid_amount",
                 Component.literal(FormattingUtil.formatNumbers(
                         fluidAmount.getIntValue() * 20L / FluidDrillLogic.MAX_PROGRESS) + "/s")
                         .withStyle(ChatFormatting.BLUE)))
                 .asWidget().setEnabledIf($ -> isFormed()));
 
         widgets.add(Text
-                .dynamic(() -> Component.translatable("gtceu.multiblock.fluid_rig.drilled_fluid",
+                .dynamic(() -> Component.translatable("gui.gtceu.machine.fluid_rig.drilled_fluid",
                         veinMaterial.getValue()))
                 .asWidget()
                 .setEnabledIf($ -> isFormed()));

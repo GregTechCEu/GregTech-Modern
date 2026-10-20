@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.nbt.LongTag;
 import net.minecraft.network.chat.Component;
@@ -32,7 +32,7 @@ public class DataBankBlockProvider extends MachineInfoProvider<DataBankMachine, 
         long energyUsage = data.getAsLong();
         String energyFormatted = FormattingUtil.formatNumbers(energyUsage);
         // wrap in text component to keep it from being formatted
-        Component voltageName = Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(energyUsage)]);
+        Component voltageName = GTValues.VNC[GTUtil.getTierByVoltage(energyUsage)];
         Component text = Component.translatable(
                 "gui.gtceu.machine.energy_consumption",
                 energyFormatted,

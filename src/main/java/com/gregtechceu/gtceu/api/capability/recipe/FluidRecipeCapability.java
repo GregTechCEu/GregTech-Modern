@@ -370,7 +370,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         return machine.getTraits(NotifiableFluidTank.class);
     }
 
-    @SuppressWarnings("unchecked")
     public List<NotifiableFluidTank> getCapabilityHandlers(MetaMachine machine, IO io) {
         return getCapabilityHandlers(machine).stream()
                 .filter(v -> v.getHandlerIO() == io).toList();

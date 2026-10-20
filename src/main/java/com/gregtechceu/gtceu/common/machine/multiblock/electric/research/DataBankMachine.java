@@ -82,7 +82,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
 
         if (this.maintenance == null) {
             pState.setError(new PatternStringError(
-                    Component.translatable("multiblock.gtceu.predicate_error.databank.missing_maintenance")));
+                    Component.translatable("multiblock.gtceu.pattern_error.databank.missing_maintenance")));
             invalidateStructure(substructureName);
             return;
         }
@@ -185,7 +185,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, energyStoredSyncValue));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
                 () -> Component.translatable("gui.gtceu.machine.data_bank.working").withStyle(ChatFormatting.GREEN),
-                () -> Component.translatable("gtceu.multiblock.data_bank.error_power").withStyle(ChatFormatting.RED)));
+                () -> Component.translatable("gui.gtceu.machine.data_bank.error_power").withStyle(ChatFormatting.RED)));
         widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
 
         return widgets;

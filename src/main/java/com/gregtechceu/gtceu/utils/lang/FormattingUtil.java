@@ -1,13 +1,15 @@
-package com.gregtechceu.gtceu.utils;
+package com.gregtechceu.gtceu.utils.lang;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 
 import com.demonwav.mcdev.annotations.Translatable;
@@ -151,28 +153,6 @@ public class FormattingUtil {
                 .replace("DCD", "CM");
     }
 
-    /**
-     * Does almost the same thing as LOWER_UNDERSCORE.to(UPPER_CAMEL, string), but it also removes underscores before
-     * numbers.
-     *
-     * @param string Any string with ASCII characters.
-     * @return A string that is all lowercase, with underscores inserted before word/number boundaries:
-     *         "maraging_steel_300" -> "maragingSteel300"
-     */
-    public static String lowerUnderscoreToUpperCamel(String string) {
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < string.length(); i++) {
-            if (string.charAt(i) == '_')
-                continue;
-            if (i == 0 || string.charAt(i - 1) == '_') {
-                result.append(Character.toUpperCase(string.charAt(i)));
-            } else {
-                result.append(string.charAt(i));
-            }
-        }
-        return result.toString();
-    }
-
     public static String formatPercent(double number) {
         return String.format("%,.2f", number);
     }
@@ -310,9 +290,9 @@ public class FormattingUtil {
                 Component.literal(" @ "));
 
         if (tier < GTValues.TIER_COUNT) {
-            MutableComponent voltageComponent = Component.literal(GTValues.VNF[tier]);
-            if (color) voltageComponent = voltageComponent.withStyle(style -> style.withColor(GTValues.VC[tier]));
-            text = voltageComponent.append(voltageComponent);
+            MutableComponent voltageComponent = GTValues.VNC[tier].copy();
+            if (!color) voltageComponent.setStyle(Style.EMPTY);
+            text.append(voltageComponent);
         } else {
             int oc = Mth.clamp(tier - GTValues.TIER_COUNT - 1, 0, GTValues.TIER_COUNT);
             MutableComponent maxComponent = Component.literal("MAX");

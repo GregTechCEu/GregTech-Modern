@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item.component;
 
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.misc.forge.FilteredFluidHandlerItemStack;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +42,6 @@ public class FilteredFluidContainer implements IItemComponent, IComponentCapabil
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
         FluidUtil.getFluidContained(stack).ifPresent(fluid -> tooltipComponents
-                .add(Component.translatable("common.gtceu.tooltip.fluid_stored", fluid.getDisplayName(),
-                        fluid.getAmount())));
+                .add(GTCommonComponents.fluidStored(fluid)));
     }
 }

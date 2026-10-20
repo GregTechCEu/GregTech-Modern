@@ -54,6 +54,8 @@ public class CommandLang {
                 "§5Congrats: you just unlocked a new cape! See the Cape Selector terminal app to use it.§r");
 
         // New Cape Commands
+
+        provider.add("command.gtceu.cape.failure.does_not_exist", "Unknown Cape: %s");
         provider.add("command.gtceu.cape.give.failed", "No new capes were unlocked");
         provider.add("command.gtceu.cape.give.success.multiple", "Unlocked %s capes for %s players");
         provider.add("command.gtceu.cape.give.success.single", "Unlocked %s capes for %s");

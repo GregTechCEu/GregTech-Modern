@@ -228,7 +228,7 @@ public class GTCommands {
                 }
             }
             if (playerSuccesses > 0) {
-                player.sendSystemMessage(Component.translatable("gtceu.chat.cape"));
+                player.sendSystemMessage(Component.translatable("chat.gtceu.cape"));
             }
         }
 

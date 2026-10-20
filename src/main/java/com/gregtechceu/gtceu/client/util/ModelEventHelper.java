@@ -198,7 +198,6 @@ public class ModelEventHelper {
                 }
                 try {
                     // have to copy because the set is updated during this loop
-                    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
                     Set<Material> textures = new HashSet<>(SCRAPED_TEXTURES.get(dependencyName));
                     for (Material tex : textures) {
                         if (TextureMetadataHelper.getMetadata(tex).isPresent()) {

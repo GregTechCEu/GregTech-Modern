@@ -18,6 +18,15 @@ public class MachineLang {
 
     private static void generateMachineTooltips(GTLangProvider provider) {
         provider.add("gui.gtceu.machine.terrain_resist", "This Machine will not explode when exposed to the Elements");
+
+        // Distinctness
+        provider.add("gui.gtceu.machine.distinct.title", "Distinct Buses:");
+
+        provider.add("gui.gtceu.machine.distinct.enabled", "Distinct Buses: §eEnabled");
+        provider.add("gui.gtceu.machine.distinct.disabled", "Distinct Buses: §eDisabled");
+
+        provider.add("gui.gtceu.machine.distinct.info",
+                "If enabled, each Item Input Bus will be treated as fully distinct from each other for recipe lookup. Useful for things like Programmed Circuits, Extruder Shapes, etc.");
     }
 
     private static void generateGeneralMachineLang(GTLangProvider provider) {
@@ -63,28 +72,30 @@ public class MachineLang {
         provider.add("gui.gtceu.circuit_settings", "Circuit Settings");
         provider.addMultiLang("gui.gtceu.output_settings_tune.tooltips", "left-click to tune the item auto output",
                 "right-click to tune the fluid auto output.");
+
         provider.add("gui.gtceu.auto_output.item.allow_input.enabled",
                 "Allow items input from the output side.");
         provider.add("gui.gtceu.auto_output.item.allow_input.disabled",
                 "Disable items input from the output side.");
+
         provider.add("gui.gtceu.auto_output.item.enabled", "Item Auto Output: §aEnabled");
         provider.add("gui.gtceu.auto_output.item.disabled", "Item Auto Output: §cDisabled");
         provider.addMultiLang("gui.gtceu.auto_output.item.unselected",
                 """
                         Item Auto Output
-                        §7Select a side of the machine to configure its output.
+                        Select a side of the machine to configure its output.
                         """);
         provider.addMultiLang("gui.gtceu.auto_output.item.other_direction",
                 """
                         Item Auto Output: §6Other Direction
-                        §7The machine's item output is set to another direction.
-                        §7Click to move the output to the currently selected side.
+                        The machine's item output is set to another direction.
+                        Click to move the output to the currently selected side.
                         """);
         provider.add("gui.gtceu.auto_output.fluid.allow_input.enabled",
                 "Allow fluids input from the output side.");
         provider.add("gui.gtceu.auto_output.fluid.allow_input.disabled",
                 "Disable fluids input from the output side.");
-        provider.add("gui.gftceu.auto_output.fluid.enabled", "Fluid Auto Output: §aEnabled");
+        provider.add("gui.gtceu.auto_output.fluid.enabled", "Fluid Auto Output: §aEnabled");
         provider.add("gui.gtceu.auto_output.fluid.disabled", "Fluid Auto Output: §cDisabled");
         provider.addMultiLang("gui.gtceu.auto_output.fluid.unselected",
                 """
@@ -106,19 +117,19 @@ public class MachineLang {
      */
     private static void generateCustomMachineLang(GTLangProvider provider) {
         // Steam Boilers
-        provider.add("gui.gtceu.machine.boiler.heating_up", "§cHeating up§r%s");
-        provider.add("gui.gtceu.machine.boiler.cooling_down", "§9Cooling down§r%s");
-        provider.add("gui.gtceu.machine.boiler.production", "§aProducing %s§a mB/t");
+        provider.add("gui.gtceu.machine.boiler.heating_up", "Heating up");
+        provider.add("gui.gtceu.machine.boiler.cooling_down", "Cooling down");
+        provider.add("gui.gtceu.machine.boiler.production", "Producing %s mB/t");
         provider.add("gui.gtceu.machine.boiler.heat", "Heat Capacity: %s %%");
 
         // Machine Hull
         provider.add("machine.gtceu.hull.tooltip",
-                "§7You just need §5I§dm§4a§cg§ei§an§ba§3t§7i§1o§5n§7 to use this");
+                "You just need §5I§dm§4a§cg§ei§an§ba§3t§7i§1o§5n§r to use this");
 
         // Transformer
-        provider.add("machine.gtceu.transformer.tooltip", "§7Transforms Energy between voltage tiers");
+        provider.add("machine.gtceu.transformer.tooltip", "Transforms Energy between voltage tiers");
         provider.add("machine.gtceu.transformer.tooltip_tool_usage",
-                "§7Starts as §fTransform Down§7, use Screwdriver to change");
+                "Starts as §fTransform Down§r, use Screwdriver to change");
         provider.add("machine.gtceu.transformer.tooltip_transform_down",
                 "§aTransform Down: §f%dA %s EU (%s§f) -> %dA %s EU (%s§f)");
         provider.add("machine.gtceu.transformer.message_transform_down",
@@ -134,12 +145,12 @@ public class MachineLang {
                 "Hit with a Soft Mallet to change Amperage flow.");
         provider.add("machine.gtceu.diode.tooltip_general",
                 "Allows Energy Flow in one direction and limits Amperage");
-        provider.add("machine.gtceu.diode.tooltip_starts_at", "Starts as §f1A§7, use Soft Mallet to change");
+        provider.add("machine.gtceu.diode.tooltip_starts_at", "Starts as §f1A§r, use Soft Mallet to change");
 
         // Energy Converter
         provider.add("machine.gtceu.energy_converter.description", "Converts Energy between EU and FE");
         provider.add("machine.gtceu.energy_converter.tooltip_tool_usage",
-                "Starts as §fFE Converter§7, use Soft Mallet to change");
+                "Starts as §fFE Converter§r, use Soft Mallet to change");
         provider.add("machine.gtceu.energy_converter.tooltip_conversion_native",
                 "§cNative Conversion: §f%d FE -> %dA %d EU (%s§f)");
         provider.add("machine.gtceu.energy_converter.message_conversion_native",
@@ -150,13 +161,14 @@ public class MachineLang {
                 "Converting EU, In: %dA %d EU, Out: %d Native");
 
         // Pump
-        provider.add("machine.gtceu.pump.tooltip", "§7The best way to empty Oceans!");
-        provider.add("machine.gtceu.pump.tooltip_buckets", "§f%d §7ticks per Bucket");
+        provider.add("machine.gtceu.pump.tooltip", "The best way to empty Oceans!");
+        provider.add("machine.gtceu.pump.tooltip_buckets", "§f%d §rticks per Bucket");
 
         // Item Collector
         provider.add("machine.gtceu.item_collector.tooltip", "Collects Items around itself");
         provider.add("machine.gtceu.item_collector.gui.collect_range",
                 "Collect within an area of %sx%s blocks");
+        provider.add("gui.gtceu.machine.item_collector.range", "Range:");
 
         // Fisher
         provider.add("machine.gtceu.fisher.tooltip", "Costs string to fish. Consumes one string each time.");
@@ -166,7 +178,7 @@ public class MachineLang {
 
         // World Accelerator
         provider.add("machine.gtceu.world_accelerator.description",
-                "Tick accelerates nearby blocks in one of 2 modes: §fTile Entity§7 or §fRandom Tick§7. Use Screwdriver to change mode.");
+                "Tick accelerates nearby blocks in one of 2 modes: §fTile Entity§r or §fRandom Tick§r. Use Screwdriver to change mode.");
         provider.add("machine.gtceu.world_accelerator.working_area", "§bWorking Area:");
         provider.add("machine.gtceu.world_accelerator.working_area_tile",
                 "  Block Entity Mode:§f Adjacent Blocks");
@@ -175,25 +187,25 @@ public class MachineLang {
         provider.add("machine.gtceu.world_accelerator.mode_entity", "Random Tick Mode");
 
         // Forming Press
-        provider.add("gui.gtceu.machine.forming_press.naming.press", "§oNamed Press");
-        provider.add("gui.gtceu.machine.forming_press.naming.to_name", "§oItem to Name");
-        provider.add("gui.gtceu.machine.forming_press.naming.named", "§oNamed Item");
+        provider.add("gui.gtceu.machine.forming_press.naming.press", "Named Press");
+        provider.add("gui.gtceu.machine.forming_press.naming.to_name", "Item to Name");
+        provider.add("gui.gtceu.machine.forming_press.naming.named", "Named Item");
 
         // Scanner
-        provider.add("gui.gtceu.machine.scanner.copy_stick_from", "§oStick to Copy");
-        provider.add("gui.gtceu.machine.scanner.copy_stick_empty", "§oEmpty Stick");
-        provider.add("gui.gtceu.machine.scanner.copy_stick_to", "§oCopy of Stick");
+        provider.add("gui.gtceu.machine.scanner.copy_stick_from", "Stick to Copy");
+        provider.add("gui.gtceu.machine.scanner.copy_stick_empty", "Empty Stick");
+        provider.add("gui.gtceu.machine.scanner.copy_stick_to", "Copy of Stick");
 
         /// Miners (& Large Miners)
 
         provider.addMultiline("gui.gtceu.machine.miner.silk_touch.enabled",
-                "Silk Touch Enabled: Click to Disable.\n§7Switching requires an idle machine.");
+                "Silk Touch Enabled: Click to Disable.\nSwitching requires an idle machine.");
         provider.addMultiline("gui.gtceu.machine.miner.silk_touch.disabled",
-                "Silk Touch Disabled: Click to Enable.\n§7Switching requires an idle machine.");
+                "Silk Touch Disabled: Click to Enable.\nSwitching requires an idle machine.");
         provider.addMultiline("gui.gtceu.machine.miner.chunk_mode.enabled",
-                "Chunk Mode Enabled: Click to Disable.\n§7Switching requires an idle machine.");
+                "Chunk Mode Enabled: Click to Disable.\nSwitching requires an idle machine.");
         provider.addMultiline("gui.gtceu.machine.miner.chunk_mode.disabled",
-                "Chunk Mode Disabled: Click to Enable.\n§7Switching requires an idle machine.");
+                "Chunk Mode Disabled: Click to Enable.\nSwitching requires an idle machine.");
 
         provider.add("machine.gtceu.miner.working_area", "§bWorking Area: §f%dx%d");
         provider.add("machine.gtceu.miner.chunk_mode", "Chunk Mode");
@@ -201,14 +213,14 @@ public class MachineLang {
         provider.add("machine.gtceu.miner.working_area_chunks", "§bWorking Area: §f%dx%d Chunks");
         provider.add("machine.gtceu.miner.working_area_max", "§bMax Working Area: §f%dx%d");
         provider.add("machine.gtceu.miner.working_area_chunks_max", "§bMax Working Area: §f%dx%d Chunks");
-        provider.add("machine.gtceu.miner.tooltip", "§7Mines ores below the Miner! Starts as §f%sx%s §7area");
+        provider.add("machine.gtceu.miner.tooltip", "Mines ores below the Miner! Starts as §f%sx%s §rarea");
 
-        provider.add("machine.gtceu.miner.per_block", "§7takes §f%ds §7per Block");
+        provider.add("machine.gtceu.miner.per_block", "takes §f%ds §rper Block");
 
         provider.add("gui.gtceu.machine.miner.multi.modes", "Has Silk Touch and Chunk Aligned Modes.");
         provider.add("gui.gtceu.machine.miner.multi.production",
-                "Produces §f3x§7 more crushed ore than a §fMacerator§7.");
-        provider.add("gui.gtceu.machine.miner.fluid_usage", "Uses §f%d mB/t §7of §f%s§7, doubled per overclock.");
+                "Produces §f3x§r more crushed ore than a §fMacerator§r.");
+        provider.add("gui.gtceu.machine.miner.fluid_usage", "Uses §f%d mB/t §rof §f%s§r, doubled per overclock.");
         provider.add("gui.gtceu.machine.miner.multi.description",
                 "A multiblock mining machine that covers a large area and produces huge quantity of ore.");
         provider.add("gui.gtceu.machine.miner.x", "sX: %d, mX: %d");
@@ -221,7 +233,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.large_miner.needspower", "Needs Power!");
         provider.add("gui.gtceu.machine.large_miner.vent", "Venting Blocked!");
         provider.add("gui.gtceu.machine.large_miner.steam", "Needs Steam!");
-        provider.add("gui.gtceu.machine.large_miner.errorradius", "§cCannot change radius while working!");
+        provider.add("gui.gtceu.machine.large_miner.error_radius", "Cannot change radius while working!");
         provider.add("gui.gtceu.machine.large_miner.needsfluid", "Needs Drilling Fluid");
 
         // Buffer
@@ -230,18 +242,18 @@ public class MachineLang {
         /// Block Breaker
 
         provider.add("machine.gtceu.block_breaker.tooltip",
-                "§7Mines block on front face and collects its drops");
+                "Mines block on front face and collects its drops");
         provider.add("machine.gtceu.block_breaker.speed_bonus", "§eSpeed Bonus: §f%d%%");
 
         /// Creative Machines
 
-        provider.add("gui.gtceu.machine.creative_tooltip.1", "§7You just need");
+        provider.add("gui.gtceu.machine.creative_tooltip.1", "You just need");
         provider.add("gui.gtceu.machine.creative_tooltip.2", " Creative Mode");
-        provider.add("gui.gtceu.machine.creative_tooltip.3", "§7 to use this");
+        provider.add("gui.gtceu.machine.creative_tooltip.3", " to use this");
 
-        provider.add("machine.gtceu.quantum_chest.tooltip", "§7Better than Storage Drawers");
+        provider.add("machine.gtceu.quantum_chest.tooltip", "Better than Storage Drawers");
         provider.add("machine.gtceu.quantum_chest.items_stored", "Item Amount:");
-        provider.add("machine.gtceu.quantum_tank.tooltip", "§7Compact place to store all your fluids");
+        provider.add("machine.gtceu.quantum_tank.tooltip", "Compact place to store all your fluids");
 
         provider.add("gui.gtceu.machine.creative_chest.item", "Item");
         provider.add("gui.gtceu.machine.creative_chest.ipc", "Items per Cycle");
@@ -253,7 +265,8 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.creative_energy.voltage", "Voltage");
         provider.add("gui.gtceu.machine.creative_energy.sink", "Sink");
         provider.add("gui.gtceu.machine.creative_energy.source", "Source");
-        provider.add("gui.gtceu.machine.creative_computation.average", "Average Requested CWUt");
+        provider.add("gui.gtceu.machine.creative_computation.average", "Average Requested CWUt: %s");
+        provider.add("gui.gtceu.machine.creative_computation.max_usage", "Max CWU/tick: %s");
         provider.add("gui.gtceu.machine.creative.activity.on", "Active");
         provider.add("gui.gtceu.machine.creative.activity.off", "Not active");
 
@@ -267,9 +280,9 @@ public class MachineLang {
 
         // Long Distance Pipeline
         provider.addMultiLang("machine.gtceu.long_distance_pipe.tooltip",
-                "Connect with §fLong Distance Pipe§7 blocks to create a pipeline.",
-                "Pipelines must have exactly §f1 Input§7 and §f1 Output§7 endpoint.",
-                "Only pipeline endpoints need to be §fchunk-loaded§7.");
+                "Connect with §fLong Distance Pipe§r blocks to create a pipeline.",
+                "Pipelines must have exactly §f1 Input§r and §f1 Output§r endpoint.",
+                "Only pipeline endpoints need to be §fchunk-loaded§r.");
         provider.add("gui.gtceu.machine.ldpl.no_network", "No network found");
         provider.add("gui.gtceu.machine.ldpl.endpoint.input", "Input Endpoint");
         provider.add("gui.gtceu.machine.ldpl.endpoint.output", "Output Endpoint");
@@ -283,6 +296,7 @@ public class MachineLang {
     private static void generateCustomMultiblockLang(GTLangProvider provider) {
         // Primitive Water Pump
         provider.add("machine.gtceu.primitive_pump.tooltip", "Endervoir at Home");
+        provider.add("gui.gtceu.machine.primitive_water_pump.production", "Production: %s mB/s");
         provider.add("gui.gtceu.machine.primitive_water_pump.description",
                 "The Primitive Water Pump is a pre-Steam Era multiblock that collects water once per second, depending on the Biome it is in. It can use a Pump, ULV, or LV Output Hatch, increasing the amount of water per tier. Follows the formula: Biome Coefficient * Hatch Multiplier.");
         provider.addMultiline("gui.gtceu.machine.primitive_water_pump.extra1",
@@ -297,7 +311,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.steam.low_steam", "Not enough Steam to run!");
         provider.add("gui.gtceu.machine.steam.steam_stored", "Steam: %s / %s mb");
         provider.add("gui.gtceu.machine.steam.duration_modifier",
-                "Takes §f1.5x §7base duration to process, not affected by number of items.");
+                "Takes §f1.5x §rbase duration to process, not affected by number of items.");
         provider.add("machine.gtceu.steam.steam_hatch.tooltip", "§eAccepted Fluid: §fSteam");
         provider.add("machine.gtceu.steam_bus.tooltip", "Does not work with non-steam multiblocks");
 
@@ -311,9 +325,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.large_boiler.throttle.tooltip",
                 "Boiler can output less Steam and consume less fuel (efficiency is not lost, does not affect heat-up time)");
         provider.add("gui.gtceu.machine.large_boiler.throttle_modify", "Modify Throttle:");
-        provider.add("gui.gtceu.machine.large_boiler.rate_tooltip",
-                "§7Produces §f%d L §7of Steam with §f1 Coal");
-        provider.add("gui.gtceu.machine.large_boiler.heat_time_tooltip", "§7Takes §f%d seconds §7to boiling up");
+        provider.add("gui.gtceu.machine.large_boiler.heat_time_tooltip", "Takes §f%d seconds §rto boiling up");
         provider.add("gui.gtceu.machine.large_boiler.explosion_tooltip",
                 "Will explode if provided Fuel with no Water");
 
@@ -333,28 +345,33 @@ public class MachineLang {
         // Combustion Engine
         provider.add("machine.gtceu.large_combustion_engine.tooltip", "Fuel Ignition Chamber");
         provider.add("machine.gtceu.extreme_combustion_engine.tooltip", "Extreme Chemical Energy Releaser");
+
+        provider.add("machine.gtceu.large_combustion_engine.tooltip.lubricant_use",
+                "Uses §f%d mB/hr §7of §6Lubricant §7while working");
+
         provider.add("machine.gtceu.large_combustion_engine.tooltip.boost_regular",
-                "Supply §f20 mB/s§7 of §bOxygen§7 to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
+                "Supply §f20 mB/s§r of §bOxygen§r to produce up to §f%s EU/t§r at §f2x§r fuel consumption.");
         provider.add("machine.gtceu.large_combustion_engine.tooltip.boost_extreme",
-                "Supply §f80 mB/s§7 of §9Liquid Oxygen§7 to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
+                "Supply §f80 mB/s§r of §9Liquid Oxygen§r to produce up to §f%s EU/t§r at §f2x§r fuel consumption.");
         provider.add("gui.gtceu.machine.large_combustion_engine.description",
                 "The Large Combustion Engine is a multiblock structure that acts as a Combustion Generator for EV power.");
         provider.add("gui.gtceu.machine.extreme_combustion_engine.description",
                 "The Extreme Combustion Engine is a multiblock structure that acts as a Combustion Generator for IV power.");
-        provider.add("gui.gtceu.machine.large_combustion_engine.lubricant_amount", "Lubricant Amount: %sL");
-        provider.add("gui.gtceu.machine.large_combustion_engine.oxygen_amount", "Oxygen Amount: %sL");
-        provider.add("gui.gtceu.machine.large_combustion_engine.liquid_oxygen_amount",
-                "Liquid Oxygen Amount: %sL");
-        provider.add("gui.gtceu.machine.large_combustion_engine.oxygen_boosted", "§bOxygen boosted.");
+        provider.add("gui.gtceu.machine.large_combustion_engine.oxygen_boosted", "Oxygen boosted.");
         provider.add("gui.gtceu.machine.large_combustion_engine.liquid_oxygen_boosted",
-                "§bLiquid Oxygen boosted.");
-        provider.add("gui.gtceu.machine.large_combustion_engine.obstructed", "Engine Intakes Obstructed.");
+                "Liquid Oxygen boosted.");
+        provider.add("gui.gtceu.machine.large_combustion_engine.obstructed", "Engine Intakes Obstructed");
+        provider.add("gui.gtceu.machine.large_combustion_engine.no_lubricant", "Lubricant Needed");
+        provider.add("gui.gtceu.machine.large_combustion_engine.boost_disallowed",
+                "§bUpgrade the Dynamo Hatch to enable Oxygen Boosting.");
 
         // Turbines
 
         provider.add("machine.gtceu.steam_large_turbine.tooltip", "Do not put your Head in it");
         provider.add("machine.gtceu.gas_large_turbine.tooltip", "Not a Jet Engine");
         provider.add("machine.gtceu.plasma_large_turbine.tooltip", "Plasma Energy Siphon");
+
+        provider.add("gui.gtceu.machine.large_turbine.missing_rotor", "Missing Rotor");
         provider.add("gui.gtceu.machine.large_turbine.fuel_amount", "Fuel Amount: %sL (%s)");
         provider.add("gui.gtceu.machine.large_turbine.rotor_speed", "Rotor Speed: %s/%s RPM");
         provider.add("gui.gtceu.machine.large_turbine.rotor_durability", "Rotor Durability: %s%%");
@@ -363,11 +380,11 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.large_turbine.energy_per_tick_maxed", "Energy Output: %s EU/t");
         provider.add("gui.gtceu.machine.large_turbine.obstructed", "Turbine Face Obstructed");
         provider.add("gui.gtceu.machine.large_turbine.efficiency_tooltip",
-                "Each Rotor Holder above %s§7 adds §f10%% efficiency and multiplies EU/t by 2§7.");
+                "Each Rotor Holder above %s§r adds §f10%% efficiency and multiplies EU/t by 2§r.");
         provider.add("gui.gtceu.machine.large_turbine.fuel_needed", "Consumes %s per %s ticks");
 
         // Fusion Reactor
-        provider.add("machine.gtceu.fusion_reactor.capacity", "§7Maximum Energy Storage: §e%sM EU");
+        provider.add("machine.gtceu.fusion_reactor.capacity", "Maximum Energy Storage: §e%sM EU");
         provider.add("machine.gtceu.fusion_reactor.overclocking",
                 "Overclocks double energy and halve duration.");
         provider.add("gui.gtceu.machine.fusion_reactor.energy", "EU: %d / %d");
@@ -381,7 +398,7 @@ public class MachineLang {
 
         // Fluid Drilling Rig
         provider.add("machine.gtceu.fluid_drilling_rig.description",
-                "§7Drills fluids from veins under bedrock.");
+                "Drills fluids from veins under bedrock.");
         provider.add("machine.gtceu.fluid_drilling_rig.production",
                 "§eProduction Multiplier: §f%dx, %fx overclocked");
         provider.add("machine.gtceu.fluid_drilling_rig.depletion", "§bDepletion Rate: §f%s%%");
@@ -392,7 +409,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.fluid_rig.vein_depleted", "Vein Depleted.");
 
         // Bedrock Miner
-        provider.add("machine.gtceu.bedrock_ore_miner.description", "§7Drills ores from veins under bedrock.");
+        provider.add("machine.gtceu.bedrock_ore_miner.description", "Drills ores from veins under bedrock.");
         provider.add("machine.gtceu.bedrock_ore_miner.production",
                 "§eProduction Multiplier: §f%dx, %fx overclocked");
         provider.add("machine.gtceu.bedrock_ore_miner.depletion", "§bDepletion Rate: §f%s%%");
@@ -404,33 +421,33 @@ public class MachineLang {
         provider.add("machine.gtceu.cleanroom.tooltip.hold_ctrl",
                 "Hold CTRL to show additional Structure Information");
         provider.add("machine.gtceu.cleanroom.tooltip.ae2.channels",
-                "Send up to §f8 AE2 Channels §7through §fHulls§7 in the walls.");
+                "Send up to §f8 AE2 Channels §rthrough §fHulls§r in the walls.");
         provider.add("machine.gtceu.cleanroom.tooltip.ae2.no_channels",
-                "Send §aAE2 Networks§7 through §fHulls§7 in the walls.");
+                "Send §aAE2 Networks§r through §fHulls§r in the walls.");
         provider.add("gui.gtceu.machine.cleanroom.clean_state", "Status: §aCLEAN");
         provider.add("gui.gtceu.machine.cleanroom.dirty_state", "Status: §4CONTAMINATED");
         provider.add("gui.gtceu.machine.cleanroom.clean_amount", "Cleanliness: §a%s%%");
 
         // Power Substation
-        provider.add("gui.gtceu.machine.power_substation.stored", "§7Stored: %s §7EU");
-        provider.add("gui.gtceu.machine.power_substation.capacity", "§7Capacity: %s §7EU");
-        provider.add("gui.gtceu.machine.power_substation.passive_drain", "§7Passive Drain: %s §7EU/t");
-        provider.add("gui.gtceu.machine.power_substation.average_in", "§7Avg. Input: %s §7EU/t");
+        provider.add("gui.gtceu.machine.power_substation.stored", "Stored: %s §rEU");
+        provider.add("gui.gtceu.machine.power_substation.capacity", "Capacity: %s §rEU");
+        provider.add("gui.gtceu.machine.power_substation.passive_drain", "Passive Drain: %s §rEU/t");
+        provider.add("gui.gtceu.machine.power_substation.average_in", "Avg. Input: %s §rEU/t");
         provider.add("gui.gtceu.machine.power_substation.average_in_hover",
                 "The average inserted EU into the Power Substation's internal energy bank");
-        provider.add("gui.gtceu.machine.power_substation.average_out", "§7Avg. Output: %s §7EU/t");
+        provider.add("gui.gtceu.machine.power_substation.average_out", "Avg. Output: %s §rEU/t");
         provider.add("gui.gtceu.machine.power_substation.average_out_hover",
                 "The average extracted EU out of the Power Substation's internal energy bank");
-        provider.add("gui.gtceu.machine.power_substation.time_to_fill", "§7Time to fill: %s");
-        provider.add("gui.gtceu.machine.power_substation.time_to_drain", "§7Time to drain: %s");
+        provider.add("gui.gtceu.machine.power_substation.time_to_fill", "Time to fill: %s");
+        provider.add("gui.gtceu.machine.power_substation.time_to_drain", "Time to drain: %s");
         provider.add("gui.gtceu.machine.power_substation.time_forever", "Forever");
 
         // Active Transformer
         provider.addMultiLang("machine.gtceu.active_transformer.tooltip",
-                "§7Transformers: Lasers in Disguise",
-                "§7Can combine any number of Energy §fInputs§7 into any number of Energy §fOutputs§7.",
-                "§7Can transmit power at incredible distance with",
-                " Lasers§7.");
+                "Transformers: Lasers in Disguise",
+                "Can combine any number of Energy §fInputs§r into any number of Energy §fOutputs§r.",
+                "Can transmit power at incredible distance with",
+                " Lasers.");
         provider.add("gui.gtceu.machine.active_transformer.average_in", "§bAvg. Input: §f%s EU/t");
         provider.add("gui.gtceu.machine.active_transformer.average_out", "§bAvg. Output: §f%s EU/t");
         provider.add("gui.gtceu.machine.active_transformer.max_input", "§aMax Input: §f%s EU/t");
@@ -444,7 +461,7 @@ public class MachineLang {
 
         // Data Bank
         provider.add("gui.gtceu.machine.data_bank.working", "Providing data.");
-
+        provider.add("gui.gtceu.machine.data_bank.error_power", "Power low, no data provided!");
         // Computation
         provider.add("gui.gtceu.machine.network_switch.non_bridging", "Non-bridging connection found");
         provider.add("gui.gtceu.machine.network_switch.non_bridging.detailed",
@@ -466,13 +483,15 @@ public class MachineLang {
                 "- Multiple bridges in structure (provides no additional benefit)");
         provider.add("gui.gtceu.machine.hpca.warning_no_computation", "- No computation providers");
         provider.add("gui.gtceu.machine.hpca.warning_low_cooling", "- Not enough cooling");
-        provider.add("gui.gtceu.machine.hpca.info_max_computation", "Max CWU/t: %s");
-        provider.add("gui.gtceu.machine.hpca.info_max_cooling_demand", "Cooling Demand: %s");
-        provider.add("gui.gtceu.machine.hpca.info_max_cooling_available", "Cooling Available: %s");
-        provider.add("gui.gtceu.machine.hpca.info_max_coolant_required", "Coolant Needed: %s");
-        provider.add("gui.gtceu.machine.hpca.info_coolant_name", "PCB Coolant");
-        provider.add("gui.gtceu.machine.hpca.info_bridging_enabled", "Bridging Enabled");
-        provider.add("gui.gtceu.machine.hpca.info_bridging_disabled", "Bridging Disabled");
+        provider.add("gui.gtceu.machine.hpca.warning_power",
+                "Power low, CWU generation halted!");
+        provider.add("gui.gtceu.machine.hpca.info.max_computation", "Max CWU/t: %s");
+        provider.add("gui.gtceu.machine.hpca.info.max_cooling_demand", "Cooling Demand: %s");
+        provider.add("gui.gtceu.machine.hpca.info.max_cooling_available", "Cooling Available: %s");
+        provider.add("gui.gtceu.machine.hpca.info.max_coolant_required", "Coolant Needed: %s");
+        provider.add("gui.gtceu.machine.hpca.info.coolant_name", "PCB Coolant");
+        provider.add("gui.gtceu.machine.hpca.info.bridging_enabled", "Bridging Enabled");
+        provider.add("gui.gtceu.machine.hpca.info.bridging_disabled", "Bridging Disabled");
 
         // Multiblock Tanks
         provider.add("machine.gtceu.multiblock.tank.tooltip",
@@ -513,8 +532,9 @@ public class MachineLang {
 
         // Parallel Hatch
         provider.add("machine.gtceu.parallel_hatch.display", "Adjust the maximum parallel of the multiblock");
-        provider.add("gui.gtceu.supports_parallel", "Can parallelize with Parallel Control Hatches.");
         provider.add("machine.gtceu.parallel_hatch.tooltip", "Allows to run up to %s recipes in parallel.");
+        provider.add("gui.gtceu.supports_parallel", "Can parallelize with Parallel Control Hatches.");
+        provider.add("gui.gtceu.machine.parallel_hatch.parallels", "Parallels");
 
         // Item/Fluid Hatches
         provider.add("machine.gtceu.item_bus.import.tooltip", "Item Input for Multiblocks");
@@ -527,6 +547,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.me_part.network.online", "Network Status: §2Online§r");
         provider.add("gui.gtceu.machine.me_part.network.offline", "Network Status: §4Offline§r");
         provider.add("gui.gtceu.machine.me_output.waiting_list", "Sending Queue:");
+        provider.add("gui.gtceu.machine.me_output.waiting_list_empty", "Sending Queue: §2Empty");
         provider.add("gui.gtceu.machine.me_input.config_slot", "§fConfig Slot§r");
         provider.add("gui.gtceu.machine.me_input.config_slot.set", "§7Click to §bset/select§7 config slot.§r");
         provider.add("gui.gtceu.machine.me_input.config_slot.scroll", "§7Scroll wheel to §achange§7 config amount.§r");
@@ -537,7 +558,7 @@ public class MachineLang {
 
         // Pattern Buffer/Proxy
         provider.add("gui.gtceu.machine.pattern_buffer.proxy_bind",
-                "§fBinding to a Pattern Buffer at %s %s %s");
+                "Binding to a Pattern Buffer at %s %s %s");
 
         provider.add("gui.gtceu.machine.pattern_buffer.shared_inventory.title", "Shared Item Inventory");
         provider.add("gui.gtceu.machine.pattern_buffer.shared_inventory.desc.0",
@@ -567,12 +588,20 @@ public class MachineLang {
                 "Retrieves fluids directly from the ME network", "Keeps 16 fluid types in stock",
                 "Auto-Pull from ME mode will automatically stock the first 16 fluids in the ME system, updated every 5 seconds.");
 
+        provider.add("gui.gtceu.machine.me_stocking.auto_pull.toggle", "Toggle Auto-Pull");
         provider.add("gui.gtceu.machine.me_stocking.auto_pull.enabled",
                 "Auto-Pull Enabled");
         provider.add("gui.gtceu.machine.me_stocking.auto_pull.disabled",
                 "Auto-Pull Disabled");
 
-        // ME Adv Stocking
+        provider.add("gui.gtceu.machine.me.stocking.min_stack_size", "Min Stack Size");
+        provider.add("gui.gtceu.machine.me.stocking.ticks_per_cycle",
+                "Ticks Per Cycle");
+        provider.add("gui.gtceu.machine.me.stocking.ticks_per_cycle_tooltip",
+                "Tick Delay between input content update");
+
+        provider.add("gui.gtceu.machine.me.stocking.stocking_settings", "Stocking Settings");
+
         provider.add("gui.gtceu.machine.me.stocking_adv.min_item_count_title",
                 "Min. Item Count");
         provider.add("gui.gtceu.machine.me.stocking_adv.min_fluid_count_title",
@@ -581,8 +610,6 @@ public class MachineLang {
                 "Minimum Item Stack Size for Automated Pulling");
         provider.add("gui.gtceu.machine.me.stocking_adv.min_fluid_count",
                 "Minimum Fluid Stack Size for Automated Pulling");
-        provider.add("gui.gtceu.machine.me.stocking_adv.ticks_per_cycle_title",
-                "Ticks Per Cycle");
         provider.add("gui.gtceu.machine.me.stocking_adv.ticks_per_cycle",
                 "Delay between item list updates");
         provider.add("gui.gtceu.machine.me.stocking_adv.title",
@@ -596,9 +623,9 @@ public class MachineLang {
         provider.add("machine.gtceu.me.import_paste_settings",
                 "Applied settings from Data Stick");
         provider.add("machine.gtceu.me.item_import.data_stick.name",
-                "§oME Input Bus Configuration Data");
+                "ME Input Bus Configuration Data");
         provider.add("machine.gtceu.me.fluid_import.data_stick.name",
-                "§oME Input Hatch Configuration Data");
+                "ME Input Hatch Configuration Data");
 
         // Dual Hatch
         provider.add("machine.gtceu.dual_hatch.import.tooltip", "Item and Fluid Input for Multiblocks");
@@ -620,7 +647,7 @@ public class MachineLang {
 
         // Data Hatches
         provider.addMultiLang("machine.gtceu.data_access_hatch.tooltip", "Data Access for Multiblocks",
-                "Adds §a%s§7 slots for Data Items");
+                "Adds §a%s§r slots for Data Items");
         provider.add("machine.gtceu.data_receiver_hatch.tooltip", "Research Data Input for Multiblocks");
         provider.add("machine.gtceu.data_transmitter_hatch.tooltip", "Research Data Output for Multiblocks");
 
@@ -641,7 +668,7 @@ public class MachineLang {
         provider.add("machine.gtceu.hpca_component.tooltip.computation_cwut", "§9Computation: §f%d CWU/t");
         provider.add("machine.gtceu.hpca_component.tooltip.computation_cooling", "§cRequires up to: §f%d Cooling");
         provider.add("machine.gtceu.hpca_component.tooltip.bridge",
-                "Allows §fHPCA§7 to connect to §fNetwork Switches§7");
+                "Allows §fHPCA§r to connect to §fNetwork Switches§r");
         provider.add("machine.gtceu.hpca_component.tooltip.damaged", "Can be damaged by HPCA overheating!");
 
         provider.add("machine.gtceu.hpca.empty_component.tooltip", "Just for filling space");
@@ -666,16 +693,16 @@ public class MachineLang {
                 "Sends Fluids from one Side to the other");
 
         // Laser Hatches
-        provider.add("machine.gtceu.laser_hatch.source.tooltip", "§7Transmitting power at distance");
-        provider.add("machine.gtceu.laser_hatch.target.tooltip", "§7Receiving power from distance");
-        provider.add("machine.gtceu.laser_hatch.both.tooltip", "§cLaser Cables must be in a straight line!§7");
+        provider.add("machine.gtceu.laser_hatch.source.tooltip", "Transmitting power at distance");
+        provider.add("machine.gtceu.laser_hatch.target.tooltip", "Receiving power from distance");
+        provider.add("machine.gtceu.laser_hatch.both.tooltip", "§cLaser Cables must be in a straight line!§r");
         provider.addMultiLang("machine.gtceu.laser_source_hatch.tooltip",
                 "Transmitting power at distance",
-                "§cLaser cables must be in a straight line!§7");
+                "§cLaser cables must be in a straight line!§r");
 
         provider.addMultiLang("machine.gtceu.laser_target_hatch.tooltip",
                 "Receiving power from distance",
-                "§cLaser cables must be in a straight line!§7");
+                "§cLaser cables must be in a straight line!§r");
     }
 
     private static void generateCentralMonitorGuiLang(GTLangProvider provider) {
@@ -684,6 +711,12 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.central_monitor.width", "Screen Width: %d");
         provider.add("gui.gtceu.machine.central_monitor.height_modify", "Modify Height: %d");
         provider.add("machine.gtceu.central_monitor.tooltip", "But can it run Doom?");
+
+        provider.add("gui.gtceu.machine.central_monitor.pause",
+                "Pause placeholder execution. Text won't be updated, and code won't be run.");
+        provider.add("gui.gtceu.machine.central_monitor.resume", "Unpause placeholder execution.");
+        provider.add("gui.gtceu.machine.central_monitor.update_once",
+                "Update text and run all placeholders in it exactly once.");
 
         provider.add("tooltip.gtceu.wireless_transmitter_bind",
                 "Binding to a transmitter cover at %s %s %s facing %s in %s");
@@ -970,10 +1003,10 @@ public class MachineLang {
         provider.add("gui.gtceu.cover.computer_monitor.update_interval", "Update interval (in ticks)");
         provider.add("gui.gtceu.cover.computer_monitor.edit_blank_placeholders", "Edit blank placeholders");
         provider.add("gui.gtceu.cover.computer_monitor.edit_displayed_text", "Edit displayed text");
-        provider.add("gui.gtceu.central_monitor.text_scale", "Text scale");
-        provider.add("gui.gtceu.central_monitor.group", "Group: %s");
-        provider.add("gui.gtceu.central_monitor.group_default_name", "Group #%d");
-        provider.add("gui.gtceu.central_monitor.none", "none");
+        provider.add("gui.gtceu.machine.central_monitor.text_scale", "Text scale");
+        provider.add("gui.gtceu.machine.central_monitor.group", "Group: %s");
+        provider.add("gui.gtceu.machine.central_monitor.group_default_name", "Group #%d");
+        provider.add("gui.gtceu.machine.central_monitor.none", "none");
         provider.add("gui.gtceu.machine.central_monitor.size", "Size: (%d+1+%d)x(%d+1+%d)");
         provider.add("gui.gtceu.cover.computer_monitor.error.invalid_number", "Invalid number '%s'!");
         provider.add("gui.gtceu.cover.computer_monitor.error.wrong_number_of_args", "Expected %d args, got %d!");
@@ -999,17 +1032,67 @@ public class MachineLang {
         provider.addMultiLang("gui.gtceu.cover.computer_monitor.second_page_textbox_tooltip",
                 "Input placeholder to be used in place of %s '{}' here.",
                 "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");
+
         provider.add("gui.gtceu.cover.computer_monitor.error.no_placeholder", "No such placeholder: '%s'!");
         provider.add("gui.gtceu.cover.computer_monitor.error.unclosed_bracket", "Unclosed bracket!");
         provider.add("gui.gtceu.cover.computer_monitor.error.unexpected_bracket", "Unexpected closing bracket!");
         provider.add("gui.gtceu.cover.computer_monitor.error.no_ae", "Cover holder does not have an AE2 network!");
         provider.add("gui.gtceu.cover.computer_monitor.error.not_supported",
                 "This feature is not supported by this block/cover!");
-        provider.add("gui.gtceu.central_monitor.create_group", "Create group");
-        provider.add("gui.gtceu.central_monitor.remove_from_group", "Remove from group");
-        provider.add("gui.gtceu.central_monitor.set_target", "Set target");
-        provider.add("gui.gtceu.central_monitor.currently_editing", "Currently editing: %s");
-        provider.addMultiLang("tooltip.gtceu.central_monitor.info",
+
+        provider.add("gui.gtceu.placeholder_editor.unclosed_bracket", "Unclosed bracket (\"}\")");
+        provider.add("gui.gtceu.placeholder_editor.unclosed_brackets", "%d brackets (\"}\") are unclosed");
+        provider.add("gui.gtceu.placeholder_editor.unclosed_escape", "Unclosed escape (\"']\")");
+        provider.add("gui.gtceu.placeholder_editor.unclosed_escapes", "%d escapes (\"']\") are unclosed");
+        provider.add("gui.gtceu.placeholder_editor.extra_closing_bracket", "Extra closing bracket");
+        provider.add("gui.gtceu.placeholder_editor.no_placeholder", "Placeholder with name '%s' does not exist");
+
+        provider.add("gui.gtceu.placeholder_editor.constant_value",
+                "This expression always evaluates to '%s'.Consider replacing it with a constant.");
+
+        provider.addMultiline("gui.gtceu.placeholder_editor.write_in_if", """
+                Placeholders inside {if} are executed regardless of the condition.
+                This means that, for example, "{if 0 {redstone set 15}}" will produce redstone output.
+                To avoid this, use "{eval {if <condition> "<code>" "<else_code>"}}".""");
+
+        provider.add("gui.gtceu.machine.central_monitor.left_click", "Select/unselect a monitor by left-clicking it");
+        provider.add("gui.gtceu.machine.central_monitor.right_click",
+                "Select a block by right-clicking it. Only 1 block can be a target.");
+        provider.add("gui.gtceu.machine.central_monitor.in_group",
+                "Monitors selected this way are added to the group, and will be used to display stuff");
+        provider.add("gui.gtceu.machine.central_monitor.in_group_and_target",
+                "The monitor selected this way is used for displaying and as a target at the same time.");
+        provider.add("gui.gtceu.machine.central_monitor.data_hatch_target",
+                "If you select a data hatch as a target, you will be prompted to enter a slot number. Then the block that the data stick in the specified slot is linked to (via right-clicking a wireless transmitter cover) will be considered the target instead.");
+        provider.add("gui.gtceu.machine.central_monitor.group_name", "Name:");
+        provider.add("gui.gtceu.machine.central_monitor.module_editor_button", "Edit module");
+        provider.add("gui.gtceu.machine.central_monitor.group_editor", "Editing monitor group");
+        provider.add("gui.gtceu.machine.central_monitor.monitor_groups", "Monitor Groups");
+        provider.add("gui.gtceu.machine.central_monitor.create_group", "Create group");
+        provider.add("gui.gtceu.machine.central_monitor.remove_from_group", "Remove from group");
+        provider.add("gui.gtceu.machine.central_monitor.set_target", "Set target");
+        provider.add("gui.gtceu.machine.central_monitor.currently_editing", "Currently editing: %s");
+        provider.add("gui.gtceu.machine.central_monitor.data_slot", "Set slot number of data stick");
+        provider.add("gui.gtceu.machine.central_monitor.gui_module_info",
+                "To select a block to get the GUI from, select a target in the monitor group editor.");
+
+        provider.addMultiline("gui.gtceu.machine.central_monitor.text_module_help",
+                """
+                        This module displays text that can have placeholders.
+                        Placeholders are strings like "{energy}" that when displayed, will display their value instead (in this case the amount of energy).
+                        They can also do some other things, such as set a redstone output/read redstone input, run calculations, etc.
+                        Some placeholders, like {energy} must have a target to function. A target is basically any block that can accept covers or is part of the
+                        central monitor multiblock. For example {energy} displays the amount of energy in its target block, usually a battery buffer or a PSS.
+                        Select a target in the monitor group editing window, check out the help page there for more info.
+                        Here's an example usage of placeholders, that displays some energy info and sends a redstone signal when energy is <50%:
+                        """);
+
+        provider.add("gui.gtceu.machine.central_monitor.image_url", "Input image URL:");
+        provider.add("gui.gtceu.machine.central_monitor.image_url_tooltip", "Image URL: %s");
+        provider.add("gui.gtceu.machine.central_monitor.target",
+                "The block selected this way is considered a target, to be used with placeholders in a text module.");
+
+        provider.addMultiLang("gui.gtceu.machine.central_monitor.info",
                 "In order to use monitors, you have to split them into groups first. A group may only have 1 module in it.",
                 "Select them by left-clicking, then click 'Create group'.",
                 "Then in the settings page for the group you can insert a module, you can configure it in the same page.",
@@ -1058,7 +1141,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.max_recipe_tier_hover", "The maximum tier of recipes that can be run");
 
         // Energy Consumption/Generation
-        provider.add("gui.gtceu.machine.max_eut", "Max EU/t: §a%s (%s§r)");
+        provider.add("gui.gtceu.machine.max_eut", "Max EU/t: §a%s (%s)");
         provider.add("gui.gtceu.machine.max_eut_hover",
                 "The maximum EU/t available for running recipes or overclocking");
         provider.add("gui.gtceu.machine.max_eut_amps", "Max EU/t: %s (%sA %s)");
@@ -1066,10 +1149,16 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.energy_generation", "Outputting: §a%s EU/t");
 
         // Maintenence
-        provider.add("gui.gtceu.machine.maintenance.no_problems", "No Maintenance Problems!");
-        provider.add("gui.gtceu.machine.maintenance.has_problems", "Has Maintenance Problems!");
-        provider.add("gui.gtceu.machine.maintenance.has_problems_header",
-                "Fix the following issues in a Maintenance Hatch:");
+
+        provider.add("gui.gtceu.machine.maintenance.fixed", "Maintenance Fine");
+        provider.add("gui.gtceu.machine.maintenance.broken", "Needs Maintenance");
+        provider.add("gui.gtceu.machine.maintenance.wrench", "Pipe is loose");
+        provider.add("gui.gtceu.machine.maintenance.screwdriver", "Screws are loose");
+        provider.add("gui.gtceu.machine.maintenance.soft_mallet", "Something is stuck");
+        provider.add("gui.gtceu.machine.maintenance.hard_hammer", "Plating is dented");
+        provider.add("gui.gtceu.machine.maintenance.wire_cutter", "Wires burned out");
+        provider.add("gui.gtceu.machine.maintenance.crowbar", "That doesn't belong there");
+
         provider.add("gui.gtceu.maintenance.problem.wrench", "§7Pipe is loose. (§aWrench§7)");
         provider.add("gui.gtceu.maintenance.problem.screwdriver", "§7Screws are loose. (§aScrewdriver§7)");
         provider.add("gui.gtceu.maintenance.problem.soft_mallet", "§7Something is stuck. (§aSoft Mallet§7)");
@@ -1084,11 +1173,6 @@ public class MachineLang {
 
         // Rotor
         provider.add("gui.gtceu.machine.rotor_obstructed", "Rotor is Obstructed!");
-
-        // Distinctness
-        provider.add("gui.gtceu.machine.distinct", "Distinct Buses:");
-        provider.add("gui.gtceu.machine.distinct.info",
-                "If enabled, each Item Input Bus will be treated as fully distinct from each other for recipe lookup. Useful for things like Programmed Circuits, Extruder Shapes, etc.");
 
         // Batching
         provider.add("machine.gtceu.batching.enabled", "Batching Enabled");

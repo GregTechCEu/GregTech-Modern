@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import brachy.modularui.api.IPanelHandler;
@@ -248,7 +247,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                         .height(18)
                         .width(40)
                         .overlay(Text.dynamic(
-                                () -> Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(voltage.getLongValue())])))
+                                () -> GTValues.VNC[GTUtil.getTierByVoltage(voltage.getLongValue())]))
 
                         // .width(32)
                         .marginLeft(4)
@@ -348,7 +347,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                 .width(72)
                 .height(104)
                 .child(Flow.column()
-                        .child(Text.lang("gtceu.top.cable_voltage").asWidget().top(4).left(3))
+                        .child(Text.lang("integration.gtceu.jade.cable.voltage").asWidget().top(4).left(3))
                         .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.80f).horizontalCenter().top(19))
                         .child(new ListWidget<>()
@@ -358,7 +357,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                                 .children(GTValues.TIER_COUNT, v -> new ButtonWidget<>()
                                         .width(36)
-                                        .overlay(Text.str(GTValues.VNF[v]))
+                                        .overlay(Text.of(GTValues.VNC[v]))
                                         .onMousePressed((context, b) -> {
                                             voltage.setValue(GTValues.V[v]);
                                             tier.setValue(v);

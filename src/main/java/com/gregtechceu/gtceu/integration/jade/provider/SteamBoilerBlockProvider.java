@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -48,10 +48,10 @@ public class SteamBoilerBlockProvider extends MachineInfoProvider<SteamBoilerMac
         MutableComponent root;
         if (isBurning && temperature < maxTemperature) {
             // Heating up
-            root = Component.translatable("gui.gtceu.machine.boiler.heating_up");
+            root = Component.translatable("gui.gtceu.machine.boiler.heating_up").withStyle(ChatFormatting.RED);
         } else if (!isBurning && temperature > 0) {
             // Cooling down
-            root = Component.translatable("gui.gtceu.machine.boiler.cooling_down");
+            root = Component.translatable("gui.gtceu.machine.boiler.cooling_down").withStyle(ChatFormatting.BLUE);
         } else {
             root = null; // neither heating nor cooling, is either max temperature or temperature of zero
         }
@@ -60,9 +60,9 @@ public class SteamBoilerBlockProvider extends MachineInfoProvider<SteamBoilerMac
         MutableComponent extra;
         if (makingSteam) {
             // Producing some amount of steam
-            extra = Component.translatable("gui.gtceu.machine.boiler.production",
-                    Component.literal(FormattingUtil.formatNumbers(production / 10))
-                            .withStyle(ChatFormatting.GREEN));
+            extra = Component
+                    .translatable("gui.gtceu.machine.boiler.production", FormattingUtil.formatNumbers(production / 10))
+                    .withStyle(ChatFormatting.GREEN);
             if (root != null) {
                 // append some nice separation here to the root
                 extra = Component.literal(" | ").append(extra);

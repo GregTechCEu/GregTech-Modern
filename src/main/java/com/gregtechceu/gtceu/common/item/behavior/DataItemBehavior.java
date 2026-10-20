@@ -100,7 +100,8 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                         "gui.gtceu.machine.pattern_buffer.proxy_bind",
                         Component.literal("" + posArray[0]).withStyle(ChatFormatting.LIGHT_PURPLE),
                         Component.literal("" + posArray[1]).withStyle(ChatFormatting.LIGHT_PURPLE),
-                        Component.literal("" + posArray[2]).withStyle(ChatFormatting.LIGHT_PURPLE)));
+                        Component.literal("" + posArray[2]).withStyle(ChatFormatting.LIGHT_PURPLE))
+                        .withStyle(ChatFormatting.WHITE));
             }
         } else {
             Collection<GTRecipe> recipes = researchData.recipeType().getDataStickEntry(researchData.researchId());

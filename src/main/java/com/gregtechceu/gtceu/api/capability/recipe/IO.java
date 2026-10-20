@@ -23,7 +23,7 @@ public enum IO {
     }
 
     public static String getTitle() {
-        return "gtceu.io.title";
+        return "common.gtceu.io.title";
     }
 
     public String getTooltip() {

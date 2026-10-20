@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ISubscription;
-import com.gregtechceu.gtceu.utils.LangUtil;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -260,8 +260,7 @@ public class FisherMachine extends TieredEnergyMachine
                                 .overlay(new ItemDrawable(Items.NAME_TAG))
                                 .tooltipAutoUpdate(true)
                                 .tooltipDynamic((r) -> {
-                                    var lines = LangUtil.getMultiLang("gui.gtceu.machine.fisher.fisher_mode",
-                                            GTValues.VNF[getTier()], GTValues.VNF[getTier()]);
+                                    var lines = LangUtil.getMultiLang("gui.gtceu.machine.fisher.fisher_mode");
                                     for (var line : lines) {
                                         r.addLine(line);
                                     }

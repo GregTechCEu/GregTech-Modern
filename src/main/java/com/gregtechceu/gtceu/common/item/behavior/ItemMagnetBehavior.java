@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.widgets.textfield.TextEditorWidget;
-import com.gregtechceu.gtceu.utils.LangUtil;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -170,7 +170,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     private ParentWidget<?> createTagFilterPage(TagFilter<ItemStack, Item> filter) {
         StringSyncValue filterString = new StringSyncValue(filter::getFilterString, filter::setFilterString).allowC2S();
         RichTooltip infoTooltip = new RichTooltip();
-        LangUtil.getListMultiLang("cover.tag_filter.info").forEach(infoTooltip::addLine);
+        LangUtil.getListMultiLang("gui.gtceu.cover.tag_filter.info").forEach(infoTooltip::addLine);
 
         return new ParentWidget<>()
                 .size(150, 55)
@@ -219,7 +219,6 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
 
     private static boolean toggleActive(ItemStack stack) {
         boolean isActive = isActive(stack);
-        // noinspection ConstantConditions
         stack.getOrCreateTag().putBoolean("IsActive", !isActive);
         return !isActive;
     }

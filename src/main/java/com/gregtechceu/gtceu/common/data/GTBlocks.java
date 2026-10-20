@@ -120,7 +120,7 @@ public class GTBlocks {
                 .block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
                 .setData(ProviderType.LANG,
                         nameAndTooltipLang("Normal Laser Pipe",
-                                "§7Transmitting power with §fno loss§7 in straight lines"))
+                                "Transmitting power with §fno loss§r in straight lines"))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
                 .gtBlockstate(GTModels::createPipeBlockModel)
@@ -152,7 +152,7 @@ public class GTBlocks {
                 .block("%s_optical_pipe".formatted(type.getSerializedName()), (p) -> new OpticalPipeBlock(p, type))
                 .setData(ProviderType.LANG,
                         nameAndTooltipLang("Optical Fiber Cable",
-                                "§7Transmitting §fComputation§7 or §fResearch Data§7"))
+                                "Transmitting §fComputation§r or §fResearch Data§r"))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
                 .gtBlockstate(GTModels::createPipeBlockModel)
@@ -416,8 +416,8 @@ public class GTBlocks {
 
     // Cleanroom
     public static final BlockEntry<Block> PLASTCRETE = createCasingBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete"));
-    public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING, "Filter Casing", "Creates a §aParticle-Free§7 environment");
-    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE, "Sterilizing Filter Casing", "Creates a §aSterilized§7 environment");
+    public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING, "Filter Casing", "Creates a §aParticle-Free§r environment");
+    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE, "Sterilizing Filter Casing", "Creates a §aSterilized§r environment");
     public static final BlockEntry<GlassBlock> CLEANROOM_GLASS = createGlassCasingBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> RenderType::cutoutMipped);
 
     // Fireboxes

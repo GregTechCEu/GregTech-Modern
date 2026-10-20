@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.*;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -329,7 +330,8 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
             }
             getRecipeLogic().resetArea(true);
         } else {
-            context.getPlayer().sendSystemMessage(Component.translatable("gui.gtceu.machine.large_miner.errorradius"));
+            context.getPlayer().sendSystemMessage(Component.translatable("gui.gtceu.machine.large_miner.error_radius")
+                    .withStyle(ChatFormatting.RED));
         }
         return InteractionResult.SUCCESS;
     }

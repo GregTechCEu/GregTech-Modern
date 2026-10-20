@@ -26,9 +26,9 @@ import com.gregtechceu.gtceu.common.mui.GTByteBufAdapters;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -232,13 +232,13 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             } else {
                 this.hasNotEnoughEnergy = true;
                 getRecipeLogic()
-                        .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
+                        .setWaiting(Component.translatable("gui.gtceu.recipe.insufficient_in")
                                 .append(": ").append(EURecipeCapability.CAP.getName()));
             }
         } else {
             this.hasNotEnoughEnergy = true;
             getRecipeLogic()
-                    .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
+                    .setWaiting(Component.translatable("gui.gtceu.recipe.insufficient_out")
                             .append(": ").append(EURecipeCapability.CAP.getName()));
         }
         return false;
@@ -272,7 +272,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
                 () -> Component.translatable("gui.gtceu.machine.running").withStyle(ChatFormatting.GREEN),
-                () -> Component.translatable("gui.gtceu.machine.hpca.error_power").withStyle(ChatFormatting.RED)));
+                () -> Component.translatable("gui.gtceu.machine.hpca.warning_power").withStyle(ChatFormatting.RED)));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, currentEUt));
         widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
         widgets.add(new TextWidget<>(Text.dynamic(text::getValue)));
@@ -696,28 +696,29 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                     ChatFormatting.GREEN;
             MutableComponent data = Component.literal(Integer.toString(getMaxCoolingDemand())).withStyle(coolingColor);
             textList.add(
-                    Component.translatable("gui.gtceu.machine.hpca.info_cooling_demand", data, getMaxCoolingAmount())
+                    Component
+                            .translatable("gui.gtceu.machine.hpca.info.max_cooling_demand", data, getMaxCoolingAmount())
                             .withStyle(ChatFormatting.GRAY));
 
             // Coolant Required
             if (getMaxCoolantDemand() > 0) {
                 data = FormattingUtil.prepend("common.gtceu.millibucket", getMaxCoolantDemand())
                         .withStyle(ChatFormatting.YELLOW).append(CommonComponents.SPACE);
-                Component coolantName = Component.translatable("gui.gtceu.machine.hpca.info_coolant_name")
+                Component coolantName = Component.translatable("gui.gtceu.machine.hpca.info.coolant_name")
                         .withStyle(ChatFormatting.YELLOW);
                 data.append(coolantName);
             } else {
                 data = Component.literal("0").withStyle(ChatFormatting.GREEN);
             }
-            textList.add(Component.translatable("gui.gtceu.machine.hpca.info_max_coolant_required", data)
+            textList.add(Component.translatable("gui.gtceu.machine.hpca.info.max_coolant_required", data)
                     .withStyle(ChatFormatting.GRAY));
 
             // Bridging
             if (numBridges > 0) {
-                textList.add(Component.translatable("gui.gtceu.machine.hpca.info_bridging_enabled")
+                textList.add(Component.translatable("gui.gtceu.machine.hpca.info.bridging_enabled")
                         .withStyle(ChatFormatting.GREEN));
             } else {
-                textList.add(Component.translatable("gui.gtceu.machine.hpca.info_bridging_disabled")
+                textList.add(Component.translatable("gui.gtceu.machine.hpca.info.bridging_disabled")
                         .withStyle(ChatFormatting.RED));
             }
         }

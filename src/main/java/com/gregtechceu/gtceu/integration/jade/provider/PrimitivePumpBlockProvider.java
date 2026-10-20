@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.nbt.LongTag;
 import net.minecraft.network.chat.Component;
@@ -30,7 +30,7 @@ public class PrimitivePumpBlockProvider extends MachineInfoProvider<PrimitivePum
     @Override
     protected void addTooltip(LongTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        tooltip.add(Component.translatable("integration.gtceu.jade.primitive_pump_production",
+        tooltip.add(Component.translatable("gui.gtceu.machine.primitive_water_pump.production",
                 FormattingUtil.formatNumbers(data.getAsLong())));
     }
 }

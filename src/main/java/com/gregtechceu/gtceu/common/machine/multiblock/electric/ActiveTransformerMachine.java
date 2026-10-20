@@ -15,8 +15,8 @@ import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -115,8 +115,9 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
         // Invalidate the structure if there is not at least one output and one input
         if (powerInput.isEmpty() || powerOutput.isEmpty()) {
             pState.setError(
-                    new PatternStringError(Component.translatable("gtceu.predicate_error.active_transformer.missing_io",
-                            powerInput.isEmpty(), powerOutput.isEmpty())));
+                    new PatternStringError(
+                            Component.translatable("multiblock.gtceu.pattern_error.active_transformer.missing_io",
+                                    powerInput.isEmpty(), powerOutput.isEmpty())));
             this.invalidateStructure(substructureName);
         }
 

@@ -13,20 +13,21 @@ public class MultiblockLang {
 
         // Pattern/Predicate Info
 
-        provider.add("multiblock.gtceu.predicate.count.exact", "§cExactly: %d§r");
-        provider.add("multiblock.gtceu.predicate.count.range", "§cBetween %d and %d§r");
-        provider.add("multiblock.gtceu.predicate.limit_max", "§cMaximum: %d§r");
-        provider.add("multiblock.gtceu.predicate.limit_min", "§cMinimum: %d§r");
-        provider.add("multiblock.gtceu.predicate.limit_layer_max", "§cMaximum: %d per layer§r");
-        provider.add("multiblock.gtceu.predicate.limit_layer_min", "§cMinimum: %d per layer§r");
+        provider.add("multiblock.gtceu.predicate.count.exact", "Exactly: %d");
+        provider.add("multiblock.gtceu.predicate.count.range", "Between %d and %d");
+        provider.add("multiblock.gtceu.predicate.limit_max", "Maximum: %d");
+        provider.add("multiblock.gtceu.predicate.limit_min", "Minimum: %d");
+        provider.add("multiblock.gtceu.predicate.limit_layer_max", "Maximum: %d per layer");
+        provider.add("multiblock.gtceu.predicate.limit_layer_min", "Minimum: %d per layer");
+        provider.add("multiblock.gtceu.predicate.single", "Only this block can be used");
+        provider.add("multiblock.gtceu.predicate.tier_must_match", "Can only be of tier: %s");
 
         provider.add("multiblock.gtceu.pattern.clear_amount", "§6Must have a clear %dx%dx%d space in front§r");
         provider.add("multiblock.gtceu.pattern.location_end", "§cVery End§r");
-        provider.add("multiblock.gtceu.pattern.replaceable_air", "Replaceable by Air");
-        provider.add("multiblock.gtceu.predicate.single", "§6Only this block can be used§r");
+        provider.add("multiblock.gtceu.predicate.replaceable_air", "Replaceable by Air");
 
         provider.add("multiblock.gtceu.pattern.coils_must_match", "All heating coils must be the same");
-        provider.add("multiblock.gtceu.pattern.filters_must_match", "All filters must be the same§r");
+        provider.add("multiblock.gtceu.pattern.filters_must_match", "All filters must be the same");
 
         // Pattern Errors
 
@@ -37,7 +38,9 @@ public class MultiblockLang {
         provider.add("multiblock.gtceu.pattern_error.active_transformer.missing_io",
                 "Missing hatches: IN - %s | OUT - %s");
         provider.add("multiblock.gtceu.pattern_error.cleanroom.too_small", "Cleanroom must be at least 5x5x4.");
-        provider.add("multiblock.gtceu.pattern_error.cleanroom.not_centered", "Cleanroom controller must be centered.");
+        provider.add(
+                "multiblock.gtceu.pattern_error.cleanroom.not_centered",
+                "Cleanroom controller must be centered.");
         provider.add("multiblock.gtceu.pattern_error.distillery.unexpected_hatch",
                 "Fluid hatch at unexpected position (%d, %d, %d).");
         provider.add("multiblock.gtceu.pattern_error.distillery.missing_outputs", "Missing fluid output hatches.");

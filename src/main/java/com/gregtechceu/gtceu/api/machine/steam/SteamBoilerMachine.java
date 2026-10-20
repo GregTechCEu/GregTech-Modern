@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.*;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -224,7 +225,6 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         return isHighPressure ? 40 : 45;
     }
 
-    @SuppressWarnings("MethodMayBeStatic")
     protected int getCoolDownRate() {
         return 1;
     }
@@ -288,7 +288,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     @Override
     protected InteractionResult onSoftMalletClick(ExtendedUseOnContext context) {
         if (!isRemote()) {
-            context.getPlayer().sendSystemMessage(Component.translatable("item.gtceu.behavior.soft_hammer.ignored"));
+            context.getPlayer().sendSystemMessage(Component.translatable("common.gtceu.workable.cannot_disable"));
         }
         return InteractionResult.sidedSuccess(getLevel().isClientSide);
     }

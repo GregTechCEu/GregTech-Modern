@@ -15,14 +15,14 @@ public enum ManualIOMode {
     }
 
     public static String getTitle() {
-        return "cover.manual.mode.title";
+        return "cover.gtceu.manual_io_mode.title";
     }
 
     public String getTooltip() {
-        return "cover.manual.mode." + localeName;
+        return "cover.gtceu.manual_io_mode." + localeName;
     }
 
     public String getDescription() {
-        return "cover.manual.mode." + localeName + ".description";
+        return "cover.gtceu.manual_io_mode." + localeName + ".description";
     }
 }

@@ -21,13 +21,11 @@ public class ItemLang {
         provider.add("item.gtceu.robot.arm.tooltip", "§7Limits §fItems§7 to specific quantities as §fCover§7.");
 
         // Programmed Circuit
-        provider.add("item.gtceu.circuit.integrated.gui", "§7Programmed Circuit Configuration");
-        provider.add("item.int_circuit.configuration", "Configuration: %d");
+        provider.add("item.gtceu.circuit.integrated.gui", "Programmed Circuit Configuration");
+        provider.add("item.gtceu.int_circuit.configuration", "Circuit Configuration: %d");
 
         // Turbines
         provider.add("item.gtceu.turbine_rotor.tooltip", "Turbine Rotors for your power station");
-
-        provider.add("item.gtceu.fluid_container.tooltip", "%d/%dL %s");
 
         // General Electric Tools
         provider.add("item.gtceu.electric.tooltip", "%d/%d EU - Tier %s");
@@ -193,5 +191,16 @@ public class ItemLang {
         // Data Stick
         provider.add("item.gtceu.behavior.data_item.title", "§n%s Construction Data:");
         provider.add("item.gtceu.behavior.data_item.data", "- §a%s");
+
+        // Spoilage lang
+        provider.add("tooltip.gtceu.spoilage.spoil_time_remaining", "Time until spoils: %s");
+        provider.add("tooltip.gtceu.spoilage.spoil_time_total", "Total spoil time: %s");
+        provider.add("tooltip.gtceu.spoilage.spoils_into", "Spoils into: %s");
+        provider.add("tooltip.gtceu.spoilage.creation_tick", "Created on overworld tick %d");
+        provider.add("tooltip.gtceu.spoilage.location", "Location: %s (%d, %d, %d)");
+        provider.add("tooltip.gtceu.spoilage.location_entity", "Entity: %s");
+        provider.add("tooltip.gtceu.spoilage.item_handler_source", "Handler source: %s");
+        provider.add("tooltip.gtceu.spoilage.item_handler_data", "Handler data: %s");
+        provider.add("tooltip.gtceu.spoilage.location_slot", "Slot: %s");
     }
 }

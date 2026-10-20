@@ -14,13 +14,15 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.utils.LangUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -71,7 +73,10 @@ public class TooltipsHandler {
                 tooltips.add(1, Component.translatable(tooltipKey));
             } else {
                 var multiLang = LangUtil.getListMultiLang(tooltipKey);
-                if (multiLang != null && !multiLang.isEmpty()) {
+                for (MutableComponent comp : multiLang) {
+                    if (comp.getStyle().getColor() == null) comp.withStyle(ChatFormatting.GRAY);
+                }
+                if (!multiLang.isEmpty()) {
                     tooltips.addAll(1, multiLang);
                 }
             }
@@ -100,7 +105,7 @@ public class TooltipsHandler {
         var material = ChemicalHelper.getMaterial(fluid);
         if (material != null) {
             if (material.requiresMetalFreezing() && fluid.isSame(material.getFluid(FluidStorageKeys.LIQUID))) {
-                tooltips.accept(Component.translatable("gtceu.fluid.requires_metal_freezing")
+                tooltips.accept(Component.translatable("material.gtceu.fluid_requires_metal_freezing")
                         .withStyle(ChatFormatting.GOLD));
             }
             var formula = material.getChemicalFormula();
@@ -116,7 +121,7 @@ public class TooltipsHandler {
                     if (remainder != 0) {
                         fluidAmount += String.format(" + %d mB", remainder);
                     }
-                    tooltips.accept(Component.translatable("gtceu.gui.fluid_amount").withStyle(ChatFormatting.GRAY)
+                    tooltips.accept(GTCommonComponents.FLUID_AMOUNT.copy().withStyle(ChatFormatting.GRAY)
                             .append(Component.literal(fluidAmount)));
                 }
             }

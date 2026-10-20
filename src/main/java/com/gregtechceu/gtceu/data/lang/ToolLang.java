@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.data.lang;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
+import static com.gregtechceu.gtceu.utils.lang.FormattingUtil.toEnglishName;
 
 public class ToolLang {
 
@@ -96,6 +96,7 @@ public class ToolLang {
         provider.add("item.gtceu.tool.behavior.relocate_mining", "§2Magnetic: §fRelocates Mined Blocks and Mob Drops");
         provider.add("item.gtceu.tool.behavior.aoe_mining", "§5Area-of-Effect: §f%sx%sx%s");
         provider.add("item.gtceu.tool.behavior.ground_tilling", "§eFarmer: §fTills Ground");
+        provider.add("item.gtceu.tool.behavior.shears", "§aGardener: §fShears blocks and mobs");
         provider.add("item.gtceu.tool.behavior.grass_path", "§eLandscaper: §fCreates Grass Paths");
         provider.add("item.gtceu.tool.behavior.rail_rotation", "§eRailroad Engineer: §fRotates Rails");
         provider.add("item.gtceu.tool.behavior.crop_harvesting", "§aHarvester: §fHarvests Crops");

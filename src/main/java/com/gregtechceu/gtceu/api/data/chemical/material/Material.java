@@ -21,8 +21,8 @@ import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.data.lang.LangGenerationHandler;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -51,7 +51,7 @@ import java.util.*;
 import java.util.function.UnaryOperator;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
+import static com.gregtechceu.gtceu.utils.lang.FormattingUtil.toEnglishName;
 
 public final class Material implements Comparable<Material> {
 
@@ -510,10 +510,6 @@ public final class Material implements Comparable<Material> {
     public int getBlastTemperature() {
         BlastProperty prop = properties.getProperty(PropertyKey.BLAST);
         return prop == null ? 0 : prop.getBlastTemperature();
-    }
-
-    public String toCamelCaseString() {
-        return FormattingUtil.lowerUnderscoreToUpperCamel(getName());
     }
 
     @NotNull

@@ -14,8 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -132,7 +131,7 @@ public class GTMultiblockTextUtil {
 
         return buildAmpVoltEutHoverLine(
                 () -> Component.translatable("gui.gtceu.machine.max_eut",
-                        buildAmpVoltComponent(maxEnergyUsage, voltage))
+                        buildAmpVoltComponent(maxEnergyUsage, voltage), maxEnergyUsage.getLongValue())
                         .withStyle(ChatFormatting.WHITE),
                 buildEutHoverTooltip(maxEnergyUsage, true),
                 ($ -> isFormed.getBoolValue()));
@@ -202,23 +201,19 @@ public class GTMultiblockTextUtil {
         long EUt = energyUsage.getLongValue();
         long V = voltage.getLongValue();
         float minAmperage = (V == 0 ? 0 : (float) EUt / V);
-        int tier = GTUtil.getTierByVoltage(V);
 
-        return Component.translatable("gtceu.multiblock.general.amp_volt", // A @ V
-                Component.literal(FormattingUtil.formatNumber2Places(minAmperage))
-                        .withStyle(ChatFormatting.RED),
-                tier < GTValues.TIER_COUNT ? Component.literal(GTValues.VNF[tier]) : V);
+        return FormattingUtil.formattedEUt(minAmperage, V, true);
     }
 
     public static RichTooltip buildEutHoverTooltip(LongSyncValue energyUsage, boolean isMaxAvailable) {
         return new RichTooltip().autoUpdate(true).tooltipBuilder(builder -> {
             String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
 
-            builder.addLine(Component.translatable("gtceu.multiblock.general.eut",
+            builder.addLine(FormattingUtil.prepend("common.gtceu.eu_per_tick",
                     energyFormatted).withStyle(ChatFormatting.GRAY)
                     .withStyle(ChatFormatting.WHITE));
             if (isMaxAvailable)
-                builder.addLine(Component.translatable("gtceu.multiblock.max_energy_per_tick_hover")
+                builder.addLine(Component.translatable("gui.gtceu.machine.max_eut_hover")
                         .withStyle(ChatFormatting.GRAY));
         });
     }
@@ -241,7 +236,7 @@ public class GTMultiblockTextUtil {
         if (!formed || tier < GTValues.ULV || tier > GTValues.MAX)
             return Text.EMPTY;
 
-        Component voltageName = Component.literal(GTValues.VNF[tier]);
+        Component voltageName = GTValues.VNC[tier];
         MutableComponent bodyText = Component.translatable(
                 "gui.gtceu.machine.max_recipe_tier",
                 voltageName).withStyle(ChatFormatting.GRAY);
@@ -303,7 +298,7 @@ public class GTMultiblockTextUtil {
                 () -> new IntSyncValue(rlMachine::getTier));
 
         return Text.dynamic(() -> {
-            Component voltageName = Component.literal(GTValues.VNF[tier.getIntValue()]);
+            Component voltageName = GTValues.VNC[tier.getIntValue()];
             return Component.translatable(
                     "gui.gtceu.machine.max_recipe_tier",
                     voltageName).withStyle(ChatFormatting.GRAY);
@@ -492,7 +487,7 @@ public class GTMultiblockTextUtil {
         var lineList = new ArrayList<TextWidget<?>>();
 
         lineList.add(Text
-                .dynamic(() -> Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED))
+                .dynamic(() -> Component.translatable("gui.gtceu.recipe.setup_fail").withStyle(ChatFormatting.RED))
                 .asWidget()
                 .setEnabledIf((w) -> isFormed.getBoolValue() && (isIdle.getBoolValue() || isWaiting.getBoolValue()) &&
                         !hasRunningRecipe.getBoolValue() && bestFailureReason.getValue() != null));
@@ -508,7 +503,6 @@ public class GTMultiblockTextUtil {
         return lineList;
     }
 
-    @SuppressWarnings("unchecked")
     public static TextWidget<?> addRecipeTypeField(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         StringSyncValue recipeTypeName = syncManager.getOrCreateSyncHandler("recipeTypeName", StringSyncValue.class,
                 () -> new StringSyncValue(

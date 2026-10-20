@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistanceNetwork;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;

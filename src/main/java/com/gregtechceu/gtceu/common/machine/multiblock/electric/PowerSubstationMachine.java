@@ -20,7 +20,7 @@ import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -152,7 +152,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         if (batteries.isEmpty()) {
             // only empty batteries found in the structure
             pState.setError(new PatternStringError(
-                    Component.translatable("gtceu.predicate_error.power_substation.missing_batteries")));
+                    Component.translatable("multiblock.gtceu.pattern_error.power_substation.missing_batteries")));
             invalidateStructure();
             return;
         }

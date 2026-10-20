@@ -24,8 +24,8 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.DataAccessHatchMachi
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalDataHatchMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.*;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -60,6 +60,7 @@ public class GTResearchMachines {
                     "Used to scan onto §fData Orbs§7 and §fData Modules§7.",
                     "Requires §fComputation§7 to work.",
                     "Providing more Computation allows the recipe to run faster.")
+            .defaultTooltip()
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("XXX", "VVV", "PPP", "PPP", "PPP", "VVV", "XXX")
                     .slice("XXX", "VAV", "AAA", "AAA", "AAA", "VAV", "XXX")
@@ -94,6 +95,7 @@ public class GTResearchMachines {
             .model(createWorkableTieredHullMachineModel(GTCEu.id("block/machines/object_holder"))
                     .andThen((ctx, prov, model) -> model.addReplaceableTextures("bottom", "top", "side")))
             .tooltipLang("Advanced Holding Mechanism for Research Station")
+            .defaultTooltip()
             .register();
 
     public static final MultiblockMachineDefinition DATA_BANK = REGISTRATE.multiblock("data_bank", DataBankMachine::new)
@@ -107,7 +109,6 @@ public class GTResearchMachines {
                     "Data Banks can be chained together.",
                     "Uses §f%s EU/t§7 per Data/Optical Hatch normally.",
                     "Uses §f%s EU/t§7 per Data/Optical Hatch when chained.")
-            .addDefaultTooltips(false)
             .tooltips(Component.translatable("machine.gtceu.data_bank.tooltip.0"),
                     Component.translatable("machine.gtceu.data_bank.tooltip.1"),
                     Component.translatable("machine.gtceu.data_bank.tooltip.2"),
@@ -144,7 +145,6 @@ public class GTResearchMachines {
                     "Used to route and distribute §fComputation§7.",
                     "Can combine any number of Computation §fReceivers§7 into any number of Computation §fTransmitters§7.",
                     "Uses §f%s EU/t§7 per Computation Data Hatch.")
-            .addDefaultTooltips(false)
             .tooltips(Component.translatable("machine.gtceu.network_switch.tooltip.0"),
                     Component.translatable("machine.gtceu.network_switch.tooltip.1"),
                     Component.translatable("machine.gtceu.network_switch.tooltip.2"),
@@ -177,6 +177,7 @@ public class GTResearchMachines {
             .tooltipLang("Just your average Supercomputer",
                     "Used to generate §fComputation§7 (and heat).",
                     "Requires HPCA components to generate §fCWU/t§7 (Compute Work Units).")
+            .defaultTooltip()
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("AA", "CC", "CC", "CC", "AA")
                     .slice("VA", "XV", "XV", "XV", "VA")
@@ -205,28 +206,28 @@ public class GTResearchMachines {
             "computation_transmitter_hatch", "Computation Data Transmission Hatch",
             ZPM, (holder) -> new OpticalComputationHatchMachine(holder, true),
             "computation_data_hatch", PartAbility.COMPUTATION_DATA_TRANSMISSION)
-            .tooltips(Component.translatable("multiblock.gtceu.part_sharing.disabled"))
+            .tooltips(GTCommonComponents.PART_SHARING_DISABLED)
             .register();
 
     public static final MachineDefinition COMPUTATION_HATCH_RECEIVER = registerDataHatch(
             "computation_receiver_hatch", "Computation Data Reception Hatch",
             ZPM, (holder) -> new OpticalComputationHatchMachine(holder, false),
             "computation_data_hatch", PartAbility.COMPUTATION_DATA_RECEPTION)
-            .tooltips(Component.translatable("multiblock.gtceu.part_sharing.disabled"))
+            .tooltips(GTCommonComponents.PART_SHARING_DISABLED)
             .register();
 
     public static final MachineDefinition DATA_HATCH_TRANSMITTER = registerDataHatch(
             "data_transmitter_hatch", "Optical Data Transmission Hatch",
             LuV, (holder) -> new OpticalDataHatchMachine(holder, true),
             "optical_data_hatch", PartAbility.OPTICAL_DATA_TRANSMISSION)
-            .tooltips(Component.translatable("multiblock.gtceu.part_sharing.disabled"))
+            .tooltips(GTCommonComponents.PART_SHARING_DISABLED)
             .register();
 
     public static final MachineDefinition DATA_HATCH_RECEIVER = registerDataHatch(
             "data_receiver_hatch", "Optical Data Reception Hatch",
             LuV, (holder) -> new OpticalDataHatchMachine(holder, false),
             "optical_data_hatch", PartAbility.OPTICAL_DATA_RECEPTION)
-            .tooltips(Component.translatable("multiblock.gtceu.part_sharing.disabled"))
+            .tooltips(GTCommonComponents.PART_SHARING_DISABLED)
             .register();
 
     public static final MachineDefinition BASIC_DATA_ACCESS_HATCH = REGISTRATE
@@ -237,7 +238,7 @@ public class GTResearchMachines {
             .abilities(PartAbility.DATA_ACCESS)
             .tooltips(Component.translatable("machine.gtceu.data_access_hatch.tooltip.0"),
                     Component.translatable("machine.gtceu.data_access_hatch.tooltip.1", 4),
-                    Component.translatable("multiblock.gtceu.part_sharing.disabled"))
+                    GTCommonComponents.PART_SHARING_DISABLED)
             .overlayTieredHullModel("data_access_hatch")
             .register();
 
@@ -249,7 +250,7 @@ public class GTResearchMachines {
             .abilities(PartAbility.DATA_ACCESS)
             .tooltips(Component.translatable("machine.gtceu.data_access_hatch.tooltip.0"),
                     Component.translatable("machine.gtceu.data_access_hatch.tooltip.1", 9),
-                    Component.translatable("multiblock.gtceu.part_sharing.disabled"))
+                    GTCommonComponents.PART_SHARING_DISABLED)
             .overlayTieredHullModel("data_access_hatch")
             .register();
 
@@ -261,7 +262,7 @@ public class GTResearchMachines {
             .abilities(PartAbility.DATA_ACCESS)
             .tooltips(Component.translatable("machine.gtceu.data_access_hatch.tooltip.0"),
                     Component.translatable("machine.gtceu.data_access_hatch.tooltip.1", 16),
-                    Component.translatable("multiblock.gtceu.part_sharing.disabled"))
+                    GTCommonComponents.PART_SHARING_DISABLED)
             .overlayTieredHullModel("data_access_hatch")
             .register();
 
@@ -275,7 +276,7 @@ public class GTResearchMachines {
             .tooltipBuilder((s, list) -> {
                 list.add(Component.translatable("machine.gtceu.data_access_hatch.tooltip.0"));
                 CREATIVE_TOOLTIPS.accept(s, list);
-                list.add(Component.translatable("multiblock.gtceu.part_sharing.enabled"));
+                list.add(GTCommonComponents.PART_SHARING_DISABLED);
             })
             .overlayTieredHullModel("data_access_hatch_creative")
             .register();
@@ -291,7 +292,7 @@ public class GTResearchMachines {
     public static final MachineDefinition HPCA_EMPTY_COMPONENT = registerHPCAPart(
             "hpca_empty_component", "Empty HPCA Component",
             GTMachineInstanceFactories.HPCA_EMPTY, "empty", false)
-            .tooltips(Component.translatable("multiblock.gtceu.part_sharing.disabled"))
+            .tooltips(GTCommonComponents.PART_SHARING_DISABLED)
             .register();
 
     public static final MachineDefinition HPCA_COMPUTATION_COMPONENT = registerHPCAPart(
@@ -302,7 +303,7 @@ public class GTResearchMachines {
                     Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut", GTValues.VA[GTValues.LuV]),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cwut", 4),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cooling", 2),
-                    Component.translatable("multiblock.gtceu.part_sharing.disabled"))
+                    GTCommonComponents.PART_SHARING_DISABLED)
             .tooltipBuilder(OVERHEAT_TOOLTIPS)
             .register();
     public static final MachineDefinition HPCA_ADVANCED_COMPUTATION_COMPONENT = registerHPCAPart(
@@ -313,7 +314,7 @@ public class GTResearchMachines {
                     Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut", GTValues.VA[GTValues.ZPM]),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cwut", 16),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cooling", 4),
-                    Component.translatable("multiblock.gtceu.part_sharing.disabled"))
+                    GTCommonComponents.PART_SHARING_DISABLED)
             .tooltipBuilder(OVERHEAT_TOOLTIPS)
             .register();
     public static final MachineDefinition HPCA_HEAT_SINK_COMPONENT = registerHPCAPart(
@@ -321,7 +322,7 @@ public class GTResearchMachines {
             GTMachineInstanceFactories.HPCA_HEAT_SINK, "heat_sink", false)
             .tooltips(Component.translatable("machine.gtceu.hpca_component.tooltip.cooler_passive"),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.cooler_cooling", 1),
-                    Component.translatable("multiblock.gtceu.part_sharing.disabled"))
+                    GTCommonComponents.PART_SHARING_DISABLED)
             .register();
     public static final MachineDefinition HPCA_ACTIVE_COOLER_COMPONENT = registerHPCAPart(
             "hpca_active_cooler_component", "HPCA Active Cooling Component",
@@ -331,14 +332,14 @@ public class GTResearchMachines {
                     Component.translatable("machine.gtceu.hpca_component.tooltip.cooler_active_coolant",
                             8, GTMaterials.PCBCoolant.getLocalizedName()),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.cooler_cooling", 2),
-                    Component.translatable("multiblock.gtceu.part_sharing.disabled"))
+                    GTCommonComponents.PART_SHARING_DISABLED)
             .register();
     public static final MachineDefinition HPCA_BRIDGE_COMPONENT = registerHPCAPart(
             "hpca_bridge_component", "HPCA Bridge Component",
             GTMachineInstanceFactories.HPCA_BRIDGE, "bridge", false)
             .tooltips(Component.translatable("machine.gtceu.hpca_component.tooltip.bridge"),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut", GTValues.VA[GTValues.IV]),
-                    Component.translatable("multiblock.gtceu.part_sharing.disabled"))
+                    GTCommonComponents.PART_SHARING_DISABLED)
             .register();
 
     private static <
