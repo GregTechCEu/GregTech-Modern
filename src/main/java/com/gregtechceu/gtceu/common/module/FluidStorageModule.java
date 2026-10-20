@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.ThermalFluidStats;
+import com.gregtechceu.gtceu.api.item.datacomponents.SimpleEnergyContent;
 import com.gregtechceu.gtceu.api.item.module.CapabilityProviderItemModule;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
@@ -16,6 +17,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
@@ -38,6 +40,13 @@ public class FluidStorageModule extends CapabilityProviderItemModule<IFluidHandl
     public void applyInitialCapabilityData(IFluidHandlerItem newCap, ModuleContext context) {
         var moduleItemData = context.getData().getModuleItem().getCapability(Capabilities.FluidHandler.ITEM);
         if (moduleItemData != null) newCap.fill(moduleItemData.getFluidInTank(0), IFluidHandler.FluidAction.EXECUTE);
+    }
+
+    @Override
+    public ItemStack copyCapabilityDataToModuleItem(IFluidHandlerItem cap, ModuleContext context) {
+        var newItem = context.getData().getModuleItem().copy();
+        newItem.set(GTDataComponents.FLUID_CONTENT, SimpleFluidContent.copyOf(cap.getFluidInTank(0)));
+        return newItem;
     }
 
     @Override

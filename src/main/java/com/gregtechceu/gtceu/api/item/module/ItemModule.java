@@ -91,6 +91,9 @@ public abstract class ItemModule {
 
     public void onUnequip(ModuleContext moduleContext, LivingEntity entity) {}
 
+    // Called when the module item needs to be updated with new data from the item module
+    public void updateModuleItem(ModuleContext moduleContext) {}
+
     /**
      * Called each tick this item is in an entity's armor slots.
      */

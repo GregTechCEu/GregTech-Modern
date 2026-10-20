@@ -159,6 +159,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
             if (modularItem == null) return;
             for (int i = 0; i < IModularItem.MAX_MODULE_SLOTS; i++) {
                 var data = modularItem.getModuleContextForSlot(i);
+                if (data != null) data.getModule().updateModuleItem(data);
                 moduleSlots.setStackInSlotNoCallback(i,
                         data == null ? ItemStack.EMPTY : data.getData().getModuleItem());
             }

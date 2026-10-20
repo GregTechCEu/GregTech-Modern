@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
+import com.gregtechceu.gtceu.api.item.datacomponents.SimpleEnergyContent;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
@@ -44,6 +45,13 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
     public void applyInitialCapabilityData(IElectricItem newCap, ModuleContext context) {
         var moduleItemData = context.getData().getModuleItem().getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM);
         if (moduleItemData != null) newCap.charge(moduleItemData.getCharge(), newCap.getTier(), true, false);
+    }
+
+    @Override
+    public ItemStack copyCapabilityDataToModuleItem(IElectricItem cap, ModuleContext context) {
+        var newItem = context.getData().getModuleItem().copy();
+        newItem.set(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(cap.getMaxCharge(), cap.getCharge()));
+        return newItem;
     }
 
     @Override
