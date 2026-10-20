@@ -39,11 +39,14 @@ import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.ByteSyncValue;
+import brachy.modularui.value.sync.DynamicLinkedSyncHandler;
 import brachy.modularui.value.sync.InteractionSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
@@ -383,51 +386,51 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        InteractionSyncHandler syncHandler = new InteractionSyncHandler();
-        Flow maintenanceStatusWidget = Flow.column()
-                .crossAxisAlignment(Alignment.CrossAxis.START)
-                .coverChildren()
-                .padding(5)
-                .childPadding(2);
-        Runnable updateWidget = maintenanceUpdateWidget(maintenanceStatusWidget);
-        syncHandler.setOnMousePressed((button) -> {
-            fixMaintenanceProblems(guiData.getPlayer());
-            updateWidget.run();
-        });
-        updateWidget.run();
+        var problemsSyncValue = new ByteSyncValue(this::getMaintenanceProblems);
+        syncManager.syncValue("maintenanceProblems", problemsSyncValue);
 
+        InteractionSyncHandler buttonSyncHandler = new InteractionSyncHandler();
+        buttonSyncHandler.setOnMousePressed((button) -> {
+            fixMaintenanceProblems(guiData.getPlayer());
+        });
+
+        var dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(problemsSyncValue)
+                .widgetProvider((widgetSyncManager, problemsSyncHandler) -> {
+                    var column = Flow.column()
+                            .crossAxisAlignment(Alignment.CrossAxis.START)
+                            .coverChildren()
+                            .padding(5)
+                            .childPadding(2);
+                    boolean hasMaintenanceProblems = ConfigHolder.INSTANCE.machines.enableMaintenance &&
+                            problemsSyncHandler.getValue() < 63;
+                    column.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems ?
+                            Component.translatable("gtceu.top.maintenance_broken") :
+                            Component.translatable("gtceu.top.maintenance_fixed"))))
+                            .child(Flow.row()
+                                    .coverChildren()
+                                    .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
+                                            .filter(i -> ((problemsSyncHandler.getValue() >> i) & 1) == 0)
+                                            .map(GTUtil::getMaintenanceText)
+                                            .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getFirst()))
+                                                    .size(16))
+                                            .map(IWidget.class::cast)
+                                            .toList()));
+                    return column;
+                });
         mainWidget.child(Flow.column()
                 .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
-                .child(manualMaintenancePanel(syncHandler, updateWidget))
-                .child(maintenanceStatusWidget));
+                .child(manualMaintenancePanel(buttonSyncHandler))
+                .child(new DynamicWidget<>().syncHandler(dynamicLinkedSyncHandler)));
     }
 
-    protected Runnable maintenanceUpdateWidget(Flow maintenanceStatusWidget) {
-        return () -> {
-            while (!maintenanceStatusWidget.getChildren().isEmpty()) maintenanceStatusWidget.remove(0);
-            maintenanceStatusWidget.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems() ?
-                    Component.translatable("gtceu.top.maintenance_broken") :
-                    Component.translatable("gtceu.top.maintenance_fixed"))))
-                    .child(Flow.row()
-                            .coverChildren()
-                            .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
-                                    .filter(i -> ((getMaintenanceProblems() >> i) & 1) == 0)
-                                    .map(GTUtil::getMaintenanceText)
-                                    .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getFirst())).size(16))
-                                    .map(IWidget.class::cast)
-                                    .toList()));
-        };
-    }
-
-    protected Flow manualMaintenancePanel(InteractionSyncHandler syncHandler, Runnable updateWidget) {
+    protected Flow manualMaintenancePanel(InteractionSyncHandler syncHandler) {
         return Flow.row()
                 .leftRel(0.5f)
                 .coverChildren()
                 .padding(5)
                 .child(new ItemSlot()
-                        .slot(new ModularSlot(itemStackHandler, 0).changeListener(
-                                (newItem, onlyAmountChanged, client, init) -> updateWidget.run()))
+                        .slot(new ModularSlot(itemStackHandler.storage, 0).singletonSlotGroup())
                         .background(GTGuiTextures.SLOT, GTGuiTextures.DUCT_TAPE_OVERLAY))
                 .child(new ButtonWidget<>()
                         .background(GTGuiTextures.BUTTON_MAINTENANCE)
