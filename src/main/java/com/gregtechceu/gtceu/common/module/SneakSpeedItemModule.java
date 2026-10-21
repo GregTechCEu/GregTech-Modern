@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.module;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
@@ -8,49 +9,64 @@ import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 
 public class SneakSpeedItemModule extends TieredItemModule {
 
     private static final int ENERGY_USAGE = 819;
+    private final double sneakSpeedBonus;
 
     public SneakSpeedItemModule(ResourceLocation id, int tier) {
         super(id, tier);
+        sneakSpeedBonus = tier >= GTValues.EV ? 0.7 : tier * 0.15;
     }
 
     @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.sneak_speed.description", getTier() * 100 / 8f);
+        return Component.translatable("module.gtceu.sneak_speed.description", Math.round((0.3 + sneakSpeedBonus) * 100));
     }
 
     @Override
-    public void clientSideArmorTick(ModuleContext moduleContext, Player player) {
-        if (!isEnabled(moduleContext)) return;
-        float mul = getTier() / 8f + 1;
-        boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
-        boolean sneaking = SyncedKeyMappings.VANILLA_SNEAK.isKeyDown(player);
-        boolean movingForward = SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player);
+    public void clientSideArmorTick(ModuleContext context, Player player) {
+        updateMovementModifier(context, player);
+    }
 
-        var battery = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
-        if (battery == null || !battery.canUse(ENERGY_USAGE)) return;
+    @Override
+    public void onArmorTick(ModuleContext context, LivingEntity entity) {
+        if (entity instanceof Player player) updateMovementModifier(context, player);
+        super.onArmorTick(context, entity);
+    }
 
-        if (player.onGround() && sneaking && movingForward) {
-            float speed = 0.25F * mul;
-            if (player.isInWater()) {
-                speed = 0.1F * mul;
-                if (jumping) {
-                    player.push(0.0, 0.1, 0.0);
-                }
-            }
-            player.moveRelative(speed, new Vec3(0, 0, 1));
+    private void updateMovementModifier(ModuleContext context, Player player) {
+        var attribute = player.getAttribute(Attributes.SNEAKING_SPEED);
+        if (attribute == null) return;
+        var battery = GTCapabilityHelper.getElectricItem(context.getAppliedTo());
+        boolean active = isEnabled(context) &&
+                battery != null && battery.canUse(ENERGY_USAGE);
+        if (!active) {
+            attribute.removeModifier(getId());
+            return;
         }
+        var modifier = new AttributeModifier(getId(), sneakSpeedBonus, AttributeModifier.Operation.ADD_VALUE);
+        if (!modifier.equals(attribute.getModifier(getId()))) attribute.addOrUpdateTransientModifier(modifier);
+    }
+
+    @Override
+    public void onUnequip(ModuleContext context, LivingEntity entity) {
+        var attribute = entity.getAttribute(Attributes.SNEAKING_SPEED);
+        if (attribute != null) attribute.removeModifier(getId());
     }
 
     @Override
     public long energyUsagePerTick(ModuleContext moduleContext, LivingEntity entity) {
         if (entity instanceof Player player) {
-            return SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isShiftKeyDown() ? ENERGY_USAGE : 0;
+            boolean moving = SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) ||
+                    SyncedKeyMappings.VANILLA_BACKWARD.isKeyDown(player) ||
+                    SyncedKeyMappings.VANILLA_LEFT.isKeyDown(player) ||
+                    SyncedKeyMappings.VANILLA_RIGHT.isKeyDown(player);
+            return moving && (player.isCrouching() || player.isVisuallyCrawling()) ? ENERGY_USAGE : 0;
         }
         return 0;
     }

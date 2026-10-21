@@ -44,7 +44,7 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
     }
 
     public float getMaxJumpBoost() {
-        return getTier() / 4f;
+        return getTier();
     }
 
     @Override

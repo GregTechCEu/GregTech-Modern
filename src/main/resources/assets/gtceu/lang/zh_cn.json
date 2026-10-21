@@ -2641,7 +2641,6 @@
     "gtceu.key.armor_mode_switch": "切换盔甲模式",
     "gtceu.key.enable_boots": "启用跳跃提升",
     "gtceu.key.enable_jetpack": "启用喷气背包",
-    "gtceu.key.enable_step_assist": "启用步行辅助",
     "gtceu.key.tool_aoe_change": "切换工具范围模式",
     "gtceu.machine.active_transformer.tooltip.0": "§7变形金刚：伪装的激光",
     "gtceu.machine.active_transformer.tooltip.1": "§7可以将任意数量的能量§f输入§7整合为任意数量的能量§f输出§7。",

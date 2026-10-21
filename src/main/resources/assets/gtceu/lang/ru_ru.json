@@ -5871,7 +5871,6 @@
     "gtceu.jade.minutes": "%s Минут(ы)",
     "gtceu.jade.remaining_charge_time": "До полного: %s",
     "gtceu.jade.remaining_discharge_time": "До пустого: %s",
-    "gtceu.key.enable_step_assist": "Включить авто-подъем",
     "gtceu.machine.miner.progress": "Прогресс: %d/%d",
     "gtceu.placeholder_info.blockNbt.0": "Возвращает NBT данные блока-сущности",
     "gtceu.placeholder_info.blockNbt.1": "Используется:",

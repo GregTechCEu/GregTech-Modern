@@ -5897,7 +5897,6 @@
   "gtceu.jade.years": "%s年",
   "gtceu.jei.bedrock_vein_diagram.depleted": "枯渇: %s",
   "gtceu.jei.bedrock_vein_diagram.yield": "収量: %s",
-  "gtceu.key.enable_step_assist": "StepAssist の有効化",
   "gtceu.machine.miner.progress": "進行度: %d/%d",
   "gtceu.placeholder_info.blockNbt.0": "ブロックエンティティのNBTを返す",
   "gtceu.placeholder_info.blockNbt.1": "使用方法:",
