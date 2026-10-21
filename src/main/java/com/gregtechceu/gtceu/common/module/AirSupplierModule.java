@@ -14,13 +14,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class AirSupplierModule extends ItemModule {
 
+    private static final long ENERGY_PER_USE = 128;
+
     public AirSupplierModule(ResourceLocation id) {
         super(id);
     }
 
     @Override
     public Component getInfo() {
-        return Component.translatable(getDescriptionLanguageKey());
+        return Component.translatable(getDescriptionLanguageKey(), ENERGY_PER_USE / 100);
     }
 
     @Override
@@ -29,7 +31,7 @@ public class AirSupplierModule extends ItemModule {
         super.onArmorTick(moduleContext, entity);
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return;
-        supplyAir(electricItem, player, 128);
+        supplyAir(electricItem, player, ENERGY_PER_USE);
     }
 
     public static void supplyAir(@NotNull IElectricItem item, Player player, long energyPerUse) {

@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
-import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,8 +23,6 @@ import lombok.Getter;
 import java.util.Objects;
 
 public class SpeedItemModule extends TieredItemModule {
-
-    private static final int ENERGY_USAGE = 819;
 
     public SpeedItemModule(ResourceLocation id, int tier) {
         super(id, tier);
@@ -65,7 +62,8 @@ public class SpeedItemModule extends TieredItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable(getDescriptionLanguageKey(), getTier() * 25);
+        return Component.translatable(getDescriptionLanguageKey(), getTier() * 25,
+                ArmorUtils.getModuleEnergyCost(getTier()));
     }
 
     @Override
@@ -82,10 +80,12 @@ public class SpeedItemModule extends TieredItemModule {
     private void updateMovementModifier(ModuleContext context, Player player) {
         var attribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (attribute == null) return;
-        var battery = GTCapabilityHelper.getElectricItem(context.getAppliedTo());
         double bonus = getTier() / 4d * getStrength(context);
         boolean active = isEnabled(context) && bonus > 0 && player.isSprinting() &&
-                battery != null && battery.canUse(ENERGY_USAGE);
+                ArmorUtils.isMovingOnGround(player) && ArmorUtils.useModuleEnergy(context.getAppliedTo(),
+                        ArmorUtils.toModuleEnergyCredits(
+                                Math.max(0.25, ArmorUtils.getModuleEnergyCost(getTier()) * getStrength(context))),
+                        player.level().isClientSide);
         if (!active) {
             attribute.removeModifier(getId());
             return;
@@ -98,15 +98,6 @@ public class SpeedItemModule extends TieredItemModule {
     public void onUnequip(ModuleContext context, LivingEntity entity) {
         var attribute = entity.getAttribute(Attributes.MOVEMENT_SPEED);
         if (attribute != null) attribute.removeModifier(getId());
-    }
-
-    @Override
-    public long energyUsagePerTick(ModuleContext moduleContext, LivingEntity entity) {
-        if (!isEnabled(moduleContext) || getStrength(moduleContext) <= 0) return 0;
-        if (entity instanceof Player player) {
-            return SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isSprinting() ? ENERGY_USAGE : 0;
-        }
-        return 0;
     }
 
     public static class SpeedModuleData extends ModuleData {

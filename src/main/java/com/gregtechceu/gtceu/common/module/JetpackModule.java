@@ -21,7 +21,7 @@ import brachy.modularui.value.sync.PanelSyncManager;
 public class JetpackModule extends ArmorLogicItemModule implements ITieredItemModule {
 
     private static final Jetpack JETPACK = new Jetpack(
-            15,
+            2,
             1_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierImpeller - 2)),
             ConfigHolder.INSTANCE.tools.voltageTierImpeller);
 
@@ -31,7 +31,7 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
 
     @Override
     public Component getInfo() {
-        return Component.translatable(getDescriptionLanguageKey());
+        return Component.translatable(getDescriptionLanguageKey(), JETPACK.getEnergyPerUse());
     }
 
     @Override

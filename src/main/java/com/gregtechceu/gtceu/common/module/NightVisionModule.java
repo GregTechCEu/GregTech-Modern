@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.module.IHUDProviderItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
@@ -28,6 +26,8 @@ import java.util.Objects;
 
 public class NightVisionModule extends ItemModule implements IHUDProviderItemModule {
 
+    private static final double ENERGY_PER_TICK = 0.25;
+
     public NightVisionModule(ResourceLocation id) {
         super(id);
     }
@@ -49,7 +49,7 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
 
     @Override
     public Component getInfo() {
-        return Component.translatable(getDescriptionLanguageKey(), 2);
+        return Component.translatable(getDescriptionLanguageKey(), ENERGY_PER_TICK);
     }
 
     @Override
@@ -67,15 +67,10 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
             return;
         }
         super.onArmorTick(moduleContext, entity);
-        IElectricItem item = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
-        if (item == null) {
-            return;
-        }
         NightVisionModuleData data = moduleContext.getData(NightVisionModuleData.class);
 
         long levelTick = entity.level().getGameTime();
         byte toggleTimer = data.getToggleTimer();
-        long nightVisionToggleTick = data.getNightVisionToggleTick();
         boolean nightVision = data.isNightVision();
 
         if (toggleTimer == 0 && SyncedKeyMappings.NIGHT_VISION_ENABLE.isKeyDown(player)) {
@@ -86,7 +81,8 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
                 data = data.withNightVisionToggleTick(0);
             }
 
-            if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
+            if (nightVision && !ArmorUtils.useModuleEnergy(moduleContext.getAppliedTo(),
+                    ArmorUtils.toModuleEnergyCredits(ENERGY_PER_TICK), true)) {
                 nightVision = false;
                 player.displayClientMessage(Component.translatable("armor.gtceu.night_vision.error"), true);
             } else {
@@ -97,20 +93,23 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
             moduleContext.setData(data);
         }
 
-        if (nightVision) {
+        if (nightVision && ArmorUtils.useModuleEnergy(moduleContext.getAppliedTo(),
+                ArmorUtils.toModuleEnergyCredits(ENERGY_PER_TICK), false)) {
             player.removeEffect(MobEffects.BLINDNESS);
-            if (levelTick > nightVisionToggleTick && item.canUse(2)) {
+            if (levelTick > data.getNightVisionToggleTick()) {
                 player.addEffect(
                         new MobEffectInstance(MobEffects.NIGHT_VISION, ArmorUtils.NIGHTVISION_DURATION, 0, true,
                                 false));
-                item.discharge(2, item.getTier(), true, false, false);
-
                 data = data.withNightVisionToggleTick(
                         levelTick + ArmorUtils.NIGHTVISION_DURATION - ArmorUtils.NIGHT_VISION_RESET);
                 moduleContext.setData(data);
             }
         } else {
             player.removeEffect(MobEffects.NIGHT_VISION);
+            if (data.getNightVisionToggleTick() != 0) {
+                data = data.withNightVisionToggleTick(0);
+                moduleContext.setData(data);
+            }
         }
 
         if (toggleTimer > 0) {

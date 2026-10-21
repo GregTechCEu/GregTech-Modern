@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 public class AdvancedJetpackModule extends JetpackModule {
 
     private static final AdvancedJetpack JETPACK = new AdvancedJetpack(
-            256,
+            48,
             6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller - 4)),
             ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller);
 
@@ -21,7 +21,8 @@ public class AdvancedJetpackModule extends JetpackModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable(getDescriptionLanguageKey());
+        return Component.translatable(getDescriptionLanguageKey(), JETPACK.getEnergyPerUse(),
+                Math.round(JETPACK.getEnergyPerUse() * JETPACK.getSprintEnergyModifier()));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.module;
 
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
@@ -40,7 +41,12 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
 
     @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.jump_boost.description", getMaxJumpBoost());
+        return Component.translatable("module.gtceu.jump_boost.description", getMaxJumpBoost(),
+                ArmorUtils.getModuleEnergyCost(getTier()) * 2);
+    }
+
+    public double getEnergyCost(ModuleContext context) {
+        return ArmorUtils.getModuleEnergyCost(getTier()) * 2 * getJumpHeight(context) / getMaxJumpBoost();
     }
 
     public float getMaxJumpBoost() {
