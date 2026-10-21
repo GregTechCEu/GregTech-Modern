@@ -101,7 +101,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 } else {
                     BlockPos p = part.getBlockPos();
                     pState.setError(new PatternStringError(Component.translatable(
-                            "gtceu.predicate_error.distillery.unexpected_hatch", p.getX(), p.getY(), p.getZ())));
+                            "gtceu.predicate_error.distillery.unexpected_hatch", p.getX(), p.getY(), p.getZ())).pos(p));
                     // GTCEu.LOGGER.error(
                     // "The Distillation Tower at {} has a fluid export hatch with an unexpected Y position",
                     // getBlockPos());
