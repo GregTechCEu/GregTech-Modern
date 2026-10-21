@@ -285,17 +285,10 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
 
     public @Nullable ControllerInfo loadControllerInfo(ItemStack stack) {
         CompoundTag tag = stack.getOrCreateTag();
-        if (tag.contains(CONTROLLER_INFO_TAG)) {
-            try {
-                return ControllerInfo.CODEC
-                        .parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
-                        .getOrThrow(false, GTCEu.LOGGER::error);
-            } catch (Exception e) {
-                return null;
-            }
-        } else {
-            return null;
-        }
+        if (!tag.contains(CONTROLLER_INFO_TAG)) return null;
+        return ControllerInfo.CODEC
+                .parse(NbtOps.INSTANCE, tag.getCompound(CONTROLLER_INFO_TAG))
+                .getOrThrow(false, GTCEu.LOGGER::error);
     }
 
     @Override
