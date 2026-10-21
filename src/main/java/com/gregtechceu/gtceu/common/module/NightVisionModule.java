@@ -78,7 +78,7 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
         long nightVisionToggleTick = data.getNightVisionToggleTick();
         boolean nightVision = data.isNightVision();
 
-        if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
+        if (toggleTimer == 0 && SyncedKeyMappings.NIGHT_VISION_ENABLE.isKeyDown(player)) {
             nightVision = !nightVision;
             toggleTimer = 5;
 
