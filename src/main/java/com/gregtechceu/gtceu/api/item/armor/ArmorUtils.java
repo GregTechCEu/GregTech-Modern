@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.ServerGamePacketListenerImplAccessor;
@@ -22,6 +24,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -29,8 +33,12 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ArmorUtils {
@@ -39,6 +47,68 @@ public class ArmorUtils {
     public static final int NIGHTVISION_DURATION = 20 * 20; // 20 seconds
     // Flashing starts at 10 seconds + two second buffer to prevent flicker
     public static final int NIGHT_VISION_RESET = 12 * 20;
+
+    /**
+     * Shares the energy evenly across all valid items, respecting max I/O rates
+     */
+    public static void chargeCarriedItems(Player player, ItemStack sourceStack, IElectricItem source, long budget) {
+        long remaining = Math.min(budget, source.getCharge());
+        if (remaining <= 0) return;
+        record Candidate(ItemStack stack, long demand) {}
+        var stacks = new ArrayList<ItemStack>();
+        if (GTCEu.Mods.isCuriosLoaded()) {
+            IItemHandler curios = CuriosApi.getCuriosInventory(player)
+                    .<IItemHandler>map(ICuriosItemHandler::getEquippedCurios)
+                    .orElse(EmptyItemHandler.INSTANCE);
+            for (int i = 0; i < curios.getSlots(); i++) stacks.add(curios.getStackInSlot(i));
+        }
+        var inventory = player.getInventory();
+        for (int i = 0; i < inventory.getContainerSize(); i++) stacks.add(inventory.getItem(i));
+        var candidates = new ArrayList<Candidate>();
+        for (ItemStack stack : stacks) {
+            long demand = chargeCarriedItem(remaining, sourceStack, source, stack, true);
+            if (demand > 0) candidates.add(new Candidate(stack, demand));
+        }
+        if (candidates.isEmpty()) return;
+        Collections.rotate(candidates, Math.floorMod(player.tickCount, candidates.size()));
+        candidates.sort(Comparator.comparingLong(Candidate::demand));
+        for (int i = 0; i < candidates.size() && remaining > 0; i++) {
+            Candidate candidate = candidates.get(i);
+            long share = Math.min(candidate.demand(), remaining / (candidates.size() - i));
+            if (share > 0) {
+                remaining -= chargeCarriedItem(share, sourceStack, source, candidate.stack(), false);
+            }
+        }
+    }
+
+    private static long chargeCarriedItem(long remaining, ItemStack sourceStack, IElectricItem source,
+                                          ItemStack target, boolean simulate) {
+        if (target == sourceStack) return 0;
+        IElectricItem targetEnergy = GTCapabilityHelper.getElectricItem(target);
+        if (targetEnergy != null) {
+            if (targetEnergy.canProvideChargeExternally()) return 0;
+            long available = source.discharge(remaining, source.getTier(), true, false, true);
+            long accepted = targetEnergy.charge(available, source.getTier(), false, true);
+            if (simulate) return accepted;
+            long extracted = source.discharge(accepted, source.getTier(), true, false, false);
+            long received = targetEnergy.charge(extracted, source.getTier(), false, false);
+            if (received < extracted) source.charge(extracted - received, source.getTier(), true, false);
+            return received;
+        }
+        if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
+            var targetFE = GTCapabilityHelper.getForgeEnergyItem(target);
+            if (targetFE != null && targetFE.canReceive()) {
+                long available = source.discharge(remaining, source.getTier(), true, false, true);
+                long accepted = FeCompat.insertEu(targetFE, available, true);
+                if (simulate) return accepted;
+                long extracted = source.discharge(accepted, source.getTier(), true, false, false);
+                long received = FeCompat.insertEu(targetFE, extracted, false);
+                if (received < extracted) source.charge(extracted - received, source.getTier(), true, false);
+                return received;
+            }
+        }
+        return 0;
+    }
 
     /**
      * Check is possible to charge item

@@ -1,17 +1,14 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -27,8 +24,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.Text;
@@ -44,12 +39,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -98,67 +88,6 @@ public class AutoChargeItemModule extends TieredItemModule {
                 electricItem.charge(charger.energyContainer.removeEnergy(energy), chargerTier, true, false);
             }
         }
-        chargeCarriedItems(player, moduleContext.getAppliedTo(), electricItem, budget, data.getVoltageTier());
-    }
-
-    private static void chargeCarriedItems(Player player, ItemStack sourceStack, IElectricItem source, long budget,
-                                           int voltageTier) {
-        long remaining = Math.min(budget, source.getCharge());
-        if (remaining <= 0) return;
-        record Candidate(ItemStack stack, long demand) {}
-        var stacks = new ArrayList<ItemStack>();
-        if (GTCEu.Mods.isCuriosLoaded()) {
-            IItemHandler curios = CuriosApi.getCuriosInventory(player)
-                    .<IItemHandler>map(ICuriosItemHandler::getEquippedCurios)
-                    .orElse(EmptyItemHandler.INSTANCE);
-            for (int i = 0; i < curios.getSlots(); i++) stacks.add(curios.getStackInSlot(i));
-        }
-        var inventory = player.getInventory();
-        for (int i = 0; i < inventory.getContainerSize(); i++) stacks.add(inventory.getItem(i));
-        var candidates = new ArrayList<Candidate>();
-        for (ItemStack stack : stacks) {
-            long demand = chargeCarriedItem(remaining, sourceStack, source, stack, voltageTier, true);
-            if (demand > 0) candidates.add(new Candidate(stack, demand));
-        }
-        if (candidates.isEmpty()) return;
-        // Evenly charge all items that can be charged.
-        Collections.rotate(candidates, Math.floorMod(player.tickCount, candidates.size()));
-        candidates.sort(Comparator.comparingLong(Candidate::demand));
-        for (int i = 0; i < candidates.size() && remaining > 0; i++) {
-            Candidate candidate = candidates.get(i);
-            long share = Math.min(candidate.demand(), remaining / (candidates.size() - i));
-            if (share > 0) {
-                remaining -= chargeCarriedItem(share, sourceStack, source, candidate.stack(), voltageTier, false);
-            }
-        }
-    }
-
-    private static long chargeCarriedItem(long remaining, ItemStack sourceStack, IElectricItem source,
-                                          ItemStack target, int voltageTier, boolean simulate) {
-        if (target == sourceStack) return 0;
-        IElectricItem targetEnergy = GTCapabilityHelper.getElectricItem(target);
-        if (targetEnergy != null && !targetEnergy.canProvideChargeExternally()) {
-            long available = source.discharge(remaining, source.getTier(), true, false, true);
-            long accepted = targetEnergy.charge(available, Math.min(voltageTier, source.getTier()), true, true);
-            if (simulate) return accepted;
-            long extracted = source.discharge(accepted, source.getTier(), true, false, false);
-            long received = targetEnergy.charge(extracted, Math.min(voltageTier, source.getTier()), true, false);
-            if (received < extracted) source.charge(extracted - received, source.getTier(), true, false);
-            return received;
-        }
-        if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
-            var targetFE = GTCapabilityHelper.getForgeEnergyItem(target);
-            if (targetFE != null && targetFE.canReceive()) {
-                long available = source.discharge(remaining, source.getTier(), true, false, true);
-                long accepted = FeCompat.insertEu(targetFE, available, true);
-                if (simulate) return accepted;
-                long extracted = source.discharge(accepted, source.getTier(), true, false, false);
-                long received = FeCompat.insertEu(targetFE, extracted, false);
-                if (received < extracted) source.charge(extracted - received, source.getTier(), true, false);
-                return received;
-            }
-        }
-        return 0;
     }
 
     @Override

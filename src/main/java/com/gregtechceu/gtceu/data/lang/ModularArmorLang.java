@@ -13,6 +13,7 @@ public class ModularArmorLang {
         provider.add("gui.gtceu.armor_config.no_modules", "No modules installed");
         provider.add("gui.gtceu.armor_config.helmet", "Helmet");
         provider.add("gui.gtceu.armor_config.chestplate", "Chestplate");
+        provider.add("gui.gtceu.armor_config.charge_inventory", "Charge Inventory");
         provider.add("gui.gtceu.armor_config.leggings", "Leggings");
         provider.add("gui.gtceu.armor_config.boots", "Boots");
 

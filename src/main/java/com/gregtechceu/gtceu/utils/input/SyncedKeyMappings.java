@@ -33,8 +33,6 @@ public final class SyncedKeyMappings {
             "gtceu.key.armor_hover", KeyConflictContext.IN_GAME, InputConstants.KEY_H);
     public static final SyncedKeyMapping JETPACK_ENABLE = SyncedKeyMapping.createConfigurable(
             "gtceu.key.enable_jetpack", KeyConflictContext.IN_GAME, InputConstants.KEY_G);
-    public static final SyncedKeyMapping ARMOR_CHARGING = SyncedKeyMapping.createConfigurable(
-            "gtceu.key.armor_charging", KeyConflictContext.IN_GAME, InputConstants.KEY_N);
     public static final SyncedKeyMapping TOOL_AOE_CHANGE = SyncedKeyMapping.createConfigurable(
             "gtceu.key.tool_aoe_change", KeyConflictContext.IN_GAME, InputConstants.KEY_V);
     public static final SyncedKeyMapping MODULAR_ITEM_GUI = SyncedKeyMapping.createConfigurable(
