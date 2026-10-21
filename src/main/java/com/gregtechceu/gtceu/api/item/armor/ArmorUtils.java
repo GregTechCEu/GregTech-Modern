@@ -309,33 +309,51 @@ public class ArmorUtils {
     public static class ModularHUD {
 
         private byte stringAmount = 0;
-        private final List<Component> stringList;
+        private final List<HudLine> stringList;
         private static final Minecraft mc = Minecraft.getInstance();
+
+        private record HudLine(int columnWidth, Component separator, Component[] columns) {}
 
         public ModularHUD() {
             this.stringList = new ArrayList<>();
         }
 
         public void newLine(Component string) {
+            newLine(mc.font.width(string), Component.empty(), string);
+        }
+
+        public void newLine(int columnWidth, Component separator, Component... columns) {
             this.stringAmount++;
-            this.stringList.add(string);
+            this.stringList.add(new HudLine(columnWidth, separator, columns));
         }
 
         public void draw(GuiGraphics guiGraphics) {
             for (int i = 0; i < stringAmount; i++) {
-                IntIntPair coords = this.getStringCoord(i);
-                guiGraphics.drawString(mc.font, stringList.get(i), coords.firstInt(), coords.secondInt(), 0xFFFFFF,
-                        false);
+                HudLine line = stringList.get(i);
+                int separatorWidth = mc.font.width(line.separator());
+                int width = line.columnWidth() * line.columns().length +
+                        separatorWidth * (line.columns().length - 1);
+                IntIntPair coords = this.getStringCoord(i, width);
+                int x = coords.firstInt();
+                for (int column = 0; column < line.columns().length; column++) {
+                    Component text = line.columns()[column];
+                    guiGraphics.drawString(mc.font, text, x + line.columnWidth() - mc.font.width(text),
+                            coords.secondInt(), 0xFFFFFF, false);
+                    x += line.columnWidth();
+                    if (column < line.columns().length - 1) {
+                        guiGraphics.drawString(mc.font, line.separator(), x, coords.secondInt(), 0xFFFFFF, false);
+                        x += separatorWidth;
+                    }
+                }
             }
         }
 
-        private IntIntPair getStringCoord(int index) {
+        private IntIntPair getStringCoord(int index, int stringWidth) {
             int posX;
             int posY;
             int fontHeight = mc.font.lineHeight;
             int windowHeight = mc.getWindow().getGuiScaledHeight();
             int windowWidth = mc.getWindow().getGuiScaledWidth();
-            int stringWidth = mc.font.width(stringList.get(index));
             switch (ConfigHolder.INSTANCE.client.armorHud.hudLocation) {
                 case 1 -> {
                     posX = 10 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetX;

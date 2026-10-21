@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.common.module.BatteryItemModule;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.network.chat.CommonComponents;
@@ -54,19 +55,18 @@ public class HudGuiOverlay implements LayeredDraw.Layer {
     }
 
     private static void renderSuitBatteries(Player player, ArmorUtils.ModularHUD hud) {
-        var percentages = Component.empty();
+        Component[] percentages = new Component[4];
+        var slots = new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST,
+                EquipmentSlot.LEGS, EquipmentSlot.FEET };
         boolean hasBattery = false;
-        for (var slot : new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST,
-                EquipmentSlot.LEGS, EquipmentSlot.FEET }) {
-            if (slot != EquipmentSlot.HEAD)
-                percentages.append(Component.literal(" | ").withStyle(ChatFormatting.WHITE));
-            var stack = player.getItemBySlot(slot);
+        for (int slot = 0; slot < slots.length; slot++) {
+            var stack = player.getItemBySlot(slots[slot]);
             var modular = GTCapabilityHelper.getModularItem(stack);
             var electric = GTCapabilityHelper.getElectricItem(stack);
             boolean hasModule = modular != null && modular.getAllModuleInstances().stream()
                     .anyMatch(context -> context.getModule() instanceof BatteryItemModule);
             if (!hasModule || electric == null || electric.getMaxCharge() <= 0) {
-                percentages.append(Component.literal("--%").withStyle(ChatFormatting.WHITE));
+                percentages[slot] = Component.literal("--%").withStyle(ChatFormatting.WHITE);
                 continue;
             }
             hasBattery = true;
@@ -75,11 +75,17 @@ public class HudGuiOverlay implements LayeredDraw.Layer {
                     percent >= 50 ? ChatFormatting.YELLOW :
                             percent >= 25 ? ChatFormatting.GOLD :
                                     percent > 0 ? ChatFormatting.RED : ChatFormatting.DARK_RED;
-            percentages.append(Component.literal(percent + "%").withStyle(color));
+            percentages[slot] = Component.literal(percent + "%").withStyle(color);
         }
         if (hasBattery) {
+            Font font = Minecraft.getInstance().font;
+            int digitWidth = 0;
+            for (int digit = 0; digit <= 9; digit++) {
+                digitWidth = Math.max(digitWidth, font.width(Integer.toString(digit)));
+            }
+            int columnWidth = Math.max(font.width("--%"), digitWidth * 3 + font.width("%"));
             hud.newLine(Component.translatable("module.gtceu.battery.hud.suit"));
-            hud.newLine(percentages);
+            hud.newLine(columnWidth, Component.literal(" | ").withStyle(ChatFormatting.WHITE), percentages);
         }
     }
 
