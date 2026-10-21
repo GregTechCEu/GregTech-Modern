@@ -91,7 +91,9 @@ public final class ItemModuleSettingsBuilder extends ArrayList<IWidget> {
                 .stopper(1))
                 .<Flow>last()
                 .child(new TextWidget<>(
-                        Text.dynamic(() -> Component.literal(sliderLabel.formatted(getter.getAsInt())))));
+                        Text.dynamic(() -> Component.literal(sliderLabel.formatted(getter.getAsInt()))))
+                        .width(Math.max(Text.str(sliderLabel.formatted(min)).getDefaultWidth(),
+                                Text.str(sliderLabel.formatted(max)).getDefaultWidth())));
         return this;
     }
 
@@ -110,7 +112,9 @@ public final class ItemModuleSettingsBuilder extends ArrayList<IWidget> {
                 .stopper((max - min) / 10))
                 .<Flow>last()
                 .child(new TextWidget<>(
-                        Text.dynamic(() -> Component.literal(sliderLabel.apply(getter.getAsDouble())))));
+                        Text.dynamic(() -> Component.literal(sliderLabel.apply(getter.getAsDouble()))))
+                        .width(Math.max(Text.str(sliderLabel.apply(min)).getDefaultWidth(),
+                                Text.str(sliderLabel.apply(max)).getDefaultWidth())));
         return this;
     }
 
@@ -131,7 +135,9 @@ public final class ItemModuleSettingsBuilder extends ArrayList<IWidget> {
                 .width(50))
                 .<Flow>last()
                 .child(new TextWidget<>(
-                        Text.dynamic(() -> Component.literal(rightLabel.apply(syncValue.getValue())))));
+                        Text.dynamic(() -> Component.literal(rightLabel.apply(syncValue.getValue()))))
+                        .width(Math.max(Text.str(rightLabel.apply(0)).getDefaultWidth(),
+                                Text.str(rightLabel.apply(1)).getDefaultWidth())));
         return this;
     }
 }
