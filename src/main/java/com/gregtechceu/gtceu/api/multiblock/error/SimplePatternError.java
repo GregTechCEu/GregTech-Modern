@@ -17,7 +17,7 @@ import java.util.List;
 public class SimplePatternError extends PatternError {
 
     public static final Codec<SimplePatternError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
+            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::pos),
             BlockInfo.CODEC.listOf().listOf().fieldOf("candidates").forGetter(SimplePatternError::getCandidates))
             .apply(instance, SimplePatternError::new));
 

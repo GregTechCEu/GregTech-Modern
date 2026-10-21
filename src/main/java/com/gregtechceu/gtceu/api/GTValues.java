@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntFunction;
 
@@ -144,6 +145,11 @@ public class GTValues {
      */
     public static final String[] VN = new String[] { "ULV", "LV", "MV", "HV", "EV", "IV", "LuV", "ZPM", "UV", "UHV",
             "UEV", "UIV", "UXV", "OpV", "MAX" };
+
+    /**
+     * The lowercase short names for the voltages, used for registration
+     */
+    public static final String[] VNL = Arrays.stream(VN).map(v -> v.toLowerCase(Locale.ROOT)).toArray(String[]::new);
 
     public static final IntFunction<String> MAX_PLUS_FORMAT = (value) -> "" + RED + BOLD + "M" +
             GREEN + BOLD + "A" +

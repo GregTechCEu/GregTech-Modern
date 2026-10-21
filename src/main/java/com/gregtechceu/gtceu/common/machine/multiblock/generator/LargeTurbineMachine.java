@@ -235,14 +235,14 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
         var rotorHolder = turbineMachine.getRotorHolder();
         if (rotorHolder == null)
-            return ModifierFunction.cancel(Component.translatable("gtceu.multiblock.turbine.no_rotor"));
+            return ModifierFunction.cancel(Component.translatable("gui.gtceu.machine.large_turbine.missing_rotor"));
 
         EnergyStack EUt = recipe.getOutputEUt();
         long turbineMaxVoltage = turbineMachine.getOverclockVoltage();
         double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
 
         if (EUt.isEmpty() || turbineMaxVoltage <= EUt.voltage() || holderEfficiency <= 0)
-            return ModifierFunction.cancel(Component.translatable("gtceu.multiblock.turbine.no_rotor"));
+            return ModifierFunction.cancel(Component.translatable("gui.gtceu.machine.large_turbine.missing_rotor"));
 
         // get the amount of parallel required to match the desired output voltage
         // Max Parallel is Ceilinged not Floored to ensure the output voltage is actually met,

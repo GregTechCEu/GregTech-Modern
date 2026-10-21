@@ -53,5 +53,13 @@ public class MultiblockLang {
         provider.add("multiblock.gtceu.pattern_error.charcoal.walls", "Incorrect wall block at (%d, %d, %d).");
         provider.add("multiblock.gtceu.pattern_error.charcoal.logs", "Must be completely filled with logs.");
         provider.add("multiblock.gtceu.pattern_error.steam.missing_steam_hatch", "Missing steam hatch");
+
+        // Autobuilding
+
+        provider.add("gui.gtceu.autobuild.ae_blocks", "The following blocks are in AE:");
+        provider.add("gui.gtceu.autobuild.placed_blocks", "The following blocks were placed:");
+        provider.add("gui.gtceu.autobuild.missing_blocks", "The following blocks are missing:");
+        provider.add("gui.gtceu.autobuild.unplaced_blocks",
+                "Could not place some blocks. Obstructions are highlighted in-world.");
     }
 }

@@ -268,21 +268,19 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                     if (energyContainer.getInputVoltage() > 0) {
                         list.add(Component.translatable("item.gtceu.behavior.portable_scanner.divider"));
                         list.add(Component.translatable("item.gtceu.behavior.portable_scanner.energy_container_in",
-                                Component.translatable(FormattingUtil.formatNumbers(energyContainer.getInputVoltage()))
+                                Component.literal(FormattingUtil.formatNumbers(energyContainer.getInputVoltage()))
                                         .withStyle(ChatFormatting.RED),
-                                Component.translatable(
-                                        GTValues.VN[GTUtil.getTierByVoltage(energyContainer.getInputVoltage())])
+                                GTValues.VNC[GTUtil.getTierByVoltage(energyContainer.getInputVoltage())].copy()
                                         .withStyle(ChatFormatting.RED),
-                                Component.translatable(FormattingUtil.formatNumbers(energyContainer.getInputAmperage()))
+                                Component.literal(FormattingUtil.formatNumbers(energyContainer.getInputAmperage()))
                                         .withStyle(ChatFormatting.RED)));
                     }
                     if (energyContainer.getOutputVoltage() > 0) {
                         list.add(Component.translatable("item.gtceu.behavior.portable_scanner.divider"));
                         list.add(Component.translatable("item.gtceu.behavior.portable_scanner.energy_container_out",
-                                Component.translatable(FormattingUtil.formatNumbers(energyContainer.getOutputVoltage()))
+                                Component.literal(FormattingUtil.formatNumbers(energyContainer.getOutputVoltage()))
                                         .withStyle(ChatFormatting.RED),
-                                Component.translatable(
-                                        GTValues.VN[GTUtil.getTierByVoltage(energyContainer.getOutputVoltage())])
+                                GTValues.VNC[GTUtil.getTierByVoltage(energyContainer.getOutputVoltage())].copy()
                                         .withStyle(ChatFormatting.RED),
                                 Component.translatable(
                                         FormattingUtil.formatNumbers(energyContainer.getOutputAmperage()))

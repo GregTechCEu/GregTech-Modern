@@ -552,7 +552,7 @@ public class GTBlocks {
     }
 
     private static BlockEntry<Block> createMachineCasingBlock(int tier) {
-        String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
+        String tierName = GTValues.VNL[tier];
         var entry = REGISTRATE
                 .block("%s_machine_casing".formatted(tierName), Block::new)
                 .lang("%s Machine Casing".formatted(GTValues.VN[tier]))
@@ -570,7 +570,7 @@ public class GTBlocks {
     }
 
     private static BlockEntry<Block> createHermeticCasing(int tier) {
-        String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
+        String tierName = GTValues.VNL[tier];
         var entry = REGISTRATE
                 .block("%s_hermetic_casing".formatted(tierName), Block::new)
                 .lang("Hermetic Casing %s".formatted(GTValues.LVT[tier]))

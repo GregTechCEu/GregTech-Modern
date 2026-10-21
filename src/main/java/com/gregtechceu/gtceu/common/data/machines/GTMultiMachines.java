@@ -51,7 +51,6 @@ import brachy.modularui.value.sync.IntSyncValue;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.multiblock.Predicates.*;
@@ -447,7 +446,7 @@ public class GTMultiMachines {
                                     .addTooltips(Component.translatable("multiblock.gtceu.pattern.location_end")))
                     .where('Y',
                             blocks(CASING_STEEL_SOLID.get()).and(Predicates.abilities(PartAbility.INPUT_ENERGY)
-                                    .setMinGlobalLimited(1).setMaxGlobalLimited(2)))
+                                    .setGlobalMinMax(1, 2)))
                     .where('I', blocks(ITEM_IMPORT_BUS[0].getBlock()))
                     .where('G', blocks(CASING_GRATE.get()))
                     .where('A', blocks(CASING_ASSEMBLY_CONTROL.get()))
@@ -571,7 +570,7 @@ public class GTMultiMachines {
                                     FusionReactorMachine.calculateEnergyStorageFactor(tier, 16) / 1000000L),
                             Component.translatable("machine.gtceu.fusion_reactor.overclocking"),
                             Component.translatable("machine.gtceu.%s_fusion_reactor.description"
-                                    .formatted(VN[tier].toLowerCase(Locale.ROOT))))
+                                    .formatted(VNL[tier])))
                     .appearanceBlock(() -> FusionReactorMachine.getCasingState(tier))
                     .pattern((definition) -> {
                         var casing = blocks(FusionReactorMachine.getCasingState(tier));
@@ -838,12 +837,8 @@ public class GTMultiMachines {
                             PowerSubstationMachine.MAX_BATTERY_LAYERS),
                     Component.translatable("machine.gtceu.power_substation.tooltip.3"),
                     Component.translatable("machine.gtceu.power_substation.tooltip.4",
-                            PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE / 1000))
-            .tooltipBuilder(
-                    (stack,
-                     components) -> components.add(Component.translatable("machine.gtceu.power_substation.tooltip.5")
-                             .append(Component.translatable("machine.gtceu.power_substation.tooltip.6")
-                                     .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))))
+                            PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE / 1000),
+                    Component.translatable("machine.gtceu.power_substation.tooltip.5").append(Component.translatable("machine.gtceu.power_substation.tooltip.6").withStyle(TooltipHelper.RAINBOW_HSL_SLOW)))
             .appearanceBlock(CASING_PALLADIUM_SUBSTATION)
             .pattern(definition -> MultiblockPatternBuilder.start(UP, BACK, RIGHT)
                     .slice("XXSXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
