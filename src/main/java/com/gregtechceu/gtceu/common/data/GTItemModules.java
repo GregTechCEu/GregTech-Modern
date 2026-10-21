@@ -28,7 +28,7 @@ public class GTItemModules {
     public static final RegistryEntry<ItemModule, AttackDamageItemModule>[] ATTACK_DAMAGE = registerTiered(GTCEu.id("attack_damage"), AttackDamageItemModule::new);
     public static final RegistryEntry<ItemModule, BlockReachItemModule>[] BLOCK_REACH = registerTiered(GTCEu.id("block_reach"), BlockReachItemModule::new);
     public static final RegistryEntry<ItemModule, MovementSpeedItemModule>[] MOVEMENT_SPEED_ATTR = registerTiered(GTCEu.id("movement_speed"), MovementSpeedItemModule::new);
-    public static final RegistryEntry<ItemModule, SneakSpeedItemModule>[] SNEAK_SPEED = registerTiered(GTCEu.id("sneak_speed"), SneakSpeedItemModule::new);
+    public static final RegistryEntry<ItemModule, SneakSpeedItemModule>[] SNEAK_SPEED = registerTiered(GTRegistration.REGISTRATE, GTCEu.id("sneak_speed"), SneakSpeedItemModule::new, GTValues.tiersBetween(GTValues.LV, GTValues.EV));
     public static final RegistryEntry<ItemModule, SwimSpeedModule>[] SWIM_SPEED = registerTiered(GTCEu.id("swim_speed"), SwimSpeedModule::new);
     public static final RegistryEntry<ItemModule, StepHeightModule>[] STEP_HEIGHT = registerTiered(GTCEu.id("step_height"), StepHeightModule::new);
     public static final RegistryEntry<ItemModule, JumpBoostItemModule>[] JUMP_BOOST = registerTiered(GTCEu.id("jump_boost"), JumpBoostItemModule::new);
