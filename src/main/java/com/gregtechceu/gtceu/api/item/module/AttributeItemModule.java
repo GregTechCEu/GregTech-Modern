@@ -119,7 +119,7 @@ public abstract class AttributeItemModule extends ItemModule {
 
     @Override
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
-        var keepActive = keepAttributeActive(moduleContext, entity);
+        var keepActive = isEnabled(moduleContext) && keepAttributeActive(moduleContext, entity);
         if (keepActive == moduleContext.getData(AttributeModuleData.class).keepActive) return;
         moduleContext.setData(moduleContext.getData(AttributeModuleData.class).withKeepActive(keepActive));
     }

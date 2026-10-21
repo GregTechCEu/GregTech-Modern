@@ -1,12 +1,15 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.ServerGamePacketListenerImplAccessor;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
@@ -47,6 +51,68 @@ public class ArmorUtils {
     public static final int NIGHTVISION_DURATION = 20 * 20; // 20 seconds
     // Flashing starts at 10 seconds + two second buffer to prevent flicker
     public static final int NIGHT_VISION_RESET = 12 * 20;
+    public static final long CREDITS_PER_EU = GTValues.M;
+    // 2^63 / the first double above the long range
+    private static final double LONG_LIMIT = 0x1.0p63;
+
+    // Full strength running cost in EU/t
+    public static double getModuleEnergyCost(int tier) {
+        return Math.scalb(0.25, 2 * (tier - GTValues.LV) + (tier >= GTValues.EV ? 1 : 0));
+    }
+
+    /**
+     * Converts an EU cost to credits, rounding up
+     *
+     * @param amount of EU to convert into credits
+     * @return credits or -1 for invalid or overflowing costs
+     */
+    public static long toModuleEnergyCredits(double amount) {
+        if (!Double.isFinite(amount) || amount < 0) return -1;
+        double credits = Math.ceil(amount * CREDITS_PER_EU);
+        return credits >= LONG_LIMIT ? -1 : (long) credits;
+    }
+
+    // Consume whole EU and retain the unused credits for later ticks or actions.
+    public static boolean useModuleEnergy(ItemStack stack, long costCredits, boolean simulate) {
+        if (costCredits < 0) return false;
+        if (costCredits == 0) return true;
+        IElectricItem battery = GTCapabilityHelper.getElectricItem(stack);
+        if (battery == null) return false;
+        long credit = Math.clamp((long) stack.getOrDefault(GTDataComponents.MODULE_ENERGY_CREDIT, 0),
+                0L, CREDITS_PER_EU - 1);
+        long requiredEU = costCredits / CREDITS_PER_EU;
+        long remainingCredit = credit - costCredits % CREDITS_PER_EU;
+        if (remainingCredit < 0) {
+            requiredEU++;
+            remainingCredit += CREDITS_PER_EU;
+        }
+        if (!battery.canUse(requiredEU)) return false;
+        if (simulate) return true;
+        if (requiredEU > 0) {
+            long extracted = battery.discharge(requiredEU, battery.getTier(), true, false, false);
+            if (extracted != requiredEU) {
+                battery.charge(extracted, battery.getTier(), true, false);
+                return false;
+            }
+        }
+        stack.set(GTDataComponents.MODULE_ENERGY_CREDIT, (int) remainingCredit);
+        return true;
+    }
+
+    public static boolean isMoving(LivingEntity entity) {
+        if (entity instanceof Player player) {
+            return SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) ||
+                    SyncedKeyMappings.VANILLA_BACKWARD.isKeyDown(player) ||
+                    SyncedKeyMappings.VANILLA_LEFT.isKeyDown(player) ||
+                    SyncedKeyMappings.VANILLA_RIGHT.isKeyDown(player);
+        }
+        return entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6;
+    }
+
+    public static boolean isMovingOnGround(LivingEntity entity) {
+        return entity.onGround() && !entity.isInWater() && !entity.isPassenger() && !entity.isFallFlying() &&
+                !(entity instanceof Player player && player.getAbilities().flying) && isMoving(entity);
+    }
 
     /**
      * Shares the energy evenly across all valid items, respecting max I/O rates
