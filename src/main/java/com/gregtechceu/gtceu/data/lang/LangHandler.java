@@ -78,6 +78,12 @@ public class LangHandler {
         provider.add("gtceu.multiblock.page_switcher.io.export", "§4Outputs");
         provider.add("gtceu.multiblock.page_switcher.io.both", "§5Combined Inputs + Outputs");
 
+        provider.add("gtceu.autobuild.ae_blocks", "The following blocks are in AE:");
+        provider.add("gtceu.autobuild.placed_blocks", "The following blocks were placed:");
+        provider.add("gtceu.autobuild.missing_blocks", "The following blocks are missing:");
+        provider.add("gtceu.autobuild.unplaced_blocks",
+                "Could not place some blocks. Obstructions are highlighted in-world.");
+
         provider.add("enchantment.disjunction", "Disjunction");
 
         provider.add("item.invalid.name", "Invalid item");

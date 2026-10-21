@@ -24,7 +24,6 @@ import net.minecraftforge.fml.ModLoader;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.function.Supplier;
 
 public class GTCovers {
@@ -137,7 +136,7 @@ public class GTCovers {
                                                     Supplier<Int2ObjectFunction<ICoverRenderer>> coverRenderer,
                                                     int... tiers) {
         return Arrays.stream(tiers).mapToObj(tier -> {
-            var name = id + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT);
+            var name = id + "." + GTValues.VNL[tier];
             return register(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
                     () -> () -> coverRenderer.get().apply(tier));
         }).toArray(CoverDefinition[]::new);
@@ -147,7 +146,7 @@ public class GTCovers {
                                                     CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
                                                     int... tiers) {
         return Arrays.stream(tiers).mapToObj(tier -> {
-            var name = id + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT);
+            var name = id + "." + GTValues.VNL[tier];
             return register(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier));
         }).toArray(CoverDefinition[]::new);
     }
