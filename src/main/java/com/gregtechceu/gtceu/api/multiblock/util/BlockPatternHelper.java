@@ -93,7 +93,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             if (pos.getX() >= dimensions.getX() ||
                     pos.getY() >= dimensions.getY() ||
                     pos.getZ() >= dimensions.getZ()) {
-                throw new IllegalStateException(
+                GTCEu.LOGGER.error(
                         "BlockPos preference " + pos + "is outside of bounds for pattern of size " +
                                 dimensions.getX() + "," + dimensions.getY() + "," + dimensions.getZ());
             }
@@ -102,7 +102,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             MultiPredicate predicate = sortedPredicates.get(c);
             var basePair = getBasePredicateRoute(new ArrayList<>(List.of(predicate)), blockInfo);
             if (basePair == null) {
-                throw new IllegalStateException("Invalid preference " + blockInfo.getBlockState().getBlock().getName() +
+                GTCEu.LOGGER.error("Invalid preference " + blockInfo.getBlockState().getBlock().getName() +
                         " for position " + pos);
             }
             resultStructure.put(pos, blockInfo);
@@ -157,7 +157,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                     if (tryMinCount(info, resultStructure, predicate, c, pos, sliceCoord, chain)) continue;
                     if (tryMaxCount(info, resultStructure, predicate, c, pos, sliceCoord, chain)) continue;
                     // If we arrive here, there's nothing we can place that doesn't overflow a max count!
-                    throw new IllegalStateException(
+                    GTCEu.LOGGER.error(
                             "Could not place a block without breaking maxCount requirements for character " + c);
                 }
             }
@@ -195,7 +195,6 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
                                 MultiPredicate predicate, char predicateChar,
                                 BlockPos pos, int offset, List<MultiPredicate> predicateChain) {
-        // TODO rehandle user min count
         // Find first unsatisfied min predicate while also checking type specific logic
         BasePredicate baseNotSatisfied = null;
         if (predicate.isAnd() || predicate.isOr()) {

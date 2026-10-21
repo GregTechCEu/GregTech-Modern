@@ -133,7 +133,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             MultiPredicate predicate = sortedPredicates.get(key);
 
             if (predicate == null)
-                throw new IllegalStateException(
+                GTCEu.LOGGER.error(
                         "Predicate provider returned character that is not mapped to a predicate: '%s'"
                                 .formatted(key));
 
@@ -156,7 +156,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             if (tryMinCount(info, resultStructure, predicate, key, mutablePos, chain)) continue;
             if (tryMaxCount(info, resultStructure, predicate, key, mutablePos, chain)) continue;
             // If we arrive here, there's nothing we can place that doesn't overflow a max count!
-            throw new IllegalStateException("Could not place a block without breaking maxCount requirements");
+            GTCEu.LOGGER.error("Could not place a block without breaking maxCount requirements");
         }
     }
 
