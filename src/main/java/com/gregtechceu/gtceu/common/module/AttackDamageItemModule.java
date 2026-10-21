@@ -18,7 +18,7 @@ public class AttackDamageItemModule extends TieredAttributeItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.attack_damage.description", getTier() * 100 / 16d);
+        return Component.translatable("module.gtceu.attack_damage.description", getMaxAttributeAmount() * 100);
     }
 
     @Override
@@ -28,7 +28,12 @@ public class AttackDamageItemModule extends TieredAttributeItemModule {
 
     @Override
     public double getMaxAttributeAmount() {
-        return 1 + getTier() / 16d;
+        return getTier() / 16d;
+    }
+
+    @Override
+    protected double getLegacyMaxAttributeAmount() {
+        return 1 + getMaxAttributeAmount();
     }
 
     @Override

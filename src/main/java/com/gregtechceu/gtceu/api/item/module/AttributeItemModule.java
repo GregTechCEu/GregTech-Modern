@@ -62,11 +62,15 @@ public abstract class AttributeItemModule extends ItemModule {
     }
 
     public double getModifier(ModuleContext moduleContext) {
-        return moduleContext.getData(AttributeModuleData.class).getModifierAmount();
+        double amount = moduleContext.getData(AttributeModuleData.class).getModifierAmount();
+        return Double.isFinite(amount) ?
+                Mth.clamp(amount, getMinModifier(moduleContext), getMaxModifier(moduleContext)) :
+                getNeutralModifier(moduleContext);
     }
 
     public void setModifier(ModuleContext moduleContext, double modifier) {
-        modifier = Mth.clamp(modifier, getNeutralModifier(moduleContext), getMaxModifier(moduleContext));
+        if (!Double.isFinite(modifier)) return;
+        modifier = Mth.clamp(modifier, getMinModifier(moduleContext), getMaxModifier(moduleContext));
         moduleContext.setData(moduleContext.getData(AttributeModuleData.class).withModifierAmount(modifier));
     }
 
@@ -88,6 +92,15 @@ public abstract class AttributeItemModule extends ItemModule {
     }
 
     public abstract Holder<Attribute> getAttribute(ModuleContext moduleContext);
+
+    protected double getLegacyMaxAttributeAmount() {
+        return getMaxAttributeAmount();
+    }
+
+    private double migrateLegacyModifier(double amount) {
+        double oldMax = getLegacyMaxAttributeAmount();
+        return oldMax == getMaxAttributeAmount() ? amount : amount / oldMax * getMaxAttributeAmount();
+    }
 
     public abstract double getMaxAttributeAmount();
 
@@ -116,8 +129,11 @@ public abstract class AttributeItemModule extends ItemModule {
         // spotless:off
         public static final MapCodec<AttributeModuleData> CODEC = RecordCodecBuilder.mapCodec(instance -> baseCodec(instance).and(instance.group(
                 Codec.DOUBLE.fieldOf("modifier_amount").forGetter(AttributeModuleData::getModifierAmount),
-                Codec.BOOL.fieldOf("keep_active").forGetter(AttributeModuleData::isKeepActive)
-        )).apply(instance, AttributeModuleData::new));
+                Codec.BOOL.fieldOf("keep_active").forGetter(AttributeModuleData::isKeepActive),
+                Codec.BOOL.optionalFieldOf("corrected_bonus", false).forGetter(data -> true)
+        )).apply(instance, (slot, module, item, enabled, amount, active, corrected) ->
+                new AttributeModuleData(slot, module, item, enabled,
+                        corrected ? amount : ((AttributeItemModule) module).migrateLegacyModifier(amount), active)));
         //spotless:on
 
         @Getter

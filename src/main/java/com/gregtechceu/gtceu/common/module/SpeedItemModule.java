@@ -9,9 +9,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -24,7 +25,6 @@ import java.util.Objects;
 
 public class SpeedItemModule extends TieredItemModule {
 
-    private static final double SPEED_ACCEL = 0.085D;
     private static final int ENERGY_USAGE = 819;
 
     public SpeedItemModule(ResourceLocation id, int tier) {
@@ -60,7 +60,7 @@ public class SpeedItemModule extends TieredItemModule {
         return super.getSettings(context, psm, id)
                 .num(Text.lang("gui.gtceu.item_module.power"), () -> getStrength(context),
                         value -> setStrength(context, (float) value), 0, 1,
-                        value -> "%.0f%%".formatted(value * 100));
+                        value -> "+%.2f%%".formatted(value * getTier() * 25));
     }
 
     @Override
@@ -69,33 +69,35 @@ public class SpeedItemModule extends TieredItemModule {
     }
 
     @Override
-    public void clientSideArmorTick(ModuleContext moduleContext, Player player) {
-        if (!isEnabled(moduleContext) || getStrength(moduleContext) <= 0) return;
+    public void clientSideArmorTick(ModuleContext context, Player player) {
+        updateMovementModifier(context, player);
+    }
 
-        var battery = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
-        if (battery == null || !battery.canUse(ENERGY_USAGE)) return;
+    @Override
+    public void onArmorTick(ModuleContext context, LivingEntity entity) {
+        if (entity instanceof Player player) updateMovementModifier(context, player);
+        super.onArmorTick(context, entity);
+    }
 
-        float strength = getStrength(moduleContext);
-        float mul = (getTier() / 4f + 1) * strength;
-        boolean sprinting = SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isSprinting();
-        boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
-        boolean sneaking = SyncedKeyMappings.VANILLA_SNEAK.isKeyDown(player);
-
-        if ((player.onGround() || player.isInWater()) && sprinting) {
-            float speed = 0.25F * mul;
-            if (player.isInWater()) {
-                speed = 0.1F * mul;
-                if (jumping) {
-                    player.push(0.0, 0.1 * strength, 0.0);
-                }
-            }
-            player.moveRelative(speed, new Vec3(0, 0, 1));
-        } else if (player.isInWater() && (sneaking || jumping)) {
-            if (sneaking)
-                player.push(0.0, -SPEED_ACCEL * mul, 0.0);
-            if (jumping)
-                player.push(0.0, SPEED_ACCEL * mul, 0.0);
+    private void updateMovementModifier(ModuleContext context, Player player) {
+        var attribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (attribute == null) return;
+        var battery = GTCapabilityHelper.getElectricItem(context.getAppliedTo());
+        double bonus = getTier() / 4d * getStrength(context);
+        boolean active = isEnabled(context) && bonus > 0 && player.isSprinting() &&
+                battery != null && battery.canUse(ENERGY_USAGE);
+        if (!active) {
+            attribute.removeModifier(getId());
+            return;
         }
+        var modifier = new AttributeModifier(getId(), bonus, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        if (!modifier.equals(attribute.getModifier(getId()))) attribute.addOrUpdateTransientModifier(modifier);
+    }
+
+    @Override
+    public void onUnequip(ModuleContext context, LivingEntity entity) {
+        var attribute = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (attribute != null) attribute.removeModifier(getId());
     }
 
     @Override

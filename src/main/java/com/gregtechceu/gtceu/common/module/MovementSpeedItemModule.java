@@ -18,7 +18,7 @@ public class MovementSpeedItemModule extends TieredAttributeItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.movement_speed.description", getTier() * 100 / 8d);
+        return Component.translatable("module.gtceu.movement_speed.description", getMaxAttributeAmount() * 100);
     }
 
     @Override
@@ -28,7 +28,12 @@ public class MovementSpeedItemModule extends TieredAttributeItemModule {
 
     @Override
     public double getMaxAttributeAmount() {
-        return 1 + getTier() / 8d;
+        return getTier() / 8d;
+    }
+
+    @Override
+    protected double getLegacyMaxAttributeAmount() {
+        return 1 + getMaxAttributeAmount();
     }
 
     @Override
