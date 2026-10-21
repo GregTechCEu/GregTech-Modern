@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
-import com.gregtechceu.gtceu.utils.codec.StreamCodecUtils;
+import com.gregtechceu.gtceu.utils.codec.GTStreamCodecUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -48,7 +48,7 @@ public class MonitorGroup {
                     .apply(instance, MonitorGroup::new));
     // spotless:on
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, MonitorGroup> STREAM_CODEC = StreamCodecUtils.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, MonitorGroup> STREAM_CODEC = GTStreamCodecUtils.composite(
             BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()), (MonitorGroup m) -> m.monitorPositions.stream().toList(),
             ByteBufCodecs.STRING_UTF8, MonitorGroup::getName,
             ItemStack.OPTIONAL_LIST_STREAM_CODEC, (m) -> m.getItemStackHandler().toList(),

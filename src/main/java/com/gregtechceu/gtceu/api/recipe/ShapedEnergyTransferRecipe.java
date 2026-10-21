@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.item.datacomponents.SimpleEnergyContent;
 import com.gregtechceu.gtceu.common.data.GTRecipeSerializers;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
-import com.gregtechceu.gtceu.utils.codec.StreamCodecUtils;
+import com.gregtechceu.gtceu.utils.codec.GTStreamCodecUtils;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -101,7 +101,7 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
                         Codec.BOOL.optionalFieldOf("show_notification", true)
                                 .forGetter(val -> ((ShapedRecipeAccessor) val).getShowNotification()))
                         .apply(instance, ShapedEnergyTransferRecipe::new));
-        public static final StreamCodec<RegistryFriendlyByteBuf, ShapedEnergyTransferRecipe> STREAM_CODEC = StreamCodecUtils
+        public static final StreamCodec<RegistryFriendlyByteBuf, ShapedEnergyTransferRecipe> STREAM_CODEC = GTStreamCodecUtils
                 .composite(
                         ByteBufCodecs.STRING_UTF8, ShapedRecipe::getGroup,
                         CraftingBookCategory.STREAM_CODEC, ShapedRecipe::category,

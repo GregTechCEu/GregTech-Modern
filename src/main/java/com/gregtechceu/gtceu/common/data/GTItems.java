@@ -2196,11 +2196,7 @@ public class GTItems {
                     .build())))
             .register();
 
-    public static void init() {
-        // GTMaterialItems.generateMaterialItems();
-        // GTMaterialItems.generateTools();
-        // GTMaterialItems.generateArmors();
-    }
+    public static void init() {}
 
     public static <T extends ItemLike> NonNullConsumer<T> materialInfo(Supplier<ItemMaterialInfo> materialInfo) {
         return item -> ItemMaterialData.registerMaterialInfo(item, materialInfo.get());

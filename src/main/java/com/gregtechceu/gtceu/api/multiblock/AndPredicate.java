@@ -15,10 +15,10 @@ public class AndPredicate extends MultiPredicate {
     protected boolean testGlobalMin(PredicateContext ctx) {
         boolean result = TestType.GLOBAL_MIN.testCounts(this, ctx);
         for (BasePredicate predicate : predicates()) {
-            result &= predicate.testSliceMin(ctx);
+            result &= predicate.testGlobalMin(ctx);
         }
         for (MultiPredicate child : children()) {
-            result &= child.testSliceMin(ctx);
+            result &= child.testGlobalMin(ctx);
         }
         return result;
     }

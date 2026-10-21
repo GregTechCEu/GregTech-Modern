@@ -63,8 +63,10 @@ public class XorPredicate extends MultiPredicate {
     @Override
     protected boolean testSliceMin(PredicateContext ctx) {
         boolean result = TestType.SLICE_MIN.testCounts(this, ctx);
-        result &= (noneValid && passedPredicate == null) ||
-                (passedPredicate != null && passedPredicate.testSliceMin(ctx));
+        // if none valid, only check the `this` counts
+        if ((noneValid && passedPredicate == null)) return result;
+        // if passed predicate exists, that gets checked too
+        if (passedPredicate != null) return result & passedPredicate.testSliceMin(ctx);
         return result;
     }
 
@@ -80,7 +82,8 @@ public class XorPredicate extends MultiPredicate {
         MutableComponent expected = Component
                 .literal("expected only: " + passed.getString());
         context.appendError(
-                PatternStringError.literal("XOR error\n" + found.getString() + "\n" + expected.getString()));
+                PatternStringError.literal("XOR error\n" + found.getString() + "\n" + expected.getString())
+                        .pos(context.pos()));
         context.skipFlipCheck();
     }
 
