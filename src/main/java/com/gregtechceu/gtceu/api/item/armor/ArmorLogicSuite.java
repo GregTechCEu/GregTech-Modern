@@ -21,6 +21,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,6 +30,7 @@ import java.util.List;
 
 public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
 
+    @Getter
     protected final int energyPerUse;
     protected final int tier;
     protected final long maxCapacity;
@@ -91,7 +93,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
             @Override
             public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
                                         TooltipFlag isAdvanced) {
-                addInfo(stack, tooltipComponents);
+                // addInfo(stack, tooltipComponents);
             }
         });
     }
@@ -99,7 +101,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     public void addInfo(ItemStack itemStack, List<Component> lines) {
         IElectricItem cont = GTCapabilityHelper.getElectricItem(itemStack);
         if (cont != null) {
-            ElectricStats.addCurrentChargeTooltip(lines, cont.getCharge(), cont.getMaxCharge(), cont.getTier(), false);
+            IElectricItem.addCurrentChargeTooltip(lines, cont.getCharge(), cont.getMaxCharge(), cont.getTier(), false);
         }
     }
 
@@ -129,18 +131,8 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
         if (cont == null) return;
         if (cont.getCharge() == 0) return;
         float energyMultiplier = cont.getCharge() * 100.0F / cont.getMaxCharge();
-        hud.newString(
-                Component.translatable("metaarmor.hud.energy_lvl", String.format("%.1f", energyMultiplier) + "%"));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public boolean shouldDrawHUD() {
-        return this.type == ArmorItem.Type.CHESTPLATE;
-    }
-
-    public int getEnergyPerUse() {
-        return this.energyPerUse;
+        hud.newLine(
+                Component.translatable("hud.gtceu.armor.energy_lvl", String.format("%.1f", energyMultiplier) + "%"));
     }
 
     protected float getAbsorption() {

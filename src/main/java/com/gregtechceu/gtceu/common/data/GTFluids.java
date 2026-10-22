@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -11,6 +12,8 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
 import com.tterrag.registrate.util.entry.FluidEntry;
@@ -31,12 +34,17 @@ public class GTFluids {
             .tag(CustomTags.POTION_FLUIDS)
             .register();
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
         // Register fluids for non-materials
-        handleNonMaterialFluids(GTMaterials.Water, Fluids.WATER);
-        handleNonMaterialFluids(GTMaterials.Lava, Fluids.LAVA);
-        handleNonMaterialFluids(GTMaterials.Milk, NeoForgeMod.MILK);
         NeoForgeMod.enableMilkFluid();
+        modBus.register(GTFluids.class);
+    }
+
+    @SubscribeEvent
+    public static void modifyMaterials(PostMaterialEvent event) {
+        handleNonMaterialFluids(GTMaterials.Water.value(), Fluids.WATER);
+        handleNonMaterialFluids(GTMaterials.Lava.value(), Fluids.LAVA);
+        handleNonMaterialFluids(GTMaterials.Milk.value(), NeoForgeMod.MILK);
     }
 
     public static void handleNonMaterialFluids(@NotNull Material material, @NotNull Fluid fluid) {

@@ -1,0 +1,700 @@
+package com.gregtechceu.gtceu.integration.kjs.builders.material;
+
+import com.gregtechceu.gtceu.api.data.chemical.Element;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.MaterialBuilder;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.DeferredMaterialStack;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
+import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
+
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
+
+import dev.latvian.mods.kubejs.client.LangKubeEvent;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.kubejs.typings.Param;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.function.UnaryOperator;
+
+@SuppressWarnings("unused")
+public class MaterialBuilderJS extends BuilderBase<Material> {
+
+    private final MaterialBuilder internal;
+    private @Nullable String langValue = null;
+
+    public MaterialBuilderJS(ResourceLocation id) {
+        super(id);
+        this.internal = new MaterialBuilder(id);
+    }
+
+    public MaterialBuilderJS langValue(String langValue) {
+        this.langValue = langValue;
+        return this;
+    }
+
+    /*
+     * Material Types
+     */
+
+    /**
+     * Adds a property to this material.
+     */
+    public <T extends IMaterialProperty> MaterialBuilderJS property(PropertyKey<T> key, T value) {
+        internal.property(key, value);
+        return this;
+    }
+
+    /**
+     * Adds a property to this material
+     */
+    public <T extends IMaterialProperty> MaterialBuilderJS property(PropertyKey<T> key) {
+        internal.property(key);
+        return this;
+    }
+
+    @Info("""
+            Add a `FluidProperty` to this Material.
+            Will be created as a `FluidStorageKeys#LIQUID`, without a Fluid Block.
+            """)
+    public MaterialBuilderJS fluid() {
+        internal.fluid();
+        return this;
+    }
+
+    @Info("""
+            Add a `FluidProperty` to this Material.
+            Will be created with the specified state a with standard `FluidBuilder` defaults.
+
+            Can be called multiple times to add multiple fluids.
+            """)
+    public MaterialBuilderJS fluid(FluidStorageKey key, FluidState state) {
+        internal.fluid(key, state);
+        return this;
+    }
+
+    @Info("""
+            Add a `FluidProperty` to this Material.
+
+            Can be called multiple times to add multiple fluids.
+            """)
+    public MaterialBuilderJS fluid(FluidStorageKey key, FluidBuilder builder) {
+        internal.fluid(key, builder);
+        return this;
+    }
+
+    @Info("""
+            Add a liquid for this material.
+
+            @see #fluid(FluidStorageKey, FluidState)
+            """)
+    public MaterialBuilderJS liquid() {
+        internal.liquid();
+        return this;
+    }
+
+    @Info("""
+            Add a liquid for this material.
+
+            @see #fluid(FluidStorageKey, FluidState)
+            """)
+    public MaterialBuilderJS liquid(FluidBuilder builder) {
+        internal.liquid(builder);
+        return this;
+    }
+
+    public MaterialBuilderJS liquid(int temp) {
+        internal.liquid(temp);
+        return this;
+    }
+
+    @Info("""
+            Add a plasma for this material.
+
+            @see #fluid(FluidStorageKey, FluidState)
+            """)
+    public MaterialBuilderJS plasma() {
+        internal.plasma();
+        return this;
+    }
+
+    @Info("""
+            Add a plasma for this material.
+
+            @see #fluid(FluidStorageKey, FluidState)
+            """)
+    public MaterialBuilderJS plasma(FluidBuilder builder) {
+        internal.plasma(builder);
+        return this;
+    }
+
+    public MaterialBuilderJS plasma(int temp) {
+        internal.plasma(temp);
+        return this;
+    }
+
+    @Info("""
+            Add a gas for this material.
+
+            @see #fluid(FluidStorageKey, FluidState)
+            """)
+    public MaterialBuilderJS gas() {
+        internal.gas();
+        return this;
+    }
+
+    @Info("""
+            Add a gas for this material.
+
+            @see #fluid(FluidStorageKey, FluidState)
+            """)
+    public MaterialBuilderJS gas(FluidBuilder builder) {
+        internal.gas(builder);
+        return this;
+    }
+
+    public MaterialBuilderJS gas(int temp) {
+        internal.gas(temp);
+        return this;
+    }
+
+    @Info("""
+            Add a `DustProperty` to this Material.
+            Will be created with a Harvest Level of 2 and no Burn Time (Furnace Fuel).
+            """)
+    public MaterialBuilderJS dust() {
+        internal.dust();
+        return this;
+    }
+
+    @Info(value = """
+            Add a `DustProperty` to this Material.
+            Will be created with no Burn Time (Furnace Fuel).
+            """,
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
+                                 The Harvest Level of this block for Mining.
+                                 If this Material also has a `ToolProperty`, this value will
+                                 also be used to determine the tool's Mining level.
+                                 If this Material already had a Harvest Level defined, it will be overridden.
+                                 """)
+          })
+    public MaterialBuilderJS dust(int harvestLevel) {
+        internal.dust(harvestLevel);
+        return this;
+    }
+
+    @Info(value = """
+            Add a `DustProperty` to this Material.
+            """,
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
+                                 The Harvest Level of this block for Mining.
+                                 If this Material also has a `ToolProperty`, this value will
+                                 also be used to determine the tool's Mining level.
+                                 If this Material already had a Harvest Level defined, it will be overridden.
+                                 """),
+                  @Param(name = "burnTime",
+                         value = """
+                                 The Burn Time (in ticks) of this Material as a Furnace Fuel.
+                                 If this Material already had a Burn Time defined, it will be overridden.
+                                 """)
+          })
+    public MaterialBuilderJS dust(int harvestLevel, int burnTime) {
+        internal.dust(harvestLevel, burnTime);
+        return this;
+    }
+
+    @Info("""
+            Add a `WoodProperty` to this Material.
+            Useful for marking a Material as Wood for various additional behaviors.
+            Will be created with a Harvest Level of 0, and a Burn Time of 300 (Furnace Fuel).
+            """)
+    public MaterialBuilderJS wood() {
+        internal.wood();
+        return this;
+    }
+
+    @Info(value = """
+            Add a `WoodProperty` to this Material.
+            Useful for marking a Material as Wood for various additional behaviors.
+            Will be created with a Burn Time of 300 (Furnace Fuel).
+            """,
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
+                                 The Harvest Level of this block for Mining.
+                                 If this Material also has a `ToolProperty`, this value will
+                                 also be used to determine the tool's Mining level.
+                                 If this Material already had a Harvest Level defined, it will be overridden.
+                                 """)
+          })
+    public MaterialBuilderJS wood(int harvestLevel) {
+        internal.wood(harvestLevel);
+        return this;
+    }
+
+    @Info(value = """
+            Add a `WoodProperty` to this Material.
+            Useful for marking a Material as Wood for various additional behaviors.
+            """,
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
+                                 The Harvest Level of this block for Mining.
+                                 If this Material also has a `ToolProperty`, this value will
+                                 also be used to determine the tool's Mining level.
+                                 If this Material already had a Harvest Level defined, it will be overridden.
+                                 """),
+                  @Param(name = "burnTime",
+                         value = """
+                                 The Burn Time (in ticks) of this Material as a Furnace Fuel.
+                                 If this Material already had a Burn Time defined, it will be overridden.
+                                 """)
+          })
+    public MaterialBuilderJS wood(int harvestLevel, int burnTime) {
+        internal.wood(harvestLevel, burnTime);
+        return this;
+    }
+
+    @Info("""
+            Add an `IngotProperty` to this Material.
+            Will be created with a Harvest Level of 2 and no Burn Time (Furnace Fuel).
+            Will automatically add a `DustProperty` to this Material if it does not already have one.
+            """)
+    public MaterialBuilderJS ingot() {
+        internal.ingot();
+        return this;
+    }
+
+    @Info(value = """
+            Add an `IngotProperty` to this Material.
+            Will be created with no Burn Time (Furnace Fuel).
+            Will automatically add a `DustProperty` to this Material if it does not already have one.
+            """,
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
+                                 The Harvest Level of this block for Mining.
+                                 If this Material also has a `ToolProperty`, this value will
+                                 also be used to determine the tool's Mining level.
+                                 If this Material already had a Harvest Level defined, it will be overridden.
+                                 """)
+          })
+    public MaterialBuilderJS ingot(int harvestLevel) {
+        internal.ingot(harvestLevel);
+        return this;
+    }
+
+    @Info(value = """
+            Add an `IngotProperty` to this Material.
+            Will automatically add a `DustProperty` to this Material if it does not already have one.
+            """,
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
+                                 The Harvest Level of this block for Mining.
+                                 If this Material also has a `ToolProperty`, this value will
+                                 also be used to determine the tool's Mining level.
+                                 If this Material already had a Harvest Level defined, it will be overridden.
+                                 """),
+                  @Param(name = "burnTime",
+                         value = """
+                                 The Burn Time (in ticks) of this Material as a Furnace Fuel.
+                                 If this Material already had a Burn Time defined, it will be overridden.
+                                 """)
+          })
+    public MaterialBuilderJS ingot(int harvestLevel, int burnTime) {
+        internal.ingot(harvestLevel, burnTime);
+        return this;
+    }
+
+    @Info("""
+            Add a `GemProperty` to this Material.
+            Will be created with a Harvest Level of 2 and no Burn Time (Furnace Fuel).
+            Will automatically add a `DustProperty` to this Material if it does not already have one.
+            """)
+    public MaterialBuilderJS gem() {
+        internal.gem();
+        return this;
+    }
+
+    @Info(value = """
+            Add a `GemProperty` to this Material.
+            Will be created with no Burn Time (Furnace Fuel).
+            Will automatically add a `DustProperty` to this Material if it does not already have one.
+            """,
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
+                                 The Harvest Level of this block for Mining.
+                                 If this Material also has a `ToolProperty`, this value will
+                                 also be used to determine the tool's Mining level.
+                                 If this Material already had a Harvest Level defined, it will be overridden.
+                                 """)
+          })
+    public MaterialBuilderJS gem(int harvestLevel) {
+        internal.gem(harvestLevel);
+        return this;
+    }
+
+    @Info(value = """
+            Add a `GemProperty` to this Material.
+            Will automatically add a `DustProperty` to this Material if it does not already have one.
+            """,
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
+                                 The Harvest Level of this block for Mining.
+                                 If this Material also has a `ToolProperty`, this value will
+                                 also be used to determine the tool's Mining level.
+                                 If this Material already had a Harvest Level defined, it will be overridden.
+                                 """),
+                  @Param(name = "burnTime",
+                         value = """
+                                 The Burn Time (in ticks) of this Material as a Furnace Fuel.
+                                 If this Material already had a Burn Time defined, it will be overridden.
+                                 """)
+          })
+    public MaterialBuilderJS gem(int harvestLevel, int burnTime) {
+        internal.gem(harvestLevel, burnTime);
+        return this;
+    }
+
+    @Info("""
+            Add a `PolymerProperty` to this Material.
+            Will be created with a Harvest Level of 2 and no Burn Time (Furnace Fuel).
+            Will automatically add a `DustProperty` to this Material if it does not already have one.
+            """)
+    public MaterialBuilderJS polymer() {
+        internal.polymer();
+        return this;
+    }
+
+    @Info(value = """
+            Add a `PolymerProperty` to this Material.
+            Will automatically add a `DustProperty` to this Material if it does not already have one.
+            Will have a burn time of 0
+            """,
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
+                                 The Harvest Level of this block for Mining.
+                                 If this Material also has a `ToolProperty`, this value will
+                                 also be used to determine the tool's Mining level.
+                                 If this Material already had a Harvest Level defined, it will be overridden.
+                                 """)
+          })
+    public MaterialBuilderJS polymer(int harvestLevel) {
+        internal.polymer(harvestLevel);
+        return this;
+    }
+
+    public MaterialBuilderJS burnTime(int burnTime) {
+        internal.burnTime(burnTime);
+        return this;
+    }
+
+    @Info("""
+            Set the Color of this Material.
+            Defaults to 0xFFFFFF unless `MaterialBuilderWrapper#colorAverage()` was called, where
+            it will be a weighted average of the components of the Material.
+
+            @param color The RGB-formatted Color.
+            """)
+    public MaterialBuilderJS color(int color) {
+        internal.color(color);
+        return this;
+    }
+
+    @Info("""
+            Set the Color of this Material.
+            Defaults to 0xFFFFFF unless `MaterialBuilderWrapper#colorAverage()` was called, where
+            it will be a weighted average of the components of the Material.
+
+            @param color         The RGB-formatted Color.
+            @param hasFluidColor Whether the fluid should be colored or not.
+            """)
+    public MaterialBuilderJS color(int color, boolean hasFluidColor) {
+        internal.color(color, hasFluidColor);
+        return this;
+    }
+
+    @Info("""
+            Set the secondary color of this Material.
+            Defaults to 0xFFFFFF unless `MaterialBuilderWrapper#colorAverage()` was called, where
+            it will be a weighted average of the components of the Material.
+
+            @param color The RGB-formatted Color.
+            """)
+    public MaterialBuilderJS secondaryColor(int color) {
+        internal.secondaryColor(color);
+        return this;
+    }
+
+    public MaterialBuilderJS colorAverage() {
+        internal.colorAverage();
+        return this;
+    }
+
+    @Info(value = """
+            Set the `MaterialIconSet` of this Material.
+            Defaults vary depending on if the Material has a:
+            `GemProperty`, it will default to `MaterialIconSet#GEM_VERTICAL`
+            `IngotProperty` or `@link DustProperty`, it will default to `MaterialIconSet#DULL`
+            `FluidProperty`, it will default to `MaterialIconSet#FLUID`
+            </ul>
+            Default will be determined by first-found Property in this order, unless specified.
+            """,
+          params = {
+                  @Param(name = "iconSet", value = "The `MaterialIconSet` of this Material.")
+          })
+    public MaterialBuilderJS iconSet(MaterialIconSet iconSet) {
+        internal.iconSet(GTRegistries.MATERIAL_ICON_SETS.wrapAsHolder(iconSet));
+        return this;
+    }
+
+    public MaterialBuilderJS components(DeferredMaterialStack... components) {
+        internal.componentStacks(components);
+        return this;
+    }
+
+    @Info("""
+            Add `MaterialFlags` to this Material.
+            Dependent Flags (for example, `MaterialFlags#GENERATE_LONG_ROD` requiring
+            `MaterialFlags#GENERATE_ROD`) will be automatically applied.
+            """)
+    public MaterialBuilderJS flags(MaterialFlag... flags) {
+        internal.flags(flags);
+        return this;
+    }
+
+    @Info(value = """
+            Add `MaterialFlags` to this Material.
+            Dependent Flags (for example, `MaterialFlags#GENERATE_LONG_ROD` requiring
+            `MaterialFlags#GENERATE_ROD`) will be automatically applied.
+            """,
+          params = {
+                  @Param(name = "f1",
+                         value = "A `Collection` of `MaterialFlag`. Provided this way for easy Flag presets to be applied."),
+                  @Param(name = "f2",
+                         value = "An Array of `MaterialFlag`. If no `Collection` is required, use `MaterialBuilderWrapper#flags(MaterialFlag...)`.")
+          })
+    // rename for kjs conflicts
+    public MaterialBuilderJS appendFlags(Collection<MaterialFlag> f1, MaterialFlag... f2) {
+        internal.appendFlags(f1, f2);
+        return this;
+    }
+
+    @SafeVarargs
+    @Info("""
+            Added `TagPrefix` to be ignored by this Material.
+            """)
+    public final MaterialBuilderJS ignoredTagPrefixes(Holder<TagPrefix>... prefixes) {
+        internal.ignoredTagPrefixes(prefixes);
+        return this;
+    }
+
+    public MaterialBuilderJS element(Element element) {
+        internal.element(GTRegistries.ELEMENTS.wrapAsHolder(element));
+        return this;
+    }
+
+    public MaterialBuilderJS formula(String formula) {
+        internal.formula(formula);
+        return this;
+    }
+
+    @Info("""
+            Replaced the old toolStats methods which took many parameters.
+            Use `ToolProperty.Builder` instead to create a Tool Property.
+            """)
+    public MaterialBuilderJS toolStats(ToolProperty toolProperty) {
+        internal.toolStats(toolProperty);
+        return this;
+    }
+
+    public MaterialBuilderJS rotorStats(int power, int efficiency, float damage, int durability) {
+        internal.rotorStats(power, efficiency, damage, durability);
+        return this;
+    }
+
+    public MaterialBuilderJS blastTemp(int temp) {
+        internal.blast(temp);
+        return this;
+    }
+
+    public MaterialBuilderJS blast(int temp) {
+        internal.blast(temp);
+        return this;
+    }
+
+    public MaterialBuilderJS blast(int temp, BlastProperty.GasTier gasTier) {
+        internal.blast(temp, gasTier);
+        return this;
+    }
+
+    public MaterialBuilderJS blast(UnaryOperator<BlastProperty.Builder> b) {
+        internal.blast(b);
+        return this;
+    }
+
+    // Tons of shortcut functions for adding various hazard effects.
+
+    public MaterialBuilderJS removeHazard() {
+        internal.removeHazard();
+        return this;
+    }
+
+    public MaterialBuilderJS radioactiveHazard(float multiplier) {
+        internal.radioactiveHazard(multiplier);
+        return this;
+    }
+
+    public MaterialBuilderJS hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
+        internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition));
+        return this;
+    }
+
+    public MaterialBuilderJS hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+                                    float progressionMultiplier) {
+        internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition), progressionMultiplier);
+        return this;
+    }
+
+    public MaterialBuilderJS hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+                                    float progressionMultiplier, boolean applyToDerivatives) {
+        internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition), progressionMultiplier,
+                applyToDerivatives);
+        return this;
+    }
+
+    public MaterialBuilderJS hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+                                    boolean applyToDerivatives) {
+        internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition), applyToDerivatives);
+        return this;
+    }
+
+    public MaterialBuilderJS ore() {
+        internal.ore();
+        return this;
+    }
+
+    public MaterialBuilderJS ore(boolean emissive) {
+        internal.ore(emissive);
+        return this;
+    }
+
+    public MaterialBuilderJS ore(int oreMultiplier, int byproductMultiplier) {
+        internal.ore(oreMultiplier, byproductMultiplier);
+        return this;
+    }
+
+    public MaterialBuilderJS ore(int oreMultiplier, int byproductMultiplier, boolean emissive) {
+        internal.ore(oreMultiplier, byproductMultiplier, emissive);
+        return this;
+    }
+
+    public MaterialBuilderJS washedIn(Material m) {
+        internal.washedIn(m.getRegistryHolder());
+        return this;
+    }
+
+    public MaterialBuilderJS washedIn(Material m, int washedAmount) {
+        internal.washedIn(m.getRegistryHolder(), washedAmount);
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public final MaterialBuilderJS separatedInto(Material... m) {
+        internal.separatedInto(Arrays.stream(m).map(Material::getRegistryHolder).toArray(Holder[]::new));
+        return this;
+    }
+
+    public MaterialBuilderJS oreSmeltInto(Material m) {
+        internal.oreSmeltInto(m.getRegistryHolder());
+        return this;
+    }
+
+    public MaterialBuilderJS polarizesInto(Material m) {
+        internal.polarizesInto(m.getRegistryHolder());
+        return this;
+    }
+
+    public MaterialBuilderJS arcSmeltInto(Material m) {
+        internal.arcSmeltInto(m.getRegistryHolder());
+        return this;
+    }
+
+    public MaterialBuilderJS macerateInto(Material m) {
+        internal.macerateInto(m.getRegistryHolder());
+        return this;
+    }
+
+    public MaterialBuilderJS ingotSmeltInto(Material m) {
+        internal.ingotSmeltInto(m.getRegistryHolder());
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public MaterialBuilderJS addOreByproducts(Material... byproducts) {
+        internal.oreByproducts(Arrays.stream(byproducts).map(Material::getRegistryHolder).toArray(Holder[]::new));
+        return this;
+    }
+
+    public MaterialBuilderJS cableProperties(long voltage, int amperage, int loss) {
+        internal.cableProperties(voltage, amperage, loss);
+        return this;
+    }
+
+    public MaterialBuilderJS cableProperties(long voltage, int amperage, int loss, boolean isSuperCon) {
+        internal.cableProperties(voltage, amperage, loss, isSuperCon);
+        return this;
+    }
+
+    public MaterialBuilderJS cableProperties(long voltage, int amperage, int loss, boolean isSuperCon,
+                                             int criticalTemperature) {
+        internal.cableProperties(voltage, amperage, loss, isSuperCon, criticalTemperature);
+        return this;
+    }
+
+    public MaterialBuilderJS fluidPipeProperties(int maxTemp, int throughput, boolean gasProof) {
+        internal.fluidPipeProperties(maxTemp, throughput, gasProof);
+        return this;
+    }
+
+    public MaterialBuilderJS fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof,
+                                                 boolean cryoProof, boolean plasmaProof) {
+        internal.fluidPipeProperties(maxTemp, throughput, gasProof, acidProof, cryoProof, plasmaProof);
+        return this;
+    }
+
+    public MaterialBuilderJS itemPipeProperties(int priority, float stacksPerSec) {
+        internal.itemPipeProperties(priority, stacksPerSec);
+        return this;
+    }
+
+    @Override
+    public void generateLang(LangKubeEvent lang) {
+        lang.add(id.toLanguageKey("material"),
+                langValue != null ? langValue : FormattingUtil.toEnglishName(id.getPath()));
+    }
+
+    @Override
+    public Material createObject() {
+        return internal.createMaterial();
+    }
+}

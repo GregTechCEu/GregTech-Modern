@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.item.datacomponents;
 
-import com.gregtechceu.gtceu.utils.codec.CodecUtils;
+import com.gregtechceu.gtceu.utils.codec.GTCodecUtils;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -23,7 +23,7 @@ public record LargeItemContent(@With ItemStack stored, @With long amount) {
                     stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
     public static final Codec<LargeItemContent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             OPTIONAL_SINGLE_ITEM_CODEC.fieldOf("stored").forGetter(LargeItemContent::stored),
-            CodecUtils.NON_NEGATIVE_LONG.fieldOf("amount").forGetter(LargeItemContent::amount)
+            GTCodecUtils.NON_NEGATIVE_LONG.fieldOf("amount").forGetter(LargeItemContent::amount)
     ).apply(instance, LargeItemContent::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, LargeItemContent> STREAM_CODEC = StreamCodec.composite(
             ItemStack.OPTIONAL_STREAM_CODEC, LargeItemContent::stored,

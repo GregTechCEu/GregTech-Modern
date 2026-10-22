@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
@@ -19,24 +17,20 @@ public class ItemLang {
     }
 
     private static void initGeneratedNames(RegistrateLangProvider provider) {
-        // TagPrefix
-        for (TagPrefix tagPrefix : GTRegistries.TAG_PREFIXES) {
-            provider.add(tagPrefix.getUnlocalizedName(), tagPrefix.langValue);
-        }
         // GTToolType
         for (GTToolType toolType : GTToolType.getTypes().values()) {
             provider.add(toolType.getUnlocalizedName(), toEnglishName(toolType.name));
         }
 
-        provider.add("tagprefix.polymer.plate", "%s Sheet");
-        provider.add("tagprefix.polymer.foil", "Thin %s Sheet");
-        provider.add("tagprefix.polymer.nugget", "%s Chip");
-        provider.add("tagprefix.polymer.dense_plate", "Dense %s Sheet");
-        provider.add("tagprefix.polymer.double_plate", "Double %s Sheet");
-        provider.add("tagprefix.polymer.tiny_dust", "Tiny Pile of %s Pulp");
-        provider.add("tagprefix.polymer.small_dust", "Small Pile of %s Pulp");
-        provider.add("tagprefix.polymer.dust", "%s Pulp");
-        provider.add("tagprefix.polymer.ingot", "%s Ingot");
+        provider.add("tag_prefix.gtceu.plate.polymer", "%s Sheet");
+        provider.add("tag_prefix.gtceu.foil.polymer", "Thin %s Sheet");
+        provider.add("tag_prefix.gtceu.nugget.polymer", "%s Chip");
+        provider.add("tag_prefix.gtceu.dense_plate.polymer", "Dense %s Sheet");
+        provider.add("tag_prefix.gtceu.double_plate.polymer", "Double %s Sheet");
+        provider.add("tag_prefix.gtceu.tiny_dust.polymer", "Tiny Pile of %s Pulp");
+        provider.add("tag_prefix.gtceu.small_dust.polymer", "Small Pile of %s Pulp");
+        provider.add("tag_prefix.gtceu.dust.polymer", "%s Pulp");
+        provider.add("tag_prefix.gtceu.ingot.polymer", "%s Ingot");
     }
 
     private static void initItemNames(RegistrateLangProvider provider) {

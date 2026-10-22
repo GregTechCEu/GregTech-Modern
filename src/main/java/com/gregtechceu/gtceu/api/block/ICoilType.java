@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.block;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.util.Lazy;
 
@@ -58,7 +59,7 @@ public interface ICoilType {
      * @return the {@link Material} of the Heating Coil if it has one, otherwise {@code null}
      */
     @Nullable
-    Material getMaterial();
+    Holder<Material> getMaterial();
 
     /**
      * @return the {@link ResourceLocation} defining the base texture of the coil
