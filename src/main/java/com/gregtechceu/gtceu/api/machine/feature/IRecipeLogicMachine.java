@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.feature;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRecipeLogicModifierTrait;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -15,10 +16,15 @@ import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * A machine can handle recipes.
  */
 public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFeature, IWorkable, IVoidable {
+
+    Set<MachineDefinition> MACHINES_LOGGING_FAILURES = new HashSet<>();
 
     /**
      * RecipeType held
@@ -55,19 +61,25 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
         ModifierFunction recipeModifier = self().getDefinition().getRecipeModifier().getModifier(self(), recipe);
         recipe = recipeModifier.apply(recipe);
         if (recipe == null) {
-            if (recipeModifier.getFailReason() == ModifierFunction.DEFAULT_FAILURE)
+            if (recipeModifier.getFailReason() == ModifierFunction.DEFAULT_FAILURE &&
+                    !MACHINES_LOGGING_FAILURES.contains(self().getDefinition())) {
                 GTCEu.LOGGER.warn(String.format("Recipe Logic Machine failed without a failure reason! Machine: %s",
-                        this.getClass()));
+                        self().getDefinition()));
+                MACHINES_LOGGING_FAILURES.add(self().getDefinition());
+            }
             return null;
         }
 
         for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
             recipe = rlTrait.modifyRecipe(recipe);
             if (recipe == null) {
-                if (rlTrait.getFailReason() == ModifierFunction.DEFAULT_FAILURE)
+                if (rlTrait.getFailReason() == ModifierFunction.DEFAULT_FAILURE &&
+                        !MACHINES_LOGGING_FAILURES.contains(self().getDefinition())) {
                     GTCEu.LOGGER.warn(String.format(
                             "Recipe Logic Machine Trait failed without a failure reason! Machine: %s, Trait: %s",
-                            this.getClass(), rlTrait.getClass()));
+                            self().getDefinition(), rlTrait.getClass()));
+                    MACHINES_LOGGING_FAILURES.add(self().getDefinition());
+                }
                 return null;
             }
         }

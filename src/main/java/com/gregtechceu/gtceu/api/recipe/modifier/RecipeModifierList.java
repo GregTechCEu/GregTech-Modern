@@ -1,18 +1,23 @@
 package com.gregtechceu.gtceu.api.recipe.modifier;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Represents a list of RecipeModifiers that should be applied in order
  */
 public final class RecipeModifierList implements RecipeModifier {
+
+    Set<MachineDefinition> MACHINES_LOGGING_FAILURES = new HashSet<>();
 
     @Getter
     private final RecipeModifier[] modifiers;
@@ -40,10 +45,13 @@ public final class RecipeModifierList implements RecipeModifier {
             var func = modifier.getModifier(machine, runningRecipe);
             runningRecipe = func.apply(runningRecipe);
             if (runningRecipe == null) {
-                if (func.getFailReason() == ModifierFunction.DEFAULT_FAILURE)
-                    GTCEu.LOGGER.warn("Recipe modifier failed without a failure reason!");
-                RecipeLogic.putFailureReason(machine, recipe, func.getFailReason());
-                return ModifierFunction.NULL;
+                if (func.getFailReason() == ModifierFunction.DEFAULT_FAILURE &&
+                        !MACHINES_LOGGING_FAILURES.contains(machine.getDefinition())) {
+                    GTCEu.LOGGER.warn(String.format("Recipe Logic Machine failed without a failure reason! Machine: %s",
+                            machine.getDefinition()));
+                    MACHINES_LOGGING_FAILURES.add(machine.getDefinition());
+                }
+                return ModifierFunction.cancel(func.getFailReason());
             }
             result = func.compose(result);
         }
