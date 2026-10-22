@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -11,7 +12,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
 
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
@@ -26,6 +29,17 @@ public class ModularArmorItem extends ArmorComponentItem implements IComponentIt
 
     public ModularArmorItem(ArmorMaterial material, Type type, Properties properties) {
         super(material, type, properties);
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        super.inventoryTick(stack, level, entity, slotId, isSelected);
+        if (level.isClientSide || getEquipmentSlot() != EquipmentSlot.CHEST ||
+                !(entity instanceof Player player) || player.getItemBySlot(EquipmentSlot.CHEST) != stack ||
+                !(stack.getTag() != null && stack.getTag().getBoolean("DischargeMode")))
+            return;
+        IElectricItem battery = GTCapabilityHelper.getElectricItem(stack);
+        if (battery != null) ArmorUtils.chargeCarriedItems(player, stack, battery, battery.getTransferLimit());
     }
 
     public boolean protectsAgainstFalls() {

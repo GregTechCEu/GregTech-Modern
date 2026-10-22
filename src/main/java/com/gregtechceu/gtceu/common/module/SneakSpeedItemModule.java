@@ -1,27 +1,34 @@
 package com.gregtechceu.gtceu.common.module;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
-import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeMod;
 
 public class SneakSpeedItemModule extends TieredItemModule {
 
+    private final double sneakSpeedBonus;
     private static final int ENERGY_USAGE = 819;
-
     public SneakSpeedItemModule(ResourceLocation id, int tier) {
         super(id, tier);
+        sneakSpeedBonus = tier >= GTValues.EV ? 0.7 : tier * 0.15;
     }
 
     @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.sneak_speed.description", getTier() * 100 / 8f);
+        return Component.translatable("module.gtceu.sneak_speed.description", Math.round((0.3 + sneakSpeedBonus) * 100),
+                Math.max(0.25, ArmorUtils.getModuleEnergyCost(getTier()) / 2));
     }
 
     @Override

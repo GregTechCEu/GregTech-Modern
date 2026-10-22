@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class CreativeFlightModule extends ItemModule implements ITieredItemModule {
 
-    public static final int ENERGY_PER_TICK = 2048;
+    public static final int ENERGY_PER_TICK = 768;
     private static final String FLIGHT_BOOST = "gtceu:thruster_flight_boost";
 
     public CreativeFlightModule(ResourceLocation id) {

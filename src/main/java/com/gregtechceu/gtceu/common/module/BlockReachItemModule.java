@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.common.module;
 
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredAttributeItemModule;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraftforge.common.ForgeMod;
@@ -20,8 +22,18 @@ public class BlockReachItemModule extends TieredAttributeItemModule {
     }
 
     @Override
+    public double getEnergyCost() {
+        return Math.max(0.25, ArmorUtils.getModuleEnergyCost(getTier()) * 0.25);
+    }
+
+    @Override
+    protected boolean consumesEnergyThisTick(ModuleContext context, LivingEntity entity) {
+        return true;
+    }
+
+    @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.block_reach.description", getTier() / 2d);
+        return Component.translatable("module.gtceu.block_reach.description", getTier() / 2d, getEnergyCost());
     }
 
     @Override

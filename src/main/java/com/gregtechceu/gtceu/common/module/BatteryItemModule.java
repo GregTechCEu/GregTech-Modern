@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.module.*;
@@ -123,9 +124,16 @@ public class BatteryItemModule extends CapabilityProviderItemModule<IElectricIte
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return super.getSettings(moduleContext, psm, id);
-        return super.getSettings(moduleContext, psm, id)
+        ItemModuleSettingsBuilder settings = super.getSettings(moduleContext, psm, id)
                 .progress(Text.lang("gui.gtceu.item_module.charge"),
                         () -> (double) electricItem.getCharge() / electricItem.getMaxCharge(),
                         x -> GTStringUtils.formatInt((long) (x * electricItem.getMaxCharge())) + " EU");
+        ItemStack stack = moduleContext.getAppliedTo();
+        if (stack.getItem() instanceof ModularArmorItem armor && armor.getEquipmentSlot() == EquipmentSlot.CHEST) {
+            settings.bool(Text.lang("gui.gtceu.armor_config.charge_inventory"),
+                    () -> stack.getTag() != null && stack.getOrCreateTag().getBoolean("DischargeMode"),
+                    v -> stack.getOrCreateTag().putBoolean("DischargeMode", v));
+        }
+        return settings;
     }
 }

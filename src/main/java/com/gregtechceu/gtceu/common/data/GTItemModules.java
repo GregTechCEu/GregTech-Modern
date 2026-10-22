@@ -28,7 +28,7 @@ public class GTItemModules {
     public static final ItemModule[] ATTACK_DAMAGE = registerTiered(GTCEu.id("attack_damage"), AttackDamageItemModule::new);
     public static final ItemModule[] BLOCK_REACH = registerTiered(GTCEu.id("block_reach"), BlockReachItemModule::new);
     public static final ItemModule[] MOVEMENT_SPEED_ATTR = registerTiered(GTCEu.id("movement_speed"), MovementSpeedItemModule::new);
-    public static final ItemModule[] SNEAK_SPEED = registerTiered(GTCEu.id("sneak_speed"), SneakSpeedItemModule::new);
+    public static final ItemModule[] SNEAK_SPEED = registerTiered(GTCEu.id("sneak_speed"), SneakSpeedItemModule::new, GTValues.tiersBetween(GTValues.LV, GTValues.EV));
     public static final ItemModule[] SWIM_SPEED = registerTiered(GTCEu.id("swim_speed"), SwimSpeedModule::new);
     public static final ItemModule[] STEP_HEIGHT = registerTiered(GTCEu.id("step_height"), StepHeightModule::new);
     public static final ItemModule[] JUMP_BOOST = registerTiered(GTCEu.id("jump_boost"), JumpBoostItemModule::new);

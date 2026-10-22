@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.BlockAttributes;
+import com.gregtechceu.gtceu.api.block.GTAttributeModifierIds;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
@@ -16,10 +16,12 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
 import com.gregtechceu.gtceu.api.item.module.AttributeItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
+import com.gregtechceu.gtceu.api.item.module.TieredAttributeItemModule;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -39,7 +41,10 @@ import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.common.module.AttackDamageItemModule;
+import com.gregtechceu.gtceu.common.module.AttackSpeedItemModule;
 import com.gregtechceu.gtceu.common.module.JetpackModule;
+import com.gregtechceu.gtceu.common.module.JumpBoostItemModule;
 import com.gregtechceu.gtceu.common.module.LiquidFuelJetpackModule;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSendWorldID;
@@ -66,6 +71,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -397,7 +403,7 @@ public class CommonEventListener {
         if (event.phase == TickEvent.Phase.START && !player.level().isClientSide) {
             var speedAttrib = player.getAttribute(Attributes.MOVEMENT_SPEED);
             if (speedAttrib == null) return;
-            var speedMod = speedAttrib.getModifier(BlockAttributes.BLOCK_SPEED_BOOST);
+            var speedMod = speedAttrib.getModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST);
 
             float speedBoost = 0.0f;
             if (!player.onGround() || player.isInWater() || player.isCrouching()) {
@@ -416,14 +422,14 @@ public class CommonEventListener {
                 if (speedBoost == speedMod.getAmount()) {
                     return;
                 } else {
-                    speedAttrib.removeModifier(BlockAttributes.BLOCK_SPEED_BOOST);
+                    speedAttrib.removeModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST);
                 }
             } else {
                 if (speedBoost == 0.0f) return;
             }
             if (speedBoost != 0.0f) {
                 speedAttrib.addTransientModifier(
-                        new AttributeModifier(BlockAttributes.BLOCK_SPEED_BOOST, "GT Block Speed Boost",
+                        new AttributeModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST, "GT Block Speed Boost",
                                 speedBoost, AttributeModifier.Operation.MULTIPLY_BASE));
             }
         }
@@ -475,6 +481,45 @@ public class CommonEventListener {
                 var modifier = attributeModule.getModifierToAdd(ctx);
                 if (modifier != null) {
                     modifierEvent.addModifier(attribute, modifier);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onModuleJump(LivingEvent.LivingJumpEvent event) {
+        var entity = event.getEntity();
+        if (entity.level().isClientSide) return;
+        for (var stack : entity.getArmorSlots()) {
+            var modular = GTCapabilityHelper.getModularItem(stack);
+            if (modular == null) continue;
+            for (var context : modular.getAllModuleInstances()) {
+                if (context.getModule() instanceof JumpBoostItemModule jump && jump.isEnabled(context)) {
+                    ArmorUtils.useModuleEnergy(stack, ArmorUtils.toModuleEnergyCredits(jump.getEnergyCost(context)),
+                            false);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onModuleMeleeHit(LivingDamageEvent event) {
+        var source = event.getSource();
+        if (!(source.is(DamageTypes.PLAYER_ATTACK) || source.is(DamageTypes.MOB_ATTACK) ||
+                source.is(DamageTypes.MOB_ATTACK_NO_AGGRO)) ||
+                !(source.getDirectEntity() instanceof LivingEntity attacker))
+            return;
+        for (var stack : attacker.getArmorSlots()) {
+            var modular = GTCapabilityHelper.getModularItem(stack);
+            if (modular == null) continue;
+            for (var context : modular.getAllModuleInstances()) {
+                if (!(context.getModule() instanceof AttackDamageItemModule ||
+                        context.getModule() instanceof AttackSpeedItemModule))
+                    continue;
+                var module = (TieredAttributeItemModule) context.getModule();
+                if (module.getModifierToAdd(context) != null) {
+                    ArmorUtils.useModuleEnergy(stack, ArmorUtils.toModuleEnergyCredits(module.getEnergyCost(context)),
+                            false);
                 }
             }
         }

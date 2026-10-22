@@ -1,11 +1,20 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
+import com.gregtechceu.gtceu.common.module.AdvancedJetpackModule;
+import com.gregtechceu.gtceu.common.module.SpeedItemModule;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.ServerGamePacketListenerImplAccessor;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,6 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
@@ -30,9 +40,14 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import net.minecraftforge.items.IItemHandler;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -43,6 +58,155 @@ public class ArmorUtils {
     public static final int NIGHTVISION_DURATION = 20 * 20; // 20 seconds
     // Flashing starts at 10 seconds + two second buffer to prevent flicker
     public static final int NIGHT_VISION_RESET = 12 * 20;
+    public static final long CREDITS_PER_EU = GTValues.M;
+    // 2^63 / the first double above the long range
+    private static final double LONG_LIMIT = 0x1.0p63;
+
+    public static final String MODULE_ENERGY_CREDITS_KEY = "ModuleEnergyCredits";
+
+    // Full strength running cost in EU/t
+    public static double getModuleEnergyCost(int tier) {
+        return Math.scalb(0.25, 2 * (tier - GTValues.LV) + (tier >= GTValues.EV ? 1 : 0));
+    }
+
+    /**
+     * Converts an EU cost to credits, rounding up
+     *
+     * @param amount of EU to convert into credits
+     * @return credits or -1 for invalid or overflowing costs
+     */
+    public static long toModuleEnergyCredits(double amount) {
+        if (!Double.isFinite(amount) || amount < 0) return -1;
+        double credits = Math.ceil(amount * CREDITS_PER_EU);
+        return credits >= LONG_LIMIT ? -1 : (long) credits;
+    }
+
+    // Consume whole EU and retain the unused credits for later ticks or actions.
+    public static boolean useModuleEnergy(ItemStack stack, long costCredits, boolean simulate) {
+        if (costCredits < 0) return false;
+        if (costCredits == 0) return true;
+        IElectricItem battery = GTCapabilityHelper.getElectricItem(stack);
+        if (battery == null) return false;
+        long credit = GTMath.clamp(stack.getTag() != null ? stack.getTag().getLong(MODULE_ENERGY_CREDITS_KEY) : 0,
+                0L, CREDITS_PER_EU - 1);
+        long requiredEU = costCredits / CREDITS_PER_EU;
+        long remainingCredit = credit - costCredits % CREDITS_PER_EU;
+        if (remainingCredit < 0) {
+            requiredEU++;
+            remainingCredit += CREDITS_PER_EU;
+        }
+        if (!battery.canUse(requiredEU)) return false;
+        if (simulate) return true;
+        if (requiredEU > 0) {
+            long extracted = battery.discharge(requiredEU, battery.getTier(), true, false, false);
+            if (extracted != requiredEU) {
+                battery.charge(extracted, battery.getTier(), true, false);
+                return false;
+            }
+        }
+        stack.getOrCreateTag().putLong(MODULE_ENERGY_CREDITS_KEY, remainingCredit);
+        return true;
+    }
+
+    public static boolean isMoving(LivingEntity entity) {
+        if (entity instanceof Player player) {
+            return SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) ||
+                    SyncedKeyMappings.VANILLA_BACKWARD.isKeyDown(player) ||
+                    SyncedKeyMappings.VANILLA_LEFT.isKeyDown(player) ||
+                    SyncedKeyMappings.VANILLA_RIGHT.isKeyDown(player);
+        }
+        return entity.getDeltaMovement().horizontalDistanceSqr() > 1.0E-6;
+    }
+
+    public static boolean isMovingOnGround(LivingEntity entity) {
+        return entity.onGround() && !entity.isInWater() && !entity.isPassenger() && !entity.isFallFlying() &&
+                !(entity instanceof Player player && player.getAbilities().flying) && isMoving(entity);
+    }
+
+    public static boolean canSprintInAnyDirection(Player player) {
+        if (player.isPassenger() || player.isSpectator() || player.isSleeping() || player.isFallFlying() ||
+                player.isInWater() || player.isSwimming())
+            return false;
+        for (ItemStack stack : player.getArmorSlots()) {
+            IModularItem modular = GTCapabilityHelper.getModularItem(stack);
+            if (modular == null) continue;
+            for (ModuleContext context : modular.getAllModuleInstances()) {
+                if (context.getModule() instanceof SpeedItemModule speed && speed.isEnabled(context) &&
+                        speed.isOmnidirectional(context) &&
+                        speed.getStrength(context) > 0 && isMovingOnGround(player) &&
+                        useModuleEnergy(stack, toModuleEnergyCredits(speed.getEnergyCost(context)), true))
+                    return true;
+                if (context.getModule() instanceof AdvancedJetpackModule thruster &&
+                        thruster.isOmnidirectional(context) && thruster.canBoost(context, player))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Shares the energy evenly across all valid items, respecting max I/O rates
+     */
+    public static void chargeCarriedItems(Player player, ItemStack sourceStack, IElectricItem source, long budget) {
+        long remaining = Math.min(budget, source.getCharge());
+        if (remaining <= 0) return;
+        record Candidate(ItemStack stack, long demand) {}
+        var stacks = new ArrayList<ItemStack>();
+        if (GTCEu.Mods.isCuriosLoaded()) {
+            IItemHandler curios = CuriosApi.getCuriosInventory(player)
+                    .<IItemHandler>map(ICuriosItemHandler::getEquippedCurios)
+                    .orElse(null);
+            if (curios != null) {
+                for (int i = 0; i < curios.getSlots(); i++) stacks.add(curios.getStackInSlot(i));
+            }
+        }
+        var inventory = player.getInventory();
+        for (int i = 0; i < inventory.getContainerSize(); i++) stacks.add(inventory.getItem(i));
+        var candidates = new ArrayList<Candidate>();
+        for (ItemStack stack : stacks) {
+            long demand = chargeCarriedItem(remaining, sourceStack, source, stack, true);
+            if (demand > 0) candidates.add(new Candidate(stack, demand));
+        }
+        if (candidates.isEmpty()) return;
+        Collections.rotate(candidates, Math.floorMod(player.tickCount, candidates.size()));
+        candidates.sort(Comparator.comparingLong(Candidate::demand));
+        for (int i = 0; i < candidates.size() && remaining > 0; i++) {
+            Candidate candidate = candidates.get(i);
+            long share = Math.min(candidate.demand(), remaining / (candidates.size() - i));
+            if (share > 0) {
+                remaining -= chargeCarriedItem(share, sourceStack, source, candidate.stack(), false);
+            }
+        }
+    }
+
+    private static long chargeCarriedItem(long remaining, ItemStack sourceStack, IElectricItem source,
+                                          ItemStack target, boolean simulate) {
+        if (target == sourceStack) return 0;
+        IElectricItem targetEnergy = GTCapabilityHelper.getElectricItem(target);
+        if (targetEnergy != null) {
+            if (targetEnergy.canProvideChargeExternally()) return 0;
+            long available = source.discharge(remaining, source.getTier(), true, false, true);
+            long accepted = targetEnergy.charge(available, source.getTier(), false, true);
+            if (simulate) return accepted;
+            long extracted = source.discharge(accepted, source.getTier(), true, false, false);
+            long received = targetEnergy.charge(extracted, source.getTier(), false, false);
+            if (received < extracted) source.charge(extracted - received, source.getTier(), true, false);
+            return received;
+        }
+        if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
+            var targetFE = GTCapabilityHelper.getForgeEnergyItem(target);
+            if (targetFE != null && targetFE.canReceive()) {
+                long available = source.discharge(remaining, source.getTier(), true, false, true);
+                long accepted = FeCompat.insertEu(targetFE, available, true);
+                if (simulate) return accepted;
+                long extracted = source.discharge(accepted, source.getTier(), true, false, false);
+                long received = FeCompat.insertEu(targetFE, extracted, false);
+                if (received < extracted) source.charge(extracted - received, source.getTier(), true, false);
+                return received;
+            }
+        }
+        return 0;
+    }
 
     /**
      * Check is possible to charge item
@@ -212,33 +376,51 @@ public class ArmorUtils {
     public static class ModularHUD {
 
         private byte stringAmount = 0;
-        private final List<Component> stringList;
+        private final List<HudLine> stringList;
         private static final Minecraft mc = Minecraft.getInstance();
+
+        private record HudLine(int columnWidth, Component separator, Component[] columns) {}
 
         public ModularHUD() {
             this.stringList = new ArrayList<>();
         }
 
         public void newLine(Component string) {
+            newLine(mc.font.width(string), Component.empty(), string);
+        }
+
+        public void newLine(int columnWidth, Component separator, Component... columns) {
             this.stringAmount++;
-            this.stringList.add(string);
+            this.stringList.add(new HudLine(columnWidth, separator, columns));
         }
 
         public void draw(GuiGraphics guiGraphics) {
             for (int i = 0; i < stringAmount; i++) {
-                IntIntPair coords = this.getStringCoord(i);
-                guiGraphics.drawString(mc.font, stringList.get(i), coords.firstInt(), coords.secondInt(), 0xFFFFFF,
-                        false);
+                HudLine line = stringList.get(i);
+                int separatorWidth = mc.font.width(line.separator());
+                int width = line.columnWidth() * line.columns().length +
+                        separatorWidth * (line.columns().length - 1);
+                IntIntPair coords = this.getStringCoord(i, width);
+                int x = coords.firstInt();
+                for (int column = 0; column < line.columns().length; column++) {
+                    Component text = line.columns()[column];
+                    guiGraphics.drawString(mc.font, text, x + line.columnWidth() - mc.font.width(text),
+                            coords.secondInt(), 0xFFFFFF, false);
+                    x += line.columnWidth();
+                    if (column < line.columns().length - 1) {
+                        guiGraphics.drawString(mc.font, line.separator(), x, coords.secondInt(), 0xFFFFFF, false);
+                        x += separatorWidth;
+                    }
+                }
             }
         }
 
-        private IntIntPair getStringCoord(int index) {
+        private IntIntPair getStringCoord(int index, int stringWidth) {
             int posX;
             int posY;
             int fontHeight = mc.font.lineHeight;
             int windowHeight = mc.getWindow().getGuiScaledHeight();
             int windowWidth = mc.getWindow().getGuiScaledWidth();
-            int stringWidth = mc.font.width(stringList.get(index));
             switch (ConfigHolder.INSTANCE.client.armorHud.hudLocation) {
                 case 1 -> {
                     posX = 10 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetX;

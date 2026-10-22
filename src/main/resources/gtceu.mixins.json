@@ -20,6 +20,7 @@
         "client.GuiHeartTypeMixin",
         "client.HumanoidArmorLayerMixin",
         "client.LevelRendererMixin",
+        "client.LocalPlayerMixin",
         "client.ModelBakerImplMixin",
         "client.ModelManagerMixin",
         "client.MultiPlayerGameModeMixin",

@@ -17,7 +17,7 @@ public class AdvancedJetpack extends Jetpack {
 
     @Override
     public double getSprintEnergyModifier() {
-        return 2.5D;
+        return 4.0D / 3.0D;
     }
 
     @Override

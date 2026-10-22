@@ -70,11 +70,15 @@ public abstract class AttributeItemModule extends ItemModule {
     }
 
     public double getModifier(ModuleContext moduleContext) {
-        return moduleContext.getData(AttributeModuleData.class).getModifierAmount();
+        double amount = moduleContext.getData(AttributeModuleData.class).getModifierAmount();
+        return Double.isFinite(amount) ?
+                Mth.clamp(amount, getMinModifier(moduleContext), getMaxModifier(moduleContext)) :
+                getNeutralModifier(moduleContext);
     }
 
     public void setModifier(ModuleContext moduleContext, double modifier) {
-        modifier = Mth.clamp(modifier, getNeutralModifier(moduleContext), getMaxModifier(moduleContext));
+        if (!Double.isFinite(modifier)) return;
+        modifier = Mth.clamp(modifier, getMinModifier(moduleContext), getMaxModifier(moduleContext));
         moduleContext.setData(moduleContext.getData(AttributeModuleData.class).withModifierAmount(modifier));
     }
 
@@ -110,7 +114,7 @@ public abstract class AttributeItemModule extends ItemModule {
 
     @Override
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
-        var keepActive = keepAttributeActive(moduleContext, entity);
+        var keepActive = isEnabled(moduleContext) && keepAttributeActive(moduleContext, entity);
         if (keepActive == moduleContext.getData(AttributeModuleData.class).keepActive) return;
         moduleContext.setData(moduleContext.getData(AttributeModuleData.class).withKeepActive(keepActive));
     }

@@ -42,7 +42,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
                 ArmorUtils.NIGHTVISION_DURATION;
         if (type == ArmorItem.Type.HELMET) {
             boolean nightVision = data.contains("nightVision") && data.getBoolean("nightVision");
-            if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
+            if (toggleTimer == 0 && SyncedKeyMappings.NIGHT_VISION_ENABLE.isKeyDown(player)) {
                 nightVision = !nightVision;
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.module;
 
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
@@ -39,16 +40,22 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
 
     @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.jump_boost.description", getTier() / 4f);
+        return Component.translatable("module.gtceu.jump_boost.description", getMaxJumpBoost(),
+                ArmorUtils.getModuleEnergyCost(getTier()) * 2);
+    }
+
+    public double getEnergyCost(ModuleContext context) {
+        return ArmorUtils.getModuleEnergyCost(getTier()) * 2 * getJumpHeight(context) / getMaxJumpBoost();
     }
 
     public float getMaxJumpBoost() {
-        return getTier() / 4f;
+        return getTier();
     }
 
     @Override
-    public float getJumpBoost(ModuleContext moduleContext) {
-        return moduleContext.getData(JumpBoostModuleData.class).getJumpBoost();
+    public float getJumpHeight(ModuleContext moduleContext) {
+        float height = moduleContext.getData(JumpBoostModuleData.class).getJumpBoost();
+        return Float.isFinite(height) ? Mth.clamp(height, 0, getMaxJumpBoost()) : 0;
     }
 
     public void setJumpBoost(ModuleContext moduleContext, float jumpBoost) {
@@ -60,9 +67,11 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
         return super.getSettings(moduleContext, psm, id)
                 .num(Text.lang("gui.gtceu.item_module.jump_boost"),
-                        () -> getJumpBoost(moduleContext),
+                        () -> getJumpHeight(moduleContext),
                         x -> setJumpBoost(moduleContext, (float) x),
-                        0, getMaxJumpBoost());
+                        0, getMaxJumpBoost(),
+                        value -> Component.translatable("gui.gtceu.item_module.jump_height_value",
+                                "%.2f".formatted(value)).getString());
     }
 
     public static class JumpBoostModuleData extends ModuleData {

@@ -2,5 +2,5 @@ package com.gregtechceu.gtceu.api.item.module;
 
 public interface IJumpBoostItemModule {
 
-    float getJumpBoost(ModuleContext moduleContext);
+    float getJumpHeight(ModuleContext moduleContext);
 }

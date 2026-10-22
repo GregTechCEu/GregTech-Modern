@@ -66,7 +66,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             data.putByte("toggleTimer", (byte) 0);
         }
 
-        boolean jetpackEnabled = data.getBoolean("enabled");
+        boolean jetpackEnabled = IJetpack.isEngineEnabled(stack);
         boolean hoverMode = updateHoverMode(player, stack, data.getBoolean("hover"), false);
         byte toggleTimer = data.getByte("toggleTimer");
 
@@ -74,6 +74,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         if (toggleTimer == 0) {
             if (SyncedKeyMappings.JETPACK_ENABLE.isKeyDown(player)) {
                 jetpackEnabled = !jetpackEnabled;
+                IJetpack.setEngineEnabled(stack, jetpackEnabled);
                 messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.flight", jetpackEnabled);
                 data.putBoolean("enabled", jetpackEnabled);
             } else if (SyncedKeyMappings.ARMOR_HOVER.isKeyDown(player)) {
@@ -137,20 +138,17 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             CompoundTag data = item.getTag();
 
             if (data != null) {
-                if (data.contains("enabled")) {
-                    Component status = (data.getBoolean("enabled") ?
-                            Component.translatable("hud.gtceu.armor.status.enabled") :
-                            Component.translatable("hud.gtceu.armor.status.disabled"));
-                    Component result = Component.translatable("hud.gtceu.armor.engine_enabled", status);
-                    hud.newLine(result);
-                }
-                if (data.contains("hover")) {
-                    Component status = (data.getBoolean("hover") ?
-                            Component.translatable("hud.gtceu.armor.status.enabled") :
-                            Component.translatable("hud.gtceu.armor.status.disabled"));
-                    Component result = Component.translatable("hud.gtceu.armor.hover_mode", status);
-                    hud.newLine(result);
-                }
+                Component status = IJetpack.isEngineEnabled(item) ?
+                        Component.translatable("hud.gtceu.armor.status.enabled") :
+                        Component.translatable("hud.gtceu.armor.status.disabled");
+                Component result = Component.translatable("hud.gtceu.armor.engine_enabled", status);
+                hud.newLine(result);
+
+                status = data.getBoolean("hover") ?
+                        Component.translatable("hud.gtceu.armor.status.enabled") :
+                        Component.translatable("hud.gtceu.armor.status.disabled");
+                result = Component.translatable("hud.gtceu.armor.hover_mode", status);
+                hud.newLine(result);
             }
         }
     }
@@ -259,8 +257,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                                     TooltipFlag isAdvanced) {
             CompoundTag data = stack.getOrCreateTag();
             Component state;
-            boolean enabled = !data.contains("enabled") || data.getBoolean("enabled");
-            state = enabled ? Component.translatable("hud.gtceu.armor.status.enabled") :
+
+            state = IJetpack.isEngineEnabled(stack) ? Component.translatable("hud.gtceu.armor.status.enabled") :
                     Component.translatable("hud.gtceu.armor.status.disabled");
             tooltipComponents.add(Component.translatable("hud.gtceu.armor.engine_enabled", state));
 
