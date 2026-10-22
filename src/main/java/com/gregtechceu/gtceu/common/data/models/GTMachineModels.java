@@ -33,8 +33,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Locale;
-
 import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.*;
 import static com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay.*;
 import static com.gregtechceu.gtceu.common.data.models.GTModels.*;
@@ -52,8 +50,7 @@ public class GTMachineModels {
 
     public static final Int2ObjectMap<ResourceLocation> TIERED_HULL_MODELS = Util.make(new Int2ObjectOpenHashMap<>(), map -> {
         for (int tier : GTValues.ALL_TIERS) {
-            String vn = GTValues.VN[tier].toLowerCase(Locale.ROOT);
-            map.put(tier, GTCEu.id("block/casings/voltage/" + vn));
+            map.put(tier, GTCEu.id("block/casings/voltage/" + GTValues.VNL[tier]));
         }
         map.defaultReturnValue(GTCEu.id("block/casings/voltage/lv"));
     });
@@ -717,7 +714,7 @@ public class GTMachineModels {
     }
 
     public static ResourceLocation getTieredHullTexture(int tier) {
-        return GTCEu.id("block/casings/voltage/%s/".formatted(GTValues.VN[tier].toLowerCase(Locale.ROOT)));
+        return GTCEu.id("block/casings/voltage/%s/".formatted(GTValues.VNL[tier]));
     }
 
     public static BlockModelBuilder tieredHullTextures(BlockModelBuilder model, int tier) {

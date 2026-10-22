@@ -189,7 +189,7 @@ public class GTMachineUtils {
         MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             var register = registrate
-                    .machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
+                    .machine(GTValues.VNL[tier] + "_" + name,
                             info -> factory.buildMachine(info, tier))
                     .tier(tier);
             definitions[tier] = builder.apply(tier, register);
@@ -475,7 +475,7 @@ public class GTMachineUtils {
         for (int tier : tiers) {
             long maxAmount = 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1);
             var register = registrate.machine(
-                    GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
+                    VNL[tier] + "_" + name,
                     MachineDefinition::new,
                     MetaMachineBlock::new, QuantumTankMachineItem::new,
                     (holder) -> new QuantumTankMachine(holder, tier, maxAmount))
@@ -576,7 +576,7 @@ public class GTMachineUtils {
         MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             var register = registrate
-                    .multiblock(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
+                    .multiblock(GTValues.VNL[tier] + "_" + name,
                             holder -> factory.buildMachine(holder, tier))
                     .tier(tier);
             definitions[tier] = builder.apply(tier, register);

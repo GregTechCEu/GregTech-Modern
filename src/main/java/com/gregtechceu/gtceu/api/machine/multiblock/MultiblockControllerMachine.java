@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.multiblock.MultiblockMachineTrait;
+import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.multiblock.pattern.*;
 import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
@@ -531,7 +532,11 @@ public class MultiblockControllerMachine extends MetaMachine {
                 }
 
                 if (structureHelper != null) {
-                    structureHelper.populate(resultStructure, pattern, null, getFrontFacing(), getUpwardsFacing(),
+                    var info = new MultiblockSchemaInfo(this.getDefinition());
+                    info.setIgnorePreviewCount(true);
+                    structureHelper.populate(info, resultStructure, pattern,
+                            null,
+                            getFrontFacing(), getUpwardsFacing(),
                             isFlipped());
                     Long2ReferenceMap<BlockState> blocks = new Long2ReferenceOpenHashMap<>();
                     resultStructure.forEach((pos, state) -> blocks.put(pos.asLong(), state.getBlockState()));
