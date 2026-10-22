@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.mui;
 
+import brachy.modularui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
@@ -159,7 +160,7 @@ public class MachineUIPanelBuilder {
         }
 
         for (var cover : machine.getCoverContainer().getCovers()) {
-            GTMuiWidgets.createCoverWidget(attachLeft, cover, null, syncManager, settings);
+            GTMuiWidgets.createCoverWidget(attachLeft, cover, new SidedPosGuiData(data.getPlayer(), data.getBlockPos(), cover.attachedSide), syncManager, settings);
         }
 
         return panel;

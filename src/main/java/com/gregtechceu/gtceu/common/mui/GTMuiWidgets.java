@@ -1,8 +1,13 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -52,6 +57,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.*;
 
@@ -411,8 +417,8 @@ public class GTMuiWidgets {
             return null;
         }
         IPanelHandler panelHandler = syncManager.syncedPanel(
-                cover.getAttachItem().getDisplayName() + cover.attachedSide.name(), true,
-                (sm, sh) -> muiCover.buildUI(data, sm, settings).disablePanelsBelow(true)
+                cover.getAttachItem().getItem() + "." + cover.attachedSide.name().toLowerCase(Locale.ROOT), true,
+                (sm, sh) -> muiCover.buildUI(data, sm, settings)
                         .closeOnOutOfBoundsClick(true));
         return flow.child(new ButtonWidget<>()
                 .overlay(new ItemDrawable(cover.getAttachItem()))
@@ -423,7 +429,7 @@ public class GTMuiWidgets {
                 }));
     }
 
-    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(Flow existingRow,
+    public static <T> ParentWidget<?> createFilterRow(Flow existingRow,
                                                                               FilterHandler<T> filterHandler,
                                                                               GuiData data,
                                                                               PanelSyncManager syncManager,
