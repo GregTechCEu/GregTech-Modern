@@ -128,10 +128,6 @@ public final class GTEmbeddiumCompat {
 
         event.addMeshAppender(context -> {
             SectionPos sectionOrigin = context.sectionOrigin();
-            if (!BloomRenderer.SafeMode.BLOOM_BUFFER_BUILDERS.containsKey(sectionOrigin)) {
-                return;
-            }
-
             Vec3 camPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
             BloomRenderer.SafeMode.bakeBloomChunkBuffers(sectionOrigin,
                     (float) camPos.x, (float) camPos.y, (float) camPos.z);

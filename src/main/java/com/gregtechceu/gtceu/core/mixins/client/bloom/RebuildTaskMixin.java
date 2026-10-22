@@ -30,8 +30,7 @@ public abstract class RebuildTaskMixin {
                 .with(() -> BloomRenderer.SafeMode.getOrStartBloomBuffer(SectionPos.of(sectionOrigin)));
     }
 
-    @Inject(method = "compile",
-            at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;", remap = false))
+    @Inject(method = "compile", at = @At("RETURN"))
     private void gtceu$clearBloomContextData(float camX, float camY, float camZ, ChunkBufferBuilderPack builders,
                                              CallbackInfoReturnable<Object> cir,
                                              @Local(ordinal = 0) BlockPos sectionOrigin) {

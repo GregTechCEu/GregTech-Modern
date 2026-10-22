@@ -278,6 +278,7 @@ public class BloomRenderer {
         public static void finishBloomBuffer(SectionPos sectionPos, BufferBuilder builder) {
             BufferBuilder.RenderedBuffer buffer = builder.endOrDiscardIfEmpty();
             if (buffer == null) {
+                invalidateSectionData(sectionPos);
                 return;
             }
 
@@ -328,6 +329,7 @@ public class BloomRenderer {
 
             BufferBuilder builder = BLOOM_BUFFER_BUILDERS.get(sectionPos);
             if (builder == null || !builder.building()) {
+                invalidateSectionData(sectionPos);
                 return;
             }
             builder.setQuadSorting(VertexSorting.byDistance(
@@ -367,6 +369,7 @@ public class BloomRenderer {
         static void invalidateLevelData() {
             BLOOM_RENDER_LOCK.writeLock().lock();
             try {
+                BLOOM_BUFFERS.values().forEach(SafeMode::closeBloomBuffer);
                 BLOOM_BUFFERS.clear();
                 BLOOM_BUFFER_BUILDERS.clear();
                 BLOOM_BUFFER_SORT_STATES.clear();
@@ -384,14 +387,18 @@ public class BloomRenderer {
                 VertexBuffer buffer = BLOOM_BUFFERS.remove(sectionPos);
 
                 if (buffer != null) {
-                    if (!RenderSystem.isOnRenderThread()) {
-                        RenderSystem.recordRenderCall(buffer::close);
-                    } else {
-                        buffer.close();
-                    }
+                    closeBloomBuffer(buffer);
                 }
             } finally {
                 BLOOM_RENDER_LOCK.writeLock().unlock();
+            }
+        }
+
+        private static void closeBloomBuffer(VertexBuffer buffer) {
+            if (RenderSystem.isOnRenderThread()) {
+                buffer.close();
+            } else {
+                RenderSystem.recordRenderCall(buffer::close);
             }
         }
     }
