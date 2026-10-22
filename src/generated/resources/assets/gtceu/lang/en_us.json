@@ -4069,6 +4069,7 @@
   "gui.gtceu.item_module.hp": "HP:",
   "gui.gtceu.item_module.jump_boost": "Boost:",
   "gui.gtceu.item_module.jump_height_value": "+%s blocks",
+  "gui.gtceu.item_module.omnidirectional_sprint": "Omnidirectional Sprint",
   "gui.gtceu.item_module.power": "Power:",
   "gui.gtceu.max_module_tier": "Max Module Tier: %s",
   "gui.gtceu.module_slot.tiered": "Tiered (%s)",

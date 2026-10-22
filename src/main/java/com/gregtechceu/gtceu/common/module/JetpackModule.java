@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.Text;
@@ -37,6 +38,23 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
     @Override
     protected Jetpack getArmorLogic(ModuleContext moduleContext) {
         return JETPACK;
+    }
+
+    public boolean canBoost(ModuleContext context, Player player) {
+        ItemStack stack = context.getAppliedTo();
+        if (!isEnabled(context) || !stack.getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY).enabled())
+            return false;
+        Jetpack logic = getArmorLogic(context);
+        int cost = (int) Math.round(logic.getEnergyPerUse() * logic.getSprintEnergyModifier());
+        if (!player.getAbilities().flying) return !player.onGround() && logic.canUseEnergy(stack, cost);
+
+        var modular = GTCapabilityHelper.getModularItem(stack);
+        var electric = GTCapabilityHelper.getElectricItem(stack);
+        return modular != null && electric != null &&
+                modular.getAllModuleInstances().stream()
+                        .anyMatch(module -> module.getModule() instanceof CreativeFlightModule &&
+                                module.getModule().isEnabled(module)) &&
+                electric.canUse(CreativeFlightModule.ENERGY_PER_TICK + (long) cost);
     }
 
     @Override

@@ -7,6 +7,7 @@ public class ModularArmorLang {
     public static void init(RegistrateLangProvider provider) {
         provider.add("gui.gtceu.item_module.jump_height_value", "+%s blocks");
         provider.add("gui.gtceu.item_module.hover_mode", "Hover Mode");
+        provider.add("gui.gtceu.item_module.omnidirectional_sprint", "Omnidirectional Sprint");
         provider.add("gtceu.key.modular_item_gui", "Armor Configuration");
         provider.add("gui.gtceu.armor_config.title", "Armor Configuration");
         provider.add("gui.gtceu.armor_config.select", "Select an equipped armor piece");

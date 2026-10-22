@@ -5,8 +5,12 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.module.AdvancedJetpackModule;
+import com.gregtechceu.gtceu.common.module.SpeedItemModule;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.ServerGamePacketListenerImplAccessor;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
@@ -112,6 +116,27 @@ public class ArmorUtils {
     public static boolean isMovingOnGround(LivingEntity entity) {
         return entity.onGround() && !entity.isInWater() && !entity.isPassenger() && !entity.isFallFlying() &&
                 !(entity instanceof Player player && player.getAbilities().flying) && isMoving(entity);
+    }
+
+    public static boolean canSprintInAnyDirection(Player player) {
+        if (player.isPassenger() || player.isSpectator() || player.isSleeping() || player.isFallFlying() ||
+                player.isInWater() || player.isSwimming())
+            return false;
+        for (ItemStack stack : player.getArmorSlots()) {
+            IModularItem modular = GTCapabilityHelper.getModularItem(stack);
+            if (modular == null) continue;
+            for (ModuleContext context : modular.getAllModuleInstances()) {
+                if (context.getModule() instanceof SpeedItemModule speed && speed.isEnabled(context) &&
+                        speed.isOmnidirectional(context) &&
+                        speed.getStrength(context) > 0 && isMovingOnGround(player) &&
+                        useModuleEnergy(stack, toModuleEnergyCredits(speed.getEnergyCost(context)), true))
+                    return true;
+                if (context.getModule() instanceof AdvancedJetpackModule thruster &&
+                        thruster.isOmnidirectional(context) && thruster.canBoost(context, player))
+                    return true;
+            }
+        }
+        return false;
     }
 
     /**

@@ -110,6 +110,8 @@ public interface IJetpack {
         double currentAccel = getVerticalAcceleration() * (deltaY < 0.3D ? 2.5D : 1.0D);
 
         if (!player.onGround() && player.getSleepingPos().isEmpty() && canUseEnergy(stack, getEnergyPerUse())) {
+            int sprintCost = (int) Math.round(getEnergyPerUse() * getSprintEnergyModifier());
+            boolean sprinting = player.isSprinting() && canUseEnergy(stack, sprintCost);
             double potentialY = 0;
             boolean editMotion = true;
 
@@ -142,37 +144,26 @@ public interface IJetpack {
                 setYMotion(player, potentialY);
             }
 
-            float speedSideways = (float) (player.isShiftKeyDown() ? getSidewaysSpeed() * 0.5f :
+            float horizontalSpeed = (float) (player.isShiftKeyDown() ? getSidewaysSpeed() * 0.5f :
                     getSidewaysSpeed());
-            float speedForward = (float) (player.isSprinting() ? speedSideways * getSprintSpeedModifier() :
-                    speedSideways);
+            if (sprinting) horizontalSpeed *= (float) getSprintSpeedModifier();
 
             // Make sure they aren't using elytra movement
-            if (!player.isFallFlying()) {
-                Vec3 movement = new Vec3(0, 0, 0);
-                if (SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player)) {
-                    movement = movement.add(0, 0, speedForward);
-                }
-                if (SyncedKeyMappings.VANILLA_BACKWARD.isKeyDown(player)) {
-                    movement = movement.add(0, 0, -speedSideways * 0.8f);
-                }
-                if (SyncedKeyMappings.VANILLA_LEFT.isKeyDown(player)) {
-                    movement = movement.add(speedSideways, 0, 0);
-                }
-                if (SyncedKeyMappings.VANILLA_RIGHT.isKeyDown(player)) {
-                    movement = movement.add(-speedSideways, 0, 0);
-                }
-
-                var dist = movement.length();
-                if (dist >= 1.0E-7) {
-                    player.moveRelative((float) dist, movement);
+            if (!player.isFallFlying() && horizontalSpeed > 0) {
+                int forward = (SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) ? 1 : 0) -
+                        (SyncedKeyMappings.VANILLA_BACKWARD.isKeyDown(player) ? 1 : 0);
+                int sideways = (SyncedKeyMappings.VANILLA_LEFT.isKeyDown(player) ? 1 : 0) -
+                        (SyncedKeyMappings.VANILLA_RIGHT.isKeyDown(player) ? 1 : 0);
+                Vec3 movement = new Vec3(sideways, 0, forward);
+                if (movement.lengthSqr() > 0) {
+                    movement = movement.normalize().scale(horizontalSpeed);
+                    player.moveRelative(horizontalSpeed, movement);
                     if (!editMotion) editMotion = true;
                 }
             }
 
             if (editMotion) {
-                int energyUsed = (int) Math
-                        .round(getEnergyPerUse() * (player.isSprinting() ? getSprintEnergyModifier() : 1));
+                int energyUsed = sprinting ? sprintCost : getEnergyPerUse();
                 drainEnergy(stack, energyUsed);
                 ArmorUtils.spawnParticle(player.level(), player, getParticle(), -0.6D);
             }

@@ -47,6 +47,14 @@ public class SpeedItemModule extends TieredItemModule {
         return context.getData(SpeedModuleData.class).getStrength();
     }
 
+    public boolean isOmnidirectional(ModuleContext context) {
+        return context.getData(SpeedModuleData.class).isOmnidirectional();
+    }
+
+    public double getEnergyCost(ModuleContext context) {
+        return Math.max(0.25, ArmorUtils.getModuleEnergyCost(getTier()) * getStrength(context));
+    }
+
     public void setStrength(ModuleContext context, float strength) {
         if (!Float.isFinite(strength)) return;
         context.setData(context.getData(SpeedModuleData.class).withStrength(Mth.clamp(strength, 0, 1)));
@@ -55,6 +63,8 @@ public class SpeedItemModule extends TieredItemModule {
     @Override
     public ItemModuleSettingsBuilder getSettings(ModuleContext context, PanelSyncManager psm, int id) {
         return super.getSettings(context, psm, id)
+                .bool(Text.lang("gui.gtceu.item_module.omnidirectional_sprint"), () -> isOmnidirectional(context),
+                        value -> context.setData(context.getData(SpeedModuleData.class).withOmnidirectional(value)))
                 .num(Text.lang("gui.gtceu.item_module.power"), () -> getStrength(context),
                         value -> setStrength(context, (float) value), 0, 1,
                         value -> "+%.2f%%".formatted(value * getTier() * 25));
@@ -83,8 +93,7 @@ public class SpeedItemModule extends TieredItemModule {
         double bonus = getTier() / 4d * getStrength(context);
         boolean active = isEnabled(context) && bonus > 0 && player.isSprinting() &&
                 ArmorUtils.isMovingOnGround(player) && ArmorUtils.useModuleEnergy(context.getAppliedTo(),
-                        ArmorUtils.toModuleEnergyCredits(
-                                Math.max(0.25, ArmorUtils.getModuleEnergyCost(getTier()) * getStrength(context))),
+                        ArmorUtils.toModuleEnergyCredits(getEnergyCost(context)),
                         player.level().isClientSide);
         if (!active) {
             attribute.removeModifier(getId());
@@ -103,47 +112,61 @@ public class SpeedItemModule extends TieredItemModule {
     public static class SpeedModuleData extends ModuleData {
 
         // spotless:off
-        public static final MapCodec<SpeedModuleData> CODEC = RecordCodecBuilder.mapCodec(instance -> baseCodec(instance).and(
-                Codec.floatRange(0, 1).optionalFieldOf("strength", 1f).forGetter(SpeedModuleData::getStrength)
-        ).apply(instance, SpeedModuleData::new));
+        public static final MapCodec<SpeedModuleData> CODEC = RecordCodecBuilder.mapCodec(instance -> baseCodec(instance).and(instance.group(
+                Codec.floatRange(0, 1).optionalFieldOf("strength", 1f).forGetter(SpeedModuleData::getStrength),
+                Codec.BOOL.optionalFieldOf("omnidirectional", true).forGetter(SpeedModuleData::isOmnidirectional)
+        )).apply(instance, SpeedModuleData::new));
         //spotless:on
 
         @Getter
         private final float strength;
 
+        @Getter
+        private final boolean omnidirectional;
+
         public SpeedModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled, float strength) {
+            this(slot, module, moduleItem, enabled, strength, true);
+        }
+
+        public SpeedModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled, float strength,
+                               boolean omnidirectional) {
             super(slot, module, moduleItem, enabled);
             this.strength = strength;
+            this.omnidirectional = omnidirectional;
         }
 
         @Override
         public ModuleData copy() {
-            return new SpeedModuleData(slot, module, moduleItem.copy(), enabled, strength);
+            return new SpeedModuleData(slot, module, moduleItem.copy(), enabled, strength, omnidirectional);
         }
 
         @Override
         public ModuleData withModuleItem(ItemStack moduleItem) {
-            return new SpeedModuleData(slot, module, moduleItem, enabled, strength);
+            return new SpeedModuleData(slot, module, moduleItem, enabled, strength, omnidirectional);
         }
 
         public SpeedModuleData withStrength(float strength) {
-            return new SpeedModuleData(slot, module, moduleItem, enabled, strength);
+            return new SpeedModuleData(slot, module, moduleItem, enabled, strength, omnidirectional);
+        }
+
+        public SpeedModuleData withOmnidirectional(boolean omnidirectional) {
+            return new SpeedModuleData(slot, module, moduleItem, enabled, strength, omnidirectional);
         }
 
         @Override
         public ModuleData withEnabled(boolean enabled) {
-            return new SpeedModuleData(slot, module, moduleItem, enabled, strength);
+            return new SpeedModuleData(slot, module, moduleItem, enabled, strength, omnidirectional);
         }
 
         @Override
         public boolean equals(Object obj) {
             if (!(obj instanceof SpeedModuleData other)) return false;
-            return super.equals(obj) && strength == other.strength;
+            return super.equals(obj) && strength == other.strength && omnidirectional == other.omnidirectional;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(slot, module, moduleItem, enabled, strength);
+            return Objects.hash(slot, module, moduleItem, enabled, strength, omnidirectional);
         }
     }
 }
