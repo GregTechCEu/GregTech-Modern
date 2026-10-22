@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.client.util.quad.transformers.GTQuadTransformers;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
-import net.neoforged.neoforge.client.model.IQuadTransformer;
+import net.minecraftforge.client.model.IQuadTransformer;
 
 import java.util.List;
 import java.util.ListIterator;

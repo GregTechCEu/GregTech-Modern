@@ -42,7 +42,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.MODID_EMBEDDIUM;
-import static com.gregtechceu.gtceu.api.GTValues.MODID_SODIUM;
 import static com.gregtechceu.gtceu.client.bloom.BloomShaderManager.BLOOM_TARGET;
 import static com.gregtechceu.gtceu.core.config.GTEarlyConfig.isModLoaded;
 
@@ -61,7 +60,7 @@ public class BloomRenderer {
     static final ScopedValue.Object<Supplier<VertexConsumer>> bloomChunkContext = new ScopedValue.Object<>();
 
     public static boolean usesChunkPassBackend() {
-        return !SafeMode.enabled() && (isModLoaded(MODID_SODIUM) || isModLoaded(MODID_EMBEDDIUM));
+        return !SafeMode.enabled() && isModLoaded(MODID_EMBEDDIUM);
     }
 
     @ApiStatus.Internal
@@ -73,6 +72,8 @@ public class BloomRenderer {
 
         profilerFiller.popPush("gtceu:bloom");
         setupBloomShaderUniforms();
+
+        BLOOM_TARGET.copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
 
         GTRenderTypes.bloom().setupRenderState();
 
@@ -163,15 +164,13 @@ public class BloomRenderer {
 
         // Forcefully insert config values to shader
         modifyBloomPostShaders((index, shader) -> {
-            shader.safeGetUniform("DepthNear").set(GameRenderer.PROJECTION_Z_NEAR);
-            shader.safeGetUniform("DepthFar").set(Minecraft.getInstance().gameRenderer.getDepthFar());
-
             // look for blur steps & change their blur strength to match the config
             if (shader.getName().contains("blur")) {
+                // The Unreal chain starts with a horizontal blur, followed by a vertical blur.
                 if (index % 2 == 0) {
-                    shader.safeGetUniform("BlurDir").set(0.0f, config.step);
-                } else {
                     shader.safeGetUniform("BlurDir").set(config.step, 0.0f);
+                } else {
+                    shader.safeGetUniform("BlurDir").set(0.0f, config.step);
                 }
             }
 

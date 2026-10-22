@@ -123,7 +123,7 @@ public final class GTEmbeddiumCompat {
 
     @SubscribeEvent
     public static void registerSafeModeChunkMeshAppender(ChunkMeshEvent event) {
-        if (!BloomRenderer.SafeMode.enabled()) return;
+        if (BloomRenderer.usesChunkPassBackend()) return;
         if (!BloomShaderManager.isBloomActive()) return;
 
         event.addMeshAppender(context -> {

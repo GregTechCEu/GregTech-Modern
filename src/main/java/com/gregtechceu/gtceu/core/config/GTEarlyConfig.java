@@ -36,9 +36,6 @@ public class GTEarlyConfig {
                 "NOTE: may be slower than 'normal' logic, but is considerably more stable and less prone to compatibility issues with other mods.",
                 "Requires restarting the client to take effect.");
 
-        addDelegateRule("client.bloom.safemode", BLOOM_SAFE_MODE, false);
-        addDelegateRule("client.bloom.normal", BLOOM_SAFE_MODE, true);
-
         Option faceLayerSafeMode = addMixinRule(FACE_LAYER_SAFE_MODE, false);
         faceLayerSafeMode.addComment(
                 "Whether to use a 'safe mode' for layered block faces",
@@ -58,9 +55,9 @@ public class GTEarlyConfig {
         final String[] OCULUS_MOD_IDS = { "oculus", "iris" };
         enableIfModPresent("embeddium", EMBEDDIUM_MOD_IDS);
         enableIfModPresent("oculus", OCULUS_MOD_IDS);
-        enableIfModPresent("client.bloom.normal.embeddium", EMBEDDIUM_MOD_IDS);
-        enableIfModPresent("client.bloom.normal.oculus", OCULUS_MOD_IDS);
-        enableIfModPresent("client.bloom.safemode.embeddium", EMBEDDIUM_MOD_IDS);
+        enableIfModPresent("client.customchunk.embeddium", "embeddium");
+        enableIfModPresent("client.customchunk.oculus", "oculus");
+        addDelegateRule("client.customchunk.embeddium.safemode", BLOOM_SAFE_MODE, false);
 
         enableIfModPresent("top", "top");
 

@@ -5,16 +5,16 @@ import com.gregtechceu.gtceu.client.bloom.BloomRenderer;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.LevelRendererAccessor;
 
 import net.minecraft.client.renderer.RenderType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-@EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT)
 public final class CustomChunkRenderPassRegistry {
 
     // Registration order is preserved when backend chunk pass arrays are extended
@@ -24,7 +24,7 @@ public final class CustomChunkRenderPassRegistry {
             new CustomChunkRenderPass(GTRenderTypes.faceLayer(), CustomChunkRenderPass.AlphaCutoff.ONE_TENTH, true,
                     CustomChunkRenderPass.DrawStage.AFTER_CUTOUT, CustomChunkRenderPass.TerrainPhase.CUTOUT_MIPPED,
                     FaceLayerRouting::isCustomPassEnabled),
-            new CustomChunkRenderPass(GTRenderTypes.bloom(), CustomChunkRenderPass.AlphaCutoff.ZERO, true,
+            new CustomChunkRenderPass(GTRenderTypes.bloom(), CustomChunkRenderPass.AlphaCutoff.ONE_TENTH, true,
                     CustomChunkRenderPass.DrawStage.MANUAL, CustomChunkRenderPass.TerrainPhase.CUSTOM,
                     BloomRenderer::usesChunkPassBackend));
 
@@ -54,9 +54,10 @@ public final class CustomChunkRenderPassRegistry {
         for (CustomChunkRenderPass pass : ACTIVE_PASSES) {
             if (pass.drawStage() != CustomChunkRenderPass.DrawStage.AFTER_CUTOUT) continue;
 
-            ((LevelRendererAccessor) event.getLevelRenderer()).invokeRenderSectionLayer(pass.renderType(),
+            ((LevelRendererAccessor) event.getLevelRenderer()).invokeRenderChunkLayer(pass.renderType(),
+                    event.getPoseStack(),
                     cameraPosition.x, cameraPosition.y, cameraPosition.z,
-                    event.getModelViewMatrix(), event.getProjectionMatrix());
+                    event.getProjectionMatrix());
         }
     }
 
