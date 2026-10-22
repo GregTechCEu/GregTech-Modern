@@ -22,7 +22,7 @@ public class AirSupplierModule extends ItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable(getDescriptionLanguageKey(), ENERGY_PER_USE / 100);
+        return Component.translatable(getDescriptionLanguageKey(), (double) ENERGY_PER_USE / (double) 100);
     }
 
     @Override

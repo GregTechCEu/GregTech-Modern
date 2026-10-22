@@ -29,7 +29,7 @@ public class AutoEatModule extends ItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable(getDescriptionLanguageKey(), ENERGY_PER_USE / 10);
+        return Component.translatable(getDescriptionLanguageKey(), (double) ENERGY_PER_USE / (double) 10);
     }
 
     @Override
