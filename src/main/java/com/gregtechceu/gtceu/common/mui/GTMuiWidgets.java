@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.common.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
@@ -409,13 +410,7 @@ public class GTMuiWidgets {
 
     public static ParentWidget<?> createCoverWidget(Flow flow, CoverBehavior cover, SidedPosGuiData data,
                                                     PanelSyncManager syncManager, UISettings settings) {
-        IMuiCover muiCover;
-        if (cover instanceof IMuiCover) {
-            muiCover = (IMuiCover) cover;
-        } else {
-            muiCover = null;
-            return null;
-        }
+        if (!(cover instanceof IMuiCover muiCover)) return null;
         IPanelHandler panelHandler = syncManager.syncedPanel(
                 cover.getAttachItem().getItem() + "." + cover.attachedSide.name().toLowerCase(Locale.ROOT), true,
                 (sm, sh) -> muiCover.buildUI(data, sm, settings)
@@ -433,7 +428,8 @@ public class GTMuiWidgets {
                                                                               FilterHandler<T> filterHandler,
                                                                               GuiData data,
                                                                               PanelSyncManager syncManager,
-                                                                              UISettings settings) {
+                                                                              UISettings settings,
+                                                      @Nullable Direction side) {
         var filterSlot = filterHandler.getFilterSlot();
 
         ModularSlot modSlot = new ModularSlot(filterSlot, 0)
@@ -442,7 +438,7 @@ public class GTMuiWidgets {
         ItemSlotSyncHandler filterSlotHandler = new ItemSlotSyncHandler(modSlot);
         syncManager.syncValue("filterSlotHandler", filterSlotHandler);
 
-        IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
+        IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel." + (side == null ? "null" : side.getName().toLowerCase(Locale.ROOT)) , true,
                 (sm, sh) -> filterHandler.getFilter().getPanel(data, sm, settings, false, sh));
 
         modSlot.changeListener((oldStack, newStack, client, init) -> {
@@ -468,7 +464,7 @@ public class GTMuiWidgets {
                                                       PanelSyncManager syncManager,
                                                       UISettings settings) {
         Flow row = Flow.row().coverChildrenHeight().childPadding(2);
-        return createFilterRow(row, filterHandler, data, syncManager, settings);
+        return createFilterRow(row, filterHandler, data, syncManager, settings, null);
     }
 
     private static int getIncrementValue(MouseData data, int step) {

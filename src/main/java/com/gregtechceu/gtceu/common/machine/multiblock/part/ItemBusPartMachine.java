@@ -276,7 +276,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                     .center()
                     .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                     .child(grid)
-                    .child(GTMuiWidgets.createFilterRow(filterRow, filterHandler, guiData, syncManager, settings)));
+                    .child(GTMuiWidgets.createFilterRow(filterRow, filterHandler, guiData, syncManager, settings, null)));
         } else {
             mainWidget.child(grid.center());
         }

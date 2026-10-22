@@ -216,7 +216,7 @@ public class ComputerMonitorCover extends CoverBehavior
     public ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var codeSync = SyncHandlers.string(this::getCode, this::setCode).allowC2S();
         var intervalSync = SyncHandlers.intNumber(this::getUpdateInterval, this::setUpdateInterval).allowC2S();
-        IPanelHandler helpPanel = syncManager.syncedPanel("placeholder_language_help",
+        IPanelHandler helpPanel = syncManager.syncedPanel("placeholder_language_help." + data.getSide().getName().toLowerCase(Locale.ROOT),
                 true,
                 (syncManager1, panelHandler1) -> PlaceholderHandler.createHelpPanel());
         return PlaceholderHandler.createPlaceholderEditorPanel(
