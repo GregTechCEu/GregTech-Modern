@@ -63,7 +63,7 @@ public abstract class CapabilityProviderItemModule<T> extends ItemModule {
 
     @Override
     public void updateModuleItem(ModuleContext moduleContext) {
-        T capability = moduleContext.getAppliedTo().getCapability(getCapability());
+        T capability = moduleContext.getAppliedTo().getCapability(getCapability()).resolve().orElse(null);
         if (capability == null) return;
         var newModuleItem = copyCapabilityDataToModuleItem(capability, moduleContext);
         moduleContext.setData(moduleContext.getData().withModuleItem(newModuleItem));
