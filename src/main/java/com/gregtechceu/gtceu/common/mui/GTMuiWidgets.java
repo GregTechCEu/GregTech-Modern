@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.common.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -414,8 +415,13 @@ public class GTMuiWidgets {
                 (sm, sh) -> muiCover.buildUI(data, sm, settings)
                         .closeOnOutOfBoundsClick(true));
         return flow.child(new ButtonWidget<>()
-                .overlay(new ItemDrawable(cover.getAttachItem()))
-                .tooltip(r -> r.addFromItem(cover.getAttachItem()))
+                .overlay(new ItemDrawable(cover.getAttachItem()).asIcon().size(14))
+                .tooltip(r -> {
+                    r.addFromItem(cover.getAttachItem());
+                    r.addLine(
+                            Component.translatable("gui.gtceu.cover.direction", cover.attachedSide.getSerializedName())
+                                    .withStyle(ChatFormatting.DARK_PURPLE));
+                })
                 .onMousePressed((context, button) -> {
                     panelHandler.togglePanel();
                     return true;
