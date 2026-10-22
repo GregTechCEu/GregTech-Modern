@@ -1,13 +1,10 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import brachy.modularui.factory.SidedPosGuiData;
-import brachy.modularui.widget.EmptyWidget;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
-import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -35,6 +32,7 @@ import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.text.TextRenderer;
 import brachy.modularui.factory.GuiData;
+import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
@@ -425,10 +423,10 @@ public class GTMuiWidgets {
     }
 
     public static <T> ParentWidget<?> createFilterRow(Flow existingRow,
-                                                                              FilterHandler<T> filterHandler,
-                                                                              GuiData data,
-                                                                              PanelSyncManager syncManager,
-                                                                              UISettings settings,
+                                                      FilterHandler<T> filterHandler,
+                                                      GuiData data,
+                                                      PanelSyncManager syncManager,
+                                                      UISettings settings,
                                                       @Nullable Direction side) {
         var filterSlot = filterHandler.getFilterSlot();
 
@@ -438,7 +436,8 @@ public class GTMuiWidgets {
         ItemSlotSyncHandler filterSlotHandler = new ItemSlotSyncHandler(modSlot);
         syncManager.syncValue("filterSlotHandler", filterSlotHandler);
 
-        IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel." + (side == null ? "null" : side.getName().toLowerCase(Locale.ROOT)) , true,
+        IPanelHandler panelHandler = syncManager.syncedPanel(
+                "filterPanel." + (side == null ? "null" : side.getName().toLowerCase(Locale.ROOT)), true,
                 (sm, sh) -> filterHandler.getFilter().getPanel(data, sm, settings, false, sh));
 
         modSlot.changeListener((oldStack, newStack, client, init) -> {
@@ -464,7 +463,8 @@ public class GTMuiWidgets {
                                                       PanelSyncManager syncManager,
                                                       UISettings settings) {
         Flow row = Flow.row().coverChildrenHeight().childPadding(2);
-        return createFilterRow(row, filterHandler, data, syncManager, settings, null);
+        return createFilterRow(row, filterHandler, data, syncManager, settings,
+                (data instanceof SidedPosGuiData posGuiData ? posGuiData.getSide() : null));
     }
 
     private static int getIncrementValue(MouseData data, int step) {

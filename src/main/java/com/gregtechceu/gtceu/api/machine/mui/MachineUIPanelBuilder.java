@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.mui;
 
-import brachy.modularui.factory.SidedPosGuiData;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
@@ -19,6 +18,7 @@ import net.minecraft.network.chat.Component;
 
 import brachy.modularui.drawable.UITexture;
 import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.sync.DoubleSyncValue;
@@ -160,7 +160,9 @@ public class MachineUIPanelBuilder {
         }
 
         for (var cover : machine.getCoverContainer().getCovers()) {
-            GTMuiWidgets.createCoverWidget(attachLeft, cover, new SidedPosGuiData(data.getPlayer(), data.getBlockPos(), cover.attachedSide), syncManager, settings);
+            GTMuiWidgets.createCoverWidget(attachLeft, cover,
+                    new SidedPosGuiData(data.getPlayer(), data.getBlockPos(), cover.attachedSide), syncManager,
+                    settings);
         }
 
         return panel;

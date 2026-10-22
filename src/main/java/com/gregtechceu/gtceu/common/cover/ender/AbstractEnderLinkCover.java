@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.cover.ender;
 
-import brachy.modularui.widgets.dynamic.DynamicWidget;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -45,6 +44,7 @@ import brachy.modularui.value.sync.*;
 import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.AccessLevel;
@@ -253,7 +253,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     @Override
     public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
                                   UISettings settings) {
-        var channelManager = syncManager.syncedPanel("channelManager." + data.getSide().getName().toLowerCase(Locale.ROOT), true,
+        var channelManager = syncManager.syncedPanel(
+                "channelManager." + data.getSide().getName().toLowerCase(Locale.ROOT), true,
                 (sm, sh) -> createChannelManagerPanel(data, sm, settings));
 
         var colorSyncer = new IntSyncValue(this::getColor);
