@@ -47,7 +47,7 @@ public final class RecipeModifierList implements RecipeModifier {
             if (runningRecipe == null) {
                 if (func.getFailReason() == ModifierFunction.DEFAULT_FAILURE &&
                         !MACHINES_LOGGING_FAILURES.contains(machine.getDefinition())) {
-                    GTCEu.LOGGER.warn(String.format("Recipe Logic Machine failed without a failure reason! Machine: %s",
+                    GTCEu.LOGGER.warn(String.format("Recipe Modifier failed without a failure reason! Machine: %s",
                             machine.getDefinition()));
                     MACHINES_LOGGING_FAILURES.add(machine.getDefinition());
                 }
