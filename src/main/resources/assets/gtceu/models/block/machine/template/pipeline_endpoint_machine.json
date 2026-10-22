@@ -2,8 +2,8 @@
     "parent": "block/block",
     "textures": {
         "particle": "#side",
-        "overlay_pipe_in_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
-        "overlay_pipe_out_emissive": "gtceu:block/overlay/machine/overlay_pipe_out_emissive",
+        "overlay_front_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
+        "overlay_back_emissive": "gtceu:block/overlay/machine/overlay_pipe_out_emissive",
         "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe"
     },
     "elements": [
