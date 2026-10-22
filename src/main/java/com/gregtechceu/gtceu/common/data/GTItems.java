@@ -18,10 +18,13 @@ import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
+import com.gregtechceu.gtceu.common.item.TieredBehaviour;
 import com.gregtechceu.gtceu.common.item.armor.*;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.*;
@@ -69,7 +72,6 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.registries.datamaps.builtin.FurnaceFuel;
 import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 
-import com.google.common.base.Preconditions;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -78,7 +80,6 @@ import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -99,23 +100,27 @@ public class GTItems {
     static {
         REGISTRATE.creativeModeTab(() -> ITEM);
     }
+
     public static ItemEntry<Item> COMPRESSED_CLAY = REGISTRATE.item("compressed_clay", Item::new)
             .lang("Compressed Clay")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M)))).register();
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M))))
+            .register();
     public static ItemEntry<Item> COMPRESSED_COKE_CLAY = REGISTRATE.item("compressed_coke_clay", Item::new)
             .lang("Compressed Coke Clay")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M)))).register();
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M))))
+            .register();
     public static ItemEntry<Item> COMPRESSED_FIRECLAY = REGISTRATE.item("compressed_fireclay", Item::new)
             .lang("Compressed Fireclay")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, GTValues.M))))
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, GTValues.M))))
             .register();
     public static ItemEntry<Item> FIRECLAY_BRICK = REGISTRATE.item("firebrick", Item::new)
             .lang("Firebrick")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, GTValues.M))))
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, GTValues.M))))
             .register();
     public static ItemEntry<Item> COKE_OVEN_BRICK = REGISTRATE.item("coke_oven_brick", Item::new)
             .lang("Coke Oven Brick")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M)))).register();
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M))))
+            .register();
     public static ItemEntry<Item> WOODEN_FORM_EMPTY = REGISTRATE.item("empty_wooden_form", Item::new)
             .lang("Empty Wooden Form")
             .register();
@@ -127,7 +132,7 @@ public class GTItems {
 
     public static ItemEntry<Item> SHAPE_EMPTY = REGISTRATE.item("empty_mold", Item::new)
             .lang("Empty Mold")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
             .register();
 
     @SuppressWarnings("unchecked")
@@ -154,75 +159,93 @@ public class GTItems {
     static {
         SHAPE_MOLDS[0] = SHAPE_MOLD_PLATE = REGISTRATE.item("plate_casting_mold", Item::new)
                 .lang("Casting Mold (Plate)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[1] = SHAPE_MOLD_GEAR = REGISTRATE.item("gear_casting_mold", Item::new)
                 .lang("Casting Mold (Gear)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[2] = SHAPE_MOLD_BOTTLE = REGISTRATE.item("bottle_casting_mold", Item::new)
                 .lang("Casting Mold (Bottle)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[3] = SHAPE_MOLD_INGOT = REGISTRATE.item("ingot_casting_mold", Item::new)
                 .lang("Casting Mold (Ingot)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[4] = SHAPE_MOLD_BALL = REGISTRATE.item("ball_casting_mold", Item::new)
                 .lang("Casting Mold (Ball)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[5] = SHAPE_MOLD_BLOCK = REGISTRATE.item("block_casting_mold", Item::new)
                 .lang("Casting Mold (Block)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[6] = SHAPE_MOLD_NUGGET = REGISTRATE.item("nugget_casting_mold", Item::new)
                 .lang("Casting Mold (Nugget)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[7] = SHAPE_MOLD_CYLINDER = REGISTRATE.item("cylinder_casting_mold", Item::new)
                 .lang("Casting Mold (Cylinder)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[8] = SHAPE_MOLD_ANVIL = REGISTRATE.item("anvil_casting_mold", Item::new)
                 .lang("Casting Mold (Anvil)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[9] = SHAPE_MOLD_NAME = REGISTRATE.item("name_casting_mold", Item::new)
                 .lang("Casting Mold (Name)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[10] = SHAPE_MOLD_GEAR_SMALL = REGISTRATE.item("small_gear_casting_mold", Item::new)
                 .lang("Casting Mold (Small Gear)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[11] = SHAPE_MOLD_ROTOR = REGISTRATE.item("rotor_casting_mold", Item::new)
                 .lang("Casting Mold (Rotor)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[12] = SHAPE_MOLD_PILL = REGISTRATE.item("pill_casting_mold", Item::new)
                 .lang("Casting Mold (Pill)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[13] = SHAPE_MOLD_TINY_PIPE = REGISTRATE.item("tiny_pipe_casting_mold", Item::new)
                 .lang("Casting Mold (Tiny Pipe)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[14] = SHAPE_MOLD_SMALL_PIPE = REGISTRATE.item("small_pipe_casting_mold", Item::new)
                 .lang("Casting Mold (Small Pipe)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[15] = SHAPE_MOLD_NORMAL_PIPE = REGISTRATE.item("normal_pipe_casting_mold", Item::new)
                 .lang("Casting Mold (Normal Pipe)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[16] = SHAPE_MOLD_LARGE_PIPE = REGISTRATE.item("large_pipe_casting_mold", Item::new)
                 .lang("Casting Mold (Large Pipe)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[17] = SHAPE_MOLD_HUGE_PIPE = REGISTRATE.item("huge_pipe_casting_mold", Item::new)
                 .lang("Casting Mold (Huge Pipe)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
     }
 
@@ -245,58 +268,72 @@ public class GTItems {
     static {
         SHAPE_EXTRUDERS[0] = SHAPE_EXTRUDER_PLATE = REGISTRATE.item("plate_extruder_mold", Item::new)
                 .lang("Extruder Mold (Plate)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[3] = SHAPE_EXTRUDER_RING = REGISTRATE.item("ring_extruder_mold", Item::new)
                 .lang("Extruder Mold (Ring)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[4] = SHAPE_EXTRUDER_CELL = REGISTRATE.item("cell_extruder_mold", Item::new)
                 .lang("Extruder Mold (Cell)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[5] = SHAPE_EXTRUDER_INGOT = REGISTRATE.item("ingot_extruder_mold", Item::new)
                 .lang("Extruder Mold (Ingot)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[6] = SHAPE_EXTRUDER_WIRE = REGISTRATE.item("wire_extruder_mold", Item::new)
                 .lang("Extruder Mold (Wire)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[7] = SHAPE_EXTRUDER_PIPE_TINY = REGISTRATE.item("tiny_pipe_extruder_mold", Item::new)
                 .lang("Extruder Mold (Tiny Pipe)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[8] = SHAPE_EXTRUDER_PIPE_SMALL = REGISTRATE.item("small_pipe_extruder_mold", Item::new)
                 .lang("Extruder Mold (Small Pipe)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[9] = SHAPE_EXTRUDER_PIPE_NORMAL = REGISTRATE.item("normal_pipe_extruder_mold", Item::new)
                 .lang("Extruder Mold (Normal Pipe)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[10] = SHAPE_EXTRUDER_PIPE_LARGE = REGISTRATE.item("large_pipe_extruder_mold", Item::new)
                 .lang("Extruder Mold (Large Pipe)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[11] = SHAPE_EXTRUDER_PIPE_HUGE = REGISTRATE.item("huge_pipe_extruder_mold", Item::new)
                 .lang("Extruder Mold (Huge Pipe)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[12] = SHAPE_EXTRUDER_BLOCK = REGISTRATE.item("block_extruder_mold", Item::new)
                 .lang("Extruder Mold (Block)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         // Extruder Shapes index 13-20 (inclusive), id 44-51 (inclusive) are unused
         SHAPE_EXTRUDERS[22] = SHAPE_EXTRUDER_BOTTLE = REGISTRATE.item("bottle_extruder_mold", Item::new)
                 .lang("Extruder Mold (Bottle)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[23] = SHAPE_EXTRUDER_FOIL = REGISTRATE.item("foil_extruder_mold", Item::new)
                 .lang("Extruder Mold (Foil)")
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .onRegister(
+                        materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
     }
+
     public static ItemEntry<Item> SPRAY_EMPTY = REGISTRATE.item("empty_spray_can", Item::new)
             .lang("Spray Can (Empty)").register();
     public static ItemEntry<ComponentItem> SPRAY_SOLVENT = REGISTRATE.item("solvent_spray_can", ComponentItem::new)
@@ -380,21 +417,26 @@ public class GTItems {
                             new ItemFluidContainer()))
             .register();
 
-    public static ItemEntry<ComponentItem> createFluidCell(Material mat, int capacity, int matSize, int stackSize) {
-        var prop = mat.getProperty(PropertyKey.FLUID_PIPE);
-        Preconditions.checkArgument(prop != null,
-                "Material { %s } does not have Fluid Pipe properties, but is being used to create a Fluid Cell",
-                mat.getName());
+    public static ItemEntry<ComponentItem> createFluidCell(MaterialRegistryEntry mat, int capacity, int matSize,
+                                                           int stackSize) {
         return REGISTRATE
                 .item("%s_fluid_cell".formatted(mat.getName()), ComponentItem::new)
                 .lang("%s " + toEnglishName(mat.getName()) + " Cell")
                 .color(() -> GTItems::cellColor)
                 .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
                 .properties(p -> p.stacksTo(stackSize))
-                .onRegister(attach(cellName(),
-                        ThermalFluidStats.create(FluidType.BUCKET_VOLUME * capacity, prop, true),
-                        new ItemFluidContainer()))
-                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(mat, GTValues.M * matSize))))
+                .onRegister(item -> {
+                    var prop = mat.getProperty(PropertyKey.FLUID_PIPE);
+                    Objects.requireNonNull(prop,
+                            "Material { %s } does not have Fluid Pipe properties, but is being used to create a Fluid Cell"
+                                    .formatted(mat.value().getName()));
+
+                    item.attachComponents(cellName(),
+                            ThermalFluidStats.create(FluidType.BUCKET_VOLUME * capacity, prop, true),
+                            new ItemFluidContainer());
+                })
+                .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(mat, GTValues.M * matSize))))
+                .tag(CustomTags.FLUID_CELLS)
                 .register();
     }
 
@@ -460,35 +502,43 @@ public class GTItems {
 
     public static ItemEntry<Item> BATTERY_HULL_LV = REGISTRATE.item("lv_battery_hull", Item::new)
             .lang("Small Battery Hull")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BatteryAlloy, GTValues.M))))
+            .onRegister(
+                    materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.BatteryAlloy, GTValues.M))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_MV = REGISTRATE.item("mv_battery_hull", Item::new)
             .lang("Medium Battery Hull")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BatteryAlloy, GTValues.M * 3))))
+            .onRegister(materialInfo(
+                    () -> new ItemMaterialInfo(new MaterialStack(GTMaterials.BatteryAlloy, GTValues.M * 3))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_HV = REGISTRATE.item("hv_battery_hull", Item::new)
             .lang("Large Battery Hull")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BatteryAlloy, GTValues.M * 9))))
+            .onRegister(materialInfo(
+                    () -> new ItemMaterialInfo(new MaterialStack(GTMaterials.BatteryAlloy, GTValues.M * 9))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_SMALL_VANADIUM = REGISTRATE.item("ev_battery_hull", Item::new)
             .lang("Small Vanadium Battery Hull")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.RedSteel, GTValues.M * 2))))
+            .onRegister(
+                    materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.RedSteel, GTValues.M * 2))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_MEDIUM_VANADIUM = REGISTRATE.item("iv_battery_hull", Item::new)
             .lang("Medium Vanadium Battery Hull")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.RoseGold, GTValues.M * 6))))
+            .onRegister(
+                    materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.RoseGold, GTValues.M * 6))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_LARGE_VANADIUM = REGISTRATE.item("luv_battery_hull", Item::new)
             .lang("Large Vanadium Battery Hull")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BlueSteel, GTValues.M * 18))))
+            .onRegister(
+                    materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.BlueSteel, GTValues.M * 18))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_MEDIUM_NAQUADRIA = REGISTRATE.item("zpm_battery_hull", Item::new)
             .lang("Medium Naquadria Battery Hull")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Europium, GTValues.M * 6))))
+            .onRegister(
+                    materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Europium, GTValues.M * 6))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_LARGE_NAQUADRIA = REGISTRATE.item("uv_battery_hull", Item::new)
             .lang("Large Naquadria Battery Hull")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Americium, GTValues.M * 18))))
+            .onRegister(
+                    materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Americium, GTValues.M * 18))))
             .register();
 
     public static ItemEntry<ComponentItem> BATTERY_ULV_TANTALUM = REGISTRATE
@@ -653,766 +703,335 @@ public class GTItems {
             .onRegister(attach(ElectricStats.createRechargeableBattery(Long.MAX_VALUE, GTValues.UHV)))
             .tag(CustomTags.UHV_BATTERIES).register();
 
-    public static ItemEntry<Item> ELECTRIC_MOTOR_LV = REGISTRATE.item("lv_electric_motor", Item::new)
-            .lang("LV Electric Motor")
-            .tag(CustomTags.ELECTRIC_MOTORS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_MOTOR_MV = REGISTRATE.item("mv_electric_motor", Item::new)
-            .lang("MV Electric Motor")
-            .tag(CustomTags.ELECTRIC_MOTORS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_MOTOR_HV = REGISTRATE.item("hv_electric_motor", Item::new)
-            .lang("HV Electric Motor")
-            .tag(CustomTags.ELECTRIC_MOTORS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_MOTOR_EV = REGISTRATE.item("ev_electric_motor", Item::new)
-            .lang("EV Electric Motor")
-            .tag(CustomTags.ELECTRIC_MOTORS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_MOTOR_IV = REGISTRATE.item("iv_electric_motor", Item::new)
-            .lang("IV Electric Motor")
-            .tag(CustomTags.ELECTRIC_MOTORS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_MOTOR_LuV = REGISTRATE.item("luv_electric_motor", Item::new)
-            .lang("LuV Electric Motor")
-            .tag(CustomTags.ELECTRIC_MOTORS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_MOTOR_ZPM = REGISTRATE.item("zpm_electric_motor", Item::new)
-            .lang("ZPM Electric Motor")
-            .tag(CustomTags.ELECTRIC_MOTORS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_MOTOR_UV = REGISTRATE.item("uv_electric_motor", Item::new)
-            .lang("UV Electric Motor")
-            .tag(CustomTags.ELECTRIC_MOTORS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_MOTOR_UHV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uhv_electric_motor", Item::new).lang("UHV Electric Motor")
-                    .register() :
-            null;
-    public static ItemEntry<Item> ELECTRIC_MOTOR_UEV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uev_electric_motor", Item::new).lang("UEV Electric Motor")
-                    .register() :
-            null;
-    public static ItemEntry<Item> ELECTRIC_MOTOR_UIV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uiv_electric_motor", Item::new).lang("UIV Electric Motor")
-                    .register() :
-            null;
-    public static ItemEntry<Item> ELECTRIC_MOTOR_UXV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uxv_electric_motor", Item::new).lang("UXV Electric Motor")
-                    .register() :
-            null;
-    public static ItemEntry<Item> ELECTRIC_MOTOR_OpV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("opv_electric_motor", Item::new).lang("OpV Electric Motor")
-                    .register() :
-            null;
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_LV = registerElectricMotor(GTValues.LV);
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_MV = registerElectricMotor(GTValues.MV);
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_HV = registerElectricMotor(GTValues.HV);
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_EV = registerElectricMotor(GTValues.EV);
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_IV = registerElectricMotor(GTValues.IV);
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_LuV = registerElectricMotor(GTValues.LuV);
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_ZPM = registerElectricMotor(GTValues.ZPM);
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_UV = registerElectricMotor(GTValues.UV);
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_UHV = GTCEuAPI.isHighTier() ?
+            registerElectricMotor(GTValues.UHV) : null;
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_UEV = GTCEuAPI.isHighTier() ?
+            registerElectricMotor(GTValues.UEV) : null;
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_UIV = GTCEuAPI.isHighTier() ?
+            registerElectricMotor(GTValues.UIV) : null;
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_UXV = GTCEuAPI.isHighTier() ?
+            registerElectricMotor(GTValues.UXV) : null;
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_OpV = GTCEuAPI.isHighTier() ?
+            registerElectricMotor(GTValues.OpV) : null;
 
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LV = REGISTRATE.item("lv_electric_pump", ComponentItem::new)
-            .lang("LV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[0])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.LV));
-            })))
-            .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();
+    private static ItemEntry<ComponentItem> registerElectricMotor(int tier) {
+        var builder = REGISTRATE
+                .item("%s_electric_motor".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .lang("%s Electric Motor".formatted(GTValues.VN[tier]))
+                .onRegister(attach(new TieredBehaviour(tier)));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.ELECTRIC_MOTORS);
+        return builder.register();
+    }
 
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_MV = REGISTRATE.item("mv_electric_pump", ComponentItem::new)
-            .lang("MV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[1])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.MV));
-            })))
-            .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_HV = REGISTRATE.item("hv_electric_pump", ComponentItem::new)
-            .lang("HV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.HV));
-            })))
-            .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_EV = REGISTRATE.item("ev_electric_pump", ComponentItem::new)
-            .lang("EV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[3])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.EV));
-            })))
-            .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_IV = REGISTRATE.item("iv_electric_pump", ComponentItem::new)
-            .lang("IV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[4])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.IV));
-            })))
-            .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LuV = REGISTRATE
-            .item("luv_electric_pump", ComponentItem::new)
-            .lang("LuV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.LuV));
-            })))
-            .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_ZPM = REGISTRATE
-            .item("zpm_electric_pump", ComponentItem::new)
-            .lang("ZPM Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[6])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.ZPM));
-            })))
-            .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UV = REGISTRATE.item("uv_electric_pump", ComponentItem::new)
-            .lang("UV Electric Pump")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[7])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.UV));
-            })))
-            .tag(CustomTags.ELECTRIC_PUMPS)
-            .register();
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] ELECTRIC_MOTORS = (ItemEntry<ComponentItem>[]) new ItemEntry[] {
+            null, ELECTRIC_MOTOR_LV, ELECTRIC_MOTOR_MV, ELECTRIC_MOTOR_HV, ELECTRIC_MOTOR_EV, ELECTRIC_MOTOR_IV,
+            ELECTRIC_MOTOR_LuV,
+            ELECTRIC_MOTOR_ZPM, ELECTRIC_MOTOR_UV, ELECTRIC_MOTOR_UHV, ELECTRIC_MOTOR_UEV, ELECTRIC_MOTOR_UIV,
+            ELECTRIC_MOTOR_UXV, ELECTRIC_MOTOR_OpV, null
+    };
 
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LV = registerElectricPump(GTValues.LV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_MV = registerElectricPump(GTValues.MV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_HV = registerElectricPump(GTValues.HV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_EV = registerElectricPump(GTValues.EV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_IV = registerElectricPump(GTValues.IV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LuV = registerElectricPump(GTValues.LuV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_ZPM = registerElectricPump(GTValues.ZPM);
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UV = registerElectricPump(GTValues.UV);
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UHV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uhv_electric_pump", ComponentItem::new)
-                    .lang("UHV Electric Pump")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[8])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                        lines.add(fluidRateTooltip(GTValues.UHV));
-                    })))
-                    .register() :
-            null;
-
+            registerElectricPump(GTValues.UHV) : null;
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UEV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uev_electric_pump", ComponentItem::new)
-                    .lang("UEV Electric Pump")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[9])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                        lines.add(fluidRateTooltip(GTValues.UEV));
-                    })))
-                    .register() :
-            null;
-
+            registerElectricPump(GTValues.UEV) : null;
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UIV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uiv_electric_pump", ComponentItem::new)
-                    .lang("UIV Electric Pump")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[10])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                        lines.add(fluidRateTooltip(GTValues.UIV));
-                    })))
-                    .register() :
-            null;
-
+            registerElectricPump(GTValues.UIV) : null;
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UXV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uxv_electric_pump", ComponentItem::new)
-                    .lang("UXV Electric Pump")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[11])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                        lines.add(fluidRateTooltip(GTValues.UXV));
-                    })))
-                    .register() :
-            null;
-
+            registerElectricPump(GTValues.UXV) : null;
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_OpV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("opv_electric_pump", ComponentItem::new)
-                    .lang("OpV Electric Pump")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[12])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                        lines.add(fluidRateTooltip(GTValues.OpV));
-                    })))
-                    .register() :
+            registerElectricPump(GTValues.OpV) : null;
+
+    private static ItemEntry<ComponentItem> registerElectricPump(int tier) {
+        var builder = REGISTRATE
+                .item("%s_electric_pump".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .lang("%s Electric Pump".formatted(GTValues.VN[tier]))
+                .onRegister(attach(new TieredBehaviour(tier)))
+                .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[tier])))
+                .onRegister(attach(new TooltipBehavior(lines -> {
+                    lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                    lines.add(fluidRateTooltip(tier));
+                })));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.ELECTRIC_PUMPS);
+        return builder.register();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] ELECTRIC_PUMPS = (ItemEntry<ComponentItem>[]) new ItemEntry[] {
+            null, ELECTRIC_PUMP_LV, ELECTRIC_PUMP_MV, ELECTRIC_PUMP_HV, ELECTRIC_PUMP_EV, ELECTRIC_PUMP_IV,
+            ELECTRIC_PUMP_LuV,
+            ELECTRIC_PUMP_ZPM, ELECTRIC_PUMP_UV, ELECTRIC_PUMP_UHV, ELECTRIC_PUMP_UEV, ELECTRIC_PUMP_UIV,
+            ELECTRIC_PUMP_UXV, ELECTRIC_PUMP_OpV, null
+    };
+
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_LV = registerFluidRegulator(GTValues.LV);
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_MV = registerFluidRegulator(GTValues.MV);
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_HV = registerFluidRegulator(GTValues.HV);
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_EV = registerFluidRegulator(GTValues.EV);
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_IV = registerFluidRegulator(GTValues.IV);
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_LuV = registerFluidRegulator(GTValues.LuV);
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_ZPM = registerFluidRegulator(GTValues.ZPM);
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UV = registerFluidRegulator(GTValues.UV);
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UHV = GTCEuAPI.isHighTier() ?
+            registerFluidRegulator(GTValues.UHV) : null;
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UEV = GTCEuAPI.isHighTier() ?
+            registerFluidRegulator(GTValues.UEV) : null;
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UIV = GTCEuAPI.isHighTier() ?
+            registerFluidRegulator(GTValues.UIV) : null;
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UXV = GTCEuAPI.isHighTier() ?
+            registerFluidRegulator(GTValues.UXV) : null;
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_OpV = GTCEuAPI.isHighTier() ?
+            registerFluidRegulator(GTValues.OpV) : null;
+
+    private static ItemEntry<ComponentItem> registerFluidRegulator(int tier) {
+        var builder = REGISTRATE
+                .item("%s_fluid_regulator".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .lang("%s Fluid Regulator".formatted(GTValues.VN[tier]))
+                .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[tier])))
+                .onRegister(attach(new TooltipBehavior(lines -> {
+                    lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                    lines.add(fluidRateTooltip(tier));
+                })));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.FLUID_REGULATORS);
+        return builder.register();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] FLUID_REGULATORS = (ItemEntry<ComponentItem>[]) new ItemEntry[] {
+            null, FLUID_REGULATOR_LV, FLUID_REGULATOR_MV, FLUID_REGULATOR_HV, FLUID_REGULATOR_EV, FLUID_REGULATOR_IV,
+            FLUID_REGULATOR_LuV,
+            FLUID_REGULATOR_ZPM, FLUID_REGULATOR_UV, FLUID_REGULATOR_UHV, FLUID_REGULATOR_UEV, FLUID_REGULATOR_UIV,
+            FLUID_REGULATOR_UXV, FLUID_REGULATOR_OpV, null
+    };
+
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LV = registerConveyorModule(GTValues.LV);
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_MV = registerConveyorModule(GTValues.MV);
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_HV = registerConveyorModule(GTValues.HV);
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_EV = registerConveyorModule(GTValues.EV);
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_IV = registerConveyorModule(GTValues.IV);
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LuV = registerConveyorModule(GTValues.LuV);
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_ZPM = registerConveyorModule(GTValues.ZPM);
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UV = registerConveyorModule(GTValues.UV);
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UHV = GTCEuAPI.isHighTier() ?
+            registerConveyorModule(GTValues.UHV) : null;
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UEV = GTCEuAPI.isHighTier() ?
+            registerConveyorModule(GTValues.UEV) : null;
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UIV = GTCEuAPI.isHighTier() ?
+            registerConveyorModule(GTValues.UIV) : null;
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UXV = GTCEuAPI.isHighTier() ?
+            registerConveyorModule(GTValues.UXV) : null;
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_OpV = GTCEuAPI.isHighTier() ?
+            registerConveyorModule(GTValues.OpV) : null;
+
+    private static ItemEntry<ComponentItem> registerConveyorModule(int tier) {
+        var builder = REGISTRATE
+                .item("%s_conveyor_module".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .lang("%s Conveyor Module".formatted(GTValues.VN[tier]))
+                .onRegister(attach(new TieredBehaviour(tier)))
+                .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[tier])))
+                .onRegister(attach(new TooltipBehavior(lines -> {
+                    lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                    lines.add(itemRateTooltip(tier));
+                })));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.CONVEYOR_MODULES);
+        return builder.register();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] CONVEYOR_MODULES = (ItemEntry<ComponentItem>[]) new ItemEntry[] {
+            null, CONVEYOR_MODULE_LV, CONVEYOR_MODULE_MV, CONVEYOR_MODULE_HV, CONVEYOR_MODULE_EV, CONVEYOR_MODULE_IV,
+            CONVEYOR_MODULE_LuV,
+            CONVEYOR_MODULE_ZPM, CONVEYOR_MODULE_UV, CONVEYOR_MODULE_UHV, CONVEYOR_MODULE_UEV, CONVEYOR_MODULE_UIV,
+            CONVEYOR_MODULE_UXV, CONVEYOR_MODULE_OpV, null
+    };
+
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_LV = registerElectricPiston(GTValues.LV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_MV = registerElectricPiston(GTValues.MV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_HV = registerElectricPiston(GTValues.HV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_EV = registerElectricPiston(GTValues.EV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_IV = registerElectricPiston(GTValues.IV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_LuV = registerElectricPiston(GTValues.LuV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_ZPM = registerElectricPiston(GTValues.ZPM);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_UV = registerElectricPiston(GTValues.UV);
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_UHV = GTCEuAPI.isHighTier() ?
+            registerElectricPiston(GTValues.UHV) : null;
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_UEV = GTCEuAPI.isHighTier() ?
+            registerElectricPiston(GTValues.UEV) : null;
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_UIV = GTCEuAPI.isHighTier() ?
+            registerElectricPiston(GTValues.UIV) : null;
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_UXV = GTCEuAPI.isHighTier() ?
+            registerElectricPiston(GTValues.UXV) : null;
+    public static ItemEntry<ComponentItem> ELECTRIC_PISTON_OpV = GTCEuAPI.isHighTier() ?
+            registerElectricPiston(GTValues.OpV) : null;
+
+    private static ItemEntry<ComponentItem> registerElectricPiston(int tier) {
+        var builder = REGISTRATE
+                .item("%s_electric_piston".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .lang("%s Electric Piston".formatted(GTValues.VN[tier]))
+                .onRegister(attach(new TieredBehaviour(tier)));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.ELECTRIC_PISTONS);
+        return builder.register();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] ELECTRIC_PISTONS = (ItemEntry<ComponentItem>[]) new ItemEntry[] {
+            null, ELECTRIC_PISTON_LV, ELECTRIC_PISTON_MV, ELECTRIC_PISTON_HV, ELECTRIC_PISTON_EV, ELECTRIC_PISTON_IV,
+            ELECTRIC_PISTON_LuV,
+            ELECTRIC_PISTON_ZPM, ELECTRIC_PISTON_UV, ELECTRIC_PISTON_UHV, ELECTRIC_PISTON_UEV, ELECTRIC_PISTON_UIV,
+            ELECTRIC_PISTON_UXV, ELECTRIC_PISTON_OpV, null
+    };
+
+    public static ItemEntry<ComponentItem> ROBOT_ARM_LV = registerRobotArm(GTValues.LV);
+    public static ItemEntry<ComponentItem> ROBOT_ARM_MV = registerRobotArm(GTValues.MV);
+    public static ItemEntry<ComponentItem> ROBOT_ARM_HV = registerRobotArm(GTValues.HV);
+    public static ItemEntry<ComponentItem> ROBOT_ARM_EV = registerRobotArm(GTValues.EV);
+    public static ItemEntry<ComponentItem> ROBOT_ARM_IV = registerRobotArm(GTValues.IV);
+    public static ItemEntry<ComponentItem> ROBOT_ARM_LuV = registerRobotArm(GTValues.LuV);
+    public static ItemEntry<ComponentItem> ROBOT_ARM_ZPM = registerRobotArm(GTValues.ZPM);
+    public static ItemEntry<ComponentItem> ROBOT_ARM_UV = registerRobotArm(GTValues.UV);
+    public static ItemEntry<ComponentItem> ROBOT_ARM_UHV = GTCEuAPI.isHighTier() ? registerRobotArm(GTValues.UHV) :
+            null;
+    public static ItemEntry<ComponentItem> ROBOT_ARM_UEV = GTCEuAPI.isHighTier() ? registerRobotArm(GTValues.UEV) :
+            null;
+    public static ItemEntry<ComponentItem> ROBOT_ARM_UIV = GTCEuAPI.isHighTier() ? registerRobotArm(GTValues.UIV) :
+            null;
+    public static ItemEntry<ComponentItem> ROBOT_ARM_UXV = GTCEuAPI.isHighTier() ? registerRobotArm(GTValues.UXV) :
+            null;
+    public static ItemEntry<ComponentItem> ROBOT_ARM_OpV = GTCEuAPI.isHighTier() ? registerRobotArm(GTValues.OpV) :
             null;
 
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_LV = REGISTRATE
-            .item("lv_fluid_regulator", ComponentItem::new)
-            .lang("LV Fluid Regulator")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[0])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.LV));
-            })))
-            .tag(CustomTags.FLUID_REGULATORS)
-            .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_MV = REGISTRATE
-            .item("mv_fluid_regulator", ComponentItem::new)
-            .lang("MV Fluid Regulator")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[1])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.MV));
-            })))
-            .tag(CustomTags.FLUID_REGULATORS)
-            .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_HV = REGISTRATE
-            .item("hv_fluid_regulator", ComponentItem::new)
-            .lang("HV Fluid Regulator")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[2])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.HV));
-            })))
-            .tag(CustomTags.FLUID_REGULATORS)
-            .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_EV = REGISTRATE
-            .item("ev_fluid_regulator", ComponentItem::new)
-            .lang("EV Fluid Regulator")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[3])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.EV));
-            })))
-            .tag(CustomTags.FLUID_REGULATORS)
-            .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_IV = REGISTRATE
-            .item("iv_fluid_regulator", ComponentItem::new)
-            .lang("IV Fluid Regulator")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[4])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.IV));
-            })))
-            .tag(CustomTags.FLUID_REGULATORS)
-            .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_LuV = REGISTRATE
-            .item("luv_fluid_regulator", ComponentItem::new)
-            .lang("LuV Fluid Regulator")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[5])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.LuV));
-            })))
-            .tag(CustomTags.FLUID_REGULATORS)
-            .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_ZPM = REGISTRATE
-            .item("zpm_fluid_regulator", ComponentItem::new)
-            .lang("ZPM Fluid Regulator")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[6])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.ZPM));
-            })))
-            .tag(CustomTags.FLUID_REGULATORS)
-            .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UV = REGISTRATE
-            .item("uv_fluid_regulator", ComponentItem::new)
-            .lang("UV Fluid Regulator")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[7])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(fluidRateTooltip(GTValues.UV));
-            })))
-            .tag(CustomTags.FLUID_REGULATORS)
-            .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UHV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uhv_fluid_regulator", ComponentItem::new)
-                    .lang("UHV Fluid Regulator")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[8])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                        lines.add(fluidRateTooltip(GTValues.UHV));
-                    })))
-                    .register() :
-            null;
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UEV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uev_fluid_regulator", ComponentItem::new)
-                    .lang("UEV Fluid Regulator")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[9])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                        lines.add(fluidRateTooltip(GTValues.UEV));
-                    })))
-                    .register() :
-            null;
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UIV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uiv_fluid_regulator", ComponentItem::new)
-                    .lang("UIV Fluid Regulator")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[10])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                        lines.add(fluidRateTooltip(GTValues.UIV));
-                    })))
-                    .register() :
-            null;
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UXV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uxv_fluid_regulator", ComponentItem::new)
-                    .lang("UXV Fluid Regulator")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[11])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                        lines.add(fluidRateTooltip(GTValues.UXV));
-                    })))
-                    .register() :
-            null;
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_OpV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("opv_fluid_regulator", ComponentItem::new)
-                    .lang("OpV Fluid Regulator")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[12])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                        lines.add(fluidRateTooltip(GTValues.OpV));
-                    })))
-                    .register() :
-            null;
+    private static ItemEntry<ComponentItem> registerRobotArm(int tier) {
+        var builder = REGISTRATE.item("%s_robot_arm".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .lang("%s Robot Arm".formatted(tier))
+                .onRegister(
+                        attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[tier]), new TieredBehaviour(tier)))
+                .onRegister(attach(new TooltipBehavior(lines -> {
+                    lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                    lines.add(itemRateTooltip(tier));
+                })));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.ROBOT_ARMS);
+        return builder.register();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] ROBOT_ARMS = (ItemEntry<ComponentItem>[]) new ItemEntry[] {
+            null, ROBOT_ARM_LV, ROBOT_ARM_MV, ROBOT_ARM_HV, ROBOT_ARM_EV, ROBOT_ARM_IV, ROBOT_ARM_LuV,
+            ROBOT_ARM_ZPM, ROBOT_ARM_UV, ROBOT_ARM_UHV, ROBOT_ARM_UEV, ROBOT_ARM_UIV, ROBOT_ARM_UXV, ROBOT_ARM_OpV, null
+    };
+
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_LV = registerFieldGenerator(GTValues.LV);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_MV = registerFieldGenerator(GTValues.MV);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_HV = registerFieldGenerator(GTValues.HV);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_EV = registerFieldGenerator(GTValues.EV);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_IV = registerFieldGenerator(GTValues.IV);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_LuV = registerFieldGenerator(GTValues.LuV);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_ZPM = registerFieldGenerator(GTValues.ZPM);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_UV = registerFieldGenerator(GTValues.UV);
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_UHV = GTCEuAPI.isHighTier() ?
+            registerFieldGenerator(GTValues.UHV) : null;
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_UEV = GTCEuAPI.isHighTier() ?
+            registerFieldGenerator(GTValues.UEV) : null;
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_UIV = GTCEuAPI.isHighTier() ?
+            registerFieldGenerator(GTValues.UIV) : null;
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_UXV = GTCEuAPI.isHighTier() ?
+            registerFieldGenerator(GTValues.UXV) : null;
+    public static ItemEntry<ComponentItem> FIELD_GENERATOR_OpV = GTCEuAPI.isHighTier() ?
+            registerFieldGenerator(GTValues.OpV) : null;
+
+    private static ItemEntry<ComponentItem> registerFieldGenerator(int tier) {
+        var builder = REGISTRATE
+                .item("%s_field_generator".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .lang("%s Field Generator".formatted(GTValues.VN[tier]))
+                .onRegister(attach(new TieredBehaviour(tier)));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.FIELD_GENERATORS);
+        return builder.register();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] FIELD_GENERATORS = (ItemEntry<ComponentItem>[]) new ItemEntry[] {
+            null, FIELD_GENERATOR_LV, FIELD_GENERATOR_MV, FIELD_GENERATOR_HV, FIELD_GENERATOR_EV, FIELD_GENERATOR_IV,
+            FIELD_GENERATOR_LuV,
+            FIELD_GENERATOR_ZPM, FIELD_GENERATOR_UV, FIELD_GENERATOR_UHV, FIELD_GENERATOR_UEV, FIELD_GENERATOR_UIV,
+            FIELD_GENERATOR_UXV, FIELD_GENERATOR_OpV, null
+    };
+
+    public static ItemEntry<ComponentItem> EMITTER_LV = registerEmitter(GTValues.LV);
+    public static ItemEntry<ComponentItem> EMITTER_MV = registerEmitter(GTValues.MV);
+    public static ItemEntry<ComponentItem> EMITTER_HV = registerEmitter(GTValues.HV);
+    public static ItemEntry<ComponentItem> EMITTER_EV = registerEmitter(GTValues.EV);
+    public static ItemEntry<ComponentItem> EMITTER_IV = registerEmitter(GTValues.IV);
+    public static ItemEntry<ComponentItem> EMITTER_LuV = registerEmitter(GTValues.LuV);
+    public static ItemEntry<ComponentItem> EMITTER_ZPM = registerEmitter(GTValues.ZPM);
+    public static ItemEntry<ComponentItem> EMITTER_UV = registerEmitter(GTValues.UV);
+    public static ItemEntry<ComponentItem> EMITTER_UHV = GTCEuAPI.isHighTier() ? registerEmitter(GTValues.UHV) : null;
+    public static ItemEntry<ComponentItem> EMITTER_UEV = GTCEuAPI.isHighTier() ? registerEmitter(GTValues.UEV) : null;
+    public static ItemEntry<ComponentItem> EMITTER_UIV = GTCEuAPI.isHighTier() ? registerEmitter(GTValues.UIV) : null;
+    public static ItemEntry<ComponentItem> EMITTER_UXV = GTCEuAPI.isHighTier() ? registerEmitter(GTValues.UXV) : null;
+    public static ItemEntry<ComponentItem> EMITTER_OpV = GTCEuAPI.isHighTier() ? registerEmitter(GTValues.OpV) : null;
+
+    private static ItemEntry<ComponentItem> registerEmitter(int tier) {
+        var builder = REGISTRATE.item("%s_emitter".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .lang("%s Emitter".formatted(GTValues.VN[tier]))
+                .onRegister(attach(new TieredBehaviour(tier)));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.EMITTERS);
+        return builder.register();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static ItemEntry<ComponentItem>[] EMITTERS = (ItemEntry<ComponentItem>[]) new ItemEntry[] {
+            null, EMITTER_LV, EMITTER_MV, EMITTER_HV, EMITTER_EV, EMITTER_IV, EMITTER_LuV,
+            EMITTER_ZPM, EMITTER_UV, EMITTER_UHV, EMITTER_UEV, EMITTER_UIV, EMITTER_UXV, EMITTER_OpV, null
+    };
+
+    public static ItemEntry<ComponentItem> SENSOR_LV = registerSensor(GTValues.LV);
+    public static ItemEntry<ComponentItem> SENSOR_MV = registerSensor(GTValues.MV);
+    public static ItemEntry<ComponentItem> SENSOR_HV = registerSensor(GTValues.HV);
+    public static ItemEntry<ComponentItem> SENSOR_EV = registerSensor(GTValues.EV);
+    public static ItemEntry<ComponentItem> SENSOR_IV = registerSensor(GTValues.IV);
+    public static ItemEntry<ComponentItem> SENSOR_LuV = registerSensor(GTValues.LuV);
+    public static ItemEntry<ComponentItem> SENSOR_ZPM = registerSensor(GTValues.ZPM);
+    public static ItemEntry<ComponentItem> SENSOR_UV = registerSensor(GTValues.UV);
+    public static ItemEntry<ComponentItem> SENSOR_UHV = GTCEuAPI.isHighTier() ? registerSensor(GTValues.UHV) : null;
+    public static ItemEntry<ComponentItem> SENSOR_UEV = GTCEuAPI.isHighTier() ? registerSensor(GTValues.UEV) : null;
+    public static ItemEntry<ComponentItem> SENSOR_UIV = GTCEuAPI.isHighTier() ? registerSensor(GTValues.UIV) : null;
+    public static ItemEntry<ComponentItem> SENSOR_UXV = GTCEuAPI.isHighTier() ? registerSensor(GTValues.UXV) : null;
+    public static ItemEntry<ComponentItem> SENSOR_OpV = GTCEuAPI.isHighTier() ? registerSensor(GTValues.OpV) : null;
+
+    private static ItemEntry<ComponentItem> registerSensor(int tier) {
+        var builder = REGISTRATE.item("%s_sensor".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .lang("%s Sensor".formatted(GTValues.VN[tier]))
+                .onRegister(attach(new TieredBehaviour(tier)));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.SENSORS);
+        return builder.register();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] SENSORS = (ItemEntry<ComponentItem>[]) new ItemEntry[] {
+            null, SENSOR_LV, SENSOR_MV, SENSOR_HV, SENSOR_EV, SENSOR_IV, SENSOR_LuV,
+            SENSOR_ZPM, SENSOR_UV, SENSOR_UHV, SENSOR_UEV, SENSOR_UIV, SENSOR_UXV, SENSOR_OpV, null
+    };
 
     public static ItemEntry<ComponentItem> DYNAMITE = REGISTRATE.item("dynamite", ComponentItem::new)
             .lang("Dynamite")
             .onRegister(attach(new DynamiteBehaviour()))
             .tab(TOOL.getKey())
             .register();
-
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LV = REGISTRATE
-            .item("lv_conveyor_module", ComponentItem::new)
-            .lang("LV Conveyor Module")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[0])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(itemRateTooltip(GTValues.LV));
-            })))
-            .tag(CustomTags.CONVEYOR_MODULES)
-            .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_MV = REGISTRATE
-            .item("mv_conveyor_module", ComponentItem::new)
-            .lang("MV Conveyor Module")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[1])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(itemRateTooltip(GTValues.MV));
-            })))
-            .tag(CustomTags.CONVEYOR_MODULES)
-            .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_HV = REGISTRATE
-            .item("hv_conveyor_module", ComponentItem::new)
-            .lang("HV Conveyor Module")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[2])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(itemRateTooltip(GTValues.HV));
-            })))
-            .tag(CustomTags.CONVEYOR_MODULES)
-            .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_EV = REGISTRATE
-            .item("ev_conveyor_module", ComponentItem::new)
-            .lang("EV Conveyor Module")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[3])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(itemRateTooltip(GTValues.EV));
-            })))
-            .tag(CustomTags.CONVEYOR_MODULES)
-            .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_IV = REGISTRATE
-            .item("iv_conveyor_module", ComponentItem::new)
-            .lang("IV Conveyor Module")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[4])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(itemRateTooltip(GTValues.IV));
-            })))
-            .tag(CustomTags.CONVEYOR_MODULES)
-            .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LuV = REGISTRATE
-            .item("luv_conveyor_module", ComponentItem::new)
-            .lang("LuV Conveyor Module")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(itemRateTooltip(GTValues.LuV));
-            })))
-            .tag(CustomTags.CONVEYOR_MODULES)
-            .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_ZPM = REGISTRATE
-            .item("zpm_conveyor_module", ComponentItem::new)
-            .lang("ZPM Conveyor Module")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[6])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(itemRateTooltip(GTValues.ZPM));
-            })))
-            .tag(CustomTags.CONVEYOR_MODULES)
-            .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UV = REGISTRATE
-            .item("uv_conveyor_module", ComponentItem::new)
-            .lang("UV Conveyor Module")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[7])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(itemRateTooltip(GTValues.UV));
-            })))
-            .tag(CustomTags.CONVEYOR_MODULES)
-            .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UHV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uhv_conveyor_module", ComponentItem::new)
-                    .lang("UHV Conveyor Module")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[8])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                        lines.add(itemRateTooltip(GTValues.UHV));
-                    })))
-                    .register() :
-            null;
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UEV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uev_conveyor_module", ComponentItem::new)
-                    .lang("UEV Conveyor Module")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[9])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                        lines.add(itemRateTooltip(GTValues.UEV));
-                    })))
-                    .register() :
-            null;
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UIV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uiv_conveyor_module", ComponentItem::new)
-                    .lang("UIV Conveyor Module")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[10])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                        lines.add(itemRateTooltip(GTValues.UIV));
-                    })))
-                    .register() :
-            null;
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UXV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uxv_conveyor_module", ComponentItem::new)
-                    .lang("UXV Conveyor Module")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[11])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                        lines.add(itemRateTooltip(GTValues.UXV));
-                    })))
-                    .register() :
-            null;
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_OpV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("opv_conveyor_module", ComponentItem::new)
-                    .lang("OpV Conveyor Module")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[12])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                        lines.add(itemRateTooltip(GTValues.OpV));
-                    })))
-                    .register() :
-            null;
-
-    public static ItemEntry<Item> ELECTRIC_PISTON_LV = REGISTRATE.item("lv_electric_piston", Item::new)
-            .lang("LV Electric Piston")
-            .tag(CustomTags.ELECTRIC_PISTONS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_PISTON_MV = REGISTRATE.item("mv_electric_piston", Item::new)
-            .lang("MV Electric Piston")
-            .tag(CustomTags.ELECTRIC_PISTONS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_PISTON_HV = REGISTRATE.item("hv_electric_piston", Item::new)
-            .lang("HV Electric Piston")
-            .tag(CustomTags.ELECTRIC_PISTONS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_PISTON_EV = REGISTRATE.item("ev_electric_piston", Item::new)
-            .lang("EV Electric Piston")
-            .tag(CustomTags.ELECTRIC_PISTONS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_PISTON_IV = REGISTRATE.item("iv_electric_piston", Item::new)
-            .lang("IV Electric Piston")
-            .tag(CustomTags.ELECTRIC_PISTONS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_PISTON_LuV = REGISTRATE.item("luv_electric_piston", Item::new)
-            .lang("LuV Electric Piston")
-            .tag(CustomTags.ELECTRIC_PISTONS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_PISTON_ZPM = REGISTRATE.item("zpm_electric_piston", Item::new)
-            .lang("ZPM Electric Piston")
-            .tag(CustomTags.ELECTRIC_PISTONS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_PISTON_UV = REGISTRATE.item("uv_electric_piston", Item::new)
-            .lang("UV Electric Piston")
-            .tag(CustomTags.ELECTRIC_PISTONS)
-            .register();
-    public static ItemEntry<Item> ELECTRIC_PISTON_UHV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uhv_electric_piston", Item::new).lang("UHV Electric Piston")
-                    .register() :
-            null;
-    public static ItemEntry<Item> ELECTRIC_PISTON_UEV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uev_electric_piston", Item::new).lang("UEV Electric Piston")
-                    .register() :
-            null;
-    public static ItemEntry<Item> ELECTRIC_PISTON_UIV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uiv_electric_piston", Item::new).lang("UIV Electric Piston")
-                    .register() :
-            null;
-    public static ItemEntry<Item> ELECTRIC_PISTON_UXV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uxv_electric_piston", Item::new).lang("UXV Electric Piston")
-                    .register() :
-            null;
-    public static ItemEntry<Item> ELECTRIC_PISTON_OpV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("opv_electric_piston", Item::new).lang("OpV Electric Piston")
-                    .register() :
-            null;
-
-    public static ItemEntry<ComponentItem> ROBOT_ARM_LV = REGISTRATE.item("lv_robot_arm", ComponentItem::new)
-            .lang("LV Robot Arm")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[0])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(itemRateTooltip(GTValues.LV));
-            })))
-            .tag(CustomTags.ROBOT_ARMS)
-            .register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_MV = REGISTRATE.item("mv_robot_arm", ComponentItem::new)
-            .lang("MV Robot Arm")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[1])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(itemRateTooltip(GTValues.MV));
-            })))
-            .tag(CustomTags.ROBOT_ARMS)
-            .register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_HV = REGISTRATE.item("hv_robot_arm", ComponentItem::new)
-            .lang("HV Robot Arm")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[2])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(itemRateTooltip(GTValues.HV));
-            })))
-            .tag(CustomTags.ROBOT_ARMS)
-            .register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_EV = REGISTRATE.item("ev_robot_arm", ComponentItem::new)
-            .lang("EV Robot Arm")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[3])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(itemRateTooltip(GTValues.EV));
-            })))
-            .tag(CustomTags.ROBOT_ARMS)
-            .register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_IV = REGISTRATE.item("iv_robot_arm", ComponentItem::new)
-            .lang("IV Robot Arm")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[4])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(itemRateTooltip(GTValues.IV));
-            })))
-            .tag(CustomTags.ROBOT_ARMS)
-            .register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_LuV = REGISTRATE.item("luv_robot_arm", ComponentItem::new)
-            .lang("LuV Robot Arm")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[5])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(itemRateTooltip(GTValues.LuV));
-            })))
-            .tag(CustomTags.ROBOT_ARMS)
-            .register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_ZPM = REGISTRATE.item("zpm_robot_arm", ComponentItem::new)
-            .lang("ZPM Robot Arm")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[6])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(itemRateTooltip(GTValues.ZPM));
-            })))
-            .tag(CustomTags.ROBOT_ARMS)
-            .register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_UV = REGISTRATE.item("uv_robot_arm", ComponentItem::new)
-            .lang("UV Robot Arm")
-            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[7])))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(itemRateTooltip(GTValues.UV));
-            })))
-            .tag(CustomTags.ROBOT_ARMS)
-            .register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_UHV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uhv_robot_arm", ComponentItem::new)
-                    .lang("UHV Robot Arm")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[8])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                        lines.add(itemRateTooltip(GTValues.UHV));
-                    })))
-                    .register() :
-            null;
-    public static ItemEntry<ComponentItem> ROBOT_ARM_UEV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uev_robot_arm", ComponentItem::new)
-                    .lang("UEV Robot Arm")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[9])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                        lines.add(itemRateTooltip(GTValues.UEV));
-                    })))
-                    .register() :
-            null;
-    public static ItemEntry<ComponentItem> ROBOT_ARM_UIV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uiv_robot_arm", ComponentItem::new)
-                    .lang("UIV Robot Arm")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[10])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                        lines.add(itemRateTooltip(GTValues.UIV));
-                    })))
-                    .register() :
-            null;
-    public static ItemEntry<ComponentItem> ROBOT_ARM_UXV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uxv_robot_arm", ComponentItem::new)
-                    .lang("UXV Robot Arm")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[11])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                        lines.add(itemRateTooltip(GTValues.UXV));
-                    })))
-                    .register() :
-            null;
-    public static ItemEntry<ComponentItem> ROBOT_ARM_OpV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("opv_robot_arm", ComponentItem::new)
-                    .lang("OpV Robot Arm")
-                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[12])))
-                    .onRegister(attach(new TooltipBehavior(lines -> {
-                        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                        lines.add(itemRateTooltip(GTValues.OpV));
-                    })))
-                    .register() :
-            null;
-
-    public static ItemEntry<Item> FIELD_GENERATOR_LV = REGISTRATE.item("lv_field_generator", Item::new)
-            .lang("LV Field Generator")
-            .tag(CustomTags.FIELD_GENERATORS)
-            .register();
-    public static ItemEntry<Item> FIELD_GENERATOR_MV = REGISTRATE.item("mv_field_generator", Item::new)
-            .lang("MV Field Generator")
-            .tag(CustomTags.FIELD_GENERATORS)
-            .register();
-    public static ItemEntry<Item> FIELD_GENERATOR_HV = REGISTRATE.item("hv_field_generator", Item::new)
-            .lang("HV Field Generator")
-            .tag(CustomTags.FIELD_GENERATORS)
-            .register();
-    public static ItemEntry<Item> FIELD_GENERATOR_EV = REGISTRATE.item("ev_field_generator", Item::new)
-            .lang("EV Field Generator")
-            .tag(CustomTags.FIELD_GENERATORS)
-            .register();
-    public static ItemEntry<Item> FIELD_GENERATOR_IV = REGISTRATE.item("iv_field_generator", Item::new)
-            .lang("IV Field Generator")
-            .tag(CustomTags.FIELD_GENERATORS)
-            .register();
-    public static ItemEntry<Item> FIELD_GENERATOR_LuV = REGISTRATE.item("luv_field_generator", Item::new)
-            .lang("LuV Field Generator")
-            .tag(CustomTags.FIELD_GENERATORS)
-            .register();
-    public static ItemEntry<Item> FIELD_GENERATOR_ZPM = REGISTRATE.item("zpm_field_generator", Item::new)
-            .lang("ZPM Field Generator")
-            .tag(CustomTags.FIELD_GENERATORS)
-            .register();
-    public static ItemEntry<Item> FIELD_GENERATOR_UV = REGISTRATE.item("uv_field_generator", Item::new)
-            .lang("UV Field Generator")
-            .tag(CustomTags.FIELD_GENERATORS)
-            .register();
-    public static ItemEntry<Item> FIELD_GENERATOR_UHV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uhv_field_generator", Item::new).lang("UHV Field Generator")
-                    .register() :
-            null;
-    public static ItemEntry<Item> FIELD_GENERATOR_UEV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uev_field_generator", Item::new).lang("UEV Field Generator")
-                    .register() :
-            null;
-    public static ItemEntry<Item> FIELD_GENERATOR_UIV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uiv_field_generator", Item::new).lang("UIV Field Generator")
-                    .register() :
-            null;
-    public static ItemEntry<Item> FIELD_GENERATOR_UXV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uxv_field_generator", Item::new).lang("UXV Field Generator")
-                    .register() :
-            null;
-    public static ItemEntry<Item> FIELD_GENERATOR_OpV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("opv_field_generator", Item::new).lang("OpV Field Generator")
-                    .register() :
-            null;
-
-    public static ItemEntry<Item> EMITTER_LV = REGISTRATE.item("lv_emitter", Item::new).lang("LV Emitter")
-            .tag(CustomTags.EMITTERS)
-            .register();
-    public static ItemEntry<Item> EMITTER_MV = REGISTRATE.item("mv_emitter", Item::new).lang("MV Emitter")
-            .tag(CustomTags.EMITTERS)
-            .register();
-    public static ItemEntry<Item> EMITTER_HV = REGISTRATE.item("hv_emitter", Item::new).lang("HV Emitter")
-            .tag(CustomTags.EMITTERS)
-            .register();
-    public static ItemEntry<Item> EMITTER_EV = REGISTRATE.item("ev_emitter", Item::new).lang("EV Emitter")
-            .tag(CustomTags.EMITTERS)
-            .register();
-    public static ItemEntry<Item> EMITTER_IV = REGISTRATE.item("iv_emitter", Item::new).lang("IV Emitter")
-            .tag(CustomTags.EMITTERS)
-            .register();
-    public static ItemEntry<Item> EMITTER_LuV = REGISTRATE.item("luv_emitter", Item::new).lang("LuV Emitter")
-            .tag(CustomTags.EMITTERS)
-            .register();
-    public static ItemEntry<Item> EMITTER_ZPM = REGISTRATE.item("zpm_emitter", Item::new).lang("ZPM Emitter")
-            .tag(CustomTags.EMITTERS)
-            .register();
-    public static ItemEntry<Item> EMITTER_UV = REGISTRATE.item("uv_emitter", Item::new).lang("UV Emitter")
-            .tag(CustomTags.EMITTERS)
-            .register();
-    public static ItemEntry<Item> EMITTER_UHV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uhv_emitter", Item::new)
-            .lang("UHV Emitter")
-            .register() : null;
-    public static ItemEntry<Item> EMITTER_UEV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uev_emitter", Item::new)
-            .lang("UEV Emitter")
-            .register() : null;
-    public static ItemEntry<Item> EMITTER_UIV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uiv_emitter", Item::new)
-            .lang("UIV Emitter")
-            .register() : null;
-    public static ItemEntry<Item> EMITTER_UXV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uxv_emitter", Item::new)
-            .lang("UXV Emitter")
-            .register() : null;
-    public static ItemEntry<Item> EMITTER_OpV = GTCEuAPI.isHighTier() ? REGISTRATE.item("opv_emitter", Item::new)
-            .lang("OpV Emitter")
-            .register() : null;
-
-    public static ItemEntry<Item> SENSOR_LV = REGISTRATE.item("lv_sensor", Item::new).lang("LV Sensor")
-            .tag(CustomTags.SENSORS)
-            .register();
-    public static ItemEntry<Item> SENSOR_MV = REGISTRATE.item("mv_sensor", Item::new).lang("MV Sensor")
-            .tag(CustomTags.SENSORS)
-            .register();
-    public static ItemEntry<Item> SENSOR_HV = REGISTRATE.item("hv_sensor", Item::new).lang("HV Sensor")
-            .tag(CustomTags.SENSORS)
-            .register();
-    public static ItemEntry<Item> SENSOR_EV = REGISTRATE.item("ev_sensor", Item::new).lang("EV Sensor")
-            .tag(CustomTags.SENSORS)
-            .register();
-    public static ItemEntry<Item> SENSOR_IV = REGISTRATE.item("iv_sensor", Item::new).lang("IV Sensor")
-            .tag(CustomTags.SENSORS)
-            .register();
-    public static ItemEntry<Item> SENSOR_LuV = REGISTRATE.item("luv_sensor", Item::new).lang("LuV Sensor")
-            .tag(CustomTags.SENSORS)
-            .register();
-    public static ItemEntry<Item> SENSOR_ZPM = REGISTRATE.item("zpm_sensor", Item::new).lang("ZPM Sensor")
-            .tag(CustomTags.SENSORS)
-            .register();
-    public static ItemEntry<Item> SENSOR_UV = REGISTRATE.item("uv_sensor", Item::new).lang("UV Sensor")
-            .tag(CustomTags.SENSORS)
-            .register();
-    public static ItemEntry<Item> SENSOR_UHV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uhv_sensor", Item::new)
-            .lang("UHV Sensor")
-            .register() : null;
-    public static ItemEntry<Item> SENSOR_UEV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uev_sensor", Item::new)
-            .lang("UEV Sensor")
-            .register() : null;
-    public static ItemEntry<Item> SENSOR_UIV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uiv_sensor", Item::new)
-            .lang("UIV Sensor")
-            .register() : null;
-    public static ItemEntry<Item> SENSOR_UXV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uxv_sensor", Item::new)
-            .lang("UXV Sensor")
-            .register() : null;
-    public static ItemEntry<Item> SENSOR_OpV = GTCEuAPI.isHighTier() ? REGISTRATE.item("opv_sensor", Item::new)
-            .lang("OpV Sensor")
-            .register() : null;
 
     public static ItemEntry<ComponentItem> TOOL_DATA_STICK = REGISTRATE.item("data_stick", ComponentItem::new)
             .lang("Data Stick").onRegister(attach(DataItemBehavior.INSTANCE))
@@ -1595,7 +1214,7 @@ public class GTItems {
     public static ItemEntry<Item> VACUUM_TUBE = REGISTRATE.item("vacuum_tube", Item::new).lang("Vacuum Tube")
             .tag(CustomTags.ULV_CIRCUITS).register();
     public static ItemEntry<Item> GLASS_TUBE = REGISTRATE.item("glass_tube", Item::new).lang("Glass Tube")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M))))
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M))))
             .register();
     public static ItemEntry<Item> TRANSISTOR = REGISTRATE.item("transistor", Item::new).lang("Transistor")
             .tag(CustomTags.TRANSISTORS)
@@ -1728,21 +1347,21 @@ public class GTItems {
 
     public static ItemEntry<Item> COMPONENT_GRINDER_DIAMOND = REGISTRATE.item("diamond_grinding_head", Item::new)
             .lang("Diamond Grinding Head")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 8),
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 8),
                     new MaterialStack(GTMaterials.Diamond, GTValues.M * 5))))
             .register();
     public static ItemEntry<Item> COMPONENT_GRINDER_TUNGSTEN = REGISTRATE.item("tungsten_grinding_head", Item::new)
             .lang("Tungsten Grinding Head")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Tungsten, GTValues.M * 4),
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Tungsten, GTValues.M * 4),
                     new MaterialStack(GTMaterials.VanadiumSteel, GTValues.M * 8),
                     new MaterialStack(GTMaterials.Diamond, GTValues.M))))
             .register();
 
     public static ItemEntry<Item> IRON_MINECART_WHEELS = REGISTRATE.item("iron_minecart_wheels", Item::new)
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, GTValues.M))))
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, GTValues.M))))
             .register();
     public static ItemEntry<Item> STEEL_MINECART_WHEELS = REGISTRATE.item("steel_minecart_wheels", Item::new)
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M))))
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M))))
             .register();
 
     public static ItemEntry<Item> QUANTUM_EYE = REGISTRATE.item("quantum_eye", Item::new).lang("Quantum Eye")
@@ -1761,7 +1380,7 @@ public class GTItems {
                     new FilterBehaviour<>(ItemStack.class, SimpleItemFilter::new,
                             GTDataComponents.SIMPLE_ITEM_FILTER),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2),
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2),
                     new MaterialStack(GTMaterials.Steel, GTValues.M))))
             .register();
     public static ItemEntry<ComponentItem> TAG_FILTER = REGISTRATE
@@ -1772,7 +1391,7 @@ public class GTItems {
                             () -> new TagFilter<>(ItemStack::getItem, ItemStack::getTags),
                             GTDataComponents.ITEM_TAG_FILTER),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
             .register();
     public static ItemEntry<ComponentItem> SMART_ITEM_FILTER = REGISTRATE
             .item("smart_item_filter", ComponentItem::new)
@@ -1781,14 +1400,15 @@ public class GTItems {
                     new FilterBehaviour<>(ItemStack.class, SmartItemFilter::new,
                             GTDataComponents.SMART_ITEM_FILTER),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
+            .onRegister(
+                    materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
             .register();
     public static ItemEntry<ComponentItem> FLUID_FILTER = REGISTRATE.item("fluid_filter", ComponentItem::new)
             .onRegister(attach(
                     new FilterBehaviour<>(FluidStack.class, SimpleFluidFilter::new,
                             GTDataComponents.SIMPLE_FLUID_FILTER),
                     new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
             .register();
     public static ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE
             .item("fluid_tag_filter", ComponentItem::new)
@@ -1797,7 +1417,8 @@ public class GTItems {
                     new FilterBehaviour<>(FluidStack.class, () -> new TagFilter<>(FluidStack::getFluid,
                             f -> f.getFluid().defaultFluidState().getTags()), GTDataComponents.FLUID_TAG_FILTER),
                     new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
+            .onRegister(
+                    materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
             .register();
 
     public static ItemEntry<ComponentItem> COMPOSITE_ITEM_FILTER = REGISTRATE
@@ -2204,6 +1825,7 @@ public class GTItems {
     }
     @SuppressWarnings("unchecked")
     public static final ItemEntry<ComponentItem>[] SPRAY_CAN_DYES = new ItemEntry[DyeColor.values().length];
+
     static {
         for (int i = 0; i < DyeColor.values().length; i++) {
             var dyeColor = DyeColor.values()[i];
@@ -2230,48 +1852,52 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_ULV = REGISTRATE.item("ulv_voltage_coil", ComponentItem::new)
             .lang("Ultra Low Voltage Coil")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Lead, GTValues.M * 2),
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Lead, GTValues.M * 2),
                     new MaterialStack(GTMaterials.IronMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_LV = REGISTRATE.item("lv_voltage_coil", ComponentItem::new)
             .lang("Low Voltage Coil")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 2),
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 2),
                     new MaterialStack(GTMaterials.IronMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_MV = REGISTRATE.item("mv_voltage_coil", ComponentItem::new)
             .lang("Medium Voltage Coil")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Aluminium, GTValues.M * 2),
-                    new MaterialStack(GTMaterials.SteelMagnetic, GTValues.M / 2))))
+            .onRegister(
+                    materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Aluminium, GTValues.M * 2),
+                            new MaterialStack(GTMaterials.SteelMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_HV = REGISTRATE.item("hv_voltage_coil", ComponentItem::new)
             .lang("High Voltage Coil")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BlackSteel, GTValues.M * 2),
-                    new MaterialStack(GTMaterials.SteelMagnetic, GTValues.M / 2))))
+            .onRegister(
+                    materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.BlackSteel, GTValues.M * 2),
+                            new MaterialStack(GTMaterials.SteelMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_EV = REGISTRATE.item("ev_voltage_coil", ComponentItem::new)
             .lang("Extreme Voltage Coil")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Platinum, GTValues.M * 2),
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Platinum, GTValues.M * 2),
                     new MaterialStack(GTMaterials.NeodymiumMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_IV = REGISTRATE.item("iv_voltage_coil", ComponentItem::new)
             .lang("Insane Voltage Coil")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Iridium, GTValues.M * 2),
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Iridium, GTValues.M * 2),
                     new MaterialStack(GTMaterials.NeodymiumMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_LuV = REGISTRATE.item("luv_voltage_coil", ComponentItem::new)
             .lang("Ludicrous Voltage Coil")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Osmiridium, GTValues.M * 2),
-                    new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
+            .onRegister(
+                    materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Osmiridium, GTValues.M * 2),
+                            new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_ZPM = REGISTRATE.item("zpm_voltage_coil", ComponentItem::new)
             .lang("Zero Point Module Voltage Coil")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Europium, GTValues.M * 2),
+            .onRegister(materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Europium, GTValues.M * 2),
                     new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_UV = REGISTRATE.item("uv_voltage_coil", ComponentItem::new)
             .lang("Ultimate Voltage Coil")
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Tritanium, GTValues.M * 2),
-                    new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
+            .onRegister(
+                    materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Tritanium, GTValues.M * 2),
+                            new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
             .register();
 
     public static ItemEntry<Item> CLIPBOARD;
@@ -2288,55 +1914,77 @@ public class GTItems {
             .tag(ItemTags.HEAD_ARMOR)
             .register();
 
-    public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE = REGISTRATE
-            .item("nanomuscle_chestplate",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
-                            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.CHESTPLATE,
-                                    512,
-                                    6_400_000L * (long) Math.max(1,
-                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
-                                    ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
-            .lang("NanoMuscle™ Suite Chestplate")
-            .properties(p -> p.rarity(Rarity.UNCOMMON))
-            .transform(addArmorClientExtensions())
-            .tag(ItemTags.CHEST_ARMOR)
-            .register();
-    public static ItemEntry<ArmorComponentItem> NANO_LEGGINGS = REGISTRATE
-            .item("nanomuscle_leggings",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.LEGGINGS, p)
-                            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.LEGGINGS,
-                                    512,
-                                    6_400_000L * (long) Math.max(1,
-                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
-                                    ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
-            .lang("NanoMuscle™ Suite Leggings")
-            .properties(p -> p.rarity(Rarity.UNCOMMON))
-            .transform(addArmorClientExtensions())
-            .tag(ItemTags.LEG_ARMOR)
-            .register();
-    public static ItemEntry<ArmorComponentItem> NANO_BOOTS = REGISTRATE
-            .item("nanomuscle_boots", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.BOOTS, p)
-                    .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.BOOTS,
-                            512,
-                            6_400_000L * (long) Math.max(1,
-                                    Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
-                            ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
-            .lang("NanoMuscle™ Suite Boots")
-            .properties(p -> p.rarity(Rarity.UNCOMMON))
-            .tag(ItemTags.FOOT_ARMOR)
-            .tag(CustomTags.STEP_BOOTS)
-            .register();
-    public static ItemEntry<ArmorComponentItem> NANO_HELMET = REGISTRATE
-            .item("nanomuscle_helmet", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.HELMET, p)
-                    .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.HELMET,
-                            512,
-                            6_400_000L * (long) Math.max(1,
-                                    Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
-                            ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
-            .lang("NanoMuscle™ Suite Helmet")
+    public static ItemEntry<HydraulicArmorItem> HYDRAULIC_HELMET = REGISTRATE.item("hydraulic_helmet",
+            p -> new HydraulicArmorItem(GTArmorMaterials.HYDRAULIC, ArmorItem.Type.HELMET, p))
+            .lang("Hydraulic Suite Helmet")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .transform(addArmorClientExtensions())
             .tag(ItemTags.HEAD_ARMOR)
+            .onRegister(attach(new ModularItemComponent(3, GTValues.MV)))
+            .register();
+
+    public static ItemEntry<HydraulicArmorItem> HYDRAULIC_CHESTPLATE = REGISTRATE.item("hydraulic_chestplate",
+            p -> new HydraulicArmorItem(GTArmorMaterials.HYDRAULIC, ArmorItem.Type.CHESTPLATE, p))
+            .lang("Hydraulic Chestplate")
+            .properties(p -> p.rarity(Rarity.UNCOMMON))
+            .transform(addArmorClientExtensions())
+            .tag(ItemTags.CHEST_ARMOR)
+            .onRegister(attach(new ModularItemComponent(3, GTValues.MV)))
+            .register();
+
+    public static ItemEntry<HydraulicArmorItem> HYDRAULIC_LEGGINGS = REGISTRATE.item("hydraulic_leggings",
+            p -> new HydraulicArmorItem(GTArmorMaterials.HYDRAULIC, ArmorItem.Type.LEGGINGS, p))
+            .lang("Hydraulic Leggings")
+            .properties(p -> p.rarity(Rarity.UNCOMMON))
+            .transform(addArmorClientExtensions())
+            .tag(ItemTags.LEG_ARMOR)
+            .onRegister(attach(new ModularItemComponent(3, GTValues.MV)))
+            .register();
+
+    public static ItemEntry<HydraulicArmorItem> HYDRAULIC_BOOTS = REGISTRATE.item("hydraulic_boots",
+            p -> new HydraulicArmorItem(GTArmorMaterials.HYDRAULIC, ArmorItem.Type.BOOTS, p))
+            .lang("Hydraulic Boots")
+            .properties(p -> p.rarity(Rarity.UNCOMMON))
+            .transform(addArmorClientExtensions())
+            .tag(ItemTags.FOOT_ARMOR)
+            .onRegister(attach(new ModularItemComponent(3, GTValues.MV)))
+            .register();
+
+    public static ItemEntry<NanoMuscleArmorItem> NANO_CHESTPLATE = REGISTRATE
+            .item("nano_fiber_chestplate",
+                    (p) -> new NanoMuscleArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.CHESTPLATE, p))
+            .lang("Nano-Fiber Suit Chestplate")
+            .properties(p -> p.rarity(Rarity.UNCOMMON))
+            .transform(addArmorClientExtensions())
+            .tag(ItemTags.CHEST_ARMOR)
+            .onRegister(attach(new ModularItemComponent(4, GTValues.EV)))
+            .register();
+    public static ItemEntry<NanoMuscleArmorItem> NANO_LEGGINGS = REGISTRATE
+            .item("nano_fiber_leggings",
+                    (p) -> new NanoMuscleArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.LEGGINGS, p))
+            .lang("Nano-Fiber Suit Leggings")
+            .properties(p -> p.rarity(Rarity.UNCOMMON))
+            .transform(addArmorClientExtensions())
+            .tag(ItemTags.LEG_ARMOR)
+            .onRegister(attach(new ModularItemComponent(4, GTValues.EV)))
+            .register();
+    public static ItemEntry<NanoMuscleArmorItem> NANO_BOOTS = REGISTRATE
+            .item("nano_fiber_boots",
+                    (p) -> new NanoMuscleArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.BOOTS, p))
+            .lang("Nano-Fiber Suit Boots")
+            .properties(p -> p.rarity(Rarity.UNCOMMON))
+            .transform(addArmorClientExtensions())
+            .tag(ItemTags.FOOT_ARMOR)
+            .onRegister(attach(new ModularItemComponent(4, GTValues.EV)))
+            .register();
+    public static ItemEntry<NanoMuscleArmorItem> NANO_HELMET = REGISTRATE
+            .item("nano_fiber_helmet",
+                    (p) -> new NanoMuscleArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.HELMET, p))
+            .lang("Nano-Fiber Suit Helmet")
+            .properties(p -> p.rarity(Rarity.UNCOMMON))
+            .transform(addArmorClientExtensions())
+            .tag(ItemTags.HEAD_ARMOR)
+            .onRegister(attach(new ModularItemComponent(4, GTValues.EV)))
             .register();
 
     public static ItemEntry<ArmorComponentItem> FACE_MASK = REGISTRATE
@@ -2406,127 +2054,50 @@ public class GTItems {
             .tag(CustomTags.PPE_ARMOR)
             .register();
 
-    public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE = REGISTRATE
-            .item("quarktech_chestplate",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
-                            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.CHESTPLATE,
-                                    8192,
-                                    100_000_000L * (long) Math.max(1,
-                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
-                                    ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
-            .lang("QuarkTech™ Suite Chestplate")
+    public static ItemEntry<QuarkTechArmorItem> QUANTUM_CHESTPLATE = REGISTRATE
+            .item("quark_matter_chestplate",
+                    (p) -> new QuarkTechArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.CHESTPLATE, p))
+            .lang("Quark-Matter Suit Chestplate")
             .properties(p -> p.rarity(Rarity.RARE))
             .transform(addArmorClientExtensions())
             .tag(ItemTags.CHEST_ARMOR)
             .tag(ItemTags.FREEZE_IMMUNE_WEARABLES)
             .tag(CustomTags.PPE_ARMOR)
+            .onRegister(attach(new ModularItemComponent(8, GTValues.MAX)))
             .register();
-    public static ItemEntry<ArmorComponentItem> QUANTUM_LEGGINGS = REGISTRATE
-            .item("quarktech_leggings",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.LEGGINGS, p)
-                            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.LEGGINGS,
-                                    8192,
-                                    100_000_000L * (long) Math.max(1,
-                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
-                                    ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
-            .lang("QuarkTech™ Suite Leggings")
+    public static ItemEntry<QuarkTechArmorItem> QUANTUM_LEGGINGS = REGISTRATE
+            .item("quark_matter_leggings",
+                    (p) -> new QuarkTechArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.LEGGINGS, p))
+            .lang("Quark-Matter Suit Leggings")
             .properties(p -> p.rarity(Rarity.RARE))
             .transform(addArmorClientExtensions())
             .tag(ItemTags.LEG_ARMOR)
             .tag(CustomTags.PPE_ARMOR)
+            .onRegister(attach(new ModularItemComponent(8, GTValues.MAX)))
             .register();
-    public static ItemEntry<ArmorComponentItem> QUANTUM_BOOTS = REGISTRATE
-            .item("quarktech_boots", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.BOOTS, p)
-                    .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.BOOTS,
-                            8192,
-                            100_000_000L * (long) Math.max(1,
-                                    Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
-                            ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
-            .lang("QuarkTech™ Suite Boots")
+    public static ItemEntry<QuarkTechArmorItem> QUANTUM_BOOTS = REGISTRATE
+            .item("quark_matter_boots",
+                    (p) -> new QuarkTechArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.BOOTS, p))
+            .lang("Quark-Matter Suit Boots")
             .properties(p -> p.rarity(Rarity.RARE))
             .transform(addArmorClientExtensions())
             .tag(ItemTags.FOOT_ARMOR)
             .tag(CustomTags.PPE_ARMOR)
-            .tag(CustomTags.STEP_BOOTS)
+            .onRegister(attach(new ModularItemComponent(8, GTValues.MAX)))
             .register();
-    public static ItemEntry<ArmorComponentItem> QUANTUM_HELMET = REGISTRATE
-            .item("quarktech_helmet", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.HELMET, p)
-                    .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.HELMET,
-                            8192,
-                            100_000_000L * (long) Math.max(1,
-                                    Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
-                            ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
-            .lang("QuarkTech™ Suite Helmet")
+    public static ItemEntry<QuarkTechArmorItem> QUANTUM_HELMET = REGISTRATE
+            .item("quark_matter_helmet",
+                    (p) -> new QuarkTechArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.HELMET, p))
+            .lang("Quark-Matter Suit Helmet")
             .properties(p -> p.rarity(Rarity.RARE))
             .transform(addArmorClientExtensions())
             .tag(ItemTags.HEAD_ARMOR)
             .tag(CustomTags.PPE_ARMOR)
+            .onRegister(attach(new ModularItemComponent(8, GTValues.MAX)))
             .register();
 
-    public static ItemEntry<ArmorComponentItem> LIQUID_FUEL_JETPACK = REGISTRATE
-            .item("liquid_fuel_jetpack",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
-                            .setArmorLogic(new PowerlessJetpack()))
-            .lang("Liquid Fuel Jetpack")
-            .transform(addArmorClientExtensions())
-            .tag(ItemTags.CHEST_ARMOR)
-            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
-            .register();
-    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK = REGISTRATE
-            .item("electric_jetpack",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
-                            .setArmorLogic(new Jetpack(15,
-                                    1_000_000L * (long) Math.max(1,
-                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierImpeller - 2)),
-                                    ConfigHolder.INSTANCE.tools.voltageTierImpeller)))
-            .lang("Electric Jetpack")
-            .properties(p -> p.rarity(Rarity.UNCOMMON))
-            .transform(addArmorClientExtensions())
-            .tag(ItemTags.CHEST_ARMOR)
-            .model(overrideModel(GTCEu.id("electric_jetpack"), 8))
-            .onRegister(modelPredicate(GTCEu.id("electric_jetpack"), ElectricStats::getStoredPredicate))
-            .register();
-
-    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK_ADVANCED = REGISTRATE
-            .item("advanced_electric_jetpack",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
-                            .setArmorLogic(new AdvancedJetpack(256,
-                                    6_400_000L * (long) Math.max(1,
-                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller - 4)),
-                                    ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller)))
-            .lang("Advanced Electric Jetpack")
-            .properties(p -> p.rarity(Rarity.RARE))
-            .transform(addArmorClientExtensions())
-            .tag(ItemTags.CHEST_ARMOR)
-            .register();
-    public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE
-            .item("advanced_nanomuscle_chestplate",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
-                            .setArmorLogic(new AdvancedNanoMuscleSuite(512,
-                                    12_800_000L * (long) Math.max(1,
-                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvNanoSuit - 3)),
-                                    ConfigHolder.INSTANCE.tools.voltageTierAdvNanoSuit)))
-            .lang("Advanced NanoMuscle™ Suite Chestplate")
-            .properties(p -> p.rarity(Rarity.RARE))
-            .transform(addArmorClientExtensions())
-            .tag(ItemTags.CHEST_ARMOR)
-            .tag(CustomTags.PPE_ARMOR)
-            .register();
-    public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE_ADVANCED = REGISTRATE
-            .item("advanced_quarktech_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR,
-                    ArmorItem.Type.CHESTPLATE, p)
-                    .setArmorLogic(new AdvancedQuarkTechSuite(8192,
-                            1_000_000_000L *
-                                    (long) Math.max(1,
-                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvQuarkTech - 6)),
-                            ConfigHolder.INSTANCE.tools.voltageTierAdvQuarkTech)))
-            .lang("Advanced QuarkTech™ Suite Chestplate")
-            .properties(p -> p.rarity(Rarity.EPIC))
-            .transform(addArmorClientExtensions())
-            .tag(ItemTags.CHEST_ARMOR)
-            .tag(ItemTags.FREEZE_IMMUNE_WEARABLES)
-            .tag(CustomTags.PPE_ARMOR)
-            .register();
+    public static ItemEntry<Item> LIQUID_FUEL_THRUSTER = REGISTRATE.item("liquid_fuel_thruster", Item::new)
+            .lang("Liquid-Fueled Thruster").register();
 
     public static ItemEntry<Item> POWER_THRUSTER = REGISTRATE.item("power_thruster", Item::new)
             .properties(p -> p.rarity(Rarity.UNCOMMON)).register();
@@ -2631,8 +2202,8 @@ public class GTItems {
         // GTMaterialItems.generateArmors();
     }
 
-    public static <T extends ItemLike> NonNullConsumer<T> materialInfo(ItemMaterialInfo materialInfo) {
-        return item -> ItemMaterialData.registerMaterialInfo(item, materialInfo);
+    public static <T extends ItemLike> NonNullConsumer<T> materialInfo(Supplier<ItemMaterialInfo> materialInfo) {
+        return item -> ItemMaterialData.registerMaterialInfo(item, materialInfo.get());
     }
 
     public static <P, T extends Item,
@@ -2651,12 +2222,12 @@ public class GTItems {
 
     public static <T extends Item> void cauldronInteraction(T item) {
         if (item instanceof TagPrefixItem tagPrefixItem &&
-                GTMaterialItems.purifyMap.containsKey(tagPrefixItem.tagPrefix)) {
+                GTMaterialItems.purifyMap.containsKey(tagPrefixItem.tagPrefix.getRegistryHolder())) {
             CauldronInteraction.WATER.map().put(item, (state, world, pos, player, hand, stack) -> {
                 if (!world.isClientSide) {
                     Item stackItem = stack.getItem();
                     if (stackItem instanceof TagPrefixItem prefixItem) {
-                        if (!GTMaterialItems.purifyMap.containsKey(prefixItem.tagPrefix))
+                        if (!GTMaterialItems.purifyMap.containsKey(prefixItem.tagPrefix.getRegistryHolder()))
                             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
                         if (!state.hasProperty(LayeredCauldronBlock.LEVEL)) {
                             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -2667,7 +2238,8 @@ public class GTItems {
                             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
                         player.setItemInHand(hand,
-                                ChemicalHelper.get(GTMaterialItems.purifyMap.get(prefixItem.tagPrefix),
+                                ChemicalHelper.get(
+                                        GTMaterialItems.purifyMap.get(prefixItem.tagPrefix.getRegistryHolder()),
                                         prefixItem.material, stack.getCount()));
                         player.awardStat(Stats.USE_CAULDRON);
                         player.awardStat(Stats.ITEM_USED.get(stackItem));
@@ -2710,17 +2282,20 @@ public class GTItems {
     }
 
     @SuppressWarnings("removal")
-    public static <P,
-            S2 extends ItemBuilder<ArmorComponentItem, P>> NonNullFunction<S2, S2> addArmorClientExtensions() {
+    public static <I extends Item,
+            S2 extends ItemBuilder<I, GTRegistrate>> NonNullFunction<S2, S2> addArmorClientExtensions() {
         return builder -> {
             builder.clientExtension(item -> () -> () -> new IClientItemExtensions() {
 
                 @Override
-                public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NonNull LivingEntity livingEntity,
-                                                                       @NonNull ItemStack itemStack,
-                                                                       @NonNull EquipmentSlot equipmentSlot,
-                                                                       @NonNull HumanoidModel<?> original) {
-                    return item.getArmorLogic().getArmorModel(livingEntity, itemStack, equipmentSlot, original);
+                public HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack,
+                                                              EquipmentSlot equipmentSlot,
+                                                              HumanoidModel<?> original) {
+                    if (!(item instanceof ArmorComponentItem armorComponentItem) ||
+                            armorComponentItem.getArmorLogic() == null)
+                        return original;
+                    return armorComponentItem.getArmorLogic().getArmorModel(livingEntity, itemStack, equipmentSlot,
+                            original);
                 }
             });
             return builder;
