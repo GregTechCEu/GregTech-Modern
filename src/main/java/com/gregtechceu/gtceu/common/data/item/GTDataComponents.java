@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data.item;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.filter.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.datacomponents.*;
 import com.gregtechceu.gtceu.api.item.module.ModularItemData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -86,6 +87,10 @@ public class GTDataComponents {
                     .networkSynchronized(ByteBufCodecs.registry(GTRegistries.Keys.MATERIAL)));
 
     // Armor-related
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> MODULE_ENERGY_CREDIT = DATA_COMPONENTS
+            .registerComponentType("module_energy_credit", builder -> builder
+                    .persistent(Codec.intRange(0, (int) (ArmorUtils.CREDITS_PER_EU - 1)))
+                    .networkSynchronized(ByteBufCodecs.VAR_INT));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> NETHERITE_PLATED = DATA_COMPONENTS
             .registerComponentType("netherite_plated", builder -> builder.persistent(Unit.CODEC)
                     .networkSynchronized(UNIT_STREAM_CODEC));

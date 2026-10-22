@@ -18,12 +18,14 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.module.AttributeItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
+import com.gregtechceu.gtceu.api.item.module.TieredAttributeItemModule;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -45,7 +47,10 @@ import com.gregtechceu.gtceu.common.item.armor.IJetpack;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.item.datacomponents.FormatStringList;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.common.module.AttackDamageItemModule;
+import com.gregtechceu.gtceu.common.module.AttackSpeedItemModule;
 import com.gregtechceu.gtceu.common.module.JetpackModule;
+import com.gregtechceu.gtceu.common.module.JumpBoostItemModule;
 import com.gregtechceu.gtceu.common.module.LiquidFuelJetpackModule;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSendWorldID;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
@@ -70,6 +75,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
@@ -90,6 +96,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.event.AddAttributeTooltipsEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -421,6 +428,48 @@ public class CommonEventListener {
                     var equipable = Equipable.get(modifierEvent.getItemStack());
                     modifierEvent.addModifier(attribute, modifier, equipable == null ? EquipmentSlotGroup.ANY :
                             EquipmentSlotGroup.bySlot(equipable.getEquipmentSlot()));
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onModuleJump(LivingEvent.LivingJumpEvent event) {
+        var entity = event.getEntity();
+        if (entity.level().isClientSide) return;
+        for (var stack : entity.getArmorSlots()) {
+            var modular = GTCapabilityHelper.getModularItem(stack);
+            if (modular == null) continue;
+            for (var context : modular.getAllModuleInstances()) {
+                if (context.getModule() instanceof JumpBoostItemModule jump && jump.isEnabled(context)) {
+                    ArmorUtils.useModuleEnergy(stack, ArmorUtils.toModuleEnergyCredits(jump.getEnergyCost(context)),
+                            false);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onModuleMeleeHit(LivingDamageEvent.Post event) {
+        if (event.getEntity().level().isClientSide ||
+                event.getNewDamage() + event.getReduction(DamageContainer.Reduction.ABSORPTION) <= 0)
+            return;
+        var source = event.getSource();
+        if (!(source.is(DamageTypes.PLAYER_ATTACK) || source.is(DamageTypes.MOB_ATTACK) ||
+                source.is(DamageTypes.MOB_ATTACK_NO_AGGRO)) ||
+                !(source.getDirectEntity() instanceof LivingEntity attacker))
+            return;
+        for (var stack : attacker.getArmorSlots()) {
+            var modular = GTCapabilityHelper.getModularItem(stack);
+            if (modular == null) continue;
+            for (var context : modular.getAllModuleInstances()) {
+                if (!(context.getModule() instanceof AttackDamageItemModule ||
+                        context.getModule() instanceof AttackSpeedItemModule))
+                    continue;
+                var module = (TieredAttributeItemModule) context.getModule();
+                if (module.getModifierToAdd(context) != null) {
+                    ArmorUtils.useModuleEnergy(stack, ArmorUtils.toModuleEnergyCredits(module.getEnergyCost(context)),
+                            false);
                 }
             }
         }

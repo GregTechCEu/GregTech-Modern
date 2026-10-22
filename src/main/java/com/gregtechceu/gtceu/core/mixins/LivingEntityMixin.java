@@ -2,16 +2,19 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.module.IJumpBoostItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
+import com.gregtechceu.gtceu.common.module.JumpBoostItemModule;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -48,21 +51,23 @@ public abstract class LivingEntityMixin {
         return (LivingEntity) (Object) this;
     }
 
-    @Inject(method = "getJumpBoostPower", at = @At("HEAD"), cancellable = true)
-    private void gtceu$adjustJumpBoost(CallbackInfoReturnable<Float> cir) {
-        float add = 0;
+    @ModifyReturnValue(method = "getJumpPower(F)F", at = @At("RETURN"))
+    private float gtceu$adjustJumpHeight(float original) {
+        float height = 0;
         for (ItemStack stack : this.getArmorSlots()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) continue;
             for (ModuleContext module : modularItem.getAllModuleInstances()) {
                 if (module.getModule().isEnabled(module) &&
                         module.getModule() instanceof IJumpBoostItemModule jumpBoostModule) {
-                    add += jumpBoostModule.getJumpBoost(module);
+                    if (jumpBoostModule instanceof JumpBoostItemModule powered &&
+                            !ArmorUtils.useModuleEnergy(stack,
+                                    ArmorUtils.toModuleEnergyCredits(powered.getEnergyCost(module)), true))
+                        continue;
+                    height += jumpBoostModule.getJumpHeight(module);
                 }
             }
         }
-        cir.setReturnValue(add + (gtceu$self().hasEffect(MobEffects.JUMP) ?
-                0.1F * ((float) gtceu$self().getEffect(MobEffects.JUMP).getAmplifier() + 1.0F) : 0.0F));
-        cir.cancel();
+        return GTMath.addJumpHeight(original, gtceu$self().getGravity(), height);
     }
 }

@@ -21,13 +21,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class AutoEatModule extends ItemModule {
 
+    private static final long ENERGY_PER_USE = 512;
+
     public AutoEatModule(ResourceLocation id) {
         super(id);
     }
 
     @Override
     public Component getInfo() {
-        return Component.translatable(getDescriptionLanguageKey());
+        return Component.translatable(getDescriptionLanguageKey(), (double) ENERGY_PER_USE / (double) 10);
     }
 
     @Override
@@ -36,7 +38,7 @@ public class AutoEatModule extends ItemModule {
         super.onArmorTick(moduleContext, entity);
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return;
-        supplyFood(electricItem, player, 512);
+        supplyFood(electricItem, player, ENERGY_PER_USE);
     }
 
     public static void supplyFood(@NotNull IElectricItem item, Player player, long energyPerUse) {

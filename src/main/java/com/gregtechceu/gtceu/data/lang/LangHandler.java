@@ -1231,13 +1231,10 @@ public class LangHandler {
         provider.add("monitor.gui.title.config", "Config");
         provider.add("fluid.tile.lava", "Lava");
         provider.add("fluid.tile.water", "Water");
-        provider.add("gtceu.key.armor_mode_switch", "Armor Mode Switch");
+        provider.add("gtceu.key.enable_night_vision", "Enable Night Vision");
         provider.add("gtceu.key.armor_hover", "Armor Hover Toggle");
         provider.add("gtceu.key.enable_jetpack", "Enable Jetpack");
-        provider.add("gtceu.key.enable_boots", "Enable Boosted Jump");
-        provider.add("gtceu.key.armor_charging", "Armor Charging to Inventory Toggle");
         provider.add("gtceu.key.tool_aoe_change", "Tool AoE Mode Switch");
-        provider.add("gtceu.key.enable_step_assist", "Enable StepAssist");
         provider.add("gtceu.debug.f3_h.enabled",
                 "GregTech has modified the debug info! For Developers: enable the misc:debug config option in the GregTech config file to see more");
         provider.add("gtceu.debug.resource_rebuild.done", "Gradle resource rebuild done in %s");

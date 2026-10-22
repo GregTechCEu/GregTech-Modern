@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.module;
 
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredAttributeItemModule;
 
@@ -17,8 +18,13 @@ public class AttackSpeedItemModule extends TieredAttributeItemModule {
     }
 
     @Override
+    public double getEnergyCost() {
+        return ArmorUtils.getModuleEnergyCost(getTier());
+    }
+
+    @Override
     public Component getInfo() {
-        return Component.translatable(getDescriptionLanguageKey(), ((double) getTier() / 2) * 100 / 16d);
+        return Component.translatable(getDescriptionLanguageKey(), getMaxAttributeAmount() * 100, getEnergyCost());
     }
 
     @Override
@@ -28,7 +34,7 @@ public class AttackSpeedItemModule extends TieredAttributeItemModule {
 
     @Override
     public double getMaxAttributeAmount() {
-        return 1 + ((double) getTier() / 2) / 16d;
+        return getTier() / 32d;
     }
 
     @Override

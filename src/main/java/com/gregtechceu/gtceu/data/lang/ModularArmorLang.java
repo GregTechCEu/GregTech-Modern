@@ -5,13 +5,16 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 public class ModularArmorLang {
 
     public static void init(RegistrateLangProvider provider) {
+        provider.add("gui.gtceu.item_module.jump_height_value", "+%s blocks");
         provider.add("gui.gtceu.item_module.hover_mode", "Hover Mode");
+        provider.add("gui.gtceu.item_module.omnidirectional_sprint", "Omnidirectional Sprint");
         provider.add("gtceu.key.modular_item_gui", "Armor Configuration");
         provider.add("gui.gtceu.armor_config.title", "Armor Configuration");
         provider.add("gui.gtceu.armor_config.select", "Select an equipped armor piece");
         provider.add("gui.gtceu.armor_config.no_modules", "No modules installed");
         provider.add("gui.gtceu.armor_config.helmet", "Helmet");
         provider.add("gui.gtceu.armor_config.chestplate", "Chestplate");
+        provider.add("gui.gtceu.armor_config.charge_inventory", "Charge Inventory");
         provider.add("gui.gtceu.armor_config.leggings", "Leggings");
         provider.add("gui.gtceu.armor_config.boots", "Boots");
 
@@ -61,26 +64,35 @@ public class ModularArmorLang {
         // Module names/descriptions
 
         provider.add("module.gtceu.speed", "Running Speed Module (%s)");
-        provider.add("module.gtceu.speed.description", "Increases sprint speed by %s%%");
+        provider.add("module.gtceu.speed.description",
+                "Increases sprint speed by %1$s%%\nUses %2$s EU/t while sprinting.");
         provider.add("module.gtceu.jump_boost", "Jump Module (%s)");
-        provider.add("module.gtceu.jump_boost.description", "Increases jump height by %s blocks");
+        provider.add("module.gtceu.jump_boost.description",
+                "Increases jump height by %1$s blocks\nUses %2$s EU per jump.");
         provider.add("module.gtceu.damage_block", "Energy Shield Module (%s)");
         provider.add("module.gtceu.damage_block.description",
                 "Blocks any amount of damage with EU (%s EU per HP, requires any battery module)");
         provider.add("module.gtceu.attack_speed", "Attack Speed Module (%s)");
-        provider.add("module.gtceu.attack_speed.description", "Increases attack speed by %s%%");
+        provider.add("module.gtceu.attack_speed.description",
+                "Increases attack speed by %1$s%%\nUses %2$s EU per melee hit.");
         provider.add("module.gtceu.attack_damage", "Attack Damage Module (%s)");
-        provider.add("module.gtceu.attack_damage.description", "Increases attack damage by %s%%");
+        provider.add("module.gtceu.attack_damage.description",
+                "Increases attack damage by %1$s%%\nUses %2$s EU per melee hit.");
         provider.add("module.gtceu.block_reach", "Reach Module (%s)");
-        provider.add("module.gtceu.block_reach.description", "Increases block reach by %s blocks");
+        provider.add("module.gtceu.block_reach.description",
+                "Increases block reach by %1$s blocks\nUses %2$s EU/t while enabled.");
         provider.add("module.gtceu.movement_speed", "Movement Speed Module (%s)");
-        provider.add("module.gtceu.movement_speed.description", "Increases all movement speed by %s%%");
+        provider.add("module.gtceu.movement_speed.description",
+                "Increases movement speed by %1$s%%\nUses %2$s EU/t while moving.");
         provider.add("module.gtceu.sneak_speed", "Sneak Speed Module (%s)");
-        provider.add("module.gtceu.sneak_speed.description", "Increases sneaking speed by %s%%");
+        provider.add("module.gtceu.sneak_speed.description",
+                "Sneaking speed: %1$s%% of walking speed before Swift Sneak. Capped at 100%%, including Swift Sneak.\nUses %2$s EU/t while moving crouched or crawling.");
         provider.add("module.gtceu.step_height", "Step Assist Module (%s)");
-        provider.add("module.gtceu.step_height.description", "Increases step height by %s blocks");
+        provider.add("module.gtceu.step_height.description",
+                "Increases step height by %1$s blocks\nUses %2$s EU/t while moving.");
         provider.add("module.gtceu.swim_speed", "Swim Speed Module (%s)");
-        provider.add("module.gtceu.swim_speed.description", "Increases swim speed by %s%%");
+        provider.add("module.gtceu.swim_speed.description",
+                "Increases swim speed by %1$s%%\nUses %2$s EU/t while swimming.");
 
         provider.add("module.gtceu.battery", "Battery Module (%s)");
         provider.add("module.gtceu.battery.description",
@@ -93,19 +105,21 @@ public class ModularArmorLang {
         provider.add("module.gtceu.battery.hud.boots", "Boots battery: %s");
 
         provider.add("module.gtceu.air_supplier", "Air Supplier Module");
-        provider.add("module.gtceu.air_supplier.description", "Replenishes Breath Bar");
+        provider.add("module.gtceu.air_supplier.description",
+                "Replenishes the breath bar for %s EU per refill");
         provider.add("module.gtceu.auto_eat", "Auto Eat Module");
-        provider.add("module.gtceu.auto_eat.description", "Replenishes Food Bar by Using Food from Inventory");
+        provider.add("module.gtceu.auto_eat.description",
+                "Replenishes the food bar using food from inventory for %s EU for each item consumed");
 
         provider.add("module.gtceu.liquid_fuel_jetpack", "Liquid-Fueled Thruster");
         provider.add("module.gtceu.liquid_fuel_jetpack.description",
-                "Provides thrust (requires a fluid storage module, does not work with Creative Flight Modules)");
+                "Provides thrust using liquid fuel (requires a fluid storage module, does not work with Creative Flight Modules)");
         provider.add("module.gtceu.jetpack", "Electric Thruster");
         provider.add("module.gtceu.jetpack.description",
-                "Provides thrust, sprint during Creative Flight for 1.3x speed (requires a battery module)");
+                "Provides thrust for %s EU/t. Sprint during Creative Flight for 1.3x speed (requires a battery module).");
         provider.add("module.gtceu.advanced_jetpack", "Advanced Electric Thruster");
         provider.add("module.gtceu.advanced_jetpack.description",
-                "Provides thrust, sprint during Creative Flight for 2.4x speed (requires a battery module)");
+                "Provides thrust for %1$s EU/t, or %2$s EU/t while sprinting. Sprint during Creative Flight for 2.4x speed (requires a battery module).");
         provider.add("module.gtceu.sensor", "Explosion Reporting Module (%s)");
         provider.add("module.gtceu.sensor.message", "%s exploded at (%d, %d, %d)");
         provider.add("module.gtceu.sensor.description",
@@ -115,7 +129,7 @@ public class ModularArmorLang {
                 "Links armor to a Battery Buffer or Power Substation across any distance and dimension (up to %s, configurable 1-16A). Right-click to link to storage.");
         provider.add("module.gtceu.creative_flight", "Creative Flight Module");
         provider.add("module.gtceu.creative_flight.description",
-                "Allows creative flight (consumes %s EU/t while flying)");
+                "Uses %s EU/t to fly, can be used with thrusters for extra movement speed.");
 
         provider.add("module.gtceu.fluid_storage", "Fluid Storage");
         provider.add("module.gtceu.fluid_storage.description",
@@ -123,7 +137,8 @@ public class ModularArmorLang {
         provider.add("module.gtceu.fluid_storage.current_stored", "Storing %s/%s mB of %s");
 
         provider.add("module.gtceu.night_vision", "Night Vision Module");
-        provider.add("module.gtceu.night_vision.description", "Provides night vision (consumes %s EU/t while active)");
+        provider.add("module.gtceu.night_vision.description",
+                "Provides night vision for %s EU/t while active.");
 
         provider.add("module.gtceu.ppe", "PPE Module");
         provider.add("module.gtceu.ppe.description",

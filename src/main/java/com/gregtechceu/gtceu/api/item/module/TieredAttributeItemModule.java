@@ -2,10 +2,12 @@ package com.gregtechceu.gtceu.api.item.module;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
@@ -40,6 +42,28 @@ public abstract class TieredAttributeItemModule extends AttributeItemModule impl
             if (modular.getModuleContext(module.value()) != null) return false;
         }
         return super.canApplyTo(stack);
+    }
+
+    public double getEnergyCost() {
+        return 0;
+    }
+
+    public double getEnergyCost(ModuleContext context) {
+        double maximum = Math.abs(getMaxAttributeAmount());
+        return maximum == 0 ? 0 : getEnergyCost() * Math.abs(getModifier(context)) / maximum;
+    }
+
+    protected boolean consumesEnergyThisTick(ModuleContext context, LivingEntity entity) {
+        return false;
+    }
+
+    @Override
+    public boolean keepAttributeActive(ModuleContext context, LivingEntity entity) {
+        boolean consume = consumesEnergyThisTick(context, entity);
+        double cost = getEnergyCost(context);
+        if (consume && cost > 0) cost = Math.max(0.25, cost);
+        return ArmorUtils.useModuleEnergy(context.getAppliedTo(), ArmorUtils.toModuleEnergyCredits(cost),
+                entity.level().isClientSide || !consume);
     }
 
     @Override

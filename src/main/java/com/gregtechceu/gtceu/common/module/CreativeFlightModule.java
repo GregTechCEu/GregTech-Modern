@@ -4,12 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
 import com.gregtechceu.gtceu.api.item.module.AttributeItemModule;
 import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -33,7 +31,7 @@ import brachy.modularui.value.sync.PanelSyncManager;
 @EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class CreativeFlightModule extends AttributeItemModule implements ITieredItemModule {
 
-    public static final int ENERGY_PER_TICK = 2048;
+    public static final int ENERGY_PER_TICK = 768;
     private static final String FLIGHT_BOOST = "gtceu:thruster_flight_boost";
 
     public CreativeFlightModule(ResourceLocation id) {
@@ -106,8 +104,7 @@ public class CreativeFlightModule extends AttributeItemModule implements ITiered
         long cost = ENERGY_PER_TICK;
         var player = (Player) entity;
         var modular = GTCapabilityHelper.getModularItem(moduleContext.getAppliedTo());
-        if (player.isSprinting() && !player.isSpectator() && modular != null &&
-                moduleContext.getAppliedTo().getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY).enabled()) {
+        if (player.isSprinting() && !player.isSpectator() && modular != null) {
             for (var context : modular.getAllModuleInstances()) {
                 if (context.getModule() instanceof JetpackModule thruster && thruster.isEnabled(context)) {
                     var logic = thruster.getArmorLogic(context);

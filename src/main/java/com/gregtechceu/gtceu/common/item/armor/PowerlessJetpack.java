@@ -60,7 +60,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
         burnTimer = data.burnTimer();
 
-        boolean jetpackEnabled = data.enabled();
+        boolean jetpackEnabled = IJetpack.isEngineEnabled(stack);
         boolean hoverMode = updateHoverMode(player, stack, data.hover(), false);
         byte toggleTimer = data.toggleTimer();
 
@@ -68,6 +68,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         if (toggleTimer == 0) {
             if (SyncedKeyMappings.JETPACK_ENABLE.isKeyDown(player)) {
                 jetpackEnabled = !jetpackEnabled;
+                IJetpack.setEngineEnabled(stack, jetpackEnabled);
                 messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.flight", jetpackEnabled);
                 data.enabled(jetpackEnabled);
             } else if (SyncedKeyMappings.ARMOR_HOVER.isKeyDown(player)) {
@@ -101,8 +102,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                 findNewRecipe(stack);
 
             data.burnTimer((short) burnTimer);
-            stack.set(GTDataComponents.ARMOR_DATA, data.toImmutable());
         }
+        stack.set(GTDataComponents.ARMOR_DATA, data.toImmutable());
     }
 
     @Override
@@ -138,7 +139,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             GTArmor data = item.get(GTDataComponents.ARMOR_DATA);
 
             if (data != null) {
-                Component status = data.enabled() ?
+                Component status = IJetpack.isEngineEnabled(item) ?
                         Component.translatable("hud.gtceu.armor.status.enabled") :
                         Component.translatable("hud.gtceu.armor.status.disabled");
                 Component result = Component.translatable("hud.gtceu.armor.engine_enabled", status);
@@ -242,7 +243,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                                     TooltipFlag isAdvanced) {
             GTArmor data = stack.getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY);
 
-            Component state = data.enabled() ? Component.translatable("hud.gtceu.armor.status.enabled") :
+            Component state = IJetpack.isEngineEnabled(stack) ?
+                    Component.translatable("hud.gtceu.armor.status.enabled") :
                     Component.translatable("hud.gtceu.armor.status.disabled");
             tooltipComponents.add(Component.translatable("hud.gtceu.armor.engine_enabled", state));
 
