@@ -11,6 +11,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import lombok.Getter;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.TerrainRenderPass;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.Material;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.material.parameters.AlphaCutoffParameter;
@@ -21,9 +22,10 @@ import java.util.Collection;
 
 public class GTEmbeddiumCompat {
 
-    public static final TerrainRenderPass BLOOM_RENDER_PASS = new TerrainRenderPass(GTRenderTypes.bloom(), false, true);
-    public static final Material BLOOM_MATERIAL = new Material(BLOOM_RENDER_PASS,
-            AlphaCutoffParameter.ONE_TENTH, true);
+    @Getter(lazy = true)
+    private static final TerrainRenderPass bloomRenderPass = new TerrainRenderPass(GTRenderTypes.bloom(), false, true);
+    @Getter(lazy = true)
+    private static final Material bloomMaterial = new Material(getBloomRenderPass(), AlphaCutoffParameter.ZERO, true);
 
     public static void init() {
         MinecraftForge.EVENT_BUS.register(GTEmbeddiumCompat.class);

@@ -6,9 +6,10 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
+import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -91,9 +92,8 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
                 "See GTMachines for examples");
         MachineDefinition[] definitions = new MachineDefinition[TIER_COUNT];
         for (final int tier : tiers) {
-            String tierName = VN[tier].toLowerCase(Locale.ROOT);
-            MachineBuilder<?, ?, ?> builder = GTRegistration.REGISTRATE.machine(
-                    String.format("%s_%s", tierName, this.id.getPath()),
+            MachineBuilder<?, ?, ?> builder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace()).machine(
+                    String.format("%s_%s", VNL[tier], this.id.getPath()),
                     holder -> machine.create(holder, tier, tankScalingFunction));
 
             builder.langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(this.id.getPath()), VLVT[tier]))
@@ -110,6 +110,9 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
                             GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                     tankScalingFunction.applyAsInt(tier), !isGenerator));
                 }
+            }
+            if (builder.ui() == null) {
+                builder.ui(GTSingleblockMachinePanels.GENERAL_MACHINE);
             }
 
             this.builders[tier] = builder;

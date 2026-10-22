@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.blockentity;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -13,8 +14,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncBlockEntity;
-import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -38,7 +37,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import brachy.modularui.drawable.UITexture;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -82,8 +80,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @RerenderOnChanged
     @SyncToClient
     @SaveField
-    @NotNull
-    private Material frameMaterial = GTMaterials.NULL;
+    @Getter
+    private @Nullable Material frameMaterial = null;
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
 
@@ -134,7 +132,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         syncDataHolder.markClientSyncFieldDirty("paintingColor");
     }
 
-    public void setFrameMaterial(Material mat) {
+    public void setFrameMaterial(@Nullable Material mat) {
         frameMaterial = mat;
         syncDataHolder.markClientSyncFieldDirty("frameMaterial");
     }
@@ -148,16 +146,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             connections = connections & (connections - 1);
         }
         return count;
-    }
-
-    @Override
-    public @NotNull Material getFrameMaterial() {
-        // backwards compat
-        // noinspection ConstantValue
-        if (frameMaterial == null) {
-            frameMaterial = GTMaterials.NULL;
-        }
-        return frameMaterial;
     }
 
     @Override
@@ -378,10 +366,10 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             }
             return Pair.of(getPipeTuneTool(), InteractionResult.sidedSuccess(isRemote()));
         } else if (toolType.contains(GTToolType.CROWBAR)) {
-            if (!frameMaterial.isNull()) {
+            if (frameMaterial != null) {
                 Block.popResource(context.getLevel(), this.getBlockPos(),
-                        GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
-                frameMaterial = GTMaterials.NULL;
+                        ChemicalHelper.getItemOrThrow(TagPrefix.frameGt, frameMaterial).getDefaultInstance());
+                frameMaterial = null;
                 return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }
         }

@@ -85,7 +85,7 @@ public class ArmorProperty implements IMaterialProperty {
         }
         if (this.repairIngredient == null && !noRepair) {
             this.repairIngredient = GTMemoizer
-                    .memoize(() -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.plate, material)));
+                    .memoize(() -> Ingredient.of(ChemicalHelper.getTagOrThrow(TagPrefix.plate, material)));
         }
     }
 

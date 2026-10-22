@@ -31,6 +31,7 @@ import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.ItemSlot;
@@ -165,7 +166,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                                     groupSync.setValue(groups, true, false);
                                                 })))
                                 .widthRel(1).height(20))
-                        .child(new DynamicSyncedWidget<>()
+                        .child(new DynamicWidget<>()
                                 .overlay(new BorderDrawable(0xFF555555, 4))
                                 .syncHandler(listHandler)
                                 .padding(4)
@@ -212,9 +213,9 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         }).draggable(true).size(160, 80));
                 IntSupplier colorSupplier = () -> {
                     if (component == null) return 0;
-                    boolean inGroup = group.contains(component.getBlockPos());
+                    boolean inGroup = group.contains(component.getComponentPos());
                     BlockPos target = group.getTargetRaw();
-                    boolean isTarget = target != null && target.asLong() == component.getBlockPos().asLong();
+                    boolean isTarget = target != null && target.asLong() == component.getComponentPos().asLong();
                     if (inGroup && isTarget) return 0xFFFF00FF;
                     else if (inGroup) return 0xFFFF0000;
                     else if (isTarget) return 0xFF0000FF;
@@ -225,7 +226,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .background(texture, new BorderDrawable(colorSupplier, 1), Text.dynamic(() -> {
                             if (component == null || component.getDataItems() == null) return Component.empty();
                             BlockPos target = group.getTargetRaw();
-                            boolean isTarget = target != null && target.asLong() == component.getBlockPos().asLong();
+                            boolean isTarget = target != null &&
+                                    target.asLong() == component.getComponentPos().asLong();
                             if (isTarget) return Component.literal(String.valueOf(group.getDataSlot() + 1));
                             else return Component.empty();
                         }))
@@ -236,13 +238,13 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                     int button = mouseData.mouseButton();
                                     if (button == InputConstants.MOUSE_BUTTON_LEFT) {
                                         if (!component.isMonitor()) return;
-                                        if (group.contains(component.getBlockPos())) {
-                                            group.remove(component.getBlockPos());
+                                        if (group.contains(component.getComponentPos())) {
+                                            group.remove(component.getComponentPos());
                                         } else {
-                                            group.add(component.getBlockPos());
+                                            group.add(component.getComponentPos());
                                         }
                                     } else if (button == InputConstants.MOUSE_BUTTON_RIGHT) {
-                                        group.setTarget(component.getBlockPos());
+                                        group.setTarget(component.getComponentPos());
                                         groupSync.setValue(groups, true, false);
                                         if (slotDialogHandler != null) {
                                             slotDialogHandler.openPanel();
@@ -256,6 +258,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
         int matrixHeight = matrix.size() * 20;
         BoolValue moduleChanged = new BoolValue(false);
         return new ModularPanel<>("editor_%d_panel".formatted(groupIndex))
+                .closeOnOutOfBoundsClick(true)
                 .width(Math.max(matrixWidth, 150))
                 .height(matrixHeight + 60)
                 .excludeAreaInRecipeViewer()
@@ -276,7 +279,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .name("module_slot")
                                         .slot(new ModularSlot(group.getItemStackHandler(), 0)
                                                 .changeListener((item, amount, client, init) -> {
-                                                    groupSync.setValue(groups, true, false);
+                                                    if (!init)
+                                                        groupSync.setValue(groups, true, false);
                                                 })))
                                 .child(new ButtonWidget<>()
                                         .overlay(GuiTextures.EDIT)

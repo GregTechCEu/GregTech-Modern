@@ -70,7 +70,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
 
     @SuppressWarnings("deprecation")
     private static Block getBlock(DyeColor color, String postfix) {
-        ResourceLocation id = new ResourceLocation("minecraft", color.getSerializedName() + "_" + postfix);
+        ResourceLocation id = ResourceLocation.withDefaultNamespace(color.getSerializedName() + "_" + postfix);
         return BuiltInRegistries.BLOCK.get(id);
     }
 
@@ -227,7 +227,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             }
         } else if (first instanceof IPipeNode pipe) {
             var collected = BreadthFirstBlockSearch.conditionalSearch(IPipeNode.class, pipe,
-                    first.getLevel(), IPipeNode::getBlockPos,
+                    first.getLevel(), (p) -> p.self().getBlockPos(),
                     gtPipePredicate, limit, limit * 6);
             paintPaintables(collected, context);
         } else if (first instanceof IPaintable paintable) {

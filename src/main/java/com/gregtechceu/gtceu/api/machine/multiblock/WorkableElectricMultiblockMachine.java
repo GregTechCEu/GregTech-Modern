@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -19,15 +20,10 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.drawable.GuiTextures;
-import brachy.modularui.drawable.Icon;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widget.Widget;
-import brachy.modularui.widgets.ListWidget;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,11 +52,6 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     public WorkableElectricMultiblockMachine(BlockEntityCreationInfo info) {
         super(info);
-    }
-
-    @Override
-    public WorkableElectricMultiblockMachine self() {
-        return this;
     }
 
     //////////////////////////////////////
@@ -96,25 +87,6 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     // ********** GUI ***********//
     //////////////////////////////////////
 
-    public static final int MULTI_UI_TEXT_PANEL_WIDTH = 172;
-    public static final int MULTI_UI_TEXT_PANEL_HEIGHT = 136;
-
-    public Widget<?> getMainTextPanel(PanelSyncManager syncManager) {
-        var parentWidget = new ParentWidget<>();
-        var listWidget = new ListWidget<>()
-                .width(MULTI_UI_TEXT_PANEL_WIDTH - 6)
-                .height(MULTI_UI_TEXT_PANEL_HEIGHT - 6)
-                .childSeparator(Icon.EMPTY_2PX)
-                .crossAxisAlignment(Alignment.CrossAxis.START)
-                .collapseDisabledChildren()
-                .posRel(Alignment.CenterLeft);
-        parentWidget.size(MULTI_UI_TEXT_PANEL_WIDTH, MULTI_UI_TEXT_PANEL_HEIGHT).background(GuiTextures.DISPLAY);
-
-        listWidget.children(getWidgetsForDisplay(syncManager));
-        parentWidget.child(listWidget.left(3).top(3));
-        return parentWidget;
-    }
-
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
@@ -124,9 +96,10 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
         List<IWidget> widgets = new ArrayList<>();
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
+
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager));
         widgets.addAll(super.getWidgetsForDisplay(syncManager));
         return widgets;
     }
@@ -242,7 +215,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public long getDisplayGeneratorPower() {
         if (this.isGenerator()) {
-            long power = -1;
+            long power = 0;
             var handlers = getCapabilitiesFlat(IO.OUT, EURecipeCapability.CAP);
             for (IRecipeHandler<?> handler : handlers) {
                 if (handler instanceof IEnergyContainer container) {
@@ -252,6 +225,17 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
             return power;
         }
         return -1;
+    }
+
+    public long getDisplayWorkingVoltage() {
+        return this.isGenerator() ? getDisplayGeneratorPower() : getDisplayRecipeVoltage();
+    }
+
+    public long getRecipeEUt() {
+        if (!isActive()) return 0L;
+        GTRecipe lastRecipe = recipeLogic.getLastUnrolledRecipe();
+        if (lastRecipe == null) return 0L;
+        return this.isGenerator() ? lastRecipe.getOutputEUt().getTotalEU() : lastRecipe.getInputEUt().getTotalEU();
     }
 
     /**

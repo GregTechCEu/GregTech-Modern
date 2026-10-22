@@ -7,10 +7,10 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import brachy.modularui.utils.EqualityTest;
 import brachy.modularui.utils.serialization.network.*;
+import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.Nullable;
@@ -34,8 +34,7 @@ public class GTByteBufAdapters {
             if (!buffer.readBoolean()) {
                 return null;
             }
-            ResourceLocation id = buffer.readResourceLocation();
-            return GTRecipeSerializer.SERIALIZER.fromNetwork(id, buffer);
+            return GTRecipeSerializer.fromNetworkWithoutDatapackSync(buffer);
         }
 
         @Override
@@ -45,7 +44,6 @@ public class GTByteBufAdapters {
                 return;
             }
             buffer.writeBoolean(true);
-            buffer.writeResourceLocation(u.getId());
             GTRecipeSerializer.SERIALIZER.toNetwork(buffer, u);
         }
 
@@ -70,8 +68,8 @@ public class GTByteBufAdapters {
 
             @Override
             public boolean areEqual(T a, T b) {
-                String encoded1 = codec.encodeStart(JsonOps.INSTANCE, a).result().orElseThrow().toString();
-                String encoded2 = codec.encodeStart(JsonOps.INSTANCE, b).result().orElseThrow().toString();
+                JsonObject encoded1 = codec.encodeStart(JsonOps.INSTANCE, a).result().orElseThrow().getAsJsonObject();
+                JsonObject encoded2 = codec.encodeStart(JsonOps.INSTANCE, b).result().orElseThrow().getAsJsonObject();
                 return Objects.equals(encoded1, encoded2);
             }
         };

@@ -947,7 +947,7 @@ public class WoodMachineRecipes {
 
     public static void hardWoodRecipes(Consumer<ResourceLocation> registry) {
         if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
-            registry.accept(new ResourceLocation("minecraft:stick"));
+            registry.accept(ResourceLocation.withDefaultNamespace("stick"));
         }
         for (WoodTypeEntry entry : getDefaultEntries()) {
             hardWoodTypeRecipes(registry, entry);
@@ -957,13 +957,13 @@ public class WoodMachineRecipes {
     private static void hardWoodTypeRecipes(Consumer<ResourceLocation> registry, @NotNull WoodTypeEntry entry) {
         if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
             if (entry.planksRecipeName != null) {
-                registry.accept(new ResourceLocation(entry.modid, entry.planksRecipeName));
+                registry.accept(ResourceLocation.fromNamespaceAndPath(entry.modid, entry.planksRecipeName));
             }
         }
 
         if (ConfigHolder.INSTANCE.recipes.harderCharcoalRecipe) {
             if (entry.removeCharcoalRecipe) {
-                registry.accept(new ResourceLocation("charcoal"));
+                registry.accept(ResourceLocation.withDefaultNamespace("charcoal"));
             }
         }
 
@@ -971,68 +971,68 @@ public class WoodMachineRecipes {
             if (entry.door != null) {
                 // hard plank -> door crafting
                 if (entry.doorRecipeName != null) {
-                    registry.accept(new ResourceLocation(entry.modid, entry.doorRecipeName));
+                    registry.accept(ResourceLocation.fromNamespaceAndPath(entry.modid, entry.doorRecipeName));
                 }
             }
             if (entry.slab != null) {
                 if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes && entry.slabRecipeName != null) {
-                    registry.accept(new ResourceLocation(entry.modid, entry.slabRecipeName));
+                    registry.accept(ResourceLocation.fromNamespaceAndPath(entry.modid, entry.slabRecipeName));
                 }
                 if (entry.boat != null) {
                     // hard plank -> boat crafting
                     if (entry.boatRecipeName != null) {
-                        registry.accept(new ResourceLocation(entry.modid, entry.boatRecipeName));
+                        registry.accept(ResourceLocation.fromNamespaceAndPath(entry.modid, entry.boatRecipeName));
                     }
                     if (entry.chestBoatRecipeName != null) {
-                        registry.accept(new ResourceLocation(entry.modid, entry.chestBoatRecipeName));
+                        registry.accept(ResourceLocation.fromNamespaceAndPath(entry.modid, entry.chestBoatRecipeName));
                     }
                 }
             }
             if (entry.fence != null) {
                 // hard plank -> fence crafting
                 if (entry.fenceRecipeName != null) {
-                    registry.accept(new ResourceLocation(entry.modid, entry.fenceRecipeName));
+                    registry.accept(ResourceLocation.fromNamespaceAndPath(entry.modid, entry.fenceRecipeName));
                 }
             }
             if (entry.fenceGate != null) {
                 // hard plank -> fence gate crafting
                 if (entry.fenceGateRecipeName != null) {
-                    registry.accept(new ResourceLocation(entry.modid, entry.fenceGateRecipeName));
+                    registry.accept(ResourceLocation.fromNamespaceAndPath(entry.modid, entry.fenceGateRecipeName));
                 }
             }
             if (entry.trapdoor != null) {
                 // hard plank -> trapdoor crafting
                 if (entry.trapdoorRecipeName != null) {
-                    registry.accept(new ResourceLocation(entry.modid, entry.trapdoorRecipeName));
+                    registry.accept(ResourceLocation.fromNamespaceAndPath(entry.modid, entry.trapdoorRecipeName));
                 }
             }
             if (entry.chestBoat != null) {
                 if (entry.chestBoatRecipeName != null) {
-                    registry.accept(new ResourceLocation(entry.modid, entry.chestBoatRecipeName));
+                    registry.accept(ResourceLocation.fromNamespaceAndPath(entry.modid, entry.chestBoatRecipeName));
                 }
             }
             if (entry.sign != null) {
                 // hard plank -> sign crafting
                 if (entry.signRecipeName != null) {
-                    registry.accept(new ResourceLocation(entry.modid, entry.signRecipeName));
+                    registry.accept(ResourceLocation.fromNamespaceAndPath(entry.modid, entry.signRecipeName));
                 }
             }
             if (entry.hangingSign != null) {
                 // hard plank -> hanging sign crafting
                 if (entry.hangingSignRecipeName != null) {
-                    registry.accept(new ResourceLocation(entry.modid, entry.hangingSignRecipeName));
+                    registry.accept(ResourceLocation.fromNamespaceAndPath(entry.modid, entry.hangingSignRecipeName));
                 }
             }
             if (entry.button != null) {
                 // hard plank -> button crafting
                 if (entry.buttonRecipeName != null) {
-                    registry.accept(new ResourceLocation(entry.modid, entry.buttonRecipeName));
+                    registry.accept(ResourceLocation.fromNamespaceAndPath(entry.modid, entry.buttonRecipeName));
                 }
             }
             if (entry.pressurePlate != null) {
                 // hard plank -> pressure plate crafting
                 if (entry.pressurePlateRecipeName != null) {
-                    registry.accept(new ResourceLocation(entry.modid, entry.pressurePlateRecipeName));
+                    registry.accept(ResourceLocation.fromNamespaceAndPath(entry.modid, entry.pressurePlateRecipeName));
                 }
             }
         }

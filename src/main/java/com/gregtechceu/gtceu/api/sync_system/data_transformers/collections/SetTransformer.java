@@ -2,9 +2,11 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers.collections;
 
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
+import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Nullable;
@@ -31,9 +33,8 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
 
     private ValueTransformer.TransformerContext<T> getInnerElemContext(@Nullable T elem,
                                                                        ValueTransformer.TransformerContext<Set<T>> parentContext) {
-        return new TransformerContext<>(parentContext.holder(),
-                parentContext.type().getGenericTypeArgs()[0], elem, parentContext.fieldName() + "[element]",
-                parentContext.isClientSync(), parentContext.isClientFullSyncUpdate());
+        return parentContext.createChildContext(parentContext.type().getGenericTypeArgs()[0], elem,
+                parentContext.fieldName() + "[element]");
     }
 
     @Override
@@ -52,8 +53,32 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
         if (current != null) current.clear();
         else current = new ObjectOpenHashSet<>();
         for (Tag elementTag : listTag) {
-            T value = getElemTransformer(context).deserializeNBT(elementTag, getInnerElemContext(null, context));
+            T value = getElemTransformer(context).deserializeNBT(
+                    TagCompatibilityFixer.stripLDLibPayloadWrapper(elementTag), getInnerElemContext(null, context));
             if (value != null) current.add(value);
+        }
+        return current;
+    }
+
+    @Override
+    public void writeToPacket(FriendlyByteBuf buf, Set<T> value, TransformerContext<Set<T>> context) {
+        buf.writeVarInt(value.size());
+        for (T elem : value) {
+            getElemTransformer(context).writeToPacket(buf, elem, getInnerElemContext(elem, context));
+        }
+    }
+
+    @Override
+    public @Nullable Set<T> readFromPacket(FriendlyByteBuf buf, TransformerContext<Set<T>> context) {
+        var len = buf.readVarInt();
+        var current = context.currentValue();
+
+        if (current != null) current.clear();
+        else current = new ObjectOpenHashSet<>(len);
+
+        for (int i = 0; i < len; i++) {
+            T val = getElemTransformer(context).readFromPacket(buf, getInnerElemContext(null, context));
+            if (val != null) current.add(val);
         }
         return current;
     }

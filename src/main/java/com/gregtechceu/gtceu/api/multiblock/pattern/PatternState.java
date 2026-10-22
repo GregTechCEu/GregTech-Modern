@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.BlockPos;
@@ -12,13 +12,13 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /*
@@ -41,14 +41,12 @@ public class PatternState {
     @Setter
     protected boolean shouldUpdate = true;
     @Getter
-    protected @Nullable List<PatternError> errors;
+    protected List<PatternError> errors = List.of();
     @Setter
     @Getter
     protected CheckState state = CheckState.UNINITIALIZED;
     @Getter
-    protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
-    protected final Object2IntMap<BasePredicate> globalCount = new Object2IntOpenHashMap<>();
-    protected final Object2IntMap<BasePredicate> layerCount = new Object2IntOpenHashMap<>();
+    protected final PredicateContext context = new PredicateContext(this);
     @Getter
     protected final Long2ObjectMap<BlockInfo> cache = new Long2ObjectOpenHashMap<>();
 
@@ -67,19 +65,42 @@ public class PatternState {
     }
 
     public boolean hasErrors() {
-        return errors != null;
+        return !this.errors.isEmpty();
     }
 
-    public void setError(@Nullable PatternError error) {
-        this.errors = error != null ? List.of(error) : null;
+    public void clearErrors() {
+        this.errors = List.of();
     }
 
-    public void setErrors(@Nullable List<PatternError> error) {
-        this.errors = error;
+    public PredicateContext resetContext(boolean withLayer) {
+        this.context.reset();
+        this.context.setCheckLayer(withLayer);
+        return this.context;
+    }
+
+    /// usage intended for outside {@link BlockPattern}
+    public void setError(PatternError error) {
+        this.errors = List.of(error);
+    }
+
+    public void setErrors(List<PatternError> errors) {
+        this.errors = Collections.unmodifiableList(errors);
+    }
+
+    public void appendError(PatternError error) {
+        ArrayList<PatternError> errors = new ArrayList<>(this.errors);
+        errors.add(error);
+        setErrors(errors);
+    }
+
+    public void appendErrors(List<PatternError> errors) {
+        ArrayList<PatternError> list = new ArrayList<>(this.errors);
+        list.addAll(errors);
+        setErrors(list);
     }
 
     public void onBlockStateChanged(BlockPos pos, BlockState oldState, BlockState newState) {
-        if (!(currentBlockInfo.getLevel() instanceof ServerLevel serverLevel)) return;
+        if (!(getContext().getCurrentBlockInfo().getLevel() instanceof ServerLevel serverLevel)) return;
         if (pos.equals(controllerPos)) {
             if (controller != null && !newState.is(controller.getBlockState().getBlock())) {
                 controller.invalidateStructure(MultiblockControllerMachine.DEFAULT_STRUCTURE);
@@ -98,6 +119,9 @@ public class PatternState {
                 PatternState patternState = controller.checkStructurePattern(name);
                 if (!patternState.hasErrors()) {
                     controller.formStructure(name);
+                    // previous formation may not have added the full multiblock the saved data
+                    // todo there's probably a better way to do this
+                    MultiblockWorldSavedData.getOrCreate(serverLevel).addMapping(this);
                 } else {
                     controller.invalidateStructure(name);
                     if (name.equals(MultiblockControllerMachine.DEFAULT_STRUCTURE)) {
@@ -107,6 +131,15 @@ public class PatternState {
                 }
             }
         }
+    }
+
+    protected void updateCache() {
+        PredicateContext context = getContext();
+        getCache().put(context.pos().asLong(), context.computeBlockInfo());
+    }
+
+    public boolean shouldCheckFlip() {
+        return getContext().isCheckFlipped();
     }
 
     @Getter

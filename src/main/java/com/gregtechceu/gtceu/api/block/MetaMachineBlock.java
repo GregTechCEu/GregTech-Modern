@@ -194,19 +194,6 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
         definition.getTooltipBuilder().accept(stack, tooltip);
         String mainKey = String.format("%s.machine.%s.tooltip", definition.getId().getNamespace(),
                 definition.getId().getPath());
-        /*
-         * if (GTUtil.isShiftDown()) {
-         * if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
-         * var pattern = multiblockDefinition.getPatternFactory().get();
-         * if (pattern != null) {
-         * var aisleDims = pattern.getDimensions();
-         * assert aisleDims.length == 3;
-         * tooltip.add(Component.translatable("gtceu.multiblock.dimension", aisleDims[0], aisleDims[1],
-         * aisleDims[2]));
-         * }
-         * }
-         * }
-         */
         if (Language.getInstance().has(mainKey)) {
             tooltip.add(1, Component.translatable(mainKey));
         }
@@ -239,7 +226,11 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
             machine.modifyDrops(drops);
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
-                    machine.saveToItem(drop.getOrCreateTag(), false);
+                    CompoundTag tag = drop.getOrCreateTag();
+                    machine.saveToItem(tag, false);
+                    if (tag.isEmpty()) {
+                        drop.setTag(null);
+                    }
                     // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
                     break;
                 }
@@ -286,8 +277,9 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
 
         InteractionResult machineInteractResult = InteractionResult.PASS;
 
-        if (!itemStack.isEmpty())
+        if (!itemStack.isEmpty()) {
             machineInteractResult = machine.onUseWithItem(new ExtendedUseOnContext(player, hand, hit));
+        }
         if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;
         machineInteractResult = machine.onUse(new ExtendedUseOnContext(player, hand, hit));
         if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;

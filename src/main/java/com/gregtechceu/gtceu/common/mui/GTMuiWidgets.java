@@ -3,14 +3,12 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.cover.IMuiCover;
-import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
@@ -30,7 +28,7 @@ import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.text.TextRenderer;
-import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.factory.GuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
@@ -40,6 +38,7 @@ import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
@@ -76,40 +75,51 @@ public class GTMuiWidgets {
     }
 
     public static Flow createTitleBar(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background) {
+        return createTitleBarWithEnd(stackSupplier, panelWidth, background, null);
+    }
+
+    public static Flow createTitleBarWithEnd(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background,
+                                             @Nullable Widget<?> end) {
         ItemStack stack = stackSupplier.get();
         var name = stack.getHoverName().getString();
         name = name.replaceAll("§.", "").trim();
-        return createTitleBar(new ItemDrawable(stack).asIcon(), name, panelWidth, background);
+        return createTitleBarWithEnd(new ItemDrawable(stack).asIcon(), name, panelWidth, background, end);
     }
 
-    public static Flow createTitleBar(Icon icon, String text, int panelWidth, UITexture background) {
-        int borderRadius = 5;
-        int iconSize = 16;
-        int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 3));
+    public static Flow createTitleBarWithEnd(Icon icon, String text, int panelWidth, UITexture background,
+                                             @Nullable Widget<?> end) {
+        int sidePadding = 5;
+        int topPadding = 3;
+
+        int iconSize = 12;
+
+        int endWidth = 0;
+        if (end != null) {
+            endWidth = end.resizer().getFixedPixelWidth() + sidePadding;
+        }
+        int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + endWidth + (sidePadding * 3));
         int textTitleWidth = GTCEu.isClientThread() ? TextRenderer.getFont().width(text) : 1;
 
         int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
         int textHeightPerRow = GTCEu.isClientThread() ? (int) (Text.renderer.getFontHeight()) : 9;
-        int textHeight = textHeightPerRow * textRows + borderRadius;
+        int textHeight = textHeightPerRow * textRows + topPadding;
 
-        int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + (borderRadius * 4) + textTitleWidth));
+        int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + endWidth + (sidePadding * 4) + textTitleWidth));
 
         return Flow.row()
                 .decoration()
-                .coverChildrenHeight()
+                .coverChildren()
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .width(rowWidth)
-                .top(-(textHeight + borderRadius))
+                .bottomRel(1f)
+                .childPadding(1)
                 .horizontalCenter()
+                .padding(sidePadding, sidePadding, topPadding, 1)
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
-                .child(icon.size(iconSize)
-                        .asWidget()
-                        .marginLeft(borderRadius))
-                .child(Text.str(text)
-                        .asWidget()
-                        .margin(borderRadius, borderRadius, borderRadius, 1)
-                        .size(Math.min(minPanelWidth, textTitleWidth), textHeight));
+                .child(icon.size(iconSize).asWidget().size(iconSize))
+                .child(Text.str(text).asWidget().size(Math.min(minPanelWidth, textTitleWidth), textHeight))
+                .childIf(end != null, () -> end);
     }
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture texture,
@@ -158,7 +168,8 @@ public class GTMuiWidgets {
     }
 
     public static ItemSlot createBatterySlot(BatterySlotTrait batterySlot, PanelSyncManager syncManager) {
-        ItemSlotSyncHandler battery = new ItemSlotSyncHandler(new ModularSlot(batterySlot.getStorage(), 0));
+        ItemSlotSyncHandler battery = new ItemSlotSyncHandler(
+                new ModularSlot(batterySlot.getStorage(), 0).singletonSlotGroup(10));
         syncManager.syncValue("battery", battery);
         return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
     }
@@ -180,6 +191,12 @@ public class GTMuiWidgets {
                 "gtceu.multiblock.universal.distinct");
     }
 
+    public static ToggleButton createBatchModeButton(WorkableElectricMultiblockMachine workableElectricMultiblockMachine) {
+        return createToggleButton(workableElectricMultiblockMachine::isBatchEnabled,
+                workableElectricMultiblockMachine::setBatchEnabled,
+                GTGuiTextures.BUTTON_BATCH[0], GTGuiTextures.BUTTON_BATCH[1], "gtceu.machine.batching");
+    }
+
     public static ToggleButton createAutoOutputItemButton(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::isAutoOutputItems, autoOutput::setAllowAutoOutputItems,
                 GTGuiTextures.BUTTON_ITEM_OUTPUT, "gtceu.gui.item_auto_output");
@@ -192,14 +209,30 @@ public class GTMuiWidgets {
 
     public static ToggleButton createInputFromOutputItem(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::allowsItemInputFromOutputSide,
-                autoOutput::setAllowItemInputFromOutputSide, GTGuiTextures.BUTTON_ITEM_OUTPUT,
+                autoOutput::setAllowItemInputFromOutputSide, GTGuiTextures.BUTTON_ITEM_ALLOW_INPUT_OUTPUT,
                 "gtceu.gui.item_input_from_output");
     }
 
     public static ToggleButton createInputFromOutputFluid(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::allowsFluidInputFromOutputSide,
-                autoOutput::setAllowFluidInputFromOutputSide, GTGuiTextures.BUTTON_FLUID_OUTPUT,
+                autoOutput::setAllowFluidInputFromOutputSide, GTGuiTextures.BUTTON_FLUID_ALLOW_INPUT_OUTPUT,
                 "gtceu.gui.fluid_input_from_output");
+    }
+
+    public static ButtonWidget<?> createRecipeTypeButton(WorkableElectricMultiblockMachine workableMultiblock,
+                                                         PanelSyncManager syncManager) {
+        syncManager.registerSyncedAction("nextRecipeType", false, true, (buf) -> {
+            workableMultiblock.cycleActiveRecipeType();
+        });
+        return new ButtonWidget<>()
+                .onMousePressed((context, button) -> {
+                    syncManager.callSyncedAction("nextRecipeType");
+                    return true;
+                })
+                .backgroundOverlay(GTGuiTextures.PROGRESS_MIXER[0])
+                .size(18)
+                .tooltip((tooltip) -> tooltip.add(Component.translatable("gtceu.gui.machinemode.tab_tooltip")))
+                .setEnabledIf((W) -> workableMultiblock.getRecipeTypes().length > 0);
     }
 
     private static IntSyncValue createCircuitSlotSyncValue(Consumer<ItemStack> circuitSetter,
@@ -223,6 +256,7 @@ public class GTMuiWidgets {
                         .value(new BoolValue.Dynamic(() -> (i + 1) == circuitSyncValue.getIntValue(),
                                 (v) -> {
                                     if (v) circuitSyncValue.setValue(i + 1);
+                                    else circuitSyncValue.setValue(0);
                                 })));
 
         return new Dialog<>("circuit_panel")
@@ -295,7 +329,7 @@ public class GTMuiWidgets {
         if (delta > 0) {
             if (current == IntCircuitBehaviour.CIRCUIT_MAX) {
                 // if at max, loop around to no circuit
-                return 0;
+                return -1;
             } else if (stack.isEmpty()) {
                 // if at no circuit, skip 0 and return 1
                 return 1;
@@ -390,8 +424,8 @@ public class GTMuiWidgets {
     }
 
     public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(Flow existingRow,
-                                                                              FilterHandler<T, S> filterHandler,
-                                                                              SidedPosGuiData data,
+                                                                              FilterHandler<T> filterHandler,
+                                                                              GuiData data,
                                                                               PanelSyncManager syncManager,
                                                                               UISettings settings) {
         var filterSlot = filterHandler.getFilterSlot();
@@ -403,15 +437,16 @@ public class GTMuiWidgets {
         syncManager.syncValue("filterSlotHandler", filterSlotHandler);
 
         IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
-                (sm, sh) -> filterHandler.loadFilter(filterSlotHandler.getSlot().getItem()).getPanel(data, sm,
-                        settings, false));
+                (sm, sh) -> filterHandler.getFilter().getPanel(data, sm, settings, false, sh));
 
-        modSlot.changeListener((newItem, onlyAmountChanged, client, init) -> {
+        modSlot.changeListener((oldStack, newStack, client, init) -> {
+            if (init || ItemStack.isSameItem(oldStack, newStack)) return;
             panelHandler.closePanel();
             panelHandler.deleteCachedPanel();
         });
         return existingRow
-                .child(new ItemSlot().syncHandler(filterSlotHandler))
+                .child(new ItemSlot().syncHandler(filterSlotHandler)
+                        .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY))
                 .child(new ButtonWidget<>()
                         .background(GuiTextures.MC_BUTTON)
                         .size(16)
@@ -422,10 +457,10 @@ public class GTMuiWidgets {
                         .setEnabledIf((w) -> !filterSlotHandler.getSlot().getItem().isEmpty()));
     }
 
-    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler,
-                                                                              SidedPosGuiData data,
-                                                                              PanelSyncManager syncManager,
-                                                                              UISettings settings) {
+    public static <T> ParentWidget<?> createFilterRow(FilterHandler<T> filterHandler,
+                                                      GuiData data,
+                                                      PanelSyncManager syncManager,
+                                                      UISettings settings) {
         Flow row = Flow.row().coverChildrenHeight().childPadding(2);
         return createFilterRow(row, filterHandler, data, syncManager, settings);
     }
@@ -574,8 +609,8 @@ public class GTMuiWidgets {
                                                                EnumSyncValue<BucketMode> bucketModeSyncValue,
                                                                IntSupplier maxMB) {
         StringSyncValue formattedValue = new StringSyncValue(
-                () -> String.valueOf(intSyncValue.getValue()),
-                (v) -> intSyncValue.setValue(Integer.parseInt(v), true,
+                () -> formattedBucketValue(intSyncValue.getIntValue(), bucketModeSyncValue.getValue()),
+                (v) -> intSyncValue.setValue(bucketsFromFormattedValue(v, bucketModeSyncValue.getValue()), true,
                         true))
                 .allowC2S();
 
@@ -628,6 +663,21 @@ public class GTMuiWidgets {
                         .background(GTGuiTextures.BUTTON)
                         .stateOverlay(0, BucketMode.BUCKET.icon.asIcon().size(16))
                         .stateOverlay(1, BucketMode.MILLI_BUCKET.icon.asIcon().size(16)));
+    }
+
+    public static String formattedBucketValue(int millibuckets, BucketMode bucketMode) {
+        if (bucketMode == BucketMode.MILLI_BUCKET) return String.valueOf(millibuckets);
+        StringBuilder buckets = new StringBuilder(String.format("%04d", millibuckets));
+        buckets.insert(buckets.length() - 3, '.');
+        return buckets.toString();
+    }
+
+    public static int bucketsFromFormattedValue(String uiInput, BucketMode bucketMode) {
+        if (bucketMode == BucketMode.MILLI_BUCKET) return Integer.parseInt(uiInput);
+        if (!uiInput.contains(".")) return Integer.parseInt(uiInput) * 1000;
+        String[] splitInput = uiInput.split("\\.");
+        if (splitInput.length > 1 && splitInput[1].length() > 3) splitInput[1] = splitInput[1].substring(0, 3);
+        return (Integer.parseInt(splitInput[0]) * 1000) + Integer.parseInt(splitInput[1]);
     }
 
     public static SlotGroupWidget verticalPlayerInventory(SlotGroupWidget.SlotConsumer slotConsumer) {

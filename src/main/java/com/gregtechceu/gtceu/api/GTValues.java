@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.api;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.util.RandomSource;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntFunction;
 
@@ -108,7 +111,6 @@ public class GTValues {
     }
 
     public static final String MODID_JEI = "jei",
-            MODID_REI = "roughlyenoughitems",
             MODID_EMI = "emi",
             MODID_APPENG = "ae2",
             MODID_KUBEJS = "kubejs",
@@ -119,13 +121,11 @@ public class GTValues {
             MODID_OPTIFINE = "optifine",
             MODID_CREATE = "create",
             MODID_CURIOS = "curios",
-            MODID_AE2WTLIB = "ae2wtlib",
             MODID_MODERNFIX = "modernfix",
             MODID_JOURNEYMAP = "journeymap",
             MODID_XAEROS_MINIMAP = "xaerominimap",
             MODID_XAEROS_WORLDMAP = "xaeroworldmap",
             MODID_FTB_CHUNKS = "ftbchunks",
-            MODID_JAVD = "javd",
             MODID_FTB_TEAMS = "ftbteams",
             MODID_ARGONAUTS = "argonauts",
             MODID_HERACLES = "heracles",
@@ -145,6 +145,11 @@ public class GTValues {
      */
     public static final String[] VN = new String[] { "ULV", "LV", "MV", "HV", "EV", "IV", "LuV", "ZPM", "UV", "UHV",
             "UEV", "UIV", "UXV", "OpV", "MAX" };
+
+    /**
+     * The lowercase short names for the voltages, used for registration
+     */
+    public static final String[] VNL = Arrays.stream(VN).map(v -> v.toLowerCase(Locale.ROOT)).toArray(String[]::new);
 
     public static final IntFunction<String> MAX_PLUS_FORMAT = (value) -> "" + RED + BOLD + "M" +
             GREEN + BOLD + "A" +
@@ -302,6 +307,7 @@ public class GTValues {
     public static boolean HT = false;
 
     public static BooleanSupplier FOOLS = () -> {
+        if (ConfigHolder.INSTANCE != null && ConfigHolder.INSTANCE.client.aprilFoolsMode) return true;
         var now = LocalDate.now();
         return now.getMonth() == Month.APRIL && now.getDayOfMonth() == 1;
     };

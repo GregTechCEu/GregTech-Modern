@@ -6,19 +6,13 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomProviderTrait;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomReceiverTrait;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
-
 import lombok.Getter;
 
 import java.util.Set;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static com.gregtechceu.gtceu.api.GTValues.UHV;
 import static com.gregtechceu.gtceu.api.GTValues.UV;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPartMachine {
 
     private final CleanroomProviderTrait cleanroomProvider;
@@ -36,14 +30,14 @@ public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPar
     @Override
     public void addedToController(MultiblockControllerMachine controller, String name) {
         super.addedToController(controller, name);
-        controller.getTraitOptional(CleanroomReceiverTrait.TYPE)
+        controller.getTraitOptional(CleanroomReceiverTrait.class)
                 .ifPresent(t -> t.setCleanroomProvider(cleanroomProvider));
     }
 
     @Override
     public void removedFromController(MultiblockControllerMachine controller) {
         super.removedFromController(controller);
-        controller.getTraitOptional(CleanroomReceiverTrait.TYPE)
+        controller.getTraitOptional(CleanroomReceiverTrait.class)
                 .ifPresent(CleanroomReceiverTrait::removeCleanroom);
     }
 

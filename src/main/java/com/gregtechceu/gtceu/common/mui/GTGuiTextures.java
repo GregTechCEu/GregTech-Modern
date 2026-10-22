@@ -57,6 +57,8 @@ public interface GTGuiTextures {
             "textures/gui/base/indicator_no_steam_steel.png");
     UITexture TANK_ICON = fullImage("textures/gui/base/tank_icon.png");
 
+    UITexture CLOSE_ICON = fullImage("textures/gui/icon/close.png");
+
     // BACKGROUNDS
     UITexture BACKGROUND = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background.png")
@@ -214,6 +216,8 @@ public interface GTGuiTextures {
     UITexture[] BUTTON_DISTINCT = slice(
             "textures/gui/widget/button_distinct_buses.png",
             16, 32, 16, 16, ColorType.DEFAULT);
+
+    UITexture[] BUTTON_BATCH = slice("textures/gui/widget/button_batch.png", 16, 32, 16, 16, ColorType.DEFAULT);
 
     UITexture[] FLUID_TRANSFER_MODE_OVERLAY = slice(
             "textures/gui/overlay/fluid_transfer_mode_overlay.png",
@@ -451,6 +455,10 @@ public interface GTGuiTextures {
     UITexture BUTTON_ITEM_OUTPUT = fullImage("textures/gui/widget/button_item_output_overlay.png");
     UITexture BUTTON_FLUID_OUTPUT = fullImage(
             "textures/gui/widget/button_fluid_output_overlay.png");
+    UITexture BUTTON_ITEM_ALLOW_INPUT_OUTPUT = fullImage(
+            "textures/gui/widget/button_item_allow_input_output_overlay.png");
+    UITexture BUTTON_FLUID_ALLOW_INPUT_OUTPUT = fullImage(
+            "textures/gui/widget/button_fluid_allow_input_output_overlay.png");
     UITexture BUTTON_AUTO_COLLAPSE = fullImage(
             "textures/gui/widget/button_auto_collapse_overlay.png");
     UITexture BUTTON_X = fullImage("textures/gui/widget/button_x_overlay.png", ColorType.DEFAULT);
@@ -468,6 +476,8 @@ public interface GTGuiTextures {
     UITexture BUTTON_MAINTENANCE = fullImage("textures/gui/widget/button_maintenance.png");
 
     UITexture BUTTON_AUTO_PULL = fullImage("textures/gui/widget/button_me_auto_pull.png");
+    UITexture[] BUTTON_CHUNK_ALIGN = slice("textures/gui/widget/button_chunk_align.png", 16, 32, 16, 16,
+            ColorType.DEFAULT);
 
     // PROGRESS BARS
 
@@ -682,7 +692,7 @@ public interface GTGuiTextures {
             "textures/gui/widget/hpca/active_cooler_component.png");
     UITexture HPCA_HEAT_SINK_COMPONENT = fullImage(
             "textures/gui/widget/hpca/heat_sink_component.png");
-    UITexture HPCA_EMPTY_COMPONENT = fullImage("textures/gui/widget/hpca/empty.png");
+    UITexture HPCA_EMPTY_COMPONENT = fullImage("textures/gui/widget/hpca/empty_component.png");
     UITexture HPCA_BRIDGE_COMPONENT = fullImage("textures/gui/widget/hpca/bridge_component.png");
     UITexture HPCA_COMPONENT_OUTLINE = fullImage("textures/gui/widget/hpca/component_outline.png");
 

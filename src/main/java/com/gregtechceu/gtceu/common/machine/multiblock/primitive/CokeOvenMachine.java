@@ -134,15 +134,18 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
 
     @Override
     public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
-        if (!isRemote()) {
-            if (super.onUseWithItem(context) == InteractionResult.SUCCESS) {
+        var toolResult = super.onUseWithItem(context);
+        if (toolResult != InteractionResult.PASS) {
+            return toolResult;
+        }
+        if (FluidUtil.getFluidHandler(context.getItemInHand()).isPresent()) {
+            if (isRemote()) {
                 return InteractionResult.SUCCESS;
             }
             if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), exportFluids)) {
-                return InteractionResult.SUCCESS;
+                return InteractionResult.CONSUME;
             }
-            return InteractionResult.PASS;
         }
-        return super.onUseWithItem(context);
+        return InteractionResult.PASS;
     }
 }

@@ -71,7 +71,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     }
 
     public ResourceLocation makeResourceLocation(String path) {
-        return new ResourceLocation(this.getModid(), path);
+        return ResourceLocation.fromNamespaceAndPath(this.getModid(), path);
     }
 
     /**
@@ -253,7 +253,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return this.currentTab;
     }
 
-    public void creativeModeTab(Supplier<RegistryEntry<CreativeModeTab>> currentTab) {
+    public void creativeModeTab(Supplier<@Nullable RegistryEntry<CreativeModeTab>> currentTab) {
         this.currentTab = currentTab.get();
     }
 

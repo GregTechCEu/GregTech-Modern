@@ -96,7 +96,6 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
         attachItem = itemStack.copy();
         attachItem.setCount(1);
         syncDataHolder.markClientSyncFieldDirty("attachItem");
-        markAsChanged();
     }
 
     public void onLoad() {}
@@ -129,6 +128,11 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
         if (this.redstoneSignalOutput == redstoneSignalOutput) return;
         this.redstoneSignalOutput = redstoneSignalOutput;
         coverHolder.notifyBlockUpdate();
+        var level = coverHolder.getLevel();
+        if (level != null) {
+            BlockPos poweredPos = coverHolder.getBlockPos().relative(attachedSide);
+            level.updateNeighborsAt(poweredPos, level.getBlockState(poweredPos).getBlock());
+        }
     }
 
     public boolean canConnectRedstone() {
@@ -141,6 +145,9 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
 
     public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
         var toolType = context.getToolType();
+        if (toolType.isEmpty() && context.getPlayer().isShiftKeyDown()) {
+            return Pair.of(null, onScrewdriverClick(context));
+        }
         if (toolType.contains(GTToolType.SCREWDRIVER)) {
             return Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(context));
         } else if (toolType.contains(GTToolType.SOFT_MALLET)) {

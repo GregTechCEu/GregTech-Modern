@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import com.google.common.base.Joiner;
@@ -9,12 +10,16 @@ import it.unimi.dsi.fastutil.chars.Char2IntMap;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
+import it.unimi.dsi.fastutil.chars.CharSet;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.gregtechceu.gtceu.api.multiblock.pattern.PatternBuilderUtils.checkNullPredicates;
 
 /**
  * A builder class for {@link BlockPattern}<br />
@@ -51,7 +56,9 @@ public class MultiblockPatternBuilder {
 
     private final List<PatternSlice> slices = new ArrayList<>();
 
-    private final Char2ObjectMap<@Nullable PatternPredicate> symbolMap = new Char2ObjectOpenHashMap<>();
+    private final Char2ObjectMap<MultiPredicate> symbolMap = new Char2ObjectOpenHashMap<>();
+
+    private final CharSet usedChars = new CharOpenHashSet();
 
     private final RelativeDirection[] directions = new RelativeDirection[3];
 
@@ -62,16 +69,14 @@ public class MultiblockPatternBuilder {
         directions[2] = charDir;
         RelativeDirection.validateFacingsArray(directions);
         // todo is this wanted?
-        this.symbolMap.put(' ', PatternPredicate.ANY);
+        this.symbolMap.put(' ', Predicates.any());
     }
 
     public MultiblockPatternBuilder sliceRepeatable(int minRepeats, int maxRepeats, String... slice) {
         validateSlice(slice);
         for (String s : slice) {
             for (char c : s.toCharArray()) {
-                if (!this.symbolMap.containsKey(c)) {
-                    this.symbolMap.put(c, null);
-                }
+                this.usedChars.add(c);
             }
         }
 
@@ -124,7 +129,7 @@ public class MultiblockPatternBuilder {
         return new MultiblockPatternBuilder(sliceDir, stringDir, charDir);
     }
 
-    public MultiblockPatternBuilder where(char symbol, PatternPredicate predicate) {
+    public MultiblockPatternBuilder where(char symbol, MultiPredicate predicate) {
         this.symbolMap.put(symbol, predicate);
         if (predicate.isController()) centerChar = symbol;
         return this;
@@ -149,15 +154,17 @@ public class MultiblockPatternBuilder {
     private void checkMissingPredicates() {
         List<Character> list = new ArrayList<>();
 
-        for (var entry : this.symbolMap.char2ObjectEntrySet()) {
-            if (entry.getValue() == null) {
-                list.add(entry.getCharKey());
+        for (char c : this.usedChars) {
+            if (!this.symbolMap.containsKey(c)) {
+                list.add(c);
             }
         }
 
         if (!list.isEmpty()) {
             throw new IllegalStateException("Predicates for character(s) " + COMMA_JOINER.join(list) + " are missing");
         }
+
+        checkNullPredicates(this.symbolMap);
     }
 
     private void checkGlobalConstraints() {
@@ -172,20 +179,18 @@ public class MultiblockPatternBuilder {
 
         for (var entry : symbolMap.char2ObjectEntrySet()) {
             char symbol = entry.getCharKey();
-            PatternPredicate predicate = entry.getValue();
-            if (predicate == null) throw new IllegalArgumentException("Predicate for symbol " + symbol + " was null.");
-
+            MultiPredicate predicate = entry.getValue();
             int maxCount = -1;
-            for (var basePredicate : predicate.subPredicates) {
-                if (basePredicate.maxCount == -1) {
+            for (var basePredicate : predicate.expand()) {
+                if (basePredicate.getMaxCount() == -1) {
                     maxCount = -1;
                     break;
                 }
-                if (basePredicate.minCount == basePredicate.maxCount) {
+                if (basePredicate.getMinCount() == basePredicate.getMaxCount()) {
                     if (maxCount == -1) {
-                        maxCount = basePredicate.minCount;
+                        maxCount = basePredicate.getMinCount();
                     } else {
-                        maxCount += basePredicate.minCount;
+                        maxCount += basePredicate.getMinCount();
                     }
                 }
             }
