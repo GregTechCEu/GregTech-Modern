@@ -120,7 +120,13 @@ public class GTMaterialBlocks {
             }
             var entry = registrate.block("%s%s_ore".formatted(typePrefix, material.getName()),
                     properties -> oreTag.blockConstructor().create(properties, oreTag, material))
-                    .initialProperties(() -> Blocks.IRON_ORE)
+                    .initialProperties(() -> {
+                        if (oreType.stoneType().get().isAir()) {
+                            // if the block is not registered (yet), fallback to stone
+                            return Blocks.IRON_ORE;
+                        }
+                        return oreType.stoneType().get().getBlock();
+                    })
                     .properties(properties -> GTBlocks.copy(oreType.template().get(), properties).noLootTable())
                     .transform(GTBlocks.unificationBlock(oreTag, material))
                     .blockstate(NonNullBiConsumer.noop())

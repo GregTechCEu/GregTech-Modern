@@ -249,6 +249,10 @@ public class CommonProxy {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void registerMaterialContent(RegisterEvent event) {
         if (event.getRegistryKey() == Registries.BLOCK) {
+            // Stone blocks need to be first so ore blocks generate properly
+            GTBlocks.generateStoneBlocks();
+            GTBlocks.initializeCobbleReplacements();
+
             // Material Blocks
             REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
             GTMaterialBlocks.generateMaterialBlocks();   // Compressed Blocks
@@ -261,10 +265,6 @@ public class CommonProxy {
             GTMaterialBlocks.generateCableBlocks();        // Cable & Wire Blocks
             GTMaterialBlocks.generateFluidPipeBlocks();    // Fluid Pipe Blocks
             GTMaterialBlocks.generateItemPipeBlocks();     // Item Pipe Blocks
-
-            // Other
-            GTBlocks.generateStoneBlocks();
-            GTBlocks.initializeCobbleReplacements();
 
             // --spacer--
         } else if (event.getRegistryKey() == Registries.ITEM) {
