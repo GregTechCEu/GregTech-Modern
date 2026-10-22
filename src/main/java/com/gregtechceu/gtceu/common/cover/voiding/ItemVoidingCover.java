@@ -89,7 +89,7 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
                 coverUIRow().child(
                         GTMuiWidgets.createPowerButton(this)),
                 filterHandler, data, syncManager,
-                settings));
+                settings, data.getSide()));
     }
 
     @Override

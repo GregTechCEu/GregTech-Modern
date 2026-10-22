@@ -416,6 +416,7 @@ public class LangHandler {
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
         multilineLang(provider, "gtceu.recipe_memory_widget.tooltip",
                 "§7Left click to automatically input this recipe into the crafting grid\n§7Shift click to lock/unlock this recipe");
+        provider.add("gui.gtceu.cover.direction", "Direction: §r%s");
         provider.add("cover.filter.blacklist.disabled", "Whitelist");
         provider.add("cover.filter.blacklist.enabled", "Blacklist");
         provider.add("cover.tag_filter.title", "Tag Filter");

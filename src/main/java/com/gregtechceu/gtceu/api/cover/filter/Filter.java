@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.factory.GuiData;
+import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -55,8 +56,11 @@ public abstract class Filter<T> implements Predicate<T> {
                     }).size(16);
         }
 
-        return new Dialog<>(Objects.requireNonNull(data.getLevel().registryAccess().registryOrThrow(Registries.ITEM)
-                .getKey(filterItemStack.getItem())).toString())
+        String name = Objects.requireNonNull(data.getLevel().registryAccess().registryOrThrow(Registries.ITEM)
+                .getKey(filterItemStack.getItem())).toString();
+        if (data instanceof SidedPosGuiData sidedData) name += "." + sidedData.getSide().getName();
+
+        return new Dialog<>(name)
                 .disablePanelsBelow(false)
                 .draggable(true)
                 .coverChildrenHeight()

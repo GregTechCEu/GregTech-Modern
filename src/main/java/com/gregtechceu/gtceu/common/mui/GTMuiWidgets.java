@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -17,6 +19,8 @@ import com.gregtechceu.gtceu.common.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
@@ -29,6 +33,7 @@ import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.text.TextRenderer;
 import brachy.modularui.factory.GuiData;
+import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
@@ -52,6 +57,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.*;
 
@@ -401,11 +407,33 @@ public class GTMuiWidgets {
         return cycleButton;
     }
 
+    public static ParentWidget<?> createCoverWidget(Flow flow, CoverBehavior cover, SidedPosGuiData data,
+                                                    PanelSyncManager syncManager, UISettings settings) {
+        if (!(cover instanceof IMuiCover muiCover)) return null;
+        IPanelHandler panelHandler = syncManager.syncedPanel(
+                cover.getAttachItem().getItem() + "." + cover.attachedSide.name().toLowerCase(Locale.ROOT), true,
+                (sm, sh) -> muiCover.buildUI(data, sm, settings)
+                        .closeOnOutOfBoundsClick(true));
+        return flow.child(new ButtonWidget<>()
+                .overlay(new ItemDrawable(cover.getAttachItem()).asIcon().size(14))
+                .tooltip(r -> {
+                    r.addFromItem(cover.getAttachItem());
+                    r.addLine(
+                            Component.translatable("gui.gtceu.cover.direction", cover.attachedSide.getSerializedName())
+                                    .withStyle(ChatFormatting.DARK_PURPLE));
+                })
+                .onMousePressed((context, button) -> {
+                    panelHandler.togglePanel();
+                    return true;
+                }));
+    }
+
     public static <T> ParentWidget<?> createFilterRow(Flow existingRow,
                                                       FilterHandler<T> filterHandler,
                                                       GuiData data,
                                                       PanelSyncManager syncManager,
-                                                      UISettings settings) {
+                                                      UISettings settings,
+                                                      @Nullable Direction side) {
         var filterSlot = filterHandler.getFilterSlot();
 
         ModularSlot modSlot = new ModularSlot(filterSlot, 0)
@@ -414,7 +442,8 @@ public class GTMuiWidgets {
         ItemSlotSyncHandler filterSlotHandler = new ItemSlotSyncHandler(modSlot);
         syncManager.syncValue("filterSlotHandler", filterSlotHandler);
 
-        IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
+        IPanelHandler panelHandler = syncManager.syncedPanel(
+                "filterPanel." + (side == null ? "null" : side.getName().toLowerCase(Locale.ROOT)), true,
                 (sm, sh) -> filterHandler.getFilter().getPanel(data, sm, settings, false, sh));
 
         modSlot.changeListener((oldStack, newStack, client, init) -> {
@@ -440,7 +469,8 @@ public class GTMuiWidgets {
                                                       PanelSyncManager syncManager,
                                                       UISettings settings) {
         Flow row = Flow.row().coverChildrenHeight().childPadding(2);
-        return createFilterRow(row, filterHandler, data, syncManager, settings);
+        return createFilterRow(row, filterHandler, data, syncManager, settings,
+                (data instanceof SidedPosGuiData posGuiData ? posGuiData.getSide() : null));
     }
 
     private static int getIncrementValue(MouseData data, int step) {

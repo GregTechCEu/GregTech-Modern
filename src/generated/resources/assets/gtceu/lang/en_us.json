@@ -4143,6 +4143,7 @@
   "gtceu.vacuum_freezer": "Vacuum Freezer",
   "gtceu.welder": "Welder",
   "gtceu.wiremill": "Wiremill",
+  "gui.gtceu.cover.direction": "Direction: §r%s",
   "gui.gtceu.refund_all.desc": "Return Stored Contents to AE2",
   "gui.gtceu.rename.desc": "Rename Pattern Buffer",
   "gui.gtceu.share_inventory.desc.0": "Shares inserted items with all patterns within buffer!",
