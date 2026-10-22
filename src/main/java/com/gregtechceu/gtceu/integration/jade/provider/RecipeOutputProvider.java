@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
-import com.gregtechceu.gtceu.utils.codec.CodecUtils;
+import com.gregtechceu.gtceu.utils.codec.GTCodecUtils;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -81,7 +81,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
                     chanced = ItemRecipeCapability.CAP.copyWithModifier(provider,
                             ContentModifier.multiplier(countD));
                 }
-                itemTag = (CompoundTag) CodecUtils.encodeMap(chanced, chanced.getType().codec(), ops)
+                itemTag = (CompoundTag) GTCodecUtils.encodeMap(chanced, chanced.getType().codec(), ops)
                         .result().orElse(new CompoundTag());
             } else {
                 ItemStack[] stacks = content.getItems();

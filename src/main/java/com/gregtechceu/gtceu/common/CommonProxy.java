@@ -25,6 +25,8 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.misc.forge.QuantumFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.mui.modular_item.ModularArmorUIFactory;
+import com.gregtechceu.gtceu.api.mui.modular_item.ModularItemUIFactory;
 import com.gregtechceu.gtceu.api.multiblock.error.GTPatternErrors;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
@@ -165,6 +167,7 @@ public class CommonProxy {
         GTRecipeConditions.init();
         ChanceLogic.init();
         GTRecipeTypes.init();
+        GTItemModules.init();
         GTRecipeCategories.init();
         GTPatternErrors.init(modBus);
 
@@ -212,6 +215,8 @@ public class CommonProxy {
         // MUI stuff
         GuiManager.registerFactory(MachineUIFactory.INSTANCE);
         GuiManager.registerFactory(CoverUIFactory.INSTANCE);
+        GuiManager.registerFactory(ModularItemUIFactory.INSTANCE);
+        GuiManager.registerFactory(ModularArmorUIFactory.INSTANCE);
 
         GTGuiTheme.registerThemes();
     }
@@ -584,5 +589,16 @@ public class CommonProxy {
                 event.getRegistry().addAlias(GTCEu.id("flowing_molten_" + material), GTCEu.id("flowing_" + material));
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void registerLegacyArmorAliases(RegisterEvent event) {
+        if (!event.getRegistryKey().equals(Registries.ITEM)) return;
+        for (String piece : List.of("helmet", "chestplate", "leggings", "boots")) {
+            event.getRegistry().addAlias(GTCEu.id("nanomuscle_" + piece), GTCEu.id("nano_fiber_" + piece));
+            event.getRegistry().addAlias(GTCEu.id("quarktech_" + piece), GTCEu.id("quark_matter_" + piece));
+        }
+        event.getRegistry().addAlias(GTCEu.id("advanced_nanomuscle_chestplate"), GTCEu.id("nano_fiber_chestplate"));
+        event.getRegistry().addAlias(GTCEu.id("advanced_quarktech_chestplate"), GTCEu.id("quark_matter_chestplate"));
     }
 }
