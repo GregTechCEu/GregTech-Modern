@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
-import com.gregtechceu.gtceu.common.data.GTElements;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -11,7 +10,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Accessors(fluent = true, chain = true)
-public class ElementBuilder extends BuilderBase<Element> {
+public class ElementBuilderJS extends BuilderBase<Element> {
 
     public transient final String name;
 
@@ -28,7 +27,7 @@ public class ElementBuilder extends BuilderBase<Element> {
     @Setter
     public transient boolean isIsotope;
 
-    public ElementBuilder(ResourceLocation id) {
+    public ElementBuilderJS(ResourceLocation id) {
         super(id);
         this.id = id;
         name = id.getPath();
@@ -37,7 +36,7 @@ public class ElementBuilder extends BuilderBase<Element> {
 
     @Override
     public Element createObject() {
-        return GTElements.createAndRegister(id, protons, neutrons, halfLifeSeconds, decayTo, name, symbol,
+        return new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol,
                 isIsotope);
     }
 }
