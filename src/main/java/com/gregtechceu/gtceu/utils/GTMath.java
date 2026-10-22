@@ -37,8 +37,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class GTMath {
 
-    //Converts jump height in blocks to jump velocity using vanilla math
+    // Converts jump height in blocks to jump velocity using vanilla math
     private static final double JUMP_DRAG = 0.98;
+
     public static float addJumpHeight(float velocity, double gravity, float extraHeight) {
         if (velocity <= 0 || gravity <= 0 || extraHeight <= 0 ||
                 !Float.isFinite(velocity) || !Double.isFinite(gravity) || !Float.isFinite(extraHeight))
