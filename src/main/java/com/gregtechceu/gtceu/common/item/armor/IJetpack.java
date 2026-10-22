@@ -3,8 +3,11 @@ package com.gregtechceu.gtceu.common.item.armor;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.module.CreativeFlightModule;
+import com.gregtechceu.gtceu.common.module.JetpackModule;
+import com.gregtechceu.gtceu.common.module.LiquidFuelJetpackModule;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.core.particles.ParticleOptions;
@@ -73,6 +76,33 @@ public interface IJetpack {
     void drainEnergy(ItemStack stack, int amount);
 
     boolean hasEnergy(ItemStack stack);
+
+    static boolean isEngineEnabled(ItemStack stack) {
+        var modular = GTCapabilityHelper.getModularItem(stack);
+        if (modular != null) {
+            for (ModuleContext context : modular.getAllModuleInstances()) {
+                if (context.getModule() instanceof JetpackModule ||
+                        context.getModule() instanceof LiquidFuelJetpackModule) {
+                    return context.getModule().isEnabled(context);
+                }
+            }
+        }
+        return stack.getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY).enabled();
+    }
+
+    static void setEngineEnabled(ItemStack stack, boolean enabled) {
+        var modular = GTCapabilityHelper.getModularItem(stack);
+        if (modular != null) {
+            for (ModuleContext context : modular.getAllModuleInstances()) {
+                if (context.getModule() instanceof JetpackModule ||
+                        context.getModule() instanceof LiquidFuelJetpackModule) {
+                    context.getModule().setEnabled(context, enabled);
+                    return;
+                }
+            }
+        }
+        stack.update(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY, data -> data.setEnabled(enabled));
+    }
 
     default boolean updateHoverMode(Player player, ItemStack stack, boolean hover, boolean toggle) {
         var modular = GTCapabilityHelper.getModularItem(stack);
@@ -185,8 +215,8 @@ public interface IJetpack {
     }
 
     static void performEHover(ItemStack stack, Player player) {
+        setEngineEnabled(stack, true);
         stack.update(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY, armor -> armor
-                .setEnabled(true)
                 .setHover(true));
         player.displayClientMessage(Component.translatable("armor.gtceu.jetpack.emergency_hover"), true);
         player.fallDistance = 0;

@@ -42,8 +42,7 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
 
     public boolean canBoost(ModuleContext context, Player player) {
         ItemStack stack = context.getAppliedTo();
-        if (!isEnabled(context) || !stack.getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY).enabled())
-            return false;
+        if (!isEnabled(context)) return false;
         Jetpack logic = getArmorLogic(context);
         int cost = (int) Math.round(logic.getEnergyPerUse() * logic.getSprintEnergyModifier());
         if (!player.getAbilities().flying) return !player.onGround() && logic.canUseEnergy(stack, cost);

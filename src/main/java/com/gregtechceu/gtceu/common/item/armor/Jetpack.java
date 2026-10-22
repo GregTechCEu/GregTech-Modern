@@ -40,12 +40,13 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         GTArmor.Mutable data = stack.getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY).toMutable();
         byte toggleTimer = data.toggleTimer();
         boolean hoverMode = updateHoverMode(player, stack, data.hover(), false);
-        boolean jetpackEnabled = data.enabled();
+        boolean jetpackEnabled = IJetpack.isEngineEnabled(stack);
 
         String messageKey = null;
         if (toggleTimer == 0) {
             if (SyncedKeyMappings.JETPACK_ENABLE.isKeyDown(player)) {
                 jetpackEnabled = !jetpackEnabled;
+                IJetpack.setEngineEnabled(stack, jetpackEnabled);
                 messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.flight", jetpackEnabled);
                 data.enabled(jetpackEnabled);
             } else if (SyncedKeyMappings.ARMOR_HOVER.isKeyDown(player)) {
@@ -118,7 +119,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
         GTArmor data = item.get(GTDataComponents.ARMOR_DATA);
         if (data != null) {
-            Component status = data.enabled() ?
+            Component status = IJetpack.isEngineEnabled(item) ?
                     Component.translatable("hud.gtceu.armor.status.enabled") :
                     Component.translatable("hud.gtceu.armor.status.disabled");
             Component result = Component.translatable("hud.gtceu.armor.engine_enabled", status);
@@ -137,7 +138,8 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         super.addInfo(itemStack, lines);
         GTArmor data = itemStack.get(GTDataComponents.ARMOR_DATA);
         if (data != null) {
-            Component state = data.enabled() ? Component.translatable("hud.gtceu.armor.status.enabled") :
+            Component state = IJetpack.isEngineEnabled(itemStack) ?
+                    Component.translatable("hud.gtceu.armor.status.enabled") :
                     Component.translatable("hud.gtceu.armor.status.disabled");
             lines.add(Component.translatable("hud.gtceu.armor.engine_enabled", state));
 

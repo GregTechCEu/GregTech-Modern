@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.item.module;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
+import com.gregtechceu.gtceu.common.item.armor.IJetpack;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -21,19 +22,19 @@ public abstract class ArmorLogicItemModule extends ItemModule implements IHUDPro
 
     @Override
     public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
-        if (!isEnabled(moduleContext)) return;
-        super.onArmorTick(moduleContext, entity);
         IArmorLogic armorLogic = getArmorLogic(moduleContext);
         if (armorLogic == null) return;
+        if (!isEnabled(moduleContext) && !(armorLogic instanceof IJetpack)) return;
+        super.onArmorTick(moduleContext, entity);
         if (entity instanceof Player player)
             armorLogic.onArmorTick(player.level(), player, moduleContext.getAppliedTo());
     }
 
     @Override
     public void clientSideArmorTick(ModuleContext moduleContext, Player player) {
-        if (!isEnabled(moduleContext)) return;
         IArmorLogic armorLogic = getArmorLogic(moduleContext);
         if (armorLogic == null) return;
+        if (!isEnabled(moduleContext) && !(armorLogic instanceof IJetpack)) return;
         armorLogic.onArmorTick(player.level(), player, moduleContext.getAppliedTo());
     }
 
