@@ -22,7 +22,8 @@ public abstract class LocalPlayerMixin {
     @Shadow
     @Final
     protected Minecraft minecraft;
-    //Note: We strictly check for if the sprint key is down, double-tapping any strafe key would possibly start
+
+    // Note: We strictly check for if the sprint key is down, double-tapping any strafe key would possibly start
     // Sprinting and would feel very awful for most players
     @ModifyReturnValue(method = "hasEnoughImpulseToStartSprinting", at = @At("RETURN"))
     private boolean gtceu$startOmnidirectionalSprint(boolean original) {
