@@ -93,15 +93,6 @@ public abstract class AttributeItemModule extends ItemModule {
 
     public abstract Holder<Attribute> getAttribute(ModuleContext moduleContext);
 
-    protected double getLegacyMaxAttributeAmount() {
-        return getMaxAttributeAmount();
-    }
-
-    private double migrateLegacyModifier(double amount) {
-        double oldMax = getLegacyMaxAttributeAmount();
-        return oldMax == getMaxAttributeAmount() ? amount : amount / oldMax * getMaxAttributeAmount();
-    }
-
     public abstract double getMaxAttributeAmount();
 
     public abstract AttributeModifier.Operation getModifierOperation();
@@ -129,11 +120,8 @@ public abstract class AttributeItemModule extends ItemModule {
         // spotless:off
         public static final MapCodec<AttributeModuleData> CODEC = RecordCodecBuilder.mapCodec(instance -> baseCodec(instance).and(instance.group(
                 Codec.DOUBLE.fieldOf("modifier_amount").forGetter(AttributeModuleData::getModifierAmount),
-                Codec.BOOL.fieldOf("keep_active").forGetter(AttributeModuleData::isKeepActive),
-                Codec.BOOL.optionalFieldOf("corrected_bonus", false).forGetter(data -> true)
-        )).apply(instance, (slot, module, item, enabled, amount, active, corrected) ->
-                new AttributeModuleData(slot, module, item, enabled,
-                        corrected ? amount : ((AttributeItemModule) module).migrateLegacyModifier(amount), active)));
+                Codec.BOOL.fieldOf("keep_active").forGetter(AttributeModuleData::isKeepActive)
+        )).apply(instance, AttributeModuleData::new));
         //spotless:on
 
         @Getter

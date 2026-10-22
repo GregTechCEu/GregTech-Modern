@@ -38,11 +38,6 @@ public class AttackSpeedItemModule extends TieredAttributeItemModule {
     }
 
     @Override
-    protected double getLegacyMaxAttributeAmount() {
-        return 1 + getMaxAttributeAmount();
-    }
-
-    @Override
     public AttributeModifier.Operation getModifierOperation() {
         return AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL;
     }
