@@ -37,7 +37,6 @@ import brachy.modularui.utils.Color;
 import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.*;
-import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.*;
