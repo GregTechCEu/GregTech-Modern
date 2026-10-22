@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -36,6 +37,8 @@ import java.util.*;
  * The base class for all multiblock parts
  */
 public class MultiblockPartMachine extends MetaMachine {
+
+    static final Set<MachineDefinition> MACHINES_LOGGING_FAILURES = new HashSet<>();
 
     @SyncToClient
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
@@ -299,7 +302,11 @@ public class MultiblockPartMachine extends MetaMachine {
     }
 
     public Component getFailReason() {
-        GTCEu.LOGGER.warn(String.format("Multiblock Part failed without a failure reason! Part: %s", this.getClass()));
+        if (!MACHINES_LOGGING_FAILURES.contains(getDefinition())) {
+            GTCEu.LOGGER
+                    .warn(String.format("Multiblock Part failed without a failure reason! Part: %s", getDefinition()));
+            MACHINES_LOGGING_FAILURES.add(getDefinition());
+        }
         return ModifierFunction.DEFAULT_FAILURE;
     }
 }

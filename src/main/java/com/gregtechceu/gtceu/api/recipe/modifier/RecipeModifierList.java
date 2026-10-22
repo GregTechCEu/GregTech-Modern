@@ -17,7 +17,7 @@ import java.util.Set;
  */
 public final class RecipeModifierList implements RecipeModifier {
 
-    Set<MachineDefinition> MACHINES_LOGGING_FAILURES = new HashSet<>();
+    static final Set<MachineDefinition> MACHINES_LOGGING_FAILURES = new HashSet<>();
 
     @Getter
     private final RecipeModifier[] modifiers;
