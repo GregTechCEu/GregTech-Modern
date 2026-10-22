@@ -386,42 +386,19 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        var problemsSyncValue = new ByteSyncValue(this::getMaintenanceProblems);
-        syncManager.syncValue("maintenanceProblems", problemsSyncValue);
+        ByteSyncValue maintenanceProblems = new ByteSyncValue(this::getMaintenanceProblems);
+        syncManager.syncValue("maintenanceProblems", maintenanceProblems);
 
         InteractionSyncHandler buttonSyncHandler = new InteractionSyncHandler();
         buttonSyncHandler.setOnMousePressed((button) -> {
             fixMaintenanceProblems(guiData.getPlayer());
         });
 
-        var dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(problemsSyncValue)
-                .widgetProvider((widgetSyncManager, problemsSyncHandler) -> {
-                    var column = Flow.column()
-                            .crossAxisAlignment(Alignment.CrossAxis.START)
-                            .coverChildren()
-                            .padding(5)
-                            .childPadding(2);
-                    boolean hasMaintenanceProblems = ConfigHolder.INSTANCE.machines.enableMaintenance &&
-                            problemsSyncHandler.getValue() < 63;
-                    column.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems ?
-                            Component.translatable("gtceu.top.maintenance_broken") :
-                            Component.translatable("gtceu.top.maintenance_fixed"))))
-                            .child(Flow.row()
-                                    .coverChildren()
-                                    .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
-                                            .filter(i -> ((problemsSyncHandler.getValue() >> i) & 1) == 0)
-                                            .map(GTUtil::getMaintenanceText)
-                                            .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getFirst()))
-                                                    .size(16))
-                                            .map(IWidget.class::cast)
-                                            .toList()));
-                    return column;
-                });
         mainWidget.child(Flow.column()
                 .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .child(manualMaintenancePanel(buttonSyncHandler))
-                .child(new DynamicWidget<>().syncHandler(dynamicLinkedSyncHandler)));
+                .child(new DynamicWidget<>().syncHandler(maintenanceProblemsDisplay(maintenanceProblems))));
     }
 
     protected Flow manualMaintenancePanel(InteractionSyncHandler syncHandler) {
@@ -438,5 +415,31 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                         .addTooltipElement(
                                 Text.lang("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))
                         .syncHandler(syncHandler));
+    }
+
+    protected DynamicLinkedSyncHandler maintenanceProblemsDisplay(ByteSyncValue problemsSyncValue){
+        return new DynamicLinkedSyncHandler<>(problemsSyncValue)
+                .widgetProvider((widgetSyncManager, problemsSyncHandler) -> {
+                    var column = Flow.column()
+                            .crossAxisAlignment(Alignment.CrossAxis.START)
+                            .coverChildren()
+                            .padding(5)
+                            .childPadding(2);
+                    boolean hasMaintenanceProblems = ConfigHolder.INSTANCE.machines.enableMaintenance &&
+                            problemsSyncHandler.getValue() < 63;
+                    column.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems ?
+                                    Component.translatable("gtceu.top.maintenance_broken") :
+                                    Component.translatable("gtceu.top.maintenance_fixed"))))
+                            .child(Flow.row()
+                                    .coverChildren()
+                                    .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
+                                            .filter(i -> ((problemsSyncHandler.getValue() >> i) & 1) == 0)
+                                            .map(GTUtil::getMaintenanceText)
+                                            .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getFirst()))
+                                                    .size(16))
+                                            .map(IWidget.class::cast)
+                                            .toList()));
+                    return column;
+                });
     }
 }

@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import brachy.modularui.value.sync.*;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
@@ -16,10 +18,6 @@ import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
-import brachy.modularui.value.sync.FloatSyncValue;
-import brachy.modularui.value.sync.IntSyncValue;
-import brachy.modularui.value.sync.InteractionSyncHandler;
-import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
@@ -111,18 +109,13 @@ public class ConfigurableMaintenanceHatchPartMachine extends MaintenanceHatchPar
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        InteractionSyncHandler syncHandler = new InteractionSyncHandler();
-        Flow maintenanceStatusWidget = Flow.column()
-                .crossAxisAlignment(Alignment.CrossAxis.START)
-                .coverChildren()
-                .padding(5)
-                .childPadding(2);
-        Runnable updateWidget = () -> {};// maintenanceUpdateWidget(maintenanceStatusWidget);
-        syncHandler.setOnMousePressed((button) -> {
+        var maintenanceProblems = new ByteSyncValue(this::getMaintenanceProblems);
+        syncManager.syncValue("maintenanceProblems", maintenanceProblems);
+
+        InteractionSyncHandler buttonSyncHandler = new InteractionSyncHandler();
+        buttonSyncHandler.setOnMousePressed((button) -> {
             fixMaintenanceProblems(guiData.getPlayer());
-            updateWidget.run();
         });
-        updateWidget.run();
 
         IntSyncValue durationSyncValue = new IntSyncValue((() -> (int) (getDurationMultiplier() * 100)),
                 (duration) -> setDurationMultiplier(duration / 100f)).allowC2S();
@@ -177,7 +170,7 @@ public class ConfigurableMaintenanceHatchPartMachine extends MaintenanceHatchPar
                                 .leftRel(0)
                                 .paddingTop(5))
                         .tooltip(frequencyTooltip))
-                .child(manualMaintenancePanel(syncHandler))
-                .child(maintenanceStatusWidget));
+                .child(manualMaintenancePanel(buttonSyncHandler))
+                .child(new DynamicWidget<>().syncHandler(maintenanceProblemsDisplay(maintenanceProblems))));
     }
 }

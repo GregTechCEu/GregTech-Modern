@@ -588,6 +588,11 @@ public class GTMuiWidgets {
         return createDecimalInputWithButtons(syncValue, minValue, maxValue, step, decimals, GTGuiTextures.DISPLAY);
     }
 
+    /**
+     * Creates an input element for handling user entry of decimal values.
+     * Does NOT take a Float or Double sync value. Takes an Integer sync and a number of decimal places to show,
+     * and handles all work in Fixed-Point with that many places.
+     */
     public static ParentWidget<?> createDecimalInputWithButtons(IntSyncValue syncValue, IntSupplier minValue,
                                                                 IntSupplier maxValue, int step, int decimalPlaces,
                                                                 IDrawable background) {
