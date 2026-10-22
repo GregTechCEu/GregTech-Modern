@@ -1,24 +1,24 @@
-package com.gregtechceu.gtceu.integration.kjs.helpers;
+package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.resources.ResourceKey;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
-public record MaterialStackWrapper(@Nullable Supplier<@NotNull Material> material, long amount) {
+public record DeferredMaterialStack(@Nullable Supplier<Material> material, long amount) {
 
-    public static MaterialStackWrapper EMPTY = new MaterialStackWrapper(() -> null, 0);
+    public static DeferredMaterialStack EMPTY = new DeferredMaterialStack(null, 0);
 
-    private static final Map<String, MaterialStackWrapper> PARSE_CACHE = new WeakHashMap<>();
+    private static final Map<String, DeferredMaterialStack> PARSE_CACHE = new WeakHashMap<>();
 
-    public static MaterialStackWrapper fromString(CharSequence str) {
+    public static DeferredMaterialStack fromString(CharSequence str) {
         String trimmed = str.toString().trim();
         String copy = trimmed;
 
@@ -37,15 +37,16 @@ public record MaterialStackWrapper(@Nullable Supplier<@NotNull Material> materia
         }
 
         final String copyFinal = copy;
-        Supplier<Material> mat = () -> GTRegistries.MATERIALS.get(GTCEu.id(copyFinal));
-        cached = new MaterialStackWrapper(mat, count);
+        final ResourceKey<Material> matKey = ResourceKey.create(GTRegistries.Keys.MATERIAL, GTCEu.id(copyFinal));
+        Supplier<Material> mat = () -> GTRegistries.MATERIALS.getOrThrow(matKey);
+        cached = new DeferredMaterialStack(mat, count);
         PARSE_CACHE.put(trimmed, cached);
         return cached.copy();
     }
 
-    public MaterialStackWrapper copy() {
+    public DeferredMaterialStack copy() {
         if (isEmpty()) return EMPTY;
-        return new MaterialStackWrapper(material, amount);
+        return new DeferredMaterialStack(material, amount);
     }
 
     public boolean isEmpty() {

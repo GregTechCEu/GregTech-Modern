@@ -335,8 +335,8 @@ public class MetaTileEntityLoader {
                 GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.HIGH_PRESSURE_HAZARD_SIGN_BLOCK.asStack());
 
         var multiHatchMaterials = new Material[] {
-                GTMaterials.Titanium, GTMaterials.TungstenSteel, GTMaterials.NiobiumTitanium,
-                GTMaterials.Iridium, GTMaterials.Naquadah, GTMaterials.Neutronium
+                GTMaterials.Titanium.value(), GTMaterials.TungstenSteel.value(), GTMaterials.NiobiumTitanium.value(),
+                GTMaterials.Iridium.value(), GTMaterials.Naquadah.value(), GTMaterials.Neutronium.value()
         };
         for (int i = 0; i < multiHatchMaterials.length; i++) {
             var tier = GTMachineUtils.MULTI_HATCH_TIERS[i];
@@ -916,8 +916,8 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, GTMachines.WIRELESS_CHARGER, "FEF", "CMC", "WBW", 'M', HULL, 'W', CABLE_QUAD,
                 'E', EMITTER, 'C', CIRCUIT, 'B', PLATE, 'F', FIELD_GENERATOR);
 
-        Material[] fluidMap = new Material[] { GTMaterials.Glue, GTMaterials.Polyethylene,
-                GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole };
+        Material[] fluidMap = new Material[] { GTMaterials.Glue.value(), GTMaterials.Polyethylene.value(),
+                GTMaterials.Polytetrafluoroethylene.value(), GTMaterials.Polybenzimidazole.value() };
 
         for (var machine : GTMachines.FLUID_IMPORT_HATCH) {
             if (machine == null) continue;

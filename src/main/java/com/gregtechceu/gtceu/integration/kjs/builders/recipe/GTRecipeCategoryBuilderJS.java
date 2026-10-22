@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 @Accessors(chain = true, fluent = true)
-public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
+public class GTRecipeCategoryBuilderJS extends BuilderBase<GTRecipeCategory> {
 
     private final transient String name;
     @Setter
@@ -29,7 +29,7 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
     @Nullable
     private transient String langValue;
 
-    public GTRecipeCategoryBuilder(ResourceLocation id) {
+    public GTRecipeCategoryBuilderJS(ResourceLocation id) {
         super(id);
         name = id.getPath();
         recipeType = GTRecipeTypes.DUMMY_RECIPES.value();
@@ -38,12 +38,12 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
         langValue = null;
     }
 
-    public GTRecipeCategoryBuilder setCustomIcon(ResourceLocation location) {
+    public GTRecipeCategoryBuilderJS setCustomIcon(ResourceLocation location) {
         this.icon = new CategoryIcon(location);
         return this;
     }
 
-    public GTRecipeCategoryBuilder setItemIcon(ItemStack stack) {
+    public GTRecipeCategoryBuilderJS setItemIcon(ItemStack stack) {
         this.icon = new CategoryIcon(stack);
         return this;
     }

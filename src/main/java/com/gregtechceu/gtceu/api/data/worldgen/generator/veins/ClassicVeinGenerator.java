@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.worldgen.GTVeinGenerators;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
@@ -301,6 +302,11 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
             public Layer.Builder mat(Material material) {
                 this.target = Either.right(material);
+                return this;
+            }
+
+            public Layer.Builder mat(Holder<Material> material) {
+                this.target = Either.right(material.value());
                 return this;
             }
 
