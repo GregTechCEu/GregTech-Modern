@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import brachy.modularui.value.sync.*;
-import brachy.modularui.widgets.dynamic.DynamicWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
@@ -18,8 +16,10 @@ import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.*;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;

@@ -417,7 +417,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                         .syncHandler(syncHandler));
     }
 
-    protected DynamicLinkedSyncHandler maintenanceProblemsDisplay(ByteSyncValue problemsSyncValue){
+    protected DynamicLinkedSyncHandler maintenanceProblemsDisplay(ByteSyncValue problemsSyncValue) {
         return new DynamicLinkedSyncHandler<>(problemsSyncValue)
                 .widgetProvider((widgetSyncManager, problemsSyncHandler) -> {
                     var column = Flow.column()
@@ -428,8 +428,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                     boolean hasMaintenanceProblems = ConfigHolder.INSTANCE.machines.enableMaintenance &&
                             problemsSyncHandler.getValue() < 63;
                     column.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems ?
-                                    Component.translatable("gtceu.top.maintenance_broken") :
-                                    Component.translatable("gtceu.top.maintenance_fixed"))))
+                            Component.translatable("gtceu.top.maintenance_broken") :
+                            Component.translatable("gtceu.top.maintenance_fixed"))))
                             .child(Flow.row()
                                     .coverChildren()
                                     .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
