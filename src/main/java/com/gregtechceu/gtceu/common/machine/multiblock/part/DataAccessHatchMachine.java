@@ -182,4 +182,9 @@ public class DataAccessHatchMachine extends TieredPartMachine
     public IItemHandler getDataItems() {
         return importItems.storage;
     }
+
+    @Override
+    public Component getFailReason() {
+        return Component.translatable("gtceu.machine.data_access_hatch.missing_research");
+    }
 }
