@@ -2806,6 +2806,7 @@
   "gtceu.machine.computation_transmitter_hatch.tooltip": "Computation Data Output for Multiblocks",
   "gtceu.machine.cracker.tooltip": "Makes Oil useful",
   "gtceu.machine.cracker.tooltip.1": "Every coil after §6Cupronickel§7 reduces energy usage by §f10%%§7.",
+  "gtceu.machine.data_access_hatch.missing_research": "Missing Research Data!",
   "gtceu.machine.data_access_hatch.tooltip.0": "Data Access for Multiblocks",
   "gtceu.machine.data_access_hatch.tooltip.1": "Adds §a%s§7 slots for Data Items",
   "gtceu.machine.data_bank.tooltip.0": "Your Personal NAS",

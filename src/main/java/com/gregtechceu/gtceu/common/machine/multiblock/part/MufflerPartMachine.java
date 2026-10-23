@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -180,5 +181,10 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
                     s.getSlot().accessibility(false, true);
                     return s;
                 }).margin(10).center());
+    }
+
+    @Override
+    public Component getFailReason() {
+        return Component.translatable("gtceu.multiblock.universal.muffler_obstructed");
     }
 }
