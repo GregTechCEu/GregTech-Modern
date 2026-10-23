@@ -442,4 +442,9 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                     return column;
                 });
     }
+
+    @Override
+    public Component getFailReason() {
+        return Component.translatable("gtceu.multiblock.universal.has_problems");
+    }
 }

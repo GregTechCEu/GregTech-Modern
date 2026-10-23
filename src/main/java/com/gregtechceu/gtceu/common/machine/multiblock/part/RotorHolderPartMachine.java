@@ -25,6 +25,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
@@ -384,5 +385,10 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
             }
         }
         return true;
+    }
+
+    @Override
+    public Component getFailReason() {
+        return Component.translatable("gtceu.multiblock.turbine.no_rotor");
     }
 }
