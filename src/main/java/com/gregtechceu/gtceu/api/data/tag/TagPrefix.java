@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.utils.TagUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.client.renderer.RenderType;
@@ -195,6 +196,8 @@ public class TagPrefix {
     public static final TagPrefixEntry oreEndstone = REGISTRATE
             .oreTagPrefix("endstone", BlockTags.MINEABLE_WITH_PICKAXE)
             .lang("End %s Ore")
+            // Make endstone-based ores dragon-immune
+            .tag(BlockTags.DRAGON_IMMUNE)
             .registerOre(Blocks.END_STONE::defaultBlockState, GTMaterials.Endstone,
                     BlockBehaviour.Properties.of().mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASEDRUM)
                             .requiresCorrectToolForDrops().strength(4.5F, 9.0F),
@@ -203,8 +206,8 @@ public class TagPrefix {
 
     public static final TagPrefixEntry rawOre = REGISTRATE.tagPrefix("raw")
             .idPattern("raw_%s")
-            .defaultTagPath("raw_materials/%s")
-            .unformattedTagPath("raw_materials")
+            .defaultTag("raw_materials/%s")
+            .unformattedTag("raw_materials")
             .lang("Raw %s")
             .materialIconType(MaterialIconType.rawOre)
             .unificationEnabled(true)
@@ -214,8 +217,8 @@ public class TagPrefix {
 
     public static final TagPrefixEntry rawOreBlock = REGISTRATE.tagPrefix("raw_ore_block")
             .idPattern("raw_%s_block")
-            .defaultTagPath("storage_blocks/raw_%s")
-            .unformattedTagPath("storage_blocks")
+            .defaultTag("storage_blocks/raw_%s")
+            .unformattedTag("storage_blocks")
             .lang("Block of Raw %s")
             .materialIconType(MaterialIconType.rawOreBlock)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -226,8 +229,8 @@ public class TagPrefix {
 
     public static final TagPrefixEntry crushedRefined = REGISTRATE.tagPrefix("refined_ore")
             .idPattern("refined_%s_ore")
-            .defaultTagPath("refined_ores/%s")
-            .defaultTagPath("refined_ores")
+            .defaultTag("refined_ores/%s")
+            .unformattedTag("refined_ores")
             .lang("Refined %s Ore")
             .materialIconType(MaterialIconType.crushedRefined)
             .unificationEnabled(true)
@@ -237,9 +240,9 @@ public class TagPrefix {
 
     public static final TagPrefixEntry crushedPurified = REGISTRATE.tagPrefix("purified_ore")
             .idPattern("purified_%s_ore")
-            .defaultTagPath("purified_ores/%s")
-            .defaultTagPath("purified_ores")
-            .customTagPredicate("siftables", false, m -> m.hasProperty(PropertyKey.GEM))
+            .defaultTag("purified_ores/%s")
+            .unformattedTag("purified_ores")
+            .filteredUnformattedTag("siftables", false, m -> m.hasProperty(PropertyKey.GEM))
             .lang("Purified %s Ore")
             .materialIconType(MaterialIconType.crushedPurified)
             .unificationEnabled(true)
@@ -249,8 +252,21 @@ public class TagPrefix {
 
     public static final TagPrefixEntry crushed = REGISTRATE.tagPrefix("crushed_ore")
             .idPattern("crushed_%s_ore")
-            .defaultTagPath("crushed_ores/%s")
-            .unformattedTagPath("crushed_ores")
+            .defaultTag("crushed_ores/%s")
+            .unformattedTag("crushed_ores")
+            .filteredCustomTag("chemical_bath_washable/%s", mat -> {
+                if (!mat.hasProperty(PropertyKey.ORE)) return false;
+                Material washedIn = mat.getPropertyOrThrow(PropertyKey.ORE).getWashedIn().first();
+                return washedIn != null;
+            }, (path, mat) -> {
+                Material washedIn = mat.getPropertyOrThrow(PropertyKey.ORE).getWashedIn().first();
+                return TagUtil.createItemTag(path.formatted(washedIn.getName()));
+            })
+            .filteredUnformattedTag("chemical_bath_washable", false, mat -> {
+                if (!mat.hasProperty(PropertyKey.ORE)) return false;
+                Material washedIn = mat.getPropertyOrThrow(PropertyKey.ORE).getWashedIn().first();
+                return washedIn != null;
+            })
             .lang("Crushed %s Ore")
             .materialIconType(MaterialIconType.crushed)
             .unificationEnabled(true)
@@ -262,21 +278,21 @@ public class TagPrefix {
     // A hot Ingot, which has to be cooled down by a Vacuum Freezer.
     public static final TagPrefixEntry ingotHot = REGISTRATE.tagPrefix("hot_ingot")
             .idPattern("hot_%s_ingot")
-            .defaultTagPath("hot_ingots/%s")
-            .unformattedTagPath("hot_ingots")
+            .defaultTag("hot_ingots/%s")
+            .unformattedTag("hot_ingots")
             .lang("Hot %s Ingot")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.ingotHot)
             .unificationEnabled(true)
             .generateItem(true)
-            .generationCondition(
-                    hasBlastProperty.and(mat -> mat.getProperty(PropertyKey.BLAST).getBlastTemperature() > 1750))
+            .generationCondition(hasBlastProperty
+                    .and(mat -> mat.getPropertyOrThrow(PropertyKey.BLAST).getBlastTemperature() > 1750))
             .register();
 
     // A regular Ingot.
     public static final TagPrefixEntry ingot = REGISTRATE.tagPrefix("ingot")
-            .defaultTagPath("ingots/%s")
-            .unformattedTagPath("ingots")
+            .defaultTag("ingots/%s")
+            .unformattedTag("ingots")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.ingot)
             .unificationEnabled(true)
@@ -287,8 +303,8 @@ public class TagPrefix {
 
     // A regular Gem worth one Dust.
     public static final TagPrefixEntry gem = REGISTRATE.tagPrefix("gem")
-            .defaultTagPath("gems/%s")
-            .unformattedTagPath("gems")
+            .defaultTag("gems/%s")
+            .unformattedTag("gems")
             .lang("%s")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.gem)
@@ -301,8 +317,8 @@ public class TagPrefix {
     // A regular Gem worth one small Dust.
     public static final TagPrefixEntry gemChipped = REGISTRATE.tagPrefix("chipped_gem")
             .idPattern("chipped_%s_gem")
-            .defaultTagPath("chipped_gems/%s")
-            .unformattedTagPath("chipped_gems")
+            .defaultTag("chipped_gems/%s")
+            .unformattedTag("chipped_gems")
             .lang("Chipped %s")
             .materialAmount(GTValues.M / 4)
             .materialIconType(MaterialIconType.gemChipped)
@@ -315,8 +331,8 @@ public class TagPrefix {
     // A regular Gem worth two small Dusts.
     public static final TagPrefixEntry gemFlawed = REGISTRATE.tagPrefix("flawed_gem")
             .idPattern("flawed_%s_gem")
-            .defaultTagPath("flawed_gems/%s")
-            .unformattedTagPath("flawed_gems")
+            .defaultTag("flawed_gems/%s")
+            .unformattedTag("flawed_gems")
             .lang("Flawed %s")
             .materialAmount(GTValues.M / 2)
             .materialIconType(MaterialIconType.gemFlawed)
@@ -329,8 +345,8 @@ public class TagPrefix {
     // A regular Gem worth two Dusts.
     public static final TagPrefixEntry gemFlawless = REGISTRATE.tagPrefix("flawless_gem")
             .idPattern("flawless_%s_gem")
-            .defaultTagPath("flawless_gems/%s")
-            .unformattedTagPath("flawless_gems")
+            .defaultTag("flawless_gems/%s")
+            .unformattedTag("flawless_gems")
             .lang("Flawless %s")
             .materialAmount(GTValues.M * 2)
             .maxStackSize(32)
@@ -344,8 +360,8 @@ public class TagPrefix {
     // A regular Gem worth four Dusts.
     public static final TagPrefixEntry gemExquisite = REGISTRATE.tagPrefix("exquisite_gem")
             .idPattern("exquisite_%s_gem")
-            .defaultTagPath("exquisite_gems/%s")
-            .unformattedTagPath("exquisite_gems")
+            .defaultTag("exquisite_gems/%s")
+            .unformattedTag("exquisite_gems")
             .lang("Exquisite %s")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
@@ -359,8 +375,8 @@ public class TagPrefix {
     // 1/4th of a Dust.
     public static final TagPrefixEntry dustSmall = REGISTRATE.tagPrefix("small_dust")
             .idPattern("small_%s_dust")
-            .defaultTagPath("small_dusts/%s")
-            .unformattedTagPath("small_dusts")
+            .defaultTag("small_dusts/%s")
+            .unformattedTag("small_dusts")
             .lang("Small Pile of %s Dust")
             .materialAmount(GTValues.M / 4)
             .materialIconType(MaterialIconType.dustSmall)
@@ -372,8 +388,8 @@ public class TagPrefix {
     // 1/9th of a Dust.
     public static final TagPrefixEntry dustTiny = REGISTRATE.tagPrefix("tiny_dust")
             .idPattern("tiny_%s_dust")
-            .defaultTagPath("tiny_dusts/%s")
-            .unformattedTagPath("tiny_dusts")
+            .defaultTag("tiny_dusts/%s")
+            .unformattedTag("tiny_dusts")
             .lang("Tiny Pile of %s Dust")
             .materialAmount(GTValues.M / 9)
             .materialIconType(MaterialIconType.dustTiny)
@@ -385,8 +401,8 @@ public class TagPrefix {
     // Dust with impurities. 1 Unit of Main Material and 1/9 - 1/4 Unit of secondary Material
     public static final TagPrefixEntry dustImpure = REGISTRATE.tagPrefix("impure_dust")
             .idPattern("impure_%s_dust")
-            .defaultTagPath("impure_dusts/%s")
-            .unformattedTagPath("impure_dusts")
+            .defaultTag("impure_dusts/%s")
+            .unformattedTag("impure_dusts")
             .lang("Impure Pile of %s Dust")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.dustImpure)
@@ -399,8 +415,8 @@ public class TagPrefix {
     // Pure Dust worth of one Ingot or Gem.
     public static final TagPrefixEntry dustPure = REGISTRATE.tagPrefix("pure_dust")
             .idPattern("pure_%s_dust")
-            .defaultTagPath("pure_dusts/%s")
-            .unformattedTagPath("pure_dusts")
+            .defaultTag("pure_dusts/%s")
+            .unformattedTag("pure_dusts")
             .lang("Purified Pile of %s Dust")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.dustPure)
@@ -411,8 +427,8 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry dust = REGISTRATE.tagPrefix("dust")
-            .defaultTagPath("dusts/%s")
-            .unformattedTagPath("dusts")
+            .defaultTag("dusts/%s")
+            .unformattedTag("dusts")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.dust)
             .unificationEnabled(true)
@@ -423,8 +439,8 @@ public class TagPrefix {
 
     // A Nugget.
     public static final TagPrefixEntry nugget = REGISTRATE.tagPrefix("nugget")
-            .defaultTagPath("nuggets/%s")
-            .unformattedTagPath("nuggets")
+            .defaultTag("nuggets/%s")
+            .unformattedTag("nuggets")
             .materialAmount(GTValues.M / 9)
             .materialIconType(MaterialIconType.nugget)
             .unificationEnabled(true)
@@ -436,8 +452,8 @@ public class TagPrefix {
     // 9 Plates combined in one Item.
     public static final TagPrefixEntry plateDense = REGISTRATE.tagPrefix("dense_plate")
             .idPattern("dense_%s_plate")
-            .defaultTagPath("dense_plates/%s")
-            .unformattedTagPath("dense_plates")
+            .defaultTag("dense_plates/%s")
+            .unformattedTag("dense_plates")
             .lang("Dense %s Plate")
             .materialAmount(GTValues.M * 9)
             .maxStackSize(7)
@@ -451,8 +467,8 @@ public class TagPrefix {
     // 2 Plates combined in one Item
     public static final TagPrefixEntry plateDouble = REGISTRATE.tagPrefix("double_plate")
             .idPattern("double_%s_plate")
-            .defaultTagPath("double_plates/%s")
-            .unformattedTagPath("double_plates")
+            .defaultTag("double_plates/%s")
+            .unformattedTag("double_plates")
             .lang("Double %s Plate")
             .materialAmount(GTValues.M * 2)
             .maxStackSize(32)
@@ -466,8 +482,8 @@ public class TagPrefix {
 
     // Regular Plate made of one Ingot/Dust.
     public static final TagPrefixEntry plate = REGISTRATE.tagPrefix("plate")
-            .defaultTagPath("plates/%s")
-            .unformattedTagPath("plates")
+            .defaultTag("plates/%s")
+            .unformattedTag("plates")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.plate)
             .unificationEnabled(true)
@@ -478,8 +494,8 @@ public class TagPrefix {
 
     // Round made of 1 Nugget
     public static final TagPrefixEntry round = REGISTRATE.tagPrefix("round")
-            .defaultTagPath("rounds/%s")
-            .unformattedTagPath("rounds")
+            .defaultTag("rounds/%s")
+            .unformattedTag("rounds")
             .materialAmount(GTValues.M / 9)
             .materialIconType(MaterialIconType.round)
             .unificationEnabled(true)
@@ -490,8 +506,8 @@ public class TagPrefix {
 
     // Foil made of 1/4 Ingot/Dust.
     public static final TagPrefixEntry foil = REGISTRATE.tagPrefix("foil")
-            .defaultTagPath("foils/%s")
-            .unformattedTagPath("foils")
+            .defaultTag("foils/%s")
+            .unformattedTag("foils")
             .materialAmount(GTValues.M / 4)
             .materialIconType(MaterialIconType.foil)
             .unificationEnabled(true)
@@ -503,8 +519,8 @@ public class TagPrefix {
     // Stick made of an Ingot.
     public static final TagPrefixEntry rodLong = REGISTRATE.tagPrefix("long_rod")
             .idPattern("long_%s_rod")
-            .defaultTagPath("rods/long/%s")
-            .unformattedTagPath("rods/long")
+            .defaultTag("rods/long/%s")
+            .unformattedTag("rods/long")
             .lang("Long %s Rod")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.rodLong)
@@ -516,8 +532,8 @@ public class TagPrefix {
 
     // Stick made of half an Ingot.
     public static final TagPrefixEntry rod = REGISTRATE.tagPrefix("rod")
-            .defaultTagPath("rods/%s")
-            .unformattedTagPath("rods")
+            .defaultTag("rods/%s")
+            .unformattedTag("rods")
             .lang("%s Rod")
             .materialAmount(GTValues.M / 2)
             .materialIconType(MaterialIconType.rod)
@@ -529,8 +545,8 @@ public class TagPrefix {
 
     // consisting out of 1/8 Ingot or 1/4 Stick.
     public static final TagPrefixEntry bolt = REGISTRATE.tagPrefix("bolt")
-            .defaultTagPath("bolts/%s")
-            .unformattedTagPath("bolts")
+            .defaultTag("bolts/%s")
+            .unformattedTag("bolts")
             .materialAmount(GTValues.M / 8)
             .materialIconType(MaterialIconType.bolt)
             .unificationEnabled(true)
@@ -541,8 +557,8 @@ public class TagPrefix {
 
     // consisting out of 1/9 Ingot.
     public static final TagPrefixEntry screw = REGISTRATE.tagPrefix("screw")
-            .defaultTagPath("screws/%s")
-            .unformattedTagPath("screws")
+            .defaultTag("screws/%s")
+            .unformattedTag("screws")
             .materialAmount(GTValues.M / 9)
             .materialIconType(MaterialIconType.screw)
             .unificationEnabled(true)
@@ -553,8 +569,8 @@ public class TagPrefix {
 
     // consisting out of 1/2 Stick.
     public static final TagPrefixEntry ring = REGISTRATE.tagPrefix("ring")
-            .defaultTagPath("rings/%s")
-            .unformattedTagPath("rings")
+            .defaultTag("rings/%s")
+            .unformattedTag("rings")
             .materialAmount(GTValues.M / 4)
             .materialIconType(MaterialIconType.ring)
             .unificationEnabled(true)
@@ -566,8 +582,8 @@ public class TagPrefix {
     // consisting out of 1 Fine Wire.
     public static final TagPrefixEntry springSmall = REGISTRATE.tagPrefix("small_spring")
             .idPattern("small_%s_spring")
-            .defaultTagPath("small_springs/%s")
-            .unformattedTagPath("small_springs")
+            .defaultTag("small_springs/%s")
+            .unformattedTag("small_springs")
             .lang("Small %s Spring")
             .materialAmount(GTValues.M / 4)
             .materialIconType(MaterialIconType.springSmall)
@@ -580,8 +596,8 @@ public class TagPrefix {
 
     // consisting out of 2 Sticks.
     public static final TagPrefixEntry spring = REGISTRATE.tagPrefix("spring")
-            .defaultTagPath("springs/%s")
-            .unformattedTagPath("springs")
+            .defaultTag("springs/%s")
+            .unformattedTag("springs")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.spring)
             .unificationEnabled(true)
@@ -594,8 +610,8 @@ public class TagPrefix {
     // consisting out of 1/8 Ingot or 1/4 Wire.
     public static final TagPrefixEntry wireFine = REGISTRATE.tagPrefix("fine_wire")
             .idPattern("fine_%s_wire")
-            .defaultTagPath("fine_wires/%s")
-            .unformattedTagPath("fine_wires")
+            .defaultTag("fine_wires/%s")
+            .unformattedTag("fine_wires")
             .lang("Fine %s Wire")
             .materialAmount(GTValues.M / 8)
             .materialIconType(MaterialIconType.wireFine)
@@ -607,8 +623,8 @@ public class TagPrefix {
 
     // consisting out of 4 Plates, 1 Ring and 1 Screw.
     public static final TagPrefixEntry rotor = REGISTRATE.tagPrefix("rotor")
-            .defaultTagPath("rotors/%s")
-            .unformattedTagPath("rotors")
+            .defaultTag("rotors/%s")
+            .unformattedTag("rotors")
             .materialAmount(GTValues.M * 17 / 4)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.rotor)
@@ -621,8 +637,8 @@ public class TagPrefix {
     // Consisting of 1 Plate.
     public static final TagPrefixEntry gearSmall = REGISTRATE.tagPrefix("small_gear")
             .idPattern("small_%s_gear")
-            .defaultTagPath("small_gears/%s")
-            .unformattedTagPath("small_gears")
+            .defaultTag("small_gears/%s")
+            .unformattedTag("small_gears")
             .lang("Small %s Gear")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.gearSmall)
@@ -634,8 +650,8 @@ public class TagPrefix {
 
     // Consisting of 4 Plates.
     public static final TagPrefixEntry gear = REGISTRATE.tagPrefix("gear")
-            .defaultTagPath("gears/%s")
-            .unformattedTagPath("gears")
+            .defaultTag("gears/%s")
+            .unformattedTag("gears")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.gear)
@@ -647,8 +663,8 @@ public class TagPrefix {
 
     // 3/4 of a Plate or Gem used to shape a Lens. Normally only used on Transparent Materials.
     public static final TagPrefixEntry lens = REGISTRATE.tagPrefix("lens")
-            .defaultTagPath("lenses/%s")
-            .unformattedTagPath("lenses")
+            .defaultTag("lenses/%s")
+            .unformattedTag("lenses")
             .materialAmount((GTValues.M * 3) / 4)
             .materialIconType(MaterialIconType.lens)
             .unificationEnabled(true)
@@ -658,8 +674,8 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry dye = REGISTRATE.tagPrefix("dye")
-            .defaultTagPath("dyes/%s")
-            .unformattedTagPath("dyes")
+            .defaultTag("dyes/%s")
+            .unformattedTag("dyes")
             .materialAmount(-1)
             .register();
 
@@ -673,7 +689,7 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.BUZZSAW_LV)))
+                    .and(mat -> mat.getPropertyOrThrow(PropertyKey.TOOL).hasType(GTToolType.BUZZSAW_LV)))
             .register();
 
     // made of 1 Ingots.
@@ -686,7 +702,7 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_LONG_ROD))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.SCREWDRIVER_LV)))
+                    .and(mat -> mat.getPropertyOrThrow(PropertyKey.TOOL).hasType(GTToolType.SCREWDRIVER_LV)))
             .register();
 
     // made of 4 Ingots.
@@ -699,7 +715,7 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.DRILL_LV)))
+                    .and(mat -> mat.getPropertyOrThrow(PropertyKey.TOOL).hasType(GTToolType.DRILL_LV)))
             .register();
 
     // made of 2 Ingots.
@@ -712,7 +728,7 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.CHAINSAW_LV)))
+                    .and(mat -> mat.getPropertyOrThrow(PropertyKey.TOOL).hasType(GTToolType.CHAINSAW_LV)))
             .register();
 
     // made of 4 Ingots.
@@ -725,7 +741,7 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WRENCH_LV)))
+                    .and(mat -> mat.getPropertyOrThrow(PropertyKey.TOOL).hasType(GTToolType.WRENCH_LV)))
             .register();
 
     public static final TagPrefixEntry toolHeadWireCutter = REGISTRATE.tagPrefix("wire_cutter_head")
@@ -737,7 +753,7 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WIRE_CUTTER_LV)))
+                    .and(mat -> mat.getPropertyOrThrow(PropertyKey.TOOL).hasType(GTToolType.WIRE_CUTTER_LV)))
             .register();
 
     // made of 5 Ingots.
@@ -755,8 +771,8 @@ public class TagPrefix {
 
     // Storage Block consisting out of 9 Ingots/Gems/Dusts.
     public static final TagPrefixEntry block = REGISTRATE.tagPrefix("block")
-            .defaultTagPath("storage_blocks/%s")
-            .unformattedTagPath("storage_blocks")
+            .defaultTag("storage_blocks/%s")
+            .unformattedTag("storage_blocks")
             .lang("Block of %s")
             .materialAmount(GTValues.M * 9)
             .materialIconType(MaterialIconType.block)
@@ -769,31 +785,32 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry log = REGISTRATE.tagPrefix("log")
-            .unformattedTagPath("logs", true)
+            .unformattedTag("logs", true)
             .register();
     public static final TagPrefixEntry planks = REGISTRATE.tagPrefix("planks")
-            .unformattedTagPath("planks", true)
+            .unformattedTag("planks", true)
             .register();
     public static final TagPrefixEntry slab = REGISTRATE.tagPrefix("slab")
-            .unformattedTagPath("slabs", true)
+            .unformattedTag("slabs", true)
             .register();
     public static final TagPrefixEntry stairs = REGISTRATE.tagPrefix("stairs")
-            .unformattedTagPath("stairs", true)
+            .unformattedTag("stairs", true)
             .register();
     public static final TagPrefixEntry fence = REGISTRATE.tagPrefix("fence")
-            .unformattedTagPath("fences")
+            .unformattedTag("fences")
             .register();
     public static final TagPrefixEntry fenceGate = REGISTRATE.tagPrefix("fence_gate")
-            .unformattedTagPath("fence_gates")
+            .unformattedTag("fence_gates")
             .register();
     public static final TagPrefixEntry door = REGISTRATE.tagPrefix("door")
-            .unformattedTagPath("doors", true)
+            .unformattedTag("doors", true)
             .register();
 
     // Prefix to determine which kind of Rock this is.
     // Also has a base tag path of only the material, for things like obsidian etc.
     public static final TagPrefixEntry rock = REGISTRATE.tagPrefix("rock")
-            .defaultTagPath("%s")
+            // the 2nd 's' makes the tag plural, which is what Common tags are expected to be.
+            .defaultTag("%ss")
             .lang("%s")
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(false)
@@ -802,8 +819,9 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry frameGt = REGISTRATE.tagPrefix("frame")
-            .defaultTagPath("frames/%s")
-            .unformattedTagPath("frames")
+            .defaultTag("frames/%s")
+            .unformattedTag("frames")
+            .tag(CustomTags.SLOW_WALKABLE_BLOCKS)
             .lang("%s Frame")
             .materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.frameGt)
@@ -1026,9 +1044,9 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry surfaceRock = REGISTRATE.tagPrefix("surface_rock")
+            .defaultTag("surface_rocks/%s")
+            .unformattedTag("surface_rocks")
             .lang("%s Surface Rock")
-            .defaultTagPath("surface_rocks/%s")
-            .unformattedTagPath("surface_rocks")
             .materialAmount(GTValues.M / 3)
             .register();
 
@@ -1036,7 +1054,7 @@ public class TagPrefix {
 
         public static final Predicate<Material> hasToolProperty = mat -> mat.hasProperty(PropertyKey.TOOL);
         public static final Predicate<Material> hasNoCraftingToolProperty = hasToolProperty
-                .and(mat -> !mat.getProperty(PropertyKey.TOOL).isIgnoreCraftingTools());
+                .and(mat -> !mat.getPropertyOrThrow(PropertyKey.TOOL).isIgnoreCraftingTools());
         public static final Predicate<Material> hasOreProperty = mat -> mat.hasProperty(PropertyKey.ORE);
         public static final Predicate<Material> hasGemProperty = mat -> mat.hasProperty(PropertyKey.GEM);
         public static final Predicate<Material> hasDustProperty = mat -> mat.hasProperty(PropertyKey.DUST);
