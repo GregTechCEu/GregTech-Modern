@@ -41,6 +41,7 @@ import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
@@ -93,41 +94,53 @@ public class GTMuiWidgets {
     }
 
     public static Flow createTitleBar(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background) {
+        return createTitleBarWithEnd(stackSupplier, panelWidth, background, null);
+    }
+
+    public static Flow createTitleBar(Icon icon, String text, int panelWidth, UITexture background) {
+        return createTitleBarWithEnd(icon, text, panelWidth, background, null);
+    }
+
+    public static Flow createTitleBarWithEnd(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background,
+                                             @Nullable Widget<?> end) {
         ItemStack stack = stackSupplier.get();
         var name = stack.getHoverName().getString();
         name = name.replaceAll("§.", "").trim();
-        return createTitleBar(new ItemDrawable(stack).asIcon(), name, panelWidth, background);
+        return createTitleBarWithEnd(new ItemDrawable(stack).asIcon(), name, panelWidth, background, end);
     }
 
-    public static Flow createTitleBar(@Nullable Icon icon, String text, int panelWidth, UITexture background) {
-        int borderRadius = 5;
-        int iconSize = icon == null ? 0 : 16;
-        int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 3));
+    public static Flow createTitleBarWithEnd(Icon icon, String text, int panelWidth, UITexture background,
+                                             @Nullable Widget<?> end) {
+        int sidePadding = 5;
+        int topPadding = 3;
+
+        int iconSize = 12;
+
+        int endWidth = 0;
+        if (end != null) {
+            endWidth = end.resizer().getFixedPixelWidth() + sidePadding;
+        }
+        int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + endWidth + (sidePadding * 3));
         int textTitleWidth = GTCEu.isClientThread() ? TextRenderer.getFont().width(text) : 1;
 
         int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
         int textHeightPerRow = GTCEu.isClientThread() ? (int) (Text.renderer.getFontHeight()) : 9;
-        int textHeight = textHeightPerRow * textRows + borderRadius;
+        int textHeight = textHeightPerRow * textRows + topPadding;
 
-        int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + (borderRadius * 4) + textTitleWidth));
-        TextWidget<?> textWidget = Text.str(text)
-                .asWidget()
-                .margin(borderRadius, borderRadius, borderRadius, 1)
-                .size(Math.min(minPanelWidth, textTitleWidth), textHeight);
-        if (icon == null) textWidget.center();
+        int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + endWidth + (sidePadding * 4) + textTitleWidth));
+
         return Flow.row()
                 .decoration()
                 .coverChildrenHeight()
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .width(rowWidth)
-                .top(-(textHeight + borderRadius))
+                .top(-(textHeight + topPadding))
                 .horizontalCenter()
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
-                .childIf(icon != null, () -> icon.size(iconSize)
-                        .asWidget()
-                        .marginLeft(borderRadius))
-                .child(textWidget);
+                .child(icon.size(iconSize).asWidget().size(iconSize))
+                .child(Text.str(text).asWidget().size(Math.min(minPanelWidth, textTitleWidth), textHeight))
+                .childIf(end != null, () -> end);
     }
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture texture,
@@ -423,7 +436,7 @@ public class GTMuiWidgets {
         syncManager.syncValue("filterSlotHandler", filterSlotHandler);
 
         IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
-                (sm, sh) -> filterHandler.getFilter().getPanel(data, sm, settings, false));
+                (sm, sh) -> filterHandler.getFilter().getPanel(data, sm, settings, false, sh));
 
         modSlot.changeListener((oldStack, newStack, client, init) -> {
             if (init || ItemStack.isSameItem(oldStack, newStack)) return;

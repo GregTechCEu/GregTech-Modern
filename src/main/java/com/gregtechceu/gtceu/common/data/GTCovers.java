@@ -23,7 +23,7 @@ import net.minecraftforge.fml.ModLoader;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
-import java.util.Locale;
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class GTCovers {
@@ -140,13 +140,11 @@ public class GTCovers {
                                                    CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
                                                    Supplier<Int2ObjectFunction<ICoverRenderer>> coverRenderer,
                                                    int... tiers) {
-        CoverDefinition[] definitions = new CoverDefinition[GTValues.TIER_COUNT];
-        for (int tier : tiers) {
-            definitions[tier] = register(id.withSuffix("." + GTValues.VN[tier].toLowerCase(Locale.ROOT)),
-                    (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
+        return Arrays.stream(tiers).mapToObj(tier -> {
+            var name = id + "." + GTValues.VNL[tier];
+            return register(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
                     () -> () -> coverRenderer.get().apply(tier));
-        }
-        return definitions;
+        }).toArray(CoverDefinition[]::new);
     }
 
     public static CoverDefinition[] registerTiered(ResourceLocation id,
@@ -154,7 +152,7 @@ public class GTCovers {
                                                    int... tiers) {
         CoverDefinition[] definitions = new CoverDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
-            definitions[tier] = register(id.withSuffix("." + GTValues.VN[tier].toLowerCase(Locale.ROOT)),
+            definitions[tier] = register(id.withSuffix("." + GTValues.VNL[tier]),
                     (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier));
         }
         return definitions;

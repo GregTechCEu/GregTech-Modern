@@ -89,8 +89,8 @@ public class ModularArmorManagerUI implements IUIHolder<ModularArmorUIFactory.Ar
             pages.addPage(moduleList);
         }
         return panel.child(GTMuiWidgets.createTitleBar(IDrawable.EMPTY.asIcon(),
-                Component.translatable("gui.gtceu.armor_config.title").getString(), 284,
-                GTGuiTextures.BACKGROUND)).child(armorList).child(pages);
+                Component.translatable("gui.gtceu.armor_config.title").getString(), 284, GTGuiTextures.BACKGROUND))
+                .child(armorList).child(pages);
     }
 
     private ModularPanel<?> createPanelForModule(PanelSyncManager psm, IModularItem modularItem, int index,

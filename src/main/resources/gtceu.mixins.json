@@ -109,6 +109,8 @@
         "forge.PartialNBTIngredientAccessor",
         "forge.StrictNBTIngredientAccessor",
         "jei.FluidHelperMixin",
+        "mui.ModularUIEmiRecipeAccessor",
+        "mui.ModularUIJeiRecipeAccessor",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",
     ],
