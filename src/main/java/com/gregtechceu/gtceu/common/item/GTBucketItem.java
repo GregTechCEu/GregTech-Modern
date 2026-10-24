@@ -18,12 +18,12 @@ public class GTBucketItem extends BucketItem {
     }
 
     public static int color(ItemStack itemStack, int index) {
-        if (itemStack.getItem() instanceof GTBucketItem item) {
+        if (itemStack.getItem() instanceof BucketItem bucket) {
             if (index == 1) {
-                return IClientFluidTypeExtensions.of(item.content).getTintColor();
+                return IClientFluidTypeExtensions.of(bucket.content).getTintColor();
             }
         }
-        return -1;
+        return 0xFFFFFFFF;
     }
 
     @Override

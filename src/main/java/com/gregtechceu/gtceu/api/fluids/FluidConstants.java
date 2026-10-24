@@ -29,6 +29,8 @@ public final class FluidConstants {
     public static final int DEFAULT_PLASMA_DENSITY = -100000;
     public static final int DEFAULT_MOLTEN_DENSITY = 1500;
 
+    public static final int MIN_SWIMMABLE_DENSITY = 500;
+
     /**
      * Viscosity for sticky materials
      */
@@ -38,6 +40,8 @@ public final class FluidConstants {
     public static final int DEFAULT_GAS_VISCOSITY = 200;
     public static final int DEFAULT_PLASMA_VISCOSITY = 10;
     public static final int DEFAULT_MOLTEN_VISCOSITY = 2000;
+
+    public static final int MAX_SWIMMABLE_VISCOSITY = 1500;
 
     /**
      * Threshold for fluids to be considered cryogenic.
