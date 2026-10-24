@@ -3,10 +3,10 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
@@ -16,7 +16,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
@@ -30,12 +29,14 @@ public class LargeSteamTurbineTest {
     @GameTest(template = "lst_with_steam", timeoutTicks = 20 + 40 + 1)
     public static void LstActivatesTest(GameTestHelper helper) {
         {
-            final var block = (PipeBlockEntity<?, ?>) helper.getBlockEntity(new BlockPos(4, 3, 3));
+            final var block = (PipeBlockEntity) helper.getBlockEntity(new BlockPos(4, 3, 3));
             block.setConnection(Direction.SOUTH, true, false);
         }
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
-            final ItemStack rotor = ChemicalHelper.get(TagPrefix.turbineRotor, GTMaterials.RoseGold);
+            final var rotor = GTItems.TURBINE_ROTOR.asStack();
+            final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
@@ -53,20 +54,22 @@ public class LargeSteamTurbineTest {
 
     @GameTest(template = "lst_with_steam", timeoutTicks = 20 + 40 + 1)
     public static void LstStopsOnBrokenRotorTest(GameTestHelper helper) {
-        {
-            final var block = (PipeBlockEntity<?, ?>) helper.getBlockEntity(new BlockPos(4, 3, 3));
-            block.setConnection(Direction.SOUTH, true, false);
-        }
+        final var block = (PipeBlockEntity) helper.getBlockEntity(new BlockPos(4, 3, 3));
+        block.setConnection(Direction.SOUTH, true, false);
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
-            final ItemStack rotor = ChemicalHelper.get(TagPrefix.turbineRotor, GTMaterials.RoseGold);
+            final var rotor = GTItems.TURBINE_ROTOR.asStack();
+            final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
+        final var dynamo = (EnergyHatchPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 1));
         helper.runAfterDelay(20, () -> {
             {
-                final ItemStack rotor = rotorPart.inventory.storage.getStackInSlot(0);
-                rotor.setDamageValue(rotor.getMaxDamage() - 1);
+                final var rotor = rotorPart.inventory.storage.getStackInSlot(0);
+                final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
+                behavior.setPartDamage(rotor, behavior.getMaxDurability(rotor) - 1);
             }
             helper.assertTrue(machine.getRecipeLogic().isWorking(), "Expected turbine to be running");
             rotorPart.setRotorSpeed(0);
@@ -82,7 +85,9 @@ public class LargeSteamTurbineTest {
     public static void LstGeneratesCorrectPowerTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
-            final ItemStack rotor = ChemicalHelper.get(TagPrefix.turbineRotor, GTMaterials.RoseGold);
+            final var rotor = GTItems.TURBINE_ROTOR.asStack();
+            final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
@@ -106,7 +111,9 @@ public class LargeSteamTurbineTest {
     public static void LstRotorSpeedIncreasesAndDecreasesAsExpectedTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
-            final ItemStack rotor = ChemicalHelper.get(TagPrefix.turbineRotor, GTMaterials.RoseGold);
+            final var rotor = GTItems.TURBINE_ROTOR.asStack();
+            final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
@@ -155,7 +162,9 @@ public class LargeSteamTurbineTest {
     public static void LstOutputsCorrectAmountOfDistilledWaterTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
-            final ItemStack rotor = ChemicalHelper.get(TagPrefix.turbineRotor, GTMaterials.RoseGold);
+            final var rotor = GTItems.TURBINE_ROTOR.asStack();
+            final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
@@ -177,12 +186,14 @@ public class LargeSteamTurbineTest {
     @GameTest(template = "lst_with_steam", timeoutTicks = 20 + 40 + 1)
     public static void LstRunsWithFullDynamoTest(GameTestHelper helper) {
         {
-            final var block = (PipeBlockEntity<?, ?>) helper.getBlockEntity(new BlockPos(4, 3, 3));
+            final var block = (PipeBlockEntity) helper.getBlockEntity(new BlockPos(4, 3, 3));
             block.setConnection(Direction.SOUTH, true, false);
         }
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
-            final ItemStack rotor = ChemicalHelper.get(TagPrefix.turbineRotor, GTMaterials.RoseGold);
+            final var rotor = GTItems.TURBINE_ROTOR.asStack();
+            final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
@@ -204,7 +215,9 @@ public class LargeSteamTurbineTest {
     public static void LstRefusesToRunWithoutMaintenanceTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
-            final ItemStack rotor = ChemicalHelper.get(TagPrefix.turbineRotor, GTMaterials.RoseGold);
+            final var rotor = GTItems.TURBINE_ROTOR.asStack();
+            final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
@@ -224,7 +237,9 @@ public class LargeSteamTurbineTest {
     public static void LstRefusesToRunOnWrongFluidTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
-            final ItemStack rotor = ChemicalHelper.get(TagPrefix.turbineRotor, GTMaterials.RoseGold);
+            final var rotor = GTItems.TURBINE_ROTOR.asStack();
+            final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));

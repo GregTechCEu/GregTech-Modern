@@ -74,6 +74,8 @@ public class GTEMIPlugin implements EmiPlugin {
                 EmiIngredient.of(Ingredient.of(GTMachines.EQUIPMENT_FOUNDRY)));
 
         // Comparators
+        registry.setDefaultComparison(GTItems.TURBINE_ROTOR, Comparison.compareNbt());
+
         registry.setDefaultComparison(GTItems.PROGRAMMED_CIRCUIT, Comparison.compareNbt());
         registry.removeEmiStacks(EmiStack.of(GTItems.PROGRAMMED_CIRCUIT));
         registry.addEmiStack(EmiStack.of(IntCircuitBehaviour.stack(0)));

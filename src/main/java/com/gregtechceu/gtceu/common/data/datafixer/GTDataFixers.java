@@ -165,7 +165,7 @@ public class GTDataFixers {
 
         // separator
 
-        Schema v3_0 = builder.addSchema(3, 0, V3::new);
+        Schema v3_0 = builder.addSchema(3, 0, SAME_NAMESPACED);
         // createMaterialRenameFix(builder, v3_0, "Rename uranium to uranium_238",
         // createRenamer(Pattern.compile("gtceu:(.*)?uranium"), "gtceu:$1uranium_238"));
         // createMaterialRenameFix(builder, v3_0, "Rename uranium_235 to uranium",
@@ -186,8 +186,6 @@ public class GTDataFixers {
                 createRenamer("gtceu:bronze_brick_casing", "gtceu:bricked_bronze_casing"));
         createBlockItemRenameFix(builder, v3_0, "Rename Bricked Wrought Iron Casing",
                 createRenamer("gtceu:steel_brick_casing", "gtceu:bricked_wrought_iron_casing"));
-
-        builder.addFixer(new ItemStackTurbineRotorFix(v3_0));
 
         // separator
 
@@ -213,7 +211,7 @@ public class GTDataFixers {
 
     /**
      * create and add all required fixes to rename a material.
-     * 
+     *
      * @param builder the DFU builder instance
      * @param schema  the current version's schema
      * @param oldName the material's old name INCLUDING the namespace
