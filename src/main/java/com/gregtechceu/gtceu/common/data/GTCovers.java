@@ -140,11 +140,12 @@ public class GTCovers {
                                                    CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
                                                    Supplier<Int2ObjectFunction<ICoverRenderer>> coverRenderer,
                                                    int... tiers) {
-        return Arrays.stream(tiers).mapToObj(tier -> {
-            var name = id + "." + GTValues.VNL[tier];
-            return register(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
-                    () -> () -> coverRenderer.get().apply(tier));
-        }).toArray(CoverDefinition[]::new);
+        CoverDefinition[] definitions = new CoverDefinition[GTValues.TIER_COUNT];
+        for (int tier : tiers) {
+            definitions[tier] = register(id.withSuffix("." + GTValues.VNL[tier]),
+                    (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier), () -> () -> coverRenderer.get().apply(tier));
+        }
+        return definitions;
     }
 
     public static CoverDefinition[] registerTiered(ResourceLocation id,
