@@ -64,13 +64,11 @@ You can change the properties of the material by adding any combination of the f
 
 === "Java"
     ```java title="AddonMaterials.java"
-    public static Material ANDESITE_ALLOY = new Material.Builder(
-            ADDON_MOD.id("andesite_alloy"))
+    public static MaterialRegistryEntry ANDESITE_ALLOY = ADDON_REGISTRATE.material("andesite_alloy", builder -> builder
             .ingot()
-            .components("1x andesite", "1x iron")
+            .components(Andesite, 1, Iron, 1)
             .color(0xFF0000).secondaryColor(0x840707).iconSet(MaterialIconSet.DULL)
-            .flags(MaterialFlags.GENERATE_PLATE, MaterialFlags.GENERATE_GEAR, MaterialFlags.GENERATE_SMALL_GEAR)
-            .buildAndRegister();
+            .flags(MaterialFlags.GENERATE_PLATE, MaterialFlags.GENERATE_GEAR, MaterialFlags.GENERATE_SMALL_GEAR));
     ```
 === "JavaScript"
     ```js title="ingot.js"
@@ -87,11 +85,9 @@ You can change the properties of the material by adding any combination of the f
 
 === "Java"
     ```java title="AddonMaterials.java"
-    public static Material MYSTERIOUS_DUST = new Material.Builder(
-            ADDON_MOD.id("mysterious_dust"))
+    public static MaterialRegistryEntry MYSTERIOUS_DUST = ADDON_REGISTRATE.material("mysterious_dust", builder -> builder
             .dust() // The harvest level and burn time can be specified in the brackets. Example: `.dust(2, 4000)`
-            .color(0x7D2DDB)
-            .buildAndRegister();
+            .color(0x7D2DDB));
     ```
 === "JavaScript"
     ```js title="dust.js"
@@ -106,14 +102,11 @@ You can change the properties of the material by adding any combination of the f
 
 === "Java"
     ```java title="Gem.java"
-    public static Material PURPLE_COAL = new Material.Builder(
-            ADDON_MOD.id("purple_coal"))
+    public static MaterialRegistryEntry PURPLE_COAL = ("purple_coal", builder -> builder
             .gem(2, 4000)
             .element(GTElements.C)
             .ore(2, 3)
-            .color(0x7D2DDB).iconSet(MaterialIconSet.LIGNITE)
-            .buildAndRegister();
-    
+            .color(0x7D2DDB).iconSet(MaterialIconSet.LIGNITE));
     ```
 === "JavaScript"
     ```js title="gem.js"
@@ -131,11 +124,9 @@ You can change the properties of the material by adding any combination of the f
 
 === "Java"
     ```java title="Fluid.java"
-    public static Material MYSTERIOUS_OOZE = new Material.Builder(
-            your_mod_id.id("mysterious_ooze"))
+    public static MaterialRegistryEntry MYSTERIOUS_OOZE = ADDON_REGISTRATE.material("mysterious_ooze", builder -> builder
             .fluid() // Or .liquid(Int Temperature)
-            .color(0x500bbf)
-            .buildAndRegister();
+            .color(0x500bbf));
     ```
 === "JavaScript"
     ```js title="fluid.js"
