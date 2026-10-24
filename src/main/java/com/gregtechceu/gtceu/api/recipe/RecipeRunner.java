@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapabilityVersions;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroupColor;
@@ -13,6 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import net.minecraft.network.chat.Component;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +38,7 @@ public class RecipeRunner {
     private final boolean isTick;
     private final Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches;
     private final Map<IO, List<RecipeHandlerList>> capabilityProxies;
+    private final RecipeCapabilityVersions versions;
     private final boolean simulated;
     private Map<RecipeCapability<?>, List<Object>> recipeContents;
     private final Map<RecipeCapability<?>, List<Object>> searchRecipeContents;
@@ -55,6 +58,7 @@ public class RecipeRunner {
         this.isTick = isTick;
         this.chanceCaches = chanceCaches;
         this.capabilityProxies = holder.getCapabilitiesProxy();
+        this.versions = holder.getRecipeVersions();
         this.recipeContents = new Reference2ObjectOpenHashMap<>();
         this.searchRecipeContents = simulated ? recipeContents : new Reference2ObjectOpenHashMap<>();
         this.simulated = simulated;
@@ -129,14 +133,17 @@ public class RecipeRunner {
         }
 
         List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(io, Collections.emptyList());
+
+        Map<RecipeHandlerGroup, List<RecipeHandlerList>> handlerGroups = getCompiledGroups(handlers);
         // Only sort for non-tick outputs
         if (!isTick && io.support(IO.OUT)) {
-            handlers.sort(RecipeHandlerList.COMPARATOR.reversed());
-        }
-
-        Map<RecipeHandlerGroup, List<RecipeHandlerList>> handlerGroups = new HashMap<>();
-        for (var handler : handlers) {
-            addToRecipeHandlerMap(handler.getGroup(), handler, handlerGroups);
+            Map<RecipeHandlerGroup, List<RecipeHandlerList>> sorted = new HashMap<>(handlerGroups.size());
+            for (var entry : handlerGroups.entrySet()) {
+                List<RecipeHandlerList> copy = new ObjectArrayList<>(entry.getValue());
+                copy.sort(RecipeHandlerList.COMPARATOR.reversed());
+                sorted.put(entry.getKey(), copy);
+            }
+            handlerGroups = sorted;
         }
         // Specifically check distinct handlers first
         for (RecipeHandlerList handler : handlerGroups.getOrDefault(BUS_DISTINCT, Collections.emptyList())) {
@@ -299,6 +306,35 @@ public class RecipeRunner {
             sum += (double) (total - leftCount) / total;
         }
         return caps == 0 ? 1.0 : sum / caps;
+    }
+
+    private Map<RecipeHandlerGroup, List<RecipeHandlerList>> getCompiledGroups(List<RecipeHandlerList> handlers) {
+        int cachedVersion;
+        Map<RecipeHandlerGroup, List<RecipeHandlerList>> cached;
+
+        if (io == IO.IN) {
+            cachedVersion = versions.cachedGroupsVersionIn;
+            cached = versions.cachedGroupsIn;
+        } else {
+            cachedVersion = versions.cachedGroupsVersionOut;
+            cached = versions.cachedGroupsOut;
+        }
+        if (cached != null && cachedVersion == versions.topologyVersion) {
+            return cached;
+        }
+
+        Map<RecipeHandlerGroup, List<RecipeHandlerList>> groups = new HashMap<>();
+        for (var handler : handlers) {
+            addToRecipeHandlerMap(handler.getGroup(), handler, groups);
+        }
+        if (io == IO.IN) {
+            versions.cachedGroupsIn = groups;
+            versions.cachedGroupsVersionIn = versions.topologyVersion;
+        } else {
+            versions.cachedGroupsOut = groups;
+            versions.cachedGroupsVersionOut = versions.topologyVersion;
+        }
+        return groups;
     }
 
     private boolean hasAnyNonVoidingContents(Map<RecipeCapability<?>, List<Object>> contents) {

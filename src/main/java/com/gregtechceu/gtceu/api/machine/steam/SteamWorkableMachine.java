@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapabilityVersions;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -67,6 +68,8 @@ public abstract class SteamWorkableMachine extends SteamMachine
     protected final Map<IO, List<RecipeHandlerList>> capabilitiesProxy;
     @Getter
     protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
+    @Getter
+    protected final RecipeCapabilityVersions recipeVersions;
     protected final List<ISubscription> traitSubscriptions;
 
     public SteamWorkableMachine(BlockEntityCreationInfo info, boolean isHighPressure,
@@ -80,6 +83,7 @@ public abstract class SteamWorkableMachine extends SteamMachine
         this.recipeLogic.setKeepSubscribing(false);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
+        this.recipeVersions = new RecipeCapabilityVersions();
         this.traitSubscriptions = new ArrayList<>();
         this.outputFacing = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
     }
@@ -110,7 +114,10 @@ public abstract class SteamWorkableMachine extends SteamMachine
 
         for (var entry : ioTraits.entrySet()) {
             var handlerList = RecipeHandlerList.of(entry.getKey(), entry.getValue());
-            this.addHandlerList(handlerList);
+            ISubscription versionSubscription = this.addHandlerList(handlerList);
+            if (versionSubscription != null) {
+                traitSubscriptions.add(versionSubscription);
+            }
             traitSubscriptions.add(handlerList.subscribe(recipeLogic::updateTickSubscription));
         }
     }

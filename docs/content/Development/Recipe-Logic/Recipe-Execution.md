@@ -63,19 +63,27 @@ private ActionResult handleContents() {
     }
 
     List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(io, Collections.emptyList());
+
+    Map<RecipeHandlerGroup, List<RecipeHandlerList>> handlerGroups = getCompiledGroups(handlers);
     // Only sort for non-tick outputs
     if (!isTick && io.support(IO.OUT)) {
-        handlers.sort(RecipeHandlerList.COMPARATOR.reversed());
-    }
-
-    Map<RecipeHandlerGroup, List<RecipeHandlerList>> handlerGroups = new HashMap<>();
-    for (var handler : handlers) {
-        addToRecipeHandlerMap(handler.getGroup(), handler, handlerGroups);
+        Map<RecipeHandlerGroup, List<RecipeHandlerList>> sorted = new HashMap<>(handlerGroups.size());
+        for (var entry : handlerGroups.entrySet()) {
+            List<RecipeHandlerList> copy = new ArrayList<>(entry.getValue());
+            copy.sort(RecipeHandlerList.COMPARATOR.reversed());
+            sorted.put(entry.getKey(), copy);
+        }
+        handlerGroups = sorted;
     }
 ```
 
-This  takes care of fetching the `RecipeHandlerList`s of a machine, and dividing them up into groups
-we take care of the grouping `RecipeHandlerList`s by their respective group, and dividing them up.
+`getCompiledGroups(handlers)` fetches the `RecipeHandlerList`s of a machine and divides them up into groups, using the same 
+`addToRecipeHandlerMap` grouping described above.
+
+The grouped map only depends on the machine's topology, so it is cached on the machine's `RecipeCapabilityVersions` 
+and reused between calls. It is only rebuilt when a handler is added or removed, or a bus changes its distinct or 
+color state, tracked by `topologyVersion`. Because the cached map is shared, we never sort it in place: for non-tick 
+outputs we sort a per-group copy instead, leaving the cache untouched.
 
 ```java title="RecipeRunner.java"
     // Specifically check distinct handlers first
