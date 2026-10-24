@@ -2575,7 +2575,7 @@
     "item.gtceu.tool.behavior.ground_tilling": "§eФермер: Вспашка земли",
     "item.gtceu.tool.behavior.plunger": "§9Сантехник: §fОткачивает жидкости",
     "item.gtceu.tool.behavior.rail_rotation": "§eЖелезнодорожник: §fВращает рельсы",
-    "item.gtceu.tool.behavior.relocate_mining": "§2Магнитный: §fПеремещает добытые блоки и добычу с существ",
+    "item.gtceu.tool.behavior.relocate_mining_and_mob_drops": "§2Магнитный: §fПеремещает добытые блоки и добычу с существ",
     "item.gtceu.tool.behavior.shield_disable": "§7Брут: §fИгнорирует щиты",
     "item.gtceu.tool.behavior.silk_ice": "§bЛедорез: §fЩёлковое касание Льда",
     "item.gtceu.tool.behavior.torch_place": "§eСпелеолог: §f Установка факелов правой кнопкой мыши",
