@@ -348,6 +348,7 @@ public class GTItems {
             .onRegister(attach(
                     ThermalFluidStats.create(FluidType.BUCKET_VOLUME, 1800, true, false, false, false, false),
                     new ItemFluidContainer(), cellName()))
+            .tag(GTTags.Items.FLUID_CELLS)
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_UNIVERSAL = REGISTRATE
             .item("universal_fluid_cell", ComponentItem::create)
@@ -357,6 +358,7 @@ public class GTItems {
             .onRegister(attach(cellName(),
                     ThermalFluidStats.create(FluidType.BUCKET_VOLUME, 1800, true, false, false, false, true),
                     new ItemFluidContainer()))
+            .tag(GTTags.Items.FLUID_CELLS)
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STEEL = createFluidCell(GTMaterials.Steel, 8, 4, 64);
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_ALUMINIUM = createFluidCell(GTMaterials.Aluminium, 32, 4,
@@ -372,14 +374,13 @@ public class GTItems {
             .lang("%s Glass Vial")
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
-            .onRegister(
-                    attach(cellName(),
-                            ThermalFluidStats.create(FluidType.BUCKET_VOLUME, 1200, false, true, false, false,
-                                    true),
-                            new ItemFluidContainer()))
+            .onRegister(attach(cellName(),
+                    ThermalFluidStats.create(FluidType.BUCKET_VOLUME, 1200, false, true, false, false, true),
+                    new ItemFluidContainer()))
+            .tag(GTTags.Items.FLUID_CELLS)
             .register();
 
-    public static ItemEntry<ComponentItem> createFluidCell(Material mat, int capacity, int matSize, int stackSize) {
+    private static ItemEntry<ComponentItem> createFluidCell(Material mat, int capacity, int matSize, int stackSize) {
         var prop = mat.getProperty(PropertyKey.FLUID_PIPE);
         Preconditions.checkArgument(prop != null,
                 "Material { %s } does not have Fluid Pipe properties, but is being used to create a Fluid Cell",
