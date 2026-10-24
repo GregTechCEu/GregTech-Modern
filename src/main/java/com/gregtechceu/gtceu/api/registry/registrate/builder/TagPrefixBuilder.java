@@ -117,41 +117,100 @@ public class TagPrefixBuilder extends AbstractBuilder<TagPrefix, TagPrefix, GTRe
         return this;
     }
 
-    public TagPrefixBuilder defaultTagPath(String path) {
-        return this.defaultTagPath(path, false);
+    /**
+     * Create a tag with a specified path with the "default" formatter, meaning there should be one "%s" format
+     * specifier in the path, intended for the material name.
+     */
+    public TagPrefixBuilder defaultTag(String path) {
+        return defaultTag(path, false);
     }
 
-    public TagPrefixBuilder defaultTagPath(String path, boolean isVanilla) {
+    /**
+     * Create a tag with a specified path with the "default" formatter, meaning there should be one "%s" format
+     * specifier in the path, intended for the material name.
+     */
+    public TagPrefixBuilder defaultTag(String path, boolean isVanilla) {
         this.tags.add(TagType.withDefaultFormatter(path, isVanilla));
         return this;
     }
 
-    public TagPrefixBuilder prefixTagPath(String path) {
+    /**
+     * Create a tag with a specified path with the "prefix" formatter, meaning there should be two "%s" format
+     * specifiers in the path, with the first being the prefix name and the second being the material name.
+     */
+    public TagPrefixBuilder prefixTag(String path) {
         this.tags.add(TagType.withPrefixFormatter(path));
         return this;
     }
 
-    public TagPrefixBuilder prefixOnlyTagPath(String path) {
+    /**
+     * Create a tag with a specified path with the "prefix only" formatter, meaning there should be one "%s" format
+     * specifier in the path, intended for the prefix name.
+     */
+    public TagPrefixBuilder prefixOnlyTag(String path) {
         this.tags.add(TagType.withPrefixOnlyFormatter(path));
         return this;
     }
 
-    public TagPrefixBuilder unformattedTagPath(String path) {
-        return unformattedTagPath(path, false);
+    /**
+     * Create a tag with a specified path with no formatter, meaning there should be <b>no</b> "%s" format specifiers in
+     * the path and that it's usable as a tag key's path as is.
+     */
+    public TagPrefixBuilder unformattedTag(String path) {
+        return unformattedTag(path, false);
     }
 
-    public TagPrefixBuilder unformattedTagPath(String path, boolean isVanilla) {
+    /**
+     * Create a tag with a specified path with no formatter, meaning there should be <b>no</b> "%s" format specifiers in
+     * the path and that it's usable as a tag key's path as is.
+     */
+    public TagPrefixBuilder unformattedTag(String path, boolean isVanilla) {
         this.tags.add(TagType.withNoFormatter(path, isVanilla));
         return this;
     }
 
-    public TagPrefixBuilder customTagPath(String path, BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
-        this.tags.add(TagType.withCustomFormatter(path, formatter));
+    /**
+     * Tag all generated items and blocks with the given tag key as it is.
+     */
+    public TagPrefixBuilder tag(TagKey<?> tag) {
+        this.tags.add(TagType.ofTagKey(tag));
         return this;
     }
 
-    public TagPrefixBuilder customTagPredicate(String path, boolean isVanilla, Predicate<Material> materialPredicate) {
-        this.tags.add(TagType.withCustomFilter(path, isVanilla, materialPredicate));
+    /**
+     * Create a tag with a specified path with a custom formatter.
+     */
+    public TagPrefixBuilder customFormattedTag(String path, BiFunction<String, Material, TagKey<Item>> formatter) {
+        this.tags.add(TagType.withCustomFormatter((self, mat) -> formatter.apply(path, mat)));
+        return this;
+    }
+
+    /**
+     * Create a tag with a specified path with no formatter, meaning there should be <b>no</b> "%s" format specifiers in
+     * the path and that it's usable as a tag key's path as is.
+     * <p>
+     * This variant of the method accepts an additional argument for a filter that'll be used to decide whether a
+     * specific material should be added to the tag.
+     */
+    public TagPrefixBuilder filteredUnformattedTag(String path, boolean isVanilla,
+                                                   Predicate<Material> materialPredicate) {
+        TagType entry = TagType.withNoFormatter(path, isVanilla);
+        entry.setFilter(materialPredicate);
+        this.tags.add(entry);
+        return this;
+    }
+
+    /**
+     * Create a tag with a specified path with a custom formatter.
+     * <p>
+     * This variant of the method accepts an additional argument for a filter that'll be used to decide whether a
+     * specific material should be added to the tag.
+     */
+    public TagPrefixBuilder filteredCustomTag(String path, Predicate<Material> materialPredicate,
+                                              BiFunction<String, Material, TagKey<Item>> formatter) {
+        TagType entry = TagType.withCustomFormatter((self, mat) -> formatter.apply(path, mat));
+        entry.setFilter(materialPredicate);
+        this.tags.add(entry);
         return this;
     }
 

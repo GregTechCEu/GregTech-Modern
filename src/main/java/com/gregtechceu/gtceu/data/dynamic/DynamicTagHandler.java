@@ -80,7 +80,7 @@ public final class DynamicTagHandler {
                 tags.computeIfAbsent(materialTag.location(), path -> new ArrayList<>()).addAll(entries);
             }
 
-            if (entry.tagPrefix() == TagPrefix.crushed && material.hasProperty(PropertyKey.ORE)) {
+            if (entry.tagPrefix() == TagPrefix.crushed.value() && material.hasProperty(PropertyKey.ORE)) {
                 OreProperty ore = material.getPropertyOrThrow(PropertyKey.ORE);
                 Material washedIn = ore.getWashedIn().first();
                 if (washedIn == null) return;

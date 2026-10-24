@@ -226,9 +226,9 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     public TagPrefixBuilder oreTagPrefix(String name, TagKey<Block> miningToolTag) {
         return entry(name, callback -> new TagPrefixBuilder(this, name, callback)
-                .defaultTagPath("ores/%s")
-                .prefixOnlyTagPath("ores_in_ground/%s")
-                .unformattedTagPath("ores")
+                .defaultTag("ores/%s")
+                .prefixOnlyTag("ores_in_ground/%s")
+                .unformattedTag("ores")
                 .materialIconType(MaterialIconType.ore)
                 .miningToolTag(miningToolTag)
                 .unificationEnabled(true)

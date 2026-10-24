@@ -9,6 +9,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,8 +23,8 @@ public final class TagType {
     private boolean isParentTag = false;
     // this is now memoized because creating tag keys interns them and that's slow
     private final BiFunction<TagPrefix, Material, TagKey<Item>> formatter;
-    @Nullable
-    /* package-private */ Predicate<Material> filter;
+    @Setter
+    private @Nullable Predicate<Material> filter;
 
     private TagType(BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
         this.formatter = Util.memoize(formatter);
