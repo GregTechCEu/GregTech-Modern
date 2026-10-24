@@ -97,7 +97,7 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
         if (!isRemote()) {
             setWorkingEnabled(!isWorkingEnabled);
             context.getPlayer().sendSystemMessage(Component.translatable(isWorkingEnabled() ?
-                    "cover.voiding.message.enabled" : "cover.voiding.message.disabled"));
+                    "cover.gtceu.voiding.message.enabled" : "cover.gtceu.voiding.message.disabled"));
         }
         return InteractionResult.sidedSuccess(isRemote());
     }

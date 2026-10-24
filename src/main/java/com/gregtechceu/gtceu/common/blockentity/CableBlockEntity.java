@@ -20,9 +20,9 @@ import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.pipelike.cable.*;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -374,10 +374,10 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
                 mode == PortableScannerBehavior.DisplayMode.SHOW_ELECTRICAL_INFO) {
-            list.add(Component.translatable("behavior.portable_scanner.eu_per_sec",
+            list.add(Component.translatable("item.gtceu.behavior.portable_scanner.eu_per_sec",
                     Component.translatable(FormattingUtil.formatNumbers(getAverageVoltage()))
                             .withStyle(ChatFormatting.RED)));
-            list.add(Component.translatable("behavior.portable_scanner.amp_per_sec",
+            list.add(Component.translatable("item.gtceu.behavior.portable_scanner.amp_per_sec",
                     Component.translatable(FormattingUtil.formatNumbers(getAverageAmperage()))
                             .withStyle(ChatFormatting.RED)));
         }

@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -80,7 +80,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
         // Attach duration here so it is always the first text row
         textComponents.child(Text
-                .dynamic(() -> Component.translatable("gtceu.recipe.duration",
+                .dynamic(() -> Component.translatable("gui.gtceu.recipe.duration",
                         FormattingUtil.formatNumbers((double) modifiedRecipe.duration / 20)))
                 .asWidget()
                 .setEnabledIf(v -> !modifiedRecipe.data.getBoolean("hide_duration")));
@@ -198,13 +198,13 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                 .hoverBackground(IDrawable.NONE)
                 .size(22, 12)
                 .rightRel(0.0f)
-                .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))
+                .overlay(Text.dynamic(() -> GTValues.VNC[tier]))
                 .tooltipBuilder(tooltip -> {
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.0", GTValues.VNF[minTier]));
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.1"));
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.2"));
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.3"));
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.4"));
+                    tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.0", GTValues.VNC[minTier]));
+                    tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.1"));
+                    tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.2"));
+                    tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.3"));
+                    tooltip.addLine(Text.lang("gui.gtceu.recipe.oc.4"));
                 })
                 .onMousePressed((ctx, b) -> {
                     var mouse = MouseData.create(b);

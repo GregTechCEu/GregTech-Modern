@@ -14,9 +14,10 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
@@ -71,8 +72,11 @@ public class TooltipsHandler {
             if (Language.getInstance().has(tooltipKey)) {
                 tooltips.add(1, Component.translatable(tooltipKey));
             } else {
-                List<MutableComponent> multiLang = LangHandler.getMultiLang(tooltipKey);
-                if (multiLang != null && !multiLang.isEmpty()) {
+                var multiLang = LangUtil.getListMultiLang(tooltipKey);
+                for (MutableComponent comp : multiLang) {
+                    if (comp.getStyle().getColor() == null) comp.withStyle(ChatFormatting.GRAY);
+                }
+                if (!multiLang.isEmpty()) {
                     tooltips.addAll(1, multiLang);
                 }
             }
@@ -101,7 +105,7 @@ public class TooltipsHandler {
         var material = ChemicalHelper.getMaterial(fluid);
         if (material != null) {
             if (material.requiresMetalFreezing() && fluid.isSame(material.getFluid(FluidStorageKeys.LIQUID))) {
-                tooltips.accept(Component.translatable("gtceu.fluid.requires_metal_freezing")
+                tooltips.accept(Component.translatable("material.gtceu.fluid_requires_metal_freezing")
                         .withStyle(ChatFormatting.GOLD));
             }
             var formula = material.getChemicalFormula();
@@ -117,7 +121,7 @@ public class TooltipsHandler {
                     if (remainder != 0) {
                         fluidAmount += String.format(" + %d mB", remainder);
                     }
-                    tooltips.accept(Component.translatable("gtceu.gui.fluid_amount").withStyle(ChatFormatting.GRAY)
+                    tooltips.accept(GTCommonComponents.FLUID_AMOUNT.copy().withStyle(ChatFormatting.GRAY)
                             .append(Component.literal(fluidAmount)));
                 }
             }
@@ -125,21 +129,18 @@ public class TooltipsHandler {
 
         if (fluid instanceof GTFluid attributedFluid) {
             FluidState state = attributedFluid.getState();
-            switch (state) {
-                case LIQUID -> tooltips.accept(Component.translatable("gtceu.fluid.state_liquid"));
-                case GAS -> tooltips.accept(Component.translatable("gtceu.fluid.state_gas"));
-                case PLASMA -> tooltips.accept(Component.translatable("gtceu.fluid.state_plasma"));
-            }
+            tooltips.accept(Component.translatable(state.getTranslationKey()).withStyle(ChatFormatting.GREEN));
             attributedFluid.getAttributes().forEach(a -> a.appendFluidTooltips(tooltips));
         } else {
-            String key = "gtceu.fluid.state_" + (fluidType.isLighterThanAir() ? "gas" : "liquid");
+            String key = "material.gtceu.fluid_state." + (fluidType.isLighterThanAir() ? "gas" : "liquid");
             tooltips.accept(Component.translatable(key));
         }
 
-        tooltips.accept(Component.translatable("gtceu.fluid.temperature",
-                FormattingUtil.formatTemperature(fluidType.getTemperature())));
+        tooltips.accept(Component.translatable("material.gtceu.fluid_property.temperature",
+                FormattingUtil.formatTemperature(fluidType.getTemperature())).withStyle(ChatFormatting.RED));
         if (fluidType.getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD) {
-            tooltips.accept(Component.translatable("gtceu.fluid.temperature.cryogenic"));
+            tooltips.accept(
+                    Component.translatable("material.gtceu.fluid_property.cryogenic").withStyle(ChatFormatting.AQUA));
         }
     }
 }

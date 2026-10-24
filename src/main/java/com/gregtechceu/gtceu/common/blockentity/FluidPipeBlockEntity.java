@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.PipeTankList;
 import com.gregtechceu.gtceu.utils.*;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -540,7 +541,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
                         }
 
                         allTanksEmpty = false;
-                        list.add(Component.translatable("behavior.portable_scanner.tank", i,
+                        list.add(Component.translatable("item.gtceu.behavior.portable_scanner.tank", i,
                                 Component.translatable(FormattingUtil.formatNumbers(fluids[i].getAmount()))
                                         .withStyle(ChatFormatting.GREEN),
                                 Component.translatable(FormattingUtil.formatNumbers(getCapacityPerTank()))
@@ -551,7 +552,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
                 }
 
                 if (allTanksEmpty) {
-                    list.add(Component.translatable("behavior.portable_scanner.tanks_empty"));
+                    list.add(Component.translatable("item.gtceu.behavior.portable_scanner.tanks_empty"));
                 }
             }
         }

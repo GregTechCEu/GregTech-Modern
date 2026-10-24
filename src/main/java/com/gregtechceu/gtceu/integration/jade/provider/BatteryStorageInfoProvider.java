@@ -7,10 +7,11 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -52,14 +53,14 @@ public class BatteryStorageInfoProvider extends MachineInfoProvider<BatteryBuffe
         CompoundTag container = data.getCompound("energy");
         long changed = container.getLong("changed"), stored = container.getLong("stored"),
                 capacity = container.getLong("capacity");
-        tooltip.add(Component.translatable("gtceu.jade.changes_eu_tick",
+        tooltip.add(FormattingUtil.prepend("common.gtceu.eu_per_sec",
                 FormattingUtil.formatNumbers(((double) changed) / 20.0)));
         if (changed > 0L) {
             tooltip.add(Component
-                    .translatable("gtceu.jade.remaining_charge_time",
+                    .translatable("integration.gtceu.jade.remaining_charge_time",
                             getStringRemainTime((capacity - stored) / changed)));
         } else if (changed < 0L) {
-            tooltip.add(Component.translatable("gtceu.jade.remaining_discharge_time",
+            tooltip.add(Component.translatable("integration.gtceu.jade.remaining_discharge_time",
                     getStringRemainTime((stored) / -changed)));
         }
         if (GTUtil.isShiftDown()) {
@@ -72,9 +73,12 @@ public class BatteryStorageInfoProvider extends MachineInfoProvider<BatteryBuffe
                     tooltip.add(helper.smallItem(stack));
                     IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
                     if (item == null) continue;
-                    tooltip.append(Component.literal(
-                            GTValues.VNF[item.getTier()] + "§r " + formatLongNumber(item.getCharge()) +
-                                    " / " + formatLongNumber(item.getMaxCharge()) + " EU"));
+                    tooltip.append(GTValues.VNC[item.getTier()].copy()
+                            .append(CommonComponents.SPACE)
+                            .append(Component.literal(formatLongNumber(item.getCharge())))
+                            .append(" / ")
+                            .append(Component.literal(formatLongNumber(item.getMaxCharge())))
+                            .append(Component.literal(" EU")));
                 }
             }
         }

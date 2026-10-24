@@ -126,15 +126,15 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         CompoundTag data = item.getTag();
         if (data != null) {
             Component status = IJetpack.isEngineEnabled(item) ?
-                    Component.translatable("hud.gtceu.armor.status.enabled") :
-                    Component.translatable("hud.gtceu.armor.status.disabled");
-            Component result = Component.translatable("hud.gtceu.armor.engine_enabled", status);
+                    Component.translatable("armor.gtceu.hud.enabled") :
+                    Component.translatable("armor.gtceu.hud.disabled");
+            Component result = Component.translatable("armor.gtceu.hud.engine", status);
             hud.newLine(result);
             if (data.contains("hover")) {
-                status = (data.getBoolean("hover") ?
-                        Component.translatable("hud.gtceu.armor.status.enabled") :
-                        Component.translatable("hud.gtceu.armor.status.disabled"));
-                result = Component.translatable("hud.gtceu.armor.hover_mode", status);
+                status = data.getBoolean("hover") ?
+                        Component.translatable("armor.gtceu.hud.enabled") :
+                        Component.translatable("armor.gtceu.hud.disabled");
+                result = Component.translatable("armor.gtceu.hud.hover_mode", status);
                 hud.newLine(result);
             }
         }
@@ -145,14 +145,14 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         super.addInfo(itemStack, lines);
         CompoundTag data = itemStack.getOrCreateTag();
         Component state = IJetpack.isEngineEnabled(itemStack) ?
-                Component.translatable("hud.gtceu.armor.status.enabled") :
-                Component.translatable("hud.gtceu.armor.status.disabled");
-        lines.add(Component.translatable("hud.gtceu.armor.engine_enabled", state));
+                Component.translatable("armor.gtceu.hud.enabled") :
+                Component.translatable("armor.gtceu.hud.disabled");
+        lines.add(Component.translatable("armor.gtceu.hud.engine", state));
 
         boolean hover = data.contains("hover") && data.getBoolean("hover");
-        state = hover ? Component.translatable("hud.gtceu.armor.status.enabled") :
-                Component.translatable("hud.gtceu.armor.status.disabled");
-        lines.add(Component.translatable("hud.gtceu.armor.hover_mode", state));
+        state = hover ? Component.translatable("armor.gtceu.hud.enabled") :
+                Component.translatable("armor.gtceu.hud.disabled");
+        lines.add(Component.translatable("armor.gtceu.hud.hover_mode", state));
     }
 
     @Override

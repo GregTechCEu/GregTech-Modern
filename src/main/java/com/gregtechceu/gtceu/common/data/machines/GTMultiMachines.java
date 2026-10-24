@@ -31,8 +31,8 @@ import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultib
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.factory.CentralMonitorUIFactory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -59,11 +59,11 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
 import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toRomanNumeral;
+import static com.gregtechceu.gtceu.utils.lang.FormattingUtil.toRomanNumeral;
 
 @SuppressWarnings("unused")
 public class GTMultiMachines {
@@ -110,6 +110,8 @@ public class GTMultiMachines {
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_coke_bricks"),
                     GTCEu.id("block/multiblock/coke_oven"))
             .themeId((i) -> GTGuiTheme.PRIMITIVE.getId())
+            .tooltipLang("Making better fuels for Steel and Power")
+            .defaultTooltip()
             .register();
 
     public static final MultiblockMachineDefinition PRIMITIVE_BLAST_FURNACE = REGISTRATE
@@ -136,6 +138,8 @@ public class GTMultiMachines {
                     .where('Y', controller(blocks(definition.getBlock())))
                     .build())
             .themeId((i) -> GTGuiTheme.PRIMITIVE.getId())
+            .tooltipLang("Making your first Steel")
+            .defaultTooltip()
             .register();
 
     public static final MultiblockMachineDefinition ELECTRIC_BLAST_FURNACE = REGISTRATE
@@ -161,9 +165,11 @@ public class GTMultiMachines {
                             ChemicalHelper.getItemOrThrow(TagPrefix.dustTiny, GTMaterials.Ash) })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
                     GTCEu.id("block/multiblock/electric_blast_furnace"))
-            .tooltips(Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.0"),
-                    Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.1"),
-                    Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.2"))
+            .tooltipLang("Where's the electric smoker?",
+                    "For every §f900K§7 above the recipe temperature, a multiplicative §f95%%§7 energy multiplier is applied pre-overclocking.",
+                    "For every §f1800K§7 above the recipe temperature, one overclock becomes §f100%% efficient§7 (perfect overclock).",
+                    "For every voltage tier above §bMV§7, temperature is increased by §f100K§7.")
+            .defaultTooltip()
             .additionalDisplay((controller, syncManager) -> {
                 if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
                     return Collections.emptyList();
@@ -175,7 +181,7 @@ public class GTMultiMachines {
                         () -> new IntSyncValue(() -> coilMachine.getTier()));
 
                 return Collections.singletonList(Text
-                        .dynamic(() -> Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
+                        .dynamic(() -> Component.translatable("gui.gtceu.machine.electric_blast_furnace.max_temp",
                                 Component.literal(
                                         FormattingUtil.formatNumbers(coilTemperature.getIntValue() +
                                                 100L * Math.max(0, machineTier.getIntValue() - GTValues.MV)) + "K")
@@ -208,6 +214,8 @@ public class GTMultiMachines {
                                 .and(casing))
                         .build();
             })
+            .tooltipLang("Black Box Reactor")
+            .defaultTooltip()
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"),
                     GTCEu.id("block/multiblock/large_chemical_reactor"))
             .register();
@@ -230,6 +238,8 @@ public class GTMultiMachines {
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                     GTCEu.id("block/multiblock/implosion_compressor"))
+            .tooltipLang("The only Machine you want to go Boom")
+            .defaultTooltip()
             .register();
 
     public static final MultiblockMachineDefinition PYROLYSE_OVEN = REGISTRATE
@@ -243,7 +253,7 @@ public class GTMultiMachines {
                     .slice("CCC", "C#C", "CCC")
                     .slice("CCC", "C#C", "CCC")
                     .slice("XXX", "XSX", "XXX")
-                    .where('S', Predicates.controller(blocks(definition.get())))
+                    .where('S', Predicates.controller(definition))
                     .where('X',
                             blocks(MACHINE_CASING_ULV.get()).setMinGlobalLimited(6)
                                     .and(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -253,7 +263,9 @@ public class GTMultiMachines {
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/voltage/ulv/side"),
                     GTCEu.id("block/multiblock/pyrolyse_oven"))
-            .tooltips(Component.translatable("gtceu.machine.pyrolyse_oven.tooltip.1"))
+            .tooltipLang("Electric Coke Oven",
+                    "§6Cupronickel §7coils are §f25%%§7 slower. Every coil after §bKanthal§7 increases speed by §f50%%§7.")
+            .defaultTooltip()
             .additionalDisplay((controller, syncManager) -> {
                 if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
                     return Collections.emptyList();
@@ -263,7 +275,7 @@ public class GTMultiMachines {
                         () -> new IntSyncValue(() -> coilMachine.getCoilTier()));
 
                 return Collections.singletonList(Text
-                        .dynamic(() -> Component.translatable("gtceu.multiblock.pyrolyse_oven.speed",
+                        .dynamic(() -> Component.translatable("gui.gtceu.machine.pyrolyse_oven.processing_speed",
                                 coilTier.getIntValue() == 0 ? 75 : 50 * (coilTier.getIntValue() + 1)))
                         .asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
             })
@@ -275,8 +287,7 @@ public class GTMultiMachines {
             .recipeTypes(GTRecipeTypes.FURNACE_RECIPES, GTRecipeTypes.ALLOY_SMELTER_RECIPES)
             .recipeModifiers(GTRecipeModifiers::multiSmelterParallel, BATCH_MODE)
             .appearanceBlock(CASING_INVAR_HEATPROOF)
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
-                    Component.translatable("gtceu.electric_furnace"), Component.translatable("gtceu.alloy_smelter")))
+            .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(FURNACE_RECIPES, ALLOY_SMELTER_RECIPES))
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("XXX", "CCC", "XXX")
                     .slice("XXX", "C#C", "XMX")
@@ -305,10 +316,10 @@ public class GTMultiMachines {
                         () -> new IntSyncValue(() -> coilMachine.getCoilType().getEnergyDiscount()));
 
                 return List.of(
-                        Text.dynamic(() -> Component.translatable("gtceu.multiblock.multi_furnace.heating_coil_level",
+                        Text.dynamic(() -> Component.translatable("gui.gtceu.machine.multi_smelter.heating_coil_level",
                                 coilLevel.getIntValue())).asWidget().setEnabledIf(w -> isFormed.getBoolValue()),
                         Text.dynamic(
-                                () -> Component.translatable("gtceu.multiblock.multi_furnace.heating_coil_discount",
+                                () -> Component.translatable("gui.gtceu.machine.multi_smelter.heating_coil_discount",
                                         energyDiscount.getIntValue()))
                                 .asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
             })
@@ -333,7 +344,8 @@ public class GTMultiMachines {
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/cracking_unit"))
-            .tooltips(Component.translatable("gtceu.machine.cracker.tooltip.1"))
+            .tooltipLang("Makes Oil useful", "Every coil after §6Cupronickel§7 reduces energy usage by §f10%%§7.")
+            .defaultTooltip()
             .additionalDisplay((controller, syncManager) -> {
                 if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
                     return Collections.emptyList();
@@ -343,7 +355,7 @@ public class GTMultiMachines {
                         () -> new IntSyncValue(() -> coilMachine.getCoilTier()));
 
                 return Collections.singletonList(Text
-                        .dynamic(() -> Component.translatable("gtceu.multiblock.cracking_unit.energy",
+                        .dynamic(() -> Component.translatable("gui.gtceu.machine.cracking_unit.energy",
                                 100 - 10 * coilTier.getIntValue()))
                         .asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
             })
@@ -386,6 +398,8 @@ public class GTMultiMachines {
             .partSorter(Comparator.comparingInt(p -> p.getBlockPos().getY()))
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/distillation_tower"))
+            .tooltipLang("Fluid Refinery")
+            .defaultTooltip()
             .register();
 
     public static final MultiblockMachineDefinition VACUUM_FREEZER = REGISTRATE
@@ -406,6 +420,8 @@ public class GTMultiMachines {
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
                     GTCEu.id("block/multiblock/vacuum_freezer"))
+            .tooltipLang("Aluminium Ice Box")
+            .defaultTooltip()
             .register();
 
     public static final MultiblockMachineDefinition ASSEMBLY_LINE = REGISTRATE
@@ -427,7 +443,7 @@ public class GTMultiMachines {
                                     Predicates.abilities(PartAbility.IMPORT_FLUIDS_1X).setMaxGlobalLimited(4)))
                     .where('O',
                             Predicates.abilities(PartAbility.EXPORT_ITEMS)
-                                    .addTooltips(Component.translatable("gtceu.multiblock.pattern.location_end")))
+                                    .addTooltips(Component.translatable("multiblock.gtceu.pattern.location_end")))
                     .where('Y',
                             blocks(CASING_STEEL_SOLID.get()).and(Predicates.abilities(PartAbility.INPUT_ENERGY)
                                     .setGlobalMinMax(1, 2)))
@@ -445,6 +461,8 @@ public class GTMultiMachines {
                     GTCEu.id("block/multiblock/assembly_line"))
                     .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createAssemblyLineRender)))
             .hasBER(true)
+            .tooltipLang("Not a multiblock Assembling Machine!")
+            .defaultTooltip()
             .register();
 
     public static final MultiblockMachineDefinition PRIMITIVE_PUMP = REGISTRATE
@@ -503,6 +521,8 @@ public class GTMultiMachines {
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
                     GTCEu.id("block/multiblock/steam_grinder"))
+            .tooltipLang("A multiblock Macerator without the Byproducts")
+            .defaultTooltip()
             .register();
 
     public static final MultiblockMachineDefinition STEAM_OVEN = REGISTRATE
@@ -533,6 +553,8 @@ public class GTMultiMachines {
                     .andThen(b -> b.addDynamicRenderer(
                             () -> DynamicRenderHelper.makeBoilerPartRender(
                                     BoilerFireboxType.BRONZE_FIREBOX, CASING_BRONZE_BRICKS))))
+            .tooltipLang("Not to be confused with Multi-Smelter")
+            .defaultTooltip()
             .register();
 
     public static final MultiblockMachineDefinition[] FUSION_REACTOR = registerTieredMultis(REGISTRATE,
@@ -544,10 +566,10 @@ public class GTMultiMachines {
                     .recipeModifiers(DEFAULT_ENVIRONMENT_REQUIREMENT,
                             FusionReactorMachine::recipeModifier, BATCH_MODE)
                     .tooltips(
-                            Component.translatable("gtceu.machine.fusion_reactor.capacity",
+                            Component.translatable("machine.gtceu.fusion_reactor.capacity",
                                     FusionReactorMachine.calculateEnergyStorageFactor(tier, 16) / 1000000L),
-                            Component.translatable("gtceu.machine.fusion_reactor.overclocking"),
-                            Component.translatable("gtceu.multiblock.%s_fusion_reactor.description"
+                            Component.translatable("machine.gtceu.fusion_reactor.overclocking"),
+                            Component.translatable("machine.gtceu.%s_fusion_reactor.description"
                                     .formatted(VNL[tier])))
                     .appearanceBlock(() -> FusionReactorMachine.getCasingState(tier))
                     .pattern((definition) -> {
@@ -594,13 +616,19 @@ public class GTMultiMachines {
                     .rotationState(RotationState.ALL)
                     .langValue("%s Fluid Drilling Rig %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(DUMMY_RECIPES)
+                    .tooltipLang(switch (tier) {
+                        case MV -> "Oil Extraction Pump";
+                        case HV -> "Does not perform Fracking";
+                        default -> "Well Drainer";
+                    })
+                    .defaultTooltip()
                     .tooltips(
-                            Component.translatable("gtceu.machine.fluid_drilling_rig.description"),
-                            Component.translatable("gtceu.machine.fluid_drilling_rig.depletion",
+                            Component.translatable("machine.gtceu.fluid_drilling_rig.description"),
+                            Component.translatable("machine.gtceu.fluid_drilling_rig.depletion",
                                     FormattingUtil.formatNumbers(100.0 / FluidDrillMachine.getDepletionChance(tier))),
-                            Component.translatable("gtceu.universal.tooltip.energy_tier_range", GTValues.VNF[tier],
-                                    GTValues.VNF[tier + 1]),
-                            Component.translatable("gtceu.machine.fluid_drilling_rig.production",
+                            Component.translatable("common.gtceu.tooltip.energy_tier_range", GTValues.VNC[tier],
+                                    GTValues.VNC[tier + 1]),
+                            Component.translatable("machine.gtceu.fluid_drilling_rig.production",
                                     FluidDrillMachine.getRigMultiplier(tier),
                                     FormattingUtil.formatNumbers(FluidDrillMachine.getRigMultiplier(tier) * 1.5)))
                     .appearanceBlock(() -> FluidDrillMachine.getCasingState(tier))
@@ -608,7 +636,7 @@ public class GTMultiMachines {
                             .slice("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
                             .slice("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
                             .slice("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
-                            .where('S', controller(blocks(definition.get())))
+                            .where('S', controller(definition))
                             .where('X', blocks(FluidDrillMachine.getCasingState(tier)).setMinGlobalLimited(3)
                                     .and(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
                                             .setMaxGlobalLimited(2))
@@ -663,20 +691,23 @@ public class GTMultiMachines {
                                     return models;
                                 });
                             }))
-                    .tooltips(
-                            Component.translatable("gtceu.machine.large_miner.%s.tooltip"
-                                    .formatted(VNL[tier])),
-                            Component.translatable("gtceu.machine.miner.multi.description"))
+                    .tooltipLang(switch (tier) {
+                        case EV -> "Digging Ore instead of You";
+                        case IV -> "Biome Excavator";
+                        default -> "Terrestrial Harvester";
+                    })
+                    .defaultTooltip()
+                    .tooltips(Component.translatable("gui.gtceu.machine.miner.multi.description"))
                     .tooltipBuilder((stack, tooltip) -> {
                         int workingAreaChunks = (2 * tier - 5);
-                        tooltip.add(Component.translatable("gtceu.machine.miner.multi.modes"));
-                        tooltip.add(Component.translatable("gtceu.machine.miner.multi.production"));
-                        tooltip.add(Component.translatable("gtceu.machine.miner.fluid_usage", 8 - (tier - 5),
+                        tooltip.add(Component.translatable("gui.gtceu.machine.miner.multi.modes"));
+                        tooltip.add(Component.translatable("gui.gtceu.machine.miner.multi.production"));
+                        tooltip.add(Component.translatable("gui.gtceu.machine.miner.fluid_usage", 8 - (tier - 5),
                                 DrillingFluid.getLocalizedName()));
-                        tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
+                        tooltip.add(Component.translatable("machine.gtceu.miner.working_area_chunks",
                                 workingAreaChunks, workingAreaChunks));
-                        tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_tier_range",
-                                GTValues.VNF[tier], GTValues.VNF[tier + 1]));
+                        tooltip.add(Component.translatable("common.gtceu.tooltip.energy_tier_range",
+                                GTValues.VNC[tier], GTValues.VNC[tier + 1]));
                     })
                     .register(),
             EV, IV, LuV);
@@ -686,27 +717,35 @@ public class GTMultiMachines {
             .rotationState(RotationState.NONE)
             .recipeType(DUMMY_RECIPES)
             .appearanceBlock(PLASTCRETE)
-            .tooltips(Component.translatable("gtceu.machine.cleanroom.tooltip.0"),
-                    Component.translatable("gtceu.machine.cleanroom.tooltip.1"),
-                    Component.translatable("gtceu.machine.cleanroom.tooltip.2"),
-                    Component.translatable("gtceu.machine.cleanroom.tooltip.3"))
+            .tooltipLang("Place machines inside to run cleanroom recipes.",
+                    "Uses §f30 EU/t§7 when dirty, §f4 EU/t§7 when clean.",
+                    "Overclocking increases cleaning per cycle.",
+                    "§bSize: §f5x5x5 to 15x15x15",
+                    "Requires §fFilter Casings §7in the ceiling, excluding the edges.",
+                    "Accepts up to §f4 Doors§7! Remains clean when the door is open.",
+                    "Generators, Mufflers, Drills, and Primitive Machines are too dirty for the cleanroom!",
+                    "Send power through §fHulls §7or §fDiodes §7in the walls.")
+            .tooltips(Component.translatable("machine.gtceu.cleanroom.tooltip.0"),
+                    Component.translatable("machine.gtceu.cleanroom.tooltip.1"),
+                    Component.translatable("machine.gtceu.cleanroom.tooltip.2"),
+                    Component.translatable("machine.gtceu.cleanroom.tooltip.3"))
             .tooltipBuilder((stack, tooltip) -> {
                 if (GTUtil.isCtrlDown()) {
                     tooltip.add(Component.empty());
-                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.4"));
-                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.5"));
-                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.6"));
-                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.7"));
-                    // tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.8"));
+                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.4"));
+                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.5"));
+                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.6"));
+                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.7"));
+                    // tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.8"));
                     if (GTCEu.Mods.isAE2Loaded()) {
                         tooltip.add(
                                 Component.translatable(AEConfig.instance().getChannelMode() == ChannelMode.INFINITE ?
-                                        "gtceu.machine.cleanroom.tooltip.ae2.no_channels" :
-                                        "gtceu.machine.cleanroom.tooltip.ae2.channels"));
+                                        "machine.gtceu.cleanroom.tooltip.ae2.no_channels" :
+                                        "machine.gtceu.cleanroom.tooltip.ae2.channels"));
                     }
                     tooltip.add(Component.empty());
                 } else {
-                    tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.hold_ctrl"));
+                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.hold_ctrl"));
                 }
             })
             .pattern(CleanroomMachine.getPattern())
@@ -730,7 +769,7 @@ public class GTMultiMachines {
             GTCEu.id("block/multiblock/generator/extreme_combustion_engine"));
 
     public static final MultiblockMachineDefinition LARGE_STEAM_TURBINE = registerLargeTurbine(REGISTRATE,
-            "steam_large_turbine",
+            "steam_large_turbine", "Large Steam Turbine",
             HV,
             GTRecipeTypes.STEAM_TURBINE_FUELS,
             CASING_STEEL_TURBINE, CASING_STEEL_GEARBOX,
@@ -739,7 +778,7 @@ public class GTMultiMachines {
             false);
 
     public static final MultiblockMachineDefinition LARGE_GAS_TURBINE = registerLargeTurbine(REGISTRATE,
-            "gas_large_turbine",
+            "gas_large_turbine", "Large Gas Turbine",
             EV,
             GTRecipeTypes.GAS_TURBINE_FUELS,
             CASING_STAINLESS_TURBINE, CASING_STAINLESS_STEEL_GEARBOX,
@@ -748,7 +787,7 @@ public class GTMultiMachines {
             true);
 
     public static final MultiblockMachineDefinition LARGE_PLASMA_TURBINE = registerLargeTurbine(REGISTRATE,
-            "plasma_large_turbine",
+            "plasma_large_turbine", "Large Plasma Turbine",
             IV,
             GTRecipeTypes.PLASMA_GENERATOR_FUELS,
             CASING_TUNGSTENSTEEL_TURBINE, CASING_TUNGSTENSTEEL_GEARBOX,
@@ -761,12 +800,12 @@ public class GTMultiMachines {
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .appearanceBlock(HIGH_POWER_CASING)
-            .tooltips(Component.translatable("gtceu.machine.active_transformer.tooltip.0"),
-                    Component.translatable("gtceu.machine.active_transformer.tooltip.1"))
+            .tooltips(Component.translatable("machine.gtceu.active_transformer.tooltip.0"),
+                    Component.translatable("machine.gtceu.active_transformer.tooltip.1"))
             .tooltipBuilder(
                     (stack,
-                     components) -> components.add(Component.translatable("gtceu.machine.active_transformer.tooltip.2")
-                             .append(Component.translatable("gtceu.machine.active_transformer.tooltip.3")
+                     components) -> components.add(Component.translatable("machine.gtceu.active_transformer.tooltip.2")
+                             .append(Component.translatable("machine.gtceu.active_transformer.tooltip.3")
                                      .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))))
             .pattern((definition) -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("XXX", "XXX", "XXX")
@@ -785,18 +824,23 @@ public class GTMultiMachines {
             .multiblock("power_substation", PowerSubstationMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-            .tooltips(Component.translatable("gtceu.machine.power_substation.tooltip.0"),
-                    Component.translatable("gtceu.machine.power_substation.tooltip.1"),
-                    Component.translatable("gtceu.machine.power_substation.tooltip.2",
+            .tooltipLang("The heart of a centralized power grid",
+                    "§fCapacitors§7 do not need to be all the same tier.",
+                    "Allows up to §f%d Capacitor Layers§7.",
+                    "Loses energy equal to §f1%%§7 of total capacity every §f24 hours§7.",
+                    "Capped at §f%d kEU/t§7 passive loss per Capacitor Block.",
+                    "Can use",
+                    " Laser Hatches§7.")
+            .tooltips(Component.translatable("machine.gtceu.power_substation.tooltip.0"),
+                    Component.translatable("machine.gtceu.power_substation.tooltip.1"),
+                    Component.translatable("machine.gtceu.power_substation.tooltip.2",
                             PowerSubstationMachine.MAX_BATTERY_LAYERS),
-                    Component.translatable("gtceu.machine.power_substation.tooltip.3"),
-                    Component.translatable("gtceu.machine.power_substation.tooltip.4",
-                            PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE / 1000))
-            .tooltipBuilder(
-                    (stack,
-                     components) -> components.add(Component.translatable("gtceu.machine.power_substation.tooltip.5")
-                             .append(Component.translatable("gtceu.machine.power_substation.tooltip.6")
-                                     .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))))
+                    Component.translatable("machine.gtceu.power_substation.tooltip.3"),
+                    Component.translatable("machine.gtceu.power_substation.tooltip.4",
+                            PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE / 1000),
+                    Component.translatable("machine.gtceu.power_substation.tooltip.5")
+                            .append(Component.translatable("machine.gtceu.power_substation.tooltip.6")
+                                    .withStyle(TooltipHelper.RAINBOW_HSL_SLOW)))
             .appearanceBlock(CASING_PALLADIUM_SUBSTATION)
             .pattern(definition -> MultiblockPatternBuilder.start(UP, BACK, RIGHT)
                     .slice("XXSXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
@@ -826,10 +870,11 @@ public class GTMultiMachines {
             .rotationState(RotationState.NONE)
             .recipeType(DUMMY_RECIPES)
             .appearanceBlock(BRONZE_HULL)
-            .tooltips(Component.translatable("gtceu.machine.charcoal_pile.tooltip.0"),
-                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.1"),
-                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.2"),
-                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.3"))
+            .tooltipLang("Turns Logs into §aCharcoal§7 when §cignited§7.",
+                    "Right Click with fire-starting items to start.",
+                    "Pyrolysis occurs in up to a §b9x4x9§7 space beneath.",
+                    "Logs must be not be exposed to §eAir§7!")
+            .defaultTooltip()
             .pattern(CharcoalPileIgniterMachine.getPattern())
             .allowFlip(false)
             .allowExtendedFacing(false)
@@ -843,13 +888,13 @@ public class GTMultiMachines {
                     .langValue("%s Bedrock Ore Miner %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(DUMMY_RECIPES)
                     .tooltips(
-                            Component.translatable("gtceu.machine.bedrock_ore_miner.description"),
-                            Component.translatable("gtceu.machine.bedrock_ore_miner.depletion",
+                            Component.translatable("machine.gtceu.bedrock_ore_miner.description"),
+                            Component.translatable("machine.gtceu.bedrock_ore_miner.depletion",
                                     FormattingUtil.formatNumbers(
                                             100.0 / BedrockOreMinerMachine.getDepletionChance(tier))),
-                            Component.translatable("gtceu.universal.tooltip.energy_tier_range",
-                                    GTValues.VNF[tier], GTValues.VNF[tier + 1]),
-                            Component.translatable("gtceu.machine.bedrock_ore_miner.production",
+                            Component.translatable("common.gtceu.tooltip.energy_tier_range",
+                                    GTValues.VNC[tier], GTValues.VNC[tier + 1]),
+                            Component.translatable("machine.gtceu.bedrock_ore_miner.production",
                                     BedrockOreMinerMachine.getRigMultiplier(tier),
                                     FormattingUtil.formatNumbers(
                                             BedrockOreMinerMachine.getRigMultiplier(tier) * 1.5)))

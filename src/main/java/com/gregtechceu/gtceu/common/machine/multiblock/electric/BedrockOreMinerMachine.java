@@ -14,8 +14,8 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.trait.BedrockOreMinerLogic;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -84,13 +84,14 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
                             .childSeparator(Icon.EMPTY_2PX);
                     var values = list.getValue();
                     if (values.isEmpty()) {
-                        listWidget.child(Text.lang("gtceu.multiblock.ore_rig.drilled_ore_entry",
-                                Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area")
+                        listWidget.child(Text.lang("gui.gtceu.machine.bedrock_miner.drilled_ore_entry",
+                                Component.translatable("gui.gtceu.machine.fluid_rig.no_fluid_in_area")
                                         .withStyle(ChatFormatting.RED))
                                 .asWidget());
                     }
                     for (var value : values) {
-                        listWidget.child(Text.lang("gtceu.multiblock.ore_rig.drilled_ore_entry", value).asWidget());
+                        listWidget.child(
+                                Text.lang("gui.gtceu.machine.bedrock_miner.drilled_ore_entry", value).asWidget());
                     }
                     return listWidget;
                 });
@@ -103,13 +104,13 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
 
-        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.ore_rig.ore_amount",
+        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.bedrock_miner.ore_amount",
                 Component.literal(FormattingUtil.formatNumbers(
                         getRecipeLogic().getOreToProduce() * 20L / BedrockOreMinerLogic.MAX_PROGRESS) + "/s")
                         .withStyle(ChatFormatting.BLUE)))
                 .asWidget());
 
-        widgets.add(Text.lang("gtceu.multiblock.ore_rig.drilled_ores_list").asWidget());
+        widgets.add(Text.lang("gui.gtceu.machine.bedrock_miner.drilled_ores_list").asWidget());
 
         widgets.add(new DynamicWidget<>().syncHandler(materialListWidgetHandler));
 

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -71,17 +71,19 @@ public record Content(Object content, int chance, int maxChance) {
     public static void addChanceTooltips(RichTooltip tooltip, Content content, ChanceLogic logic) {
         if (content.chance() < ChanceLogic.getMaxChancedValue()) {
             if (content.chance() == 0) {
-                tooltip.addLine(Component.translatable("gtceu.gui.content.chance_nc"));
+                tooltip.addLine(
+                        Component.translatable("gui.gtceu.recipe_content.chance_nc").withStyle(ChatFormatting.RED));
             } else {
                 float baseChanceFloat = 100f * content.chance() / content.maxChance();
 
                 if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
-                    tooltip.addLine(Component.translatable("gtceu.gui.content.chance_no_boost_logic",
-                            FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
-                            .withStyle(ChatFormatting.YELLOW));
+                    tooltip.addLine(Component.translatable("gui.gtceu.recipe_content.chance_no_boost_logic",
+                            FormattingUtil.formatNumber2Places(baseChanceFloat),
+                            Component.translatable(logic.getLanguageKey())
+                                    .withStyle(ChatFormatting.YELLOW)));
                 } else {
                     tooltip.addLine(
-                            FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost",
+                            FormattingUtil.formatPercentage2Places("gui.gtceu.recipe_content.chance_no_boost",
                                     baseChanceFloat));
                 }
             }

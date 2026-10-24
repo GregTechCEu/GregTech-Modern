@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -159,6 +160,12 @@ public class OrganicChemistryMaterials {
                 .buildAndRegister();
 
         Sugar = new Material.Builder(GTCEu.id("sugar"))
+                .langOverride(TagPrefix.gem, "Sugar Cube")
+                .langOverride(TagPrefix.gemFlawed, "Small Sugar Cubes")
+                .langOverride(TagPrefix.gemChipped, "Tiny Sugar Cube")
+                .langOverride(TagPrefix.dustSmall, "Small Pile of Sugar")
+                .langOverride(TagPrefix.dustTiny, "Tiny Pile of Sugar")
+
                 .gem(1)
                 .color(0xFFFFFF).secondaryColor(0x545468).iconSet(FINE)
                 .flags(DISABLE_DECOMPOSITION)
@@ -167,7 +174,7 @@ public class OrganicChemistryMaterials {
 
         Methane = new Material.Builder(GTCEu.id("methane"))
                 .gas(new FluidBuilder()
-                        .translation("gtceu.fluid.gas_generic"))
+                        .translation("material.gtceu.fluid_type.gas_generic"))
                 .color(0xFF0078)
                 .components(Carbon, 1, Hydrogen, 4)
                 .buildAndRegister();

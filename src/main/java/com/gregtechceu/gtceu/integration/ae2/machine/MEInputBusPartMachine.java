@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -129,8 +130,8 @@ public class MEInputBusPartMachine extends MEBusPartMachine
         var flow = Flow.col().coverChildren();
 
         flow.child(Text.dynamic(() -> isOnlineValue.getBoolValue() ?
-                Component.translatable("gtceu.gui.me_network.online") :
-                Component.translatable("gtceu.gui.me_network.offline"))
+                Component.translatable("gui.gtceu.machine.me_part.network.online") :
+                Component.translatable("gui.gtceu.machine.me_part.network.offline"))
                 .asWidget().marginTop(2).marginBottom(4));
         flow.child(new AEConfigWidget(aeItemHandler, CONFIG_SIZE, false)
                 .syncManager(syncManager)
@@ -208,8 +209,9 @@ public class MEInputBusPartMachine extends MEBusPartMachine
             CompoundTag tag = new CompoundTag();
             tag.put("MEInputBus", writeConfigToTag());
             dataStick.setTag(tag);
-            dataStick.setHoverName(Component.translatable("gtceu.machine.me.item_import.data_stick.name"));
-            player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_copy_settings"));
+            dataStick.setHoverName(Component.translatable("machine.gtceu.me.item_import.data_stick.name")
+                    .withStyle(ChatFormatting.ITALIC));
+            player.sendSystemMessage(Component.translatable("machine.gtceu.me.import_copy_settings"));
         }
         return InteractionResult.SUCCESS;
     }
@@ -224,7 +226,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
         if (!isRemote()) {
             readConfigFromTag(tag.getCompound("MEInputBus"));
             this.updateInventorySubscription();
-            player.sendSystemMessage(Component.translatable("gtceu.machine.me.import_paste_settings"));
+            player.sendSystemMessage(Component.translatable("machine.gtceu.me.import_paste_settings"));
         }
         return InteractionResult.sidedSuccess(isRemote());
     }

@@ -115,7 +115,7 @@ import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnderscore;
+import static com.gregtechceu.gtceu.utils.lang.FormattingUtil.toLowerCaseUnderscore;
 
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonEventListener {

@@ -135,9 +135,9 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         syncManager.syncValue("minValue", minValueSync);
         syncManager.syncValue("maxValue", maxValueSync);
 
-        column.child(coverUIRow().child(Text.lang("cover.advanced_energy_detector.min").asWidget().width(20))
+        column.child(coverUIRow().child(Text.lang("common.gtceu.min").asWidget().width(20))
                 .child(GTMuiWidgets.createLongInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(142)))
-                .child(coverUIRow().child(Text.lang("cover.advanced_energy_detector.max").asWidget().width(20))
+                .child(coverUIRow().child(Text.lang("common.gtceu.max").asWidget().width(20))
                         .child(GTMuiWidgets.createLongInputWithButtons(maxValueSync, () -> 0,
                                 () -> usePercent ? 100 : getEnergyCapacity()).width(142)))
                 .child(coverUIRow()
@@ -145,8 +145,8 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
                                 .value(new BooleanSyncValue(this::isInverted, this::setInverted).allowC2S())
                                 .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
                                 .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
-                                .tooltip(false, t -> t.add("cover.advanced_energy_detector.invert.disabled"))
-                                .tooltip(true, t -> t.add("cover.advanced_energy_detector.invert.enabled")))
+                                .tooltip(false, t -> t.add("cover.gtceu.advanced_energy_detector.invert.disabled"))
+                                .tooltip(true, t -> t.add("cover.gtceu.advanced_energy_detector.invert.enabled")))
                         .child(new ToggleButton()
                                 .value(new BooleanSyncValue(this::isUsePercent, this::setUsePercent).allowC2S())
                                 .background(true, ThemeAPI.INSTANCE.getTheme(settings.getTheme())
@@ -154,9 +154,9 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
                                 .overlay(false, GTGuiTextures.BUTTON_EU)
                                 .overlay(true, GTGuiTextures.BUTTON_PERCENT)
                                 .tooltip(false,
-                                        t -> t.add("cover.advanced_energy_detector.use_percent.disabled"))
+                                        t -> t.add("cover.gtceu.advanced_energy_detector.use_percent.disabled"))
                                 .tooltip(true,
-                                        t -> t.add("cover.advanced_energy_detector.use_percent.enabled"))));
+                                        t -> t.add("cover.gtceu.advanced_energy_detector.use_percent.enabled"))));
     }
 
     private void updateEUValues(boolean wasPercent) {

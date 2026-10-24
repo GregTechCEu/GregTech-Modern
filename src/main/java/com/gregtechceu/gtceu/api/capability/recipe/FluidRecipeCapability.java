@@ -38,7 +38,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public final static FluidRecipeCapability CAP = new FluidRecipeCapability();
 
     protected FluidRecipeCapability() {
-        super(GTCEu.id("fluid"), 0xFF3C70EE, true, 1, SerializerFluidIngredient.INSTANCE);
+        super(GTCEu.id("fluid"), "Fluid", 0xFF3C70EE, true, 1, SerializerFluidIngredient.INSTANCE);
     }
 
     @Override
@@ -370,7 +370,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         return machine.getTraits(NotifiableFluidTank.class);
     }
 
-    @SuppressWarnings("unchecked")
     public List<NotifiableFluidTank> getCapabilityHandlers(MetaMachine machine, IO io) {
         return getCapabilityHandlers(machine).stream()
                 .filter(v -> v.getHandlerIO() == io).toList();

@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
+import static com.gregtechceu.gtceu.utils.lang.FormattingUtil.toEnglishName;
 
 @Accessors(fluent = true, chain = true)
 public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
@@ -107,7 +107,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
                 GTRecipeType recipeType = builder.recipeTypes()[0];
                 if (tankScalingFunction != null && addDefaultTooltips) {
                     builder.tooltips(
-                            GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
+                            GTMachineUtils.workableTiered(tier, GTValues.V[tier] * 64, recipeType,
                                     tankScalingFunction.applyAsInt(tier), !isGenerator));
                 }
             }

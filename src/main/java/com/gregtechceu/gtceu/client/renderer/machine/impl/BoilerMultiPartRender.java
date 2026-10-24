@@ -88,7 +88,6 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
         return false;
     }
 
-    @SuppressWarnings("DataFlowIssue")
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderPartModel(List<BakedQuad> quads, MultiblockControllerMachine controller,

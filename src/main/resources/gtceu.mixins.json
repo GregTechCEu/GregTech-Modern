@@ -113,6 +113,7 @@
         "mui.ModularUIJeiRecipeAccessor",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",
+        "registrate.LanguageProviderAccessor"
     ],
     "injectors": {
         "defaultRequire": 1,

@@ -289,18 +289,18 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .value(new StringSyncValue(this::getColorStr, this::setColorStr).allowC2S())
                         .setMaxLength(8)
                         .setValidator(str -> COLOR_INPUT_PATTERN.matcher(str).replaceAll(""))
-                        .addTooltipLine(Text.lang("cover.ender_link.tooltip.channel_name")))
+                        .addTooltipLine(Text.lang("cover.gtceu.ender_link.tooltip.channel_name")))
                 .child(new DynamicSyncedWidget<>().syncHandler(dynamicLinkedSyncHandler))
                 .child(new ButtonWidget<>().onMousePressed((GuiContext context, int button) -> {
                     channelManager.openPanel();
                     return true;
                 }).posRel(Alignment.CenterRight).tooltip(new RichTooltip()
-                        .addLine(Text.lang("cover.ender_link.tooltip.list_button")))));
+                        .addLine(Text.lang("cover.gtceu.ender_link.tooltip.list_button")))));
 
         column.child(coverUIRow().child(new TextFieldWidget()
                 .setMaxLength(32)
                 .widthRel(1f)
-                .addTooltipLine(Text.lang("cover.ender_link.tooltip.channel_description"))
+                .addTooltipLine(Text.lang("cover.gtceu.ender_link.tooltip.channel_description"))
                 .value(new StringSyncValue(this::getDescription, this::setDescription).allowC2S())));
 
         Flow bottomRow = coverUIRow();
@@ -314,7 +314,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     protected ParentWidget<?> getChannelStatusRowShort(PanelSyncManager syncManager, VirtualEntry entry, int idx) {
         TextWidget<?> str;
         if (entry.getDescription().isBlank()) {
-            str = Text.lang("cover.ender_link.description_empty").asWidget().size(98, 12)
+            str = Text.lang("cover.gtceu.ender_link.tooltip.description_empty").asWidget().size(98, 12)
                     .color(Color.GREY.darker(1));
         } else {
             str = Text.str(entry.getDescription()).asWidget().size(98, 12);

@@ -1,17 +1,21 @@
-package com.gregtechceu.gtceu.utils;
+package com.gregtechceu.gtceu.utils.lang;
 
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.Mth;
 
+import com.demonwav.mcdev.annotations.Translatable;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4fc;
-import org.joml.Options;
-import org.joml.Runtime;
 
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -149,28 +153,6 @@ public class FormattingUtil {
                 .replace("DCD", "CM");
     }
 
-    /**
-     * Does almost the same thing as LOWER_UNDERSCORE.to(UPPER_CAMEL, string), but it also removes underscores before
-     * numbers.
-     *
-     * @param string Any string with ASCII characters.
-     * @return A string that is all lowercase, with underscores inserted before word/number boundaries:
-     *         "maraging_steel_300" -> "maragingSteel300"
-     */
-    public static String lowerUnderscoreToUpperCamel(String string) {
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < string.length(); i++) {
-            if (string.charAt(i) == '_')
-                continue;
-            if (i == 0 || string.charAt(i - 1) == '_') {
-                result.append(Character.toUpperCase(string.charAt(i)));
-            } else {
-                result.append(string.charAt(i));
-            }
-        }
-        return result.toString();
-    }
-
     public static String formatPercent(double number) {
         return String.format("%,.2f", number);
     }
@@ -293,44 +275,71 @@ public class FormattingUtil {
     }
 
     /**
-     * Return a single-line string representation of {@code matrix} using JOML's number formatting.
+     * Formats an EUt value as {@code (amps) A @ (voltage)}
      *
-     * @return the string representation
+     * @param color If color formatting should also be applied
      */
-    public static String matrixToSingleLineString(Matrix4fc matrix) {
-        String str = matrixToSingleLineString(matrix, Options.NUMBER_FORMAT);
-        StringBuilder res = new StringBuilder();
-        int eIndex = Integer.MIN_VALUE;
+    public static MutableComponent formattedEUt(float amps, long voltage, boolean color) {
+        var tier = GTUtil.getTierByVoltage(voltage);
 
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (c == 'E') {
-                eIndex = i;
-            } else if (c == ' ' && eIndex == i - 1) {
-                // workaround Java 1.4 DecimalFormat bug
-                res.append('+');
-                continue;
-            } else if (Character.isDigit(c) && eIndex == i - 1) {
-                res.append('+');
-            }
-            res.append(c);
+        MutableComponent amperage = FormattingUtil.prepend("common.gtceu.amperage",
+                FormattingUtil.formatNumber2Places(amps));
+        if (color) amperage = amperage.withStyle(ChatFormatting.RED);
+
+        MutableComponent text = amperage.append(color ? Component.literal(" @ ").withStyle(ChatFormatting.GREEN) :
+                Component.literal(" @ "));
+
+        if (tier < GTValues.TIER_COUNT) {
+            MutableComponent voltageComponent = GTValues.VNC[tier].copy();
+            if (!color) voltageComponent.setStyle(Style.EMPTY);
+            text.append(voltageComponent);
+        } else {
+            int oc = Mth.clamp(tier - GTValues.TIER_COUNT - 1, 0, GTValues.TIER_COUNT);
+            MutableComponent maxComponent = Component.literal("MAX");
+            if (color) maxComponent = maxComponent.withStyle(style -> style.withColor(TooltipHelper.rainbowColor(oc)));
+
+            MutableComponent countComponent = Component.literal("+").append(String.valueOf(oc));
+            if (color) countComponent = countComponent.withStyle(style -> style.withColor(GTValues.VC[oc]));
+            text.append(maxComponent).append(countComponent);
         }
-        return res.toString();
+
+        return text;
     }
 
     /**
-     * Return a single-line string representation of this matrix by formatting the matrix
-     * elements with the given {@link NumberFormat}.
+     * Adds a given string to the beginning and end of a component.
      *
-     * @param formatter the {@link NumberFormat} used to format the matrix values with
-     * @return the string representation
+     * @param component The component to append/preprend to.
+     * @param str       The string to append/prepend.
      */
-    // spotless:off
-    public static String matrixToSingleLineString(Matrix4fc matrix, NumberFormat formatter) {
-        return "{ [" + Runtime.format(matrix.m00(), formatter) + " " + Runtime.format(matrix.m10(), formatter) + " " + Runtime.format(matrix.m20(), formatter) + " " + Runtime.format(matrix.m30(), formatter) + "]. "
-                + "[" + Runtime.format(matrix.m01(), formatter) + " " + Runtime.format(matrix.m11(), formatter) + " " + Runtime.format(matrix.m21(), formatter) + " " + Runtime.format(matrix.m31(), formatter) + "], "
-                + "[" + Runtime.format(matrix.m02(), formatter) + " " + Runtime.format(matrix.m12(), formatter) + " " + Runtime.format(matrix.m22(), formatter) + " " + Runtime.format(matrix.m32(), formatter) + "]. "
-                + "[" + Runtime.format(matrix.m03(), formatter) + " " + Runtime.format(matrix.m13(), formatter) + " " + Runtime.format(matrix.m23(), formatter) + " " + Runtime.format(matrix.m33(), formatter) + "] }";
+    public static MutableComponent wrap(Component component, String str) {
+        return Component.literal(str).append(component).append(str);
     }
-    // spotless:on
+
+    /**
+     * Adds a given string to the beginning and end of a component.
+     *
+     * @param component The component to append/preprend to.
+     * @param prefix    The string to preprend.
+     * @param postfix   The string to append.
+     */
+    public static MutableComponent wrap(Component component, String prefix, String postfix) {
+        return Component.literal(prefix).append(component).append(postfix);
+    }
+
+    /**
+     * Preprends a value to the start of a component.<br>
+     * e.g. {@code prepend(Component.translatable("common.gtceu.mb_per_tick"), 100)} returns {@code "100 mB/t"}
+     */
+    public static MutableComponent prepend(Component component, Object val) {
+        return Component.literal(val.toString() + " ").append(component);
+    }
+
+    /**
+     * Preprends a value to the start of a component.<br>
+     * e.g. {@code prepend("common.gtceu.mb_per_tick", 100)} returns {@code "100 mB/t"}
+     */
+    public static MutableComponent prepend(@Translatable String langKey, Object val) {
+        return Component.literal(val.toString() + " ").append(Component.translatable(langKey));
+    }
 }

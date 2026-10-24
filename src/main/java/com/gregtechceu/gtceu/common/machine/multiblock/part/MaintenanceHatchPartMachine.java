@@ -443,8 +443,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         Runnable updateWidget = () -> {
             while (!maintenanceStatusWidget.getChildren().isEmpty()) maintenanceStatusWidget.remove(0);
             maintenanceStatusWidget.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems() ?
-                    Component.translatable("gtceu.top.maintenance_broken") :
-                    Component.translatable("gtceu.top.maintenance_fixed"))))
+                    Component.translatable("gui.gtceu.machine.maintenance.broken") :
+                    Component.translatable("gui.gtceu.machine.maintenance.fixed"))))
                     .child(Flow.row()
                             .coverChildren()
                             .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
@@ -472,7 +472,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                                 .childPadding(5)
                                 .leftRel(0)
                                 .child(new TextWidget<>(
-                                        Text.lang("gtceu.maintenance.configurable_duration.modify")))
+                                        Text.lang("gui.gtceu.machine.maintenance.configurable_duration.modify")))
                                 .child(new TextFieldWidget()
                                         .setNumbersDouble(() -> MIN_DURATION_MULTIPLIER,
                                                 () -> MAX_DURATION_MULTIPLIER)
@@ -481,10 +481,10 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                                                 this::setDurationMultiplier))
                                         .addTooltipElement(Text.dynamic(() -> getDurationMultiplier() == 1.0 ?
                                                 Component.translatable(
-                                                        "gtceu.maintenance.configurable_duration.unchanged_description") :
+                                                        "gui.gtceu.machine.maintenance.configurable_duration.unchanged_description") :
                                                 Component.translatable(
-                                                        "gtceu.maintenance.configurable_duration.changed_description")))))
-                        .child(new TextWidget<>(Text.lang("gtceu.maintenance.configurable_time",
+                                                        "gui.gtceu.machine.maintenance.configurable_duration.changed_description")))))
+                        .child(new TextWidget<>(Text.lang("gui.gtceu.machine.maintenance.configurable_time",
                                 this.getTimeMultiplier()))
                                 .leftRel(0)))
                 .child(Flow.row()
@@ -499,7 +499,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                                 .background(GTGuiTextures.BUTTON_MAINTENANCE)
                                 .disableHoverBackground()
                                 .addTooltipElement(
-                                        Text.lang("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))
+                                        Text.lang("machine.gtceu.maintenance_hatch_tool_slot.tooltip"))
                                 .syncHandler(syncHandler)))
                 .child(maintenanceStatusWidget));
     }

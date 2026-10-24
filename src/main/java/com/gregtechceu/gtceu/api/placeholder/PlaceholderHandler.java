@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.placeholder.exceptions.UnknownPlaceholderExcept
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.common.mui.widgets.textfield.CodeEditorWidget;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -282,78 +282,86 @@ public class PlaceholderHandler {
                                         ctx.itemStackHandler().getSlots(),
                                         i -> new ItemSlot()
                                                 .slot(ctx.itemStackHandler(), i)
-                                                .addTooltipLine(
-                                                        Text.lang("gtceu.gui.computer_monitor_cover.slot_tooltip", i))))
-                        .child(Flow.column()
-                                .widthRel(.7f)
-                                .padding(5)
-                                .child(Flow.row()
-                                        .height(20)
-                                        .childIf(scaleDouble != null,
-                                                () -> new TextWidget<>(
-                                                        Text.lang("gtceu.gui.central_monitor.text_scale")))
-                                        .childIf(scaleDouble != null, () -> new TextFieldWidget()
-                                                .setNumbersDouble(x -> Math.max(x, 0))
-                                                .setDefaultNumber(1.0)
-                                                .value(scaleDouble)
-                                                .marginLeft(4))
-                                        .childIf(updateInterval != null,
-                                                () -> new TextWidget<>(
-                                                        Text.lang("gtceu.gui.computer_monitor_cover.update_interval")))
-                                        .childIf(updateInterval != null, () -> new TextFieldWidget()
-                                                .setNumbers(1, 1000)
-                                                .setDefaultNumber(1)
-                                                .value(updateInterval)
-                                                .marginLeft(4))
-                                        .childIf(pause != null, () -> new ToggleButton()
-                                                .value(pause)
-                                                .marginLeft(10)
-                                                .marginRight(10)
-                                                .background(true, GuiTextures.MC_BUTTON)
-                                                .hoverBackground(true, GuiTextures.MC_BUTTON_HOVERED)
-                                                .background(false, GuiTextures.MC_BUTTON)
-                                                .hoverBackground(false, GuiTextures.MC_BUTTON_HOVERED)
-                                                .overlay(false, GuiTextures.PAUSE)
-                                                .overlay(true, GuiTextures.PLAY)
-                                                .addTooltip(false, Text.lang("gtceu.gui.central_monitor.pause"))
-                                                .addTooltip(true, Text.lang("gtceu.gui.central_monitor.resume")))
-                                        .childIf(runCodeOnce != null, () -> new ButtonWidget<>()
-                                                .overlay(GuiTextures.RIGHTLOAD)
-                                                .addTooltipLine(Text.lang("gtceu.gui.central_monitor.update_once"))
-                                                .syncHandler(runCodeOnce))
-                                        .child(new ButtonWidget<>()
-                                                .right(0)
-                                                .overlay(GuiTextures.HELP)
-                                                .onMousePressed((GuiContext context, int button) -> {
-                                                    helpPanel.openPanel();
-                                                    return true;
-                                                })))
-                                .child(new CodeEditorWidget<>(LANG_DEFINITION)
-                                        .value(code)
-                                        .langContext(ctx)
-                                        .fullWidth()
-                                        .heightRelOffset(1, -25)))
-                        .child(new ListWidget<>()
-                                .widthRel(.25f)
-                                .right(0)
-                                .paddingBottom(5)
-                                .excludeAreaInRecipeViewer()
-                                .fullHeight()
-                                .children(GTRegistries.PLACEHOLDERS.values()
-                                        .stream()
-                                        .map(Placeholder::getName)
-                                        .sorted()
-                                        .map(s -> (IWidget) Flow.row()
-                                                .coverChildren()
-                                                .child(new TextWidget<>(s).center())
-                                                .tooltip(new RichTooltip()
-                                                        .addDrawableLines(LangHandler
-                                                                .getSingleOrMultiLang("gtceu.placeholder_info." + s)
-                                                                .stream()
-                                                                .map(Text::of)
-                                                                .map(key -> (IDrawable) key)
-                                                                .toList())))
-                                        .toList())));
+                                                .addTooltipLine(Text.comp(
+                                                        Text.lang("gui.gtceu.cover.computer_monitor.slot_tooltip.0"),
+                                                        Text.lang("gui.gtceu.cover.computer_monitor.slot_tooltip.1",
+                                                                i))))
+                                .child(Flow.column()
+                                        .widthRel(.7f)
+                                        .padding(5)
+                                        .child(Flow.row()
+                                                .height(20)
+                                                .childIf(scaleDouble != null,
+                                                        () -> new TextWidget<>(
+                                                                Text.lang(
+                                                                        "gui.gtceu.machine.central_monitor.text_scale")))
+                                                .childIf(scaleDouble != null, () -> new TextFieldWidget()
+                                                        .setNumbersDouble(x -> Math.max(x, 0))
+                                                        .setDefaultNumber(1.0)
+                                                        .value(scaleDouble)
+                                                        .marginLeft(4))
+                                                .childIf(updateInterval != null,
+                                                        () -> new TextWidget<>(
+                                                                Text.lang(
+                                                                        "gui.gtceu.cover.computer_monitor.update_interval")))
+                                                .childIf(updateInterval != null, () -> new TextFieldWidget()
+                                                        .setNumbers(1, 1000)
+                                                        .setDefaultNumber(1)
+                                                        .value(updateInterval)
+                                                        .marginLeft(4))
+                                                .childIf(pause != null, () -> new ToggleButton()
+                                                        .value(pause)
+                                                        .marginLeft(10)
+                                                        .marginRight(10)
+                                                        .background(true, GuiTextures.MC_BUTTON)
+                                                        .hoverBackground(true, GuiTextures.MC_BUTTON_HOVERED)
+                                                        .background(false, GuiTextures.MC_BUTTON)
+                                                        .hoverBackground(false, GuiTextures.MC_BUTTON_HOVERED)
+                                                        .overlay(false, GuiTextures.PAUSE)
+                                                        .overlay(true, GuiTextures.PLAY)
+                                                        .addTooltip(false,
+                                                                Text.lang("gui.gtceu.machine.central_monitor.pause"))
+                                                        .addTooltip(true,
+                                                                Text.lang("gui.gtceu.machine.central_monitor.resume")))
+                                                .childIf(runCodeOnce != null, () -> new ButtonWidget<>()
+                                                        .overlay(GuiTextures.RIGHTLOAD)
+                                                        .addTooltipLine(Text
+                                                                .lang("gui.gtceu.machine.central_monitor.update_once"))
+                                                        .syncHandler(runCodeOnce))
+                                                .child(new ButtonWidget<>()
+                                                        .right(0)
+                                                        .overlay(GuiTextures.HELP)
+                                                        .onMousePressed((GuiContext context, int button) -> {
+                                                            helpPanel.openPanel();
+                                                            return true;
+                                                        })))
+                                        .child(new CodeEditorWidget<>(LANG_DEFINITION)
+                                                .value(code)
+                                                .langContext(ctx)
+                                                .fullWidth()
+                                                .heightRelOffset(1, -25)))
+                                .child(new ListWidget<>()
+                                        .widthRel(.25f)
+                                        .right(0)
+                                        .paddingBottom(5)
+                                        .excludeAreaInRecipeViewer()
+                                        .fullHeight()
+                                        .children(GTRegistries.PLACEHOLDERS.values()
+                                                .stream()
+                                                .map(Placeholder::getId)
+                                                .sorted(Comparator.comparing(ResourceLocation::getPath))
+                                                .map(s -> (IWidget) Flow.row()
+                                                        .coverChildren()
+                                                        .child(new TextWidget<>(s.toString().replaceAll("gtceu:", ""))
+                                                                .center())
+                                                        .tooltip(new RichTooltip()
+                                                                .addDrawableLines(Arrays.stream(LangUtil
+                                                                        .getSingleOrMultiLang(
+                                                                                s.toLanguageKey("placeholder")))
+                                                                        .map(Text::of)
+                                                                        .map(key -> (IDrawable) key)
+                                                                        .toList())))
+                                                .toList()))));
     }
 
     public static ModularPanel<?> createHelpPanel() {
@@ -361,7 +369,8 @@ public class PlaceholderHandler {
                 .size(500, 250)
                 .child(Flow.column()
                         .padding(5)
-                        .child(new TextWidget<>(Text.lang("gtceu.gui.central_monitor.text_module_help")))
+                        .children(LangUtil.getListMultiLang("gui.gtceu.machine.central_monitor.text_module_help")
+                                .stream().map(t -> (IWidget) new TextWidget<>(t)).toList())
                         .child(new CodeEditorWidget<>(LANG_DEFINITION)
                                 .padding(5)
                                 .widthRel(.95f)
@@ -404,8 +413,8 @@ public class PlaceholderHandler {
                             .withHoverEvent(new HoverEvent(
                                     HoverEvent.Action.SHOW_TEXT,
                                     unclosedBrackets == 1 ?
-                                            Component.translatable("gtceu.placeholder_editor.unclosed_bracket") :
-                                            Component.translatable("gtceu.placeholder_editor.unclosed_brackets",
+                                            Component.translatable("gui.gtceu.placeholder_editor.unclosed_bracket") :
+                                            Component.translatable("gui.gtceu.placeholder_editor.unclosed_brackets",
                                                     unclosedBrackets))));
                 }
                 if (unclosedSingleEscapes > 0) {
@@ -417,8 +426,8 @@ public class PlaceholderHandler {
                             .withHoverEvent(new HoverEvent(
                                     HoverEvent.Action.SHOW_TEXT,
                                     unclosedSingleEscapes == 1 ?
-                                            Component.translatable("gtceu.placeholder_editor.unclosed_escape") :
-                                            Component.translatable("gtceu.placeholder_editor.unclosed_escapes",
+                                            Component.translatable("gui.gtceu.placeholder_editor.unclosed_escape") :
+                                            Component.translatable("gui.gtceu.placeholder_editor.unclosed_escapes",
                                                     unclosedBrackets))));
                 }
                 return Component.empty();
@@ -453,7 +462,7 @@ public class PlaceholderHandler {
                                 .withColor(0xFF0000)
                                 .withHoverEvent(new HoverEvent(
                                         HoverEvent.Action.SHOW_TEXT,
-                                        Component.translatable("gtceu.placeholder_editor.extra_closing_bracket"))));
+                                        Component.translatable("gui.gtceu.placeholder_editor.extra_closing_bracket"))));
                     }
                     return Component.literal(s).withStyle(ChatFormatting.GOLD);
                 }
@@ -473,7 +482,7 @@ public class PlaceholderHandler {
                                 .withColor(0xFF0000)
                                 .withHoverEvent(new HoverEvent(
                                         HoverEvent.Action.SHOW_TEXT,
-                                        Component.translatable("gtceu.placeholder_editor.extra_closing_bracket"))));
+                                        Component.translatable("gui.gtceu.placeholder_editor.extra_closing_bracket"))));
                     }
                     everything.append(s);
                     if (!openPlaceholders.empty()) {
@@ -492,7 +501,7 @@ public class PlaceholderHandler {
                         return Component.literal(s)
                                 .withStyle(style -> style.withHoverEvent(new HoverEvent(
                                         HoverEvent.Action.SHOW_TEXT,
-                                        Component.translatable("gtceu.placeholder_editor.constant_value", result)))
+                                        Component.translatable("gui.gtceu.placeholder_editor.constant_value", result)))
                                         .withInsertion(""));
                     }
                     if (!viewStarts.empty()) viewStarts.pop();
@@ -517,7 +526,7 @@ public class PlaceholderHandler {
                                 .withStyle(ChatFormatting.BLUE, ChatFormatting.UNDERLINE)
                                 .withStyle(style -> style.withHoverEvent(new HoverEvent(
                                         HoverEvent.Action.SHOW_TEXT,
-                                        Component.translatable("gtceu.placeholder_editor.write_in_if"))));
+                                        Component.translatable("gui.gtceu.placeholder_editor.write_in_if"))));
                     }
                     return Component.literal(s).withStyle(ChatFormatting.BLUE);
                 } else {
@@ -526,7 +535,7 @@ public class PlaceholderHandler {
                             .withColor(0xFF0000)
                             .withHoverEvent(new HoverEvent(
                                     HoverEvent.Action.SHOW_TEXT,
-                                    Component.translatable("gtceu.placeholder_editor.no_placeholder",
+                                    Component.translatable("gui.gtceu.placeholder_editor.no_placeholder",
                                             s.replaceAll("\\n", "\\\\n")))));
                 }
             }

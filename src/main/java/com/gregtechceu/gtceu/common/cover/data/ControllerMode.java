@@ -24,8 +24,8 @@ public enum ControllerMode {
     }
 
     public String getTooltip() {
-        return "cover.machine_controller.mode." + localeName;
+        return "cover.gtceu.machine_controller.mode." + localeName;
     }
 
-    public static final String nullLocaleName = "cover.machine_controller.mode.null";
+    public static final String nullLocaleName = "cover.gtceu.machine_controller.mode.null";
 }

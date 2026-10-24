@@ -152,7 +152,8 @@ public class ComputerMonitorCover extends CoverBehavior
                 text = getRenderedText();
             } catch (RuntimeException e) {
                 text = GTUtil
-                        .list(Component.translatable("gtceu.computer_monitor_cover.error.exception", e.getMessage()));
+                        .list(Component.translatable("gui.gtceu.cover.computer_monitor.error.exception",
+                                e.getMessage()));
             }
             syncDataHolder.markClientSyncFieldDirty("text");
         }

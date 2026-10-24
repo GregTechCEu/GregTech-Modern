@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.widgets.SteamDialWidget;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 
@@ -140,9 +140,10 @@ public class MachineUIPanelBuilder {
                     .child(background.asWidget()
                             .size(32, 32)
                             .tooltipAutoUpdate(true)
-                            .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.multiblock.steam.steam_stored",
-                                    FormattingUtil.formatNumbers(steamAmount.getIntValue()),
-                                    FormattingUtil.formatNumbers(steamCapacity.getIntValue())))))
+                            .tooltipDynamic(
+                                    r -> r.addLine(Component.translatable("gui.gtceu.machine.steam.steam_stored",
+                                            FormattingUtil.formatNumbers(steamAmount.getIntValue()),
+                                            FormattingUtil.formatNumbers(steamCapacity.getIntValue())))))
                     .child(new SteamDialWidget(steamProgress)
                             .setMinAngle((float) Math.PI)
                             .setMaxAngle((float) 0.0f)
@@ -153,9 +154,10 @@ public class MachineUIPanelBuilder {
                             .left(16)
                             .top(16)
                             .tooltipAutoUpdate(true)
-                            .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.multiblock.steam.steam_stored",
-                                    FormattingUtil.formatNumbers(steamAmount.getIntValue()),
-                                    FormattingUtil.formatNumbers(steamCapacity.getIntValue())))))
+                            .tooltipDynamic(
+                                    r -> r.addLine(Component.translatable("gui.gtceu.machine.steam.steam_stored",
+                                            FormattingUtil.formatNumbers(steamAmount.getIntValue()),
+                                            FormattingUtil.formatNumbers(steamCapacity.getIntValue())))))
                     .leftRel(0.0f).left(-36).top(4)
                     .excludeAreaInRecipeViewer());
         }

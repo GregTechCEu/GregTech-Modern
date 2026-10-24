@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -18,7 +20,7 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_1F;
+import static com.gregtechceu.gtceu.utils.lang.FormattingUtil.DECIMAL_FORMAT_1F;
 
 public class CableBlockProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
@@ -32,23 +34,24 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
                 long voltage = tag.getLong("currentVoltage");
                 double amperage = tag.getDouble("currentAmperage");
                 int temperature = tag.getInt("temperature");
-                iTooltip.add(Component.translatable("gtceu.top.cable_voltage"));
+                iTooltip.add(Component.translatable("integration.gtceu.jade.cable.voltage"));
                 if (voltage != 0) {
-                    iTooltip.append(Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(voltage)]));
+                    iTooltip.append(GTValues.VNC[GTUtil.getTierByVoltage(voltage)]);
                     iTooltip.append(Component.literal(" / "));
                 }
-                iTooltip.append(Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(tag.getLong("maxVoltage"))]));
+                iTooltip.append(GTValues.VNC[GTUtil.getTierByVoltage(tag.getLong("maxVoltage"))]);
 
-                iTooltip.add(Component.translatable("gtceu.top.cable_amperage"));
+                iTooltip.add(Component.translatable("integration.gtceu.jade.cable.amperage"));
                 if (amperage != 0) {
                     iTooltip.append(Component.literal(DECIMAL_FORMAT_1F.format(amperage) + "A / "));
                 }
-                iTooltip.append(Component.translatable("gtceu.jade.amperage_use",
+                iTooltip.append(FormattingUtil.prepend("common.gtceu.amperage",
                         DECIMAL_FORMAT_1F.format(tag.getDouble("maxAmperage"))));
 
                 if (temperature != CableBlockEntity.getDefaultTemp()) {
-                    iTooltip.add(Component.translatable("gtceu.top.cable_overloaded", progressToFailure(
-                            CableBlockEntity.getDefaultTemp(), CableBlockEntity.getMeltTemp(), temperature)));
+                    iTooltip.add(Component.translatable("integration.gtceu.jade.cable.overloaded", progressToFailure(
+                            CableBlockEntity.getDefaultTemp(), CableBlockEntity.getMeltTemp(), temperature))
+                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
                 }
             }
         }

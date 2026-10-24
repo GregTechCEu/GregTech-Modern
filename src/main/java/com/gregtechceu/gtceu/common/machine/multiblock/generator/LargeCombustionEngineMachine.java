@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
@@ -139,11 +140,12 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         }
         if (engineMachine.isIntakesObstructed()) {
             return ModifierFunction
-                    .cancel(Component.translatable("gtceu.multiblock.large_combustion_engine.obstructed"));
+                    .cancel(Component.translatable("gui.gtceu.machine.large_combustion_engine.obstructed"));
         }
         if (!engineMachine.hasLubricant()) {
             return ModifierFunction
-                    .cancel(Component.translatable("gtceu.multiblock.large_combustion_engine.no_lubricant"));
+                    .cancel(Component.translatable("gui.gtceu.machine.large_combustion_engine.no_lubricant")
+                            .withStyle(ChatFormatting.RED));
         }
 
         EnergyStack EUt = recipe.getOutputEUt();
@@ -220,24 +222,25 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         syncManager.syncValue("engineVoltage", engineVoltage);
 
         var hasLubricantWarning = Text.dynamic(() -> Component.translatable(
-                "gtceu.multiblock.large_combustion_engine.no_lubricant"))
+                "gui.gtceu.machine.large_combustion_engine.no_lubricant").withStyle(ChatFormatting.RED))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && !hasLubricant.getBoolValue());
         var boostDisallowed = Text.dynamic(() -> Component.translatable(
-                "gtceu.multiblock.large_combustion_engine.boost_disallowed"))
+                "gui.gtceu.machine.large_combustion_engine.boost_disallowed"))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && !isBoostAllowed.getBoolValue());
         var canBoost = Text.dynamic(() -> Component.translatable(
                 isExtreme.getValue() ?
-                        "gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost" :
-                        "gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost"))
+                        "gui.gtceu.machine.large_combustion_engine.supply_liquid_oxygen_to_boost" :
+                        "gui.gtceu.machine.large_combustion_engine.supply_oxygen_to_boost"))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && isBoostAllowed.getBoolValue() &&
                         !isOxygenBoosted.getBoolValue());
         var isBoosted = Text.dynamic(() -> Component.translatable(
                 isExtreme.getValue() ?
-                        "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
-                        "gtceu.multiblock.large_combustion_engine.oxygen_boosted"))
+                        "gui.gtceu.machine.large_combustion_engine.liquid_oxygen_boosted" :
+                        "gui.gtceu.machine.large_combustion_engine.oxygen_boosted")
+                .withStyle(ChatFormatting.AQUA))
                 .asWidget()
                 .setEnabledIf(
                         w -> isFormed.getBoolValue() && isActive.getBoolValue() && isBoostAllowed.getBoolValue() &&

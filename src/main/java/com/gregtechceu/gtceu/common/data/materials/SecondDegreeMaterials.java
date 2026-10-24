@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -16,12 +17,20 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class SecondDegreeMaterials {
 
     public static void register() {
         Glass = new Material.Builder(GTCEu.id("glass"))
+                .langOverride(TagPrefix.gem, "Glass Gem")
+                .langOverride(TagPrefix.gemChipped, "Chipped Glass Gem")
+                .langOverride(TagPrefix.gemFlawed, "Flawed Glass Gem")
+                .langOverride(TagPrefix.gemFlawless, "Flawless Glass Gem")
+                .langOverride(TagPrefix.gemExquisite, "Exquisite Glass Gem")
+                .langOverride(TagPrefix.plate, "Glass Pane")
+                .langOverride(TagPrefix.lens, "Glass Lens (White)")
                 .gem(0)
                 .liquid(new FluidBuilder()
                         .temperature(1200)
@@ -95,6 +104,8 @@ public class SecondDegreeMaterials {
                 .buildAndRegister();
 
         Blaze = new Material.Builder(GTCEu.id("blaze"))
+                .langOverride(dustTiny, "Tiny Pile of Blaze Powder")
+                .langOverride(dustSmall, "Small Pile of Blaze Powder")
                 .dust(1)
                 .liquid(new FluidBuilder()
                         .temperature(4000)
@@ -213,6 +224,9 @@ public class SecondDegreeMaterials {
                 .buildAndRegister();
 
         QuartzSand = new Material.Builder(GTCEu.id("quartz_sand"))
+                .langOverride(dust, "Quartz Sand")
+                .langOverride(dustSmall, "Small Pile of Quartz Sand")
+                .langOverride(dustTiny, "Tiny Pile of Quartz Sand")
                 .dust(1)
                 .color(0xf8efe3).secondaryColor(0xe6c1bb).iconSet(SAND)
                 .flags(DISABLE_DECOMPOSITION)
@@ -226,6 +240,14 @@ public class SecondDegreeMaterials {
                 .buildAndRegister();
 
         Bentonite = new Material.Builder(GTCEu.id("bentonite"))
+                .langOverride(dust, "Bentonite")
+                .langOverride(dustSmall, "Small Pile of Bentonite")
+                .langOverride(dustTiny, "Tiny Pile of Bentonite")
+                .langOverride(dustImpure, "Impure Pile of Bentonite")
+                .langOverride(dustPure, "Purified Pile of Bentonite")
+                .langOverride(crushed, "Ground Bentonite")
+                .langOverride(crushedPurified, "Purified Bentonite")
+                .langOverride(crushedRefined, "Refined Bentonite")
                 .dust().ore(3, 1)
                 .color(0xede8a3).secondaryColor(0xcdb44c).iconSet(ROUGH)
                 .flags(DISABLE_DECOMPOSITION)
@@ -234,12 +256,22 @@ public class SecondDegreeMaterials {
 
         FullersEarth = new Material.Builder(GTCEu.id("fullers_earth"))
                 .langValue("Fuller's Earth")
+                .langOverride(dustSmall, "Small Pile of Fuller's Earth")
+                .langOverride(dustTiny, "Tiny Pile of Fuller's Earth")
                 .dust().ore(2, 1)
                 .color(0xf3efbb).secondaryColor(0xb8d066).iconSet(FINE)
                 .components(Magnesium, 2, Silicon, 4, Oxygen, 14, Hydrogen, 4, Water, 1)
                 .buildAndRegister();
 
         Pitchblende = new Material.Builder(GTCEu.id("pitchblende"))
+                .langOverride(dust, "Pitchblende")
+                .langOverride(dustSmall, "Small Pile of Pitchblende")
+                .langOverride(dustTiny, "Tiny Pile of Pitchblende")
+                .langOverride(dustImpure, "Impure Pile of Pitchblende")
+                .langOverride(dustPure, "Purified Pile of Pitchblende")
+                .langOverride(crushed, "Ground Pitchblende")
+                .langOverride(crushedPurified, "Purified Pitchblende")
+                .langOverride(crushedRefined, "Refined Pitchblende")
                 .dust(3).ore(true)
                 .color(0xffd647).secondaryColor(0x0d1e2f)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
@@ -321,6 +353,8 @@ public class SecondDegreeMaterials {
                 .buildAndRegister();
 
         BorosilicateGlass = new Material.Builder(GTCEu.id("borosilicate_glass"))
+                .langOverride(wireFine, "Borosilicate Glass Fibers")
+                .langOverride(ingot, "Borosilicate Glass Bar")
                 .ingot(1)
                 .liquid(new FluidBuilder().temperature(1921))
                 .color(0xFAFAFA).secondaryColor(0xfaf5c0).iconSet(SHINY)
@@ -455,6 +489,9 @@ public class SecondDegreeMaterials {
                 .buildAndRegister();
 
         PlatinumSludgeResidue = new Material.Builder(GTCEu.id("platinum_sludge_residue"))
+                .langOverride(dust, "Platinum Slude Residue")
+                .langOverride(dustSmall, "Small Pile of Platinum Slude Residue")
+                .langOverride(dustTiny, "Tiny Pile of Platinum Slude Residue")
                 .dust()
                 .color(0x5e4b40).secondaryColor(0x4b403d).iconSet(FINE)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
@@ -462,6 +499,9 @@ public class SecondDegreeMaterials {
                 .buildAndRegister();
 
         PalladiumRaw = new Material.Builder(GTCEu.id("palladium_raw"))
+                .langOverride(dust, "Raw Palladium Powder")
+                .langOverride(dustSmall, "Small Pile of Raw Palladium Powder")
+                .langOverride(dustTiny, "Tiny Pile of Raw Palladium Powder")
                 .dust()
                 .color(0x5d4e1a).secondaryColor(0x33352d).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
@@ -469,6 +509,9 @@ public class SecondDegreeMaterials {
                 .buildAndRegister();
 
         RarestMetalMixture = new Material.Builder(GTCEu.id("rarest_metal_mixture"))
+                .langOverride(dust, "Rarest Metal Mixture")
+                .langOverride(dustSmall, "Small Pile of Rarest Metal Mixture")
+                .langOverride(dustTiny, "Tiny Pile of Rarest Metal Mixture")
                 .dust()
                 .color(0xca8832).secondaryColor(0xb21900).iconSet(SHINY)
                 .flags(DISABLE_DECOMPOSITION)

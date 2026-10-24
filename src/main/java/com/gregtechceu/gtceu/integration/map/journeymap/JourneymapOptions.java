@@ -15,10 +15,10 @@ public class JourneymapOptions {
     private final Map<String, BooleanOption> layerOptions = new HashMap<>();
 
     public JourneymapOptions() {
-        final OptionCategory category = new OptionCategory(GTCEu.MOD_ID, "gtceu.journeymap.options.layers");
+        final OptionCategory category = new OptionCategory(GTCEu.MOD_ID, "integration.gtceu.journeymap.options.layers");
 
         for (String layerName : Layers.allKeys()) {
-            final BooleanOption layer = new BooleanOption(category, layerName, "gtceu.button." + layerName, false);
+            final BooleanOption layer = new BooleanOption(category, layerName, "map.gtceu.button." + layerName, false);
             layerOptions.put(layerName, layer);
         }
     }

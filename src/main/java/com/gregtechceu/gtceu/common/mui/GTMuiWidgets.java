@@ -49,6 +49,7 @@ import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
+import com.demonwav.mcdev.annotations.Translatable;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import org.jetbrains.annotations.Nullable;
@@ -144,7 +145,7 @@ public class GTMuiWidgets {
     }
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture texture,
-                                                  String langKey) {
+                                                  @Translatable(suffix = ".enabled") String langKey) {
         var value = new BooleanSyncValue(getter, setter).allowC2S();
         return new ToggleButton()
                 .value(value)
@@ -155,7 +156,8 @@ public class GTMuiWidgets {
     }
 
     public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture background,
-                                                  UITexture selectedBackground, String langKey) {
+                                                  UITexture selectedBackground,
+                                                  @Translatable(suffix = ".enabled") String langKey) {
         var value = new BooleanSyncValue(getter, setter).allowC2S();
         return new ToggleButton()
                 .value(value)
@@ -172,7 +174,7 @@ public class GTMuiWidgets {
                 recipeLogicMachine::setWorkingEnabled,
                 GTGuiTextures.BUTTON_POWER[0],
                 GTGuiTextures.BUTTON_POWER[1],
-                "behaviour.soft_hammer");
+                "common.gtceu.workable");
     }
 
     public static ToggleButton createPowerButton(IControllable workable) {
@@ -181,7 +183,7 @@ public class GTMuiWidgets {
                 workable::setWorkingEnabled,
                 GTGuiTextures.BUTTON_POWER[0],
                 GTGuiTextures.BUTTON_POWER[1],
-                "behaviour.soft_hammer");
+                "common.gtceu.workable");
     }
 
     public static FluidSlot createTankWidget() {
@@ -209,35 +211,35 @@ public class GTMuiWidgets {
     public static ToggleButton createDistinctnessButton(IDistinctPart distinct) {
         return createToggleButton(distinct::isDistinct, distinct::setDistinct, GTGuiTextures.BUTTON_DISTINCT[0],
                 GTGuiTextures.BUTTON_DISTINCT[1],
-                "gtceu.multiblock.universal.distinct");
+                "gui.gtceu.machine.distinct");
     }
 
     public static ToggleButton createBatchModeButton(WorkableElectricMultiblockMachine workableElectricMultiblockMachine) {
         return createToggleButton(workableElectricMultiblockMachine::isBatchEnabled,
                 workableElectricMultiblockMachine::setBatchEnabled,
-                GTGuiTextures.BUTTON_BATCH[0], GTGuiTextures.BUTTON_BATCH[1], "gtceu.machine.batching");
+                GTGuiTextures.BUTTON_BATCH[0], GTGuiTextures.BUTTON_BATCH[1], "machine.gtceu.batching");
     }
 
     public static ToggleButton createAutoOutputItemButton(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::isAutoOutputItems, autoOutput::setAllowAutoOutputItems,
-                GTGuiTextures.BUTTON_ITEM_OUTPUT, "gtceu.gui.item_auto_output");
+                GTGuiTextures.BUTTON_ITEM_OUTPUT, "gui.gtceu.auto_output.item");
     }
 
     public static ToggleButton createAutoOutputFluidButton(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::isAutoOutputFluids, autoOutput::setAllowAutoOutputFluids,
-                GTGuiTextures.BUTTON_FLUID_OUTPUT, "gtceu.gui.fluid_auto_output");
+                GTGuiTextures.BUTTON_FLUID_OUTPUT, "gui.gtceu.auto_output.fluid");
     }
 
     public static ToggleButton createInputFromOutputItem(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::allowsItemInputFromOutputSide,
                 autoOutput::setAllowItemInputFromOutputSide, GTGuiTextures.BUTTON_ITEM_ALLOW_INPUT_OUTPUT,
-                "gtceu.gui.item_input_from_output");
+                "gui.gtceu.auto_output.item.allow_input");
     }
 
     public static ToggleButton createInputFromOutputFluid(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::allowsFluidInputFromOutputSide,
                 autoOutput::setAllowFluidInputFromOutputSide, GTGuiTextures.BUTTON_FLUID_ALLOW_INPUT_OUTPUT,
-                "gtceu.gui.fluid_input_from_output");
+                "gui.gtceu.auto_output.fluid.allow_input");
     }
 
     public static ButtonWidget<?> createRecipeTypeButton(WorkableElectricMultiblockMachine workableMultiblock,
@@ -252,7 +254,7 @@ public class GTMuiWidgets {
                 })
                 .backgroundOverlay(GTGuiTextures.PROGRESS_MIXER[0])
                 .size(18)
-                .tooltip((tooltip) -> tooltip.add(Component.translatable("gtceu.gui.machinemode.tab_tooltip")))
+                .tooltip((tooltip) -> tooltip.add(Component.translatable("gui.gtceu.active_machine_mode.tab_tooltip")))
                 .setEnabledIf((W) -> workableMultiblock.getRecipeTypes().length > 0);
     }
 
@@ -343,7 +345,8 @@ public class GTMuiWidgets {
                 }))
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder((r) -> r
-                        .addLine(Text.lang("metaitem.int_circuit.configuration", circuitTrait.getCurrentCircuit())));
+                        .addLine(Text.lang("item.gtceu.circuit.integrated.gui")
+                                .append(": " + circuitTrait.getCurrentCircuit())));
     }
 
     private static int nextCircuitValue(ItemStack stack, int current, double delta) {

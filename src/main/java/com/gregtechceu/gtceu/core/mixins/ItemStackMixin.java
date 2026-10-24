@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.ISpoilableItemStackExtension;
 import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -158,10 +158,10 @@ public abstract class ItemStackMixin implements ISpoilableItemStackExtension {
                     isAdvanced);
         } else if (gtceu$fakeTooltip) {
             list.add(Component.translatable(
-                    "gtceu.tooltip.spoil_time_remaining",
+                    "tooltip.gtceu.spoilage.spoil_time_remaining",
                     Component.literal(FormattingUtil.formatTime(100)).withStyle(ChatFormatting.DARK_AQUA)));
             list.add(Component.translatable(
-                    "gtceu.tooltip.spoils_into",
+                    "tooltip.gtceu.spoilage.spoils_into",
                     Items.DIRT.getDefaultInstance().getDisplayName()));
         }
     }

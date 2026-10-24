@@ -195,6 +195,7 @@ public interface IJetpack {
                 int energyUsed = sprinting ? sprintCost : getEnergyPerUse();
                 drainEnergy(stack, energyUsed);
                 ArmorUtils.spawnParticle(player.level(), player, getParticle(), -0.6D);
+                ArmorUtils.playJetpackSound(player);
             }
 
             // ensure that the player is actually using the jetpack to cancel fall damage

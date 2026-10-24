@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
-import com.gregtechceu.gtceu.data.lang.LangUtils;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.nbt.CompoundTag;
@@ -47,10 +46,13 @@ public class NightvisionGoggles extends ArmorLogicSuite {
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
-                    player.displayClientMessage(Component.translatable("armor.gtceu.night_vision.error"), true);
+                    player.displayClientMessage(
+                            Component.translatable("armor.gtceu.nano_muscle_suite.night_vision.error"), true);
                 } else {
                     player.displayClientMessage(Component
-                            .translatable(LangUtils.enabledBoolean("armor.gtceu.night_vision", nightVision)), true);
+                            .translatable("armor.gtceu.nano_muscle_suite.night_vision." +
+                                    (nightVision ? "enabled" : "disabled")),
+                            true);
                 }
             }
 
@@ -81,7 +83,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
         if (!world.isClientSide) {
             player.removeEffect(MobEffects.NIGHT_VISION);
             if (sendMsg)
-                player.displayClientMessage(Component.translatable("armor.gtceu.night_vision.disabled"), true);
+                player.displayClientMessage(Component.translatable("armor.gtceu.message.night_vision.disabled"), true);
         }
     }
 
@@ -97,9 +99,9 @@ public class NightvisionGoggles extends ArmorLogicSuite {
             CompoundTag nbtData = itemStack.getOrCreateTag();
             boolean nv = nbtData.getBoolean("nightVision");
             if (nv) {
-                lines.add(Component.translatable("armor.gtceu.night_vision.enabled"));
+                lines.add(Component.translatable("armor.gtceu.message.night_vision.enabled"));
             } else {
-                lines.add(Component.translatable("armor.gtceu.night_vision.disabled"));
+                lines.add(Component.translatable("armor.gtceu.message.night_vision.disabled"));
             }
         }
     }

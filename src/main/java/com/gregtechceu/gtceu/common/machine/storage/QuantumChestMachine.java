@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.*;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -247,7 +248,7 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
                         .background(GTGuiTextures.DISPLAY)
                         .size(90, 63)
                         .center()
-                        .child(Text.lang("gtceu.machine.quantum_chest.items_stored").asWidget()
+                        .child(Text.lang("machine.gtceu.quantum_chest.items_stored").asWidget()
                                 .color(0xffffff)
                                 .margin(8, 0, 8, 0))
                         .child(Text.dynamic(
@@ -261,9 +262,9 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
                                 .coverChildren()
                                 .child(GTMuiWidgets.createAutoOutputItemButton(autoOutput))
                                 .child(GTMuiWidgets.createToggleButton(this::isLocked, this::setLocked,
-                                        GTGuiTextures.BUTTON_LOCK, "gtceu.gui.item_lock.tooltip"))
+                                        GTGuiTextures.BUTTON_LOCK, "gui.gtceu.item_locking"))
                                 .child(GTMuiWidgets.createToggleButton(this::isVoiding, this::setVoiding,
-                                        GTGuiTextures.BUTTON_VOID, "gtceu.gui.item_voiding_partial.tooltip")))
+                                        GTGuiTextures.BUTTON_VOID, "gui.gtceu.item_voiding")))
                         .child(Flow.column()
                                 .margin(68, 0, 15, 0)
                                 .coverChildren()

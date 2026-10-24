@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
+import net.minecraft.network.chat.CommonComponents;
+
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -73,7 +75,7 @@ public class ItemMaterialInfo {
         StringBuilder ret = new StringBuilder("[ ");
         for (var matStack : sortedMaterials) {
             ret.append(matStack.amount() / (float) GTValues.M).append("x ")
-                    .append(matStack.material().getResourceLocation()).append(" ");
+                    .append(matStack.material().getResourceLocation()).append(CommonComponents.SPACE);
         }
         ret.append("]");
         toStringValue = ret.toString();

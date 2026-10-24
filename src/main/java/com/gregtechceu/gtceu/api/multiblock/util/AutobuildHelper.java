@@ -148,7 +148,8 @@ public class AutobuildHelper {
             whatWeHaveAE = AEWrapper.tryGrid(whatWeDontHave, level, item, player);
         }
 
-        printBlockList(Component.translatable("gtceu.autobuild.ae_blocks").withStyle(ChatFormatting.AQUA), whatWeHaveAE,
+        printBlockList(Component.translatable("gui.gtceu.autobuild.ae_blocks").withStyle(ChatFormatting.AQUA),
+                whatWeHaveAE,
                 player);
 
         Map<Item, Integer> whatWePlaced = new Object2IntArrayMap<>();
@@ -184,13 +185,13 @@ public class AutobuildHelper {
                     (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
         }
 
-        printBlockList(Component.translatable("gtceu.autobuild.placed_blocks").withStyle(ChatFormatting.GREEN),
+        printBlockList(Component.translatable("gui.gtceu.autobuild.placed_blocks").withStyle(ChatFormatting.GREEN),
                 whatWePlaced, player);
-        printBlockList(Component.translatable("gtceu.autobuild.missing_blocks").withStyle(ChatFormatting.RED),
+        printBlockList(Component.translatable("gui.gtceu.autobuild.missing_blocks").withStyle(ChatFormatting.RED),
                 whatWeWant, player);
 
         if (!canNotPlaceBlocks.isEmpty()) player.displayClientMessage(
-                Component.translatable("gtceu.autobuild.unplaced_blocks").withStyle(ChatFormatting.RED), false);
+                Component.translatable("gui.gtceu.autobuild.unplaced_blocks").withStyle(ChatFormatting.RED), false);
         if (!canNotPlaceBlocks.isEmpty())
             GTNetwork.sendToPlayer(player, new SPacketAutobuildHighlight(canNotPlaceBlocks.keySet().toLongArray()));
     }
