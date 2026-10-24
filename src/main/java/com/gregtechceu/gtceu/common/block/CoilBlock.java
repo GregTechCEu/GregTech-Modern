@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
@@ -75,12 +76,12 @@ public class CoilBlock extends ActiveBlock {
         private final int energyDiscount;
         @NotNull
         @Getter
-        private final Material material;
+        private final Holder<Material> material;
         @NotNull
         @Getter
         private final ResourceLocation texture;
 
-        CoilType(String name, int coilTemperature, int level, int energyDiscount, Material material,
+        CoilType(String name, int coilTemperature, int level, int energyDiscount, Holder<Material> material,
                  ResourceLocation texture) {
             this.name = name;
             this.coilTemperature = coilTemperature;

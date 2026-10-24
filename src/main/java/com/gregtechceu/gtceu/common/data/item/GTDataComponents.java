@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.common.data.item;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.filter.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.datacomponents.*;
+import com.gregtechceu.gtceu.api.item.module.ModularItemData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
 import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
@@ -75,6 +77,8 @@ public class GTDataComponents {
                     .persistent(ResolvableItemEnchantments.CODEC)
                     .networkSynchronized(ResolvableItemEnchantments.STREAM_CODEC)
                     .cacheEncoding());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ModularItemData>> MODULAR_ITEM_DATA = DATA_COMPONENTS
+            .registerComponentType("modular_item_data", builder -> builder.persistent(ModularItemData.CODEC));
 
     // Material-related
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Material>> ITEM_MATERIAL = DATA_COMPONENTS
@@ -83,6 +87,13 @@ public class GTDataComponents {
                     .networkSynchronized(ByteBufCodecs.registry(GTRegistries.Keys.MATERIAL)));
 
     // Armor-related
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> MODULE_ENERGY_CREDIT = DATA_COMPONENTS
+            .registerComponentType("module_energy_credit", builder -> builder
+                    .persistent(Codec.intRange(0, (int) (ArmorUtils.CREDITS_PER_EU - 1)))
+                    .networkSynchronized(ByteBufCodecs.VAR_INT));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> NETHERITE_PLATED = DATA_COMPONENTS
+            .registerComponentType("netherite_plated", builder -> builder.persistent(Unit.CODEC)
+                    .networkSynchronized(UNIT_STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<GTArmor>> ARMOR_DATA = DATA_COMPONENTS
             .registerComponentType("armor",
                     builder -> builder.persistent(GTArmor.CODEC).networkSynchronized(GTArmor.STREAM_CODEC));

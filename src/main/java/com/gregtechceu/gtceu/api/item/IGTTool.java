@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
@@ -137,7 +138,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
             return tool.getMaterial();
         }
 
-        return GTMaterials.Iron;
+        return GTMaterials.Iron.value();
     }
 
     default @Nullable ToolProperty getToolProperty() {
@@ -320,17 +321,17 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         if (entry.material() == getToolMaterial(toRepair)) {
             // special case wood to allow Wood Planks
             if (VanillaRecipeHelper.isMaterialWood(entry.material())) {
-                return entry.tagPrefix() == TagPrefix.planks;
+                return entry.tagPrefix() == TagPrefix.planks.value();
             }
             // Gems can use gem and plate, Ingots can use ingot and plate
-            if (entry.tagPrefix() == TagPrefix.plate) {
+            if (entry.tagPrefix() == TagPrefix.plate.value()) {
                 return true;
             }
             if (entry.material().hasProperty(PropertyKey.INGOT)) {
-                return entry.tagPrefix() == TagPrefix.ingot;
+                return entry.tagPrefix() == TagPrefix.ingot.value();
             }
             if (entry.material().hasProperty(PropertyKey.GEM)) {
-                return entry.tagPrefix() == TagPrefix.gem;
+                return entry.tagPrefix() == TagPrefix.gem.value();
             }
         }
         return false;
@@ -557,7 +558,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
 
         // electric info
         if (this.isElectric()) {
-            ElectricStats.addCurrentChargeTooltip(tooltip, getCharge(stack), getMaxCharge(stack), getElectricTier(),
+            IElectricItem.addCurrentChargeTooltip(tooltip, getCharge(stack), getMaxCharge(stack), getElectricTier(),
                     false);
         }
 
@@ -662,13 +663,13 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
                 Collection<Component> repairItems = new ArrayList<>();
                 if (!VanillaRecipeHelper.isMaterialWood(material)) {
                     if (material.hasProperty(PropertyKey.INGOT)) {
-                        repairItems.add(TagPrefix.ingot.getLocalizedName(material));
+                        repairItems.add(TagPrefix.ingot.value().getLocalizedName(material));
                     } else if (material.hasProperty(PropertyKey.GEM)) {
-                        repairItems.add(TagPrefix.gem.getLocalizedName(material));
+                        repairItems.add(TagPrefix.gem.value().getLocalizedName(material));
                     }
                 }
                 if (!ChemicalHelper.get(TagPrefix.plate, material).isEmpty()) {
-                    repairItems.add(TagPrefix.plate.getLocalizedName(material));
+                    repairItems.add(TagPrefix.plate.value().getLocalizedName(material));
                 }
                 if (!repairItems.isEmpty()) {
                     tooltip.add(Component.translatable("item.gtceu.tool.tooltip.repair_material", repairItems.stream()

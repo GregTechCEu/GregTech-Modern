@@ -32,10 +32,7 @@ import com.gregtechceu.gtceu.utils.DummyRecipeUtils;
 import com.gregtechceu.gtceu.utils.ScopedValue;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -142,6 +139,10 @@ public class ToolHelper {
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    public static ItemStack get(GTToolType toolType, Holder<Material> material) {
+        return get(toolType, material.value());
     }
 
     public static ItemStack getArmor(ArmorItem.Type armorType, Material material) {
@@ -432,7 +433,7 @@ public class ToolHelper {
                     continue;
                 }
                 // Only apply fortune on ore -> crushed forge hammer recipes
-                if (ChemicalHelper.getPrefix(output.getItem()) != TagPrefix.crushed) {
+                if (ChemicalHelper.getPrefix(output.getItem()) != TagPrefix.crushed.value()) {
                     continue;
                 }
                 if (fortuneDropMultiplier == null) {

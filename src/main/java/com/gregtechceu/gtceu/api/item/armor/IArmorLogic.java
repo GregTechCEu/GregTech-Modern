@@ -1,5 +1,9 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
+
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -11,8 +15,6 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,13 +33,19 @@ public interface IArmorLogic {
      *
      * @return The number of armor points for display, 2 per shield.
      */
-    int getArmorDisplay(Player player, @NotNull ItemStack armor, EquipmentSlot slot);
+    int getArmorDisplay(Player player, ItemStack armor, EquipmentSlot slot);
 
     default boolean canBreakWithDamage(ItemStack stack) {
         return false;
     }
 
-    default boolean isPPE() {
+    default boolean isPPE(ItemStack stack) {
+        IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+        if (modularItem != null) {
+            for (ModuleContext moduleData : modularItem.getAllModuleInstances()) {
+                if (moduleData.getModule().isPPE(moduleData)) return true;
+            }
+        }
         return false;
     }
 
@@ -50,18 +58,7 @@ public interface IArmorLogic {
         return Collections.emptyList();
     }
 
-    default boolean isValidArmor(ItemStack itemStack, Entity entity, EquipmentSlot equipmentSlot) {
-        return getArmorType().getSlot() == equipmentSlot;
-    }
-
     default void onArmorTick(Level world, Player player, ItemStack itemStack) {}
-
-    @OnlyIn(Dist.CLIENT)
-    default void renderHelmetOverlay(ItemStack itemStack, Player player, float partialTicks) {}
-
-    default int getArmorLayersAmount(ItemStack itemStack) {
-        return 1;
-    }
 
     default int getArmorLayerColor(ItemStack itemStack, int layerIndex) {
         return 0xFFFFFF;

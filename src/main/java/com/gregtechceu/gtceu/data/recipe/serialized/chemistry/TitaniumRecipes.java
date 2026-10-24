@@ -48,7 +48,7 @@ public class TitaniumRecipes {
                 .inputFluids(TitaniumTetrachloride.getFluid(1000))
                 .outputItems(ingotHot, Titanium)
                 .outputItems(dust, MagnesiumChloride, 6)
-                .blastFurnaceTemp(Titanium.getBlastTemperature() + 200)
+                .blastFurnaceTemp(Titanium.value().getBlastTemperature() + 200)
                 .duration(800).EUt(VA[HV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("salt_from_magnesium_chloride")
