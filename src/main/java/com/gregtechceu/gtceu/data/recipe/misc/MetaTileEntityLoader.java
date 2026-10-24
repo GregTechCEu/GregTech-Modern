@@ -335,8 +335,8 @@ public class MetaTileEntityLoader {
                 GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.HIGH_PRESSURE_HAZARD_SIGN_BLOCK.asStack());
 
         var multiHatchMaterials = new Material[] {
-                GTMaterials.Titanium, GTMaterials.TungstenSteel, GTMaterials.NiobiumTitanium,
-                GTMaterials.Iridium, GTMaterials.Naquadah, GTMaterials.Neutronium
+                GTMaterials.Titanium.value(), GTMaterials.TungstenSteel.value(), GTMaterials.NiobiumTitanium.value(),
+                GTMaterials.Iridium.value(), GTMaterials.Naquadah.value(), GTMaterials.Neutronium.value()
         };
         for (int i = 0; i < multiHatchMaterials.length; i++) {
             var tier = GTMachineUtils.MULTI_HATCH_TIERS[i];
@@ -916,8 +916,8 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, GTMachines.WIRELESS_CHARGER, "FEF", "CMC", "WBW", 'M', HULL, 'W', CABLE_QUAD,
                 'E', EMITTER, 'C', CIRCUIT, 'B', PLATE, 'F', FIELD_GENERATOR);
 
-        Material[] fluidMap = new Material[] { GTMaterials.Glue, GTMaterials.Polyethylene,
-                GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole };
+        Material[] fluidMap = new Material[] { GTMaterials.Glue.value(), GTMaterials.Polyethylene.value(),
+                GTMaterials.Polytetrafluoroethylene.value(), GTMaterials.Polybenzimidazole.value() };
 
         for (var machine : GTMachines.FLUID_IMPORT_HATCH) {
             if (machine == null) continue;
@@ -1207,6 +1207,15 @@ public class MetaTileEntityLoader {
                 "MCM", 'F', GTItems.ITEM_FILTER.asStack(), 'R',
                 new MaterialEntry(TagPrefix.rotor, GTMaterials.StainlessSteel), 'H', HULL.get(HV), 'M',
                 GTItems.ELECTRIC_MOTOR_HV.asStack(), 'C', CustomTags.HV_CIRCUITS);
+
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "equipment_foundry", GTMachines.EQUIPMENT_FOUNDRY.asStack(),
+                "APA",
+                "AHA",
+                "PCP",
+                'A', GTItems.ROBOT_ARM_LV,
+                'P', new MaterialEntry(TagPrefix.plate, GTMaterials.Steel),
+                'H', GTMachines.HULL[LV].asStack(),
+                'C', GTMachines.STEEL_CRATE.asStack());
 
         if (ConfigHolder.INSTANCE.compat.energy.enableFEConverters) {
             registerMachineRecipe(provider, true, GTMachines.ENERGY_CONVERTER_1A, " WW", "RMC", " WW", 'C', CIRCUIT,

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.TagPrefixEntry;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
 
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
@@ -378,6 +379,11 @@ public class VanillaRecipeHelper {
                     case TagPrefix prefix -> {
                         if (!prefix.getItemParentTags().isEmpty()) {
                             builder.define(sign, prefix.getItemParentTags().getFirst());
+                        }
+                    }
+                    case TagPrefixEntry prefixEntry -> {
+                        if (!prefixEntry.value().getItemParentTags().isEmpty()) {
+                            builder.define(sign, prefixEntry.value().getItemParentTags().getFirst());
                         }
                     }
                     case ItemLike itemLike -> builder.define(sign, itemLike);

@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.function.Predicate;
 
@@ -42,6 +43,14 @@ public class CustomItemStackHandler extends ItemStackHandler
 
     public CustomItemStackHandler(NonNullList<ItemStack> stacks) {
         super(stacks);
+    }
+
+    /**
+     * Sets the stack in the given slot, without executing the contents changed callback. Use carefully.
+     */
+    public void setStackInSlotNoCallback(int slot, ItemStack stack) {
+        validateSlotIndex(slot);
+        this.stacks.set(slot, stack);
     }
 
     @Override
@@ -84,7 +93,7 @@ public class CustomItemStackHandler extends ItemStackHandler
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.@NonNull Provider provider, CompoundTag nbt) {
         if (nbt.getInt("Size") != stacks.size()) nbt.putInt("Size", stacks.size());
         super.deserializeNBT(provider, nbt);
     }

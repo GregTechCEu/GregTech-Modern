@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -11,12 +13,14 @@ import com.gregtechceu.gtceu.api.machine.trait.recipe.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,6 +37,8 @@ import java.util.*;
  * The base class for all multiblock parts
  */
 public class MultiblockPartMachine extends MetaMachine {
+
+    static final Set<MachineDefinition> MACHINES_LOGGING_FAILURES = new HashSet<>();
 
     @SyncToClient
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
@@ -293,5 +299,14 @@ public class MultiblockPartMachine extends MetaMachine {
             if (appearance != null) return appearance;
         }
         return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
+    }
+
+    public Component getFailReason() {
+        if (!MACHINES_LOGGING_FAILURES.contains(getDefinition())) {
+            GTCEu.LOGGER
+                    .warn(String.format("Multiblock Part failed without a failure reason! Part: %s", getDefinition()));
+            MACHINES_LOGGING_FAILURES.add(getDefinition());
+        }
+        return ModifierFunction.DEFAULT_FAILURE;
     }
 }

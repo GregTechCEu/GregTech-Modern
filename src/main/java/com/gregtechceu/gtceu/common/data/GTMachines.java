@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.common.data.machines.*;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.machine.GTMachineInstanceFactories;
 import com.gregtechceu.gtceu.common.machine.electric.*;
+import com.gregtechceu.gtceu.common.machine.misc.EquipmentFoundryMachine;
 import com.gregtechceu.gtceu.common.machine.mui.TestMuiMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
@@ -713,7 +714,8 @@ public class GTMachines {
     public static final MachineEntry<MachineDefinition>[] QUANTUM_TANK = registerQuantumTanks(REGISTRATE,
             "quantum_tank", HIGH_TIERS);
 
-    public static final MachineEntry<MachineDefinition> WOODEN_CRATE = registerCrate(REGISTRATE, GTMaterials.Wood, 27,
+    public static final MachineEntry<MachineDefinition> WOODEN_CRATE = registerCrate(REGISTRATE, GTMaterials.Wood, true,
+            27,
             9, "Wooden Crate");
     public static final MachineEntry<MachineDefinition> BRONZE_CRATE = registerCrate(REGISTRATE, GTMaterials.Bronze, 54,
             9, "Bronze Crate");
@@ -733,7 +735,7 @@ public class GTMachines {
             GTMaterials.TungstenSteel, 144, 16,
             "Tungstensteel Crate");
 
-    public static final MachineEntry<MachineDefinition> WOODEN_DRUM = registerDrum(REGISTRATE, GTMaterials.Wood,
+    public static final MachineEntry<MachineDefinition> WOODEN_DRUM = registerDrum(REGISTRATE, GTMaterials.Wood, true,
             (16 * FluidType.BUCKET_VOLUME),
             "Wooden Barrel");
     public static final MachineEntry<MachineDefinition> BRONZE_DRUM = registerDrum(REGISTRATE, GTMaterials.Bronze,
@@ -1285,6 +1287,13 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .model(createOverlayCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/machine/part/computer_monitor")))
+            .register();
+
+    public static final MachineEntry<MachineDefinition> EQUIPMENT_FOUNDRY = REGISTRATE
+            .machine("equipment_foundry", EquipmentFoundryMachine::new)
+            .rotationState(RotationState.NONE)
+            .themeId(GTGuiTheme.EQUIPMENT_FOUNDRY.getId())
+            .model(createBasicMachineModel(GTCEu.id("block/machine/equipment_foundry/base")))
             .register();
 
     public static void init() {

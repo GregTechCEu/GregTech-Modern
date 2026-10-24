@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -14,8 +13,14 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
+import com.gregtechceu.gtceu.api.item.module.AttributeItemModule;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
+import com.gregtechceu.gtceu.api.item.module.TieredAttributeItemModule;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
@@ -28,14 +33,18 @@ import com.gregtechceu.gtceu.common.commands.HazardCommands;
 import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
 import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.data.GTAttributeModifierIds;
+import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
-import com.gregtechceu.gtceu.common.item.armor.IStepAssist;
-import com.gregtechceu.gtceu.common.item.armor.QuarkTechSuite;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.item.datacomponents.FormatStringList;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.common.module.AttackDamageItemModule;
+import com.gregtechceu.gtceu.common.module.AttackSpeedItemModule;
+import com.gregtechceu.gtceu.common.module.JetpackModule;
+import com.gregtechceu.gtceu.common.module.JumpBoostItemModule;
+import com.gregtechceu.gtceu.common.module.LiquidFuelJetpackModule;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSendWorldID;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
@@ -55,16 +64,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ChunkPos;
@@ -76,7 +88,9 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.event.AddAttributeTooltipsEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
@@ -94,6 +108,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Either;
 
 import java.util.ArrayList;
@@ -144,8 +159,8 @@ public class CommonEventListener {
             }
 
             var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
-
             HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+            if (property == null) continue;
 
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
@@ -155,25 +170,6 @@ public class CommonEventListener {
             }
             hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, stack.getCount()));
             hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, stack.getCount()));
-        }
-    }
-
-    @SubscribeEvent
-    public static void onMobEffectEvent(MobEffectEvent.Applicable event) {
-        if (event.getEntity() instanceof Player player) {
-            ItemStack item = player.getItemBySlot(EquipmentSlot.HEAD);
-            IElectricItem helmet = GTCapabilityHelper.getElectricItem(item);
-            if (item.is(GTItems.QUANTUM_HELMET.asItem()) && helmet != null) {
-                MobEffectInstance effect = event.getEffectInstance();
-                int cost = QuarkTechSuite.potionRemovalCost.getOrDefault(effect.getEffect(), -1);
-                if (cost != -1) {
-                    cost = cost * (effect.getAmplifier() + 1);
-                    if (helmet.canUse(cost)) {
-                        helmet.discharge(cost, helmet.getTier(), true, false, false);
-                        event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
-                    }
-                }
-            }
         }
     }
 
@@ -318,6 +314,13 @@ public class CommonEventListener {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onEntityLivingFallEvent(LivingFallEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (entity.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof ModularArmorItem armor &&
+                armor.protectsAgainstFalls()) {
+            entity.fallDistance = 0;
+            event.setCanceled(true);
+            return;
+        }
         if (event.getEntity() instanceof ServerPlayer player) {
             if (player.fallDistance < 3.2f)
                 return;
@@ -325,48 +328,166 @@ public class CommonEventListener {
             ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 
-            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor) {
-                armor.getArmorLogic().damageArmor(player, boots,
-                        (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
-                player.fallDistance = 0;
-                event.setCanceled(true);
-            } else if (chest.getItem() instanceof ArmorComponentItem armor &&
+            if (chest.getItem() instanceof ArmorComponentItem armor &&
                     armor.getArmorLogic() instanceof IJetpack jetpack &&
                     jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
                     player.fallDistance >= player.getHealth() + 3.2f) {
-                        IJetpack.performEHover(chest, player);
-                        player.fallDistance = 0;
-                        event.setCanceled(true);
-                    }
+                IJetpack.performEHover(chest, player);
+                player.fallDistance = 0;
+                event.setCanceled(true);
+            }
         }
     }
 
     @SubscribeEvent
-    public static void stepAssistHandler(EntityTickEvent.Pre event) {
+    public static void onEntityTick(EntityTickEvent.Pre event) {
         if (!(event.getEntity() instanceof LivingEntity entity)) {
             return;
         }
-        AttributeInstance stepHeightAttribute = entity.getAttribute(Attributes.STEP_HEIGHT);
-        if (stepHeightAttribute == null) {
-            return;
+
+        if (entity.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ModularArmorItem armor &&
+                armor.protectsAgainstFire()) {
+            entity.clearFire();
         }
-        if (!entity.isShiftKeyDown() && entity.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS)) {
-            stepHeightAttribute.addOrUpdateTransientModifier(IStepAssist.STEP_ASSIST_MODIFIER);
-        } else {
-            stepHeightAttribute.removeModifier(IStepAssist.STEP_ASSIST_MODIFIER);
+
+        for (ItemStack stack : entity.getArmorSlots()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+            if (modularItem == null) continue;
+            if (entity.level().isClientSide() && entity instanceof Player player && player.isLocalPlayer())
+                modularItem.runForEachModule((m, a) -> m.clientSideArmorTick(a, player));
+            else if (!entity.level().isClientSide()) modularItem.runForEachModule((m, a) -> m.onArmorTick(a, entity));
+        }
+
+        if (entity instanceof Player player && !entity.level().isClientSide()) {
+            var inv = player.getInventory();
+            for (var group : ImmutableList.of(inv.items, inv.armor, inv.offhand)) {
+                for (ItemStack stack : group) {
+                    IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+                    if (modularItem == null) continue;
+                    modularItem.runForEachModule((m, a) -> {
+                        if (m.isEnabled(a)) m.onInventoryTick(a, player);
+                        m.onTickRaw(a, player, player.level(), player.getOnPos());
+                    });
+                }
+            }
         }
     }
 
     @SubscribeEvent
-    public static void onEquipmentChange(LivingEquipmentChangeEvent event) {
+    public static void onEntityEquipmentChange(LivingEquipmentChangeEvent event) {
         if (!event.getSlot().isArmor()) return;
-        if (!(event.getEntity() instanceof Player player)) return;
 
-        if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor) {
-            armor.getArmorLogic().onUnequip(player);
+        final LivingEntity entity = event.getEntity();
+        final ItemStack old = event.getFrom();
+        final ItemStack current = event.getTo();
+
+        if (IModularItem.isSameItemSameModules(old, current)) return;
+
+        if (entity instanceof Player player) {
+            if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() != null) {
+                armor.getArmorLogic().onUnequip(player);
+            }
+            if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() != null) {
+                armor.getArmorLogic().onEquip(player);
+            }
         }
-        if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor) {
-            armor.getArmorLogic().onEquip(player);
+
+        if (!old.isEmpty()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(old);
+            if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onUnequip(a, entity));
+        }
+
+        if (!current.isEmpty()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(current);
+            if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onEquip(a, entity));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onItemStackAttributeQuery(ItemAttributeModifierEvent modifierEvent) {
+        var modular = GTCapabilityHelper.getModularItem(modifierEvent.getItemStack());
+        if (modular == null) return;
+
+        for (var ctx : modular.getAllModuleInstances()) {
+            if (ctx.getModule() instanceof AttributeItemModule attributeModule) {
+                var attribute = attributeModule.getAttribute(ctx);
+                var modifier = attributeModule.getModifierToAdd(ctx);
+                if (modifier != null) {
+
+                    var equipable = Equipable.get(modifierEvent.getItemStack());
+                    modifierEvent.addModifier(attribute, modifier, equipable == null ? EquipmentSlotGroup.ANY :
+                            EquipmentSlotGroup.bySlot(equipable.getEquipmentSlot()));
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onModuleJump(LivingEvent.LivingJumpEvent event) {
+        var entity = event.getEntity();
+        if (entity.level().isClientSide) return;
+        for (var stack : entity.getArmorSlots()) {
+            var modular = GTCapabilityHelper.getModularItem(stack);
+            if (modular == null) continue;
+            for (var context : modular.getAllModuleInstances()) {
+                if (context.getModule() instanceof JumpBoostItemModule jump && jump.isEnabled(context)) {
+                    ArmorUtils.useModuleEnergy(stack, ArmorUtils.toModuleEnergyCredits(jump.getEnergyCost(context)),
+                            false);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onModuleMeleeHit(LivingDamageEvent.Post event) {
+        if (event.getEntity().level().isClientSide ||
+                event.getNewDamage() + event.getReduction(DamageContainer.Reduction.ABSORPTION) <= 0)
+            return;
+        var source = event.getSource();
+        if (!(source.is(DamageTypes.PLAYER_ATTACK) || source.is(DamageTypes.MOB_ATTACK) ||
+                source.is(DamageTypes.MOB_ATTACK_NO_AGGRO)) ||
+                !(source.getDirectEntity() instanceof LivingEntity attacker))
+            return;
+        for (var stack : attacker.getArmorSlots()) {
+            var modular = GTCapabilityHelper.getModularItem(stack);
+            if (modular == null) continue;
+            for (var context : modular.getAllModuleInstances()) {
+                if (!(context.getModule() instanceof AttackDamageItemModule ||
+                        context.getModule() instanceof AttackSpeedItemModule))
+                    continue;
+                var module = (TieredAttributeItemModule) context.getModule();
+                if (module.getModifierToAdd(context) != null) {
+                    ArmorUtils.useModuleEnergy(stack, ArmorUtils.toModuleEnergyCredits(module.getEnergyCost(context)),
+                            false);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHurt(LivingIncomingDamageEvent event) {
+        final LivingEntity entity = event.getEntity();
+        final DamageSource source = event.getSource();
+        // GT heat also has the fire tag; hot ingots use the separate insulation multiplier.
+        if (source.is(DamageTypeTags.IS_FIRE) && !source.is(GTDamageTypes.HEAT) &&
+                entity.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ModularArmorItem armor &&
+                armor.protectsAgainstFire()) {
+            entity.clearFire();
+            event.setCanceled(true);
+            return;
+        }
+
+        for (final ItemStack stack : entity.getArmorSlots()) {
+            float amount = event.getAmount();
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+            if (modularItem == null) continue;
+            for (ModuleContext context : modularItem.getAllModuleInstances()) {
+                if (!context.getModule().isEnabled(context)) continue;
+                amount = context.getModule().changeDamage(context, entity, amount, source);
+            }
+            event.setAmount(amount);
         }
     }
 
@@ -439,12 +560,16 @@ public class CommonEventListener {
     public static void modifyBreakSpeed(PlayerEvent.BreakSpeed event) {
         Player player = event.getEntity();
         for (ItemStack stack : player.getArmorSlots()) {
-            if (!(stack.getItem() instanceof ArmorComponentItem componentItem)) {
-                continue;
+            boolean removesPenalty = stack.getItem() instanceof ArmorComponentItem componentItem &&
+                    componentItem.getArmorLogic() instanceof IJetpack jetpack && jetpack.removeMiningSpeedPenalty();
+            var modular = GTCapabilityHelper.getModularItem(stack);
+            if (modular != null) {
+                removesPenalty |= modular.getAllModuleInstances().stream()
+                        .anyMatch(context -> context.getModule().isEnabled(context) &&
+                                (context.getModule() instanceof JetpackModule ||
+                                        context.getModule() instanceof LiquidFuelJetpackModule));
             }
-            if (!(componentItem.getArmorLogic() instanceof IJetpack jetpack) || !jetpack.removeMiningSpeedPenalty()) {
-                continue;
-            }
+            if (!removesPenalty) continue;
             // undo flight mining speed debuff
             if (!player.onGround()) {
                 event.setNewSpeed(event.getNewSpeed() * 5);
@@ -454,6 +579,7 @@ public class CommonEventListener {
                     event.getEntity().level().registryAccess().holderOrThrow(Enchantments.AQUA_AFFINITY)) == 0) {
                 event.setNewSpeed(event.getNewSpeed() * 5);
             }
+            break;
         }
 
         MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
@@ -512,18 +638,6 @@ public class CommonEventListener {
                 List<Component> tmp = new ArrayList<>();
                 tooltipProvider.appendHoverText(stack, event.getContext(), tmp, event.getContext().flag());
                 event.addTooltipLines(tmp.toArray(Component[]::new));
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void breakSpeed(PlayerEvent.BreakSpeed event) {
-        Player player = event.getEntity();
-        for (ItemStack stack : player.getArmorSlots()) {
-            if (stack.getItem() instanceof ArmorComponentItem componentItem) {
-                if (componentItem.getArmorLogic() instanceof IJetpack jetpack && jetpack.removeMiningSpeedPenalty()) {
-                    if (!player.onGround() || player.isUnderWater()) event.setNewSpeed(event.getOriginalSpeed() * 5);
-                }
             }
         }
     }

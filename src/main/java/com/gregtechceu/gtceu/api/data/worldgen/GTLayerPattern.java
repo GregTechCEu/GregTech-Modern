@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -157,6 +158,11 @@ public class GTLayerPattern {
 
             public GTLayerPattern.Layer.Builder mat(Material material) {
                 this.targets.add(Either.right(material));
+                return this;
+            }
+
+            public GTLayerPattern.Layer.Builder mat(Holder<Material> material) {
+                this.targets.add(Either.right(material.value()));
                 return this;
             }
 

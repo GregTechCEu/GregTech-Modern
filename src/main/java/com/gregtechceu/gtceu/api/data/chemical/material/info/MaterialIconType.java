@@ -154,20 +154,21 @@ public record MaterialIconType(String name) {
                 return suffixMap.get(suffix);
             }
         }
-
-        MaterialIconSet iconSet = materialIconSet;
         // noinspection ConstantConditions
         if (!GTCEu.isClientSide() || Minecraft.getInstance() == null ||
-                Minecraft.getInstance().getResourceManager() == null)
-            return GTModels.BLANK_TEXTURE; // check minecraft for null for CI environments
+                Minecraft.getInstance().getResourceManager() == null) {
+            // check minecraft for null for CI environments
+            return GTModels.BLANK_TEXTURE;
+        }
+
+        MaterialIconSet iconSet = materialIconSet;
         while (iconSet != null && !iconSet.isRootIconset) {
             ResourceLocation location = iconSet.id.withPath(String
                     .format("textures/block/material_sets/%s/%s%s.png", iconSet.getName(), this.name, suffix));
 
             if (GTUtil.resourceExists(location)) break;
-            else iconSet = iconSet.parentIconset;
+            iconSet = iconSet.parentIconset == null ? null : iconSet.parentIconset.value();
         }
-
         Objects.requireNonNull(iconSet);
 
         ResourceLocation location = iconSet.id
@@ -190,20 +191,21 @@ public record MaterialIconType(String name) {
                 return cachedValue;
             }
         }
-
-        MaterialIconSet iconSet = materialIconSet;
         // noinspection ConstantConditions
-        if (!iconSet.isRootIconset && GTCEu.isClientSide() && Minecraft.getInstance() != null &&
-                Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
-            while (iconSet != null && !iconSet.isRootIconset) {
-                ResourceLocation location = iconSet.id
-                        .withPath(String.format("models/block/material_sets/%s/%s.json", iconSet.getName(), this.name));
-
-                if (GTUtil.resourceExists(location)) break;
-                else iconSet = iconSet.parentIconset;
-            }
+        if (!GTCEu.isClientSide() || Minecraft.getInstance() == null ||
+                Minecraft.getInstance().getResourceManager() == null) {
+            // check minecraft for null for CI environments
+            return GTModels.BLANK_TEXTURE;
         }
 
+        MaterialIconSet iconSet = materialIconSet;
+        while (iconSet != null && !iconSet.isRootIconset) {
+            ResourceLocation location = iconSet.id.withPath(String
+                    .format("models/block/material_sets/%s/%s.json", iconSet.getName(), this.name));
+
+            if (GTUtil.resourceExists(location)) break;
+            iconSet = iconSet.parentIconset == null ? null : iconSet.parentIconset.value();
+        }
         Objects.requireNonNull(iconSet);
 
         ResourceLocation location = iconSet.id
@@ -221,6 +223,12 @@ public record MaterialIconType(String name) {
                 return cachedValue;
             }
         }
+        // noinspection ConstantConditions
+        if (!GTCEu.isClientSide() || Minecraft.getInstance() == null ||
+                Minecraft.getInstance().getResourceManager() == null) {
+            // check minecraft for null for CI environments
+            return GTModels.BLANK_TEXTURE;
+        }
 
         MaterialIconSet iconSet = materialIconSet;
         while (iconSet != null && !iconSet.isRootIconset) {
@@ -228,9 +236,8 @@ public record MaterialIconType(String name) {
                     .withPath(String.format("models/item/material_sets/%s/%s.json", iconSet.getName(), this.name));
 
             if (GTUtil.resourceExists(location)) break;
-            else iconSet = iconSet.parentIconset;
+            iconSet = iconSet.parentIconset == null ? null : iconSet.parentIconset.value();
         }
-
         Objects.requireNonNull(iconSet);
 
         ResourceLocation location = iconSet.id
@@ -255,16 +262,21 @@ public record MaterialIconType(String name) {
                 return suffixMap.get(suffix);
             }
         }
+        // noinspection ConstantConditions
+        if (!GTCEu.isClientSide() || Minecraft.getInstance() == null ||
+                Minecraft.getInstance().getResourceManager() == null) {
+            // check minecraft for null for CI environments
+            return GTModels.BLANK_TEXTURE;
+        }
 
         MaterialIconSet iconSet = materialIconSet;
         while (iconSet != null && !iconSet.isRootIconset) {
-            ResourceLocation location = iconSet.id.withPath(
-                    String.format("textures/item/material_sets/%s/%s%s.png", iconSet.getName(), this.name, suffix));
+            ResourceLocation location = iconSet.id
+                    .withPath(String.format("textures/item/material_sets/%s/%s%s.png", iconSet.getName(), this.name));
 
             if (GTUtil.resourceExists(location)) break;
-            else iconSet = iconSet.parentIconset;
+            iconSet = iconSet.parentIconset == null ? null : iconSet.parentIconset.value();
         }
-
         Objects.requireNonNull(iconSet);
 
         ResourceLocation location = iconSet.id.withPath(
