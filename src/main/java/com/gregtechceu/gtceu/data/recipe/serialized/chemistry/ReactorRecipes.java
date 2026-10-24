@@ -639,7 +639,6 @@ public class ReactorRecipes {
                 .duration(200).EUt(VA[HV]).save(provider);
 
         // Dyes
-
         for (DyeColor color : DyeColor.values()) {
             CHEMICAL_RECIPES.recipeBuilder("chemical_dye_" + color.getName())
                     .inputItems(color.getTag())

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.utils.WeightedEntry;
 
 import net.minecraft.core.BlockPos;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 public class WorldGeneratorUtils {
 
-    public static final RuleTest END_ORE_REPLACEABLES = new TagMatchTest(CustomTags.ENDSTONE_ORE_REPLACEABLES);
+    public static final RuleTest END_ORE_REPLACEABLES = new TagMatchTest(GTTags.Blocks.ENDSTONE_ORE_REPLACEABLES);
 
     private static final Map<ServerLevel, WorldOreVeinCache> oreVeinCache = new WeakHashMap<>();
 

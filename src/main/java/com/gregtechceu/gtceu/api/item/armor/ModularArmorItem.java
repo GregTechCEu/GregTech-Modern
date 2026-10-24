@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -65,7 +65,7 @@ public class ModularArmorItem extends ArmorComponentItem implements IComponentIt
             traits.add(Component.translatable("tooltip.gtceu.armor.trait.heat",
                     Math.round((1.0f - getHeatResistance()) * 100)));
         }
-        if (stack.is(CustomTags.PPE_ARMOR)) traits.add(Component.translatable("tooltip.gtceu.armor.trait.hazard"));
+        if (stack.is(GTTags.Items.PPE_ARMOR)) traits.add(Component.translatable("tooltip.gtceu.armor.trait.hazard"));
         if (traits.isEmpty()) return;
         tooltip.add(Component.translatable("tooltip.gtceu.armor.built_in_traits"));
         for (Component trait : traits) {

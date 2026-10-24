@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.EquipmentFoundryRecipeHelper;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -49,11 +49,11 @@ public class EquipmentFoundryRecipes {
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("respiration"),
                 Ingredient.of(Tags.Items.ARMORS_HELMETS),
-                CustomTags.ELECTRIC_PUMPS, GTItemModules.AIR_SUPPLIER);
+                GTTags.Items.ELECTRIC_PUMPS, GTItemModules.AIR_SUPPLIER);
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("autoeat"),
                 Ingredient.of(Tags.Items.ARMORS_HELMETS),
-                CustomTags.ROBOT_ARMS, GTItemModules.AUTO_EAT);
+                GTTags.Items.ROBOT_ARMS, GTItemModules.AUTO_EAT);
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("swim_speed"),
                 Ingredient.of(Tags.Items.ARMORS_BOOTS),
@@ -69,7 +69,7 @@ public class EquipmentFoundryRecipes {
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("battery_modifier"),
                 Ingredient.of(Tags.Items.ARMORS),
-                CustomTags.BATTERIES, GTItemModules.BATTERY);
+                GTTags.Items.BATTERIES, GTItemModules.BATTERY);
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("night_vision"),
                 Ingredient.of(Tags.Items.ARMORS_HELMETS),
@@ -121,6 +121,6 @@ public class EquipmentFoundryRecipes {
 
         EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("fluid_storage"),
                 Ingredient.of(Tags.Items.ARMORS_CHESTPLATES),
-                Ingredient.of(CustomTags.FLUID_CELLS), GTItemModules.FLUID_STORAGE);
+                Ingredient.of(GTTags.Items.FLUID_CELLS), GTItemModules.FLUID_STORAGE);
     }
 }

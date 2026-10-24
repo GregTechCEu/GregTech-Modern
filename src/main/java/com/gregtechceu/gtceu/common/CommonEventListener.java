@@ -58,7 +58,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.GTOreLoader;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
@@ -410,11 +410,11 @@ public class CommonEventListener {
                 speedBoost = 0.0f;
             } else {
                 var state = player.level().getBlockState(player.getOnPos());
-                if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) {
+                if (state.is(GTTags.Blocks.VERY_FAST_WALKABLE_BLOCKS)) {
                     speedBoost = 0.6f; // value that is added to the base MC speed
-                } else if (state.is(CustomTags.FAST_WALKABLE_BLOCKS)) {
+                } else if (state.is(GTTags.Blocks.FAST_WALKABLE_BLOCKS)) {
                     speedBoost = 0.25f; // slower to walk on studs
-                } else if (state.is(CustomTags.SLOW_WALKABLE_BLOCKS)) {
+                } else if (state.is(GTTags.Blocks.SLOW_WALKABLE_BLOCKS)) {
                     speedBoost = -0.20f; // slower on frames
                 }
             }
@@ -446,11 +446,11 @@ public class CommonEventListener {
         if (IModularItem.isSameItemSameModules(old, current)) return;
 
         if (entity instanceof Player player) {
-            if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor &&
+            if (!old.isEmpty() && old.getItem() instanceof ArmorComponentItem armor &&
                     armor.getArmorLogic() != null) {
                 armor.getArmorLogic().onUnequip(player);
             }
-            if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor &&
+            if (!current.isEmpty() && current.getItem() instanceof ArmorComponentItem armor &&
                     armor.getArmorLogic() != null) {
                 armor.getArmorLogic().onEquip(player);
             }
