@@ -8,6 +8,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -230,7 +231,6 @@ public class CustomTags {
     public static final TagKey<EntityType<?>> SPIDERS = TagUtil.createTag(Registries.ENTITY_TYPE, "spiders", false);
 
     public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createModFluidTag("lighter_fluids");
-    public static final TagKey<Fluid> POTION_FLUIDS = TagUtil.createFluidTag("potion");
 
     public static final TagKey<Fluid> FREEZABLE_FLUIDS = TagUtil.createModFluidTag("freezable_fluids");
     /** @deprecated Use FREEZABLE_FLUIDS for fluids requiring metal freezing. */
@@ -280,4 +280,7 @@ public class CustomTags {
             RED_LENS,
             BLACK_LENS
     };
+
+    public static final TagKey<Enchantment> PREVENTS_HAMMER_CRUSHING = TagUtil.createModTag(Registries.ENCHANTMENT,
+            "prevents_hammer_crushing");
 }
