@@ -275,7 +275,7 @@ public class CraftingRecipeLoader {
                 new MaterialEntry(ring, Rubber), 'B', GTItems.BATTERY_LV_SODIUM, 'L',
                 new MaterialEntry(lens, Glass));
         VanillaRecipeHelper.addShapedRecipe(provider, "liquid_fuel_thruster", GTItems.LIQUID_FUEL_THRUSTER.asStack(),
-                "xCw", "SUS", "RIR", 'C', GTTags.Items.LV_CIRCUITS, 'S', GTItems.FLUID_CELL_LARGE_STEEL.asStack(), 'U',
+                "xCw", "SUS", "RIR", 'C', GTTags.Items.CIRCUITS_LV, 'S', GTItems.FLUID_CELL_LARGE_STEEL.asStack(), 'U',
                 GTItems.ELECTRIC_PUMP_LV.asStack(), 'R', new MaterialEntry(rotor, Lead), 'I',
                 new MaterialEntry(pipeSmallFluid, Potin));
         VanillaRecipeHelper.addShapedRecipe(provider, "hydraulic_helmet", HYDRAULIC_HELMET.asStack(),
