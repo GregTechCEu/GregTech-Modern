@@ -23,7 +23,6 @@ import net.minecraftforge.fml.ModLoader;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
-import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class GTCovers {
@@ -143,7 +142,8 @@ public class GTCovers {
         CoverDefinition[] definitions = new CoverDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             definitions[tier] = register(id.withSuffix("." + GTValues.VNL[tier]),
-                    (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier), () -> () -> coverRenderer.get().apply(tier));
+                    (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
+                    () -> () -> coverRenderer.get().apply(tier));
         }
         return definitions;
     }
