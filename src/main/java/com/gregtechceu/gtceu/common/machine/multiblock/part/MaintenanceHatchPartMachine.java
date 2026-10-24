@@ -454,6 +454,11 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
             updateWidget.run();
         });
         updateWidget.run();
+        FloatSyncValue durationSyncValue = new FloatSyncValue(this::getDurationMultiplier,
+                this::setDurationMultiplier);
+        durationSyncValue.allowC2S();
+        FloatSyncValue timeMultiplierSyncValue = new FloatSyncValue(this::getTimeMultiplier);
+        syncManager.syncValue("timeMultiplier", timeMultiplierSyncValue);
         mainWidget.child(Flow.column()
                 .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
@@ -472,15 +477,15 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                                         .setNumbersDouble(() -> MIN_DURATION_MULTIPLIER,
                                                 () -> MAX_DURATION_MULTIPLIER)
                                         .setDefaultNumber(1)
-                                        .value(new FloatSyncValue(this::getDurationMultiplier,
-                                                this::setDurationMultiplier))
+                                        .value(durationSyncValue)
                                         .addTooltipElement(Text.dynamic(() -> getDurationMultiplier() == 1.0 ?
                                                 Component.translatable(
                                                         "gtceu.maintenance.configurable_duration.unchanged_description") :
                                                 Component.translatable(
                                                         "gtceu.maintenance.configurable_duration.changed_description")))))
-                        .child(new TextWidget<>(Text.lang("gtceu.maintenance.configurable_time",
-                                this.getTimeMultiplier()))
+                        .child(new TextWidget<>(Text.dynamic(() -> Component.translatable(
+                                "gtceu.maintenance.configurable_time",
+                                timeMultiplierSyncValue.getValue())))
                                 .leftRel(0)))
                 .child(Flow.row()
                         .leftRel(0.5f)
@@ -497,5 +502,10 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                                         Text.lang("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))
                                 .syncHandler(syncHandler)))
                 .child(maintenanceStatusWidget));
+    }
+
+    @Override
+    public Component getFailReason() {
+        return Component.translatable("gtceu.multiblock.universal.has_problems");
     }
 }
