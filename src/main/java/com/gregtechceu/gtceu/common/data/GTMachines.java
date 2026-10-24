@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.common.data.machines.*;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.machine.GTMachineInstanceFactories;
 import com.gregtechceu.gtceu.common.machine.electric.*;
+import com.gregtechceu.gtceu.common.machine.misc.EquipmentFoundryMachine;
 import com.gregtechceu.gtceu.common.machine.mui.TestMuiMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
@@ -1323,6 +1324,13 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .model(createOverlayCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/machine/part/computer_monitor")))
+            .register();
+
+    public static final MachineDefinition EQUIPMENT_FOUNDRY = REGISTRATE
+            .machine("equipment_foundry", EquipmentFoundryMachine::new)
+            .rotationState(RotationState.NONE)
+            .themeId(GTGuiTheme.EQUIPMENT_FOUNDRY.getId())
+            .model(createBasicMachineModel(GTCEu.id("block/machine/equipment_foundry/base")))
             .register();
 
     public static void init() {

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.data.lang.LangUtils;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -22,32 +23,24 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
-    @OnlyIn(Dist.CLIENT)
-    protected ArmorUtils.ModularHUD HUD;
-
     public Jetpack(int energyPerUse, long capacity, int tier) {
         super(energyPerUse, capacity, tier, ArmorItem.Type.CHESTPLATE);
-        if (GTCEu.isClientSide() && this.shouldDrawHUD()) {
-            // noinspection NewExpressionSideOnly
-            HUD = new ArmorUtils.ModularHUD();
-        }
     }
 
     @Override
-    public void onArmorTick(Level world, Player player, @NotNull ItemStack item) {
-        IElectricItem cont = GTCapabilityHelper.getElectricItem(item);
+    public void onArmorTick(Level world, Player player, ItemStack stack) {
+        IElectricItem cont = GTCapabilityHelper.getElectricItem(stack);
         if (cont == null) {
             return;
         }
 
-        CompoundTag data = item.getOrCreateTag();
+        CompoundTag data = stack.getOrCreateTag();
         // Assume no tags exist if we don't see the enabled tag
         if (!data.contains("enabled")) {
             data.putBoolean("enabled", true);
@@ -56,18 +49,18 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         }
 
         boolean jetpackEnabled = data.getBoolean("enabled");
-        boolean hoverMode = data.getBoolean("hover");
+        boolean hoverMode = updateHoverMode(player, stack, data.getBoolean("hover"), false);
         byte toggleTimer = data.getByte("toggleTimer");
 
         String messageKey = null;
         if (toggleTimer == 0) {
             if (SyncedKeyMappings.JETPACK_ENABLE.isKeyDown(player)) {
                 jetpackEnabled = !jetpackEnabled;
-                messageKey = "armor.gtceu.jetpack.flight." + (jetpackEnabled ? "enabled" : "disabled");
-                data.putBoolean("enabled", jetpackEnabled);
+                IJetpack.setEngineEnabled(stack, jetpackEnabled);
+                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.flight", jetpackEnabled);
             } else if (SyncedKeyMappings.ARMOR_HOVER.isKeyDown(player)) {
-                hoverMode = !hoverMode;
-                messageKey = "armor.gtceu.jetpack.hover." + (hoverMode ? "enabled" : "disabled");
+                hoverMode = updateHoverMode(player, stack, hoverMode, true);
+                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.hover", hoverMode);
                 data.putBoolean("hover", hoverMode);
             }
 
@@ -79,12 +72,13 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
         if (toggleTimer > 0) toggleTimer--;
         data.putByte("toggleTimer", toggleTimer);
+        data.putBoolean("hover", hoverMode);
 
-        performFlying(player, jetpackEnabled, hoverMode, item);
+        performFlying(player, jetpackEnabled, hoverMode, stack);
     }
 
     @Override
-    public boolean canUseEnergy(@NotNull ItemStack stack, int amount) {
+    public boolean canUseEnergy(ItemStack stack, int amount) {
         IElectricItem container = getIElectricItem(stack);
         if (container == null)
             return false;
@@ -92,15 +86,15 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     }
 
     @Override
-    public void drainEnergy(@NotNull ItemStack stack, int amount) {
+    public void drainEnergy(ItemStack stack, int amount) {
         IElectricItem container = getIElectricItem(stack);
         if (container == null)
             return;
-        container.discharge(amount, tier, true, false, false);
+        container.discharge(amount, container.getTier(), true, false, false);
     }
 
     @Override
-    public boolean hasEnergy(@NotNull ItemStack stack) {
+    public boolean hasEnergy(ItemStack stack) {
         IElectricItem container = getIElectricItem(stack);
         if (container == null)
             return false;
@@ -108,7 +102,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     }
 
     @Nullable
-    private static IElectricItem getIElectricItem(@NotNull ItemStack stack) {
+    private static IElectricItem getIElectricItem(ItemStack stack) {
         return GTCapabilityHelper.getElectricItem(stack);
     }
 
@@ -127,37 +121,31 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void drawHUD(ItemStack item, GuiGraphics guiGraphics) {
-        addCapacityHUD(item, this.HUD);
+    public void drawHUD(ItemStack item, ArmorUtils.ModularHUD hud, GuiGraphics guiGraphics) {
+        addCapacityHUD(item, hud);
         CompoundTag data = item.getTag();
         if (data != null) {
-            if (data.contains("enabled")) {
-                Component status = (data.getBoolean("enabled") ?
-                        Component.translatable("armor.gtceu.hud.enabled") :
-                        Component.translatable("armor.gtceu.hud.disabled"));
-                Component result = Component.translatable("armor.gtceu.hud.engine", status);
-                this.HUD.newString(result);
-            }
+            Component status = IJetpack.isEngineEnabled(item) ?
+                    Component.translatable("armor.gtceu.hud.enabled") :
+                    Component.translatable("armor.gtceu.hud.disabled");
+            Component result = Component.translatable("armor.gtceu.hud.engine", status);
+            hud.newLine(result);
             if (data.contains("hover")) {
-                Component status = (data.getBoolean("hover") ?
+                status = data.getBoolean("hover") ?
                         Component.translatable("armor.gtceu.hud.enabled") :
-                        Component.translatable("armor.gtceu.hud.disabled"));
-                Component result = Component.translatable("armor.gtceu.hud.hover_mode", status);
-                this.HUD.newString(result);
+                        Component.translatable("armor.gtceu.hud.disabled");
+                result = Component.translatable("armor.gtceu.hud.hover_mode", status);
+                hud.newLine(result);
             }
         }
-        this.HUD.draw(guiGraphics);
-        this.HUD.reset();
     }
 
     @Override
     public void addInfo(ItemStack itemStack, List<Component> lines) {
         super.addInfo(itemStack, lines);
         CompoundTag data = itemStack.getOrCreateTag();
-
-        Component state;
-        boolean enabled = !data.contains("enabled") || data.getBoolean("enabled");
-        state = enabled ? Component.translatable("armor.gtceu.hud.enabled") :
+        Component state = IJetpack.isEngineEnabled(itemStack) ?
+                Component.translatable("armor.gtceu.hud.enabled") :
                 Component.translatable("armor.gtceu.hud.disabled");
         lines.add(Component.translatable("armor.gtceu.hud.engine", state));
 

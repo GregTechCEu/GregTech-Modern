@@ -838,7 +838,9 @@ public class GTMultiMachines {
                     Component.translatable("machine.gtceu.power_substation.tooltip.3"),
                     Component.translatable("machine.gtceu.power_substation.tooltip.4",
                             PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE / 1000),
-                    Component.translatable("machine.gtceu.power_substation.tooltip.5").append(Component.translatable("machine.gtceu.power_substation.tooltip.6").withStyle(TooltipHelper.RAINBOW_HSL_SLOW)))
+                    Component.translatable("machine.gtceu.power_substation.tooltip.5")
+                            .append(Component.translatable("machine.gtceu.power_substation.tooltip.6")
+                                    .withStyle(TooltipHelper.RAINBOW_HSL_SLOW)))
             .appearanceBlock(CASING_PALLADIUM_SUBSTATION)
             .pattern(definition -> MultiblockPatternBuilder.start(UP, BACK, RIGHT)
                     .slice("XXSXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.lang.LangUtils;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
@@ -50,13 +51,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     private FluidIngredient previousFuel = FluidIngredient.EMPTY;
     private int burnTimer = 0;
 
-    @OnlyIn(Dist.CLIENT)
-    private ArmorUtils.ModularHUD HUD;
-
-    public PowerlessJetpack() {
-        if (GTCEu.isClientSide())
-            HUD = new ArmorUtils.ModularHUD();
-    }
+    public PowerlessJetpack() {}
 
     @Override
     public void onArmorTick(Level world, Player player, @NotNull ItemStack stack) {
@@ -71,19 +66,20 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             data.putByte("toggleTimer", (byte) 0);
         }
 
-        boolean jetpackEnabled = data.getBoolean("enabled");
-        boolean hoverMode = data.getBoolean("hover");
+        boolean jetpackEnabled = IJetpack.isEngineEnabled(stack);
+        boolean hoverMode = updateHoverMode(player, stack, data.getBoolean("hover"), false);
         byte toggleTimer = data.getByte("toggleTimer");
 
         String messageKey = null;
         if (toggleTimer == 0) {
             if (SyncedKeyMappings.JETPACK_ENABLE.isKeyDown(player)) {
                 jetpackEnabled = !jetpackEnabled;
-                messageKey = "armor.gtceu.jetpack.flight." + (jetpackEnabled ? "enabled" : "disabled");
+                IJetpack.setEngineEnabled(stack, jetpackEnabled);
+                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.flight", jetpackEnabled);
                 data.putBoolean("enabled", jetpackEnabled);
             } else if (SyncedKeyMappings.ARMOR_HOVER.isKeyDown(player)) {
-                hoverMode = !hoverMode;
-                messageKey = "armor.gtceu.jetpack.hover." + (hoverMode ? "enabled" : "disabled");
+                hoverMode = updateHoverMode(player, stack, hoverMode, true);
+                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.hover", hoverMode);
                 data.putBoolean("hover", hoverMode);
             }
 
@@ -95,6 +91,10 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
         if (toggleTimer > 0) toggleTimer--;
         data.putByte("toggleTimer", toggleTimer);
+        data.putBoolean("hover", hoverMode);
+
+        if (currentFuel.getStacks().length == 0)
+            findNewRecipe(stack);
 
         performFlying(player, jetpackEnabled, hoverMode, stack);
 
@@ -128,34 +128,29 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void drawHUD(@NotNull ItemStack item, GuiGraphics guiGraphics) {
+    public void drawHUD(@NotNull ItemStack item, ArmorUtils.ModularHUD hud, GuiGraphics guiGraphics) {
         IFluidHandler tank = FluidUtil.getFluidHandler(item).resolve().orElse(null);
         if (tank != null) {
             if (tank.getFluidInTank(0).getAmount() == 0) return;
             String formated = String.format("%.1f",
                     (tank.getFluidInTank(0).getAmount() * 100.0F / tank.getTankCapacity(0)));
-            this.HUD.newString(Component.translatable("armor.gtceu.hud.fuel_level", formated + "%"));
+            hud.newLine(Component.translatable("armor.gtceu.hud.fuel_level", formated + "%"));
             CompoundTag data = item.getTag();
 
             if (data != null) {
-                if (data.contains("enabled")) {
-                    Component status = (data.getBoolean("enabled") ?
-                            Component.translatable("armor.gtceu.hud.enabled") :
-                            Component.translatable("armor.gtceu.hud.disabled"));
-                    Component result = Component.translatable("armor.gtceu.hud.engine", status);
-                    this.HUD.newString(result);
-                }
-                if (data.contains("hover")) {
-                    Component status = (data.getBoolean("hover") ?
-                            Component.translatable("armor.gtceu.hud.enabled") :
-                            Component.translatable("armor.gtceu.hud.disabled"));
-                    Component result = Component.translatable("armor.gtceu.hud.hover_mode", status);
-                    this.HUD.newString(result);
-                }
+                Component status = IJetpack.isEngineEnabled(item) ?
+                        Component.translatable("armor.gtceu.hud.enabled") :
+                        Component.translatable("armor.gtceu.hud.disabled");
+                Component result = Component.translatable("armor.gtceu.hud.engine", status);
+                hud.newLine(result);
+
+                status = data.getBoolean("hover") ?
+                        Component.translatable("armor.gtceu.hud.enabled") :
+                        Component.translatable("armor.gtceu.hud.disabled");
+                result = Component.translatable("armor.gtceu.hud.hover_mode", status);
+                hud.newLine(result);
             }
         }
-        this.HUD.draw(guiGraphics);
-        this.HUD.reset();
     }
 
     @Override
@@ -262,8 +257,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                                     TooltipFlag isAdvanced) {
             CompoundTag data = stack.getOrCreateTag();
             Component state;
-            boolean enabled = !data.contains("enabled") || data.getBoolean("enabled");
-            state = enabled ? Component.translatable("armor.gtceu.hud.enabled") :
+
+            state = IJetpack.isEngineEnabled(stack) ? Component.translatable("armor.gtceu.hud.enabled") :
                     Component.translatable("armor.gtceu.hud.disabled");
             tooltipComponents.add(Component.translatable("armor.gtceu.hud.engine", state));
 

@@ -370,7 +370,7 @@ public class PlaceholderHandler {
                 .child(Flow.column()
                         .padding(5)
                         .children(LangUtil.getListMultiLang("gui.gtceu.machine.central_monitor.text_module_help")
-                                .stream().map(t -> (IWidget)new TextWidget<>(t)).toList())
+                                .stream().map(t -> (IWidget) new TextWidget<>(t)).toList())
                         .child(new CodeEditorWidget<>(LANG_DEFINITION)
                                 .padding(5)
                                 .widthRel(.95f)
