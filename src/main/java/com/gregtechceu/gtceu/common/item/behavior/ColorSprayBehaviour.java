@@ -214,7 +214,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             } else {
                 collected = Set.of((IColorableBlockEntity) first);
             }
-            var ae2Color = color == null ? AEColor.TRANSPARENT : AEColor.values()[color.ordinal()];
+            var ae2Color = color == null ? AEColor.TRANSPARENT : AEColor.fromDye(color);
             for (var c : collected) {
                 if (c.getColor() == ae2Color) {
                     continue;

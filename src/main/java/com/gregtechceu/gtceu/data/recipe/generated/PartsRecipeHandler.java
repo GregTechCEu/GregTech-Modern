@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.TagPrefixEntry;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
@@ -55,9 +56,7 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        Material magMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
-                material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
-        if (magMaterial == null) magMaterial = material;
+        Material magMaterial = getMagneticResult(material);
         ItemStack boltStack = ChemicalHelper.get(bolt, magMaterial);
 
         CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_screw_to_bolt")
@@ -73,9 +72,7 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        Material magMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
-                material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
-        if (magMaterial == null) magMaterial = material;
+        Material magMaterial = getMagneticResult(material);
 
         ItemStack screwStack = ChemicalHelper.get(screw, magMaterial);
 
@@ -96,9 +93,7 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        var magMaterial = material.hasFlag(IS_MAGNETIC) ?
-                material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
-        if (magMaterial == null) magMaterial = material;
+        Material magMaterial = getMagneticResult(material);
 
         if (!material.hasFlag(NO_SMASHING))
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("foil_%s", material.getName()),
@@ -145,9 +140,7 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        Material magMaterial = material.hasFlag(IS_MAGNETIC) ?
-                material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
-        if (magMaterial == null) magMaterial = material;
+        Material magMaterial = getMagneticResult(material);
 
         ItemStack fineWireStack = ChemicalHelper.get(wireFine, magMaterial);
 
@@ -172,7 +165,7 @@ public final class PartsRecipeHandler {
         }
     }
 
-    private static void processGear(@NotNull RecipeOutput provider, @NotNull TagPrefix prefix,
+    private static void processGear(@NotNull RecipeOutput provider, @NotNull TagPrefixEntry prefix,
                                     @NotNull Material material) {
         if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.DUST)) {
             return;
@@ -180,9 +173,7 @@ public final class PartsRecipeHandler {
 
         boolean isSmall = prefix == gearSmall;
 
-        Material magMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
-                material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
-        if (magMaterial == null) magMaterial = material;
+        Material magMaterial = getMagneticResult(material);
 
         ItemStack stack = ChemicalHelper.get(prefix, magMaterial);
         if (!isSmall && material.hasProperty(PropertyKey.INGOT)) {
@@ -302,9 +293,7 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        Material magMaterial = material.hasFlag(IS_MAGNETIC) ?
-                material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
-        if (magMaterial == null) magMaterial = material;
+        Material magMaterial = getMagneticResult(material);
 
         if (material.hasFlag(GENERATE_PLATE)) {
             if (!material.hasFlag(NO_SMASHING)) {
@@ -335,9 +324,8 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        Material magMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
-                material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
-        if (magMaterial == null) magMaterial = material;
+        Material magMaterial = getMagneticResult(material);
+
         BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_plate_to_dense_plate")
                 .inputItems(plate, material, 9)
                 .circuitMeta(9)
@@ -386,7 +374,7 @@ public final class PartsRecipeHandler {
         }
     }
 
-    private static void processSpring(@NotNull RecipeOutput provider, @NotNull TagPrefix prefix,
+    private static void processSpring(@NotNull RecipeOutput provider, @NotNull TagPrefixEntry prefix,
                                       @NotNull Material material) {
         if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
@@ -454,9 +442,7 @@ public final class PartsRecipeHandler {
                     .duration((int) Math.max(material.getMass() * 2, 1))
                     .EUt(16);
 
-            Material magMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
-                    material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
-            if (magMaterial == null) magMaterial = material;
+            Material magMaterial = getMagneticResult(material);
 
             builder.addData(LatheRecipeLogic.LUBRICATED_ROD,
                     BuiltInRegistries.ITEM.getKey(ChemicalHelper.get(rod, magMaterial).getItem()).toString())
@@ -467,9 +453,7 @@ public final class PartsRecipeHandler {
 
         if (material.hasFlag(GENERATE_BOLT_SCREW)) {
 
-            Material magMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
-                    material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
-            if (magMaterial == null) magMaterial = material;
+            Material magMaterial = getMagneticResult(material);
 
             ItemStack boltStack = ChemicalHelper.get(bolt, magMaterial);
             CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_rod_to_bolt")
@@ -491,9 +475,7 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        Material magMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
-                material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
-        if (magMaterial == null) magMaterial = material;
+        Material magMaterial = getMagneticResult(material);
 
         ItemStack stack = ChemicalHelper.get(rodLong,
                 magMaterial);
@@ -575,9 +557,7 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        Material outputMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
-                material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
-        if (outputMaterial == null) outputMaterial = material;
+        Material outputMaterial = getMagneticResult(material);
 
         if (!material.hasFlag(NO_SMASHING)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("round_%s", material.getName()),
@@ -598,5 +578,11 @@ public final class PartsRecipeHandler {
 
     private static int getVoltageMultiplier(@NotNull Material material) {
         return material.getBlastTemperature() > 2800 ? VA[LV] : VA[ULV];
+    }
+
+    private static Material getMagneticResult(Material material) {
+        if (!material.hasFlag(IS_MAGNETIC) || !material.hasProperty(PropertyKey.INGOT)) return material;
+        Holder<Material> mat = material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto();
+        return mat == null ? material : mat.value();
     }
 }

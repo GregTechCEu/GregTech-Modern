@@ -28,7 +28,8 @@ public class ItemTagLoader {
 
     public static void init(RegistrateItemTagsProvider provider) {
         provider.addTag(CustomTags.DOUGHS).addTag(CustomTags.WHEAT_DOUGHS);
-        provider.addTag(CustomTags.WHEAT_GRAINS).add(ChemicalHelper.getItemOrThrow(dust, Wheat));
+        provider.addTag(CustomTags.WHEAT_GRAINS)
+                .add(ChemicalHelper.getItemOrThrow(dust, Wheat));
         provider.addTag(CustomTags.GRAINS).addTag(CustomTags.WHEAT_GRAINS);
 
         provider.addTag(TagUtil.createItemTag("foods/dough")).addTag(CustomTags.DOUGHS);

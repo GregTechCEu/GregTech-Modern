@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -24,6 +25,8 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.misc.forge.QuantumFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.mui.modular_item.ModularArmorUIFactory;
+import com.gregtechceu.gtceu.api.mui.modular_item.ModularItemUIFactory;
 import com.gregtechceu.gtceu.api.multiblock.error.GTPatternErrors;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
@@ -38,7 +41,6 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidStackMapIng
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidTagMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.block.*;
@@ -62,9 +64,7 @@ import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
-import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
@@ -113,11 +113,6 @@ import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import brachy.modularui.factory.GuiManager;
-import com.google.common.collect.Multimaps;
-import com.tterrag.registrate.providers.ProviderType;
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-import com.tterrag.registrate.providers.RegistrateProvider;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import java.util.Arrays;
@@ -143,13 +138,13 @@ public class CommonProxy {
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
 
-        GTRegistries.init(modBus);
+        GTRegistries.init();
         REGISTRATE.registerEventListeners(modBus);
 
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();
-        GTMaterials.init();
+        GTMaterials.init(modBus);
         GTMedicalConditions.init();
         TagPrefix.init();
 
@@ -165,13 +160,14 @@ public class CommonProxy {
         GTCreativeModeTabs.init();
 
         GTBlocks.init();
-        GTFluids.init();
+        GTFluids.init(modBus);
 
         GTDimensionMarkers.init(modBus);
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
         ChanceLogic.init();
         GTRecipeTypes.init();
+        GTItemModules.init();
         GTRecipeCategories.init();
         GTPatternErrors.init(modBus);
 
@@ -220,6 +216,8 @@ public class CommonProxy {
         // MUI stuff
         GuiManager.registerFactory(MachineUIFactory.INSTANCE);
         GuiManager.registerFactory(CoverUIFactory.INSTANCE);
+        GuiManager.registerFactory(ModularItemUIFactory.INSTANCE);
+        GuiManager.registerFactory(ModularArmorUIFactory.INSTANCE);
 
         GTGuiTheme.registerThemes();
     }
@@ -228,27 +226,22 @@ public class CommonProxy {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onRegisterLowest(RegisterEvent event) {
         if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
+            GTRegistries.MATERIALS.close();
+
+            // Because material properties can't be verified while holders may be unresolved, verify all materials after
+            // the registry is closed and all elements have been registered.
+            GTRegistries.MATERIALS.forEach(Material::verifyMaterialInitial);
+
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
             // Block entirely new Materials from being added in the Post event
             GTCEu.LOGGER.info("Firing material register late event");
-            GTRegistries.MATERIALS.close();
             ModLoader.postEventWrapContainerInModOrder(new PostMaterialEvent());
             if (GTCEu.Mods.isKubeJSLoaded()) {
                 KJSEventWrapper.materialModification();
             }
 
-            GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
-                // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
-                var registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
-                AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
-                if (accessor.getDoDatagen().get()) {
-                    List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps
-                            .asMap(accessor.getDatagens())
-                            .get(ProviderType.LANG);
-                    providers.addFirst(
-                            (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, namespace));
-                }
-            });
+            GTRegistries.MATERIALS.forEach(Material::verifyMaterialFinal);
+
         } else if (event.getRegistryKey() == GTRegistries.Keys.MACHINE) {
             // Prepare machine render states after all machines have been registered
             for (MachineDefinition machine : GTRegistries.MACHINES) {
@@ -262,6 +255,10 @@ public class CommonProxy {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void registerMaterialContent(RegisterEvent event) {
         if (event.getRegistryKey() == Registries.BLOCK) {
+            // Stone blocks need to be first so ore blocks generate properly
+            GTBlocks.generateStoneBlocks();
+            GTBlocks.initializeCobbleReplacements();
+
             // Material Blocks
             REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
             GTMaterialBlocks.generateMaterialBlocks();   // Compressed Blocks
@@ -274,6 +271,7 @@ public class CommonProxy {
             GTMaterialBlocks.generateCableBlocks();        // Cable & Wire Blocks
             GTMaterialBlocks.generateFluidPipeBlocks();    // Fluid Pipe Blocks
             GTMaterialBlocks.generateItemPipeBlocks();     // Item Pipe Blocks
+
             // --spacer--
         } else if (event.getRegistryKey() == Registries.ITEM) {
             // Material Items & Tools
@@ -592,5 +590,16 @@ public class CommonProxy {
                 event.getRegistry().addAlias(GTCEu.id("flowing_molten_" + material), GTCEu.id("flowing_" + material));
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void registerLegacyArmorAliases(RegisterEvent event) {
+        if (!event.getRegistryKey().equals(Registries.ITEM)) return;
+        for (String piece : List.of("helmet", "chestplate", "leggings", "boots")) {
+            event.getRegistry().addAlias(GTCEu.id("nanomuscle_" + piece), GTCEu.id("nano_fiber_" + piece));
+            event.getRegistry().addAlias(GTCEu.id("quarktech_" + piece), GTCEu.id("quark_matter_" + piece));
+        }
+        event.getRegistry().addAlias(GTCEu.id("advanced_nanomuscle_chestplate"), GTCEu.id("nano_fiber_chestplate"));
+        event.getRegistry().addAlias(GTCEu.id("advanced_quarktech_chestplate"), GTCEu.id("quark_matter_chestplate"));
     }
 }
