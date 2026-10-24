@@ -193,12 +193,12 @@ public class MiscRecipeLoader {
                 .addMaterialInfo(true)
                 .save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("power_thruster_advanced").duration(200).EUt(30)
-                .inputItems(ELECTRIC_MOTOR_HV)
-                .inputItems(ring, StainlessSteel, 2)
-                .inputItems(rod, StainlessSteel)
-                .inputItems(rotor, Chromium)
-                .inputItems(cableGtSingle, Gold, 2)
+        ASSEMBLER_RECIPES.recipeBuilder("power_thruster_advanced").duration(200).EUt(VA[EV])
+                .inputItems(ELECTRIC_MOTOR_EV)
+                .inputItems(ring, Titanium, 2)
+                .inputItems(rod, Titanium)
+                .inputItems(rotor, Titanium)
+                .inputItems(cableGtSingle, Aluminium, 2)
                 .outputItems(POWER_THRUSTER_ADVANCED)
                 .addMaterialInfo(true)
                 .save(provider);
@@ -261,23 +261,6 @@ public class MiscRecipeLoader {
                 .inputItems(wireFine, Rhodium, 16)
                 .inputFluids(Titanium.getFluid(L * 8))
                 .outputItems(QUANTUM_BOOTS)
-                .addMaterialInfo(true, true)
-                .save(provider);
-
-        ASSEMBLY_LINE_RECIPES.recipeBuilder("quantum_chestplate_advanced").duration(1000).EUt(VA[LuV])
-                .inputItems(QUANTUM_CHESTPLATE.asItem())
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(wireFine, NiobiumTitanium, 64)
-                .inputItems(wireGtQuadruple, Osmium, 6)
-                .inputItems(plateDouble, Iridium, 4)
-                .inputItems(GRAVITATION_ENGINE, 2)
-                .inputItems(GTTags.Items.CIRCUITS_ZPM)
-                .inputItems(plateDense, RhodiumPlatedPalladium, 2)
-                .inputItems(ENERGY_LAPOTRONIC_ORB_CLUSTER)
-                .inputItems(FIELD_GENERATOR_LuV, 2)
-                .inputItems(ELECTRIC_MOTOR_LuV, 2)
-                .inputItems(screw, HSSS, 8)
-                .outputItems(QUANTUM_CHESTPLATE_ADVANCED)
                 .addMaterialInfo(true, true)
                 .save(provider);
 

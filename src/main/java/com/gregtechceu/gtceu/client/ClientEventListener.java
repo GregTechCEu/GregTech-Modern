@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.BlockAttributes;
+import com.gregtechceu.gtceu.api.block.GTAttributeModifierIds;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -12,9 +12,10 @@ import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
+import com.gregtechceu.gtceu.common.module.MovementSpeedItemModule;
+import com.gregtechceu.gtceu.common.module.SpeedItemModule;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerInfoAccessor;
-import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
 import net.minecraft.ChatFormatting;
@@ -23,7 +24,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -106,36 +106,43 @@ public class ClientEventListener {
     public static void updateFOV(ComputeFovModifierEvent event) {
         Player player = event.getPlayer();
 
-        AttributeInstance moveSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (moveSpeed == null || moveSpeed.getModifier(BlockAttributes.BLOCK_SPEED_BOOST) == null) return;
+        AttributeInstance speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        float walkingSpeed = player.getAbilities().getWalkingSpeed();
+        if (speedAttribute == null || walkingSpeed <= 0) return;
 
-        float multi = 1;
-        var state = player.level().getBlockState(player.getOnPos());
+        double cameraSpeed = getFovMovementSpeed(speedAttribute);
+        if (cameraSpeed == speedAttribute.getValue()) return;
 
-        if (state.is(GTTags.Blocks.VERY_FAST_WALKABLE_BLOCKS)) multi /= 1.2F;
-
-        multi = (float) Mth.lerp(Minecraft.getInstance().options.fovEffectScale().get(), 1.0F, multi);
-        event.setNewFovModifier(event.getNewFovModifier() * multi);
+        // Replace movement speed but retain sprinting, potions, flight and other FOV changes.
+        float originalFactor = ((float) speedAttribute.getValue() / walkingSpeed + 1) / 2;
+        float correctedFactor = ((float) cameraSpeed / walkingSpeed + 1) / 2;
+        if (!Float.isFinite(originalFactor) || originalFactor <= 0) return;
+        double correction = event.getFovModifier() * (correctedFactor / originalFactor - 1) *
+                Minecraft.getInstance().options.fovEffectScale().get();
+        event.setNewFovModifier(event.getNewFovModifier() + (float) correction);
     }
 
-    private static double getValueWithoutWalkingBoost(AttributeInstance attrib) {
-        double base = attrib.getBaseValue();
-
-        for (AttributeModifier mod : attrib.getModifiers(AttributeModifier.Operation.ADDITION)) {
-            base += mod.getAmount();
+    private static double getFovMovementSpeed(AttributeInstance attribute) {
+        var modifiers = attribute.getModifiers().stream().filter(modifier -> {
+            if (modifier.getId().equals(GTAttributeModifierIds.BLOCK_SPEED_BOOST)) return false;
+            return !(modifier.getId().equals(SpeedItemModule.SPEED_UUID) ||
+                    modifier.getId().equals(MovementSpeedItemModule.MUL_MOVEMENT_SPEED_UUID));
+        }).toList();
+        double base = attribute.getBaseValue();
+        for (AttributeModifier mod : modifiers) {
+            if (mod.getOperation() == AttributeModifier.Operation.ADDITION) base += mod.getAmount();
         }
 
         double applied = base;
-        for (AttributeModifier mod : attrib.getModifiers(AttributeModifier.Operation.MULTIPLY_BASE)) {
-            if (mod.getId() == BlockAttributes.BLOCK_SPEED_BOOST) continue;
-            applied += base * mod.getAmount();
+        for (AttributeModifier mod : modifiers) {
+            if (mod.getOperation() == AttributeModifier.Operation.MULTIPLY_BASE) applied += base * mod.getAmount();
         }
 
-        for (AttributeModifier mod : attrib.getModifiers(AttributeModifier.Operation.MULTIPLY_TOTAL)) {
-            applied *= 1 + mod.getAmount();
+        for (AttributeModifier mod : modifiers) {
+            if (mod.getOperation() == AttributeModifier.Operation.MULTIPLY_TOTAL) applied *= 1 + mod.getAmount();
         }
 
-        return attrib.getAttribute().sanitizeValue(applied);
+        return attribute.getAttribute().sanitizeValue(applied);
     }
 
     @SubscribeEvent

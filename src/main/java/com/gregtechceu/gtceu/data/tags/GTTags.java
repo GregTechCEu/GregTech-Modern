@@ -104,10 +104,11 @@ public class GTTags {
         public static final TagKey<Item> PISTONS = TagUtil.createItemTag("pistons");
 
         public static final TagKey<Item> PPE_ARMOR = TagUtil.createModItemTag("ppe_armor");
-        public static final TagKey<Item> STEP_BOOTS = TagUtil.createModItemTag("step_boots");
 
         public static final TagKey<Item> CHEM_BATH_WASHABLE = TagUtil.createModItemTag("chemical_bath_washable");
         public static final TagKey<Item> SKIP_ITEM_DETECTOR = TagUtil.createModItemTag("skip_item_detector");
+
+        public static final TagKey<Item> FLUID_CELLS = TagUtil.createModItemTag("fluid_cells");
         // endregion misc
 
         // region common/mod compat tags
