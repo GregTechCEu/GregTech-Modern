@@ -20,6 +20,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.InputStream;
 
+/**
+ * Mixin to ModernFix's structure cache to make it account for GT's data version as well as the vanilla one.
+ *
+ * @author screret
+ * @implNote This is the approach recommended by EmbeddedT.<br>
+ *           (He couldn't figure out a better way to do this than this relatively small mixin)
+ */
 @Mixin(value = CachingStructureManager.class, remap = false)
 public class CachingStructureManagerMixin {
 
