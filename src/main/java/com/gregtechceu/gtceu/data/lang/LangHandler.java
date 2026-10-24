@@ -521,6 +521,8 @@ public class LangHandler {
         provider.add("cover.detector_base.message_normal_state", "Monitoring Status: Normal");
         provider.add("cover.detector_base.message_inverted_state", "Monitoring Status: Inverted");
 
+        // FIXME why is this duplicated?? just append it to the tooltip in code.
+        // also, this thing adds an empty string to the translation file.
         var detectorLatchDescription = """
                 Change the redstone behavior of this Cover.
                 §eContinuous§7 - Default; values less than the minimum output 0; values higher than the maximum output 15; values between min and max output between 0 and 15
@@ -534,11 +536,15 @@ public class LangHandler {
         provider.add("cover.advanced_energy_detector.min", "Min");
         provider.add("cover.advanced_energy_detector.max", "Max");
 
+        // FIXME why is this duplicated?? just append it to the tooltip in code.
+        // also, this thing adds 2 empty strings to the translation file.
         var advancedEnergyDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone is emitted when less than the minimum EU, and stops emitting when greater than the max EU";
         multilineLang(provider, "cover.advanced_energy_detector.invert.enabled",
                 "Output: Inverted\n\n" + advancedEnergyDetectorInvertDescription);
         multilineLang(provider, "cover.advanced_energy_detector.invert.disabled",
                 "Output: Normal\n\n" + advancedEnergyDetectorInvertDescription);
+        // FIXME why is this duplicated?? just append it to the tooltip in code.
+        // also, this thing adds 2 empty strings to the translation file.
         var advancedEnergyDetectorModeDescription = "Change between using discrete EU values or percentages for comparing min/max against an attached energy storage.";
         multilineLang(provider, "cover.advanced_energy_detector.use_percent.enabled",
                 "Mode: Percentage\n\n" + advancedEnergyDetectorModeDescription);
@@ -546,6 +552,8 @@ public class LangHandler {
                 "Mode: Discrete EU\n\n" + advancedEnergyDetectorModeDescription);
 
         provider.add("cover.advanced_fluid_detector.label", "Advanced Fluid Detector");
+        // FIXME why is this duplicated?? just append it to the tooltip in code.
+        // also, this thing adds 2 empty strings to the translation file.
         var advancedFluidDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum mB of fluid, and starts emitting when greater than the min mB of fluid up to the set maximum";
         multilineLang(provider, "cover.advanced_fluid_detector.invert.enabled",
                 "Output: Inverted\n\n" + advancedFluidDetectorInvertDescription);
@@ -555,6 +563,8 @@ public class LangHandler {
         provider.add("cover.advanced_fluid_detector.min", "Min Fluid (mB)");
 
         provider.add("cover.advanced_item_detector.label", "Advanced Item Detector");
+        // FIXME why is this duplicated?? just append it to the tooltip in code.
+        // also, this thing adds 2 empty strings to the translation file.
         var advancedItemDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum";
         multilineLang(provider, "cover.advanced_item_detector.invert.enabled",
                 "Output: Inverted\n\n" + advancedItemDetectorInvertDescription);
@@ -567,9 +577,9 @@ public class LangHandler {
 
         replace(provider, "item.gtceu.bucket", "%s Bucket");
 
-        replace(provider, "block.gtceu.oil_heavy", "Heavy Oil");
-        replace(provider, "block.gtceu.oil_light", "Light Oil");
-        replace(provider, "block.gtceu.oil_medium", "Raw Oil");
+        replace(provider, "block.gtceu.heavy_oil", "Heavy Oil");
+        replace(provider, "block.gtceu.light_oil", "Light Oil");
+        replace(provider, "block.gtceu.raw_oil", "Raw Oil");
         replace(provider, "block.gtceu.oil", "Oil");
         replace(provider, "block.gtceu.creosote", "Creosote");
 
@@ -583,8 +593,8 @@ public class LangHandler {
         replace(provider, GTBlocks.BATTERY_LAPOTRONIC_UV.get().getDescriptionId(), "UV Lapotronic Capacitor");
         replace(provider, GTBlocks.BATTERY_ULTIMATE_UHV.get().getDescriptionId(), "UHV Ultimate Capacitor");
 
-        provider.add("item.netherrack_nether_quartz", "Nether Quartz Ore");
-        provider.add("block.surface_rock", "%s Surface Rock");
+        provider.add("item.gtceu.netherrack_nether_quartz", "Nether Quartz Ore");
+        provider.add("block.gtceu.surface_rock", "%s Surface Rock");
 
         provider.add("item.gtceu.tiny_gunpowder_dust", "Tiny Pile of Gunpowder");
         provider.add("item.gtceu.small_gunpowder_dust", "Small Pile of Gunpowder");
@@ -646,6 +656,7 @@ public class LangHandler {
         provider.add("item.gtceu.flawless_glass_gem", "Flawless Glass Crystal");
         provider.add("item.gtceu.exquisite_glass_gem", "Exquisite Glass Crystal");
         provider.add("item.gtceu.glass_plate", "Glass Pane");
+        provider.add("item.gtceu.glass_lens", "Glass Lens (White)");
         provider.add("item.gtceu.tiny_blaze_dust", "Tiny Pile of Blaze Powder");
         provider.add("item.gtceu.small_blaze_dust", "Small Pile of Blaze Powder");
         provider.add("item.gtceu.tiny_sugar_dust", "Tiny Pile of Sugar");
@@ -706,9 +717,9 @@ public class LangHandler {
         provider.add("item.gtceu.tiny_platinum_raw_dust", "Tiny Pile of Raw Platinum Powder");
         provider.add("item.gtceu.small_platinum_raw_dust", "Small Pile of Raw Platinum Powder");
         provider.add("item.gtceu.platinum_raw_dust", "Raw Platinum Powder");
-        provider.add("item.gtceu.tiny_palladium_raw_dust", "Tiny Pile of Raw Palladium Powder");
-        provider.add("item.gtceu.small_palladium_raw_dust", "Small Pile of Raw Palladium Powder");
-        provider.add("item.gtceu.palladium_raw_dust", "Raw Palladium Powder");
+        provider.add("item.gtceu.tiny_raw_palladium_dust", "Tiny Pile of Raw Palladium Powder");
+        provider.add("item.gtceu.small_raw_palladium_dust", "Small Pile of Raw Palladium Powder");
+        provider.add("item.gtceu.raw_palladium_dust", "Raw Palladium Powder");
         provider.add("item.gtceu.tiny_inert_metal_mixture_dust", "Tiny Pile of Inert Metal Mixture");
         provider.add("item.gtceu.small_inert_metal_mixture_dust", "Small Pile of Inert Metal Mixture");
         provider.add("item.gtceu.inert_metal_mixture_dust", "Inert Metal Mixture");

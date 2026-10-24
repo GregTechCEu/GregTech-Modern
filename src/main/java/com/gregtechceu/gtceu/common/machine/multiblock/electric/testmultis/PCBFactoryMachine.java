@@ -10,8 +10,9 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import org.jetbrains.annotations.NotNull;
 
-import static com.gregtechceu.gtceu.common.data.GTBlocks.CASING_GRATE;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.CASING_ASSEMBLY_GRATE;
 
+// FIXME why is this here?!
 public class PCBFactoryMachine extends WorkableElectricMultiblockMachine {
 
     public PCBFactoryMachine(BlockEntityCreationInfo info) {
@@ -27,7 +28,7 @@ public class PCBFactoryMachine extends WorkableElectricMultiblockMachine {
                 .where('C', /*
                              * Predicates.autoAbilities(true, false, false)
                              * .or(
-                             */Predicates.blocks(CASING_GRATE.get()).setMinGlobalLimited(12))
+                             */Predicates.blocks(CASING_ASSEMBLY_GRATE.get()).setMinGlobalLimited(12))
                 .where('S', Predicates.controller(Predicates.blocks(getDefinition().getBlock())))
                 .where('B', Predicates.frames(GTMaterials.Steel))
                 .build();

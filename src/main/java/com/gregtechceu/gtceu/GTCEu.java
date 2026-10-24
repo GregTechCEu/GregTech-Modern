@@ -33,6 +33,22 @@ public class GTCEu {
 
     public static final Path GTCEU_FOLDER = getGameDir().resolve("gtceu");
 
+    /**
+     * Only used for datafixers. Bump subversion whenever a block changes id, save data layout changes, etc.<br>
+     * Main version should be bumped the first time it is bumped after a release, then subversion for each subsequent
+     * change.
+     *
+     * <p>
+     * Versions:
+     * <ul>
+     * <li>0: 1.3.0-7.5.2</li>
+     * <li>1: upgrade to 7.5.3</li>
+     * <li>2-3: upgrade to 8.0.0</li>
+     * <li>4: 8.0.1-SNAPSHOT-???????</li>
+     * </ul>
+     */
+    public static final int GT_DATA_VERSION = 3;
+
     public GTCEu() {
         GTCEu.init();
         GTCEuAPI.instance = this;
