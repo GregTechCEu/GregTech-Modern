@@ -1,7 +1,6 @@
 {
     "targets": [
         "final",
-        "filter",
         { "name": "swap_b0", "bilinear": true },
         { "name": "swap_b1", "bilinear": true },
         { "name": "swap_b2", "bilinear": true },
@@ -10,17 +9,8 @@
     ],
     "passes": [
         {
-            "name": "gtceu:filter_bloom_color",
-            "intarget": "final",
-            "outtarget": "filter",
-            "auxtargets": [
-                { "id": "final:depth",          "name": "DiffuseDepthSampler" },
-                { "id": "minecraft:main:depth", "name": "MainDepthSampler" }
-            ]
-        },
-        {
             "name": "gtceu:blur",
-            "intarget": "filter",
+            "intarget": "final",
             "outtarget": "swap_b0",
             "uniforms": [
                 {
@@ -139,11 +129,16 @@
             ]
         },
         {
+            "name": "blit",
+            "intarget": "final",
+            "outtarget": "swap_b0"
+        },
+        {
             "name": "gtceu:unreal_composite",
             "intarget": "minecraft:main",
             "outtarget": "final",
             "auxtargets": [
-                { "id": "filter",  "name": "HighlightSampler" },
+                { "id": "swap_b0", "name": "HighlightSampler" },
                 { "id": "swap_b1", "name": "BlurTexture1" },
                 { "id": "swap_b2", "name": "BlurTexture2" },
                 { "id": "swap_b3", "name": "BlurTexture3" },
