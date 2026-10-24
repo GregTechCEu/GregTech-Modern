@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.module;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredAttributeItemModule;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -34,8 +35,8 @@ public class SwimSpeedModule extends TieredAttributeItemModule {
 
     @Override
     public Component getInfo() {
-        return Component.translatable("module.gtceu.swim_speed.description", getMaxAttributeAmount() * 100,
-                getEnergyCost());
+        return Component.translatable(getDescriptionLanguageKey(), getMaxAttributeAmount() * 100,
+                FormattingUtil.formatNumbers(getEnergyCost()));
     }
 
     @Override
