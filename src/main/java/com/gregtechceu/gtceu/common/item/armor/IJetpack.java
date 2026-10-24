@@ -1,6 +1,11 @@
 package com.gregtechceu.gtceu.common.item.armor;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
+import com.gregtechceu.gtceu.common.module.CreativeFlightModule;
+import com.gregtechceu.gtceu.common.module.JetpackModule;
+import com.gregtechceu.gtceu.common.module.LiquidFuelJetpackModule;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.core.particles.ParticleOptions;
@@ -71,7 +76,56 @@ public interface IJetpack {
 
     boolean hasEnergy(ItemStack stack);
 
+    static boolean isEngineEnabled(ItemStack stack) {
+        var modular = GTCapabilityHelper.getModularItem(stack);
+        if (modular != null) {
+            for (ModuleContext context : modular.getAllModuleInstances()) {
+                if (context.getModule() instanceof JetpackModule ||
+                        context.getModule() instanceof LiquidFuelJetpackModule) {
+                    return context.getModule().isEnabled(context);
+                }
+            }
+        }
+        return stack.getTag() != null && stack.getTag().getBoolean("enabled");
+    }
+
+    static void setEngineEnabled(ItemStack stack, boolean enabled) {
+        var modular = GTCapabilityHelper.getModularItem(stack);
+        if (modular != null) {
+            for (ModuleContext context : modular.getAllModuleInstances()) {
+                if (context.getModule() instanceof JetpackModule ||
+                        context.getModule() instanceof LiquidFuelJetpackModule) {
+                    context.getModule().setEnabled(context, enabled);
+                    return;
+                }
+            }
+        }
+        stack.getOrCreateTag().putBoolean("enabled", enabled);
+    }
+
+    default boolean updateHoverMode(Player player, ItemStack stack, boolean hover, boolean toggle) {
+        var modular = GTCapabilityHelper.getModularItem(stack);
+        boolean creativeFlight = modular != null && modular.getAllModuleInstances().stream()
+                .anyMatch(context -> context.getModule() instanceof CreativeFlightModule &&
+                        context.getModule().isEnabled(context));
+        if (!creativeFlight) return toggle != hover;
+
+        // The server owns flight changes; vanilla's ability packet also covers double-tap jump.
+        if (toggle && !player.level().isClientSide && !player.isSpectator()) {
+            var abilities = player.getAbilities();
+            var electric = GTCapabilityHelper.getElectricItem(stack);
+            if (abilities.flying || (abilities.mayfly && electric != null &&
+                    electric.canUse(CreativeFlightModule.ENERGY_PER_TICK))) {
+                abilities.flying = !abilities.flying;
+                player.onUpdateAbilities();
+            }
+        }
+        return player.getAbilities().flying;
+    }
+
     default void performFlying(@NotNull Player player, boolean flightEnabled, boolean hover, ItemStack stack) {
+        if (player.getAbilities().flying) return;
+
         double deltaY = player.getDeltaMovement().y();
 
         if ((!flightEnabled || !hover) && player.getY() < player.level().getMinBuildHeight() - 5) {
@@ -85,6 +139,8 @@ public interface IJetpack {
         double currentAccel = getVerticalAcceleration() * (deltaY < 0.3D ? 2.5D : 1.0D);
 
         if (!player.onGround() && player.getSleepingPos().isEmpty() && canUseEnergy(stack, getEnergyPerUse())) {
+            int sprintCost = (int) Math.round(getEnergyPerUse() * getSprintEnergyModifier());
+            boolean sprinting = player.isSprinting() && canUseEnergy(stack, sprintCost);
             double potentialY = 0;
             boolean editMotion = true;
 
@@ -117,37 +173,26 @@ public interface IJetpack {
                 setYMotion(player, potentialY);
             }
 
-            float speedSideways = (float) (player.isShiftKeyDown() ? getSidewaysSpeed() * 0.5f :
+            float horizontalSpeed = (float) (player.isShiftKeyDown() ? getSidewaysSpeed() * 0.5f :
                     getSidewaysSpeed());
-            float speedForward = (float) (player.isSprinting() ? speedSideways * getSprintSpeedModifier() :
-                    speedSideways);
+            if (sprinting) horizontalSpeed *= (float) getSprintSpeedModifier();
 
             // Make sure they aren't using elytra movement
-            if (!player.isFallFlying()) {
-                Vec3 movement = new Vec3(0, 0, 0);
-                if (SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player)) {
-                    movement = movement.add(0, 0, speedForward);
-                }
-                if (SyncedKeyMappings.VANILLA_BACKWARD.isKeyDown(player)) {
-                    movement = movement.add(0, 0, -speedSideways * 0.8f);
-                }
-                if (SyncedKeyMappings.VANILLA_LEFT.isKeyDown(player)) {
-                    movement = movement.add(speedSideways, 0, 0);
-                }
-                if (SyncedKeyMappings.VANILLA_RIGHT.isKeyDown(player)) {
-                    movement = movement.add(-speedSideways, 0, 0);
-                }
-
-                var dist = movement.length();
-                if (dist >= 1.0E-7) {
-                    player.moveRelative((float) dist, movement);
+            if (!player.isFallFlying() && horizontalSpeed > 0) {
+                int forward = (SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) ? 1 : 0) -
+                        (SyncedKeyMappings.VANILLA_BACKWARD.isKeyDown(player) ? 1 : 0);
+                int sideways = (SyncedKeyMappings.VANILLA_LEFT.isKeyDown(player) ? 1 : 0) -
+                        (SyncedKeyMappings.VANILLA_RIGHT.isKeyDown(player) ? 1 : 0);
+                Vec3 movement = new Vec3(sideways, 0, forward);
+                if (movement.lengthSqr() > 0) {
+                    movement = movement.normalize().scale(horizontalSpeed);
+                    player.moveRelative(horizontalSpeed, movement);
                     if (!editMotion) editMotion = true;
                 }
             }
 
             if (editMotion) {
-                int energyUsed = (int) Math
-                        .round(getEnergyPerUse() * (player.isSprinting() ? getSprintEnergyModifier() : 1));
+                int energyUsed = sprinting ? sprintCost : getEnergyPerUse();
                 drainEnergy(stack, energyUsed);
                 ArmorUtils.spawnParticle(player.level(), player, getParticle(), -0.6D);
             }
@@ -172,7 +217,7 @@ public interface IJetpack {
         CompoundTag tag = stack.getOrCreateTag();
         tag.putBoolean("enabled", true);
         tag.putBoolean("hover", true);
-        player.displayClientMessage(Component.translatable("metaarmor.jetpack.emergency_hover_mode"), true);
+        player.displayClientMessage(Component.translatable("armor.gtceu.jetpack.emergency_hover"), true);
         player.fallDistance = 0;
 
         if (!player.level().isClientSide) {

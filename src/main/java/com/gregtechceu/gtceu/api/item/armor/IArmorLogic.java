@@ -13,8 +13,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -44,13 +42,13 @@ public interface IArmorLogic {
      *
      * @return The number of armor points for display, 2 per shield.
      */
-    int getArmorDisplay(Player player, @NotNull ItemStack armor, EquipmentSlot slot);
+    int getArmorDisplay(Player player, ItemStack armor, EquipmentSlot slot);
 
     default boolean canBreakWithDamage(ItemStack stack) {
         return false;
     }
 
-    default boolean isPPE() {
+    default boolean isPPE(ItemStack stack) {
         return false;
     }
 
@@ -63,18 +61,7 @@ public interface IArmorLogic {
         return ImmutableMultimap.of();
     }
 
-    default boolean isValidArmor(ItemStack itemStack, Entity entity, EquipmentSlot equipmentSlot) {
-        return getArmorType().getSlot() == equipmentSlot;
-    }
-
     default void onArmorTick(Level world, Player player, ItemStack itemStack) {}
-
-    @OnlyIn(Dist.CLIENT)
-    default void renderHelmetOverlay(ItemStack itemStack, Player player, float partialTicks) {}
-
-    default int getArmorLayersAmount(ItemStack itemStack) {
-        return 1;
-    }
 
     default int getArmorLayerColor(ItemStack itemStack, int layerIndex) {
         return 0xFFFFFF;

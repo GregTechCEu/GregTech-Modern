@@ -41,6 +41,14 @@ public class CustomItemStackHandler extends ItemStackHandler
         super(stacks);
     }
 
+    /**
+     * Sets the stack in the given slot, without executing the contents changed callback. Use carefully.
+     */
+    public void setStackInSlotNoCallback(int slot, ItemStack stack) {
+        validateSlotIndex(slot);
+        this.stacks.set(slot, stack);
+    }
+
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return filter.test(stack);

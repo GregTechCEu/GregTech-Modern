@@ -17,7 +17,9 @@ import com.gregtechceu.gtceu.common.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +32,7 @@ import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.text.TextRenderer;
 import brachy.modularui.factory.GuiData;
 import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
 import brachy.modularui.utils.Alignment;
@@ -53,9 +56,25 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.*;
 
 public class GTMuiWidgets {
+
+    public static void addWrappedModuleDescription(RichTooltip tooltip,
+                                                   Component description) {
+        var minecraft = Minecraft.getInstance();
+        int width = Math.max(1, Math.min(220, minecraft.getWindow().getGuiScaledWidth() - 24));
+        for (var line : minecraft.font.getSplitter().splitLines(description, width,
+                Style.EMPTY)) {
+            var wrapped = Component.empty();
+            line.visit((style, text) -> {
+                wrapped.append(Component.literal(text).withStyle(style));
+                return Optional.empty();
+            }, Style.EMPTY);
+            tooltip.addLine(wrapped);
+        }
+    }
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth) {
         UITexture background = GTGuiTextures.BACKGROUND;
@@ -76,6 +95,10 @@ public class GTMuiWidgets {
 
     public static Flow createTitleBar(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background) {
         return createTitleBarWithEnd(stackSupplier, panelWidth, background, null);
+    }
+
+    public static Flow createTitleBar(Icon icon, String text, int panelWidth, UITexture background) {
+        return createTitleBarWithEnd(icon, text, panelWidth, background, null);
     }
 
     public static Flow createTitleBarWithEnd(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background,
@@ -108,14 +131,12 @@ public class GTMuiWidgets {
 
         return Flow.row()
                 .decoration()
-                .coverChildren()
+                .coverChildrenHeight()
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                 .width(rowWidth)
-                .bottomRel(1f)
-                .childPadding(1)
+                .top(-(textHeight + topPadding))
                 .horizontalCenter()
-                .padding(sidePadding, sidePadding, topPadding, 1)
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
                 .child(icon.size(iconSize).asWidget().size(iconSize))
                 .child(Text.str(text).asWidget().size(Math.min(minPanelWidth, textTitleWidth), textHeight))
