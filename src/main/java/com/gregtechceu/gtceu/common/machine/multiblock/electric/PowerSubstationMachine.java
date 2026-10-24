@@ -32,18 +32,13 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.drawable.GuiTextures;
-import brachy.modularui.drawable.Icon;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.BigIntegerSyncValue;
 import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.LongSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widget.Widget;
-import brachy.modularui.widgets.ListWidget;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -73,6 +68,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     private @Nullable MaintenanceHatchPartMachine maintenance;
 
+    @Getter
     @SaveField
     private final PowerStationEnergyBank energyBank;
 
@@ -276,25 +272,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     @Override
     public boolean supportsBigIntEnergyValues() {
         return true;
-    }
-
-    public static final int MULTI_UI_TEXT_PANEL_WIDTH = 172;
-    public static final int MULTI_UI_TEXT_PANEL_HEIGHT = 136;
-
-    public Widget<?> getMainTextPanel(PanelSyncManager syncManager) {
-        var parentWidget = new ParentWidget<>();
-        var listWidget = new ListWidget<>()
-                .width(MULTI_UI_TEXT_PANEL_WIDTH - 6)
-                .height(MULTI_UI_TEXT_PANEL_HEIGHT - 6)
-                .childSeparator(Icon.EMPTY_2PX)
-                .crossAxisAlignment(Alignment.CrossAxis.START)
-                .collapseDisabledChildren()
-                .posRel(Alignment.CenterLeft);
-        parentWidget.size(MULTI_UI_TEXT_PANEL_WIDTH, MULTI_UI_TEXT_PANEL_HEIGHT).background(GuiTextures.DISPLAY);
-
-        listWidget.children(getWidgetsForDisplay(syncManager));
-        parentWidget.child(listWidget.left(3).top(3));
-        return parentWidget;
     }
 
     @Override
@@ -513,6 +490,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         /** @return Amount filled into storage */
         public long fill(long amount) {
             if (amount < 0) throw new IllegalArgumentException("Amount cannot be negative!");
+            if (amount == 0 || storage.length == 0) return 0;
 
             // ensure index
             if (index != storage.length - 1 && storage[index] == maximums[index]) {
@@ -543,6 +521,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         /** @return Amount drained from storage */
         public long drain(long amount) {
             if (amount < 0) throw new IllegalArgumentException("Amount cannot be negative!");
+            if (amount == 0 || storage.length == 0) return 0;
 
             // ensure index
             if (index != 0 && storage[index] == 0) {

@@ -196,7 +196,7 @@ public class Predicates {
     }
 
     public static MultiPredicate abilities(PartAbility ability) {
-        return builder("Ability")
+        return builder(ability.getName())
                 .predicate(ctx -> ability.isApplicable(ctx.state().getBlock()))
                 .errorFunction(ctx -> new PartAbilityError(ctx.pos(), ability))
                 .candidates(ability.getAllBlocks().stream().map(BlockInfo::fromBlock))
@@ -208,14 +208,14 @@ public class Predicates {
         List<BasePredicate> predicates = new ArrayList<>();
         for (PartAbility ability : abilities) {
             Validate.noNullElements(ability.getAllBlocks(), "Ability %s has null block at index %s", ability.getName());
-            predicates.add(builder("Ability")
+            predicates.add(builder(ability.getName())
                     .predicate(ctx -> ability.isApplicable(ctx.state().getBlock()))
                     .errorFunction(ctx -> new PartAbilityError(ctx.pos(), ability))
                     .candidates(ability.getAllBlocks().stream().map(BlockInfo::fromBlock))
                     .contents(builder -> builder.append(ability.getName()))
                     .build());
         }
-        return MultiPredicate.or(predicates);
+        return MultiPredicate.and(predicates);
     }
 
     public static MultiPredicate ability(PartAbility ability, int... tiers) {
@@ -223,7 +223,7 @@ public class Predicates {
         for (int tier : tiers) {
             sb.add(GTValues.VN[tier]);
         }
-        return builder("TieredAbility")
+        return builder(ability.getName() + "[" + sb + "]")
                 .predicate(ctx -> ability.getBlocks(tiers).contains(ctx.state().getBlock()))
                 .errorFunction(ctx -> new PartAbilityError(ctx.pos(), ability))
                 .candidates(ability.getBlocks(tiers).stream().map(BlockInfo::fromBlock))

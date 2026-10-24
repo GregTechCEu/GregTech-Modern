@@ -232,7 +232,7 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
                                 .child(createPhantomLockedFluidSlot(syncManager))));
     }
 
-    private IWidget createFluidSlot(PanelSyncManager syncManager) {
+    protected IWidget createFluidSlot(PanelSyncManager syncManager) {
         syncManager.syncValue("fluid_slot",
                 SyncHandlers.fluidSlot(new FluidCacheTankWrapper(cache)).controlsAmount(false));
         return new FluidSlot().syncHandler("fluid_slot", 0).background(GTGuiTextures.FLUID_SLOT);

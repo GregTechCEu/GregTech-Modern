@@ -57,6 +57,8 @@ public interface GTGuiTextures {
             "textures/gui/base/indicator_no_steam_steel.png");
     UITexture TANK_ICON = fullImage("textures/gui/base/tank_icon.png");
 
+    UITexture CLOSE_ICON = fullImage("textures/gui/icon/close.png");
+
     // BACKGROUNDS
     UITexture BACKGROUND = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background.png")
@@ -95,6 +97,20 @@ public interface GTGuiTextures {
             .adaptable(4)
             .name(IDs.STEEL_BACKGROUND)
             .build();
+
+    UITexture BACKGROUND_EQUIPMENT_FOUNDRY = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/widget/equipment_foundry/equipment_foundry_background.png")
+            .imageSize(168, 76)
+            .adaptable(4)
+            .build();
+
+    UITexture EQUIPMENT_FOUNDRY_ARMOR_SLOT = fullImage(
+            "textures/gui/widget/equipment_foundry/equipment_foundry_armor_slot.png");
+    UITexture EQUIPMENT_FOUNDRY_MODULE_SLOT = fullImage(
+            "textures/gui/widget/equipment_foundry/equipment_foundry_module_slot.png");
+
+    UITexture EQUIPMENT_FOUNDRY_LOCK = fullImage(
+            "textures/gui/widget/equipment_foundry/equipment_foundry_overlay_lock.png");
 
     UITexture BLANK_TRANSPARENT = fullImage("textures/gui/base/blank_transparent.png");
 

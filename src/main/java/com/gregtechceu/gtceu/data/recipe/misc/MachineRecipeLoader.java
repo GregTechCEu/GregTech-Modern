@@ -35,7 +35,6 @@ import net.minecraftforge.common.Tags;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -1606,10 +1605,10 @@ public class MachineRecipeLoader {
                 TOOL_DATA_ORB.asStack());
         VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_module_nbt", TOOL_DATA_MODULE.asStack(),
                 TOOL_DATA_MODULE.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "terminal_nbt", TERMINAL.asStack(),
+                TERMINAL.asStack());
 
         // Jetpacks
-        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_jetpack_clear", LIQUID_FUEL_JETPACK.asStack(),
-                LIQUID_FUEL_JETPACK.asStack());
 
         // Filters
         VanillaRecipeHelper.addShapelessRecipe(provider, "item_filter_nbt", ITEM_FILTER.asStack(),
@@ -1654,7 +1653,7 @@ public class MachineRecipeLoader {
         }
 
         for (int tier : GTMachineUtils.MULTI_HATCH_TIERS) {
-            var tierName = VN[tier].toLowerCase(Locale.ROOT);
+            var tierName = VNL[tier];
 
             var importHatch4x = FLUID_IMPORT_HATCH_4X[tier];
             var exportHatch4x = FLUID_EXPORT_HATCH_4X[tier];
@@ -1681,7 +1680,7 @@ public class MachineRecipeLoader {
         }
 
         for (int tier : GTMachineUtils.DUAL_HATCH_TIERS) {
-            var tierName = VN[tier].toLowerCase(Locale.ROOT);
+            var tierName = VNL[tier];
 
             var inputBuffer = DUAL_IMPORT_HATCH[tier];
             var outputBuffer = DUAL_EXPORT_HATCH[tier];

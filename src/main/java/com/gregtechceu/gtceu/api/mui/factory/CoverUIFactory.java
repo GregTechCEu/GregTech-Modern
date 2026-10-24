@@ -17,7 +17,6 @@ import brachy.modularui.api.IUIHolder;
 import brachy.modularui.factory.AbstractUIFactory;
 import brachy.modularui.factory.GuiManager;
 import brachy.modularui.factory.SidedPosGuiData;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -45,7 +44,7 @@ public class CoverUIFactory extends AbstractUIFactory<SidedPosGuiData> {
     }
 
     @Override
-    public @NotNull IUIHolder<SidedPosGuiData> getGuiHolder(SidedPosGuiData data) {
+    public IUIHolder<SidedPosGuiData> getGuiHolder(SidedPosGuiData data) {
         BlockEntity be = data.getBlockEntity();
         if (be == null) {
             throw new IllegalStateException("Could not get gui for null BlockEntity!");
@@ -78,7 +77,7 @@ public class CoverUIFactory extends AbstractUIFactory<SidedPosGuiData> {
     }
 
     @Override
-    public @NotNull SidedPosGuiData readGuiData(Player player, FriendlyByteBuf buffer) {
+    public SidedPosGuiData readGuiData(Player player, FriendlyByteBuf buffer) {
         return new SidedPosGuiData(player, buffer.readBlockPos(), Direction.from3DDataValue(buffer.readByte()));
     }
 }
