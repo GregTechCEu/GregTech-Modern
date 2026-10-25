@@ -68,6 +68,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     private @Nullable MaintenanceHatchPartMachine maintenance;
 
+    @Getter
     @SaveField
     private final PowerStationEnergyBank energyBank;
 
@@ -489,6 +490,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         /** @return Amount filled into storage */
         public long fill(long amount) {
             if (amount < 0) throw new IllegalArgumentException("Amount cannot be negative!");
+            if (amount == 0 || storage.length == 0) return 0;
 
             // ensure index
             if (index != storage.length - 1 && storage[index] == maximums[index]) {
@@ -519,6 +521,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         /** @return Amount drained from storage */
         public long drain(long amount) {
             if (amount < 0) throw new IllegalArgumentException("Amount cannot be negative!");
+            if (amount == 0 || storage.length == 0) return 0;
 
             // ensure index
             if (index != 0 && storage[index] == 0) {

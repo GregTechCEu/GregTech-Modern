@@ -16,7 +16,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.IdMapper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -41,7 +43,7 @@ import java.util.function.*;
 /**
  * Representing basic information of a machine.
  */
-public class MachineDefinition implements Supplier<MetaMachineBlock> {
+public class MachineDefinition implements Supplier<MetaMachineBlock>, ItemLike {
 
     public static final IdMapper<MachineRenderState> RENDER_STATE_REGISTRY = new IdMapper<>(512);
 
@@ -153,6 +155,11 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
 
     public BlockEntityType<? extends MetaMachine> getBlockEntityType() {
         return blockEntityTypeSupplier.get();
+    }
+
+    @Override
+    public Item asItem() {
+        return getItem();
     }
 
     public ItemStack asStack() {

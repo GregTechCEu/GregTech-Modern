@@ -318,7 +318,7 @@ public class VanillaRecipeHelper {
      * <li>{@code 'w'} - {@code craftingToolWrench}</li>
      * <li>{@code 'x'} - {@code craftingToolWireCutter}</li>
      * </ul>
-     * 
+     *
      * @param setMaterialInfoData whether to add material decomposition information to the recipe output
      *
      * @param matchSize

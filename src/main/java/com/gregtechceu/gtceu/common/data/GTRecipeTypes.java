@@ -20,12 +20,14 @@ import com.gregtechceu.gtceu.common.machine.trait.customlogic.*;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.recipe.gui.GTRecipeUIModifiers;
+import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -39,9 +41,12 @@ import brachy.modularui.drawable.progress.CircularProgressDrawable;
 import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.widgets.ProgressWidget;
 import brachy.modularui.widgets.layout.Flow;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 
 import java.util.Collections;
 import java.util.List;
+
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 @SuppressWarnings("deprecation")
 public class GTRecipeTypes {
@@ -56,6 +61,22 @@ public class GTRecipeTypes {
         GTRegistries.RECIPE_TYPES.unfreeze();
         GTRegistries.RECIPE_CATEGORIES.unfreeze();
     }
+
+    public static final RegistryEntry<? extends RecipeType<EquipmentFoundryRecipe>> EQUIPMENT_FOUNDRY_RECIPES = REGISTRATE
+            .generic("equipment_foundry",
+                    Registries.RECIPE_TYPE, () -> new RecipeType<EquipmentFoundryRecipe>() {
+
+                        @Override
+                        public String toString() {
+                            return "equipment_foundry";
+                        }
+                    })
+            .register();
+
+    public static final RegistryEntry<EquipmentFoundryRecipe.Serializer> EQUIPMENT_FOUNDRY_SERIALIZER = REGISTRATE
+            .generic("equipment_foundry",
+                    Registries.RECIPE_SERIALIZER, EquipmentFoundryRecipe.Serializer::new)
+            .register();
 
     //////////////////////////////////////
     // ********* Steam **********//
