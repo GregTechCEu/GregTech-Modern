@@ -47,9 +47,9 @@ public class ToolItemHelper {
     public static ItemStack getToolItem(GTToolType toolType) {
         return TOOL_CACHE.computeIfAbsent(toolType, type -> {
             if (type == GTToolType.SOFT_MALLET) {
-                return GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Rubber, type).asStack();
+                return GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Rubber.value(), type).asStack();
             }
-            return GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, type).asStack();
+            return GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium.value(), type).asStack();
         });
     }
 }
