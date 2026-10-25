@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -145,11 +146,12 @@ public class GTToolType {
     public static final GTToolType HARD_HAMMER = GTToolType.builder("hammer")
             .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_HAMMERS)
             .toolTag(ToolItemTagType.MATCH, CustomTags.TOOLS_HAMMER)
+            .toolTag(ItemTags.MINING_ENCHANTABLE, ItemTags.MINING_LOOT_ENCHANTABLE)
             .harvestTag(CustomTags.MINEABLE_WITH_HAMMER)
             .harvestTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .definition(b -> b.blockBreaking().crafting().damagePerCraftingAction(2)
                     .attackDamage(1.0F).attackSpeed(-2.8F)
-                    .behaviors(new EntityDamageBehavior(2.0F, CustomTags.IRON_GOLEMS), ProspectingBehavior.INSTANCE))
+                    .behaviors(new EntityDamageBehavior(2.0F, CustomTags.CONSTRUCTS), ProspectingBehavior.INSTANCE))
             .sound(GTSoundEntries.FORGE_HAMMER)
             .symbol('h')
             .toolClasses(GTToolType.PICKAXE)
@@ -175,7 +177,7 @@ public class GTToolType {
             .definition(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .attackDamage(1.0F).attackSpeed(-2.8F)
                     .behaviors(BlockRotatingBehavior.INSTANCE,
-                            new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS),
+                            new EntityDamageBehavior(3.0F, CustomTags.CONSTRUCTS),
                             ToolModeSwitchBehavior.INSTANCE))
             .sound(GTSoundEntries.WRENCH_TOOL, true)
             .symbol('w')
@@ -209,7 +211,7 @@ public class GTToolType {
             .toolTag(ToolItemTagType.MATCH, CustomTags.TOOLS_SCREWDRIVER)
             .definition(b -> b.crafting().damagePerCraftingAction(4).sneakBypassUse()
                     .attackDamage(-1.0F).attackSpeed(3.0F).efficiencyMultiplier(3.0F)
-                    .behaviors(new EntityDamageBehavior(3.0F, CustomTags.SPIDERS)))
+                    .behaviors(new EntityDamageBehavior(3.0F, EntityTypeTags.ARTHROPOD)))
             .sound(GTSoundEntries.SCREWDRIVER_TOOL)
             .symbol('d')
             .defaultAbilities(GTItemAbilities.DEFAULT_SCREWDRIVER_ACTIONS)
@@ -424,7 +426,7 @@ public class GTToolType {
             .definition(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(2.0F).attackDamage(1.0F).attackSpeed(-2.8F)
                     .behaviors(BlockRotatingBehavior.INSTANCE,
-                            new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS),
+                            new EntityDamageBehavior(3.0F, CustomTags.CONSTRUCTS),
                             ToolModeSwitchBehavior.INSTANCE)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
             .sound(GTSoundEntries.WRENCH_TOOL, true)
@@ -441,7 +443,7 @@ public class GTToolType {
             .definition(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(3.0F).attackDamage(1.0F).attackSpeed(-2.8F)
                     .behaviors(BlockRotatingBehavior.INSTANCE,
-                            new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS),
+                            new EntityDamageBehavior(3.0F, CustomTags.CONSTRUCTS),
                             ToolModeSwitchBehavior.INSTANCE)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV))
             .sound(GTSoundEntries.WRENCH_TOOL, true)
@@ -458,7 +460,7 @@ public class GTToolType {
             .definition(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(4.0F).attackDamage(1.0F).attackSpeed(-2.8F)
                     .behaviors(BlockRotatingBehavior.INSTANCE,
-                            new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS),
+                            new EntityDamageBehavior(3.0F, CustomTags.CONSTRUCTS),
                             ToolModeSwitchBehavior.INSTANCE)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV))
             .sound(GTSoundEntries.WRENCH_TOOL, true)
@@ -526,7 +528,7 @@ public class GTToolType {
             .toolTag(ToolItemTagType.MATCH, CustomTags.TOOLS_SCREWDRIVER)
             .definition(b -> b.crafting().sneakBypassUse()
                     .attackDamage(-1.0F).efficiencyMultiplier(3.0F)
-                    .behaviors(new EntityDamageBehavior(3.0F, CustomTags.SPIDERS))
+                    .behaviors(new EntityDamageBehavior(3.0F, EntityTypeTags.ARTHROPOD))
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
             .sound(GTSoundEntries.SCREWDRIVER_TOOL)
             .electric(GTValues.LV)
