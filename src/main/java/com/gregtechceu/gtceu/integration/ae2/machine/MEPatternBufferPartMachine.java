@@ -1070,7 +1070,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                         it2.remove();
                         continue;
                     }
-                    if (!ingredient.test(stack)) continue;
+                    if (!ingredient.ingredient().test(stack)) continue;
                     int extracted = Math.min(GTMath.saturatedCast(count), amount);
                     if (!simulate && extracted > 0) {
                         changed = true;
@@ -1118,7 +1118,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                         it2.remove();
                         continue;
                     }
-                    if (!ingredient.test(stack)) continue;
+                    if (!ingredient.ingredient().test(stack)) continue;
                     int extracted = Math.min(GTMath.saturatedCast(count), amount);
                     if (!simulate && extracted > 0) {
                         changed = true;
