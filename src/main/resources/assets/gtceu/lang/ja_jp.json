@@ -4720,7 +4720,7 @@
   "item.gtceu.tool.behavior.prospecting.ore": "鉱石を発見: %s",
   "item.gtceu.tool.behavior.prospecting.water": "水を発見",
   "item.gtceu.tool.behavior.rail_rotation": "§e鉄道技師: §fレールを回転",
-  "item.gtceu.tool.behavior.relocate_mining": "§2磁力: §f採掘ブロックとモブドロップを直接回収",
+  "item.gtceu.tool.behavior.relocate_mining_and_mob_drops": "§2磁力: §f採掘ブロックとモブドロップを直接回収",
   "item.gtceu.tool.behavior.remove_wax": "§6クリーナー: §fワックス除去",
   "item.gtceu.tool.behavior.scrape": "§b研磨業者: §fサビを除去する",
   "item.gtceu.tool.behavior.shield_disable": "§c野蛮: §f盾無効",

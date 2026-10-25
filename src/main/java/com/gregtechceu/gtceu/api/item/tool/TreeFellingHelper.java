@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,9 +39,10 @@ public class TreeFellingHelper {
         helpers.add(this);
     }
 
-    public static void fellTree(ItemStack stack, Level level, BlockState origin, BlockPos originPos,
-                                LivingEntity miner) {
-        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
+    public static void fellTree(ItemStack stack, BlockState originState, BlockPos originPos, ServerPlayer miner) {
+        Level level = miner.level();
+
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
 
         Queue<BlockPos> checking = new ArrayDeque<>();
         Set<BlockPos> visited = new ObjectOpenHashSet<>();
@@ -51,56 +51,65 @@ public class TreeFellingHelper {
 
         while (!checking.isEmpty()) {
             BlockPos check = checking.remove();
-            if (check != originPos) {
+            if (!check.equals(originPos)) {
                 visited.add(check);
             }
             for (int y = 0; y <= 1; y++) {
                 for (int x = -1; x <= 1; x++) {
                     for (int z = -1; z <= 1; z++) {
-                        if (x != 0 || y != 0 || z != 0) {
-                            mutablePos.set(check.getX() + x, check.getY() + y, check.getZ() + z);
-                            if (!visited.contains(mutablePos)) {
-                                // Check that the found block matches the original block state, which is wood.
-                                if (origin.getBlock() == level.getBlockState(mutablePos).getBlock()) {
-                                    if (!checking.contains(mutablePos)) {
-                                        BlockPos immutablePos = mutablePos.immutable();
-                                        checking.add(immutablePos);
-                                    }
-                                }
-                            }
-                        }
+                        if (x == 0 && y == 0 && z == 0) continue;
+
+                        cursor.set(check.getX() + x, check.getY() + y, check.getZ() + z);
+                        if (visited.contains(cursor)) continue;
+
+                        // Check that the found block matches the original block state, which is wood.
+                        if (!originState.is(level.getBlockState(cursor).getBlock())) continue;
+                        if (checking.contains(cursor)) continue;
+
+                        BlockPos immutablePos = cursor.immutable();
+                        checking.add(immutablePos);
                     }
                 }
             }
         }
 
-        if (!visited.isEmpty() && miner instanceof ServerPlayer serverPlayer) {
+        if (!visited.isEmpty()) {
             Deque<BlockPos> orderedBlocks = visited.stream()
                     .sorted(Comparator.comparingInt(pos -> pos.getY() - originPos.getY()))
                     .collect(Collectors.toCollection(LinkedList::new));
-            new TreeFellingHelper(serverPlayer, stack, orderedBlocks);
+            new TreeFellingHelper(miner, stack, orderedBlocks);
+        }
+    }
+
+    private boolean isValid() {
+        if (this.player.isRemoved()) return false;
+        if (this.orderedBlocks.isEmpty()) return false;
+        return !this.tool.isEmpty() && getBehaviorsComponent(this.tool).hasBehavior(GTToolBehaviors.TREE_FELLING);
+    }
+
+    private void tick() {
+        if (this.tick++ % ConfigHolder.INSTANCE.tools.treeFellingDelay == 0) {
+            ToolHelper.destroyBlock(this.player, this.tool, this.orderedBlocks.removeLast(), true);
         }
     }
 
     @SubscribeEvent
     public static void onWorldTick(LevelTickEvent.Pre event) {
-        if (!event.getLevel().isClientSide && !helpers.isEmpty()) {
-            var iterator = helpers.iterator();
-            while (iterator.hasNext()) {
-                var helper = iterator.next();
-                if (event.getLevel() == helper.player.level()) {
-                    ItemStack held = helper.player.getMainHandItem();
-                    if (helper.player.isRemoved() || helper.orderedBlocks.isEmpty() || helper.tool.isEmpty() ||
-                            !getBehaviorsComponent(held).hasBehavior(GTToolBehaviors.TREE_FELLING.value())) {
-                        iterator.remove();
-                        continue;
-                    }
-                    if (helper.tick % ConfigHolder.INSTANCE.tools.treeFellingDelay == 0) {
-                        ToolHelper.destroyBlock(helper.player, helper.tool, helper.orderedBlocks.removeLast(), true);
-                    }
-                    helper.tick++;
-                }
+        if (helpers.isEmpty()) return;
+        Level currentLevel = event.getLevel();
+        if (currentLevel.isClientSide) return;
+
+        var iterator = helpers.iterator();
+        while (iterator.hasNext()) {
+            TreeFellingHelper helper = iterator.next();
+            if (currentLevel != helper.player.level()) {
+                continue;
             }
+            if (!helper.isValid()) {
+                iterator.remove();
+                continue;
+            }
+            helper.tick();
         }
     }
 }

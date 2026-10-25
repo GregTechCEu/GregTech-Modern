@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -30,6 +29,7 @@ import com.gregtechceu.gtceu.core.mixins.LootTableAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.DummyRecipeUtils;
+import com.gregtechceu.gtceu.utils.ScopedValue;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.*;
@@ -54,6 +54,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.context.UseOnContext;
@@ -74,6 +75,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.level.BlockEvent;
 
 import it.unimi.dsi.fastutil.chars.Char2ReferenceMap;
 import it.unimi.dsi.fastutil.chars.Char2ReferenceOpenHashMap;
@@ -263,24 +265,24 @@ public class ToolHelper {
         int maximumDurability = stack.getMaxDamage();
         int remainingUses = maximumDurability - currentDurability;
         List<BlockPos> harvestableBlocks = getHarvestableBlocks(stack, player);
-        if (!harvestableBlocks.isEmpty()) {
-            for (BlockPos pos : harvestableBlocks) {
-                if (!destroyBlock(player, stack, pos, pos.equals(targeted))) {
-                    return true;
-                }
-
-                remainingUses--;
-                if (stack.getItem() instanceof IGTTool gtTool && !gtTool.isElectric() && remainingUses == 0) {
-                    return true;
-                }
-                // If the tool is an electric tool, catch the tool breaking and cancel the remaining AOE
-                else if (!ItemStack.isSameItem(player.getMainHandItem(), stack)) {
-                    return true;
-                }
-            }
-            return true;
+        if (harvestableBlocks.isEmpty()) {
+            return false;
         }
-        return false;
+        for (BlockPos pos : harvestableBlocks) {
+            if (!destroyBlock(player, stack, pos, pos.equals(targeted))) {
+                break;
+            }
+
+            remainingUses--;
+            if (stack.getItem() instanceof IGTTool gtTool && !gtTool.isElectric() && remainingUses == 0) {
+                break;
+            }
+            // If the tool is an electric tool, catch the tool breaking and cancel the remaining AOE
+            else if (!ItemStack.isSameItem(player.getMainHandItem(), stack)) {
+                break;
+            }
+        }
+        return true;
     }
 
     public static AoESymmetrical getAoEDefinition(ItemStack stack) {
@@ -374,8 +376,8 @@ public class ToolHelper {
      * Applies Forge Hammer recipes to block broken, used for hammers or tools with hard hammer enchant applied.
      */
     public static void applyHammerDropConversion(ServerLevel level, BlockPos pos, ItemStack tool, BlockState state,
-                                                 List<ItemStack> drops, int fortune, float dropChance,
-                                                 RandomSource random) {
+                                                 List<ItemStack> drops, LootParams.Builder lootParams) {
+        // TODO (low priority): implement the hard hammer enchantment
         // || EnchantmentHelper.getEnchantmentLevel(EnchantmentHardHammer.INSTANCE, tool) > 0
         if (!is(tool, GTToolType.HARD_HAMMER)) {
             return;
@@ -384,7 +386,7 @@ public class ToolHelper {
         LootContext lootContext = null;
         boolean cleared = false;
 
-        List<ItemStack> silkTouchDrops = getSilkTouchDrop(level, pos, state);
+        List<ItemStack> silkTouchDrops = getSilkTouchDrops(level, pos, state);
         for (ItemStack silkTouchDrop : silkTouchDrops) {
             if (silkTouchDrop.isEmpty()) continue;
             // Stack lists can be immutable going into Recipe#matches barring no rewrites
@@ -427,11 +429,6 @@ public class ToolHelper {
                 ItemStack output = ItemRecipeCapability.CAP.of(content.content()).getItems()[0];
                 // only apply hammer drop conversion to ore blocks
                 if (!isOre) {
-                    drops.add(output);
-                    continue;
-                }
-                // GT ore Fortune is applied once, after conversion, by the harvest handler.
-                if (state.getBlock() instanceof OreBlock) {
                     drops.add(output.copy());
                     continue;
                 }
@@ -440,13 +437,10 @@ public class ToolHelper {
                     continue;
                 }
                 if (fortuneDropMultiplier == null) {
-                    fortuneDropMultiplier = getOrInitUniformDropMultiplier(level.registryAccess());
+                    fortuneDropMultiplier = getOrInitOreDropMultiplier(level.registryAccess());
                 }
                 if (lootContext == null) {
-                    // TODO pass params from BlockMixin
-                    lootContext = createBlockLootContext(level, state, new LootParams.Builder(level)
-                            .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-                            .withParameter(LootContextParams.TOOL, tool));
+                    lootContext = createBlockLootContext(level, state, lootParams);
                 }
                 drops.add(fortuneDropMultiplier.apply(output.copy(), lootContext));
             }
@@ -477,22 +471,23 @@ public class ToolHelper {
         return new LootContext.Builder(params).create(((LootTableAccessor) lootTable).getRandomSequence());
     }
 
-    public static final ThreadLocal<Boolean> DO_BLOCK_BREAK_SOUND_PARTICLES = ThreadLocal.withInitial(() -> true);
-    public static final ThreadLocal<Boolean> IS_AOE_BREAKING_BLOCKS = ThreadLocal.withInitial(() -> false);
+    public static final ScopedValue.Boolean DO_BLOCK_BREAK_SOUND_PARTICLES = new ScopedValue.Boolean(true);
+    public static final ScopedValue.Boolean AOE_BREAKING_BLOCKS = new ScopedValue.Boolean(false);
 
     public static boolean destroyBlock(ServerPlayer player, ItemStack tool, BlockPos pos, boolean playSound) {
-        DO_BLOCK_BREAK_SOUND_PARTICLES.set(playSound);
         Level level = player.level();
-
-        // we set this flag when firing the event so the event listener that starts this whole thing doesn't cascade
-        IS_AOE_BREAKING_BLOCKS.set(true);
         BlockState state = level.getBlockState(pos);
-        var event = CommonHooks.fireBlockBreak(level, player.gameMode.getGameModeForPlayer(), player, pos, state);
-        // ...and the easiest way to make sure it's false after is to set it before we return at all.
-        IS_AOE_BREAKING_BLOCKS.set(false);
-        if (event.isCanceled()) {
-            return false;
-        } else {
+
+        try (var $ = DO_BLOCK_BREAK_SOUND_PARTICLES.with(playSound)) {
+            // we set this flag when firing the event so the event listener that starts this whole thing doesn't cascade
+            try (var $_ = AOE_BREAKING_BLOCKS.setActive()) {
+                BlockEvent.BreakEvent event = CommonHooks.fireBlockBreak(level, player.gameMode.getGameModeForPlayer(),
+                        player, pos, state);
+                if (event.isCanceled()) {
+                    return false;
+                }
+            }
+
             Block block = state.getBlock();
             if (block instanceof GameMasterBlock && !player.canUseGameMasterBlocks()) {
                 level.sendBlockUpdated(pos, state, state, 3);
@@ -709,8 +704,12 @@ public class ToolHelper {
      * @param state the BlockState of the block
      * @return the silk touch drop
      */
-    public static List<ItemStack> getSilkTouchDrop(ServerLevel level, BlockPos pos, BlockState state) {
-        ItemStack tool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
+    public static List<ItemStack> getSilkTouchDrops(ServerLevel level, BlockPos pos, BlockState state) {
+        ItemStack tool = ToolHelper.get(GTToolType.PICKAXE, GTMaterials.Neutronium);
+        if (tool.isEmpty()) {
+            // fallback if someone removed the neutronium pickaxe or something
+            tool = new ItemStack(Items.NETHERITE_PICKAXE);
+        }
         // oh wow, this exists now. cool!
         EnchantmentHelper.enchantItemFromProvider(
                 tool,
@@ -719,7 +718,8 @@ public class ToolHelper {
                 CONSTANT_DIFFICULTY,
                 level.getRandom());
 
-        return state.getDrops(new LootParams.Builder(level).withParameter(LootContextParams.BLOCK_STATE, state)
+        return state.getDrops(new LootParams.Builder(level)
+                .withParameter(LootContextParams.BLOCK_STATE, state)
                 .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
                 .withParameter(LootContextParams.TOOL, tool)
                 .withOptionalParameter(LootContextParams.BLOCK_ENTITY, level.getBlockEntity(pos)));
