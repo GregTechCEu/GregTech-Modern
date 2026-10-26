@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.fluids.FluidConstants;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
@@ -27,7 +27,7 @@ public interface IThermalFluidHandlerItemStack {
      * @return whether the FluidStack can be used to fill this fluid container
      */
     default boolean canFillFluidType(FluidStack stack) {
-        if (stack == null || stack.getFluid() == null) return false;
+        if (stack.isEmpty()) return false;
 
         Fluid fluid = stack.getFluid();
 
@@ -38,9 +38,9 @@ public interface IThermalFluidHandlerItemStack {
             Collection<FluidAttribute> attributes = attributedFluid.getAttributes();
             if (attributes.contains(FluidAttributes.ACID) && !isAcidProof()) return false;
 
-            FluidState fluidState = attributedFluid.getState();
-            if (fluidState == FluidState.PLASMA && !isPlasmaProof()) return false;
-            if (fluidState == FluidState.GAS && !isGasProof()) return false;
+            MaterialFluidState fluidState = attributedFluid.getState();
+            if (fluidState == MaterialFluidState.PLASMA && !isPlasmaProof()) return false;
+            if (fluidState == MaterialFluidState.GAS && !isGasProof()) return false;
         }
 
         int temperature = fluidType.getTemperature(stack);
