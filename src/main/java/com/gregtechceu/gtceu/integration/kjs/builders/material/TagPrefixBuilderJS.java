@@ -105,42 +105,52 @@ public class TagPrefixBuilderJS extends BuilderBase<TagPrefix> {
         return this;
     }
 
-    public TagPrefixBuilderJS defaultTagPath(String path) {
-        return this.defaultTagPath(path, false);
+    public TagPrefixBuilderJS defaultTag(String path) {
+        return this.defaultTag(path, false);
     }
 
-    public TagPrefixBuilderJS defaultTagPath(String path, boolean isVanilla) {
+    public TagPrefixBuilderJS defaultTag(String path, boolean isVanilla) {
         this.tags.add(TagType.withDefaultFormatter(path, isVanilla));
         return this;
     }
 
-    public TagPrefixBuilderJS prefixTagPath(String path) {
+    public TagPrefixBuilderJS prefixTag(String path) {
         this.tags.add(TagType.withPrefixFormatter(path));
         return this;
     }
 
-    public TagPrefixBuilderJS prefixOnlyTagPath(String path) {
+    public TagPrefixBuilderJS prefixOnlyTag(String path) {
         this.tags.add(TagType.withPrefixOnlyFormatter(path));
         return this;
     }
 
-    public TagPrefixBuilderJS unformattedTagPath(String path) {
-        return unformattedTagPath(path, false);
+    public TagPrefixBuilderJS unformattedTag(String path) {
+        return unformattedTag(path, false);
     }
 
-    public TagPrefixBuilderJS unformattedTagPath(String path, boolean isVanilla) {
+    public TagPrefixBuilderJS unformattedTag(String path, boolean isVanilla) {
         this.tags.add(TagType.withNoFormatter(path, isVanilla));
         return this;
     }
 
-    public TagPrefixBuilderJS customTagPath(String path, BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
-        this.tags.add(TagType.withCustomFormatter(path, formatter));
+    public TagPrefixBuilderJS customFormattedTag(String path, BiFunction<String, Material, TagKey<Item>> formatter) {
+        this.tags.add(TagType.withCustomFormatter((self, mat) -> formatter.apply(path, mat)));
         return this;
     }
 
-    public TagPrefixBuilderJS customTagPredicate(String path, boolean isVanilla,
-                                                 Predicate<Material> materialPredicate) {
-        this.tags.add(TagType.withCustomFilter(path, isVanilla, materialPredicate));
+    public TagPrefixBuilderJS filteredUnformattedTag(String path, boolean isVanilla,
+                                                     Predicate<Material> materialPredicate) {
+        TagType entry = TagType.withNoFormatter(path, isVanilla);
+        entry.setFilter(materialPredicate);
+        this.tags.add(entry);
+        return this;
+    }
+
+    public TagPrefixBuilderJS filteredCustomTag(String path, Predicate<Material> materialPredicate,
+                                                BiFunction<String, Material, TagKey<Item>> formatter) {
+        TagType entry = TagType.withCustomFormatter((self, mat) -> formatter.apply(path, mat));
+        entry.setFilter(materialPredicate);
+        this.tags.add(entry);
         return this;
     }
 

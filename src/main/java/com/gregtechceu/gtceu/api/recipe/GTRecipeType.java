@@ -264,6 +264,11 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         additionHandler.beginStaging();
     }
 
+    @ApiStatus.Internal
+    public void completeStagingRecipes() {
+        additionHandler.completeStaging();
+    }
+
     public interface ICustomRecipeLogic {
 
         /**
