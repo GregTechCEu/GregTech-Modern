@@ -299,11 +299,9 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        CompoundTag tag = stack.getOrCreateTag();
-
         var info = loadControllerInfo(stack);
         if (info != null) {
-            tooltipComponents.add(Component.translatable("gtceu.terminal.controller_bound",
+            tooltipComponents.add(Component.translatable("gui.gtceu.terminal.bound_to_controller",
                     info.pos().getX(), info.pos().getY(), info.pos().getZ())
                     .withStyle(ChatFormatting.GOLD));
             tooltipComponents.add(info.definition().getBlock().getName());
@@ -311,7 +309,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
 
         GlobalPos aeBinding = getLinkedPos(stack);
         if (aeBinding != null) {
-            tooltipComponents.add(Component.translatable("gtceu.terminal.network_bound", aeBinding.dimension(),
+            tooltipComponents.add(Component.translatable("gui.gtceu.terminal.bound_to_me_network", aeBinding.dimension(),
                     aeBinding.pos().getX(), aeBinding.pos().getY(), aeBinding.pos().getZ())
                     .withStyle(ChatFormatting.GOLD));
         }

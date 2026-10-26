@@ -111,8 +111,6 @@ public class IntegrationLang {
         provider.add("integration.gtceu.jade.allow_output_input", "Allow Input");
 
         // Cable Provider
-        provider.add("integration.gtceu.jade.cable.voltage", "Voltage: ");
-        provider.add("integration.gtceu.jade.cable.amperage", "Amperage: ");
         provider.add("integration.gtceu.jade.cable.overloaded", "Cable Overloaded!");
         // Machine Mode Provider
         provider.add("integration.gtceu.jade.machine_mode", "Machine Mode: ");

@@ -12,7 +12,7 @@ public class ItemLang {
     private static void initItemTooltips(GTLangProvider provider) {
         // Battery Behavior
         provider.add("item.gtceu.battery.charge_time", "§aHolds %s %s of Power (%s)");
-        provider.add("item.gtceu.battery.charge_detailed", "%s/%s EU§7 - Tier %s §7(%s/%s remaining§7)");
+        provider.add("item.gtceu.battery.charge_detailed", "%s/%s EU - Tier %s (%s/%s remaining)");
 
         // Cover Tooltips
         provider.add("item.gtceu.electric.pump.tooltip", "§7Transfers §fFluids§7 at specific rates as §fCover§7.");

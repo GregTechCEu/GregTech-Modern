@@ -178,7 +178,7 @@ public interface IElectricItem {
         IElectricItem.addCurrentChargeTooltip(tooltipComponents, getCharge(), getMaxCharge(),
                 getTier(), canProvideChargeExternally());
         if (canProvideChargeExternally()) {
-            tooltipComponents.add(Component.translatable("metaitem.electric.discharge_mode.tooltip"));
+            tooltipComponents.add(Component.translatable("item.electric.discharge_mode.tooltip"));
         }
     }
 
@@ -228,9 +228,6 @@ public interface IElectricItem {
         Instant max = Instant.now().plusSeconds((long) ((maxCharge * 1.0) / GTValues.V[tier] / 20));
         Duration durationCurrent = Duration.between(start, current);
         Duration durationMax = Duration.between(start, max);
-        long currentChargeTime;
-        long maxChargeTime;
-        Component unit;
 
         ChatFormatting color = ChatFormatting.RED;
         if (percentage > 0.5) {
@@ -239,30 +236,31 @@ public interface IElectricItem {
             color = ChatFormatting.YELLOW;
         }
 
+
         if (showTimeRemaining) {
+            long currentChargeTime;
+            Component maxChargeTimeComponent;
+
+
             if (durationCurrent.getSeconds() <= 60) {
-                maxChargeTime = durationMax.getSeconds();
                 currentChargeTime = durationCurrent.toSeconds();
-                unit = Component.translatable("item.gtceu.battery.charge_unit.second");
+                maxChargeTimeComponent = Component.translatable("common.gtceu.seconds", FormattingUtil.formatNumbers(durationMax.toSeconds()));
             } else if (durationCurrent.toMinutes() <= 60) {
-                maxChargeTime = durationMax.toMinutes();
                 currentChargeTime = durationCurrent.toMinutes();
-                unit = Component.translatable("item.gtceu.battery.charge_unit.minute");
+                maxChargeTimeComponent = Component.translatable("gui.minutes", FormattingUtil.formatNumbers(durationMax.toMinutes()));
             } else {
-                maxChargeTime = durationMax.toHours();
                 currentChargeTime = durationCurrent.toHours();
-                unit = Component.translatable("item.gtceu.battery.charge_unit.hour");
+                maxChargeTimeComponent = Component.translatable("gui.hours", FormattingUtil.formatNumbers(durationMax.toHours()));
             }
             tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed",
                     FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
-                    GTValues.VNF[tier],
-                    FormattingUtil.formatNumbers(currentChargeTime), FormattingUtil.formatNumbers(maxChargeTime),
-                    unit)
+                    GTValues.VNC[tier],
+                    FormattingUtil.formatNumbers(currentChargeTime), maxChargeTimeComponent)
                     .withStyle(color));
         } else {
-            tooltip.add(Component.translatable("metaitem.generic.electric_item.tooltip",
+            tooltip.add(Component.translatable("item.gtceu.electric.tooltip",
                     FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
-                    GTValues.VNF[tier]).withStyle(color));
+                    GTValues.VNC[tier]).withStyle(color));
         }
     }
 }
