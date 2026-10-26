@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -16,6 +17,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -58,10 +60,10 @@ public class HazardProperty implements IMaterialProperty {
         public static final Map<String, HazardTrigger> ALL_TRIGGERS = new HashMap<>();
 
         public static final HazardTrigger INHALATION = new HazardTrigger("inhalation", ProtectionType.MASK,
-                TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny, TagPrefix.dustPure, TagPrefix.dustImpure);
+                CustomTags.INHALATION_TRIGGER_PREFIXES);
         public static final HazardTrigger ANY = new HazardTrigger("any", ProtectionType.FULL);
         public static final HazardTrigger SKIN_CONTACT = new HazardTrigger("skin_contact", ProtectionType.HANDS,
-                TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny);
+                CustomTags.SKIN_CONTACT_TRIGGER_PREFIXES);
         public static final HazardTrigger NONE = new HazardTrigger("none", ProtectionType.NONE);
         // special trigger that's activated when the player eats an item with a condition and this trigger
         public static final HazardTrigger CONSUMPTION = new HazardTrigger("consumption", ProtectionType.NONE);
@@ -73,6 +75,10 @@ public class HazardProperty implements IMaterialProperty {
         @SafeVarargs
         public HazardTrigger(String name, ProtectionType protectionType, Holder<TagPrefix>... tagPrefixes) {
             this(name, protectionType, HolderSet.direct(tagPrefixes));
+        }
+
+        public HazardTrigger(String name, ProtectionType protectionType, TagKey<TagPrefix> tag) {
+            this(name, protectionType, GTRegistries.TAG_PREFIXES.getOrCreateTag(tag));
         }
 
         public boolean isAffected(Holder<TagPrefix> prefix) {
