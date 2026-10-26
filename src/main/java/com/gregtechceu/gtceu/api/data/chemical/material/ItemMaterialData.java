@@ -18,7 +18,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,9 +34,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Supplier;
-
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ingot;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.Clay;
 
 public class ItemMaterialData {
 
@@ -166,7 +162,6 @@ public class ItemMaterialData {
         FLUID_MATERIAL.clear();
 
         // Load new data
-        initExtraUnificationEntries();
         GTRegistries.TAG_PREFIXES.holders()
                 .filter(h -> h != null && h.isBound())
                 .map(Holder::value)
@@ -176,10 +171,6 @@ public class ItemMaterialData {
                 .forEach((materialEntry, supplier) -> registerMaterialEntry(supplier, materialEntry));
         WoodMachineRecipes.registerMaterialInfo();
         StoneMachineRecipes.registerMaterialInfo();
-    }
-
-    private static void initExtraUnificationEntries() {
-        registerMaterialEntry(Items.CLAY_BALL, ingot, Clay);
     }
 
     @ApiStatus.Internal

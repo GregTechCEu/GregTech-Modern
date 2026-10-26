@@ -34,7 +34,7 @@ import com.tterrag.registrate.providers.ProviderType;
 import java.util.Set;
 
 @EventBusSubscriber(modid = GTCEu.MOD_ID)
-public class GregTechDatagen {
+public class GTDatagen {
 
     // we only register this so the class gets loaded. the key gets overwritten in #initPre.
     private static final ProviderType<GTBlockstateProvider> BLOCKSTATE_PROVIDER = ProviderType.registerProvider(

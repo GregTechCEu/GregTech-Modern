@@ -10,13 +10,12 @@ import com.tterrag.registrate.providers.RegistrateTagsProvider;
 // Custom registrate data provider types
 public class GTProviderTypes {
 
+    // spotless:off
     public static final ProviderType<RegistrateTagsProvider.IntrinsicImpl<Material>> MATERIAL_TAGS = ProviderType
-            .registerIntrinsicTag(
-                    "tags/material", "materials", GTRegistries.Keys.MATERIAL,
-                    Material::getKey);
+            .registerIntrinsicTag("tags/material", "materials", GTRegistries.Keys.MATERIAL, Material::getKey);
 
     public static final ProviderType<RegistrateTagsProvider.IntrinsicImpl<TagPrefix>> TAG_PREFIX_TAGS = ProviderType
-            .registerIntrinsicTag(
-                    "tags/tag_prefix", "tag_prefixes", GTRegistries.Keys.TAG_PREFIX,
-                    TagPrefix::getKey);
+            .registerIntrinsicTag("tags/tag_prefix", "tag_prefixes", GTRegistries.Keys.TAG_PREFIX, TagPrefix::getKey);
+
+    // spotless:on
 }

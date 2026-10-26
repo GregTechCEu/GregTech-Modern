@@ -77,8 +77,8 @@ public class HazardProperty implements IMaterialProperty {
             this(name, protectionType, HolderSet.direct(tagPrefixes));
         }
 
-        public HazardTrigger(String name, ProtectionType protectionType, TagKey<TagPrefix> tagPrefixTag) {
-            this(name, protectionType, GTRegistries.TAG_PREFIXES.getOrCreateTag(tagPrefixTag));
+        public HazardTrigger(String name, ProtectionType protectionType, TagKey<TagPrefix> tag) {
+            this(name, protectionType, GTRegistries.TAG_PREFIXES.getOrCreateTag(tag));
         }
 
         public boolean isAffected(Holder<TagPrefix> prefix) {
