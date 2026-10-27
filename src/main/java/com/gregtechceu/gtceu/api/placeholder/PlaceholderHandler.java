@@ -474,13 +474,15 @@ public class PlaceholderHandler {
                         openPlaceholders.pop();
                     }
                     if (!pureStarts.empty()) {
-                        String result = processPlaceholders(everything.substring(pureStarts.peek()), ctx)
-                                .toString()
-                                .replaceAll("\\n", "\\\\n");
+                        String result = ctx == null ? null :
+                                processPlaceholders(everything.substring(pureStarts.peek()), ctx)
+                                        .toString()
+                                        .replaceAll("\\n", "\\\\n");
                         int popped = pureStarts.peek();
                         pureStarts.pop();
-                        viewStarts.pop();
-                        if (!everything.substring(popped).contains(" ")) return Component.literal(s);
+                        if (!viewStarts.empty()) viewStarts.pop();
+                        if (result == null || !everything.substring(popped).contains(" "))
+                            return Component.literal(s);
                         return Component.literal(s)
                                 .withStyle(style -> style.withHoverEvent(new HoverEvent(
                                         HoverEvent.Action.SHOW_TEXT,
