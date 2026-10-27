@@ -507,7 +507,9 @@ public class PlaceholderHandler {
                                             s.replaceAll("\\n", "\\\\n")))));
                 }
 
-                var holder = ctx.holderLookup().holder(id);
+                var holder = ctx != null && ctx.holderLookup() != null ?
+                    ctx.holderLookup().holder(id) :
+                    GTRegistries.PLACEHOLDERS.getHolder(id);
                 if (holder.isPresent()) {
                     var placeholder = holder.get().value();
                     if (placeholder.isPure()) {
