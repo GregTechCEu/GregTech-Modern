@@ -61,7 +61,6 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 machine::setMonitorGroups, MONITOR_GROUPS, MONITOR_GROUPS,
                 MONITOR_GROUPS, null);
         syncManager.syncValue("monitor_groups_sync", groupSync);
-        List<MonitorGroup> groups = new ArrayList<>(machine.getMonitorGroups());
         IPanelHandler helpPanel = syncManager.syncedPanel(
                 "help_panel", true,
                 (syncManager1, panelHandler1) -> createHelpPanel());
@@ -91,8 +90,11 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                     () -> new ItemSlotSyncHandler(new ModularSlot(group.getItemStackHandler(), 0)
                                             .changeListener((newItem, onlyAmountChanged, client, init) -> {
                                                 if (!init) {
-                                                    groups.set(index, group);
-                                                    groupSync.setValue(groups, true, false);
+                                                    List<MonitorGroup> current = new ArrayList<>(groupSync.getValue());
+                                                    if (index >= 0 && index < current.size()) {
+                                                        current.set(index, group);
+                                                        groupSync.setValue(current, true, false);
+                                                    }
                                                 }
                                             })))))
                     .child(new ButtonWidget<>()
@@ -106,8 +108,11 @@ public class CentralMonitorUIFactory implements PanelFactory {
                             .syncHandler(syncManager.getOrCreateSyncHandler("delete_group", index,
                                     InteractionSyncHandler.class, () -> new InteractionSyncHandler()
                                             .setOnMousePressed(mouseData -> {
-                                                groups.remove(index);
-                                                groupSync.setValue(groups, true, false);
+                                                List<MonitorGroup> current = new ArrayList<>(groupSync.getValue());
+                                                if (index >= 0 && index < current.size()) {
+                                                    current.remove(index);
+                                                    groupSync.setValue(current, true, false);
+                                                }
                                             }))))
                     .childIf(moduleEditor != null, () -> new ButtonWidget<>()
                             .right(36)
@@ -163,9 +168,9 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .right(36)
                                         .syncHandler(new InteractionSyncHandler()
                                                 .setOnMousePressed(mouseData -> {
-                                                    MonitorGroup group = new MonitorGroup(getNewGroupName(groupSync));
-                                                    groups.add(group);
-                                                    groupSync.setValue(groups, true, false);
+                                                    List<MonitorGroup> current = new ArrayList<>(groupSync.getValue());
+                                                    current.add(new MonitorGroup(getNewGroupName(groupSync)));
+                                                    groupSync.setValue(current, true, false);
                                                 })))
                                 .widthRel(1).height(20))
                         .child(new DynamicWidget<>()
