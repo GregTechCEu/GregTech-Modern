@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -44,9 +45,7 @@ public class PipeBlockItem extends BlockItem {
         super.appendHoverText(stack, level, tooltip, isAdvanced);
         if (GTUtil.isShiftDown()) {
             var tool = getBlock().getPipeTuneTool();
-            tooltip.add(Component.translatable("tool_action.gtceu." + tool.name + ".connect"));
-        } else {
-            tooltip.add(Component.translatable("tool_action.gtceu.show_tooltips"));
+            tooltip.add(Component.translatable("item.gtceu." + tool.name + ".tooltip.set_connections"));
         }
     }
 

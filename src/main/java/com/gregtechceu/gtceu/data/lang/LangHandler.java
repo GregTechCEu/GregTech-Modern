@@ -38,7 +38,7 @@ public class LangHandler {
         MachineLang.init(provider); // TODO
         MaterialLang.init(provider);
         RecipeLang.init(provider);
-        ToolLang.init(provider); // TODO
+        ToolLang.init(provider);
         ModularArmorLang.init(provider);
     }
 }

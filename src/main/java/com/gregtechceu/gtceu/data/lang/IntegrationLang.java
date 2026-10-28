@@ -83,8 +83,8 @@ public class IntegrationLang {
         // Transformers
         provider.add("integration.gtceu.jade.transform_up", "§cStep Up§r %s");
         provider.add("integration.gtceu.jade.transform_down", "§aStep Down§r %s");
-        provider.add("integration.gtceu.jade.transform_input", "§6Input:§r %s");
-        provider.add("integration.gtceu.jade.transform_output", "§9Output:§r %s");
+        provider.add("integration.gtceu.jade.transform_input", "Input: %s");
+        provider.add("integration.gtceu.jade.transform_output", "Output: %s");
         provider.add("integration.gtceu.jade.convert_eu", "Converting §eEU§r -> §cFE§r");
         provider.add("integration.gtceu.jade.convert_fe", "Converting §cFE§r -> §eEU§r");
 

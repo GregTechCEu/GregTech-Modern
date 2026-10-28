@@ -49,7 +49,7 @@ public class TreeFellingBehavior implements IToolBehavior {
 
     @Override
     public void addInformation(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("item.gtceu.tool.behavior.tree_felling"));
+        tooltip.add(Component.translatable("tool_behavior.gtceu.tree_felling"));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TreeFellingBehavior implements IToolBehavior {
         var tag = ToolHelper.getBehaviorsTag(held);
         var disable = tag.getBoolean(ToolHelper.DISABLE_TREE_FELLING_KEY);
         tag.putBoolean(ToolHelper.DISABLE_TREE_FELLING_KEY, !disable);
-        player.sendSystemMessage(Component.translatable("item.gtceu.tool.behavior.tree_felling").append(" - ")
+        player.sendSystemMessage(Component.translatable("tool_behavior.gtceu.tree_felling").append(" - ")
                 .append(Component.translatable("cover.voiding.label." + (disable ? "enabled" : "disabled"))));
         return InteractionResultHolder.success(held);
     }

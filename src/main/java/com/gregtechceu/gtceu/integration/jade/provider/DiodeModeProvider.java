@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -32,15 +30,13 @@ public class DiodeModeProvider extends MachineInfoProvider<DiodePartMachine, Com
     @Override
     protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
+
+
         if (block.getHitResult().getDirection() ==
                 Direction.from3DDataValue(data.getInt("side"))) {
-            tooltip.add(Component.translatable(
-                    "integration.gtceu.jade.transform_output",
-                    (GTValues.VNF[data.getInt("voltage")] + " §r(" + data.getInt("amps") + "A)")));
+            tooltip.add(TransformerBlockProvider.createIOComponent(false, data.getInt("voltage"), data.getInt("amps")));
         } else {
-            tooltip.add(Component.translatable(
-                    "integration.gtceu.jade.transform_input",
-                    (GTValues.VNF[data.getInt("voltage")] + " §r(16A)")));
+            tooltip.add(TransformerBlockProvider.createIOComponent(false, data.getInt("voltage"), 16));
         }
     }
 }

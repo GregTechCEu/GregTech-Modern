@@ -22,7 +22,7 @@ public class ItemLang {
 
         // Programmed Circuit
         provider.add("item.gtceu.circuit.integrated.gui", "Programmed Circuit Configuration");
-        provider.add("item.gtceu.int_circuit.configuration", "Circuit Configuration: %d");
+        provider.add("item.gtceu.int_circuit.configuration", "Circuit Configuration: %s");
 
         // Turbines
         provider.add("item.gtceu.turbine_rotor.tooltip", "Turbine Rotors for your power station");

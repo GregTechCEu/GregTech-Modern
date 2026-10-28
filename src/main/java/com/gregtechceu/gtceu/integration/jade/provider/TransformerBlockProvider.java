@@ -4,8 +4,11 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -50,17 +53,20 @@ public class TransformerBlockProvider extends MachineInfoProvider<TransformerMac
 
         if (block.getHitResult().getDirection() ==
                 Direction.from3DDataValue(data.getInt("side"))) {
-            tooltip.add(
-                    Component.translatable(
-                            (transformUp ? "integration.gtceu.jade.transform_output" :
-                                    "integration.gtceu.jade.transform_input"),
-                            (GTValues.VNF[voltage + 1] + " §r(" + amp + "A)")));
+            tooltip.add(createIOComponent(!transformUp, voltage + 1, amp));
         } else {
-            tooltip.add(
-                    Component.translatable(
-                            (transformUp ? "integration.gtceu.jade.transform_input" :
-                                    "integration.gtceu.jade.transform_output"),
-                            (GTValues.VNF[voltage] + " §r(" + amp * 4 + "A)")));
+            tooltip.add(createIOComponent(transformUp, voltage, amp * 4));
         }
+    }
+
+    public static Component createIOComponent(boolean isIn, int voltageTier, int amperage) {
+        var base = Component.translatable(isIn ? "integration.gtceu.jade.transform_input" :
+                "integration.gtceu.jade.transform_output", GTValues.VNC[voltageTier]);
+        base.withStyle(isIn ? ChatFormatting.GOLD : ChatFormatting.BLUE);
+
+        return Component.empty()
+                .append(base)
+                .append(CommonComponents.SPACE)
+                .append(Component.literal("(" + FormattingUtil.formatBuckets(amperage) + "A)"));
     }
 }
