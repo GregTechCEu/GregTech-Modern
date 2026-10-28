@@ -166,7 +166,6 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
         return machine.getTraits(NotifiableBonkHandler.class);
     }
 
-    @SuppressWarnings("unchecked")
     public List<NotifiableBonkHandler> getCapabilityHandlers(MetaMachine machine, IO io) {
         return (List<NotifiableBonkHandler>)super.getCapabilityHandlers(machine, io);
     }
@@ -277,7 +276,7 @@ We will register the actual part, as well as a "Large Bonk Reactor" which is an 
 ```java title="BonkMachines.java"
 public class BonkMachines {
 
-    public static final MachineDefinition BONK_HATCH = Bonk.REGISTRATE
+    public static final MachineEntry<MachineDefinition> BONK_HATCH = Bonk.REGISTRATE
             .machine("bonk_hatch", (holder) -> new BonkHatchPartMachine(holder, ZPM, IO.IN))
             .langValue("Bonk Hatch")
             .rotationState(RotationState.ALL)
@@ -288,7 +287,7 @@ public class BonkMachines {
             .abilities(BonkPartAbilities.BONK_HATCH)
             .register();
 
-    public static final MultiblockMachineDefinition LARGE_BONK_REACTOR = Bonk.REGISTRATE
+    public static final MachineEntry<MultiblockMachineDefinition> LARGE_BONK_REACTOR = Bonk.REGISTRATE
             .multiblock("large_bonk_reactor", WorkableElectricMultiblockMachine::new)
             .langValue("Large Bonk Reactor")
             .rotationState(RotationState.ALL)
@@ -331,20 +330,13 @@ public class BonkPartAbilities {
 ## Creating the RecipeType
 ```java title="BonkRecipeTypes.java"
 public class BonkRecipeTypes {
-    public static final GTRecipeType LARGE_BONK_RECIPES = register(AddonMod.id("large_bonk_reactor"), MULTIBLOCK)
+    public static final GTRecipeTypeEntry LARGE_BONK_RECIPES = Bonk.REGISTRATE.recipeType("large_bonk_reactor", MULTIBLOCK)
             .setMaxIOSize(3, 3, 5, 4)
             .setMaxSize(IO.IN, BonkRecipeCapability.CAP, 1)
-            .setEUIO(IO.IN);
+            .setEUIO(IO.IN)
+            .register();
 
     public static void init() {}
-    
-    public static GTRecipeType register(String name, String group, RecipeType<?>... proxyRecipes) {
-        var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);
-        GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, recipeType.registryName, recipeType);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.registryName, new GTRecipeSerializer());
-        GTRegistries.RECIPE_TYPES.register(recipeType.registryName, recipeType);
-        return recipeType;
-    }
 }
 ```
 
@@ -352,9 +344,9 @@ public class BonkRecipeTypes {
 ```java title="BonkRecipes.java"
 public class BonkRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         LARGE_BONK_RECIPES.recipeBuilder(
-                        GTCEu.id("test"))
+                        Bonk.id("test"))
                 .inputItems(Items.STONE)
                 .input(BonkRecipeCapability.CAP, new BonkIngredient(2))
                 .outputItems(Items.COBBLESTONE)
@@ -370,22 +362,29 @@ public class BonkRecipes {
 ```java title="BonkRecipeCapabilities.java"
 public class BonkRecipeCapabilities {
 
-    public static final BonkRecipeCapability BONK = BonkRecipeCapability.CAP;
-
-    public static void init() {
-        GTRegistries.RECIPE_CAPABILITIES.register(BONK.name, BONK);
-    }
+    public final static RegistryEntry<RecipeCapability<?>, BonkRecipeCapability> BONK = 
+            Bonk.REGISTRATE.simple(BonkRecipeCapability.CAP.id.getPath(), GTRegistries.Keys.RECIPE_CAPABILITY, () -> BonkRecipeCapability.CAP);
+    
+    public static void init() {}
 }
 ```
 The following parts, you would do in your main java class and your main GTAddon class, assuming you are working off of the [Addon Template](https://github.com/JuiceyBeans/GregTech-Addon-Template):
 ```java title="Bonk.java"
 @Mod(Bonk.MOD_ID)
+@EventBusSubscriber(modid = Bonk.MOD_ID)
 public class Bonk {
 
-    public BonkMod(IEventBus modBus) {
+    public Bonk(IEventBus modBus) {
         BonkRecipeTypes.init();
         BonkMachines.init();
         BonkRecipeCapabilities.init();
+    }
+
+    @SubscribeEvent
+    public static void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            MapIngredientTypeManager.registerMapIngredient(BonkIngredient.class, MapBonkIngredient::convertToMapIngredient);
+        });
     }
 }
 ```
@@ -395,11 +394,7 @@ public class Bonk {
 public class BonkGTAddon implements IGTAddon {
     // ...
     @Override
-    public void initializeAddon() {
-        MapIngredientTypeManager.registerMapIngredient(BonkIngredient.class, MapBonkIngredient::convertToMapIngredient);
-    }
-    @Override
-    public void addRecipes(Consumer<FinishedRecipe> provider) {
+    public void addRecipes(RecipeOutput provider) {
         BonkRecipes.init(provider);
     }
 }

@@ -38,7 +38,7 @@ In Java, these are also available, as well as simpler `.[n]eq(key, [type] value)
 === "Java"
     ```java title="GTRecipes.java"
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         ASSEMBLER_RECIPES.recipeBuilder("test_nbt")
                 .inputItemNbtPredicate(new ItemStack(Items.dirt, 1), NBTPredicates.eq("charge", "23"))
                 .outputItems(new ItemStack(Items.STICK))
@@ -73,7 +73,7 @@ The following number comparison operators exist:
 === "Java"
     ```java title="GTRecipes.java"
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         ASSEMBLER_RECIPES.recipeBuilder("test_nbt")
                 .inputItemNbtPredicate(new ItemStack(Items.dirt, 1), NBTPredicates.lt("charge", 23))
                 .outputItems(new ItemStack(Items.STICK))
@@ -111,7 +111,7 @@ The following list operators exist:
 === "Java"
     ```java title="GTRecipes.java"
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         ASSEMBLER_RECIPES.recipeBuilder("test_nbt")
                 .inputItemNbtPredicate(new ItemStack(Items.dirt, 1),
                     NBTPredicates.all([
@@ -156,7 +156,7 @@ The negation operators exists:
 === "Java"
     ```java title="GTRecipes.java"
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         ASSEMBLER_RECIPES.recipeBuilder("test_nbt")
                 .inputItemNbtPredicate(new ItemStack(Items.dirt, 1),
                     NBTPredicates.not(

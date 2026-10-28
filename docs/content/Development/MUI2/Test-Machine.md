@@ -25,7 +25,7 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
 and in your machines definitions class, add the following entry:
 
 ```java
-    public static final MachineDefinition MUI_TEST_MACHINE = REGISTRATE
+    public static final MachineEntry<MachineDefinition> MUI_TEST_MACHINE = REGISTRATE
             .machine("mui_test", MuiTestMachine::new)
             .model(createOverlayCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/machine/part/computer_monitor")))

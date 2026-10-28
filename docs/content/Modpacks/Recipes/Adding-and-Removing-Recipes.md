@@ -72,7 +72,7 @@ Syntax: `event.recipes.gtceu.RECIPE_TYPE(string: recipe id)`
     public class MyGTAddon implements IGTAddon {
         
         @Override
-        public void addRecipes(Consumer<FinishedRecipe> provider) {
+        public void addRecipes(RecipeOutput provider) {
             ASSEMBLER_RECIPES.recipeBuilder(ADDON_MOD.id("test"))
                 .inputItems(
                     new ItemStack(Blocks.DIRT, 64),
@@ -193,7 +193,7 @@ Scanner Research, Station Research and Computation.
     public class MyGTAddon implements IGTAddon {
 
         @Override
-        public void addRecipes(Consumer<FinishedRecipe> provider) {
+        public void addRecipes(RecipeOutput provider) {
             ASSEMBLY_LINE_RECIPES.recipeBuilder(ADDON_MOD.id("scanner_test"))
                 .inputItems(new ItemStack(Items.COAL, 64))
                 .outputItems(Items.DIAMOND)
@@ -229,7 +229,7 @@ Scanner Research, Station Research and Computation.
     public class MyGTAddon implements IGTAddon {
 
         @Override
-        public void addRecipes(Consumer<FinishedRecipe> provider) {
+        public void addRecipes(RecipeOutput provider) {
             ASSEMBLY_LINE_RECIPES.recipeBuilder(ADDON_MOD.id("research_station_test"))
                 .inputItems(new ItemStack(Items.COAL, 64))
                 .outputItems(Items.DIAMOND)
@@ -271,7 +271,7 @@ To add a condition, you can use the `adjacentFluids(Fluid...)` methods, see [our
     public class MyGTAddon implements IGTAddon {
 
         @Override
-        public void addRecipes(Consumer<FinishedRecipe> provider) {
+        public void addRecipes(RecipeOutput provider) {
             ROCK_BREAKER_RECIPES.recipeBuilder(ADDON_MOD.id("test"))
                 .notConsumable(Blocks.DIRT.asItem())
                 .outputItems(Blocks.DIRT.asItem())

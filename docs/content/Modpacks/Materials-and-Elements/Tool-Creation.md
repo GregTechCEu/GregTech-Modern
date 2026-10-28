@@ -22,12 +22,10 @@ toolStats has the following arguments:
 An example of this being used is included below.
 === "Java"
     ```java title="ExampleToolMaterial.java"
-        public static Material ALUMINFROST = new Material.Builder(
-            your_mod_id.id("aluminfrost"))
+        public static final MaterialRegistryEntry ALUMINFROST = ADDON_REGISTRATE.material("aluminfrost", builder -> builder
             .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
             .toolStats(new ToolProperty(12.0F, 7.0F, 3072, 6,
-                    new GTToolType[] { GTToolType.DRILL_LV, GTToolType.MINING_HAMMER }))
-            .buildAndRegister();
+                    new GTToolType[] { GTToolType.DRILL_LV, GTToolType.MINING_HAMMER })));
     ```
 === "JavaScript"
     ```js title="example_tool_material.js"
@@ -68,8 +66,7 @@ The builder has the same arguments as the constructor, and can have chained meth
 Here is an example of using the builder in a material:
 === "Java"
     ```java title="ExampleToolMaterial.java"
-        public static Material ALUMINFROST = new Material.Builder(
-                ADDON_MOD.id("aluminfrost"))
+        public static final MaterialRegistryEntry ALUMINFROST = ADDON_REGISTRATE.material("aluminfrost", builder -> builder
                 .ingot()
                 .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
                 .toolStats(ToolProperty.Builder.of(1.8F, 1.7F, 700, 3)
@@ -80,7 +77,7 @@ Here is an example of using the builder in a material:
                         .unbreakable()
                         .enchantment(SILK_TOUCH, 1)
                         .build())
-                .buildAndRegister();
+                );
     ```
 === "JavaScript"
     ```js title="example_tool_material.js"

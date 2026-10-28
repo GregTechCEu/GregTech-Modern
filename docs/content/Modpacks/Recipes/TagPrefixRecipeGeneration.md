@@ -10,7 +10,7 @@ Gregtech will iterate through all materials and all tag prefixes possible for th
 
 ```java title="TagPrefixRecipes.java"
 
-public static void recipeAddition(Consumer<FinishedRecipe> consumer) {
+public static void recipeAddition(RecipeOutput consumer) {
 
     for (Material material : GTRegistries.MATERIALS) {
             if (material.hasFlag(MaterialFlags.NO_UNIFICATION)) {
@@ -25,11 +25,11 @@ public static void recipeAddition(Consumer<FinishedRecipe> consumer) {
 
 ```java title="MaterialRecipeHandler.java"
 
-public static void run(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
+public static void run(@NotNull RecipeOutput provider, @NotNull Material material) {
         processFrame(provider, material);
 }
 
-private static void processFrame(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
+private static void processFrame(@NotNull RecipeOutput provider, @NotNull Material material) {
         if (!material.shouldGenerateRecipesFor(frameGt) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         } // (1)
