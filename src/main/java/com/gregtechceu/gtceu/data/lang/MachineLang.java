@@ -178,7 +178,7 @@ public class MachineLang {
 
         // World Accelerator
         provider.add("machine.gtceu.world_accelerator.description",
-                "Tick accelerates nearby blocks in one of 2 modes: §fTile Entity§r or §fRandom Tick§r. Use Screwdriver to change mode.");
+                "Tick accelerates nearby blocks in one of 2 modes: §fBlock Entity§r or §fRandom Tick§r. Use Screwdriver to change mode.");
         provider.add("machine.gtceu.world_accelerator.working_area", "§bWorking Area:");
         provider.add("machine.gtceu.world_accelerator.working_area_tile",
                 "  Block Entity Mode:§f Adjacent Blocks");
@@ -420,10 +420,10 @@ public class MachineLang {
         provider.add("machine.gtceu.cleanroom.tooltip.ae2.channels",
                 "Send up to §f8 AE2 Channels §rthrough §fHulls§r in the walls.");
         provider.add("machine.gtceu.cleanroom.tooltip.ae2.no_channels",
-                "Send §aAE2 Networks§r through §fHulls§r in the walls.");
+                "Send §rAE2 Networks§r through §fHulls§r in the walls.");
         provider.add("gui.gtceu.machine.cleanroom.clean_state", "Status: §aCLEAN");
         provider.add("gui.gtceu.machine.cleanroom.dirty_state", "Status: §4CONTAMINATED");
-        provider.add("gui.gtceu.machine.cleanroom.clean_amount", "Cleanliness: §a%s%%");
+        provider.add("gui.gtceu.machine.cleanroom.clean_amount", "Cleanliness: §r%s%%");
 
         // Power Substation
         provider.add("gui.gtceu.machine.power_substation.stored", "Stored: %s §rEU");
@@ -1146,13 +1146,6 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.maintenance.hard_hammer", "Plating is dented");
         provider.add("gui.gtceu.machine.maintenance.wire_cutter", "Wires burned out");
         provider.add("gui.gtceu.machine.maintenance.crowbar", "That doesn't belong there");
-
-        provider.add("gui.gtceu.maintenance.problem.wrench", "§7Pipe is loose. (§aWrench§7)");
-        provider.add("gui.gtceu.maintenance.problem.screwdriver", "§7Screws are loose. (§aScrewdriver§7)");
-        provider.add("gui.gtceu.maintenance.problem.soft_mallet", "§7Something is stuck. (§aSoft Mallet§7)");
-        provider.add("gui.gtceu.maintenance.problem.hard_hammer", "§7Plating is dented. (§aHard Hammer§7)");
-        provider.add("gui.gtceu.maintenance.problem.wire_cutter", "§7Wires burned out. (§aWire Cutter§7)");
-        provider.add("gui.gtceu.maintenance.problem.crowbar", "§7That doesn't belong there. (§aCrowbar§7)");
 
         // Muffler
         provider.add("gui.gtceu.machine.muffler_obstructed", "Muffler Hatch is Obstructed!");
