@@ -508,8 +508,8 @@ public class PlaceholderHandler {
                 }
 
                 var holder = ctx != null && ctx.holderLookup() != null ?
-                    ctx.holderLookup().holder(id) :
-                    GTRegistries.PLACEHOLDERS.getHolder(id);
+                        ctx.holderLookup().holder(id) :
+                        GTRegistries.PLACEHOLDERS.getHolder(id);
                 if (holder.isPresent()) {
                     var placeholder = holder.get().value();
                     if (placeholder.isPure()) {
