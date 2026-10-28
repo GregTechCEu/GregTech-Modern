@@ -150,9 +150,12 @@ public record SpoilContext(@Nullable Level level,
     public static SpoilContext deserializeNBT(CompoundTag tag) {
         SpoilContext ctx = new SpoilContext();
         if (tag.contains("level")) {
-            ctx = ctx.withLevel(ServerLifecycleHooks.getCurrentServer().getLevel(ResourceKey.create(
-                    Registries.DIMENSION,
-                    ResourceLocation.parse(tag.getString("level")))));
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            if (server != null) {
+                ctx = ctx.withLevel(server.getLevel(ResourceKey.create(
+                        Registries.DIMENSION,
+                        ResourceLocation.parse(tag.getString("level")))));
+            }
         }
         if (tag.contains("pos")) {
             ctx = ctx.withPos(BlockPos.of(tag.getLong("pos")));
