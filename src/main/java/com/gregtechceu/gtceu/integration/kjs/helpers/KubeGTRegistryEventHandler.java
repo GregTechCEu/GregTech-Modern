@@ -12,6 +12,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import dev.latvian.mods.kubejs.DevProperties;
@@ -33,49 +35,43 @@ public class KubeGTRegistryEventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void registerAll(RegisterEvent event) {
-        // only post the GT registry event for GT registries
-        if (event.getRegistryKey().equals(Registries.RECIPE_TYPE) ||
-                !GTRegistries.getRegistryOrder().contains(event.getRegistryKey().location())) {
+        // Post GT script events only for registries in the GT load order.
+        if (!GTRegistries.getRegistryOrder().contains(event.getRegistryKey().location())) {
             return;
         }
 
         handleRegistryEvent((ResourceKey) event.getRegistryKey(), event);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void postRecipeTypeEvent(RegisterEvent event) {
-        if (event.getRegistryKey().equals(Registries.RECIPE_TYPE)) {
-            GTCEuStartupEvents.REGISTRY.post(ScriptType.STARTUP, (ResourceKey) Registries.RECIPE_TYPE,
-                    new GTRegistryKubeEvent<>(Registries.RECIPE_TYPE));
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registerRecipeTypes(RegisterEvent event) {
-        if (!event.getRegistryKey().equals(Registries.RECIPE_TYPE)) {
-            return;
-        }
-
-        for (var builder : RegistryObjectStorage.of(Registries.RECIPE_TYPE)) {
-            addNamespace(builder.id.getNamespace());
-        }
-
         var registryKey = GTRegistries.Keys.RECIPE_TYPE;
-        GTCEuStartupEvents.REGISTRY.post(ScriptType.STARTUP, (ResourceKey) registryKey,
-                new GTRegistryKubeEvent<>(registryKey));
-        StartupEvents.REGISTRY.post(ScriptType.STARTUP, (ResourceKey) registryKey,
-                new RegistryKubeEvent<>(registryKey));
-        registerObjects(registryKey, event);
+        var context = ModLoadingContext.get();
+        var previousContainer = context.getActiveContainer();
+        try {
+            // Keep original callback of Kube before GT callbacks and builder visibility .
+            context.setActiveContainer(ModList.get().getModContainerById(KubeJS.MOD_ID).orElseThrow());
+            StartupEvents.REGISTRY.post(ScriptType.STARTUP, (ResourceKey) registryKey,
+                    new RegistryKubeEvent<>(registryKey));
+            registerObjects(registryKey, event, false);
+
+            context.setActiveContainer(ModList.get().getModContainerById(GTCEu.MOD_ID).orElseThrow());
+            GTCEuStartupEvents.REGISTRY.post(ScriptType.STARTUP, (ResourceKey) registryKey,
+                    new GTRegistryKubeEvent<>(registryKey));
+            registerObjects(registryKey, event, true);
+        } finally {
+            context.setActiveContainer(previousContainer);
+        }
     }
 
     private static <T> void handleRegistryEvent(ResourceKey<Registry<T>> registryKey, RegisterEvent event) {
         GTCEuStartupEvents.REGISTRY.post(ScriptType.STARTUP, (ResourceKey) registryKey,
                 new GTRegistryKubeEvent<>(registryKey));
 
-        registerObjects(registryKey, event);
+        registerObjects(registryKey, event, true);
     }
 
-    private static <T> void registerObjects(ResourceKey<Registry<T>> registryKey, RegisterEvent event) {
+    private static <T> void registerObjects(ResourceKey<Registry<T>> registryKey, RegisterEvent event,
+                                            boolean registerDummyBuilders) {
         var objStorage = RegistryObjectStorage.of(registryKey);
 
         if (objStorage.objects.isEmpty()) {
@@ -93,6 +89,15 @@ public class KubeGTRegistryEventHandler {
         int added = 0;
 
         for (var builder : objStorage) {
+            if (builder.dummyBuilder && !registerDummyBuilders) continue;
+
+            // KubeJS may already have registered this so conflicting objects MUST still fail.
+            if (!builder.dummyBuilder && event.getRegistryKey().equals(Registries.RECIPE_TYPE) &&
+                    builder.get() != null && event.getRegistry().containsKey(builder.id) &&
+                    event.getRegistry().get(builder.id) == builder.get()) {
+                addNamespace(builder.id.getNamespace());
+                continue;
+            }
             if (builder.dummyBuilder) {
                 // don't actually register anything here, the wrapper builders register themselves with Registrate
                 builder.createTransformedObject();
