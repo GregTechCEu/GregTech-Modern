@@ -104,7 +104,10 @@ Assure that the material is registered with a liquid before attempting to replac
     ```java title="ExampleMaterials.java"
     public static void register() {
         GLUGG_BRINE = REGISTRATE.material("glugg_brine", builder -> builder.liquid(new FluidBuilder()));
-    
-        GTFluids.handleNonMaterialFluids(GLUGG_BRINE, () -> PVFluidRegistry.BRINE_FLUID_SOURCE.get());
+    }
+
+    @SubscribeEvent
+    public static void modifyMaterials(PostMaterialEvent event) {
+        GTFluids.handleNonMaterialFluids(GLUGG_BRINE.value(), () -> PVFluidRegistry.BRINE_FLUID_SOURCE.get());
     }
     ```

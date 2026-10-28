@@ -166,7 +166,6 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
         return machine.getTraits(NotifiableBonkHandler.class);
     }
 
-    @SuppressWarnings("unchecked")
     public List<NotifiableBonkHandler> getCapabilityHandlers(MetaMachine machine, IO io) {
         return (List<NotifiableBonkHandler>)super.getCapabilityHandlers(machine, io);
     }
@@ -345,7 +344,7 @@ public class BonkRecipeTypes {
 ```java title="BonkRecipes.java"
 public class BonkRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         LARGE_BONK_RECIPES.recipeBuilder(
                         Bonk.id("test"))
                 .inputItems(Items.STONE)
@@ -365,17 +364,17 @@ public class BonkRecipeCapabilities {
 
     public final static RegistryEntry<RecipeCapability<?>, BonkRecipeCapability> BONK = 
             Bonk.REGISTRATE.simple(BonkRecipeCapability.CAP.id.getPath(), GTRegistries.Keys.RECIPE_CAPABILITY, () -> BonkRecipeCapability.CAP);
-    public static void init() {
-        GTRegistries.RECIPE_CAPABILITIES.register(BONK.name, BONK);
-    }
+    
+    public static void init() {}
 }
 ```
 The following parts, you would do in your main java class and your main GTAddon class, assuming you are working off of the [Addon Template](https://github.com/JuiceyBeans/GregTech-Addon-Template):
 ```java title="Bonk.java"
 @Mod(Bonk.MOD_ID)
+@EventBusSubscriber(modid = Bonk.MOD_ID)
 public class Bonk {
 
-    public BonkMod(IEventBus modBus) {
+    public Bonk(IEventBus modBus) {
         BonkRecipeTypes.init();
         BonkMachines.init();
         BonkRecipeCapabilities.init();
@@ -395,7 +394,7 @@ public class Bonk {
 public class BonkGTAddon implements IGTAddon {
     // ...
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> provider) {
+    public void addRecipes(RecipeOutput provider) {
         BonkRecipes.init(provider);
     }
 }

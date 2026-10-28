@@ -9,7 +9,7 @@ Properties can be applied to a material to decide how they behave. An example of
 
 === "Java"
     ```java
-    public static Material MY_MATERIAL = ADDON_REGISTRATE.material("my_material", builder -> builder
+    public static final MaterialRegistryEntry MY_MATERIAL = ADDON_REGISTRATE.material("my_material", builder -> builder
         /// ...
         .blastTemp(3700, BlastProperty.GasTier.MID, GTValues.VA[GTValues.EV], 1600));
     ```

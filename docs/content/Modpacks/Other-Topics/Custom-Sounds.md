@@ -17,7 +17,7 @@ import static com.examplemod.common.registry.ExampleRegistration.REGISTRATE;
 
 public class ExampleSound {
 
-    public static final DeferredHolder<SoundEntry, SoundEntry> MICROVERSE = REGISTRATE.sound(ExampleMod.id("microverse")).register();
+    public static final DeferredHolder<SoundEntry, SoundEntry> MICROVERSE = REGISTRATE.sound("microverse").register();
 
     public static void init() {}
 }

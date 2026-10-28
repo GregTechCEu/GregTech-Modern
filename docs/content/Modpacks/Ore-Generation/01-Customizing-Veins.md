@@ -157,13 +157,13 @@ It is also possible to modify or even delete existing ones.
 ## Removing an Existing Ore Vein
 
 === "JSON"
-    ```json title="resources/data/gtceu/gtceu/ore_vein/magnetite_vein_ow.json
-        {"neoforge:conditions":[{"type":"neoforge:never"}]}
+    ```json title="resources/data/gtceu/gtceu/ore_vein/magnetite.json"
+        {"neoforge:conditions":[{"type":"neoforge:false"}]}
     ```
 === "JavaScript"
     ```js title="server_scripts/remove_ore_vein.js"
     GTCEuServerEvents.oreVeins(event => {
-         event.remove("gtceu:magnetite_vein_ow") 
+         event.remove("gtceu:magnetite") 
     })
     ```
 
@@ -181,7 +181,7 @@ It is also possible to modify or even delete existing ones.
     You can also filter the veins you want to remove:
 
     ```js
-    event.removeAll((id, vein) => id.path != "magnetite_vein_ow")
+    event.removeAll((id, vein) => id.path != "magnetite")
     ```
 
 

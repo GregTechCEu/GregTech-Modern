@@ -51,7 +51,7 @@ public class ExampleCondition extends RecipeCondition<ExampleCondition> {
 
     @Override
     public RecipeConditionType<ExampleCondition> getType() {
-        return ExampleMod.EXAMPLE_CONDITION;
+        return ExampleMod.EXAMPLE_CONDITION.get();
     }
 
     @Override

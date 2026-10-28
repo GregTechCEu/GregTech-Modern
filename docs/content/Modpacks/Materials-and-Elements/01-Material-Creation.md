@@ -102,7 +102,7 @@ You can change the properties of the material by adding any combination of the f
 
 === "Java"
     ```java title="Gem.java"
-    public static MaterialRegistryEntry PURPLE_COAL = ("purple_coal", builder -> builder
+    public static MaterialRegistryEntry PURPLE_COAL = ADDON_REGISTRATE.material("purple_coal", builder -> builder
             .gem(2, 4000)
             .element(GTElements.C)
             .ore(2, 3)

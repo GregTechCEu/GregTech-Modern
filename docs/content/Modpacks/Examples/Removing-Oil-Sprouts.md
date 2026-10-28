@@ -11,12 +11,12 @@ If you are using kubejs, placing files in the `kubejs/data` folder is equivalent
 
 ## Removing Oil Sprouts
 
-To disable oil sprouts entirely, place the following file in `kubejs/data/gtceu/worldgen/configured_feature/raw_oil_sprout.json`,
+To disable oil sprouts entirely, place the following file in `data/gtceu/neoforge/biome_modifier/raw_oil_sprout.json`,
 or create a datapack containing the equivalent. This will disable the GT raw oil sprout feature from being loaded.
 
-```json title="data/gtceu/worldgen/configured_feature/raw_oil_sprout.json"
+```json title="data/gtceu/neoforge/biome_modifier/raw_oil_sprout.json"
 {
-    "neoforge:conditions":[{"type":"neoforge:never"}]
+    "neoforge:conditions":[{"type":"neoforge:false"}]
 }
 ```
 
