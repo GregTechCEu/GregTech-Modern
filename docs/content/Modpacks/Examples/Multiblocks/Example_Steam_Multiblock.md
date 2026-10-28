@@ -33,7 +33,7 @@ Steam multiblocks such as the Steam Grinder and Steam Oven use this class.
                     .where('E', Predicates.blocks(GTBlocks.BRONZE_BRICKS_HULL.get()))
                     .where('F', Predicates.blocks(GTBlocks.FIREBOX_BRONZE.get()))
                     .where('G', Predicates.blocks(GTBlocks.BRONZE_HULL.get()))
-                    .where('H', Predicates.controller(Predicates.blocks(definition.get())))
+                    .where('H', Predicates.controller(definition.get()))
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/steam/bronze/bottom"),
                     GTCEu.id("block/machines/compressor"))
