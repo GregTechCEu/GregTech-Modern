@@ -10,9 +10,12 @@ public class ToolLang {
     public static void init(GTLangProvider provider) {
         generateDeathMessages(provider);
         generateToolClassKeys(provider);
-        generateToolKeys(provider);
         generateTooltips(provider);
         generateEnchantKeys(provider);
+
+        provider.add("item.gtceu.turbine_rotor_generic", "Turbine Rotor");
+        provider.add("item.gtceu.tool_generic", "Non-electric tool");
+        provider.add("item.gtceu.bucket", "%s Bucket");
     }
     
     public static void generateToolClassKeys(GTLangProvider provider) {
@@ -39,65 +42,6 @@ public class ToolLang {
         provider.add("item.gtceu.tool.class.plunger", "Plunger");
         provider.add("item.gtceu.tool.class.shears", "Shears");
         provider.add("item.gtceu.tool.class.drill", "Drill");
-    }
-
-    public static void generateToolKeys(GTLangProvider provider) {
-        for (GTToolType toolType : GTToolType.getTypes().values()) {
-            provider.add(toolType.getUnlocalizedName(), toEnglishName(toolType.name));
-        }
-
-        provider.add("item.gtceu.turbine_rotor_generic", "Turbine Rotor");
-        provider.add("item.gtceu.tool_generic", "Non-electric tool");
-
-        // Tool Names
-        provider.add("item.gtceu.tool.sword", "%s Sword");
-        provider.add("item.gtceu.tool.pickaxe", "%s Pickaxe");
-        provider.add("item.gtceu.tool.shovel", "%s Shovel");
-        provider.add("item.gtceu.tool.axe", "%s Axe");
-        provider.add("item.gtceu.tool.hoe", "%s Hoe");
-        provider.add("item.gtceu.tool.saw", "%s Saw");
-        provider.add("item.gtceu.bucket", "%s Bucket");
-
-        provider.add("item.gtceu.tool.hammer", "%s Hammer");
-        provider.add("item.gtceu.tool.mallet", "%s Soft Mallet");
-        provider.add("item.gtceu.tool.wrench", "%s Wrench");
-        provider.add("item.gtceu.tool.file", "%s File");
-        provider.add("item.gtceu.tool.crowbar", "%s Crowbar");
-        provider.add("item.gtceu.tool.screwdriver", "%s Screwdriver");
-        provider.add("item.gtceu.tool.mortar", "%s Mortar");
-        provider.add("item.gtceu.tool.wire_cutter", "%s Wire Cutter");
-        provider.add("item.gtceu.tool.knife", "%s Knife");
-        provider.add("item.gtceu.tool.butchery_knife", "%s Butchery Knife");
-        provider.add("item.gtceu.tool.scythe", "%s Scythe");
-
-        provider.add("item.gtceu.tool.lv_drill", "%s Drill (LV)");
-        provider.add("item.gtceu.tool.mv_drill", "%s Drill (MV)");
-        provider.add("item.gtceu.tool.hv_drill", "%s Drill (HV)");
-        provider.add("item.gtceu.tool.ev_drill", "%s Drill (EV)");
-        provider.add("item.gtceu.tool.iv_drill", "%s Drill (IV)");
-
-        provider.add("item.gtceu.tool.lv_wirecutter", "%s Wire Cutter (LV)");
-        provider.add("item.gtceu.tool.hv_wirecutter", "%s Wire Cutter (HV)");
-        provider.add("item.gtceu.tool.iv_wirecutter", "%s Wire Cutter (IV)");
-
-        provider.add("item.gtceu.tool.mining_hammer", "%s Mining Hammer");
-        provider.add("item.gtceu.tool.spade", "%s Spade");
-
-        provider.add("item.gtceu.tool.lv_chainsaw", "%s Chainsaw (LV)");
-        provider.add("item.gtceu.tool.mv_chainsaw", "%s Chainsaw (MV)");
-        provider.add("item.gtceu.tool.hv_chainsaw", "%s Chainsaw (HV)");
-        provider.add("item.gtceu.tool.iv_chainsaw", "%s Chainsaw (IV)");
-
-        provider.add("item.gtceu.tool.lv_wrench", "%s Wrench (LV)");
-        provider.add("item.gtceu.tool.hv_wrench", "%s Wrench (HV)");
-        provider.add("item.gtceu.tool.iv_wrench", "%s Wrench (IV)");
-
-        provider.add("item.gtceu.tool.buzzsaw", "%s Buzzsaw (LV)");
-        provider.add("item.gtceu.tool.lv_screwdriver", "%s Screwdriver (LV)");
-        provider.add("item.gtceu.tool.hv_screwdriver", "%s Screwdriver (HV)");
-        provider.add("item.gtceu.tool.iv_screwdriver", "%s Screwdriver (IV)");
-        provider.add("item.gtceu.tool.plunger", "%s Plunger");
-        provider.add("item.gtceu.tool.shears", "%s Shears");
     }
 
     public static void generateTooltips(GTLangProvider provider) {

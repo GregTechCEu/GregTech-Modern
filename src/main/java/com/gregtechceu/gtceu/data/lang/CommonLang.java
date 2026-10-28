@@ -53,6 +53,7 @@ public class CommonLang {
         provider.add("common.gtceu.item_slots", "Item Slots: ");
         provider.add("common.gtceu.item_capacity", "Item Capacity: ");
         provider.add("common.gtceu.item_stored", "Item Stored: ");
+        provider.add("common.gtceu.item_amount", "Item Amount: ");
         provider.add("common.gtceu.energy_capacity", "Energy Capacity: ");
         provider.add("common.gtceu.voltage_label", "Voltage: ");
         provider.add("common.gtceu.amperage_label", "Amperage: ");

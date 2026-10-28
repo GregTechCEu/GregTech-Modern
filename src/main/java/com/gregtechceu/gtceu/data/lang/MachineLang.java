@@ -252,7 +252,6 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.creative_tooltip.3", " to use this");
 
         provider.add("machine.gtceu.quantum_chest.tooltip", "Better than Storage Drawers");
-        provider.add("machine.gtceu.quantum_chest.items_stored", "Item Amount:");
         provider.add("machine.gtceu.quantum_tank.tooltip", "Compact place to store all your fluids");
 
         provider.add("gui.gtceu.machine.creative_chest.item", "Item");
@@ -261,8 +260,6 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.creative_tank.fluid", "Fluid");
         provider.add("gui.gtceu.machine.creative_tank.mbpc", "mB per Cycle");
         provider.add("gui.gtceu.machine.creative_tank.tpc", "Ticks per Cycle");
-        provider.add("gui.gtceu.machine.creative_energy.amperage", "Amperage");
-        provider.add("gui.gtceu.machine.creative_energy.voltage", "Voltage");
         provider.add("gui.gtceu.machine.creative_energy.sink", "Sink");
         provider.add("gui.gtceu.machine.creative_energy.source", "Source");
         provider.add("gui.gtceu.machine.creative_computation.average", "Average Requested CWUt: %s");
@@ -696,13 +693,6 @@ public class MachineLang {
         provider.add("machine.gtceu.laser_hatch.source.tooltip", "Transmitting power at distance");
         provider.add("machine.gtceu.laser_hatch.target.tooltip", "Receiving power from distance");
         provider.add("machine.gtceu.laser_hatch.both.tooltip", "§cLaser Cables must be in a straight line!§r");
-        provider.addMultiLang("machine.gtceu.laser_source_hatch.tooltip",
-                "Transmitting power at distance",
-                "§cLaser cables must be in a straight line!§r");
-
-        provider.addMultiLang("machine.gtceu.laser_target_hatch.tooltip",
-                "Receiving power from distance",
-                "§cLaser cables must be in a straight line!§r");
     }
 
     private static void generateCentralMonitorGuiLang(GTLangProvider provider) {
@@ -1121,18 +1111,16 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.progress", "Progress: %ss / %ss (%s%%)");
 
         // Recipe Outputs
-        provider.add("gui.gtceu.machine.output_line.0", "%s x §e%s§r (%ss/ea)");
-        provider.add("gui.gtceu.machine.output_line.1", "%s x §e%s§r (%s/s)");
-        provider.add("gui.gtceu.machine.output_line.2", "%s ≈ §e%s§r (%ss/ea)");
-        provider.add("gui.gtceu.machine.output_line.3", "%s ≈ §e%s§r (%s/s)");
+        provider.add("gui.gtceu.machine.output_line.exact_each", "%s x §e%s§r (%ss/ea)");
+        provider.add("gui.gtceu.machine.output_line.exact_per_sec", "%s x §e%s§r (%s/s)");
+        provider.add("gui.gtceu.machine.output_line.rounded_each", "%s ≈ §e%s§r (%ss/ea)");
+        provider.add("gui.gtceu.machine.output_line.rounded_per_sec", "%s ≈ §e%s§r (%s/s)");
 
         // Structure Validation
         provider.add("gui.gtceu.machine.invalid_structure", "Invalid structure.");
         provider.add("gui.gtceu.machine.invalid_structure.tooltip",
                 "This block is a controller of the multiblock structure. For building help, see structure template in JEI.");
-
-        // Pattern Preview
-
+        
         // Hatch Limitation - Mostly for GCYM Multiblocks that are Hardcoded into GTCEU
         provider.add("gui.gtceu.machine.single_energy_hatch_only.tooltip", "§fAccepts Exactly §6One §fEnergy Hatch.");
 
@@ -1185,12 +1173,10 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.machine_mode_recipes.tooltip", "Machine Modes: §e%s§r");
         provider.add("gui.gtceu.machine.machine_mode.switch_message",
                 "The machine must be off to switch modes!");
-        provider.add("gui.gtceu.active_machine_mode.title", "Active Machine Mode");
-        provider.add("gui.gtceu.active_machine_mode", "Active Machine Mode: %s");
-        provider.add("gui.gtceu.active_machine_mode.tab_tooltip", "Change active Machine Mode");
-        provider.add("gui.gtceu.available_recipe_types_1.tooltip", "Available Recipe Types: %s");
-        provider.add("gui.gtceu.available_recipe_types_2.tooltip", "Available Recipe Types: %s, %s");
-        provider.add("gui.gtceu.available_recipe_types_3.tooltip", "Available Recipe Types: %s, %s, %s");
-        provider.add("gui.gtceu.available_recipe_types_4.tooltip", "Available Recipe Types: %s, %s, %s, %s");
+        provider.add("gui.gtceu.machine.active_machine_mode.title", "Active Machine Mode");
+        provider.add("gui.gtceu.machine.active_machine_mode", "Active Machine Mode: %s");
+        provider.add("gui.gtceu.machine.active_machine_mode.tab_tooltip", "Change active Machine Mode");
+        provider.add("gui.gtceu.machine.available_recipe_types", "Available Recipe Types:");
+
     }
 }
