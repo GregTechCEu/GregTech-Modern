@@ -60,8 +60,8 @@ A more illustrative example, using some Applied Energistics 2 items:
     ```java title="CommonEventListeners.java"
     @SubscribeEvent
     public static void materialModification(PostMaterialEvent event) {
-        TagPrefix.gemChipped.setIgnored(GTMaterials.get("fluix_crystal"));// (2)
-        TagPrefix.rock.setIgnored(GTMaterials.get("sky_stone"), AEBlocks.SKY_STONE_BLOCK); // (3)
+        TagPrefix.gemChipped.setIgnored(AddonMaterials.FLUIX);// (2)
+        TagPrefix.rock.setIgnored(AddonMaterials.SKY_STONE, AEBlocks.SKY_STONE_BLOCK); // (3)
         TagPrefix.ingot.removeIgnored(GTMaterials.Iron);// (4)
     }
     ```
