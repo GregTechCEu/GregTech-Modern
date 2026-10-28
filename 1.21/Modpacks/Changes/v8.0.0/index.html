@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -5312,20 +5312,6 @@ is now<br />
 <ul>
 <li><code>GTRegistrate#registerRegistrate</code> has been removed. <code>GTRegistrate.create(modId)</code> now registers the event listeners itself, so the call can simply be deleted.</li>
 <li><code>MaterialRegistryEvent</code> has been removed, along with the per-addon material registries. Delete the listener that called <code>GTCEuAPI.materialManager.createRegistry(MOD_ID)</code>. <code>MaterialEvent</code> and <code>PostMaterialEvent</code> are unchanged.</li>
-<li><code>GTElements.createAndRegister</code> takes a <code>ResourceLocation</code> id first, so addon elements register into your own namespace:
-  <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">/////// OLD</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">GTElements</span><span class="p">.</span><span class="na">createAndRegister</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="s">"Crystal Matrix"</span><span class="p">,</span><span class="w"> </span><span class="s">"C☆"</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1">////// NEW</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">GTElements</span><span class="p">.</span><span class="na">createAndRegister</span><span class="p">(</span><span class="n">MyAddon</span><span class="p">.</span><span class="na">id</span><span class="p">(</span><span class="s">"crystal_matrix"</span><span class="p">),</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="s">"Crystal Matrix"</span><span class="p">,</span><span class="w"> </span><span class="s">"C☆"</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">);</span>
-</code></pre></div></li>
-<li>The deprecated <code>IGTAddon.registerX()</code> callbacks are replaced by generic <code>GTCEuAPI.RegisterEvent&lt;ResourceLocation, T&gt;</code> events on your mod event bus:
-  <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">modEventBus</span><span class="p">.</span><span class="na">addGenericListener</span><span class="p">(</span><span class="n">Element</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">::</span><span class="n">registerElements</span><span class="p">);</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="kd">private</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">registerElements</span><span class="p">(</span><span class="n">GTCEuAPI</span><span class="p">.</span><span class="na">RegisterEvent</span><span class="o">&lt;</span><span class="n">ResourceLocation</span><span class="p">,</span><span class="w"> </span><span class="n">Element</span><span class="o">&gt;</span><span class="w"> </span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="n">MyElements</span><span class="p">.</span><span class="na">init</span><span class="p">();</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="p">}</span>
-</code></pre></div>
-  Events exist for elements, material icon sets, tag prefixes, covers, recipe capabilities, recipe types, recipe categories, machines, sounds, placeholders, dimension markers, chance logics, medical conditions, pattern errors and worldgen layers.</li>
 </ul>
 <h1 id="client-model-and-rendering-changes">Client model and rendering changes</h1>
 <ul>
@@ -5337,12 +5323,12 @@ is now<br />
 </ul>
 </li>
 <li>The bake listener no longer exposes the baked models, so look them up at render time instead of caching them from the event:
-  <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">/////// OLD</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">ModelUtils</span><span class="p">.</span><span class="na">registerBakeEventListener</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">sphereModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="na">getModels</span><span class="p">().</span><span class="na">get</span><span class="p">(</span><span class="n">SPHERE</span><span class="p">));</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1">////// NEW</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1">// at render time:</span>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">Minecraft</span><span class="p">.</span><span class="na">getInstance</span><span class="p">().</span><span class="na">getModelManager</span><span class="p">().</span><span class="na">getModel</span><span class="p">(</span><span class="n">SPHERE</span><span class="p">);</span><span class="w"> </span><span class="c1">// do something with this</span>
+  <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">/////// OLD</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">ModelUtils</span><span class="p">.</span><span class="na">registerBakeEventListener</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">sphereModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="na">getModels</span><span class="p">().</span><span class="na">get</span><span class="p">(</span><span class="n">SPHERE</span><span class="p">));</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1">////// NEW</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="c1">// at render time:</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="n">Minecraft</span><span class="p">.</span><span class="na">getInstance</span><span class="p">().</span><span class="na">getModelManager</span><span class="p">().</span><span class="na">getModel</span><span class="p">(</span><span class="n">SPHERE</span><span class="p">);</span><span class="w"> </span><span class="c1">// do something with this</span>
 </code></pre></div>
   Models are rebaked on every resource reload, so the lookup must stay refreshable.</li>
 <li><code>registerBakeEventListener</code> is now a replacement function <code>(modelLocation, baked, rootModel, modelBakery) -&gt; BakedModel</code> instead of an event consumer.</li>
@@ -5510,10 +5496,10 @@ A few regexes for fixing all the MCMeta files is follows, run them in order:</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.sections", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "content.code.annotate", "content.action.view"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.sections", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "content.code.annotate", "content.action.view"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>

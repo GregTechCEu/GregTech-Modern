@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4929,12 +4929,11 @@
 <p>Oil Sprouts are generated via Minecraft's "Configured Feature" system, and can be customized via standard datapacks.
 If you are using kubejs, placing files in the <code>kubejs/data</code> folder is equivalent to adding files to a datapack.</p>
 <h2 id="removing-oil-sprouts">Removing Oil Sprouts</h2>
-<p>To disable oil sprouts entirely, place the following file in <code>kubejs/data/gtceu/worldgen/configured_feature/raw_oil_sprout.json</code>,
-or create a datapack containing the equivalent. This will replace the sprouts with a <code>no_op</code> - i.e. a feature that does nothing.</p>
-<div class="highlight"><span class="filename">data/gtceu/worldgen/configured_feature/raw_oil_sprout.json</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"minecraft:no_op"</span><span class="p">,</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">"config"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">}</span>
+<p>To disable oil sprouts entirely, place the following file in <code>data/gtceu/neoforge/biome_modifier/raw_oil_sprout.json</code>,
+or create a datapack containing the equivalent. This will disable the GT raw oil sprout feature from being loaded.</p>
+<div class="highlight"><span class="filename">data/gtceu/neoforge/biome_modifier/raw_oil_sprout.json</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">"neoforge:conditions"</span><span class="p">:[{</span><span class="nt">"type"</span><span class="p">:</span><span class="s2">"neoforge:false"</span><span class="p">}]</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">}</span>
 </code></pre></div>
 <h2 id="adjusting-oil-sprout-placement-conditions">Adjusting Oil Sprout Placement Conditions</h2>
 <p>If you just want to adjust the rarity of oil sprouts, that is configured via the "Placed Feature" system. Copy the
@@ -5048,10 +5047,10 @@ as desired. (The default file uses a <code>"minecraft:rarity_filter"</code> to g
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.sections", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "content.code.annotate", "content.action.view"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.sections", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "content.code.annotate", "content.action.view"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>

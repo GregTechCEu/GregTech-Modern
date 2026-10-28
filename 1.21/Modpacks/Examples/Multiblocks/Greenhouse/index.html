@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../../../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4951,11 +4951,12 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Java</label><label for="__tabbed_1_2">JavaScript</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><span class="filename">RecipeTypes.java</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">GTRecipeType</span><span class="w"> </span><span class="n">GREENHOUSE_RECIPES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">register</span><span class="p">(</span><span class="n">AddonMod</span><span class="p">.</span><span class="na">id</span><span class="p">(</span><span class="s">"greenhouse"</span><span class="p">),</span><span class="w"> </span><span class="n">MULTIBLOCK</span><span class="p">)</span>
+<div class="highlight"><span class="filename">RecipeTypes.java</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">GTRecipeTypeEntry</span><span class="w"> </span><span class="n">GREENHOUSE_RECIPES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ADDON_REGISTRATE</span><span class="p">.</span><span class="na">recipeType</span><span class="p">(</span><span class="s">"greenhouse"</span><span class="p">,</span><span class="w"> </span><span class="n">MULTIBLOCK</span><span class="p">)</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">        </span><span class="p">.</span><span class="na">setMaxIOSize</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="p">.</span><span class="na">setEUIO</span><span class="p">(</span><span class="n">IO</span><span class="p">.</span><span class="na">IN</span><span class="p">)</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="p">.</span><span class="na">UI</span><span class="p">(</span><span class="n">ui</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">ui</span><span class="p">.</span><span class="na">setProgressBar</span><span class="p">(</span><span class="n">GTGuiTextures</span><span class="p">.</span><span class="na">PROGRESS_ARROW</span><span class="p">))</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="p">.</span><span class="na">setSound</span><span class="p">(</span><span class="n">GTSoundEntries</span><span class="p">.</span><span class="na">BATH</span><span class="p">);</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="p">.</span><span class="na">setSound</span><span class="p">(</span><span class="n">GTSoundEntries</span><span class="p">.</span><span class="na">BATH</span><span class="p">)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="p">.</span><span class="na">register</span><span class="p">();</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -4974,7 +4975,7 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Java</label><label for="__tabbed_2_2">JavaScript</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><span class="filename">MultiMachines.java</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MultiblockMachineDefinition</span><span class="w"> </span><span class="n">GREENHOUSE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REGISTRATE</span>
+<div class="highlight"><span class="filename">MultiMachines.java</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MachineEntry</span><span class="o">&lt;</span><span class="n">MultiblockMachineDefinition</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GREENHOUSE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REGISTRATE</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">        </span><span class="p">.</span><span class="na">multiblock</span><span class="p">(</span><span class="s">"greenhouse"</span><span class="p">,</span><span class="w"> </span><span class="n">WorkableElectricMultiblockMachine</span><span class="p">::</span><span class="k">new</span><span class="p">)</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="p">.</span><span class="na">langValue</span><span class="p">(</span><span class="s">"Greenhouse"</span><span class="p">)</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="p">.</span><span class="na">rotationState</span><span class="p">(</span><span class="n">RotationState</span><span class="p">.</span><span class="na">NON_Y_AXIS</span><span class="p">)</span>
@@ -5050,13 +5051,13 @@
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>```java title="Recipes.java"
-private static void greenhouseHelper(Consumer<FinishedRecipe> provider, String id, Item input, ItemStack output_normal, ItemStack output_boosted) {
+private static void greenhouseHelper(RecipeOutput provider, String id, Item input, ItemStack output_normal, ItemStack output_boosted) {
     greenhouseHelper(provider, AddonMod.id(id), input, List.of(output_normal), List.of(output_boosted));
 }</p>
-<p>private static void greenhouseHelper(Consumer<FinishedRecipe> provider, String id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
+<p>private static void greenhouseHelper(RecipeOutput provider, String id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
     greenhouseHelper(provider, AddonMod.id(id), input, output_normal, output_boosted);
 }</p>
-<p>private static void greenhouseHelper(Consumer<FinishedRecipe> provider, ResourceLocation id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
+<p>private static void greenhouseHelper(RecipeOutput provider, ResourceLocation id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
      GREENHOUSE_RECIPES.recipeBuilder(id)
             .circuitMeta(2)
             .notConsumable(input)
@@ -5075,7 +5076,7 @@ private static void greenhouseHelper(Consumer<FinishedRecipe> provider, String i
             .EUt(MV)
             .save(provider);
 }</p>
-<div class="highlight"><pre><span></span><code>    private static void loadGreenhouseRecipes(Consumer&lt;FinishedRecipe&gt; provider){
+<div class="highlight"><pre><span></span><code>    private static void loadGreenhouseRecipes(RecipeOutput provider){
        VanillaRecipeHelper.addShapedRecipe(provider, true, GTCEu.id("greenhouse"),
                GTMultiMachines.GREENHOUSE.asStack(),
                "AWA",
@@ -5430,10 +5431,10 @@ private static void greenhouseHelper(Consumer<FinishedRecipe> provider, String i
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.sections", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "content.code.annotate", "content.action.view"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.instant", "navigation.sections", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "content.code.annotate", "content.action.view"], "search": "../../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>

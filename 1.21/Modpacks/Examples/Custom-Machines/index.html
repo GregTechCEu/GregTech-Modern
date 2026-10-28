@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4949,7 +4949,7 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Java</label><label for="__tabbed_1_2">JavaScript</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><span class="filename">AddonMachines.java</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Pair</span><span class="o">&lt;</span><span class="n">MachineDefinition</span><span class="p">,</span><span class="w"> </span><span class="n">MachineDefinition</span><span class="o">&gt;</span><span class="w"> </span><span class="n">STEAM_COMPRESSOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GTMachineUtils</span><span class="p">.</span><span class="na">registerSimpleSteamMachines</span><span class="p">(</span>
+<div class="highlight"><span class="filename">AddonMachines.java</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Pair</span><span class="o">&lt;</span><span class="n">MachineEntry</span><span class="o">&lt;</span><span class="n">MachineDefinition</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">MachineEntry</span><span class="o">&lt;</span><span class="n">MachineDefinition</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">STEAM_COMPRESSOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GTMachineUtils</span><span class="p">.</span><span class="na">registerSimpleSteamMachines</span><span class="p">(</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="n">ADDON_REGISTRATE</span><span class="p">,</span><span class="w"> </span><span class="s">"test_simple_steam_machine"</span><span class="p">,</span><span class="w"> </span><span class="n">AddonRecipeTypes</span><span class="p">.</span><span class="na">TEST_RECIPE_TYPE</span><span class="p">);</span>
 </code></pre></div>
 </div>
@@ -4968,7 +4968,7 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Java</label><label for="__tabbed_2_2">JavaScript</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><span class="filename">AddonMachines.java</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MachineDefinition</span><span class="o">[]</span><span class="w"> </span><span class="n">TEST_ELECTRIC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SimpleMachineBuilder</span><span class="p">(</span><span class="n">ADDON_REGISTRATE</span><span class="p">,</span><span class="w"> </span><span class="s">"extractor"</span><span class="p">,</span>
+<div class="highlight"><span class="filename">AddonMachines.java</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MachineEntry</span><span class="o">&lt;</span><span class="n">MachineDefinition</span><span class="o">&gt;[]</span><span class="w"> </span><span class="n">TEST_ELECTRIC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SimpleMachineBuilder</span><span class="p">(</span><span class="n">ADDON_REGISTRATE</span><span class="p">,</span><span class="w"> </span><span class="s">"extractor"</span><span class="p">,</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">        </span><span class="n">AddonRecipeTypes</span><span class="p">.</span><span class="na">TEST_RECIPE_TYPE</span><span class="p">)</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="p">.</span><span class="na">tiers</span><span class="p">(</span><span class="n">GTValues</span><span class="p">.</span><span class="na">LV</span><span class="p">,</span><span class="w"> </span><span class="n">GTValues</span><span class="p">.</span><span class="na">MV</span><span class="p">,</span><span class="w"> </span><span class="n">GTValues</span><span class="p">.</span><span class="na">HV</span><span class="p">)</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="p">.</span><span class="na">tankScalingFunction</span><span class="p">(</span><span class="n">tier</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">tier</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">3200</span><span class="p">)</span>
@@ -4993,7 +4993,7 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Java</label><label for="__tabbed_3_2">JavaScript</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><span class="filename">AddonMachines.java</span><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MachineDefinition</span><span class="o">[]</span><span class="w"> </span><span class="n">TEST_GENERATOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GTMachineUtils</span><span class="p">.</span><span class="na">registerSimpleGenerator</span><span class="p">(</span><span class="n">ADDON_REGISTRATE</span><span class="p">,</span><span class="w"> </span><span class="s">"test_generator"</span><span class="p">,</span>
+<div class="highlight"><span class="filename">AddonMachines.java</span><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MachineEntry</span><span class="o">&lt;</span><span class="n">MachineDefinition</span><span class="o">&gt;[]</span><span class="w"> </span><span class="n">TEST_GENERATOR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GTMachineUtils</span><span class="p">.</span><span class="na">registerSimpleGenerator</span><span class="p">(</span><span class="n">ADDON_REGISTRATE</span><span class="p">,</span><span class="w"> </span><span class="s">"test_generator"</span><span class="p">,</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="n">AddonRecipeTypes</span><span class="p">.</span><span class="na">TEST_GENERATOR_RECIPE_TYPE</span><span class="p">,</span><span class="w"> </span><span class="n">tier</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">tier</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">3200</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1f</span><span class="p">,</span><span class="w"> </span><span class="n">GTValues</span><span class="p">.</span><span class="na">LV</span><span class="p">,</span><span class="w"> </span><span class="n">GTValues</span><span class="p">.</span><span class="na">MV</span><span class="p">,</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="n">GTValues</span><span class="p">.</span><span class="na">HV</span><span class="p">);</span>
 </code></pre></div>
@@ -5115,10 +5115,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.sections", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "content.code.annotate", "content.action.view"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.sections", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "content.code.annotate", "content.action.view"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>
