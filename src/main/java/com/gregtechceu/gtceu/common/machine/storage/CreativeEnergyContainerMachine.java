@@ -296,6 +296,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                         .onMousePressed((GuiContext context, int button) -> {
                             MouseData mouseData = MouseData.create(button);
                             if (mouseData.shift()) {
+                                if (amps.getValue()/2 < 1) return true;
                                 amps.setValue(amps.getValue() / 2);
                             } else if (mouseData.ctrl()) {
                                 amps.setValue(amps.getValue() * 4);

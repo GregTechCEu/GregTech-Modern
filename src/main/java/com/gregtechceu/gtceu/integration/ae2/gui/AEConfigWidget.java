@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.gui;
 
+import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
@@ -102,7 +103,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
                 .value(new StringValue.Dynamic(() -> pendingAmount, val -> pendingAmount = val));
 
         return new ModularPanel<>("ae_amount_editor")
-                .size(120, 36)
+                .size(120, 38)
                 .posRel(0.5f, 0.35f)
                 .background(GTGuiTextures.BACKGROUND)
                 .child(ButtonWidget.panelCloseButton())
@@ -112,7 +113,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
                         .child(amountField)
                         .child(new ButtonWidget<>()
                                 .size(18, 18)
-                                .overlay(Text.str("✓"))
+                                .overlay(GuiTextures.CHECKMARK)
                                 .onMousePressed((context, button) -> {
                                     if (button == 0) {
                                         confirmAmountEdit();
