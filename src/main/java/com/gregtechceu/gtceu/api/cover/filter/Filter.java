@@ -52,7 +52,7 @@ public abstract class Filter<T> implements Predicate<T> {
                     .onMousePressed((c, b) -> {
                         popoutHandler.togglePanel();
                         return true;
-                    }).size(16);
+                    }).size(12);
         }
 
         return new Dialog<>(Objects.requireNonNull(data.getLevel().registryAccess().registryOrThrow(Registries.ITEM)

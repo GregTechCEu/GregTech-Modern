@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.*;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTRecipeTypeUIs;
 import com.gregtechceu.gtceu.common.recipe.gui.GTRecipeUIModifiers;
 import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -515,9 +516,7 @@ public class GTRecipeTypes {
             .setEUIO(IO.IN)
             .setMaxSize(IO.IN, GTRecipeCapabilities.CWU, 1)
             .setMaxIOSize(2, 1, 0, 0)
-            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
-                    .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.SCANNER_OVERLAY)
-                    .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.RESEARCH_STATION_OVERLAY))
+            .UI(builder -> builder.customRecipeTypeUI(GTRecipeTypeUIs.RESEARCH_STATION))
             .setScanner(true)
             .setMaxTooltips(4)
             .setSound(GTValues.FOOLS.getAsBoolean() ? GTSoundEntries.SCIENCE : GTSoundEntries.COMPUTATION);
