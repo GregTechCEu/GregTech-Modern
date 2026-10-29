@@ -60,6 +60,6 @@ public class ResearchCondition extends RecipeCondition<ResearchCondition> {
 
     @Override
     public RecipeUIModifier modifyUI() {
-        return GTRecipeUIModifiers.RESEARCH_INFO;
+        return (a, b) -> {};
     }
 }

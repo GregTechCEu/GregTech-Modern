@@ -599,7 +599,7 @@ public class GTRecipeTypes {
     public final static GTRecipeType DISTILLATION_RECIPES = register("distillation_tower", MULTIBLOCK)
             .setMaxIOSize(0, 1, 1, 12).setEUIO(IO.IN)
             .setSound(GTSoundEntries.CHEMICAL)
-            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW_MULTIPLE))
+            .UI(builder -> builder.customRecipeTypeUI(GTRecipeTypeUIs.DISTILLATION_TOWER))
             .onRecipeBuild((recipeBuilder, provider) -> {
                 if (recipeBuilder.data.getBoolean("disable_distillery")) return;
                 if (recipeBuilder.output.containsKey(FluidRecipeCapability.CAP)) {
@@ -702,7 +702,7 @@ public class GTRecipeTypes {
 
     public final static GTRecipeType ASSEMBLY_LINE_RECIPES = register("assembly_line", MULTIBLOCK)
             .setMaxIOSize(16, 1, 4, 0).setEUIO(IO.IN)
-            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW))
+            .UI(builder -> builder.customRecipeTypeUI(GTRecipeTypeUIs.ASSLINE))
             .setSound(GTSoundEntries.ASSEMBLER)
             .setHasResearchSlot(true)
             .onRecipeBuild(ResearchManager::createDefaultResearchRecipe);
