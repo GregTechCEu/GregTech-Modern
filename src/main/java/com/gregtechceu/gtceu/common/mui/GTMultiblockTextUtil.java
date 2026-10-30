@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import brachy.modularui.utils.Color;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;

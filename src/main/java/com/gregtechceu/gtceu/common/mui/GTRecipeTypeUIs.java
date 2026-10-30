@@ -1,5 +1,14 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
+import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeViewerWidget;
+import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
+
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
@@ -10,20 +19,14 @@ import brachy.modularui.value.DoubleValue;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ProgressWidget;
 import brachy.modularui.widgets.SlotGroupWidget;
-import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
-import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeViewerWidget;
-import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
-import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 
 import java.awt.*;
 import java.util.Objects;
 
 public class GTRecipeTypeUIs {
 
-    public static final GTRecipeTypeUILayout.CustomRecipeUIBuilder RESEARCH_STATION = (recipeWidget, uiLayout, recipe) -> {
+    public static final GTRecipeTypeUILayout.CustomRecipeUIBuilder RESEARCH_STATION = (recipeWidget, uiLayout,
+                                                                                       recipe) -> {
 
         var inputSlot = RecipeViewerSlotWidget.create(ItemStack.class).value(ItemStackList.of(ItemStack.EMPTY))
                 .background(GuiTextures.SLOT_ITEM, GTGuiTextures.SCANNER_OVERLAY)
@@ -46,11 +49,11 @@ public class GTRecipeTypeUIs {
 
         var progressWidget1 = new ProgressWidget().size(54, 5)
                 .texture(GTGuiTextures.PROGRESS_BAR_RESEARCH_STATION_1, ProgressDrawable.Direction.RIGHT)
-                .clientValue(() -> Mth.clamp(doubleValue.getDoubleValue(), 0, 0.8)/0.8);
+                .clientValue(() -> Mth.clamp(doubleValue.getDoubleValue(), 0, 0.8) / 0.8);
 
         var progressWidget2 = new ProgressWidget().size(10, 18)
                 .texture(GTGuiTextures.PROGRESS_BAR_RESEARCH_STATION_2, ProgressDrawable.Direction.DOWN)
-                .clientValue(() -> Mth.clamp(doubleValue.getDoubleValue()-0.8, 0, 0.2)/0.2);
+                .clientValue(() -> Mth.clamp(doubleValue.getDoubleValue() - 0.8, 0, 0.2) / 0.2);
 
         var mainWidget = new ParentWidget<>()
                 .size(125, 60)
@@ -73,7 +76,8 @@ public class GTRecipeTypeUIs {
         return mainWidget;
     };
 
-    public static final GTRecipeTypeUILayout.CustomRecipeUIBuilder DISTILLATION_TOWER = (recipeWidget, uiLayout, recipe) -> {
+    public static final GTRecipeTypeUILayout.CustomRecipeUIBuilder DISTILLATION_TOWER = (recipeWidget, uiLayout,
+                                                                                         recipe) -> {
 
         var inputSlot = RecipeViewerSlotWidget.create(FluidStack.class).value(FluidStackList.of(FluidStack.EMPTY))
                 .background(GuiTextures.SLOT_FLUID, GTGuiTextures.BEAKER_OVERLAY_1)
@@ -86,11 +90,12 @@ public class GTRecipeTypeUIs {
                         "sss",
                         "sss", "S")
                 .key('s', i -> {
-                    int row = 3 - i/3;
+                    int row = 3 - i / 3;
                     int index = i % 3;
                     return RecipeViewerSlotWidget.create(FluidStack.class).value(FluidStackList.of(FluidStack.EMPTY))
                             .background(GuiTextures.SLOT_FLUID, GTGuiTextures.BEAKER_OVERLAY_3)
-                            .name(GTRecipeViewerWidget.capabilityWidgetName(FluidRecipeCapability.CAP, IO.OUT, row*3 + index));
+                            .name(GTRecipeViewerWidget.capabilityWidgetName(FluidRecipeCapability.CAP, IO.OUT,
+                                    row * 3 + index));
                 })
                 .key('S', i -> RecipeViewerSlotWidget.create(ItemStack.class).value(ItemStackList.of(ItemStack.EMPTY))
                         .background(GuiTextures.SLOT_ITEM, GTGuiTextures.DUST_OVERLAY)
@@ -106,11 +111,11 @@ public class GTRecipeTypeUIs {
 
         var progressWidgetBubbles = new ProgressWidget().size(7, 31)
                 .texture(GTGuiTextures.PROGRESS_BAR_DISTILLATION_BUBBLES, ProgressDrawable.Direction.UP)
-                .clientValue(() -> Mth.clamp(doubleValue.getDoubleValue()-0.3, 0, 0.7)/0.7);
+                .clientValue(() -> Mth.clamp(doubleValue.getDoubleValue() - 0.3, 0, 0.7) / 0.7);
 
         var progressWidgetCoil = new ProgressWidget().size(12, 20)
                 .texture(GTGuiTextures.PROGRESS_BAR_DISTILLATION_COIL, ProgressDrawable.Direction.UP)
-                .clientValue(() -> Mth.clamp(doubleValue.getDoubleValue(), 0, 0.3)/0.3);
+                .clientValue(() -> Mth.clamp(doubleValue.getDoubleValue(), 0, 0.3) / 0.3);
 
         var parentWidget = new ParentWidget<>()
                 .size(130, 90)
@@ -119,7 +124,6 @@ public class GTRecipeTypeUIs {
                 .child(progressWidgetCoil.pos(13, 54))
                 .child(progressWidget.pos(28, 8))
                 .child(outputs.pos(69, 0));
-
 
         // Add the EU and computation EU since it should still be displayed
 
@@ -148,9 +152,10 @@ public class GTRecipeTypeUIs {
         var fluidSlots = SlotGroupWidget
                 .builder()
                 .matrix("s", "s", "s", "s")
-                .key('s', i -> RecipeViewerSlotWidget.create(FluidStack.class).value(FluidStackList.of(FluidStack.EMPTY))
-                        .background(GuiTextures.SLOT_FLUID)
-                        .name(GTRecipeViewerWidget.capabilityWidgetName(FluidRecipeCapability.CAP, IO.IN, i)))
+                .key('s',
+                        i -> RecipeViewerSlotWidget.create(FluidStack.class).value(FluidStackList.of(FluidStack.EMPTY))
+                                .background(GuiTextures.SLOT_FLUID)
+                                .name(GTRecipeViewerWidget.capabilityWidgetName(FluidRecipeCapability.CAP, IO.IN, i)))
                 .build()
                 .coverChildren(18, 18);
 
@@ -204,5 +209,4 @@ public class GTRecipeTypeUIs {
 
         return parentWidget;
     };
-
 }

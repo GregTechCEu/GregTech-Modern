@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
-import brachy.modularui.drawable.Rectangle;
-import brachy.modularui.utils.Color;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.ae2.gui;
 
-import brachy.modularui.drawable.GuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
@@ -18,6 +17,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.Interactable;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.integration.emi.EmiStackConverter;
 import brachy.modularui.integration.recipeviewer.handlers.GhostIngredientSlot;
 import brachy.modularui.screen.ModularPanel;

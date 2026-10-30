@@ -69,8 +69,10 @@ public class GTMuiMachineUtil {
 
     public static SlotGroupWidget createSquareSlotGroupFromInventory(IItemHandler itemHandler,
                                                                      String slotGroupName,
-                                                                     PanelSyncManager syncManager, UnaryOperator<ItemSlot> slotModifier) {
-        return createSlotGroupFromInventory(itemHandler, slotGroupName, itemHandler.getSlots(), 'I', slotModifier, syncManager,
+                                                                     PanelSyncManager syncManager,
+                                                                     UnaryOperator<ItemSlot> slotModifier) {
+        return createSlotGroupFromInventory(itemHandler, slotGroupName, itemHandler.getSlots(), 'I', slotModifier,
+                syncManager,
                 createSquareMatrix(itemHandler.getSlots(), 'I'));
     }
 

@@ -261,7 +261,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
     }
 
     public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue) {
-        StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue, syncValue::setStringValue).allowC2S();
+        StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue, syncValue::setStringValue)
+                .allowC2S();
 
         var textField = new TextFieldWidget() {
 

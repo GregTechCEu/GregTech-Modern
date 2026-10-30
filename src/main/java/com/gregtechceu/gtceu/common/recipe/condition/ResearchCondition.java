@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.gui.RecipeUIModifier;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
-import com.gregtechceu.gtceu.common.recipe.gui.GTRecipeUIModifiers;
 
 import net.minecraft.network.chat.Component;
 

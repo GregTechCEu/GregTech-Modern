@@ -8,9 +8,11 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface IConfigurableSlot {
 
-    @Nullable GenericStack getConfig();
+    @Nullable
+    GenericStack getConfig();
 
-    @Nullable GenericStack getStock();
+    @Nullable
+    GenericStack getStock();
 
     void setConfig(@Nullable GenericStack val);
 

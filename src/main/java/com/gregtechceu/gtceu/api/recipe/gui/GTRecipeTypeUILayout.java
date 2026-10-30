@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
-import brachy.modularui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -10,9 +9,9 @@ import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.value.IDoubleValue;
+import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.ProgressWidget;
-import brachy.modularui.widgets.layout.Flow;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
