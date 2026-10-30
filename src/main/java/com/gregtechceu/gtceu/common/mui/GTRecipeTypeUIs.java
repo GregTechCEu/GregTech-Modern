@@ -85,9 +85,13 @@ public class GTRecipeTypeUIs {
                         "sss",
                         "sss",
                         "sss", "S")
-                .key('s', i -> RecipeViewerSlotWidget.create(FluidStack.class).value(FluidStackList.of(FluidStack.EMPTY))
-                        .background(GuiTextures.SLOT_FLUID, GTGuiTextures.BEAKER_OVERLAY_3)
-                        .name(GTRecipeViewerWidget.capabilityWidgetName(FluidRecipeCapability.CAP, IO.OUT, i)))
+                .key('s', i -> {
+                    int row = 3 - i/3;
+                    int index = i % 3;
+                    return RecipeViewerSlotWidget.create(FluidStack.class).value(FluidStackList.of(FluidStack.EMPTY))
+                            .background(GuiTextures.SLOT_FLUID, GTGuiTextures.BEAKER_OVERLAY_3)
+                            .name(GTRecipeViewerWidget.capabilityWidgetName(FluidRecipeCapability.CAP, IO.OUT, row*3 + index));
+                })
                 .key('S', i -> RecipeViewerSlotWidget.create(ItemStack.class).value(ItemStackList.of(ItemStack.EMPTY))
                         .background(GuiTextures.SLOT_ITEM, GTGuiTextures.DUST_OVERLAY)
                         .name(GTRecipeViewerWidget.capabilityWidgetName(ItemRecipeCapability.CAP, IO.OUT, i)))
@@ -102,17 +106,17 @@ public class GTRecipeTypeUIs {
 
         var progressWidgetBubbles = new ProgressWidget().size(7, 31)
                 .texture(GTGuiTextures.PROGRESS_BAR_DISTILLATION_BUBBLES, ProgressDrawable.Direction.UP)
-                .clientValue(() -> Mth.clamp(doubleValue.getDoubleValue(), 0, 0.7)/0.7);
+                .clientValue(() -> Mth.clamp(doubleValue.getDoubleValue()-0.3, 0, 0.7)/0.7);
 
-        var progressWidgetCoil = new ProgressWidget().size(10, 16)
+        var progressWidgetCoil = new ProgressWidget().size(12, 20)
                 .texture(GTGuiTextures.PROGRESS_BAR_DISTILLATION_COIL, ProgressDrawable.Direction.UP)
-                .clientValue(() -> Mth.clamp(doubleValue.getDoubleValue()-0.7, 0, 0.3)/0.3);
+                .clientValue(() -> Mth.clamp(doubleValue.getDoubleValue(), 0, 0.3)/0.3);
 
         var parentWidget = new ParentWidget<>()
                 .size(130, 90)
                 .child(progressWidgetBubbles.pos(16, 2))
                 .child(inputSlot.pos(10, 35))
-                .child(progressWidgetCoil.pos(14, 54))
+                .child(progressWidgetCoil.pos(13, 54))
                 .child(progressWidget.pos(28, 8))
                 .child(outputs.pos(69, 0));
 
