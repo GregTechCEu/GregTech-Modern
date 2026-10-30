@@ -30,8 +30,6 @@ public class DiodeModeProvider extends MachineInfoProvider<DiodePartMachine, Com
     @Override
     protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-
-
         if (block.getHitResult().getDirection() ==
                 Direction.from3DDataValue(data.getInt("side"))) {
             tooltip.add(TransformerBlockProvider.createIOComponent(false, data.getInt("voltage"), data.getInt("amps")));

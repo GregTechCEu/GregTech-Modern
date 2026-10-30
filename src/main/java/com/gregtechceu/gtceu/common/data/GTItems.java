@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
+import com.gregtechceu.gtceu.common.cover.InfiniteWaterCover;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
@@ -1682,7 +1683,9 @@ public class GTItems {
             .setData(ProviderType.LANG,
                     nameAndTooltipLang("Infinite Water Cover",
                             "Fills attached containers with §9Water§r as §fCover§r."))
-            .onRegister(attach(new TooltipBehavior(Component.translatable("common.gtceu.tooltip.produces_fluid", 16_000 / 20)),
+            .onRegister(attach(
+                    new TooltipBehavior(Component.translatable("common.gtceu.tooltip.produces_fluid",
+                            InfiniteWaterCover.AVG_FLUID_PER_TICK)),
                     new CoverPlaceBehavior(GTCovers.INFINITE_WATER)))
             .register();
 

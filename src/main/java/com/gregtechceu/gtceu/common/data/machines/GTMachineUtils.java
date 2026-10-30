@@ -55,10 +55,9 @@ import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
-
 import com.gregtechceu.gtceu.utils.lang.LangUtil;
+
 import net.minecraft.ChatFormatting;
-import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -401,8 +400,11 @@ public class GTMachineUtils {
                                 amperage))
                         .modelProperty(GTMachineModelProperties.IS_FE_TO_EU, false)
                         .model(GTMachineModels.createConverterModel(amperage))
-                        .tooltips(Component.translatable("machine.gtceu.energy_converter.description").withStyle(ChatFormatting.GRAY),
-                                Component.translatable("machine.gtceu.energy_converter.tooltip_tool_usage").withStyle(ChatFormatting.GRAY),
+                        .tooltips(
+                                Component.translatable("machine.gtceu.energy_converter.description")
+                                        .withStyle(ChatFormatting.GRAY),
+                                Component.translatable("machine.gtceu.energy_converter.tooltip_tool_usage")
+                                        .withStyle(ChatFormatting.GRAY),
                                 Component.translatable("machine.gtceu.energy_converter.tooltip_conversion_native",
                                         FeCompat.toFeLong(V[tier] * amperage,
                                                 FeCompat.ratio(true)),
@@ -430,7 +432,8 @@ public class GTMachineUtils {
                         .rotationState(RotationState.ALL)
                         .tooltips(
                                 Component.translatable("machine.gtceu.laser_hatch." + name + ".tooltip"),
-                                Component.translatable("machine.gtceu.laser_hatch.both.tooltip").withStyle(ChatFormatting.RED),
+                                Component.translatable("machine.gtceu.laser_hatch.both.tooltip")
+                                        .withStyle(ChatFormatting.RED),
                                 GTCommonComponents.voltage(io, tier),
                                 GTCommonComponents.amperage(IN, amperage),
                                 GTCommonComponents
@@ -943,7 +946,8 @@ public class GTMachineUtils {
                         } else if (defaultTooltipLang != null) {
                             builder.tooltipLang(defaultTooltipLang);
                         }
-                        builder.tooltips(Arrays.stream(LangUtil.getSingleOrMultiLang(builder.id.toLanguageKey("machine", "tooltip")))
+                        builder.tooltips(Arrays
+                                .stream(LangUtil.getSingleOrMultiLang(builder.id.toLanguageKey("machine", "tooltip")))
                                 .map(c -> c.withStyle(ChatFormatting.GRAY)).toList());
 
                         builder.tooltips(workableTiered(tier, GTValues.V[tier] * 64, recipeType,

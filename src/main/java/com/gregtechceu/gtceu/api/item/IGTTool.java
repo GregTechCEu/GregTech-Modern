@@ -707,14 +707,19 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
             // show this
             int damageRemaining = tool.getTotalMaxDurability(stack) - stack.getDamageValue() + 1;
             if (toolStats.isSuitableForCrafting(stack)) {
-                var damageStr = FormattingUtil.formatNumbers(damageRemaining / Math.max(1, toolStats.getToolDamagePerCraft(stack)));
+                var damageStr = FormattingUtil
+                        .formatNumbers(damageRemaining / Math.max(1, toolStats.getToolDamagePerCraft(stack)));
 
-                tooltip.add(Component.translatable("tool.gtceu.tooltip.crafting_uses", Component.literal(damageStr).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.GREEN));
+                tooltip.add(Component
+                        .translatable("tool.gtceu.tooltip.crafting_uses",
+                                Component.literal(damageStr).withStyle(ChatFormatting.WHITE))
+                        .withStyle(ChatFormatting.GREEN));
             }
 
             var damageRemainingComp = Component.literal(FormattingUtil.formatNumbers(damageRemaining))
                     .withStyle(ChatFormatting.WHITE);
-            var maxDurabilityComp = Component.literal(FormattingUtil.formatNumbers(tool.getTotalMaxDurability(stack) + 1))
+            var maxDurabilityComp = Component
+                    .literal(FormattingUtil.formatNumbers(tool.getTotalMaxDurability(stack) + 1))
                     .withStyle(ChatFormatting.WHITE);
 
             tooltip.add(Component.translatable("tool.gtceu.tooltip.general_uses",
@@ -724,16 +729,21 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
         // attack info
         if (toolStats.isSuitableForAttacking(stack)) {
-            var attackDamageComp = Component.literal(FormattingUtil.formatNumbers(2 + tool.getTotalAttackDamage(stack))).withStyle(ChatFormatting.WHITE);
-            var attackSpeedComp = Component.literal(FormattingUtil.formatNumbers(4 + tool.getTotalAttackSpeed(stack))).withStyle(ChatFormatting.WHITE);
+            var attackDamageComp = Component.literal(FormattingUtil.formatNumbers(2 + tool.getTotalAttackDamage(stack)))
+                    .withStyle(ChatFormatting.WHITE);
+            var attackSpeedComp = Component.literal(FormattingUtil.formatNumbers(4 + tool.getTotalAttackSpeed(stack)))
+                    .withStyle(ChatFormatting.WHITE);
 
-            tooltip.add(Component.translatable("tool.gtceu.tooltip.attack_damage", attackDamageComp).withStyle(ChatFormatting.RED));
-            tooltip.add(Component.translatable("tool.gtceu.tooltip.attack_speed", attackSpeedComp).withStyle(ChatFormatting.BLUE));
+            tooltip.add(Component.translatable("tool.gtceu.tooltip.attack_damage", attackDamageComp)
+                    .withStyle(ChatFormatting.RED));
+            tooltip.add(Component.translatable("tool.gtceu.tooltip.attack_speed", attackSpeedComp)
+                    .withStyle(ChatFormatting.BLUE));
         }
 
         // mining info
         if (toolStats.isSuitableForBlockBreak(stack)) {
-            var miningSpeedComp = Component.literal(FormattingUtil.formatNumbers(tool.getTotalToolSpeed(stack))).withStyle(ChatFormatting.WHITE);
+            var miningSpeedComp = Component.literal(FormattingUtil.formatNumbers(tool.getTotalToolSpeed(stack)))
+                    .withStyle(ChatFormatting.WHITE);
 
             tooltip.add(Component.translatable("tool.gtceu.tooltip.mining_speed",
                     miningSpeedComp).withStyle(ChatFormatting.LIGHT_PURPLE));
@@ -742,12 +752,14 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
             String harvestName = "tool.gtceu.tooltip.harvest_level_name." + harvestLevel;
             if (Language.getInstance().has(harvestName)) { // if there's a defined name for the harvest level, use it
                 tooltip.add(Component.empty()
-                        .append(Component.translatable("tool.gtceu.tooltip.harvest_level", harvestLevel).withStyle(ChatFormatting.YELLOW))
+                        .append(Component.translatable("tool.gtceu.tooltip.harvest_level", harvestLevel)
+                                .withStyle(ChatFormatting.YELLOW))
                         .append(" (")
                         .append(Component.translatable(harvestName))
                         .append(")"));
             } else {
-                tooltip.add(Component.translatable("tool.gtceu.tooltip.harvest_level", harvestLevel).withStyle(ChatFormatting.YELLOW));
+                tooltip.add(Component.translatable("tool.gtceu.tooltip.harvest_level", harvestLevel)
+                        .withStyle(ChatFormatting.YELLOW));
             }
         }
 
@@ -779,7 +791,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
         var defaultEnchants = getDefaultEnchantments(stack);
         if (!defaultEnchants.isEmpty()) {
-            tooltip.add(Component.translatable("tool.gtceu.tooltip.default_enchantments").withStyle(ChatFormatting.DARK_PURPLE));
+            tooltip.add(Component.translatable("tool.gtceu.tooltip.default_enchantments")
+                    .withStyle(ChatFormatting.DARK_PURPLE));
             for (var entry : defaultEnchants.entrySet()) {
                 Enchantment enchant = entry.getKey();
                 if (enchant == null) continue;
@@ -795,7 +808,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
                         .filter(s -> Language.getInstance().has("item.gtceu.tool.class." + s))
                         .map(s -> Component.translatable("item.gtceu.tool.class." + s).withStyle(ChatFormatting.WHITE))
                         .collect(Component::empty, FormattingUtil::combineComponents,
-                                FormattingUtil::combineComponents)).withStyle(ChatFormatting.DARK_GRAY));
+                                FormattingUtil::combineComponents))
+                .withStyle(ChatFormatting.DARK_GRAY));
 
         // repair info
         if (!tagCompound.getBoolean(UNBREAKABLE_KEY)) {
@@ -819,10 +833,12 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
                 if (!repairItems.isEmpty()) {
                     tooltip.add(Component.translatable("tool.gtceu.tooltip.repair_material", repairItems.stream()
                             .collect(Component::empty, FormattingUtil::combineComponents,
-                                    FormattingUtil::combineComponents)).withStyle(ChatFormatting.DARK_GRAY));
+                                    FormattingUtil::combineComponents))
+                            .withStyle(ChatFormatting.DARK_GRAY));
                 }
             } else {
-                tooltip.add(Component.translatable("tool.gtceu.tooltip.show_repair_info").withStyle(ChatFormatting.DARK_GRAY));
+                tooltip.add(Component.translatable("tool.gtceu.tooltip.show_repair_info")
+                        .withStyle(ChatFormatting.DARK_GRAY));
             }
         }
         if (this.isElectric()) {

@@ -40,7 +40,8 @@ import java.util.function.UnaryOperator;
 
 public class GTToolType {
 
-    // TODO this needs to be refactored so that tool types are in a registry, and so that addon tool type don't use the GT namespace.
+    // TODO this needs to be refactored so that tool types are in a registry, and so that addon tool type don't use the
+    // GT namespace.
     @Getter
     private static final Map<String, GTToolType> types = new HashMap<>();
 
@@ -806,9 +807,9 @@ public class GTToolType {
             var toolType = get();
 
             if (lang != null) {
-                LangGenerationHandler.forNamespace(GTCEu.MOD_ID).add((provider -> provider.add(toolType.getUnlocalizedName(), lang)));
+                LangGenerationHandler.forNamespace(GTCEu.MOD_ID)
+                        .add((provider -> provider.add(toolType.getUnlocalizedName(), lang)));
             }
-
 
             if (this.symbol == ' ') {
                 return toolType;

@@ -254,7 +254,8 @@ public class GTMuiWidgets {
                 })
                 .backgroundOverlay(GTGuiTextures.PROGRESS_MIXER[0])
                 .size(18)
-                .tooltip((tooltip) -> tooltip.add(Component.translatable("gui.gtceu.machine.active_machine_mode.tab_tooltip")))
+                .tooltip((tooltip) -> tooltip
+                        .add(Component.translatable("gui.gtceu.machine.active_machine_mode.tab_tooltip")))
                 .setEnabledIf((W) -> workableMultiblock.getRecipeTypes().length > 0);
     }
 

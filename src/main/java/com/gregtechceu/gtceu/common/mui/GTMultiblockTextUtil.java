@@ -518,7 +518,8 @@ public class GTMultiblockTextUtil {
                                 .withStyle(ChatFormatting.GOLD))
                         .withStyle(ChatFormatting.GRAY))
                 .asWidget()
-                .tooltip((tooltip) -> tooltip.add(Component.translatable("gui.gtceu.machine.active_machine_mode.title")))
+                .tooltip(
+                        (tooltip) -> tooltip.add(Component.translatable("gui.gtceu.machine.active_machine_mode.title")))
                 .setEnabledIf((w) -> rlMachine.getRecipeTypes().length > 1);
     }
 

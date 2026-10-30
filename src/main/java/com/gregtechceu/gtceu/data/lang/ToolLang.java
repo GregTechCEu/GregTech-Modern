@@ -1,9 +1,6 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
-
-import static com.gregtechceu.gtceu.utils.lang.FormattingUtil.toEnglishName;
 
 public class ToolLang {
 
@@ -17,7 +14,7 @@ public class ToolLang {
         provider.add("item.gtceu.tool_generic", "Non-electric tool");
         provider.add("item.gtceu.bucket", "%s Bucket");
     }
-    
+
     public static void generateToolClassKeys(GTLangProvider provider) {
         // Tool Names
         provider.add("item.gtceu.tool.class.sword", "Sword");
@@ -45,7 +42,6 @@ public class ToolLang {
     }
 
     public static void generateTooltips(GTLangProvider provider) {
-
         // Generic Tool Behaviors
         provider.add("tool_behavior.gtceu.silk_ice", "§bIce Cutter: §fSilk Harvests Ice");
         provider.add("tool_behavior.gtceu.torch_place", "§eSpelunker: §fPlaces Torches on RIGHT CLICK");
@@ -126,7 +122,6 @@ public class ToolLang {
         provider.add("item.behavior.mode_switch.tooltip", "Use while sneaking to switch mode");
         provider.add("item.behavior.mode_switch.current_mode", "Mode: %s");
 
-
         provider.add("item.gtceu.wrench.tooltip.set_connections",
                 "Use Wrench to set Connections, sneak to block Connections");
         provider.add("item.gtceu.wrench.wire_cutter.set_connections", "Use Wire Cutters to set Connections");
@@ -171,7 +166,7 @@ public class ToolLang {
         provider.add("death.attack.gtceu.buzzsaw", "%s was buzzed by %s");
         provider.add("death.attack.gtceu.screwdriver_lv", "%s had their screws removed by %s");
     }
-    
+
     private static void generateEnchantKeys(GTLangProvider provider) {
         // Enchantments
         provider.add("enchantment.gtceu.disjunction", "Disjunction");

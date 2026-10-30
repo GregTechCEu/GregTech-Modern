@@ -1120,7 +1120,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.invalid_structure", "Invalid structure.");
         provider.add("gui.gtceu.machine.invalid_structure.tooltip",
                 "This block is a controller of the multiblock structure. For building help, see structure template in JEI.");
-        
+
         // Hatch Limitation - Mostly for GCYM Multiblocks that are Hardcoded into GTCEU
         provider.add("gui.gtceu.machine.single_energy_hatch_only.tooltip", "§fAccepts Exactly §6One §fEnergy Hatch.");
 
@@ -1170,6 +1170,5 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.active_machine_mode", "Active Machine Mode: %s");
         provider.add("gui.gtceu.machine.active_machine_mode.tab_tooltip", "Change active Machine Mode");
         provider.add("gui.gtceu.machine.available_recipe_types", "Available Recipe Types:");
-
     }
 }

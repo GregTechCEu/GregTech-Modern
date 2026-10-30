@@ -309,8 +309,9 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
 
         GlobalPos aeBinding = getLinkedPos(stack);
         if (aeBinding != null) {
-            tooltipComponents.add(Component.translatable("gui.gtceu.terminal.bound_to_me_network", aeBinding.dimension(),
-                    aeBinding.pos().getX(), aeBinding.pos().getY(), aeBinding.pos().getZ())
+            tooltipComponents.add(Component
+                    .translatable("gui.gtceu.terminal.bound_to_me_network", aeBinding.dimension(),
+                            aeBinding.pos().getX(), aeBinding.pos().getY(), aeBinding.pos().getZ())
                     .withStyle(ChatFormatting.GOLD));
         }
     }

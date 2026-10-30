@@ -936,8 +936,7 @@ public class GTMachines {
                             Component.translatable("machine.gtceu.energy_hatch.output.tooltip"),
                             GTCommonComponents.voltage(OUT, tier),
                             GTCommonComponents.amperage(OUT, 2),
-                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 2))
-                            )
+                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 2)))
                     .overlayTieredHullModel("energy_output_hatch")
                     .register(),
             ALL_TIERS);
@@ -1269,8 +1268,11 @@ public class GTMachines {
                     .modelProperty(IS_FORMED, false)
                     .modelProperty(GTMachineModelProperties.DIODE_AMP_MODE, DiodePartMachine.AmpMode.MODE_1A)
                     .model(createDiodeModel())
-                    .tooltips(Component.translatable("machine.gtceu.diode.tooltip_general").withStyle(ChatFormatting.GRAY),
-                            Component.translatable("machine.gtceu.diode.tooltip_starts_at").withStyle(ChatFormatting.GRAY),
+                    .tooltips(
+                            Component.translatable("machine.gtceu.diode.tooltip_general")
+                                    .withStyle(ChatFormatting.GRAY),
+                            Component.translatable("machine.gtceu.diode.tooltip_starts_at")
+                                    .withStyle(ChatFormatting.GRAY),
                             GTCommonComponents.voltage(BOTH, tier),
                             GTCommonComponents.amperageUpTo(BOTH, DiodePartMachine.MAX_AMPS))
                     .register(),

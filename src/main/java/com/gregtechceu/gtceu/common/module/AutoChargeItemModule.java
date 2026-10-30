@@ -170,7 +170,8 @@ public class AutoChargeItemModule extends TieredItemModule {
                 if (context.getLevel().isClientSide()) return InteractionResult.SUCCESS;
                 moduleContext.setData(moduleContext.getData(AutoChargeModuleData.class)
                         .withLinkedPos(GlobalPos.of(context.getLevel().dimension(), pos)));
-                if (player != null) player.displayClientMessage(Component.translatable("module.gtceu.wireless_charger.linked"), true);
+                if (player != null)
+                    player.displayClientMessage(Component.translatable("module.gtceu.wireless_charger.linked"), true);
                 context.getLevel().playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5f,
                         1.2f);
                 return InteractionResult.CONSUME;

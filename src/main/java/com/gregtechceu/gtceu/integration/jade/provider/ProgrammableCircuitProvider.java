@@ -44,7 +44,8 @@ public class ProgrammableCircuitProvider extends MachineTraitProvider<Programmab
             int configuration = data.getInt("Configuration");
             ItemStack circuit = IntCircuitBehaviour.stack(configuration);
 
-            MutableComponent text = Component.translatable("item.gtceu.int_circuit.configuration", Component.literal(Integer.toString(configuration)).withStyle(ChatFormatting.WHITE));
+            MutableComponent text = Component.translatable("item.gtceu.int_circuit.configuration",
+                    Component.literal(Integer.toString(configuration)).withStyle(ChatFormatting.WHITE));
 
             tooltip.add(helper.smallItem(circuit));
             tooltip.append(text);

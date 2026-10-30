@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTMath;
-
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -236,21 +236,22 @@ public interface IElectricItem {
             color = ChatFormatting.YELLOW;
         }
 
-
         if (showTimeRemaining) {
             long currentChargeTime;
             Component maxChargeTimeComponent;
 
-
             if (durationCurrent.getSeconds() <= 60) {
                 currentChargeTime = durationCurrent.toSeconds();
-                maxChargeTimeComponent = Component.translatable("common.gtceu.seconds", FormattingUtil.formatNumbers(durationMax.toSeconds()));
+                maxChargeTimeComponent = Component.translatable("common.gtceu.seconds",
+                        FormattingUtil.formatNumbers(durationMax.toSeconds()));
             } else if (durationCurrent.toMinutes() <= 60) {
                 currentChargeTime = durationCurrent.toMinutes();
-                maxChargeTimeComponent = Component.translatable("gui.minutes", FormattingUtil.formatNumbers(durationMax.toMinutes()));
+                maxChargeTimeComponent = Component.translatable("gui.minutes",
+                        FormattingUtil.formatNumbers(durationMax.toMinutes()));
             } else {
                 currentChargeTime = durationCurrent.toHours();
-                maxChargeTimeComponent = Component.translatable("gui.hours", FormattingUtil.formatNumbers(durationMax.toHours()));
+                maxChargeTimeComponent = Component.translatable("gui.hours",
+                        FormattingUtil.formatNumbers(durationMax.toHours()));
             }
             tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed",
                     FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
