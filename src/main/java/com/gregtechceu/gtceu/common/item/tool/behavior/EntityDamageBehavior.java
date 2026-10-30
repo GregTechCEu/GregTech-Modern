@@ -74,8 +74,8 @@ public class EntityDamageBehavior implements IToolBehavior {
     public void addInformation(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip,
                                @NotNull TooltipFlag flag) {
         if (mobType != null && !mobType.isEmpty()) {
-            tooltip.add(Component.translatable("item.gtceu.tool.behavior.damage_boost",
-                    Component.translatable("item.gtceu.tool.behavior.damage_boost_" + mobType)));
+            tooltip.add(Component.translatable("tool_behavior.gtceu.damage_boost",
+                    Component.translatable("tool_behavior.gtceu.damage_boost_" + mobType)));
         }
     }
 

@@ -513,12 +513,13 @@ public class GTMultiblockTextUtil {
         // No need to sync the rlMachine.getRecipeTypes().length > 1 condition because the recipe type array is the same
         // on client side.
         return Text
-                .dynamic(() -> Component.translatable("gui.gtceu.active_machine_mode",
+                .dynamic(() -> Component.translatable("gui.gtceu.machine.active_machine_mode",
                         Component.literal(recipeTypeName.getStringValue())
                                 .withStyle(ChatFormatting.GOLD))
                         .withStyle(ChatFormatting.GRAY))
                 .asWidget()
-                .tooltip((tooltip) -> tooltip.add(Component.translatable("gui.gtceu.active_machine_mode.title")))
+                .tooltip(
+                        (tooltip) -> tooltip.add(Component.translatable("gui.gtceu.machine.active_machine_mode.title")))
                 .setEnabledIf((w) -> rlMachine.getRecipeTypes().length > 1);
     }
 
@@ -608,7 +609,7 @@ public class GTMultiblockTextUtil {
             displaycount = Component.literal(String.valueOf(count));
         }
         if (countD < maxDurationSec) {
-            String key = "gui.gtceu.machine.output_line." + (rounded ? "2" : "0");
+            String key = "gui.gtceu.machine.output_line." + (rounded ? "rounded" : "exact") + "_each";
             return Optional.of(
                     Flow.row()
                             .coverChildrenHeight()
@@ -622,7 +623,7 @@ public class GTMultiblockTextUtil {
                                             FormattingUtil.formatNumber2Places(maxDurationSec / countD))
                                             .asWidget()));
         } else {
-            String key = "gui.gtceu.machine.output_line." + (rounded ? "3" : "1");
+            String key = "gui.gtceu.machine.output_line." + (rounded ? "rounded" : "exact") + "_per_sec";
             return Optional.of(
                     Flow.row()
                             .coverChildrenHeight()
@@ -676,7 +677,7 @@ public class GTMultiblockTextUtil {
             displaycount = Component.literal(String.valueOf(amount));
         }
         if (amountD < maxDurationSec) {
-            String key = "gui.gtceu.machine.output_line." + (rounded ? "2" : "0");
+            String key = "gui.gtceu.machine.output_line." + (rounded ? "rounded" : "exact") + "_each";
             return Optional.of(
                     Flow.row()
                             .coverChildrenHeight()
@@ -690,7 +691,7 @@ public class GTMultiblockTextUtil {
                                             FormattingUtil.formatNumber2Places(maxDurationSec / amountD))
                                             .asWidget()));
         } else {
-            String key = "gui.gtceu.machine.output_line." + (rounded ? "3" : "1");
+            String key = "gui.gtceu.machine.output_line." + (rounded ? "rounded" : "exact") + "_per_sec";
             return Optional.of(
                     Flow.row()
                             .coverChildrenHeight()

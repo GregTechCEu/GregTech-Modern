@@ -55,8 +55,10 @@ import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -398,8 +400,11 @@ public class GTMachineUtils {
                                 amperage))
                         .modelProperty(GTMachineModelProperties.IS_FE_TO_EU, false)
                         .model(GTMachineModels.createConverterModel(amperage))
-                        .tooltips(Component.translatable("machine.gtceu.energy_converter.description"),
-                                Component.translatable("machine.gtceu.energy_converter.tooltip_tool_usage"),
+                        .tooltips(
+                                Component.translatable("machine.gtceu.energy_converter.description")
+                                        .withStyle(ChatFormatting.GRAY),
+                                Component.translatable("machine.gtceu.energy_converter.tooltip_tool_usage")
+                                        .withStyle(ChatFormatting.GRAY),
                                 Component.translatable("machine.gtceu.energy_converter.tooltip_conversion_native",
                                         FeCompat.toFeLong(V[tier] * amperage,
                                                 FeCompat.ratio(true)),
@@ -425,8 +430,10 @@ public class GTMachineUtils {
                         .langValue(VNF[tier] + "§r " + FormattingUtil.formatNumbers(amperage) + "§eA§r Laser " +
                                 FormattingUtil.toEnglishName(name) + " Hatch")
                         .rotationState(RotationState.ALL)
-                        .tooltips(Component.translatable("machine.gtceu.laser_hatch." + name + ".tooltip"),
-                                Component.translatable("machine.gtceu.laser_hatch.both.tooltip"),
+                        .tooltips(
+                                Component.translatable("machine.gtceu.laser_hatch." + name + ".tooltip"),
+                                Component.translatable("machine.gtceu.laser_hatch.both.tooltip")
+                                        .withStyle(ChatFormatting.RED),
                                 GTCommonComponents.voltage(io, tier),
                                 GTCommonComponents.amperage(IN, amperage),
                                 GTCommonComponents
@@ -844,10 +851,14 @@ public class GTMachineUtils {
 
     public static Component getAvailableRecipeMapTooltip(GTRecipeType... recipeTypes) {
         if (recipeTypes != null) {
-            String key = "gui.gtceu.available_recipe_types_" + recipeTypes.length + ".tooltip";
-            return Component.translatable(key, Arrays.stream(recipeTypes)
-                    .map(recipeType -> Component.translatable(recipeType.getCategory().getLanguageKey()))
-                    .toArray());
+            var components = Arrays.stream(recipeTypes)
+                    .map(s -> Component.translatable(s.getCategory().getLanguageKey()))
+                    .collect(Component::empty, FormattingUtil::combineComponents,
+                            FormattingUtil::combineComponents);
+
+            return Component.translatable("gui.gtceu.machine.available_recipe_types")
+                    .append(CommonComponents.SPACE)
+                    .append(components);
         }
         return Component.empty();
     }
@@ -932,11 +943,12 @@ public class GTMachineUtils {
 
                         if (tieredTooltipLang.containsKey(tier)) {
                             builder.tooltipLang(tieredTooltipLang.get(tier));
-                            builder.defaultTooltip();
                         } else if (defaultTooltipLang != null) {
                             builder.tooltipLang(defaultTooltipLang);
-                            builder.defaultTooltip();
                         }
+                        builder.tooltips(Arrays
+                                .stream(LangUtil.getSingleOrMultiLang(builder.id.toLanguageKey("machine", "tooltip")))
+                                .map(c -> c.withStyle(ChatFormatting.GRAY)).toList());
 
                         builder.tooltips(workableTiered(tier, GTValues.V[tier] * 64, recipeType,
                                 tankScalingFunction.applyAsInt(tier), true));

@@ -19,6 +19,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class InfiniteWaterCover extends CoverBehavior {
 
+    public static final int FLUID_PER_SEC = 16 * FluidType.BUCKET_VOLUME;
+    public static final int AVG_FLUID_PER_TICK = FLUID_PER_SEC / 20;
+
     private TickableSubscription subscription;
 
     public InfiniteWaterCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
@@ -48,7 +51,7 @@ public class InfiniteWaterCover extends CoverBehavior {
     public void update() {
         if (coverHolder.getOffsetTimer() % 20 == 0) {
             FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide)
-                    .ifPresent(h -> h.fill(new FluidStack(Fluids.WATER, 16 * FluidType.BUCKET_VOLUME),
+                    .ifPresent(h -> h.fill(new FluidStack(Fluids.WATER, FLUID_PER_SEC),
                             IFluidHandler.FluidAction.EXECUTE));
         }
     }

@@ -72,7 +72,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         int b = bounds.get(5);
         if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
             pState.setError(
-                    new PatternStringError(Component.translatable("gtceu.predicate_error.pile_igniter.too_small")));
+                    new PatternStringError(
+                            Component.translatable("multiblock.gtceu.pattern_error.charcoal.too_small")));
             invalidateStructure();
             return;
         }

@@ -34,14 +34,14 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
                 long voltage = tag.getLong("currentVoltage");
                 double amperage = tag.getDouble("currentAmperage");
                 int temperature = tag.getInt("temperature");
-                iTooltip.add(Component.translatable("integration.gtceu.jade.cable.voltage"));
+                iTooltip.add(Component.translatable("common.gtceu.voltage_label"));
                 if (voltage != 0) {
                     iTooltip.append(GTValues.VNC[GTUtil.getTierByVoltage(voltage)]);
                     iTooltip.append(Component.literal(" / "));
                 }
                 iTooltip.append(GTValues.VNC[GTUtil.getTierByVoltage(tag.getLong("maxVoltage"))]);
 
-                iTooltip.add(Component.translatable("integration.gtceu.jade.cable.amperage"));
+                iTooltip.add(Component.translatable("common.gtceu.amperage_label"));
                 if (amperage != 0) {
                     iTooltip.append(Component.literal(DECIMAL_FORMAT_1F.format(amperage) + "A / "));
                 }
