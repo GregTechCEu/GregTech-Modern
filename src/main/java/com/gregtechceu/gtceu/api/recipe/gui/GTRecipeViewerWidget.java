@@ -29,7 +29,6 @@ import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.layout.Flow;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
