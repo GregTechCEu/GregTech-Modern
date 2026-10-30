@@ -209,6 +209,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     private void setDescription(String description) {
+        if (description.length() > 32) description = description.substring(0, 32);
         if (getEntry() != null) getEntry().setDescription(description);
     }
 
