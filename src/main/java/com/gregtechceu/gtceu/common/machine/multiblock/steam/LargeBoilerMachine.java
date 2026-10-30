@@ -186,9 +186,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
     }
 
     private void setThrottle(int newThrottle) {
-        newThrottle = Mth.clamp(newThrottle, 25, 100);
-        this.throttle = newThrottle;
-        ((LargeBoilerRecipeLogic) (this.recipeLogic)).setCurrentThrottle(newThrottle);
+        this.throttle = Mth.clamp(newThrottle, 25, 100);
+        getRecipeLogic().setCurrentThrottle(throttle);
     }
 
     /**
