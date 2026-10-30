@@ -11,7 +11,6 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
 
 === "Java"
     ```java title="MultiMachines.java"
-    
         public static final MultiblockMachineDefinition SUPERHEATED_PYROLYZING_OVEN = REGISTRATE
                 .multiblock("superheated_pyrolyzing_oven", (holder) -> new CoilWorkableElectricMultiblockMachine(holder))
                 .rotationState(RotationState.NON_Y_AXIS)
@@ -39,7 +38,7 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
                     .where('G', Predicates.heatingCoils())
                     .where('H', Predicates.blocks(GCYMBlocks.CASING_HIGH_TEMPERATURE_SMELTING.get()))
                     .where('M', Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
-                    .where('I', Predicates.controller(Predicates.blocks(definition.get())))
+                    .where('I', Predicates.controller(definition))
                     .build())
                 .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                      GTCEu.id("block/multiblock/pyrolyse_oven"))

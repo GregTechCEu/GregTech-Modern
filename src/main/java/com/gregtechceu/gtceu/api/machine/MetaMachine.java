@@ -1389,4 +1389,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     public List<ItemStack> getItemsRequiredToPaste() {
         return coverContainer.getItemsRequiredToPaste();
     }
+
+    public static MachineDefinition definitionOf(BlockEntityCreationInfo info) {
+        if (info.state().getBlock() instanceof MetaMachineBlock machineBlock) {
+            return machineBlock.getDefinition();
+        }
+        throw new IllegalStateException("MetaMachine created for an incompatible block: " + info.state().getBlock());
+    }
 }

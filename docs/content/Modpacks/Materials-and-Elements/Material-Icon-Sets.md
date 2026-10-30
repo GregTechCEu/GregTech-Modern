@@ -12,30 +12,30 @@ The material system uses icon sets to determine the textures of generated blocks
 
 The following icon sets are available by default:
 
-- `GTMaterialIconSet.BRIGHT`
-- `GTMaterialIconSet.CERTUS`
-- `GTMaterialIconSet.DIAMOND`
-- `GTMaterialIconSet.DULL`
-- `GTMaterialIconSet.EMERALD`
-- `GTMaterialIconSet.FINE`
-- `GTMaterialIconSet.FLINT`
-- `GTMaterialIconSet.FLUID`
-- `GTMaterialIconSet.GAS`
-- `GTMaterialIconSet.GEM_HORIZONTAL`
-- `GTMaterialIconSet.GEM_VERTICAL`
-- `GTMaterialIconSet.GLASS`
-- `GTMaterialIconSet.LAPIS`
-- `GTMaterialIconSet.LIGNITE`
-- `GTMaterialIconSet.MAGNETIC`
-- `GTMaterialIconSet.METALLIC`
-- `GTMaterialIconSet.NETHERSTAR`
-- `GTMaterialIconSet.OPAL`
-- `GTMaterialIconSet.QUARTZ`
-- `GTMaterialIconSet.ROUGH`
-- `GTMaterialIconSet.RUBY`
-- `GTMaterialIconSet.SAND`
-- `GTMaterialIconSet.SHINY`
-- `GTMaterialIconSet.WOOD`
+- `MaterialIconSet.BRIGHT`
+- `MaterialIconSet.CERTUS`
+- `MaterialIconSet.DIAMOND`
+- `MaterialIconSet.DULL`
+- `MaterialIconSet.EMERALD`
+- `MaterialIconSet.FINE`
+- `MaterialIconSet.FLINT`
+- `MaterialIconSet.FLUID`
+- `MaterialIconSet.GAS`
+- `MaterialIconSet.GEM_HORIZONTAL`
+- `MaterialIconSet.GEM_VERTICAL`
+- `MaterialIconSet.GLASS`
+- `MaterialIconSet.LAPIS`
+- `MaterialIconSet.LIGNITE`
+- `MaterialIconSet.MAGNETIC`
+- `MaterialIconSet.METALLIC`
+- `MaterialIconSet.NETHERSTAR`
+- `MaterialIconSet.OPAL`
+- `MaterialIconSet.QUARTZ`
+- `MaterialIconSet.ROUGH`
+- `MaterialIconSet.RUBY`
+- `MaterialIconSet.SAND`
+- `MaterialIconSet.SHINY`
+- `MaterialIconSet.WOOD`
 
 
 ## Custom Icon Sets
