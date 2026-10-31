@@ -175,8 +175,8 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("red_granite")
-                .notConsumable(rock, GraniteRed)
-                .outputItems(rock, GraniteRed)
+                .notConsumable(rock, RedGranite)
+                .outputItems(rock, RedGranite)
                 .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
                 .duration(16)
                 .EUt(VHA[EV])

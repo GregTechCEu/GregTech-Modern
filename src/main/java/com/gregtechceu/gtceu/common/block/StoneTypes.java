@@ -22,7 +22,7 @@ public enum StoneTypes implements StringRepresentable {
     DEEPSLATE("deepslate", MapColor.DEEPSLATE, true, () -> Blocks.DEEPSLATE::defaultBlockState, GTMaterials.Deepslate,
             false),
     RED_GRANITE("red_granite", MapColor.COLOR_RED, true, () -> GTBlocks.RED_GRANITE::getDefaultState,
-            GTMaterials.GraniteRed),
+            GTMaterials.RedGranite),
     MARBLE("marble", MapColor.QUARTZ, true, () -> GTBlocks.MARBLE::getDefaultState, GTMaterials.Marble),
     ANDESITE("andesite", MapColor.STONE, true, () -> Blocks.ANDESITE::defaultBlockState, GTMaterials.Andesite, false),
     GRANITE("granite", MapColor.DIRT, true, () -> Blocks.GRANITE::defaultBlockState, GTMaterials.Granite, false),
