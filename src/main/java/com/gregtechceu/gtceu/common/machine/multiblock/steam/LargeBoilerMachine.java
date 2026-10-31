@@ -186,8 +186,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
     }
 
     private void setThrottle(int newThrottle) {
-        this.throttle = newThrottle;
-        ((LargeBoilerRecipeLogic) (this.recipeLogic)).setCurrentThrottle(newThrottle);
+        this.throttle = Mth.clamp(newThrottle, 25, 100);
+        getRecipeLogic().setCurrentThrottle(throttle);
     }
 
     /**
@@ -260,8 +260,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
     }
 
     public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue) {
-        StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue,
-                syncValue::setStringValue);
+        StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue, syncValue::setStringValue)
+                .allowC2S();
 
         var textField = new TextFieldWidget() {
 

@@ -111,7 +111,7 @@ public class GTMuiWidgets {
 
     public static Flow createTitleBarWithEnd(Icon icon, String text, int panelWidth, UITexture background,
                                              @Nullable Widget<?> end) {
-        int sidePadding = 5;
+        int sidePadding = 3;
         int topPadding = 3;
 
         int iconSize = 12;
@@ -131,10 +131,11 @@ public class GTMuiWidgets {
 
         return Flow.row()
                 .decoration()
-                .coverChildrenHeight()
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                .width(rowWidth)
+                .paddingTop(topPadding)
+                .size(rowWidth, textHeight + topPadding)
+                .childPadding(2)
                 .top(-(textHeight + topPadding))
                 .horizontalCenter()
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))

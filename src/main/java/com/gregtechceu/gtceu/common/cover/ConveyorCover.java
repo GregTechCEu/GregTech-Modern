@@ -28,6 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.IItemHandler;
@@ -135,9 +136,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     }
 
     public void setTransferRate(int transferRate) {
-        if (transferRate <= maxItemTransferRate) {
-            this.transferRate = transferRate;
-        }
+        this.transferRate = Mth.clamp(transferRate, 1, maxItemTransferRate);
     }
 
     public void setIo(IO io) {

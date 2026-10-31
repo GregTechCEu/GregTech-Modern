@@ -55,7 +55,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     public final Flow inputColumn = Flow.col().coverChildren().crossAxisAlignment(Alignment.CrossAxis.START);
     public final Flow outputColumn = Flow.col().coverChildren().crossAxisAlignment(Alignment.CrossAxis.START);
 
-    public final Flow recipeContentRow;
+    public final ParentWidget<?> recipeContentRow;
     public final ParentWidget<?> additionalRecipeContent = new ParentWidget<>()
             .coverChildrenHeight().widthRel(1f);
 
@@ -74,7 +74,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         Flow mainColumn = Flow.col().widthRel(1f).coverChildrenHeight();
 
         child(mainColumn);
-        margin(3);
+        margin(2, 2, 2, 1);
         coverChildrenWidth(150);
         coverChildrenHeight(60);
 
@@ -86,10 +86,9 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                 .setEnabledIf(v -> !modifiedRecipe.data.getBoolean("hide_duration")));
 
         recipeContentRow = uiLayout.getCustomUIBuilder() == null ? buildDefaultLayout() :
-                uiLayout.getCustomUIBuilder().apply(recipe);
+                uiLayout.getCustomUIBuilder().buildMainRow(this, uiLayout, recipe);
 
-        mainColumn.child(recipeContentRow.coverChildrenWidth().marginTop(5).marginBottom(3)
-                .paddingLeft(2).paddingRight(2));
+        mainColumn.child(recipeContentRow.marginTop(2).marginBottom(3));
         mainColumn.child(additionalRecipeContent.child(textComponents));
 
         loadContentIntoSlots();
@@ -105,7 +104,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         var row = Flow.row()
                 .horizontalCenter()
                 .coverChildrenHeight()
-                .widthRel(1.f)
+                .coverChildrenWidth()
                 .childPadding((recipeType.getUiLayout().getProgressBar().progressSize() / 3) + 2)
                 .child(inputColumn)
                 .child(uiLayout.getProgressWidgetSupplier()
@@ -184,7 +183,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         childIf(!FMLLoader.isProduction(), () -> new ButtonWidget<>()
                 .overlay(Text.str("ID"))
                 .decoration()
-                .bottom(3).right(3)
+                .bottom(12).right(3)
                 .size(15, 15)
                 .tooltip(r -> r.addLine("Click to copy recipe ID: " + baseRecipe.id))
                 .onMousePressed((ctx, b) -> {

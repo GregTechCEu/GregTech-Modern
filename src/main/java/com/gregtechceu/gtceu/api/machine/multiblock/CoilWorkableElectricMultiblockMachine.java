@@ -120,12 +120,12 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
 
         mainWidget
                 .child(Flow.row().height(MULTI_UI_TEXT_PANEL_HEIGHT).coverChildrenWidth()
-                        .child(Flow.col().coverChildrenWidth()
+                        .child(Flow.col().width(7)
                                 .child(new IDrawable.DrawableWidget(leftTop).size(7, 4))
                                 .child(new IDrawable.DrawableWidget(leftMiddle).size(7, MULTI_UI_TEXT_PANEL_HEIGHT - 8))
                                 .child(new IDrawable.DrawableWidget(leftBottom).size(7, 4)))
                         .child(getMainTextPanel(syncManager))
-                        .child(Flow.col().coverChildrenWidth()
+                        .child(Flow.col().width(7)
                                 .child(new IDrawable.DrawableWidget(rightTop).size(7, 4))
                                 .child(new IDrawable.DrawableWidget(rightMiddle).size(7,
                                         MULTI_UI_TEXT_PANEL_HEIGHT - 8))
