@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins.client.bloom.safemode.embeddium;
+package com.gregtechceu.gtceu.core.mixins.client.customchunk.embeddium.safemode;
 
 import com.gregtechceu.gtceu.client.bloom.BloomRenderer;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
@@ -27,9 +27,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Safe mode version of {@link com.gregtechceu.gtceu.core.mixins.client.bloom.normal.embeddium.BlockRendererMixin}
+ * Safe mode alternative to
+ * {@link com.gregtechceu.gtceu.core.mixins.client.customchunk.embeddium.EmbeddiumBlockRendererMixin}
  *
- * @see com.gregtechceu.gtceu.core.mixins.client.bloom.normal.embeddium.BlockRendererMixin
+ * @see com.gregtechceu.gtceu.core.mixins.client.customchunk.embeddium.EmbeddiumBlockRendererMixin
  */
 @Mixin(value = BlockRenderer.class, remap = false)
 public class BlockRendererMixin {
