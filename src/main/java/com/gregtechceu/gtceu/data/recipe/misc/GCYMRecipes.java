@@ -241,7 +241,7 @@ public class GCYMRecipes {
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_hsla_nonconducting")
+        WELDER_RECIPES.recipeBuilder("casing_hsla_nonconducting")
                 .inputItems(plate, HSLASteel, 6)
                 .inputItems(frameGt, HSLASteel)
                 .circuitMeta(6)
@@ -249,7 +249,7 @@ public class GCYMRecipes {
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_incoloy_vibration_safe")
+        WELDER_RECIPES.recipeBuilder("casing_incoloy_vibration_safe")
                 .inputItems(plate, IncoloyMA956, 6)
                 .inputItems(frameGt, IncoloyMA956)
                 .circuitMeta(6)
@@ -257,7 +257,7 @@ public class GCYMRecipes {
                 .EUt(16).duration(50)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_watertight")
+        WELDER_RECIPES.recipeBuilder("casing_watertight")
                 .inputItems(plate, WatertightSteel, 6)
                 .inputItems(frameGt, WatertightSteel)
                 .circuitMeta(6)
@@ -265,7 +265,7 @@ public class GCYMRecipes {
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_secure_maceration")
+        WELDER_RECIPES.recipeBuilder("casing_secure_maceration")
                 .inputItems(plate, Zeron100, 6)
                 .inputItems(frameGt, Titanium)
                 .circuitMeta(6)
@@ -273,7 +273,7 @@ public class GCYMRecipes {
                 .EUt(16).duration(50)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_high_temperature_smelting")
+        WELDER_RECIPES.recipeBuilder("casing_high_temperature_smelting")
                 .inputItems(plate, TitaniumCarbide, 4)
                 .inputItems(plate, HSLASteel, 2)
                 .inputItems(frameGt, TungstenCarbide)
@@ -282,7 +282,7 @@ public class GCYMRecipes {
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_reaction_safe_mixing")
+        WELDER_RECIPES.recipeBuilder("casing_reaction_safe_mixing")
                 .inputItems(TagPrefix.plate, GTMaterials.HastelloyX, 6)
                 .inputItems(TagPrefix.frameGt, GTMaterials.MaragingSteel300)
                 .circuitMeta(6)
@@ -290,14 +290,14 @@ public class GCYMRecipes {
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_laser_safe_engraving")
+        WELDER_RECIPES.recipeBuilder("casing_laser_safe_engraving")
                 .inputItems(plate, TitaniumTungstenCarbide, 6)
                 .inputItems(frameGt, Titanium).circuitMeta(6)
                 .outputItems(CASING_LASER_SAFE_ENGRAVING.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_large_scale_assembling")
+        WELDER_RECIPES.recipeBuilder("casing_large_scale_assembling")
                 .inputItems(plate, Stellite100, 6)
                 .inputItems(frameGt, Tungsten)
                 .circuitMeta(6)
@@ -305,7 +305,7 @@ public class GCYMRecipes {
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_shock_proof")
+        WELDER_RECIPES.recipeBuilder("casing_shock_proof")
                 .inputItems(plate, HastelloyC276, 6)
                 .inputItems(frameGt, HastelloyC276)
                 .circuitMeta(6)
@@ -313,7 +313,7 @@ public class GCYMRecipes {
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_corrosion_proof")
+        WELDER_RECIPES.recipeBuilder("casing_corrosion_proof")
                 .inputItems(plate, CobaltBrass, 6)
                 .inputItems(frameGt, HSLASteel)
                 .circuitMeta(6)
@@ -321,7 +321,7 @@ public class GCYMRecipes {
                 .duration(50).EUt(16)
                 .addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_stress_proof")
+        WELDER_RECIPES.recipeBuilder("casing_stress_proof")
                 .inputItems(plate, MaragingSteel300, 6)
                 .inputItems(frameGt, StainlessSteel)
                 .circuitMeta(6)
