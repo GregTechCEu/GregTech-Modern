@@ -19,7 +19,11 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
@@ -407,6 +411,10 @@ public final class PartsRecipeHandler {
         }
     }
 
+    private static final Supplier<Set<Material>> LV_ROTOR_MATERIALS = Suppliers.memoize(() -> Set.of(
+            GTMaterials.Copper.value(), GTMaterials.Iron.value(), GTMaterials.Tin.value(),
+            GTMaterials.Bronze.value(), GTMaterials.Steel.value(), GTMaterials.Lead.value()));
+
     private static void processRotor(@NotNull RecipeOutput provider, @NotNull Material material) {
         if (!material.shouldGenerateRecipesFor(rotor) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
@@ -420,13 +428,15 @@ public final class PartsRecipeHandler {
                 'R', new MaterialEntry(ring, material));
 
         if (material.shouldGenerateRecipesFor(plate) && material.shouldGenerateRecipesFor(ring)) {
+            int eut = material.getBlastTemperature() >= 2800 ? 256 : 64;
+            if (LV_ROTOR_MATERIALS.get().contains(material)) eut = 16;
             WELDER_RECIPES.recipeBuilder("weld_" + material.getName() + "_parts_to_rotor")
                     .inputItems(plate, material, 4)
                     .inputItems(ring, material, 1)
                     .circuitMeta(3)
                     .outputItems(stack.copy())
                     .duration((int) material.getMass() * 4)
-                    .EUt(material.getBlastTemperature() >= 2800 ? 256 : 64)
+                    .EUt(eut)
                     .save(provider);
         }
     }
