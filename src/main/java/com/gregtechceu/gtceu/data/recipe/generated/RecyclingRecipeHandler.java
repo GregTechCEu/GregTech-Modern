@@ -47,7 +47,8 @@ public final class RecyclingRecipeHandler {
         materialStacks.addAll(prefix.value().secondaryMaterials());
         // only ignore arc smelting for blacklisted prefixes if yielded material is the same as input material
         // if arc smelting gives different material, allow it
-        boolean ignoreArcSmelting = IGNORE_ARC_SMELTING.contains(prefix) &&
+        boolean ignoreArcSmelting = IGNORE_ARC_SMELTING.stream()
+                .anyMatch(ignored -> ignored.value() == prefix.value()) &&
                 !(material.hasProperty(PropertyKey.INGOT) &&
                         material.getProperty(PropertyKey.INGOT).getArcSmeltingInto() != null);
         RecyclingRecipes.registerRecyclingRecipes(provider, ChemicalHelper.get(prefix, material), materialStacks,
