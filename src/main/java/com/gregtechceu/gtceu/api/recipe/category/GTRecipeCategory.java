@@ -7,7 +7,9 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -16,15 +18,17 @@ import net.minecraft.world.item.Items;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Supplier;
 
 @Accessors(chain = true)
 public class GTRecipeCategory {
 
     public final ResourceLocation id;
-    @Getter
-    private final GTRecipeType recipeType;
+    private final Supplier<GTRecipeType> recipeType;
     @Nullable
     @Setter
     private CategoryIcon icon = null;
@@ -32,15 +36,19 @@ public class GTRecipeCategory {
     @Setter
     private boolean isXEIVisible = true;
 
-    public GTRecipeCategory(@NotNull ResourceLocation id, @NotNull GTRecipeType recipeType) {
+    public GTRecipeCategory(@NotNull ResourceLocation id, @NotNull Supplier<GTRecipeType> recipeType) {
         this.recipeType = recipeType;
         this.id = id;
     }
 
     public static GTRecipeCategory registerDefault(@NotNull GTRecipeType recipeType) {
-        GTRecipeCategory category = new GTRecipeCategory(recipeType.id, recipeType);
+        GTRecipeCategory category = new GTRecipeCategory(recipeType.id, () -> recipeType);
         Registry.register(GTRegistries.RECIPE_CATEGORIES, category.id, category);
         return category;
+    }
+
+    public GTRecipeType getRecipeType() {
+        return recipeType.get();
     }
 
     public String getLanguageKey() {
@@ -53,8 +61,8 @@ public class GTRecipeCategory {
 
     public CategoryIcon getIcon() {
         if (icon == null) {
-            if (recipeType.getIconSupplier() != null) {
-                icon = new CategoryIcon(recipeType.getIconSupplier().get());
+            if (getRecipeType().getIconSupplier() != null) {
+                icon = new CategoryIcon(getRecipeType().getIconSupplier().get());
             } else {
                 icon = new CategoryIcon(new ItemStack(Items.BARRIER));
             }
@@ -63,7 +71,7 @@ public class GTRecipeCategory {
     }
 
     public void addRecipe(GTRecipe recipe) {
-        recipeType.addToCategoryMap(this, recipe);
+        getRecipeType().addToCategoryMap(this, recipe);
     }
 
     public boolean shouldRegisterDisplays() {

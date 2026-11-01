@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -13,14 +14,15 @@ import dev.latvian.mods.kubejs.client.LangKubeEvent;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Supplier;
 
 @Accessors(chain = true, fluent = true)
 public class GTRecipeCategoryBuilderJS extends BuilderBase<GTRecipeCategory> {
 
-    private final transient String name;
-    @Setter
-    private transient GTRecipeType recipeType;
+    private transient Supplier<GTRecipeType> recipeType;
     @Setter
     private transient CategoryIcon icon;
     @Setter
@@ -31,11 +33,19 @@ public class GTRecipeCategoryBuilderJS extends BuilderBase<GTRecipeCategory> {
 
     public GTRecipeCategoryBuilderJS(ResourceLocation id) {
         super(id);
-        name = id.getPath();
-        recipeType = GTRecipeTypes.DUMMY_RECIPES.value();
+        recipeType = GTRecipeTypes.DUMMY_RECIPES;
         icon = null;
         isXEIVisible = true;
         langValue = null;
+    }
+
+    public GTRecipeCategoryBuilderJS setRecipeType(Supplier<GTRecipeType> recipeType) {
+        this.recipeType = recipeType;
+        return this;
+    }
+
+    public GTRecipeCategoryBuilderJS setRecipeType(GTRecipeType recipeType) {
+        return setRecipeType(() -> recipeType);
     }
 
     public GTRecipeCategoryBuilderJS setCustomIcon(ResourceLocation location) {
