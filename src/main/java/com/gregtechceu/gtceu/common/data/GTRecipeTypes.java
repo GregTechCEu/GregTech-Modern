@@ -695,7 +695,7 @@ public class GTRecipeTypes {
 
                         SizedFluidIngredient dividedInputFluid = new SizedFluidIngredient(input.ingredient(),
                                 Math.max(1, input.amount() / ratio));
-                        SizedFluidIngredient dividedOutputFluid = new SizedFluidIngredient(input.ingredient(),
+                        SizedFluidIngredient dividedOutputFluid = new SizedFluidIngredient(output.ingredient(),
                                 Math.max(1, output.amount() / ratio));
 
                         if (shouldDivide && fluidsDivisible) {
