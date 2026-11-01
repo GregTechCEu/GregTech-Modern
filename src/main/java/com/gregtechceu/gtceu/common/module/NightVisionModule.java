@@ -1,0 +1,207 @@
+package com.gregtechceu.gtceu.common.module;
+
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.api.item.module.IHUDProviderItemModule;
+import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
+import com.gregtechceu.gtceu.data.lang.LangUtils;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
+
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
+
+import java.util.Objects;
+
+public class NightVisionModule extends ItemModule implements IHUDProviderItemModule {
+
+    private static final double ENERGY_PER_TICK = 0.25;
+
+    public NightVisionModule(ResourceLocation id) {
+        super(id);
+    }
+
+    @Override
+    public Codec<? extends ModuleData> moduleDataCodec() {
+        return NightVisionModuleData.CODEC;
+    }
+
+    @Override
+    public Class<? extends ModuleData> moduleDataClass() {
+        return NightVisionModuleData.class;
+    }
+
+    @Override
+    public ModuleData defaultModuleData(int slot, ItemModule module, ItemStack moduleStack) {
+        return new NightVisionModuleData(slot, module, moduleStack);
+    }
+
+    @Override
+    public Component getInfo() {
+        return Component.translatable(getDescriptionLanguageKey(), ENERGY_PER_TICK);
+    }
+
+    @Override
+    public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
+        if (!(entity instanceof Player player)) return;
+        if (entity.level().isClientSide) return;
+
+        if (!isEnabled(moduleContext)) {
+            var data = moduleContext.getData(NightVisionModuleData.class);
+            if (data.isNightVision()) {
+                player.removeEffect(MobEffects.NIGHT_VISION);
+                moduleContext.setData(new NightVisionModuleData(data.getSlot(), data.getModule(), data.getModuleItem(),
+                        false, false, (byte) 0, 0));
+            }
+            return;
+        }
+        super.onArmorTick(moduleContext, entity);
+        NightVisionModuleData data = moduleContext.getData(NightVisionModuleData.class);
+
+        long levelTick = entity.level().getGameTime();
+        byte toggleTimer = data.getToggleTimer();
+        boolean nightVision = data.isNightVision();
+
+        if (toggleTimer == 0 && SyncedKeyMappings.NIGHT_VISION_ENABLE.isKeyDown(player)) {
+            nightVision = !nightVision;
+            toggleTimer = 5;
+
+            if (!nightVision) {
+                data = data.withNightVisionToggleTick(0);
+            }
+
+            if (nightVision && !ArmorUtils.useModuleEnergy(moduleContext.getAppliedTo(),
+                    ArmorUtils.toModuleEnergyCredits(ENERGY_PER_TICK), true)) {
+                nightVision = false;
+                player.displayClientMessage(Component.translatable("armor.gtceu.night_vision.error"), true);
+            } else {
+                player.displayClientMessage(Component
+                        .translatable(LangUtils.enabledBoolean("armor.gtceu.night_vision", nightVision)), true);
+            }
+            data = data.withNightVision(nightVision).withToggleTimer(toggleTimer);
+            moduleContext.setData(data);
+        }
+
+        if (nightVision && ArmorUtils.useModuleEnergy(moduleContext.getAppliedTo(),
+                ArmorUtils.toModuleEnergyCredits(ENERGY_PER_TICK), false)) {
+            player.removeEffect(MobEffects.BLINDNESS);
+            if (levelTick > data.getNightVisionToggleTick()) {
+                player.addEffect(
+                        new MobEffectInstance(MobEffects.NIGHT_VISION, ArmorUtils.NIGHTVISION_DURATION, 0, true,
+                                false));
+                data = data.withNightVisionToggleTick(
+                        levelTick + ArmorUtils.NIGHTVISION_DURATION - ArmorUtils.NIGHT_VISION_RESET);
+                moduleContext.setData(data);
+            }
+        } else {
+            player.removeEffect(MobEffects.NIGHT_VISION);
+            if (data.getNightVisionToggleTick() != 0) {
+                data = data.withNightVisionToggleTick(0);
+                moduleContext.setData(data);
+            }
+        }
+
+        if (toggleTimer > 0) {
+            toggleTimer--;
+            moduleContext.setData(data.withToggleTimer(toggleTimer));
+        }
+    }
+
+    @Override
+    public void drawHUD(ModuleContext moduleContext, ArmorUtils.ModularHUD hud, GuiGraphics graphics) {
+        var data = moduleContext.getData(NightVisionModuleData.class);
+        if (data.isNightVision()) {
+            hud.newLine(Component.translatable("armor.gtceu.night_vision.enabled"));
+        } else {
+            hud.newLine(Component.translatable("armor.gtceu.night_vision.disabled"));
+        }
+    }
+
+    public static class NightVisionModuleData extends ModuleData {
+
+        // spotless:off
+        public static final Codec<NightVisionModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(instance.group(
+                Codec.BOOL.fieldOf("night_vision").forGetter(NightVisionModuleData::isNightVision),
+                Codec.BYTE.fieldOf("toggle_timer").forGetter(NightVisionModuleData::getToggleTimer),
+                Codec.LONG.fieldOf("night_vision_tick").forGetter(NightVisionModuleData::getNightVisionToggleTick))
+        ).apply(instance, NightVisionModuleData::new));
+        // spotless:on
+
+        @Getter
+        private boolean nightVision = false;
+        @Getter
+        private byte toggleTimer = 0;
+        @Getter
+        private final long nightVisionToggleTick;
+
+        public NightVisionModuleData(int slot, ItemModule module, ItemStack moduleItem) {
+            super(slot, module, moduleItem, true);
+            this.nightVision = false;
+            this.toggleTimer = 0;
+            this.nightVisionToggleTick = 0;
+        }
+
+        public NightVisionModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
+                                     boolean nightVision, byte toggleTimer, long nightVisionToggleTick) {
+            super(slot, module, moduleItem, enabled);
+            this.nightVision = nightVision;
+            this.toggleTimer = toggleTimer;
+            this.nightVisionToggleTick = nightVisionToggleTick;
+        }
+
+        @Override
+        public ModuleData withEnabled(boolean enabled) {
+            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
+                    nightVisionToggleTick);
+        }
+
+        @Override
+        public ModuleData withModuleItem(ItemStack moduleItem) {
+            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
+                    nightVisionToggleTick);
+        }
+
+        public NightVisionModuleData withNightVision(boolean nightVision) {
+            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
+                    nightVisionToggleTick);
+        }
+
+        public NightVisionModuleData withToggleTimer(byte toggleTimer) {
+            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
+                    nightVisionToggleTick);
+        }
+
+        public NightVisionModuleData withNightVisionToggleTick(long nightVisionToggleTick) {
+            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
+                    nightVisionToggleTick);
+        }
+
+        @Override
+        public ModuleData copy() {
+            return new NightVisionModuleData(slot, module, moduleItem.copy(), enabled, nightVision, toggleTimer,
+                    nightVisionToggleTick);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof NightVisionModuleData other)) return false;
+            return super.equals(obj) && nightVision == other.nightVision && toggleTimer == other.toggleTimer &&
+                    nightVisionToggleTick == other.nightVisionToggleTick;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(slot, module, moduleItem, enabled, nightVision, toggleTimer, nightVisionToggleTick);
+        }
+    }
+}

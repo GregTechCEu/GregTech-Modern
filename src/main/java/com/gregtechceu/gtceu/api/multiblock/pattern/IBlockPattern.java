@@ -1,12 +1,15 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+
+import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 
 public interface IBlockPattern {
 
@@ -42,6 +45,8 @@ public interface IBlockPattern {
     boolean checkPatternAt(Level level, PatternState state, BlockPos centerPos, Direction frontFacing,
                            Direction upwardsFacing,
                            boolean isFlipped);
+
+    Char2ObjectMap<MultiPredicate> getPredicates();
 
     OriginOffset getOffset();
 

@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.core.mixins;
 
+import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.IBreathingEntity;
 import com.gregtechceu.gtceu.core.IFireImmuneEntity;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -33,7 +36,11 @@ public abstract class EntityMixin implements IFireImmuneEntity, IBreathingEntity
 
     @ModifyReturnValue(method = "fireImmune", at = @At("RETURN"))
     private boolean gtceu$changeFireImmune(boolean original) {
-        return original || gtceu$fireImmune;
+        Entity entity = (Entity) (Object) this;
+        return original || gtceu$fireImmune ||
+                (entity instanceof LivingEntity living &&
+                        living.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ModularArmorItem armor &&
+                        armor.protectsAgainstFire());
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))

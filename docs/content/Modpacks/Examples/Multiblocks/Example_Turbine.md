@@ -33,8 +33,8 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
                 .where('D', Predicates.ability(PartAbility.MUFFLER).setExactLimit(1))
                 .where('F', Predicates.ability(PartAbility.ROTOR_HOLDER).setExactLimit(1))
                 .where('E', Predicates.blocks(ChemicalHelper.getBlock(TagPrefix.frame, GTMaterials.StainlessSteel)))
-                .where('G', Predicates.controller(Predicates.blocks(definition.get())))
-                    .build())
+                .where('G', Predicates.controller(definition.get()))
+                .build())
             .workableCasingModel(GTCEu.id("block/casings/steam/bronze/bottom"),
                     GTCEu.id("block/machines/compressor"))
             .register();

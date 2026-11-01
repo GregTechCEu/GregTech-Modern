@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
@@ -31,6 +32,7 @@ public class ExpandableMultiblockPatternBuilder {
         directions[1] = stringDir;
         directions[2] = charDir;
         RelativeDirection.validateFacingsArray(directions);
+        this.symbolMap.put(' ', Predicates.any());
     }
 
     public static ExpandableMultiblockPatternBuilder start(RelativeDirection aisleDir, RelativeDirection stringDir,

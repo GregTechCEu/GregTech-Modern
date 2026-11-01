@@ -41,6 +41,6 @@ public record FilterBehaviour<T>(Class<T> filterableObjectType, Function<ItemSta
     @Override
     public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
         return Filters.loadFilter(filterableObjectType, data.getUsedItemStack()).getPanel(data, syncManager, settings,
-                true);
+                true, null);
     }
 }

@@ -21,17 +21,12 @@ import net.minecraftforge.fluids.FluidType;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.drawable.GuiTextures;
-import brachy.modularui.drawable.Icon;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widget.Widget;
-import brachy.modularui.widgets.ListWidget;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -134,26 +129,6 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine implements
             value = value * 3 / 2;
         }
         return value;
-    }
-
-    public Widget<?> getMainTextPanel(PanelSyncManager syncManager, int width, int height) {
-        var parentWidget = new ParentWidget<>();
-        var listWidget = new ListWidget<>();
-        listWidget
-                .width(width - 6)
-                .height(height - 6)
-                .childSeparator(Icon.EMPTY_2PX)
-                .crossAxisAlignment(Alignment.CrossAxis.START)
-                .collapseDisabledChildren()
-                .posRel(Alignment.CenterLeft)
-                .left(3)
-                .top(3);
-        parentWidget.size(width, height)
-                .background(GuiTextures.DISPLAY);
-
-        listWidget.children(getWidgetsForDisplay(syncManager));
-        parentWidget.child(listWidget.left(3).top(3));
-        return parentWidget;
     }
 
     @Override

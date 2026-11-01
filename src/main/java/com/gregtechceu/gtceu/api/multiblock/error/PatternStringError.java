@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.error;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ExtraCodecs;
 
@@ -13,7 +14,8 @@ import lombok.Getter;
 public class PatternStringError extends PatternError {
 
     public static final Codec<PatternStringError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ExtraCodecs.COMPONENT.fieldOf("component").forGetter(PatternStringError::getComponent))
+            ExtraCodecs.COMPONENT.fieldOf("component").forGetter(PatternStringError::getComponent),
+            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::pos))
             .apply(instance, PatternStringError::new));
 
     public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("pattern_string_error"), CODEC);
@@ -21,12 +23,22 @@ public class PatternStringError extends PatternError {
     @Getter
     public final Component component;
 
+    public PatternStringError(Component component, BlockPos pos) {
+        super(pos);
+        this.component = component;
+    }
+
     public PatternStringError(Component component) {
+        super();
         this.component = component;
     }
 
     public static PatternStringError of(Component component) {
         return new PatternStringError(component);
+    }
+
+    public static PatternStringError of(Component component, BlockPos pos) {
+        return new PatternStringError(component, pos);
     }
 
     public static PatternStringError literal(String s) {

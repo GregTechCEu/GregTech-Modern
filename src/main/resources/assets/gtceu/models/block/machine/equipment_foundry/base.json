@@ -1,0 +1,44 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "down": "gtceu:block/equipment_foundry/bottom",
+    "up": "gtceu:block/equipment_foundry/top",
+    "north": "gtceu:block/equipment_foundry/front",
+    "south": "gtceu:block/equipment_foundry/back",
+    "west": "gtceu:block/equipment_foundry/left",
+    "east": "gtceu:block/equipment_foundry/right",
+    "top_emissive": "gtceu:block/equipment_foundry/top_emissive",
+    "particle": "gtceu:block/equipment_foundry/front"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "gtceu:face_layer": "base",
+      "faces": {
+        "down": { "texture": "#down", "cullface": "down" },
+        "up": { "texture": "#up", "cullface": "up" },
+        "north": { "texture": "#north", "cullface": "north" },
+        "south": { "texture": "#south", "cullface": "south" },
+        "west": { "texture": "#west", "cullface": "west" },
+        "east": { "texture": "#east", "cullface": "east" }
+      }
+    },
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "shade": false,
+      "neoforge_data": { "block_light": 15, "sky_light": 15 },
+      "faces": {
+        "up": {
+          "uv": [0, 0, 16, 16],
+          "texture": "#top_emissive",
+          "cullface": "up",
+          "tintindex": -101,
+          "gtceu:face_layer": "emissive"
+        }
+      }
+    }
+  ]
+}

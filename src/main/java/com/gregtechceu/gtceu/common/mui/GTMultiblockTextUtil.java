@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -84,12 +85,14 @@ public class GTMultiblockTextUtil {
                     if (listSyncHandler.getValue().isEmpty()) {
                         return unformed;
                     }
-                    BlockPos pos = listSyncHandler.getValue().stream().toList().get(0).getPos();
+                    BlockPos pos = listSyncHandler.getValue().stream().toList().get(0).pos();
+                    if (PatternError.CONTROLLER.equals(pos)) pos = controller.getBlockPos();
+                    final BlockPos fpos = pos;
                     unformed.child(new ButtonWidget<>()
                             .onMousePressed((c, b) -> {
                                 ((ModularGuiContext) c).getScreen().getMainPanel().closeIfOpen();
                                 AABBHighlightRenderer.INSTANCE.addHighlight(AABBHighlightRenderer.builder()
-                                        .aabb(pos)
+                                        .aabb(fpos)
                                         .colorARGB(255, 255, 0, 0)
                                         .thickness(0.025)
                                         .durationMillis(10000)
@@ -97,7 +100,7 @@ public class GTMultiblockTextUtil {
                                         .build());
                                 return true;
                             })
-                            .setEnabledIf(w -> pos != null)
+                            .setEnabledIf(w -> fpos != null)
                             .tooltip(r -> r.add("Highlight the missing predicate in world")));
 
                     for (var error : listSyncHandler.getValue()) {
@@ -315,16 +318,13 @@ public class GTMultiblockTextUtil {
 
     public static TextWidget<?> addParallelLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         IntSyncValue parallelAmount = syncManager.getOrCreateSyncHandler("parallelAmount", IntSyncValue.class,
-                () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().parallels;
-                }));
+                () -> new IntSyncValue(() -> rlMachine.getParallelHatch()
+                        .map(ParallelHatchPartMachine::getCurrentParallel).orElse(0)));
 
         return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(parallelAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
-            String key = "gtceu.multiblock.parallel";
-            return Component.translatable(key, runs)
+            return Component.translatable("gtceu.multiblock.parallel", runs)
                     .withStyle(ChatFormatting.GRAY);
         }).asWidget()
                 .setEnabledIf(widget -> parallelAmount.getIntValue() > 1);

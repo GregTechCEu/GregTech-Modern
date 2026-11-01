@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
@@ -159,33 +158,33 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         syncManager.syncValue("maxOutput", maxOutput);
         syncManager.syncValue("turbineVoltage", turbineVoltage);
 
-        var hasNoRotorWarning = Text.dynamic(() -> (Component.translatable("gtceu.multiblock.turbine.no_rotor"))
-                .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)))
+        var hasNoRotorWarning = Text.lang("gtceu.multiblock.turbine.no_rotor")
+                .withStyle(ChatFormatting.RED)
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && !hasRotor.getBoolValue());
         var rotorSpeedDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_speed",
                 FormattingUtil.formatNumbers(rotorSpeed.getIntValue()),
                 FormattingUtil.formatNumbers(maxRotorSpeed.getIntValue()))
-                .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)))
+                .withStyle(ChatFormatting.WHITE))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue());
         var turbineEfficiencyDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.efficiency",
                 efficiency.getIntValue())
-                .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)))
+                .withStyle(ChatFormatting.WHITE))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue());
         var turbinePowerDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
                 FormattingUtil.formatNumbers(euOutput.getIntValue()),
                 FormattingUtil.formatNumbers(maxOutput.getIntValue()))
-                .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)))
+                .withStyle(ChatFormatting.WHITE))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue() && isActive.getBoolValue());
         var rotorDurabilityDisplay = Text
                 .dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_durability",
                         rotorDurability.getIntValue())
-                        .setStyle(rotorDurability.getIntValue() > MIN_DURABILITY_TO_WARN ?
-                                Style.EMPTY.withColor(ChatFormatting.WHITE) :
-                                Style.EMPTY.withColor(ChatFormatting.RED)))
+                        .withStyle(rotorDurability.getIntValue() > MIN_DURABILITY_TO_WARN ?
+                                ChatFormatting.WHITE :
+                                ChatFormatting.RED))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue());
 

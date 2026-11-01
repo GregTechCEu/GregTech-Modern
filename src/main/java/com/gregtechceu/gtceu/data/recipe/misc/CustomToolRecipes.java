@@ -22,11 +22,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.Tags;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceArrayMap;
@@ -139,7 +141,7 @@ public final class CustomToolRecipes {
 
     private static void registerFlintToolRecipes(@NotNull Consumer<FinishedRecipe> provider) {
         final MaterialEntry flint = new MaterialEntry(TagPrefix.gem, GTMaterials.Flint);
-        final ItemStack stick = new ItemStack(Items.STICK);
+        final TagKey<Item> stick = Tags.Items.RODS_WOODEN;
 
         addToolRecipe(provider, GTMaterials.Flint, GTToolType.MORTAR, false,
                 " I ", "SIS", "SSS",
@@ -178,7 +180,7 @@ public final class CustomToolRecipes {
     }
 
     private static void registerSoftToolRecipes(@NotNull Consumer<FinishedRecipe> provider) {
-        final ItemStack stick = new ItemStack(Items.STICK);
+        final TagKey<Item> stick = Tags.Items.RODS_WOODEN;
 
         for (int i = 0; i < softMaterials.length; i++) {
             Material material = softMaterials[i];
@@ -201,7 +203,7 @@ public final class CustomToolRecipes {
                         ToolHelper.getAndSetToolData(GTToolType.PLUNGER, material, 128 * (i << 1), 1, 4F, 0F),
                         "xPP", " SP", "S f",
                         'P', new MaterialEntry(TagPrefix.plate, material),
-                        'S', rod);
+                        'S', stick);
             }
         }
     }

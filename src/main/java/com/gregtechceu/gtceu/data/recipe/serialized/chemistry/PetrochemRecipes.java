@@ -440,7 +440,7 @@ public class PetrochemRecipes {
                 .inputFluids(raw.getFluid(500))
                 .inputFluids(Hydrogen.getFluid(1000))
                 .outputFluids(hydroCracked.getFluid(250))
-                .duration(80).EUt(30).save(provider);
+                .duration(80).EUt(VA[LV]).save(provider);
 
         CRACKING_RECIPES.recipeBuilder("lightly_steam_crack_" + raw.getName())
                 .circuitMeta(1)
@@ -454,7 +454,7 @@ public class PetrochemRecipes {
                 .inputFluids(raw.getFluid(1000))
                 .inputFluids(Steam.getFluid(1000))
                 .outputFluids(steamCracked.getFluid(500))
-                .duration(160).duration(VA[LV]).save(provider);
+                .duration(160).EUt(VA[LV]).save(provider);
     }
 
     private static void moderatelyCrack(Consumer<FinishedRecipe> provider, Material raw, Material hydroCracked,
