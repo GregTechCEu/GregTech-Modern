@@ -96,11 +96,11 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         if (tag.contains("energyBank", Tag.TAG_COMPOUND)) {
             PowerStationEnergyBank.fixLegacyTag(tag.getCompound("energyBank"));
         }
-        super.load(tag);
+        super.loadAdditional(tag, registries);
     }
 
     @Override

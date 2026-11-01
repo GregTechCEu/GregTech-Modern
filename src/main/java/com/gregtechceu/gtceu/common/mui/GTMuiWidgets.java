@@ -97,6 +97,10 @@ public class GTMuiWidgets {
         return createTitleBarWithEnd(stackSupplier, panelWidth, background, null);
     }
 
+    public static Flow createTitleBar(Component name, int panelWidth, UITexture background) {
+        return createTitleBarWithEnd(null, name.getString(), panelWidth, background, null);
+    }
+
     public static Flow createTitleBarWithEnd(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background,
                                              @Nullable Widget<?> end) {
         ItemStack stack = stackSupplier.get();
@@ -105,7 +109,7 @@ public class GTMuiWidgets {
         return createTitleBarWithEnd(new ItemDrawable(stack).asIcon(), name, panelWidth, background, end);
     }
 
-    public static Flow createTitleBarWithEnd(Icon icon, String text, int panelWidth, UITexture background,
+    public static Flow createTitleBarWithEnd(@Nullable Icon icon, String text, int panelWidth, UITexture background,
                                              @Nullable Widget<?> end) {
         int sidePadding = 5;
         int topPadding = 3;
@@ -136,7 +140,7 @@ public class GTMuiWidgets {
                 .horizontalCenter()
                 .padding(sidePadding, sidePadding, topPadding, 1)
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
-                .child(icon.size(iconSize).asWidget().size(iconSize))
+                .childIf(icon != null, () -> icon.size(iconSize).asWidget().size(iconSize))
                 .child(Text.str(text).asWidget().size(Math.min(minPanelWidth, textTitleWidth), textHeight))
                 .childIf(end != null, () -> end);
     }
