@@ -19,8 +19,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -411,9 +409,9 @@ public final class PartsRecipeHandler {
         }
     }
 
-    private static final Supplier<Set<Material>> LV_ROTOR_MATERIALS = Suppliers.memoize(() -> Set.of(
-            GTMaterials.Copper.value(), GTMaterials.Iron.value(), GTMaterials.Tin.value(),
-            GTMaterials.Bronze.value(), GTMaterials.Steel.value(), GTMaterials.Lead.value()));
+    private static final Set<Holder<Material>> LV_ROTOR_MATERIALS = Set.of(
+            GTMaterials.Copper, GTMaterials.Iron, GTMaterials.Tin,
+            GTMaterials.Bronze, GTMaterials.Steel, GTMaterials.Lead);
 
     private static void processRotor(@NotNull RecipeOutput provider, @NotNull Material material) {
         if (!material.shouldGenerateRecipesFor(rotor) || !material.hasProperty(PropertyKey.INGOT)) {
@@ -428,8 +426,8 @@ public final class PartsRecipeHandler {
                 'R', new MaterialEntry(ring, material));
 
         if (material.shouldGenerateRecipesFor(plate) && material.shouldGenerateRecipesFor(ring)) {
-            int eut = material.getBlastTemperature() >= 2800 ? 256 : 64;
-            if (LV_ROTOR_MATERIALS.get().contains(material)) eut = 16;
+            int eut = material.getBlastTemperature() >= 2800 ? VH[HV] : VH[MV];
+            if (LV_ROTOR_MATERIALS.contains(material.getRegistryHolder())) eut = VH[LV];
             WELDER_RECIPES.recipeBuilder("weld_" + material.getName() + "_parts_to_rotor")
                     .inputItems(plate, material, 4)
                     .inputItems(ring, material, 1)
