@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.core.config;
 
 import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.data.loading.DatagenModLoader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,8 +47,7 @@ public class GTEarlyConfig {
 
         // hidden rules for dev-only mixins
         addHiddenRule("dev", !FMLLoader.isProduction());
-        // mixins that target DatagenModLoader (MixinTargetAlreadyLoadedException).
-        addHiddenRule("dev.datagen", !FMLLoader.isProduction() && DatagenModLoader.isRunningDataGen());
+        addHiddenRule("dev.datagen", !FMLLoader.isProduction() && isDataLaunchTarget());
 
         // bind non-empty parents
         for (Map.Entry<String, Option> entry : this.options.entrySet()) {
@@ -314,6 +312,11 @@ public class GTEarlyConfig {
         } else {
             return FMLLoader.getLoadingModList().getModFileById(modId) != null;
         }
+    }
+
+    private static boolean isDataLaunchTarget() {
+        String launchTarget = FMLLoader.launcherHandlerName();
+        return launchTarget != null && launchTarget.contains("data");
     }
 
     public static final boolean OPTIFINE_PRESENT;
