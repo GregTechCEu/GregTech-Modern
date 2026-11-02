@@ -160,16 +160,9 @@ public class RecipeRunner {
                     continue;
                 }
             }
-            if (!simulated) {
-                // Actually consume the contents of this handler and also all the bypassed handlers
-                recipeContents = handler.handleRecipe(io, recipe, recipeContents, false);
-                if (!recipeContents.isEmpty()) {
-                    for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
-                            Collections.emptyList())) {
-                        recipeContents = bypassHandler.handleRecipe(io, recipe, recipeContents, false);
-                        if (recipeContents.isEmpty()) break;
-                    }
-                }
+            if (!simulated && !consume(List.of(handler),
+                    handlerGroups.getOrDefault(BYPASS_DISTINCT, Collections.emptyList()))) {
+                continue;
             }
             recipeContents.clear();
             return ActionResult.SUCCESS;
@@ -219,25 +212,12 @@ public class RecipeRunner {
                 }
             }
             if (simulated) return ActionResult.SUCCESS;
-            // Start actually removing items.
-            // Keep track of the remaining items for this RecipeHandlerGroup
-            // First go through the handlers of the group
-            for (RecipeHandlerList handler : handlerListEntry.getValue()) {
-                recipeContents = handler.handleRecipe(io, recipe, recipeContents, false);
-                if (recipeContents.isEmpty()) {
-                    return ActionResult.SUCCESS;
-                }
-            }
-            // Then go through the handlers that bypass the distinctness system and empty those
             // If we're already in the bypass_distinct group, don't check it twice.
-            if (!handlerListEntry.getKey().equals(BYPASS_DISTINCT)) {
-                for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
-                        Collections.emptyList())) {
-                    recipeContents = bypassHandler.handleRecipe(io, recipe, recipeContents, false);
-                    if (recipeContents.isEmpty()) {
-                        return ActionResult.SUCCESS;
-                    }
-                }
+            var bypassHandlers = handlerListEntry.getKey().equals(BYPASS_DISTINCT) ?
+                    List.<RecipeHandlerList>of() :
+                    handlerGroups.getOrDefault(BYPASS_DISTINCT, Collections.emptyList());
+            if (consume(handlerListEntry.getValue(), bypassHandlers) && recipeContents.isEmpty()) {
+                return ActionResult.SUCCESS;
             }
         }
 
@@ -299,6 +279,33 @@ public class RecipeRunner {
             sum += (double) (total - leftCount) / total;
         }
         return caps == 0 ? 1.0 : sum / caps;
+    }
+
+    /**
+     * Consumes the recipe contents from the given handlers, then from the bypass handlers if anything is left.
+     * @return true if we could handle all the contents fully, otherwise false and we roll back every change
+     */
+    private boolean consume(List<RecipeHandlerList> handlers, List<RecipeHandlerList> bypassHandlers) {
+        try (var transaction = RecipeTransaction.begin()) {
+            var remaining = recipeContents;
+            for (var handler : handlers) {
+                remaining = handler.handleRecipe(io, recipe, remaining, false);
+                if (remaining.isEmpty()) break;
+            }
+            if (!remaining.isEmpty()) {
+                for (var handler : bypassHandlers) {
+                    remaining = handler.handleRecipe(io, recipe, remaining, false);
+                    if (remaining.isEmpty()) break;
+                }
+            }
+
+            var failed = io == IO.OUT ? hasAnyNonVoidingContents(remaining) : !remaining.isEmpty();
+            if (failed) return false;
+
+            transaction.commit();
+            recipeContents = remaining;
+            return true;
+        }
     }
 
     private boolean hasAnyNonVoidingContents(Map<RecipeCapability<?>, List<Object>> contents) {

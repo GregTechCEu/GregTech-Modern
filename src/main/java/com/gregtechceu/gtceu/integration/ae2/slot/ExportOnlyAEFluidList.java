@@ -122,6 +122,11 @@ public class ExportOnlyAEFluidList extends NotifiableFluidTank implements IConfi
         }
 
         @Override
+        public void setFluid(FluidStack stack) {
+            // NO-OP
+        }
+
+        @Override
         public int fill(FluidStack resource, FluidAction action) {
             return 0;
         }

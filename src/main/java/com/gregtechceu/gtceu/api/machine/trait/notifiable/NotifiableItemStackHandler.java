@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeTransaction;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -112,6 +113,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         // Necessary for simulation since we don't actually modify the slot's contents
         // Doesn't hurt for execution, and definitely cheaper than copying the entire storage
         ItemStack[] visited = new ItemStack[storage.getSlots()];
+        boolean snapshot = !simulate && RecipeTransaction.isActive();
         for (var it = left.listIterator(); it.hasNext();) {
             var ingredient = it.next();
             if (ingredient.isEmpty()) {
@@ -141,6 +143,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                 if (io == IO.IN) {
                     if (current.isEmpty()) continue;
                     if (ingredient.test(current)) {
+                        if (snapshot && visited[slot] == null) snapshotSlot(storage, slot);
                         var extracted = recipe == null ? null : getActioned(storage, slot, recipe.ingredientActions);
                         if (extracted == null) extracted = storage.extractItem(slot, Math.min(count, amount), simulate);
                         if (!extracted.isEmpty()) {
@@ -172,6 +175,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                     // Only try this slot if not visited or if visited with the same type of item
                     if (visited[slot] == null || GTUtil.isSameItemSameTags(visited[slot], output)) {
                         if (count < output.getMaxStackSize() && count < storage.getSlotLimit(slot)) {
+                            if (snapshot && visited[slot] == null) snapshotSlot(storage, slot);
                             var remainder = recipe == null ? null :
                                     getActioned(storage, slot, recipe.ingredientActions);
                             if (remainder == null) remainder = storage.insertItem(slot, output, simulate);
@@ -203,6 +207,11 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         if (changed && !simulate) listener.run();
 
         return left;
+    }
+
+    private static void snapshotSlot(CustomItemStackHandler storage, int slot) {
+        var before = storage.getStackInSlot(slot).copy();
+        RecipeTransaction.record(() -> storage.setStackInSlot(slot, before));
     }
 
     private static @Nullable ItemStack getActioned(CustomItemStackHandler storage, int index, List<?> actions) {

@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.recipe.RecipeTransaction;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -368,6 +370,16 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
                         ItemStack resultStack = key instanceof AEItemKey itemKey ?
                                 itemKey.toStack((int) extracted) : ItemStack.EMPTY;
                         if (!simulate) {
+                            var previousStock = this.stock;
+                            RecipeTransaction.record(() -> {
+                                long inserted = aeNetwork.insert(key, extracted, Actionable.MODULATE,
+                                        stockingBusPartMachine.actionSource);
+                                if (inserted < extracted) {
+                                    GTCEu.LOGGER.warn("Stocking rollback could only reinsert {} of {} {}", inserted, extracted, key);
+                                }
+                                this.stock = previousStock;
+                                this.onContentsChanged.run();
+                            });
                             // may as well update the display here
                             this.stock = ExportOnlyAESlot.copy(stock, stock.amount() - extracted);
                             if (this.stock.amount() == 0) {
