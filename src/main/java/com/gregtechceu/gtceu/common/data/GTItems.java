@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
+import com.gregtechceu.gtceu.common.cover.InfiniteWaterCover;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
@@ -1682,9 +1683,11 @@ public class GTItems {
             .setData(ProviderType.LANG,
                     nameAndTooltipLang("Infinite Water Cover",
                             "Fills attached containers with §9Water§r as §fCover§r."))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(Component.translatable("common.gtceu.tooltip.produces_fluid", 16_000 / 20));
-            }), new CoverPlaceBehavior(GTCovers.INFINITE_WATER))).register();
+            .onRegister(attach(
+                    new TooltipBehavior(Component.translatable("common.gtceu.tooltip.produces_fluid",
+                            InfiniteWaterCover.AVG_FLUID_PER_TICK)),
+                    new CoverPlaceBehavior(GTCovers.INFINITE_WATER)))
+            .register();
 
     public static ItemEntry<ComponentItem> COVER_ENDER_FLUID_LINK = REGISTRATE
             .item("ender_fluid_link_cover", ComponentItem::create)
@@ -1746,27 +1749,24 @@ public class GTItems {
             .setData(ProviderType.LANG,
                     nameAndMultilineTooltipLang("Solar Panel Cover",
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(GTCommonComponents.voltage(IO.OUT, GTValues.ULV));
-            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL_BASIC)))
+            .onRegister(attach(new TooltipBehavior(GTCommonComponents.voltage(IO.OUT, GTValues.ULV))))
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL_BASIC)))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ULV = REGISTRATE
             .item("ulv_solar_panel", ComponentItem::create)
             .setData(ProviderType.LANG,
                     nameAndMultilineTooltipLang("Ultra Low Voltage Solar Panel Cover",
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(GTCommonComponents.voltage(IO.OUT, GTValues.ULV));
-            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[0])))
+            .onRegister(attach(new TooltipBehavior(GTCommonComponents.voltage(IO.OUT, GTValues.ULV))))
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[0])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LV = REGISTRATE
             .item("lv_solar_panel", ComponentItem::create)
             .setData(ProviderType.LANG,
                     nameAndMultilineTooltipLang("Low Voltage Solar Panel Cover",
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(GTCommonComponents.voltage(IO.OUT, GTValues.LV));
-            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[1])))
+            .onRegister(attach(new TooltipBehavior(GTCommonComponents.voltage(IO.OUT, GTValues.LV))))
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[1])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_MV = REGISTRATE
             .item("mv_solar_panel", ComponentItem::create)
@@ -1774,63 +1774,56 @@ public class GTItems {
             .setData(ProviderType.LANG,
                     nameAndMultilineTooltipLang("Medium Voltage Solar Panel Cover",
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(GTCommonComponents.voltage(IO.OUT, GTValues.MV));
-            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[2])))
+            .onRegister(attach(new TooltipBehavior(GTCommonComponents.voltage(IO.OUT, GTValues.MV))))
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[2])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_HV = REGISTRATE
             .item("hv_solar_panel", ComponentItem::create)
             .setData(ProviderType.LANG,
                     nameAndMultilineTooltipLang("High Voltage Solar Panel Cover",
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(GTCommonComponents.voltage(IO.OUT, GTValues.HV));
-            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[3])))
+            .onRegister(attach(new TooltipBehavior(GTCommonComponents.voltage(IO.OUT, GTValues.HV))))
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[3])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_EV = REGISTRATE
             .item("ev_solar_panel", ComponentItem::create)
             .setData(ProviderType.LANG,
                     nameAndMultilineTooltipLang("Extreme Voltage Solar Panel Cover",
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(GTCommonComponents.voltage(IO.OUT, GTValues.EV));
-            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[4])))
+            .onRegister(attach(new TooltipBehavior(GTCommonComponents.voltage(IO.OUT, GTValues.EV))))
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[4])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_IV = REGISTRATE
             .item("iv_solar_panel", ComponentItem::create)
             .setData(ProviderType.LANG,
                     nameAndMultilineTooltipLang("Insane Voltage Solar Panel Cover",
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(GTCommonComponents.voltage(IO.OUT, GTValues.IV));
-            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[5])))
+            .onRegister(attach(new TooltipBehavior(GTCommonComponents.voltage(IO.OUT, GTValues.IV))))
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[5])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LuV = REGISTRATE
             .item("luv_solar_panel", ComponentItem::create)
             .setData(ProviderType.LANG,
                     nameAndMultilineTooltipLang("Ludicrous Voltage Solar Panel Cover",
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(GTCommonComponents.voltage(IO.OUT, GTValues.LuV));
-            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[6])))
+            .onRegister(attach(new TooltipBehavior(GTCommonComponents.voltage(IO.OUT, GTValues.LuV))))
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[6])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ZPM = REGISTRATE
             .item("zpm_solar_panel", ComponentItem::create)
             .setData(ProviderType.LANG,
                     nameAndMultilineTooltipLang("Zero Point Module Solar Panel Cover",
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(GTCommonComponents.voltage(IO.OUT, GTValues.ZPM));
-            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[7])))
+            .onRegister(attach(new TooltipBehavior(GTCommonComponents.voltage(IO.OUT, GTValues.ZPM))))
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[7])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_UV = REGISTRATE
             .item("uv_solar_panel", ComponentItem::create)
             .setData(ProviderType.LANG,
                     nameAndMultilineTooltipLang("Ultimate Voltage Solar Panel Cover",
                             "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r"))
-            .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.add(GTCommonComponents.voltage(IO.OUT, GTValues.UV));
-            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[8])))
+            .onRegister(attach(new TooltipBehavior(GTCommonComponents.voltage(IO.OUT, GTValues.UV))))
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[8])))
             .register();
 
     // Plugin

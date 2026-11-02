@@ -38,9 +38,9 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
     // var tag = getBehaviorsTag(holder.getHeld());
     // var defaultDefinition = getMaxAoEDefinition(holder.getHeld());
     // return new ModularUI(120, 80, holder, player).background(GuiTextures.BACKGROUND)
-    // .widget(new LabelWidget(6, 10, "item.gtceu.tool.aoe.columns"))
-    // .widget(new LabelWidget(49, 10, "item.gtceu.tool.aoe.rows"))
-    // .widget(new LabelWidget(79, 10, "item.gtceu.tool.aoe.layers"))
+    // .widget(new LabelWidget(6, 10, "gui.gtceu.tool_aoe.columns"))
+    // .widget(new LabelWidget(49, 10, "gui.gtceu.tool_aoe.rows"))
+    // .widget(new LabelWidget(79, 10, "gui.gtceu.tool_aoe.layers"))
     // .widget(new ButtonWidget(15, 24, 20, 20, new TextTexture("+"), (data) -> {
     // AoESymmetrical.increaseColumn(tag, defaultDefinition);
     // holder.markAsDirty();
@@ -107,9 +107,9 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
                         .child(Flow.column()
                                 .childPadding(6)
                                 .coverChildren()
-                                .child(Text.lang("item.gtceu.tool.aoe.columns").asWidget())
-                                .child(Text.lang("item.gtceu.tool.aoe.rows").asWidget())
-                                .child(Text.lang("item.gtceu.tool.aoe.layers").asWidget()))
+                                .child(Text.lang("gui.gtceu.tool_aoe.columns").asWidget())
+                                .child(Text.lang("gui.gtceu.tool_aoe.rows").asWidget())
+                                .child(Text.lang("gui.gtceu.tool_aoe.layers").asWidget()))
                         .child(Flow.column()
                                 .childPadding(2)
                                 .coverChildren()

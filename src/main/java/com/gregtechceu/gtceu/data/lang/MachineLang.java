@@ -178,7 +178,7 @@ public class MachineLang {
 
         // World Accelerator
         provider.add("machine.gtceu.world_accelerator.description",
-                "Tick accelerates nearby blocks in one of 2 modes: §fTile Entity§r or §fRandom Tick§r. Use Screwdriver to change mode.");
+                "Tick accelerates nearby blocks in one of 2 modes: §fBlock Entity§r or §fRandom Tick§r. Use Screwdriver to change mode.");
         provider.add("machine.gtceu.world_accelerator.working_area", "§bWorking Area:");
         provider.add("machine.gtceu.world_accelerator.working_area_tile",
                 "  Block Entity Mode:§f Adjacent Blocks");
@@ -252,7 +252,6 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.creative_tooltip.3", " to use this");
 
         provider.add("machine.gtceu.quantum_chest.tooltip", "Better than Storage Drawers");
-        provider.add("machine.gtceu.quantum_chest.items_stored", "Item Amount:");
         provider.add("machine.gtceu.quantum_tank.tooltip", "Compact place to store all your fluids");
 
         provider.add("gui.gtceu.machine.creative_chest.item", "Item");
@@ -261,8 +260,6 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.creative_tank.fluid", "Fluid");
         provider.add("gui.gtceu.machine.creative_tank.mbpc", "mB per Cycle");
         provider.add("gui.gtceu.machine.creative_tank.tpc", "Ticks per Cycle");
-        provider.add("gui.gtceu.machine.creative_energy.amperage", "Amperage");
-        provider.add("gui.gtceu.machine.creative_energy.voltage", "Voltage");
         provider.add("gui.gtceu.machine.creative_energy.sink", "Sink");
         provider.add("gui.gtceu.machine.creative_energy.source", "Source");
         provider.add("gui.gtceu.machine.creative_computation.average", "Average Requested CWUt: %s");
@@ -423,10 +420,10 @@ public class MachineLang {
         provider.add("machine.gtceu.cleanroom.tooltip.ae2.channels",
                 "Send up to §f8 AE2 Channels §rthrough §fHulls§r in the walls.");
         provider.add("machine.gtceu.cleanroom.tooltip.ae2.no_channels",
-                "Send §aAE2 Networks§r through §fHulls§r in the walls.");
+                "Send §rAE2 Networks§r through §fHulls§r in the walls.");
         provider.add("gui.gtceu.machine.cleanroom.clean_state", "Status: §aCLEAN");
         provider.add("gui.gtceu.machine.cleanroom.dirty_state", "Status: §4CONTAMINATED");
-        provider.add("gui.gtceu.machine.cleanroom.clean_amount", "Cleanliness: §a%s%%");
+        provider.add("gui.gtceu.machine.cleanroom.clean_amount", "Cleanliness: §r%s%%");
 
         // Power Substation
         provider.add("gui.gtceu.machine.power_substation.stored", "Stored: %s §rEU");
@@ -696,13 +693,6 @@ public class MachineLang {
         provider.add("machine.gtceu.laser_hatch.source.tooltip", "Transmitting power at distance");
         provider.add("machine.gtceu.laser_hatch.target.tooltip", "Receiving power from distance");
         provider.add("machine.gtceu.laser_hatch.both.tooltip", "§cLaser Cables must be in a straight line!§r");
-        provider.addMultiLang("machine.gtceu.laser_source_hatch.tooltip",
-                "Transmitting power at distance",
-                "§cLaser cables must be in a straight line!§r");
-
-        provider.addMultiLang("machine.gtceu.laser_target_hatch.tooltip",
-                "Receiving power from distance",
-                "§cLaser cables must be in a straight line!§r");
     }
 
     private static void generateCentralMonitorGuiLang(GTLangProvider provider) {
@@ -1121,17 +1111,15 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.progress", "Progress: %ss / %ss (%s%%)");
 
         // Recipe Outputs
-        provider.add("gui.gtceu.machine.output_line.0", "%s x §e%s§r (%ss/ea)");
-        provider.add("gui.gtceu.machine.output_line.1", "%s x §e%s§r (%s/s)");
-        provider.add("gui.gtceu.machine.output_line.2", "%s ≈ §e%s§r (%ss/ea)");
-        provider.add("gui.gtceu.machine.output_line.3", "%s ≈ §e%s§r (%s/s)");
+        provider.add("gui.gtceu.machine.output_line.exact_each", "%s x §e%s§r (%ss/ea)");
+        provider.add("gui.gtceu.machine.output_line.exact_per_sec", "%s x §e%s§r (%s/s)");
+        provider.add("gui.gtceu.machine.output_line.rounded_each", "%s ≈ §e%s§r (%ss/ea)");
+        provider.add("gui.gtceu.machine.output_line.rounded_per_sec", "%s ≈ §e%s§r (%s/s)");
 
         // Structure Validation
         provider.add("gui.gtceu.machine.invalid_structure", "Invalid structure.");
         provider.add("gui.gtceu.machine.invalid_structure.tooltip",
                 "This block is a controller of the multiblock structure. For building help, see structure template in JEI.");
-
-        // Pattern Preview
 
         // Hatch Limitation - Mostly for GCYM Multiblocks that are Hardcoded into GTCEU
         provider.add("gui.gtceu.machine.single_energy_hatch_only.tooltip", "§fAccepts Exactly §6One §fEnergy Hatch.");
@@ -1159,13 +1147,6 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.maintenance.wire_cutter", "Wires burned out");
         provider.add("gui.gtceu.machine.maintenance.crowbar", "That doesn't belong there");
 
-        provider.add("gui.gtceu.maintenance.problem.wrench", "§7Pipe is loose. (§aWrench§7)");
-        provider.add("gui.gtceu.maintenance.problem.screwdriver", "§7Screws are loose. (§aScrewdriver§7)");
-        provider.add("gui.gtceu.maintenance.problem.soft_mallet", "§7Something is stuck. (§aSoft Mallet§7)");
-        provider.add("gui.gtceu.maintenance.problem.hard_hammer", "§7Plating is dented. (§aHard Hammer§7)");
-        provider.add("gui.gtceu.maintenance.problem.wire_cutter", "§7Wires burned out. (§aWire Cutter§7)");
-        provider.add("gui.gtceu.maintenance.problem.crowbar", "§7That doesn't belong there. (§aCrowbar§7)");
-
         // Muffler
         provider.add("gui.gtceu.machine.muffler_obstructed", "Muffler Hatch is Obstructed!");
         provider.add("gui.gtceu.machine.muffler_obstructed.tooltip",
@@ -1185,12 +1166,9 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.machine_mode_recipes.tooltip", "Machine Modes: §e%s§r");
         provider.add("gui.gtceu.machine.machine_mode.switch_message",
                 "The machine must be off to switch modes!");
-        provider.add("gui.gtceu.active_machine_mode.title", "Active Machine Mode");
-        provider.add("gui.gtceu.active_machine_mode", "Active Machine Mode: %s");
-        provider.add("gui.gtceu.active_machine_mode.tab_tooltip", "Change active Machine Mode");
-        provider.add("gui.gtceu.available_recipe_types_1.tooltip", "Available Recipe Types: %s");
-        provider.add("gui.gtceu.available_recipe_types_2.tooltip", "Available Recipe Types: %s, %s");
-        provider.add("gui.gtceu.available_recipe_types_3.tooltip", "Available Recipe Types: %s, %s, %s");
-        provider.add("gui.gtceu.available_recipe_types_4.tooltip", "Available Recipe Types: %s, %s, %s, %s");
+        provider.add("gui.gtceu.machine.active_machine_mode.title", "Active Machine Mode");
+        provider.add("gui.gtceu.machine.active_machine_mode", "Active Machine Mode: %s");
+        provider.add("gui.gtceu.machine.active_machine_mode.tab_tooltip", "Change active Machine Mode");
+        provider.add("gui.gtceu.machine.available_recipe_types", "Available Recipe Types:");
     }
 }

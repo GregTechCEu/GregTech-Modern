@@ -916,10 +916,10 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.INPUT_ENERGY)
                     .modelProperty(IS_FORMED, false)
-                    .tooltips(GTCommonComponents.voltage(IO.IN, tier),
+                    .tooltips(Component.translatable("machine.gtceu.energy_hatch.input.tooltip"),
+                            GTCommonComponents.voltage(IO.IN, tier),
                             GTCommonComponents.amperage(IN, 2),
-                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 2)),
-                            Component.translatable("machine.gtceu.energy_hatch.input.tooltip"))
+                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 2)))
                     .overlayTieredHullModel("energy_input_hatch")
                     .register(),
             ALL_TIERS);
@@ -933,10 +933,10 @@ public class GTMachines {
                     .abilities(PartAbility.OUTPUT_ENERGY)
                     .modelProperty(IS_FORMED, false)
                     .tooltips(
+                            Component.translatable("machine.gtceu.energy_hatch.output.tooltip"),
                             GTCommonComponents.voltage(OUT, tier),
                             GTCommonComponents.amperage(OUT, 2),
-                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 2)),
-                            Component.translatable("machine.gtceu.energy_hatch.output.tooltip"))
+                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 2)))
                     .overlayTieredHullModel("energy_output_hatch")
                     .register(),
             ALL_TIERS);
@@ -949,10 +949,10 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.INPUT_ENERGY)
                     .modelProperty(IS_FORMED, false)
-                    .tooltips(GTCommonComponents.voltage(IO.IN, tier),
+                    .tooltips(Component.translatable("machine.gtceu.energy_hatch.input_hi_amp.tooltip"),
+                            GTCommonComponents.voltage(IO.IN, tier),
                             GTCommonComponents.amperage(IO.IN, 4),
-                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 4)),
-                            Component.translatable("machine.gtceu.energy_hatch.input_hi_amp.tooltip"))
+                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 4)))
                     .overlayTieredHullModel("energy_input_hatch_4a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
@@ -965,10 +965,10 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.OUTPUT_ENERGY)
                     .modelProperty(IS_FORMED, false)
-                    .tooltips(GTCommonComponents.voltage(OUT, tier),
+                    .tooltips(Component.translatable("machine.gtceu.energy_hatch.output_hi_amp.tooltip"),
+                            GTCommonComponents.voltage(OUT, tier),
                             GTCommonComponents.amperage(OUT, 4),
-                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 4)),
-                            Component.translatable("machine.gtceu.energy_hatch.output_hi_amp.tooltip"))
+                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 4)))
                     .overlayTieredHullModel("energy_output_hatch_4a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
@@ -981,10 +981,10 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.INPUT_ENERGY)
                     .modelProperty(IS_FORMED, false)
-                    .tooltips(GTCommonComponents.voltage(IO.IN, tier),
+                    .tooltips(Component.translatable("machine.gtceu.energy_hatch.input_hi_amp.tooltip"),
+                            GTCommonComponents.voltage(IO.IN, tier),
                             GTCommonComponents.amperage(IN, 16),
-                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 16)),
-                            Component.translatable("machine.gtceu.energy_hatch.input_hi_amp.tooltip"))
+                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 16)))
                     .overlayTieredHullModel("energy_input_hatch_16a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
@@ -997,10 +997,10 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.OUTPUT_ENERGY)
                     .modelProperty(IS_FORMED, false)
-                    .tooltips(GTCommonComponents.voltage(OUT, tier),
+                    .tooltips(Component.translatable("machine.gtceu.energy_hatch.output_hi_amp.tooltip"),
+                            GTCommonComponents.voltage(OUT, tier),
                             GTCommonComponents.amperage(OUT, 16),
-                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 16)),
-                            Component.translatable("machine.gtceu.energy_hatch.output_hi_amp.tooltip"))
+                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 16)))
                     .overlayTieredHullModel("energy_output_hatch_16a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
@@ -1013,10 +1013,10 @@ public class GTMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.SUBSTATION_INPUT_ENERGY)
                     .modelProperty(IS_FORMED, false)
-                    .tooltips(GTCommonComponents.voltage(IO.IN, tier),
+                    .tooltips(Component.translatable("machine.gtceu.substation_hatch.input.tooltip"),
+                            GTCommonComponents.voltage(IO.IN, tier),
                             GTCommonComponents.amperage(IO.IN, 64),
-                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 64)),
-                            Component.translatable("machine.gtceu.substation_hatch.input.tooltip"))
+                            GTCommonComponents.energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, 64)))
                     .overlayTieredHullModel("energy_input_hatch_64a")
                     .register(),
             GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV));
@@ -1268,8 +1268,11 @@ public class GTMachines {
                     .modelProperty(IS_FORMED, false)
                     .modelProperty(GTMachineModelProperties.DIODE_AMP_MODE, DiodePartMachine.AmpMode.MODE_1A)
                     .model(createDiodeModel())
-                    .tooltips(Component.translatable("machine.gtceu.diode.tooltip_general"),
-                            Component.translatable("machine.gtceu.diode.tooltip_starts_at"),
+                    .tooltips(
+                            Component.translatable("machine.gtceu.diode.tooltip_general")
+                                    .withStyle(ChatFormatting.GRAY),
+                            Component.translatable("machine.gtceu.diode.tooltip_starts_at")
+                                    .withStyle(ChatFormatting.GRAY),
                             GTCommonComponents.voltage(BOTH, tier),
                             GTCommonComponents.amperageUpTo(BOTH, DiodePartMachine.MAX_AMPS))
                     .register(),

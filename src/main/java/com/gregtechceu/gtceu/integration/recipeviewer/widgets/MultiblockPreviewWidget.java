@@ -356,7 +356,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             ((ModularGuiContext) guiContext).getScreen().getMainPanel().closeIfOpen();
                             return true;
                         })
-                        .tooltip(r -> r.addLine(Component.translatable("gtceu.terminal.clear_multi"))))
+                        .tooltip(r -> r.addLine(Component.translatable("gui.gtceu.multi_preview.clear_multiblock"))))
                 .childIf(terminal, () -> new ButtonWidget<>()
                         .right(24)
                         .overlay(new DrawableStack(new ItemDrawable(GTBlocks.COIL_CUPRONICKEL),
@@ -366,7 +366,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             ((ModularGuiContext) guiContext).getScreen().getMainPanel().closeIfOpen();
                             return true;
                         })
-                        .tooltip(r -> r.addLine(Component.translatable("gtceu.terminal.clear_preference"))))
+                        .tooltip(r -> r.addLine(Component.translatable("gui.gtceu.multi_preview.clear_preferences"))))
                 .childIf(terminal, () -> new ToggleButton()
                         .right(43)
                         .overlay(new DrawableStack(new ItemDrawable(GTMachines.ITEM_EXPORT_BUS[0].asStack()),
@@ -376,7 +376,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             refreshSchema();
                             notifyWidgetHandlers();
                         }))
-                        .tooltip(r -> r.addLine(Component.translatable("gtceu.terminal.clear_preference"))))
+                        .tooltip(r -> r.addLine(Component.translatable("gui.gtceu.multi_preview.clear_preferences"))))
                 .child(new DynamicWidget<>()
                         .right(-20)
                         .clientOnlyHandler(structureErrorHandler));

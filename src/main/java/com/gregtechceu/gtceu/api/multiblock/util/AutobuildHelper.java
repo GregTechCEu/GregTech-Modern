@@ -165,7 +165,7 @@ public class AutobuildHelper {
                 level.setBlockAndUpdate(pos, blockState);
                 continue;
             }
-            var blocksLeft = whatWeHave.merge(blockState.getBlock().asItem(), -1, Integer::sum);
+            int blocksLeft = whatWeHave.merge(blockState.getBlock().asItem(), -1, Integer::sum);
             if (blocksLeft < 0) {
                 blocksLeft = whatWeHaveAE.merge(blockState.getBlock().asItem(), -1, Integer::sum);
                 if (blocksLeft < 0) continue;
@@ -229,7 +229,7 @@ public class AutobuildHelper {
         }
     }
 
-    public class AEWrapper {
+    public static class AEWrapper {
 
         @Nullable
         public static IGrid getLinkedGrid(ItemStack stack, Level level, Player player) {
@@ -239,25 +239,25 @@ public class AutobuildHelper {
 
             var linkedPos = TerminalBehavior.getLinkedPos(stack);
             if (linkedPos == null) {
-                player.displayClientMessage(Component.translatable("gtceu.terminal.not_linked"), true);
+                player.displayClientMessage(Component.translatable("gui.gtceu.terminal.not_bound_to_me_network"), true);
                 return null;
             }
 
             var linkedLevel = serverLevel.getServer().getLevel(linkedPos.dimension());
             if (linkedLevel == null) {
-                player.displayClientMessage(Component.translatable("gtceu.terminal.network_missing"), true);
+                player.displayClientMessage(Component.translatable("gui.gtceu.terminal.me_network_invalid"), true);
                 return null;
             }
 
             var be = Platform.getTickingBlockEntity(linkedLevel, linkedPos.pos());
             if (!(be instanceof IWirelessAccessPoint accessPoint)) {
-                player.displayClientMessage(Component.translatable("gtceu.terminal.network_missing"), true);
+                player.displayClientMessage(Component.translatable("gui.gtceu.terminal.me_network_invalid"), true);
                 return null;
             }
 
             var grid = accessPoint.getGrid();
             if (grid == null) {
-                player.displayClientMessage(Component.translatable("gtceu.terminal.network_missing"), true);
+                player.displayClientMessage(Component.translatable("gui.gtceu.terminal.me_network_invalid"), true);
                 return null;
             }
             return grid;

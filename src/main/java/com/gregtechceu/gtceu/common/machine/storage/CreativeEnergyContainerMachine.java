@@ -267,7 +267,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
     static Flow createAmpRow(IntSyncValue amps) {
         return Flow.row()
                 .coverChildrenHeight()
-                .child(Text.lang("gui.gtceu.machine.creative_energy.amperage").asWidget()
+                .child(Text.lang("common.gtceu.amperage_label").asWidget()
                         .marginRight(4)
                         .verticalCenter().width(50))
                 .child(
@@ -347,7 +347,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                 .width(72)
                 .height(104)
                 .child(Flow.column()
-                        .child(Text.lang("integration.gtceu.jade.cable.voltage").asWidget().top(4).left(3))
+                        .child(Text.lang("common.gtceu.voltage_label").asWidget().top(4).left(3))
                         .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.80f).horizontalCenter().top(19))
                         .child(new ListWidget<>()

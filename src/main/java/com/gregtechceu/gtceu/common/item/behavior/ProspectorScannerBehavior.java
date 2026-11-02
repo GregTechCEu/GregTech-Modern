@@ -45,7 +45,7 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
     private final long cost;
     private final ProspectorMode<?>[] modes;
 
-    public ProspectorScannerBehavior(int radius, long cost, ProspectorMode<?>... modes) {
+    public ProspectorScannerBehavior(int radius, long cost, @Nullable ProspectorMode<?>... modes) {
         this.radius = radius + 1;
         this.modes = Arrays.stream(modes).filter(Objects::nonNull).toArray(ProspectorMode[]::new);
         this.cost = cost;

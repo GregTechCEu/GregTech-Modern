@@ -52,9 +52,19 @@ public class MultiblockLang {
         provider.add("multiblock.gtceu.pattern_error.research.missing_object_holder", "Missing object holder hatch.");
         provider.add("multiblock.gtceu.pattern_error.charcoal.walls", "Incorrect wall block at (%d, %d, %d).");
         provider.add("multiblock.gtceu.pattern_error.charcoal.logs", "Must be completely filled with logs.");
+        provider.add("multiblock.gtceu.pattern_error.charcoal.too_small", "Charcoal Pile is too small.");
         provider.add("multiblock.gtceu.pattern_error.steam.missing_steam_hatch", "Missing steam hatch");
 
-        // Autobuilding
+        // Autobuilding, Multiblock Preview & Terminal
+
+        provider.add("gui.gtceu.multi_preview.clear_preferences", "Clear Preferences");
+        provider.add("gui.gtceu.multi_preview.clear_multiblock", "Clear Multiblock");
+
+        provider.add("gui.gtceu.terminal.bound_to_controller", "Bound to multiblock controller at (%s, %s, %s).");
+        provider.add("gui.gtceu.terminal.bound_to_me_network", "Bound to ME network. (%s, %s, %s, %s)");
+        provider.add("gui.gtceu.terminal.not_bound_to_me_network", "Terminal is not bound to ME network.");
+
+        provider.add("gui.gtceu.terminal.me_network_invalid", "Cannot access ME network.");
 
         provider.add("gui.gtceu.autobuild.ae_blocks", "The following blocks are in AE:");
         provider.add("gui.gtceu.autobuild.placed_blocks", "The following blocks were placed:");
