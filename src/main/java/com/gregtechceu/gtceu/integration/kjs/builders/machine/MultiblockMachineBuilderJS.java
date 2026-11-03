@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBu
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
@@ -131,7 +133,7 @@ public class MultiblockMachineBuilderJS extends BuilderBase<MultiblockMachineDef
     }
 
     public MultiblockMachineBuilderJS recipeType(GTRecipeType recipeTypes) {
-        internal.recipeType(() -> recipeTypes);
+        internal.recipeType(DeferredHolder.create(Registries.RECIPE_TYPE, recipeTypes.id));
         return this;
     }
 

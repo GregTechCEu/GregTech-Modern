@@ -14,9 +14,11 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -110,6 +112,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         }
         this.proxyRecipes = map;
         category.setXEIVisible(properties.recipeViewerCategoryVisible());
+    }
+
+    public ResourceKey<RecipeType<?>> getKey() {
+        return ResourceKey.create(Registries.RECIPE_TYPE, id);
     }
 
     @Override

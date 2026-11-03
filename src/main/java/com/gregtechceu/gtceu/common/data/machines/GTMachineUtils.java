@@ -64,11 +64,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import brachy.modularui.api.drawable.Text;
 import it.unimi.dsi.fastutil.Pair;
@@ -235,7 +237,7 @@ public class GTMachineUtils {
     }
 
     public static MachineEntry<MachineDefinition>[] registerSimpleGenerator(GTRegistrate registrate, String name,
-                                                                            Supplier<GTRecipeType> recipeType,
+                                                                            DeferredHolder<RecipeType<?>, GTRecipeType> recipeType,
                                                                             Int2IntFunction tankScalingFunction,
                                                                             float hazardStrengthPerOperation,
                                                                             int... tiers) {
@@ -259,7 +261,7 @@ public class GTMachineUtils {
 
     public static Pair<MachineEntry<MachineDefinition>, MachineEntry<MachineDefinition>> registerSimpleSteamMachines(GTRegistrate registrate,
                                                                                                                      String name,
-                                                                                                                     Supplier<GTRecipeType> recipeType) {
+                                                                                                                     DeferredHolder<RecipeType<?>, GTRecipeType> recipeType) {
         return registerSteamMachines(registrate, "steam_" + name, SimpleSteamMachine::new,
                 (pressure, builder) -> builder
                         .rotationState(RotationState.ALL)
@@ -588,7 +590,7 @@ public class GTMachineUtils {
                             .slice("XXX", "CCC", "CCC", "CCC")
                             .slice("XXX", "CPC", "CPC", "CCC")
                             .slice("XXX", "CSC", "CCC", "CCC")
-                            .where('S', Predicates.controller(blocks(definition.getBlock())))
+                            .where('S', Predicates.controller(definition))
                             .where('P', blocks(pipe.get()))
                             .where('X', fireboxPred)
                             .where('C', blocks(casing.get()).setMinGlobalLimited(20)
@@ -647,7 +649,7 @@ public class GTMachineUtils {
                         .where('A',
                                 blocks(intake.get())
                                         .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_1")))
-                        .where('Y', controller(blocks(definition.getBlock())))
+                        .where('Y', controller(definition))
                         .build())
                 .recoveryItems(
                         () -> new ItemLike[] {
@@ -668,7 +670,7 @@ public class GTMachineUtils {
 
     public static MachineEntry<MultiblockMachineDefinition> registerLargeTurbine(GTRegistrate registrate,
                                                                                  String name, int tier,
-                                                                                 Supplier<GTRecipeType> recipeType,
+                                                                                 DeferredHolder<RecipeType<?>, GTRecipeType> recipeType,
                                                                                  Supplier<? extends Block> casing,
                                                                                  Supplier<? extends Block> gear,
                                                                                  ResourceLocation casingTexture,
@@ -679,7 +681,7 @@ public class GTMachineUtils {
 
     public static MachineEntry<MultiblockMachineDefinition> registerLargeTurbine(GTRegistrate registrate,
                                                                                  String name, int tier,
-                                                                                 Supplier<GTRecipeType> recipeType,
+                                                                                 DeferredHolder<RecipeType<?>, GTRecipeType> recipeType,
                                                                                  Supplier<? extends Block> casing,
                                                                                  Supplier<? extends Block> gear,
                                                                                  ResourceLocation casingTexture,
@@ -695,7 +697,7 @@ public class GTMachineUtils {
                         .slice("CCCC", "CHHC", "CCCC")
                         .slice("CHHC", "RGGR", "CHHC")
                         .slice("CCCC", "CSHC", "CCCC")
-                        .where('S', controller(blocks(definition.getBlock())))
+                        .where('S', controller(definition))
                         .where('G', blocks(gear.get()))
                         .where('C', blocks(casing.get()))
                         .where('R', rotorHolder(tier).setExactLimit(1)
@@ -813,7 +815,7 @@ public class GTMachineUtils {
         @Setter
         private String name;
         @Setter
-        private Supplier<GTRecipeType> recipeType;
+        private DeferredHolder<RecipeType<?>, GTRecipeType> recipeType;
         @Setter
         private Int2IntFunction tankScalingFunction = defaultTankSizeFunction;
         @Setter
@@ -825,7 +827,8 @@ public class GTMachineUtils {
         private int[] tiers = ELECTRIC_TIERS;
 
         // Simple Machines need to have a name, recipe type, and a registrate to register the machine to.
-        public SimpleMachineBuilder(GTRegistrate registrate, String name, Supplier<GTRecipeType> recipeType) {
+        public SimpleMachineBuilder(GTRegistrate registrate, String name,
+                                    DeferredHolder<RecipeType<?>, GTRecipeType> recipeType) {
             this.registrate = registrate;
             this.name = name;
             this.recipeType = recipeType;

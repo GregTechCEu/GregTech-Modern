@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
@@ -123,12 +122,11 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
             }
             this.definition.apply(tier, builder);
 
-            if (builder.properties().recipeTypes().length > 0) {
-                GTRecipeType recipeType = builder.properties().recipeTypes()[0];
+            if (!builder.properties().recipeTypes().isEmpty()) {
                 if (tankScalingFunction != null && addDefaultTooltips) {
                     builder.tooltips(
                             GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
-                                    () -> recipeType,
+                                    () -> builder.properties().recipeTypes().stream().findFirst().orElseThrow().get(),
                                     tankScalingFunction.applyAsInt(tier), !isGenerator));
                 }
             }
