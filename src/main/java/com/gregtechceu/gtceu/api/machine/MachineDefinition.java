@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.Direction;
 import net.minecraft.core.IdMapper;
 import net.minecraft.network.chat.Component;
@@ -72,7 +73,7 @@ public class MachineDefinition implements ItemLike {
     private Supplier<BlockEntityType<? extends MetaMachine>> blockEntityTypeSupplier;
 
     private GTRecipeType @Nullable [] recipeTypes = null;
-    private final Set<DeferredHolder<RecipeType<?>, GTRecipeType>> unresolvedRecipeTypes;
+    private final List<DeferredHolder<RecipeType<?>, GTRecipeType>> unresolvedRecipeTypes;
 
     @Getter
     private final int tier;
@@ -304,7 +305,7 @@ public class MachineDefinition implements ItemLike {
         private RotationState rotationState = RotationState.NON_Y_AXIS;
         private boolean allowExtendedFacing = false;
         private boolean hasBER = ConfigHolder.INSTANCE.client.machinesHaveBERsByDefault;
-        private Set<DeferredHolder<RecipeType<?>, GTRecipeType>> recipeTypes = new ObjectArraySet<>();
+        private List<DeferredHolder<RecipeType<?>, GTRecipeType>> recipeTypes = new ObjectArrayList<>();
         private int tier = -1;
         private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
         private IntSupplier paintingColor = () -> ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
