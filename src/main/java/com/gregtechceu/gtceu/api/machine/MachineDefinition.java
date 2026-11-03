@@ -40,7 +40,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import brachy.modularui.theme.ThemeAPI;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
@@ -72,7 +72,7 @@ public class MachineDefinition implements ItemLike {
     private Supplier<BlockEntityType<? extends MetaMachine>> blockEntityTypeSupplier;
 
     private GTRecipeType @Nullable [] recipeTypes = null;
-    private final Set<DeferredHolder<RecipeType<?>, GTRecipeType>> unresolvedRecipeTypes;
+    private final List<DeferredHolder<RecipeType<?>, GTRecipeType>> unresolvedRecipeTypes;
 
     @Getter
     private final int tier;
@@ -304,7 +304,7 @@ public class MachineDefinition implements ItemLike {
         private RotationState rotationState = RotationState.NON_Y_AXIS;
         private boolean allowExtendedFacing = false;
         private boolean hasBER = ConfigHolder.INSTANCE.client.machinesHaveBERsByDefault;
-        private Set<DeferredHolder<RecipeType<?>, GTRecipeType>> recipeTypes = new ObjectArraySet<>();
+        private List<DeferredHolder<RecipeType<?>, GTRecipeType>> recipeTypes = new ObjectArrayList<>();
         private int tier = -1;
         private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
         private IntSupplier paintingColor = () -> ConfigHolder.INSTANCE.client.getDefaultPaintingColor();

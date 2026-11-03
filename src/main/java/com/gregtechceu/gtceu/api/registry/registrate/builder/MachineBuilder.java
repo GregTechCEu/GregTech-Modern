@@ -64,7 +64,7 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -93,7 +93,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private boolean defaultBlock = true;
     private boolean defaultItem = true;
 
-    protected final Set<DeferredHolder<RecipeType<?>, GTRecipeType>> unresolvedRecipeTypes = new ObjectArraySet<>();
+    protected final List<DeferredHolder<RecipeType<?>, GTRecipeType>> unresolvedRecipeTypes = new ObjectArrayList<>();
 
     private NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister = NonNullConsumer.noop();
 
