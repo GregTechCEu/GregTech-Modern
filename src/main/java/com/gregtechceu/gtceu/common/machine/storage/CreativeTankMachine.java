@@ -67,13 +67,13 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     private void setTicksPerCycle(int value) {
-        ticksPerCycle = value;
-        autoOutput.setTicksPerCycle(value);
+        ticksPerCycle = Math.clamp(value, 1, Integer.MAX_VALUE);
+        autoOutput.setTicksPerCycle(ticksPerCycle);
         onFluidChanged();
     }
 
     private void setmBPerCycle(int value) {
-        mBPerCycle = value;
+        mBPerCycle = Math.clamp(value, 1, Integer.MAX_VALUE);
         onFluidChanged();
     }
 
