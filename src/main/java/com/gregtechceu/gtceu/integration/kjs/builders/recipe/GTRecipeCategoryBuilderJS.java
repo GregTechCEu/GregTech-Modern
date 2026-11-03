@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -14,7 +13,6 @@ import dev.latvian.mods.kubejs.client.LangKubeEvent;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;

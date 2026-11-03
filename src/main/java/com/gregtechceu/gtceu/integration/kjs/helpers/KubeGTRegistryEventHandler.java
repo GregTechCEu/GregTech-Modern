@@ -34,7 +34,7 @@ public class KubeGTRegistryEventHandler {
         // only post the GT registry event for GT registries (excluding the recipe type registry)
         if (!GTRegistries.getRegistryOrder().contains(event.getRegistryKey().location())) {
             if (event.getRegistryKey().equals(Registries.RECIPE_TYPE)) {
-                handleRegistryEvent((ResourceKey)event.getRegistryKey(), event);
+                handleRegistryEvent((ResourceKey) event.getRegistryKey(), event);
             }
             return;
         }
