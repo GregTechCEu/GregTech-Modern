@@ -324,7 +324,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
         if (tank instanceof FilteredFluidTank filteredFluidTank) {
             filterWidgetSupplier = () -> GTMuiWidgets.createFilterRow(
                     Flow.row().width(9 * 18).coverChildrenHeight().childPadding(2),
-                    filteredFluidTank.getFilterHandler(), guiData, syncManager, settings);
+                    filteredFluidTank.getFilterHandler(), guiData, syncManager, settings, null);
         }
 
         return Flow.col()
