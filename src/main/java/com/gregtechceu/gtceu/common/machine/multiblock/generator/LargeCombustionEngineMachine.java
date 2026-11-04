@@ -148,11 +148,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
         EnergyStack EUt = recipe.getOutputEUt();
         if (!EUt.isEmpty()) {
-            engineMachine.isOxygenBoosted = RecipeHelper.matchRecipe(engineMachine, engineMachine.getBoostRecipe())
-                    .isSuccess() &&
-                    RecipeHelper
-                            .handleRecipeIO(engineMachine, engineMachine.getBoostRecipe(), IO.IN,
-                                    engineMachine.recipeLogic.getChanceCaches())
+            engineMachine.isOxygenBoosted = engineMachine.isBoostAllowed() &&
+                    RecipeHelper.matchRecipe(engineMachine, engineMachine.getBoostRecipe())
                             .isSuccess();
 
             int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt.getTotalEU()); // get maximum parallel
@@ -182,12 +179,16 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 return false;
             }
         }
-        // check boost fluid
-        if (isBoostAllowed()) {
+        // check boost fluid if multi is currently running in boosted state
+        if (this.isOxygenBoosted) {
             var boosterRecipe = getBoostRecipe();
             this.isOxygenBoosted = RecipeHelper.matchRecipe(this, boosterRecipe).isSuccess() &&
                     RecipeHelper.handleRecipeIO(this, boosterRecipe, IO.IN, this.recipeLogic.getChanceCaches())
                             .isSuccess();
+            if (!this.isOxygenBoosted) {
+                recipeLogic.interruptRecipe();
+                return false;
+            }
         }
 
         runningTimer++;
