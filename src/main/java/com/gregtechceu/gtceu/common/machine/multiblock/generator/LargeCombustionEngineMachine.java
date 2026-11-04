@@ -148,8 +148,9 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
         EnergyStack EUt = recipe.getOutputEUt();
         if (!EUt.isEmpty()) {
-            engineMachine.isOxygenBoosted = engineMachine.isBoostAllowed() && RecipeHelper.matchRecipe(engineMachine, engineMachine.getBoostRecipe())
-                    .isSuccess();
+            engineMachine.isOxygenBoosted = engineMachine.isBoostAllowed() &&
+                    RecipeHelper.matchRecipe(engineMachine, engineMachine.getBoostRecipe())
+                            .isSuccess();
 
             int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt.getTotalEU()); // get maximum parallel
             int actualParallel = ParallelLogic.getParallelAmount(engineMachine, recipe, maxParallel);
