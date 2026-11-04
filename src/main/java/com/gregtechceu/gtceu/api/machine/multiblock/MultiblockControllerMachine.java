@@ -261,7 +261,6 @@ public class MultiblockControllerMachine extends MetaMachine {
             patternStates.put(name, new PatternState());
             structurePatterns.put(this.getDefinition(), name, pattern.get());
         });
-        getSyncDataHolder().markClientSyncFieldDirty("patternStates");
     }
 
     public PatternState getDefaultPatternState() {

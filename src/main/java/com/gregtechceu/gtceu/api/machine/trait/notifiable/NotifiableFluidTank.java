@@ -78,7 +78,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
 
     public void onContentsChanged() {
         isEmpty = null;
-        syncDataHolder.markClientSyncFieldDirty("storages");
         notifyListeners();
     }
 
