@@ -486,6 +486,14 @@ public class GTMuiWidgets {
                         .setEnabledIf((w) -> !filterSlotHandler.getSlot().getItem().isEmpty()));
     }
 
+    public static <T> ParentWidget<?> createFilterRow(Flow existingRow,
+                                                      FilterHandler<T> filterHandler,
+                                                      GuiData data,
+                                                      PanelSyncManager syncManager,
+                                                      UISettings settings) {
+        return createFilterRow(existingRow, filterHandler, data, syncManager, settings, null);
+    }
+
     public static <T> ParentWidget<?> createFilterRow(FilterHandler<T> filterHandler,
                                                       GuiData data,
                                                       PanelSyncManager syncManager,
