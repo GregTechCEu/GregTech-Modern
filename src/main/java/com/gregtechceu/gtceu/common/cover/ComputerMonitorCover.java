@@ -216,11 +216,11 @@ public class ComputerMonitorCover extends CoverBehavior
     public ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         var codeSync = SyncHandlers.string(this::getCode, this::setCode).allowC2S();
         var intervalSync = SyncHandlers.intNumber(this::getUpdateInterval, this::setUpdateInterval).allowC2S();
-        IPanelHandler helpPanel = syncManager.syncedPanel("placeholder_language_help",
-                true,
-                (syncManager1, panelHandler1) -> PlaceholderHandler.createHelpPanel());
+        String helpPanelName = "placeholder_language_help." + data.getSide().getName();
+        IPanelHandler helpPanel = syncManager.syncedPanel(helpPanelName, true,
+                (syncManager1, panelHandler1) -> PlaceholderHandler.createHelpPanel(helpPanelName));
         return PlaceholderHandler.createPlaceholderEditorPanel(
-                "main", createPlaceholderContext(),
+                coverDefinition.getId().getPath() + "." + data.getSide().getName(), createPlaceholderContext(),
                 codeSync, null, intervalSync, null, helpPanel, null)
                 .child(GTMuiWidgets.verticalPlayerInventory((index, slot) -> slot)
                         .verticalCenter()
