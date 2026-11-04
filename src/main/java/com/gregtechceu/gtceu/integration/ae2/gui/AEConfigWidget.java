@@ -17,6 +17,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.Interactable;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.integration.emi.EmiStackConverter;
 import brachy.modularui.integration.recipeviewer.handlers.GhostIngredientSlot;
 import brachy.modularui.screen.ModularPanel;
@@ -102,7 +103,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
                 .value(new StringValue.Dynamic(() -> pendingAmount, val -> pendingAmount = val));
 
         return new ModularPanel<>("ae_amount_editor")
-                .size(120, 36)
+                .size(120, 38)
                 .posRel(0.5f, 0.35f)
                 .background(GTGuiTextures.BACKGROUND)
                 .child(ButtonWidget.panelCloseButton())
@@ -112,7 +113,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
                         .child(amountField)
                         .child(new ButtonWidget<>()
                                 .size(18, 18)
-                                .overlay(Text.str("✓"))
+                                .overlay(GuiTextures.CHECKMARK)
                                 .onMousePressed((context, button) -> {
                                     if (button == 0) {
                                         confirmAmountEdit();

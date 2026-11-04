@@ -45,6 +45,9 @@ public class SyncDataHolder {
      * @param fieldName The field that has changed.
      */
     public void markClientSyncFieldDirty(String fieldName) {
+        if (!syncData.getClientSyncFields().containsKey(fieldName)) {
+            GTCEu.LOGGER.warn("Sync: Unknown client sync field: {}", fieldName);
+        }
         dirtySyncFields.add(fieldName);
         holder.markAsChanged();
     }

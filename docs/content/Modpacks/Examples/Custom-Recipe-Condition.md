@@ -15,7 +15,6 @@ They are registered using
 @Mod(ExampleMod.MOD_ID)
 public class ExampleMod {
     
-    // in 1.20.1
     public static RecipeConditionType<ExampleCondition> EXAMPLE_CONDITION;
 
     public ExampleMod() {
@@ -27,23 +26,6 @@ public class ExampleMod {
         EXAMPLE_CONDITION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS, AddonMod.id("example_condition"), // (1)
                 new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
     }
-    // end 1.20.1
-    
-    // in 1.21.1
-    public static final RecipeConditionType<ExampleCondition> EXAMPLE_CONDITION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
-            ResourceLocation.fromNamespaceAndPath(ExampleMod.MOD_ID, "example_condition"), // (1)
-            new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
-
-    public ExampleMod(IEventBus modBus, FMLModContainer container) {
-        modBus.addListener(CommonInit::onRegister);
-        bus.addListener(this::registerConditions);
-    }
-    
-    public void registerConditions(RegisterEvent event) {
-        EXAMPLE_CONDITION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS, AddonMod.id("example_condition"),
-                new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
-    }
-    // end 1.21.1
 }
 ```
 

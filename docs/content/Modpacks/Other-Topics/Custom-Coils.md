@@ -34,7 +34,7 @@ StartupEvents.registry('block', event => {
 ## Standard Coils
 
 For reference, the standard GregTech Modern coils use the following stats:
-```js
+```
 Coil, Temperature, Level, Discount
 CUPRONICKEL, 1800, 1, 1
 KANTHAL, 2700, 2, 1

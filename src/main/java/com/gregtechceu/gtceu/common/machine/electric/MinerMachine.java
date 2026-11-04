@@ -190,7 +190,10 @@ public class MinerMachine extends WorkableTieredMachine
                                 .background(GuiTextures.DISPLAY)
                                 .child(textList.heightRel(1.0f).padding(3)))
                         .child(GTMuiMachineUtil
-                                .createSquareSlotGroupFromInventory(exportItems, "export_inv", syncManager)
+                                .createSquareSlotGroupFromInventory(exportItems.storage, "export_inv", slot -> {
+                                    slot.getSlot().accessibility(false, true);
+                                    return slot;
+                                }, syncManager)
                                 .verticalCenter())
                         .padding(4, 0));
     }

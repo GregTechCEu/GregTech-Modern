@@ -135,6 +135,10 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
 
     @Override
     public ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
+        modelData = modelData.derive()
+                .with(GTModelProperties.LEVEL, level)
+                .with(GTModelProperties.POS, pos)
+                .build();
         for (BakedModel part : this.parts.values()) {
             modelData = part.getModelData(level, pos, state, modelData);
         }
