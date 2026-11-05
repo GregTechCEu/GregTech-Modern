@@ -801,12 +801,10 @@ public class GTMultiMachines {
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .appearanceBlock(HIGH_POWER_CASING)
             .tooltips(Component.translatable("machine.gtceu.active_transformer.tooltip.0"),
-                    Component.translatable("machine.gtceu.active_transformer.tooltip.1"))
-            .tooltipBuilder(
-                    (stack,
-                     components) -> components.add(Component.translatable("machine.gtceu.active_transformer.tooltip.2")
-                             .append(Component.translatable("machine.gtceu.active_transformer.tooltip.3")
-                                     .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))))
+                    Component.translatable("machine.gtceu.active_transformer.tooltip.1"),
+                    Component.translatable("machine.gtceu.active_transformer.tooltip.2")
+                            .append(Component.translatable("machine.gtceu.active_transformer.tooltip.3")
+                                    .withStyle(TooltipHelper.RAINBOW_HSL_SLOW)))
             .pattern((definition) -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("XXX", "XXX", "XXX")
                     .slice("XXX", "XCX", "XXX")

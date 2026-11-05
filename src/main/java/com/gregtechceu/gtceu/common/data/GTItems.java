@@ -188,7 +188,8 @@ public class GTItems {
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[9] = SHAPE_MOLD_NAME = REGISTRATE.item("name_casting_mold", ComponentItem::create)
-                .transform(nameAndTooltip("Casting Mold (Name)", "Mold for naming Items in the Forming Press (rename Mold with Anvil)"))
+                .transform(nameAndTooltip("Casting Mold (Name)",
+                        "Mold for naming Items in the Forming Press (rename Mold with Anvil)"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[10] = SHAPE_MOLD_GEAR_SMALL = REGISTRATE.item("small_gear_casting_mold", ComponentItem::create)
@@ -254,30 +255,36 @@ public class GTItems {
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[5] = SHAPE_EXTRUDER_INGOT = REGISTRATE.item("ingot_extruder_mold", ComponentItem::create)
-                .transform(nameAndTooltip("Extruder Mold (Ingot)", "Extruder Shape for, wait, can't we just use a Furnace?"))
+                .transform(nameAndTooltip("Extruder Mold (Ingot)",
+                        "Extruder Shape for, wait, can't we just use a Furnace?"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[6] = SHAPE_EXTRUDER_WIRE = REGISTRATE.item("wire_extruder_mold", ComponentItem::create)
                 .transform(nameAndTooltip("Extruder Mold (Wire)", "Extruder Shape for making Wires"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_EXTRUDERS[7] = SHAPE_EXTRUDER_PIPE_TINY = REGISTRATE.item("tiny_pipe_extruder_mold", ComponentItem::create)
+        SHAPE_EXTRUDERS[7] = SHAPE_EXTRUDER_PIPE_TINY = REGISTRATE
+                .item("tiny_pipe_extruder_mold", ComponentItem::create)
                 .transform(nameAndTooltip("Extruder Mold (Tiny Pipe)", "Extruder Shape for making Tiny Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_EXTRUDERS[8] = SHAPE_EXTRUDER_PIPE_SMALL = REGISTRATE.item("small_pipe_extruder_mold", ComponentItem::create)
+        SHAPE_EXTRUDERS[8] = SHAPE_EXTRUDER_PIPE_SMALL = REGISTRATE
+                .item("small_pipe_extruder_mold", ComponentItem::create)
                 .transform(nameAndTooltip("Extruder Mold (Small Pipe)", "Extruder Shape for making Small Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_EXTRUDERS[9] = SHAPE_EXTRUDER_PIPE_NORMAL = REGISTRATE.item("normal_pipe_extruder_mold", ComponentItem::create)
+        SHAPE_EXTRUDERS[9] = SHAPE_EXTRUDER_PIPE_NORMAL = REGISTRATE
+                .item("normal_pipe_extruder_mold", ComponentItem::create)
                 .transform(nameAndTooltip("Extruder Mold (Normal Pipe)", "Extruder Shape for making Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_EXTRUDERS[10] = SHAPE_EXTRUDER_PIPE_LARGE = REGISTRATE.item("large_pipe_extruder_mold", ComponentItem::create)
+        SHAPE_EXTRUDERS[10] = SHAPE_EXTRUDER_PIPE_LARGE = REGISTRATE
+                .item("large_pipe_extruder_mold", ComponentItem::create)
                 .transform(nameAndTooltip("Extruder Mold (Large Pipe)", "Extruder Shape for making Large Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_EXTRUDERS[11] = SHAPE_EXTRUDER_PIPE_HUGE = REGISTRATE.item("huge_pipe_extruder_mold", ComponentItem::create)
+        SHAPE_EXTRUDERS[11] = SHAPE_EXTRUDER_PIPE_HUGE = REGISTRATE
+                .item("huge_pipe_extruder_mold", ComponentItem::create)
                 .transform(nameAndTooltip("Extruder Mold (Huge Pipe)", "Extruder Shape for making Huge Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
@@ -461,11 +468,13 @@ public class GTItems {
     public static ItemEntry<ComponentItem> BASIC_TAPE = REGISTRATE
             .item("basic_tape", ComponentItem::create)
             .transform(nameAndTooltip("Tape",
-                    "Not strong enough for mechanical issues", "Can be used to pick up crates without dropping their items"))
+                    "Not strong enough for mechanical issues",
+                    "Can be used to pick up crates without dropping their items"))
             .onRegister(attach(new TapeBehaviour()))
             .register();
 
-    public static ItemEntry<ComponentItem> NEUTRON_REFLECTOR = REGISTRATE.item("neutron_reflector", ComponentItem::create)
+    public static ItemEntry<ComponentItem> NEUTRON_REFLECTOR = REGISTRATE
+            .item("neutron_reflector", ComponentItem::create)
             .transform(nameAndTooltip("Iridium Neutron Reflector", "Indestructible"))
             .register();
 
@@ -487,39 +496,45 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BatteryAlloy, GTValues.M * 9))))
             .register();
 
-    public static ItemEntry<ComponentItem> BATTERY_HULL_SMALL_VANADIUM = REGISTRATE.item("ev_battery_hull", ComponentItem::create)
+    public static ItemEntry<ComponentItem> BATTERY_HULL_SMALL_VANADIUM = REGISTRATE
+            .item("ev_battery_hull", ComponentItem::create)
             .lang("Small Vanadium Battery Hull")
             .onRegister(attachBatteryHullTooltip(GTValues.EV))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.RedSteel, GTValues.M * 2))))
             .register();
 
-    public static ItemEntry<ComponentItem> BATTERY_HULL_MEDIUM_VANADIUM = REGISTRATE.item("iv_battery_hull", ComponentItem::create)
+    public static ItemEntry<ComponentItem> BATTERY_HULL_MEDIUM_VANADIUM = REGISTRATE
+            .item("iv_battery_hull", ComponentItem::create)
             .lang("Medium Vanadium Battery Hull")
             .onRegister(attachBatteryHullTooltip(GTValues.IV))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.RoseGold, GTValues.M * 6))))
             .register();
 
-    public static ItemEntry<ComponentItem> BATTERY_HULL_LARGE_VANADIUM = REGISTRATE.item("luv_battery_hull", ComponentItem::create)
+    public static ItemEntry<ComponentItem> BATTERY_HULL_LARGE_VANADIUM = REGISTRATE
+            .item("luv_battery_hull", ComponentItem::create)
             .lang("Large Vanadium Battery Hull")
             .onRegister(attachBatteryHullTooltip(GTValues.LuV))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BlueSteel, GTValues.M * 18))))
             .register();
 
-    public static ItemEntry<ComponentItem> BATTERY_HULL_MEDIUM_NAQUADRIA = REGISTRATE.item("zpm_battery_hull", ComponentItem::create)
+    public static ItemEntry<ComponentItem> BATTERY_HULL_MEDIUM_NAQUADRIA = REGISTRATE
+            .item("zpm_battery_hull", ComponentItem::create)
             .lang("Medium Naquadria Battery Hull")
             .onRegister(attachBatteryHullTooltip(GTValues.ZPM))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Europium, GTValues.M * 6))))
             .register();
 
-    public static ItemEntry<ComponentItem> BATTERY_HULL_LARGE_NAQUADRIA = REGISTRATE.item("uv_battery_hull", ComponentItem::create)
+    public static ItemEntry<ComponentItem> BATTERY_HULL_LARGE_NAQUADRIA = REGISTRATE
+            .item("uv_battery_hull", ComponentItem::create)
             .lang("Large Naquadria Battery Hull")
             .onRegister(attachBatteryHullTooltip(GTValues.UV))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Americium, GTValues.M * 18))))
             .register();
 
     private static NonNullConsumer<ComponentItem> attachBatteryHullTooltip(int tier) {
-        return i -> i.attachComponents(new TooltipBehavior(Component.translatable("item.gtceu.battery_hull.tooltip", GTValues.VNC[tier])
-                .withStyle(ChatFormatting.GRAY)));
+        return i -> i.attachComponents(
+                new TooltipBehavior(Component.translatable("item.gtceu.battery_hull.tooltip", GTValues.VNC[tier])
+                        .withStyle(ChatFormatting.GRAY)));
     }
 
     public static ItemEntry<ComponentItem> BATTERY_ULV_TANTALUM = REGISTRATE
@@ -1088,56 +1103,71 @@ public class GTItems {
             .transform(nameAndTooltip("Neutronium-doped Wafer", "Raw Circuit"))
             .register();
 
-    public static ItemEntry<ComponentItem> CENTRAL_PROCESSING_UNIT_WAFER = REGISTRATE.item("cpu_wafer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> CENTRAL_PROCESSING_UNIT_WAFER = REGISTRATE
+            .item("cpu_wafer", ComponentItem::new)
             .transform(nameAndTooltip("CPU Wafer", "Raw Processing Unit"))
             .register();
     public static ItemEntry<ComponentItem> RANDOM_ACCESS_MEMORY_WAFER = REGISTRATE.item("ram_wafer", ComponentItem::new)
             .transform(nameAndTooltip("RAM Wafer", "Raw Memory"))
             .register();
-    public static ItemEntry<ComponentItem> INTEGRATED_LOGIC_CIRCUIT_WAFER = REGISTRATE.item("ilc_wafer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> INTEGRATED_LOGIC_CIRCUIT_WAFER = REGISTRATE
+            .item("ilc_wafer", ComponentItem::new)
             .transform(nameAndTooltip("ILC Wafer", "Raw Integrated Circuit"))
             .register();
-    public static ItemEntry<ComponentItem> NANO_CENTRAL_PROCESSING_UNIT_WAFER = REGISTRATE.item("nano_cpu_wafer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> NANO_CENTRAL_PROCESSING_UNIT_WAFER = REGISTRATE
+            .item("nano_cpu_wafer", ComponentItem::new)
             .transform(nameAndTooltip("Nano CPU Wafer", "Raw Nano Circuit"))
             .register();
-    public static ItemEntry<ComponentItem> QUBIT_CENTRAL_PROCESSING_UNIT_WAFER = REGISTRATE.item("qbit_cpu_wafer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> QUBIT_CENTRAL_PROCESSING_UNIT_WAFER = REGISTRATE
+            .item("qbit_cpu_wafer", ComponentItem::new)
             .transform(nameAndTooltip("Qubit CPU Wafer", "Raw Qubit Circuit"))
             .register();
-    public static ItemEntry<ComponentItem> SIMPLE_SYSTEM_ON_CHIP_WAFER = REGISTRATE.item("simple_soc_wafer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> SIMPLE_SYSTEM_ON_CHIP_WAFER = REGISTRATE
+            .item("simple_soc_wafer", ComponentItem::new)
             .transform(nameAndTooltip("Simple SoC Wafer", "Raw Simple Circuit"))
             .register();
     public static ItemEntry<ComponentItem> SYSTEM_ON_CHIP_WAFER = REGISTRATE.item("soc_wafer", ComponentItem::new)
             .transform(nameAndTooltip("SoC Wafer", "Raw Basic Circuit"))
             .register();
-    public static ItemEntry<ComponentItem> ADVANCED_SYSTEM_ON_CHIP_WAFER = REGISTRATE.item("advanced_soc_wafer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> ADVANCED_SYSTEM_ON_CHIP_WAFER = REGISTRATE
+            .item("advanced_soc_wafer", ComponentItem::new)
             .transform(nameAndTooltip("ASoC Wafer", "Raw Advanced Circuit"))
             .register();
-    public static ItemEntry<ComponentItem> HIGHLY_ADVANCED_SOC_WAFER = REGISTRATE.item("highly_advanced_soc_wafer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> HIGHLY_ADVANCED_SOC_WAFER = REGISTRATE
+            .item("highly_advanced_soc_wafer", ComponentItem::new)
             .transform(nameAndTooltip("HASoC Wafer", "Raw Highly Advanced Circuit"))
             .register();
-    public static ItemEntry<ComponentItem> NAND_MEMORY_CHIP_WAFER = REGISTRATE.item("nand_memory_wafer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> NAND_MEMORY_CHIP_WAFER = REGISTRATE
+            .item("nand_memory_wafer", ComponentItem::new)
             .transform(nameAndTooltip("NAND Memory Wafer", "Raw Logic Gate"))
             .register();
-    public static ItemEntry<ComponentItem> NOR_MEMORY_CHIP_WAFER = REGISTRATE.item("nor_memory_wafer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> NOR_MEMORY_CHIP_WAFER = REGISTRATE
+            .item("nor_memory_wafer", ComponentItem::new)
             .transform(nameAndTooltip("NOR Memory Wafer", "Raw Logic Gate"))
             .register();
-    public static ItemEntry<ComponentItem> ULTRA_LOW_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE.item("ulpic_wafer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> ULTRA_LOW_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE
+            .item("ulpic_wafer", ComponentItem::new)
             .transform(nameAndTooltip("ULPIC Wafer", "Raw Ultra Low Power Circuit"))
             .register();
-    public static ItemEntry<ComponentItem> LOW_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE.item("lpic_wafer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> LOW_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE
+            .item("lpic_wafer", ComponentItem::new)
             .transform(nameAndTooltip("LPIC Wafer", "Raw Low Power Circuit"))
             .register();
-    public static ItemEntry<ComponentItem> POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE.item("mpic_wafer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE
+            .item("mpic_wafer", ComponentItem::new)
             .transform(nameAndTooltip("MPIC Wafer", "Raw Power Circuit"))
             .register();
-    public static ItemEntry<ComponentItem> HIGH_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE.item("hpic_wafer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> HIGH_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE
+            .item("hpic_wafer", ComponentItem::new)
             .transform(nameAndTooltip("HPIC Wafer", "Raw High Power Circuit"))
             .register();
-    public static ItemEntry<ComponentItem> ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE.item("uhpic_wafer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE
+            .item("uhpic_wafer", ComponentItem::new)
             .transform(nameAndTooltip("UHPIC Wafer", "Raw Ultra High Power Circuit"))
             .register();
 
-    public static ItemEntry<ComponentItem> ENGRAVED_CRYSTAL_CHIP = REGISTRATE.item("engraved_crystal_chip", ComponentItem::new)
+    public static ItemEntry<ComponentItem> ENGRAVED_CRYSTAL_CHIP = REGISTRATE
+            .item("engraved_crystal_chip", ComponentItem::new)
             .transform(nameAndTooltip("Engraved Crystal Chip", "Needed for Circuits"))
             .register();
     public static ItemEntry<Item> ENGRAVED_LAPOTRON_CHIP = REGISTRATE.item("engraved_lapotron_crystal_chip", Item::new)
@@ -1156,11 +1186,13 @@ public class GTItems {
             .transform(nameAndTooltip("IC Chip", "Integrated Logic Circuit"))
             .register();
 
-    public static ItemEntry<ComponentItem> NANO_CENTRAL_PROCESSING_UNIT = REGISTRATE.item("nano_cpu_chip", ComponentItem::new)
+    public static ItemEntry<ComponentItem> NANO_CENTRAL_PROCESSING_UNIT = REGISTRATE
+            .item("nano_cpu_chip", ComponentItem::new)
             .transform(nameAndTooltip("Nano CPU Chip", "Nano Central Processing Unit"))
             .register();
 
-    public static ItemEntry<ComponentItem> QUBIT_CENTRAL_PROCESSING_UNIT = REGISTRATE.item("qbit_cpu_chip", ComponentItem::new)
+    public static ItemEntry<ComponentItem> QUBIT_CENTRAL_PROCESSING_UNIT = REGISTRATE
+            .item("qbit_cpu_chip", ComponentItem::new)
             .transform(nameAndTooltip("Qubit CPU Chip", "Qubit Central Processing Unit"))
             .register();
 
@@ -1176,7 +1208,8 @@ public class GTItems {
             .transform(nameAndTooltip("ASoC", "Advanced System on Chip"))
             .register();
 
-    public static ItemEntry<ComponentItem> HIGHLY_ADVANCED_SOC = REGISTRATE.item("highly_advanced_soc", ComponentItem::new)
+    public static ItemEntry<ComponentItem> HIGHLY_ADVANCED_SOC = REGISTRATE
+            .item("highly_advanced_soc", ComponentItem::new)
             .transform(nameAndTooltip("HASoC", "Highly Advanced System on Chip"))
             .register();
 
@@ -1188,12 +1221,14 @@ public class GTItems {
             .transform(nameAndTooltip("NOR Memory Chip", "NOR Logic Gate"))
             .register();
 
-    public static ItemEntry<ComponentItem> ULTRA_LOW_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item("ulpic_chip", ComponentItem::new)
+    public static ItemEntry<ComponentItem> ULTRA_LOW_POWER_INTEGRATED_CIRCUIT = REGISTRATE
+            .item("ulpic_chip", ComponentItem::new)
             .lang("ULPIC Chip")
             .transform(nameAndTooltip("ULPIC Chip", "Ultra Low Power IC"))
             .register();
 
-    public static ItemEntry<ComponentItem> LOW_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item("lpic_chip", ComponentItem::new)
+    public static ItemEntry<ComponentItem> LOW_POWER_INTEGRATED_CIRCUIT = REGISTRATE
+            .item("lpic_chip", ComponentItem::new)
             .transform(nameAndTooltip("LPIC Chip", "Low Power IC"))
             .register();
 
@@ -1201,11 +1236,13 @@ public class GTItems {
             .transform(nameAndTooltip("MPIC Chip", "Power IC"))
             .register();
 
-    public static ItemEntry<ComponentItem> HIGH_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item("hpic_chip", ComponentItem::new)
+    public static ItemEntry<ComponentItem> HIGH_POWER_INTEGRATED_CIRCUIT = REGISTRATE
+            .item("hpic_chip", ComponentItem::new)
             .transform(nameAndTooltip("HPIC Chip", "High Power IC"))
             .register();
 
-    public static ItemEntry<ComponentItem> ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item("uhpic_chip", ComponentItem::new)
+    public static ItemEntry<ComponentItem> ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT = REGISTRATE
+            .item("uhpic_chip", ComponentItem::new)
             .transform(nameAndTooltip("UHPIC Chip", "Ultra High Power IC"))
             .register();
 
@@ -1213,10 +1250,12 @@ public class GTItems {
             .lang("Raw Crystal Chip")
             .transform(nameAndTooltip("Raw Crystal Chip", "Raw Crystal Processor"))
             .register();
-    public static ItemEntry<ComponentItem> RAW_CRYSTAL_CHIP_PART = REGISTRATE.item("raw_crystal_chip_parts", ComponentItem::new)
+    public static ItemEntry<ComponentItem> RAW_CRYSTAL_CHIP_PART = REGISTRATE
+            .item("raw_crystal_chip_parts", ComponentItem::new)
             .transform(nameAndTooltip("Raw Crystal Chip Parts", "Raw Crystal Processor Parts"))
             .register();
-    public static ItemEntry<ComponentItem> CRYSTAL_CENTRAL_PROCESSING_UNIT = REGISTRATE.item("crystal_cpu", ComponentItem::new)
+    public static ItemEntry<ComponentItem> CRYSTAL_CENTRAL_PROCESSING_UNIT = REGISTRATE
+            .item("crystal_cpu", ComponentItem::new)
             .transform(nameAndTooltip("Crystal CPU", "Crystal Processing Unit"))
             .register();
     public static ItemEntry<ComponentItem> CRYSTAL_SYSTEM_ON_CHIP = REGISTRATE.item("crystal_soc", ComponentItem::new)
@@ -1226,7 +1265,8 @@ public class GTItems {
     public static ItemEntry<ComponentItem> COATED_BOARD = REGISTRATE.item("resin_circuit_board", ComponentItem::new)
             .transform(nameAndTooltip("Resin Circuit Board", "A Coated Board"))
             .register();
-    public static ItemEntry<ComponentItem> PHENOLIC_BOARD = REGISTRATE.item("phenolic_circuit_board", ComponentItem::new)
+    public static ItemEntry<ComponentItem> PHENOLIC_BOARD = REGISTRATE
+            .item("phenolic_circuit_board", ComponentItem::new)
             .transform(nameAndTooltip("Phenolic Circuit Board", "A Good Board"))
             .register();
     public static ItemEntry<ComponentItem> PLASTIC_BOARD = REGISTRATE.item("plastic_circuit_board", ComponentItem::new)
@@ -1235,7 +1275,8 @@ public class GTItems {
     public static ItemEntry<ComponentItem> EPOXY_BOARD = REGISTRATE.item("epoxy_circuit_board", ComponentItem::new)
             .transform(nameAndTooltip("Epoxy Circuit Board", "An Advanced Board"))
             .register();
-    public static ItemEntry<ComponentItem> FIBER_BOARD = REGISTRATE.item("fiber_reinforced_circuit_board", ComponentItem::new)
+    public static ItemEntry<ComponentItem> FIBER_BOARD = REGISTRATE
+            .item("fiber_reinforced_circuit_board", ComponentItem::new)
             .transform(nameAndTooltip("Fiber-Reinforced Circuit Board", "An Extreme Board"))
             .register();
     public static ItemEntry<ComponentItem> MULTILAYER_FIBER_BOARD = REGISTRATE
@@ -1246,20 +1287,24 @@ public class GTItems {
             .transform(nameAndTooltip("Wetware Circuit Board", "The Board that keeps life"))
             .register();
 
-    public static ItemEntry<ComponentItem> BASIC_CIRCUIT_BOARD = REGISTRATE.item("resin_printed_circuit_board", ComponentItem::new)
+    public static ItemEntry<ComponentItem> BASIC_CIRCUIT_BOARD = REGISTRATE
+            .item("resin_printed_circuit_board", ComponentItem::new)
             .transform(nameAndTooltip("Resin Printed Circuit Board", "A Basic Circuit Board"))
             .register();
 
-    public static ItemEntry<ComponentItem> GOOD_CIRCUIT_BOARD = REGISTRATE.item("phenolic_printed_circuit_board", ComponentItem::new)
+    public static ItemEntry<ComponentItem> GOOD_CIRCUIT_BOARD = REGISTRATE
+            .item("phenolic_printed_circuit_board", ComponentItem::new)
             .lang("Phenolic Printed Circuit Board")
             .transform(nameAndTooltip("Phenolic Printed Circuit Board", "A Good Circuit Board"))
             .register();
 
-    public static ItemEntry<ComponentItem> PLASTIC_CIRCUIT_BOARD = REGISTRATE.item("plastic_printed_circuit_board", ComponentItem::new)
+    public static ItemEntry<ComponentItem> PLASTIC_CIRCUIT_BOARD = REGISTRATE
+            .item("plastic_printed_circuit_board", ComponentItem::new)
             .transform(nameAndTooltip("Plastic Printed Circuit Board", "A Good Circuit Board"))
             .register();
 
-    public static ItemEntry<ComponentItem> ADVANCED_CIRCUIT_BOARD = REGISTRATE.item("epoxy_printed_circuit_board", ComponentItem::new)
+    public static ItemEntry<ComponentItem> ADVANCED_CIRCUIT_BOARD = REGISTRATE
+            .item("epoxy_printed_circuit_board", ComponentItem::new)
             .transform(nameAndTooltip("Epoxy Printed Circuit Board", "An Advanced Circuit Board"))
             .register();
 
@@ -1271,10 +1316,11 @@ public class GTItems {
     public static ItemEntry<ComponentItem> ELITE_CIRCUIT_BOARD = REGISTRATE
             .item("multilayer_fiber_reinforced_printed_circuit_board", ComponentItem::new)
             .transform(nameAndTooltip("Multi-layer Fiber-Reinforced Printed Circuit Board",
-                            "An Elite Circuit Board"))
+                    "An Elite Circuit Board"))
             .register();
 
-    public static ItemEntry<ComponentItem> WETWARE_CIRCUIT_BOARD = REGISTRATE.item("wetware_printed_circuit_board", ComponentItem::new)
+    public static ItemEntry<ComponentItem> WETWARE_CIRCUIT_BOARD = REGISTRATE
+            .item("wetware_printed_circuit_board", ComponentItem::new)
             .transform(nameAndTooltip("Wetware Printed Circuit Board", "The Board that keeps life"))
             .register();
 
@@ -1338,50 +1384,60 @@ public class GTItems {
             .tag(CustomTags.INDUCTORS)
             .register();
 
-    public static ItemEntry<ComponentItem> ADVANCED_SMD_TRANSISTOR = REGISTRATE.item("advanced_smd_transistor", ComponentItem::new)
+    public static ItemEntry<ComponentItem> ADVANCED_SMD_TRANSISTOR = REGISTRATE
+            .item("advanced_smd_transistor", ComponentItem::new)
             .transform(nameAndTooltip("Advanced SMD Transistor", "Advanced Electronic Component"))
             .register();
 
-    public static ItemEntry<ComponentItem> ADVANCED_SMD_RESISTOR = REGISTRATE.item("advanced_smd_resistor", ComponentItem::new)
+    public static ItemEntry<ComponentItem> ADVANCED_SMD_RESISTOR = REGISTRATE
+            .item("advanced_smd_resistor", ComponentItem::new)
             .transform(nameAndTooltip("Advanced SMD Resistor", "Advanced Electronic Component"))
             .register();
 
-    public static ItemEntry<ComponentItem> ADVANCED_SMD_CAPACITOR = REGISTRATE.item("advanced_smd_capacitor", ComponentItem::new)
+    public static ItemEntry<ComponentItem> ADVANCED_SMD_CAPACITOR = REGISTRATE
+            .item("advanced_smd_capacitor", ComponentItem::new)
             .transform(nameAndTooltip("Advanced SMD Capacitor", "Advanced Electronic Component"))
             .register();
 
-    public static ItemEntry<ComponentItem> ADVANCED_SMD_DIODE = REGISTRATE.item("advanced_smd_diode", ComponentItem::new)
+    public static ItemEntry<ComponentItem> ADVANCED_SMD_DIODE = REGISTRATE
+            .item("advanced_smd_diode", ComponentItem::new)
             .transform(nameAndTooltip("Advanced SMD Diode", "Advanced Electronic Component"))
             .register();
 
-    public static ItemEntry<ComponentItem> ADVANCED_SMD_INDUCTOR = REGISTRATE.item("advanced_smd_inductor", ComponentItem::new)
+    public static ItemEntry<ComponentItem> ADVANCED_SMD_INDUCTOR = REGISTRATE
+            .item("advanced_smd_inductor", ComponentItem::new)
             .transform(nameAndTooltip("Advanced SMD Inductor", "Advanced Electronic Component"))
             .register();
 
     // T1: Electronic
-    public static ItemEntry<ComponentItem> ELECTRONIC_CIRCUIT_LV = REGISTRATE.item("basic_electronic_circuit", ComponentItem::new)
+    public static ItemEntry<ComponentItem> ELECTRONIC_CIRCUIT_LV = REGISTRATE
+            .item("basic_electronic_circuit", ComponentItem::new)
             .transform(nameAndTooltip("Basic Electronic Circuit", "Your First Circuit", "§cLV-Tier Circuit"))
             .tag(CustomTags.LV_CIRCUITS)
             .register();
-    public static ItemEntry<ComponentItem> ELECTRONIC_CIRCUIT_MV = REGISTRATE.item("good_electronic_circuit", ComponentItem::new)
+    public static ItemEntry<ComponentItem> ELECTRONIC_CIRCUIT_MV = REGISTRATE
+            .item("good_electronic_circuit", ComponentItem::new)
             .transform(nameAndTooltip("Good Electronic Circuit", "Your Second Circuit", "§cMV-Tier Circuit"))
             .tag(CustomTags.MV_CIRCUITS)
             .register();
 
     // T2: Integrated
-    public static ItemEntry<ComponentItem> INTEGRATED_CIRCUIT_LV = REGISTRATE.item("basic_integrated_circuit", ComponentItem::new)
+    public static ItemEntry<ComponentItem> INTEGRATED_CIRCUIT_LV = REGISTRATE
+            .item("basic_integrated_circuit", ComponentItem::new)
             .transform(nameAndTooltip("Basic Integrated Circuit",
-                            "Smaller and more powerful", "§6LV-Tier Circuit"))
+                    "Smaller and more powerful", "§6LV-Tier Circuit"))
             .tag(CustomTags.LV_CIRCUITS)
             .register();
-    public static ItemEntry<ComponentItem> INTEGRATED_CIRCUIT_MV = REGISTRATE.item("good_integrated_circuit", ComponentItem::new)
+    public static ItemEntry<ComponentItem> INTEGRATED_CIRCUIT_MV = REGISTRATE
+            .item("good_integrated_circuit", ComponentItem::new)
             .transform(nameAndTooltip("Good Integrated Circuit",
-                            "Smaller and more powerful", "§6MV-Tier Circuit"))
+                    "Smaller and more powerful", "§6MV-Tier Circuit"))
             .tag(CustomTags.MV_CIRCUITS)
             .register();
-    public static ItemEntry<ComponentItem> INTEGRATED_CIRCUIT_HV = REGISTRATE.item("advanced_integrated_circuit", ComponentItem::new)
+    public static ItemEntry<ComponentItem> INTEGRATED_CIRCUIT_HV = REGISTRATE
+            .item("advanced_integrated_circuit", ComponentItem::new)
             .transform(nameAndTooltip("Advanced Integrated Circuit",
-                            "Smaller and more powerful", "§6HV-Tier Circuit"))
+                    "Smaller and more powerful", "§6HV-Tier Circuit"))
             .tag(CustomTags.HV_CIRCUITS)
             .register();
 
@@ -1389,7 +1445,8 @@ public class GTItems {
     public static ItemEntry<ComponentItem> NAND_CHIP_ULV = REGISTRATE.item("nand_chip", ComponentItem::new)
             .transform(nameAndTooltip("NAND Chip", "A Superior Simple Circuit", "§6ULV-Tier Circuit"))
             .tag(CustomTags.ULV_CIRCUITS).register();
-    public static ItemEntry<ComponentItem> MICROPROCESSOR_LV = REGISTRATE.item("microchip_processor", ComponentItem::new)
+    public static ItemEntry<ComponentItem> MICROPROCESSOR_LV = REGISTRATE
+            .item("microchip_processor", ComponentItem::new)
             .transform(nameAndTooltip("Microchip Processor", "A Superior Basic Circuit", "§eLV-Tier Circuit"))
             .tag(CustomTags.LV_CIRCUITS)
             .register();
@@ -1400,21 +1457,24 @@ public class GTItems {
             .tag(CustomTags.MV_CIRCUITS)
             .register();
 
-    public static ItemEntry<ComponentItem> PROCESSOR_ASSEMBLY_HV = REGISTRATE.item("micro_processor_assembly", ComponentItem::new)
+    public static ItemEntry<ComponentItem> PROCESSOR_ASSEMBLY_HV = REGISTRATE
+            .item("micro_processor_assembly", ComponentItem::new)
             .transform(nameAndTooltip("Microprocessor Assembly",
-                            "Amazing Computation Speed!", "§eHV-Tier Circuit"))
+                    "Amazing Computation Speed!", "§eHV-Tier Circuit"))
             .tag(CustomTags.HV_CIRCUITS)
             .register();
 
-    public static ItemEntry<ComponentItem> WORKSTATION_EV = REGISTRATE.item("micro_processor_computer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> WORKSTATION_EV = REGISTRATE
+            .item("micro_processor_computer", ComponentItem::new)
             .transform(nameAndTooltip("Microprocessor Supercomputer",
-                            "Amazing Computation Speed!", "§eEV-Tier Circuit"))
+                    "Amazing Computation Speed!", "§eEV-Tier Circuit"))
             .tag(CustomTags.EV_CIRCUITS)
             .register();
 
-    public static ItemEntry<ComponentItem> MAINFRAME_IV = REGISTRATE.item("micro_processor_mainframe", ComponentItem::new)
+    public static ItemEntry<ComponentItem> MAINFRAME_IV = REGISTRATE
+            .item("micro_processor_mainframe", ComponentItem::new)
             .transform(nameAndTooltip("Microprocessor Mainframe",
-                            "Amazing Computation Speed!", "§eIV-Tier Circuit"))
+                    "Amazing Computation Speed!", "§eIV-Tier Circuit"))
             .tag(CustomTags.IV_CIRCUITS)
             .register();
 
@@ -1424,83 +1484,97 @@ public class GTItems {
             .tag(CustomTags.HV_CIRCUITS)
             .register();
 
-    public static ItemEntry<ComponentItem> NANO_PROCESSOR_ASSEMBLY_EV = REGISTRATE.item("nano_processor_assembly", ComponentItem::new)
+    public static ItemEntry<ComponentItem> NANO_PROCESSOR_ASSEMBLY_EV = REGISTRATE
+            .item("nano_processor_assembly", ComponentItem::new)
             .transform(nameAndTooltip("Nanoprocessor Assembly", "Smaller than ever", "§bEV-Tier Circuit"))
             .tag(CustomTags.EV_CIRCUITS)
             .register();
-    public static ItemEntry<ComponentItem> NANO_COMPUTER_IV = REGISTRATE.item("nano_processor_computer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> NANO_COMPUTER_IV = REGISTRATE
+            .item("nano_processor_computer", ComponentItem::new)
             .transform(nameAndTooltip("Nanoprocessor Supercomputer",
-                            "Smaller than ever", "§bIV-Tier Circuit"))
+                    "Smaller than ever", "§bIV-Tier Circuit"))
             .tag(CustomTags.IV_CIRCUITS)
             .register();
-    public static ItemEntry<ComponentItem> NANO_MAINFRAME_LuV = REGISTRATE.item("nano_processor_mainframe", ComponentItem::new)
+    public static ItemEntry<ComponentItem> NANO_MAINFRAME_LuV = REGISTRATE
+            .item("nano_processor_mainframe", ComponentItem::new)
             .transform(nameAndTooltip("Nanoprocessor Mainframe", "Smaller than ever", "§bLuV-Tier Circuit"))
             .tag(CustomTags.LuV_CIRCUITS)
             .register();
 
     // T5: Quantum
-    public static ItemEntry<ComponentItem> QUANTUM_PROCESSOR_EV = REGISTRATE.item("quantum_processor", ComponentItem::new)
+    public static ItemEntry<ComponentItem> QUANTUM_PROCESSOR_EV = REGISTRATE
+            .item("quantum_processor", ComponentItem::new)
             .transform(nameAndTooltip("Quantum Processor",
-                            "Quantum Computing comes to life!", "§aEV-Tier Circuit"))
+                    "Quantum Computing comes to life!", "§aEV-Tier Circuit"))
             .tag(CustomTags.EV_CIRCUITS)
             .register();
-    public static ItemEntry<ComponentItem> QUANTUM_ASSEMBLY_IV = REGISTRATE.item("quantum_processor_assembly", ComponentItem::new)
+    public static ItemEntry<ComponentItem> QUANTUM_ASSEMBLY_IV = REGISTRATE
+            .item("quantum_processor_assembly", ComponentItem::new)
             .transform(nameAndTooltip("Quantum Processor Assembly",
-                            "Quantum Computing comes to life!", "§aIV-Tier Circuit"))
+                    "Quantum Computing comes to life!", "§aIV-Tier Circuit"))
             .tag(CustomTags.IV_CIRCUITS)
             .register();
-    public static ItemEntry<ComponentItem> QUANTUM_COMPUTER_LuV = REGISTRATE.item("quantum_processor_computer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> QUANTUM_COMPUTER_LuV = REGISTRATE
+            .item("quantum_processor_computer", ComponentItem::new)
             .transform(nameAndTooltip("Quantum Processor Supercomputer",
-                            "Quantum Computing comes to life!", "§aLuV-Tier Circuit"))
+                    "Quantum Computing comes to life!", "§aLuV-Tier Circuit"))
             .tag(CustomTags.LuV_CIRCUITS)
             .register();
-    public static ItemEntry<ComponentItem> QUANTUM_MAINFRAME_ZPM = REGISTRATE.item("quantum_processor_mainframe", ComponentItem::new)
+    public static ItemEntry<ComponentItem> QUANTUM_MAINFRAME_ZPM = REGISTRATE
+            .item("quantum_processor_mainframe", ComponentItem::new)
             .transform(nameAndTooltip("Quantum Processor Mainframe",
-                            "Quantum Computing comes to life!", "§aZPM-Tier Circuit"))
+                    "Quantum Computing comes to life!", "§aZPM-Tier Circuit"))
             .tag(CustomTags.ZPM_CIRCUITS)
             .register();
 
     // T6: Crystal
-    public static ItemEntry<ComponentItem> CRYSTAL_PROCESSOR_IV = REGISTRATE.item("crystal_processor", ComponentItem::new)
+    public static ItemEntry<ComponentItem> CRYSTAL_PROCESSOR_IV = REGISTRATE
+            .item("crystal_processor", ComponentItem::new)
             .transform(nameAndTooltip("Crystal Processor",
-                            "Taking Advantage of Crystal Engraving", "§9IV-Tier Circuit"))
+                    "Taking Advantage of Crystal Engraving", "§9IV-Tier Circuit"))
             .tag(CustomTags.IV_CIRCUITS)
             .register();
-    public static ItemEntry<ComponentItem> CRYSTAL_ASSEMBLY_LuV = REGISTRATE.item("crystal_processor_assembly", ComponentItem::new)
+    public static ItemEntry<ComponentItem> CRYSTAL_ASSEMBLY_LuV = REGISTRATE
+            .item("crystal_processor_assembly", ComponentItem::new)
             .transform(nameAndTooltip("Crystal Processor Assembly",
-                            "Taking Advantage of Crystal Engraving", "§9LuV-Tier Circuit"))
+                    "Taking Advantage of Crystal Engraving", "§9LuV-Tier Circuit"))
             .tag(CustomTags.LuV_CIRCUITS)
             .register();
-    public static ItemEntry<ComponentItem> CRYSTAL_COMPUTER_ZPM = REGISTRATE.item("crystal_processor_computer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> CRYSTAL_COMPUTER_ZPM = REGISTRATE
+            .item("crystal_processor_computer", ComponentItem::new)
             .transform(nameAndTooltip("Crystal Processor Supercomputer",
-                            "Taking Advantage of Crystal Engraving", "§9ZPM-Tier Circuit"))
+                    "Taking Advantage of Crystal Engraving", "§9ZPM-Tier Circuit"))
             .tag(CustomTags.ZPM_CIRCUITS)
             .register();
-    public static ItemEntry<ComponentItem> CRYSTAL_MAINFRAME_UV = REGISTRATE.item("crystal_processor_mainframe", ComponentItem::new)
+    public static ItemEntry<ComponentItem> CRYSTAL_MAINFRAME_UV = REGISTRATE
+            .item("crystal_processor_mainframe", ComponentItem::new)
             .transform(nameAndTooltip("Crystal Processor Mainframe",
-                            "Taking Advantage of Crystal Engraving", "§9UV-Tier Circuit"))
+                    "Taking Advantage of Crystal Engraving", "§9UV-Tier Circuit"))
             .tag(CustomTags.UV_CIRCUITS)
             .register();
 
     // T7: Wetware
-    public static ItemEntry<ComponentItem> WETWARE_PROCESSOR_LuV = REGISTRATE.item("wetware_processor", ComponentItem::new)
+    public static ItemEntry<ComponentItem> WETWARE_PROCESSOR_LuV = REGISTRATE
+            .item("wetware_processor", ComponentItem::new)
             .transform(nameAndTooltip("Wetware Processor",
-                            "You have a feeling like it's watching you", "§4LuV-Tier Circuit"))
+                    "You have a feeling like it's watching you", "§4LuV-Tier Circuit"))
             .tag(CustomTags.LuV_CIRCUITS)
             .register();
     public static ItemEntry<ComponentItem> WETWARE_PROCESSOR_ASSEMBLY_ZPM = REGISTRATE
             .item("wetware_processor_assembly", ComponentItem::new)
             .transform(nameAndTooltip("Wetware Processor Assembly",
-                            "Can run Minecraft", "§4ZPM-Tier Circuit"))
+                    "Can run Minecraft", "§4ZPM-Tier Circuit"))
             .tag(CustomTags.ZPM_CIRCUITS).register();
-    public static ItemEntry<ComponentItem> WETWARE_SUPER_COMPUTER_UV = REGISTRATE.item("wetware_processor_computer", ComponentItem::new)
+    public static ItemEntry<ComponentItem> WETWARE_SUPER_COMPUTER_UV = REGISTRATE
+            .item("wetware_processor_computer", ComponentItem::new)
             .transform(nameAndTooltip("Wetware Processor Supercomputer",
-                            "Ultimate fusion of Flesh and Machine", "§4UV-Tier Circuit"))
+                    "Ultimate fusion of Flesh and Machine", "§4UV-Tier Circuit"))
             .tag(CustomTags.UV_CIRCUITS)
             .register();
-    public static ItemEntry<ComponentItem> WETWARE_MAINFRAME_UHV = REGISTRATE.item("wetware_processor_mainframe", ComponentItem::new)
+    public static ItemEntry<ComponentItem> WETWARE_MAINFRAME_UHV = REGISTRATE
+            .item("wetware_processor_mainframe", ComponentItem::new)
             .transform(nameAndTooltip("Wetware Processor Mainframe",
-                            "The best Man has ever seen", "§4UHV-Tier Circuit"))
+                    "The best Man has ever seen", "§4UHV-Tier Circuit"))
             .tag(CustomTags.UHV_CIRCUITS)
             .register();
 
@@ -1539,7 +1613,8 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> ITEM_FILTER = REGISTRATE.item("item_filter", ComponentItem::create)
             .transform(nameAndTooltip("Item Filter",
-                    "Filters §fItem§r I/O as §fCover§r.", "Can be used as a §fConveyor Module§r and §fRobotic Arm§r upgrade."))
+                    "Filters §fItem§r I/O as §fCover§r.",
+                    "Can be used as a §fConveyor Module§r and §fRobotic Arm§r upgrade."))
             .onRegister(attach(new FilterBehaviour<>(ItemStack.class, SimpleItemFilter::new),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2),
@@ -1549,7 +1624,8 @@ public class GTItems {
     public static ItemEntry<ComponentItem> TAG_FILTER = REGISTRATE
             .item("item_tag_filter", ComponentItem::create)
             .transform(nameAndTooltip("Item Tag Filter",
-                    "Filters §fItem§r I/O with §fItem Tags§r as §fCover§r.", "Can be used as a §fConveyor Module§r and §fRobotic Arm§r upgrade."))
+                    "Filters §fItem§r I/O with §fItem Tags§r as §fCover§r.",
+                    "Can be used as a §fConveyor Module§r and §fRobotic Arm§r upgrade."))
             .onRegister(attach(
                     new FilterBehaviour<>(ItemStack.class,
                             stack -> new TagFilter<>(stack, ItemStack::getItem, ItemStack::getTags)),
@@ -1560,7 +1636,8 @@ public class GTItems {
     public static ItemEntry<ComponentItem> SMART_ITEM_FILTER = REGISTRATE
             .item("item_smart_filter", ComponentItem::create)
             .transform(nameAndTooltip("Smart Item Filter",
-                    "Filters §fItem§r I/O with §fMachine Recipes§r as §fCover§r.", "Can be used as a §fConveyor Module§r and §fRobotic Arm§r upgrade."))
+                    "Filters §fItem§r I/O with §fMachine Recipes§r as §fCover§r.",
+                    "Can be used as a §fConveyor Module§r and §fRobotic Arm§r upgrade."))
             .onRegister(attach(new FilterBehaviour<>(ItemStack.class, SmartItemFilter::new),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
@@ -1568,7 +1645,8 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> FLUID_FILTER = REGISTRATE.item("fluid_filter", ComponentItem::create)
             .transform(nameAndTooltip("Fluid Filter",
-                    "Filters §fFluid§r I/O as §fCover§r.", "Can be used as a §fElectric Pump§r and §fFluid Regulator§r upgrade."))
+                    "Filters §fFluid§r I/O as §fCover§r.",
+                    "Can be used as a §fElectric Pump§r and §fFluid Regulator§r upgrade."))
             .onRegister(attach(new FilterBehaviour<>(FluidStack.class, SimpleFluidFilter::new),
                     new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
@@ -1576,7 +1654,8 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE.item("fluid_tag_filter", ComponentItem::create)
             .transform(nameAndTooltip("Fluid Tag Filter",
-                    "Filters §fFluid§r I/O with §fFluid Tags§r as §fCover§r.", "Can be used as a §fElectric Pump§r and §fFluid Regulator§r upgrade."))
+                    "Filters §fFluid§r I/O with §fFluid Tags§r as §fCover§r.",
+                    "Can be used as a §fElectric Pump§r and §fFluid Regulator§r upgrade."))
             .onRegister(attach(
                     new FilterBehaviour<>(FluidStack.class, stack -> new TagFilter<>(stack, FluidStack::getFluid,
                             f -> f.getFluid().defaultFluidState().getTags())),
@@ -1617,25 +1696,25 @@ public class GTItems {
     public static ItemEntry<ComponentItem> COVER_ACTIVITY_DETECTOR = REGISTRATE
             .item("activity_detector_cover", ComponentItem::create)
             .transform(nameAndTooltip("Activity Detector Cover",
-                            "Gives out §fActivity Status§r as Redstone as §fCover§r."))
+                    "Gives out §fActivity Status§r as Redstone as §fCover§r."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ACTIVITY_DETECTOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ACTIVITY_DETECTOR_ADVANCED = REGISTRATE
             .item("advanced_activity_detector_cover", ComponentItem::create)
             .transform(nameAndTooltip("Advanced Activity Detector Cover",
-                            "Gives out §fMachine Progress§r as Redstone as §fCover§r."))
+                    "Gives out §fMachine Progress§r as Redstone as §fCover§r."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ACTIVITY_DETECTOR_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_FLUID_DETECTOR = REGISTRATE
             .item("fluid_detector_cover", ComponentItem::create)
             .transform(nameAndTooltip("Fluid Detector Cover",
-                            "Gives out §fFluid Amount§r as Redstone as §fCover§r."))
+                    "Gives out §fFluid Amount§r as Redstone as §fCover§r."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_DETECTOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_FLUID_DETECTOR_ADVANCED = REGISTRATE
             .item("advanced_fluid_detector_cover", ComponentItem::create)
             .transform(nameAndTooltip("Advanced Fluid Detector Cover",
-                            "Gives §fRS-Latch§r controlled §fFluid Storage Status§r as Redstone as §fCover§r."))
+                    "Gives §fRS-Latch§r controlled §fFluid Storage Status§r as Redstone as §fCover§r."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_DETECTOR_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ITEM_DETECTOR = REGISTRATE
@@ -1646,25 +1725,25 @@ public class GTItems {
     public static ItemEntry<ComponentItem> COVER_ITEM_DETECTOR_ADVANCED = REGISTRATE
             .item("advanced_item_detector_cover", ComponentItem::create)
             .transform(nameAndTooltip("Advanced Item Detector Cover",
-                            "Gives §fRS-Latch§r controlled §fItem Storage Status§r as Redstone as §fCover§r."))
+                    "Gives §fRS-Latch§r controlled §fItem Storage Status§r as Redstone as §fCover§r."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_DETECTOR_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ENERGY_DETECTOR = REGISTRATE
             .item("energy_detector_cover", ComponentItem::create)
             .transform(nameAndTooltip("Energy Detector Cover",
-                            "Gives out §fEnergy Amount§r as Redstone as §fCover§r."))
+                    "Gives out §fEnergy Amount§r as Redstone as §fCover§r."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENERGY_DETECTOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ENERGY_DETECTOR_ADVANCED = REGISTRATE
             .item("advanced_energy_detector_cover", ComponentItem::create)
             .transform(nameAndTooltip("Advanced Energy Detector Cover",
-                            "Gives §fRS-Latch§r controlled §fEnergy Status§r as Redstone as §fCover§r."))
+                    "Gives §fRS-Latch§r controlled §fEnergy Status§r as Redstone as §fCover§r."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENERGY_DETECTOR_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_MAINTENANCE_DETECTOR = REGISTRATE
             .item("maintenance_detector_cover", ComponentItem::create)
             .transform(nameAndTooltip("Maintenance Detector Cover",
-                            "Gives out §fMaintenance Status§r as Redstone as §fCover§r."))
+                    "Gives out §fMaintenance Status§r as Redstone as §fCover§r."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.MAINTENANCE_DETECTOR)))
             .register();
 
@@ -1682,14 +1761,14 @@ public class GTItems {
     public static ItemEntry<ComponentItem> COVER_SHUTTER = REGISTRATE
             .item("shutter_module_cover", ComponentItem::create)
             .transform(nameAndTooltip("Shutter Module Cover",
-                            "§fBlocks Transfer§r through attached Side as §fCover§r."))
+                    "§fBlocks Transfer§r through attached Side as §fCover§r."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.SHUTTER)))
             .register();
 
     public static ItemEntry<ComponentItem> COVER_INFINITE_WATER = REGISTRATE
             .item("infinite_water_cover", ComponentItem::create)
             .transform(nameAndTooltip("Infinite Water Cover",
-                            "Fills attached containers with §9Water§r as §fCover§r."))
+                    "Fills attached containers with §9Water§r as §fCover§r."))
             .onRegister(attach(
                     new TooltipBehavior(Component.translatable("common.gtceu.tooltip.produces_fluid",
                             InfiniteWaterCover.AVG_FLUID_PER_TICK)),
@@ -1699,20 +1778,20 @@ public class GTItems {
     public static ItemEntry<ComponentItem> COVER_ENDER_FLUID_LINK = REGISTRATE
             .item("ender_fluid_link_cover", ComponentItem::create)
             .transform(nameAndTooltip("Ender Fluid Link Cover",
-                            "Transports §fFluids§r with a §fWireless §dEnder§f Connection§r as §fCover§r."))
+                    "Transports §fFluids§r with a §fWireless §dEnder§f Connection§r as §fCover§r."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_FLUID_LINK)))
             .register();
 
     public static ItemEntry<ComponentItem> COVER_ENDER_ITEM_LINK = REGISTRATE
             .item("ender_item_link_cover", ComponentItem::create)
             .transform(nameAndTooltip("Ender Item Link Cover",
-                            "Transports §fItems§r with a §fWireless §dEnder§f Connection§r as §fCover§r."))
+                    "Transports §fItems§r with a §fWireless §dEnder§f Connection§r as §fCover§r."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_ITEM_LINK)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ENDER_REDSTONE_LINK = REGISTRATE
             .item("ender_redstone_link_cover", ComponentItem::create)
             .transform(nameAndTooltip("Ender Redstone Link Cover",
-                            "Transmits §fRedstone Signal§r with a §fWireless §dEnder§f Connection§r as §fCover§r."))
+                    "Transmits §fRedstone Signal§r with a §fWireless §dEnder§f Connection§r as §fCover§r."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_REDSTONE_LINK)))
             .register();
 
@@ -1725,7 +1804,8 @@ public class GTItems {
     public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING_ADVANCED = REGISTRATE
             .item("advanced_fluid_voiding_cover", ComponentItem::create)
             .transform(nameAndTooltip("Advanced Fluid Voiding Cover",
-                    "Voids §fFluids§r with amount control as §fCover§r.", "Activate with §fSoft Mallet§r after placement."))
+                    "Voids §fFluids§r with amount control as §fCover§r.",
+                    "Activate with §fSoft Mallet§r after placement."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_VOIDING_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ITEM_VOIDING = REGISTRATE
@@ -1737,7 +1817,8 @@ public class GTItems {
     public static ItemEntry<ComponentItem> COVER_ITEM_VOIDING_ADVANCED = REGISTRATE
             .item("advanced_item_voiding_cover", ComponentItem::create)
             .transform(nameAndTooltip("Advanced Item Voiding Cover",
-                    "Voids §fItems§r with amount control as §fCover§r.", "Activate with §fSoft Mallet§r after placement."))
+                    "Voids §fItems§r with amount control as §fCover§r.",
+                    "Activate with §fSoft Mallet§r after placement."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_VOIDING_ADVANCED)))
             .register();
 
@@ -1817,8 +1898,7 @@ public class GTItems {
         return v -> v.attachComponents(new TooltipBehavior(
                 Component.translatable("item.gtceu.solar_panel.tooltip.0").withStyle(ChatFormatting.GRAY),
                 Component.translatable("item.gtceu.solar_panel.tooltip.1").withStyle(ChatFormatting.GRAY),
-                GTCommonComponents.voltage(IO.OUT, tier)
-        ));
+                GTCommonComponents.voltage(IO.OUT, tier)));
     }
 
     // Plugin
@@ -2023,7 +2103,8 @@ public class GTItems {
             .color(() -> IMaterialPartItem::getItemStackColor)
             .onRegister(attach(new TurbineRotorBehaviour())).register();
 
-    public static ItemEntry<ComponentItem> NEURO_PROCESSOR = REGISTRATE.item("neuro_processing_unit", ComponentItem::new)
+    public static ItemEntry<ComponentItem> NEURO_PROCESSOR = REGISTRATE
+            .item("neuro_processing_unit", ComponentItem::new)
             .transform(nameAndTooltip("Neuro Processing Unit", "Neuro CPU"))
             .register();
     public static ItemEntry<ComponentItem> STEM_CELLS = REGISTRATE.item("stem_cells", ComponentItem::new)
@@ -2368,9 +2449,12 @@ public class GTItems {
     }
 
     /**
-     * Adds lang generation for an item name & tooltip(s), and adds the tooltip(s) to the component item. Tooltips are coloured grey by default
+     * Adds lang generation for an item name & tooltip(s), and adds the tooltip(s) to the component item. Tooltips are
+     * coloured grey by default
      */
-    public static <I extends ComponentItem, S extends ItemBuilder<I, GTRegistrate>> NonNullFunction<S, S> nameAndTooltip(String name, String... tooltips) {
+    public static <I extends ComponentItem,
+            S extends ItemBuilder<I, GTRegistrate>> NonNullFunction<S, S> nameAndTooltip(String name,
+                                                                                         String... tooltips) {
         return builder -> {
             builder.setData(ProviderType.LANG, (ctx, prov) -> {
                 prov.add(ctx.getEntry().getDescriptionId(), name);
@@ -2383,7 +2467,8 @@ public class GTItems {
                 }
             });
             builder.onRegister(item -> {
-                var tooltipComponents = Arrays.stream(LangUtil.getSingleOrMultiLang(item.getDescriptionId() + ".tooltip"))
+                var tooltipComponents = Arrays
+                        .stream(LangUtil.getSingleOrMultiLang(item.getDescriptionId() + ".tooltip"))
                         .map(v -> v.withStyle(ChatFormatting.GRAY))
                         .toArray(MutableComponent[]::new);
 

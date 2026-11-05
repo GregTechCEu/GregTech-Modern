@@ -177,11 +177,9 @@ public class GTMachines {
                     .tooltips(Component.translatable("common.gtceu.tooltip.uses_per_tick_steam", isHP ? 32 : 16)
                             .append(ChatFormatting.GRAY + ", ")
                             .append(Component.translatable("machine.gtceu.miner.per_block",
-                                    isHP ? 240 / 20 : 280 / 20)))
-                    .tooltipBuilder((item, tooltip) -> {
-                        int maxArea = IMiner.getWorkingArea(isHP ? 6 : 4);
-                        tooltip.add(Component.translatable("machine.gtceu.miner.working_area", maxArea, maxArea));
-                    })
+                                    isHP ? 240 / 20 : 280 / 20)),
+                            Component.translatable("machine.gtceu.miner.working_area",
+                                    IMiner.getWorkingArea(isHP ? 6 : 4), IMiner.getWorkingArea(isHP ? 6 : 4)))
                     .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
                     .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.UP)
                     .workableSteamHullModel(isHP, isHP ?
@@ -752,7 +750,7 @@ public class GTMachines {
             .rotationState(RotationState.NONE)
             .model(createSingleOverlayTieredHullMachineModel(GTModels.BLANK_TEXTURE,
                     GTCEu.id("block/overlay/machine/overlay_energy_emitter")))
-            .tooltipBuilder(CREATIVE_TOOLTIPS)
+            .tooltips(GTCommonComponents.CREATIVE_NEEDED)
             .tier(MAX)
             .register();
 
@@ -762,7 +760,7 @@ public class GTMachines {
             .model(createSingleOverlayTieredHullMachineModel(
                     GTCEu.id("block/overlay/machine/overlay_data_hatch_optical"),
                     GTCEu.id("block/overlay/machine/overlay_data_hatch_optical_emissive")))
-            .tooltipBuilder(CREATIVE_TOOLTIPS)
+            .tooltips(GTCommonComponents.CREATIVE_NEEDED)
             .tier(MAX)
             .register();
 

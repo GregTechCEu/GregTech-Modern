@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
-
 import com.gregtechceu.gtceu.utils.lang.LangUtil;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

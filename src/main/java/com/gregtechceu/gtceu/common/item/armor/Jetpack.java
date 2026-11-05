@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
-
 import com.gregtechceu.gtceu.utils.lang.LangUtil;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;

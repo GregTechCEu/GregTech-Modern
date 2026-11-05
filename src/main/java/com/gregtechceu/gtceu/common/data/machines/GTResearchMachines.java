@@ -29,10 +29,6 @@ import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.List;
-import java.util.function.BiConsumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -41,7 +37,6 @@ import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelPropertie
 import static com.gregtechceu.gtceu.api.multiblock.Predicates.*;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
-import static com.gregtechceu.gtceu.common.data.GTMachines.CREATIVE_TOOLTIPS;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
@@ -273,11 +268,9 @@ public class GTResearchMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.DATA_ACCESS)
             .modelProperty(IS_FORMED, false)
-            .tooltipBuilder((s, list) -> {
-                list.add(Component.translatable("machine.gtceu.data_access_hatch.tooltip.0"));
-                CREATIVE_TOOLTIPS.accept(s, list);
-                list.add(GTCommonComponents.PART_SHARING_DISABLED);
-            })
+            .tooltips(Component.translatable("machine.gtceu.data_access_hatch.tooltip.0"),
+                    GTCommonComponents.CREATIVE_NEEDED,
+                    GTCommonComponents.PART_SHARING_DISABLED)
             .overlayTieredHullModel("data_access_hatch_creative")
             .register();
 
@@ -285,9 +278,9 @@ public class GTResearchMachines {
     // *********** HPCA ***********//
     //////////////////////////////////////
 
-    public static final BiConsumer<ItemStack, List<Component>> OVERHEAT_TOOLTIPS = (stack, components) -> components
-            .add(Component.translatable("machine.gtceu.hpca_component.tooltip.damaged")
-                    .withStyle(style -> style.withColor(TooltipHelper.BLINKING_ORANGE.getCurrent())));
+    public static final Component OVERHEAT_TOOLTIP = Component
+            .translatable("machine.gtceu.hpca_component.tooltip.damaged")
+            .withStyle(style -> style.withColor(TooltipHelper.BLINKING_ORANGE.getCurrent()));
 
     public static final MachineDefinition HPCA_EMPTY_COMPONENT = registerHPCAPart(
             "hpca_empty_component", "Empty HPCA Component",
@@ -303,8 +296,8 @@ public class GTResearchMachines {
                     Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut", GTValues.VA[GTValues.LuV]),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cwut", 4),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cooling", 2),
+                    OVERHEAT_TOOLTIP,
                     GTCommonComponents.PART_SHARING_DISABLED)
-            .tooltipBuilder(OVERHEAT_TOOLTIPS)
             .register();
     public static final MachineDefinition HPCA_ADVANCED_COMPUTATION_COMPONENT = registerHPCAPart(
             "hpca_advanced_computation_component", "HPCA Advanced Computation Component",
@@ -314,8 +307,8 @@ public class GTResearchMachines {
                     Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut", GTValues.VA[GTValues.ZPM]),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cwut", 16),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cooling", 4),
+                    OVERHEAT_TOOLTIP,
                     GTCommonComponents.PART_SHARING_DISABLED)
-            .tooltipBuilder(OVERHEAT_TOOLTIPS)
             .register();
     public static final MachineDefinition HPCA_HEAT_SINK_COMPONENT = registerHPCAPart(
             "hpca_heat_sink_component", "HPCA Heat Sink Component",
