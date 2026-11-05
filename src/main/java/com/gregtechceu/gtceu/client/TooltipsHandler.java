@@ -44,9 +44,6 @@ import java.util.function.UnaryOperator;
 @OnlyIn(Dist.CLIENT)
 public class TooltipsHandler {
 
-    private static final String ITEM_PREFIX = "item." + GTCEu.MOD_ID;
-    private static final String BLOCK_PREFIX = "block." + GTCEu.MOD_ID;
-
     public static void appendTooltips(ItemStack stack, TooltipFlag flag, List<Component> tooltips) {
         // Formula
         var materialEntry = ChemicalHelper.getMaterialEntry(stack.getItem());
@@ -63,23 +60,6 @@ public class TooltipsHandler {
             }
         } else if (stack.getItem() instanceof MilkBucketItem) {
             appendFluidTooltips(GTMaterials.Milk.getFluid(FluidType.BUCKET_VOLUME), tooltips::add, flag);
-        }
-
-        // Block/Item custom tooltips
-        String translationKey = stack.getDescriptionId();
-        if (translationKey.startsWith(ITEM_PREFIX)) {
-            String tooltipKey = translationKey + ".tooltip";
-            if (Language.getInstance().has(tooltipKey)) {
-                tooltips.add(1, Component.translatable(tooltipKey));
-            } else {
-                var multiLang = LangUtil.getListMultiLang(tooltipKey);
-                for (MutableComponent comp : multiLang) {
-                    if (comp.getStyle().getColor() == null) comp.withStyle(ChatFormatting.GRAY);
-                }
-                if (!multiLang.isEmpty()) {
-                    tooltips.addAll(1, multiLang);
-                }
-            }
         }
 
         Either<Material, MaterialEntry> material = HazardProperty.getValidHazardMaterial(stack);
