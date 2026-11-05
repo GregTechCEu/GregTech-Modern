@@ -3297,6 +3297,7 @@
   "gtceu.maintenance.configurable_duration.changed_description": "Recipes will run with %fx duration, applied before overclocking.",
   "gtceu.maintenance.configurable_duration.modify": "Modify Duration:",
   "gtceu.maintenance.configurable_duration.unchanged_description": "Recipes will run at normal speed. Change configuration to update.",
+  "gtceu.maintenance.configurable_frequency": "Maintenance: %fx",
   "gtceu.maintenance.configurable_time": "Time: %fx",
   "gtceu.maintenance.configurable_time.changed_description": "Maintenance problems will occur at %fx the normal rate.",
   "gtceu.maintenance.configurable_time.unchanged_description": "Maintenance problems will occur at normal rate. Change configuration to update.",

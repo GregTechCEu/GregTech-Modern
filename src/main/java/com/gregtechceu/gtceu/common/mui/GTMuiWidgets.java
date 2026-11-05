@@ -452,29 +452,41 @@ public class GTMuiWidgets {
     }
 
     private static int getIncrementValue(MouseData data, int step) {
-        int adjust = step;
-        if (data.shift()) adjust *= 4;
-        if (data.ctrl()) adjust *= 16;
-        if (data.alt()) adjust *= 64;
-        return adjust;
+        return getIncrementValue(data, step, 4);
     }
 
     private static long getIncrementValue(MouseData data, long step) {
+        return getIncrementValue(data, step, 4);
+    }
+
+    private static int getIncrementValue(MouseData data, int step, int mult) {
+        int adjust = step;
+        if (data.shift()) adjust *= mult;
+        if (data.ctrl()) adjust *= mult * mult;
+        if (data.alt()) adjust *= mult * mult * mult;
+        return adjust;
+    }
+
+    private static long getIncrementValue(MouseData data, long step, long mult) {
         long adjust = step;
-        if (data.shift()) adjust *= 4;
-        if (data.ctrl()) adjust *= 16;
-        if (data.alt()) adjust *= 64;
+        if (data.shift()) adjust *= mult;
+        if (data.ctrl()) adjust *= mult * mult;
+        if (data.alt()) adjust *= mult * mult * mult;
         return adjust;
     }
 
     private static Text createAdjustOverlay(boolean increment) {
-        return createAdjustOverlay(increment, 1);
+        return createAdjustOverlay(increment, 1, 4);
     }
 
     private static Text createAdjustOverlay(boolean increment, long step) {
+        return createAdjustOverlay(increment, step, 4);
+    }
+
+    private static Text createAdjustOverlay(boolean increment, long step, long mult) {
         final StringBuilder builder = new StringBuilder();
         builder.append(increment ? '+' : '-');
-        builder.append(getIncrementValue(MouseData.create(-1), step));
+        builder.append(getIncrementValue(MouseData.create(-1), step, mult));
 
         float scale = 1f;
         if (builder.length() == 3) {
@@ -589,6 +601,82 @@ public class GTMuiWidgets {
                             syncValue.setLongValue(value < min ? min : Math.min(value, max), true, true);
                             return true;
                         }).onUpdateListener(w -> w.overlay(createAdjustOverlay(true, step))));
+    }
+
+    public static ParentWidget<?> createDecimalInputWithButtons(IntSyncValue syncValue, IntSupplier minValue,
+                                                                IntSupplier maxValue, int step, int decimals) {
+        return createDecimalInputWithButtons(syncValue, minValue, maxValue, step, decimals, GTGuiTextures.DISPLAY);
+    }
+
+    /**
+     * Creates an input element for handling user entry of decimal values.
+     * Does NOT take a Float or Double sync value. Takes an Integer sync and a number of decimal places to show,
+     * and handles all work in Fixed-Point with that many places.
+     */
+    public static ParentWidget<?> createDecimalInputWithButtons(IntSyncValue syncValue, IntSupplier minValue,
+                                                                IntSupplier maxValue, int step, int decimalPlaces,
+                                                                IDrawable background) {
+        StringSyncValue formattedValue = new StringSyncValue(
+                () -> formattedDecimalValue(syncValue.getIntValue(), decimalPlaces),
+                (v) -> syncValue.setValue(decimalFromFormattedValue(v, decimalPlaces), true,
+                        true))
+                .allowC2S();
+
+        var textField = new TextFieldWidget() {
+
+            @Override
+            public boolean onMouseScrolled(double scrollX, double scrollY) {
+                int inc = (int) scrollY * getIncrementValue(MouseData.create(-1), step, 10);
+                int val = Mth.clamp(syncValue.getIntValue() + inc, minValue.getAsInt(),
+                        maxValue.getAsInt());
+                syncValue.setIntValue(val, true, true);
+                return true;
+            }
+        }.left(18).right(18).height(18)
+                .setTextAlignment(Alignment.Center)
+                .setTextColor(Color.WHITE.darker(1))
+                .setNumbers(minValue, maxValue)
+                .value(formattedValue)
+                .background(background);
+
+        return Flow.row()
+                .coverChildrenHeight()
+                .widthRel(1.0f)
+                .child(new ButtonWidget<>()
+                        .width(18).height(18)
+                        .onMousePressed((context, button) -> {
+                            int val = syncValue.getIntValue() - getIncrementValue(MouseData.create(button), step, 10);
+                            val = Mth.clamp(val, minValue.getAsInt(), maxValue.getAsInt());
+                            syncValue.setIntValue(val, true, true);
+                            return true;
+                        })
+                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(false, step, 10))))
+                .child(textField)
+                .child(new ButtonWidget<>()
+                        .width(18).height(18).right(0)
+                        .onMousePressed((context, button) -> {
+                            int val = syncValue.getIntValue() + getIncrementValue(MouseData.create(button), step, 10);
+                            val = Mth.clamp(val, minValue.getAsInt(), maxValue.getAsInt());
+                            syncValue.setIntValue(val, true, true);
+                            return true;
+                        })
+                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(true, step, 10))));
+    }
+
+    public static String formattedDecimalValue(int value, int decimalPlaces) {
+        String formatter = "%0" + (decimalPlaces + 1) + "d";
+        StringBuilder decimal = new StringBuilder(String.format(formatter, value));
+        decimal.insert(decimal.length() - decimalPlaces, '.');
+        return decimal.toString();
+    }
+
+    public static int decimalFromFormattedValue(String uiInput, int decimalPlaces) {
+        int multiplier = (int) Math.pow(10, decimalPlaces);
+        if (!uiInput.contains(".") || decimalPlaces == 0) return Integer.parseInt(uiInput) * multiplier;
+        String[] splitInput = uiInput.split("\\.");
+        if (splitInput.length > 1 && splitInput[1].length() > decimalPlaces)
+            splitInput[1] = splitInput[1].substring(0, decimalPlaces);
+        return (Integer.parseInt(splitInput[0]) * multiplier) + Integer.parseInt(splitInput[1]);
     }
 
     public static ParentWidget<?> createIntInputWithBucketMode(IntSyncValue intSyncValue,
