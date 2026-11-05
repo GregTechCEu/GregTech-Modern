@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.utils.lang;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 
+import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -167,6 +168,18 @@ public final class GTCommonComponents {
                         FormattingUtil.formatNumbers(amount)));
     }
 
+    public static MutableComponent itemTransferRate(int items) {
+        String itemStr = items > 64 ? FormattingUtil.formatNumber2Places((double)items / 64)
+                : String.valueOf(items);
+
+        var rateKey = items > 64 ? "common.gtceu.stacks_per_sec" : "common.gtceu.items_per_sec";
+
+        return Component.empty()
+                .append(Component.translatable("common.gtceu.transfer_rate").withStyle(ChatFormatting.AQUA))
+                .append(CommonComponents.SPACE)
+                .append(FormattingUtil.prepend(rateKey, itemStr));
+    }
+
     /// Fluid Storage / Capacity
 
     /**
@@ -228,5 +241,11 @@ public final class GTCommonComponents {
                 .append(GTCommonComponents.COMMA_SPACE)
                 .append(FormattingUtil.prepend("common.gtceu.millibucket",
                         FormattingUtil.formatNumbers(amount)));
+    }
+
+    public static MutableComponent fluidTransferRate(int mb) {
+        return Component.empty()
+                .append(Component.translatable("common.gtceu.transfer_rate").withStyle(ChatFormatting.AQUA))
+                .append(FormattingUtil.prepend("common.gtceu.millibucket", FormattingUtil.formatNumbers(mb)));
     }
 }

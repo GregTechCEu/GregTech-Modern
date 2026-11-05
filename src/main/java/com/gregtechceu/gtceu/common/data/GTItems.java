@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.cover.InfiniteWaterCover;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
@@ -40,8 +41,11 @@ import com.gregtechceu.gtceu.integration.ae2.AEItemCompat;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
+import com.tterrag.registrate.AbstractRegistrate;
+import com.tterrag.registrate.util.nullness.NonNullBiFunction;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -762,7 +766,7 @@ public class GTItems {
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[tier])))
                 .onRegister(attach(new TooltipBehavior(lines -> {
                     lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                    lines.add(fluidRateTooltip(tier));
+                    lines.add(GTCommonComponents.fluidTransferRate(PumpCover.PUMP_SCALING.applyAsInt(tier)));
                 })));
         if (tier <= GTValues.UV) builder.tag(CustomTags.ELECTRIC_PUMPS);
         return builder.register();
@@ -802,7 +806,7 @@ public class GTItems {
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[tier])))
                 .onRegister(attach(new TooltipBehavior(lines -> {
                     lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                    lines.add(fluidRateTooltip(tier));
+                    lines.add(GTCommonComponents.fluidTransferRate(PumpCover.PUMP_SCALING.applyAsInt(tier)));
                 })));
         if (tier <= GTValues.UV) builder.tag(CustomTags.FLUID_REGULATORS);
         return builder.register();
@@ -843,7 +847,7 @@ public class GTItems {
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[tier])))
                 .onRegister(attach(new TooltipBehavior(lines -> {
                     lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                    lines.add(itemRateTooltip(tier));
+                    lines.add(GTCommonComponents.itemTransferRate(ConveyorCover.CONVEYOR_SCALING.applyAsInt(tier)));
                 })));
         if (tier <= GTValues.UV) builder.tag(CustomTags.CONVEYOR_MODULES);
         return builder.register();
@@ -919,7 +923,7 @@ public class GTItems {
                         attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[tier]), new TieredBehaviour(tier)))
                 .onRegister(attach(new TooltipBehavior(lines -> {
                     lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                    lines.add(itemRateTooltip(tier));
+                    lines.add(GTCommonComponents.itemTransferRate(ConveyorCover.CONVEYOR_SCALING.applyAsInt(tier)));
                 })));
         if (tier <= GTValues.UV) builder.tag(CustomTags.ROBOT_ARMS);
         return builder.register();
@@ -2372,6 +2376,28 @@ public class GTItems {
         }
     }
 
+    /**
+     * Adds lang generation for an item name & tooltip(s), and adds the tooltip(s) to the component item. Tooltips are coloured grey by default
+     */
+    public static <S extends ItemBuilder<? extends ComponentItem, GTRegistrate>> NonNullFunction<S, S> nameAndTooltipTransform(String name, String... tooltips) {
+        return builder -> {
+            builder.setData(ProviderType.LANG, (ctx, prov) -> {
+                prov.add(ctx.getEntry().getDescriptionId(), name);
+                if (tooltips.length == 1) {
+                    prov.add(ctx.getEntry().getDescriptionId() + ".tooltip", tooltips[0]);
+                } else {
+                    for (var i = 0; i < tooltips.length; i++) {
+                        prov.add(ctx.getEntry().getDescriptionId() + ".tooltip." + i, tooltips[i]);
+                    }
+                }
+            });
+            builder.onRegister(item -> {
+                item.attachComponents(new TooltipBehavior(LangUtil.getSingleOrMultiLang(item.getDescriptionId() + ".tooltip")));
+            });
+            return builder;
+        };
+    }
+
     public static <
             T extends Item> NonNullBiConsumer<DataGenContext<Item, T>, RegistrateLangProvider> nameAndTooltipLang(String name,
                                                                                                                   String tooltip) {
@@ -2475,30 +2501,6 @@ public class GTItems {
                 ItemProperties.register(item, predicate, property.get().get());
             }
         };
-    }
-
-    @SuppressWarnings("RedundantCast")
-    public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<ResourceLocation> before,
-                                        Collection<ResourceLocation> after) {
-        TierSortingRegistry.registerTier(tier, id, Arrays.asList((Object[]) before.toArray(ResourceLocation[]::new)),
-                Arrays.asList((Object[]) after.toArray(ResourceLocation[]::new)));
-    }
-
-    private static Component itemRateTooltip(int tier) {
-        var itemsPerSecond = ConveyorCover.CONVEYOR_SCALING.applyAsInt(tier);
-        return itemsPerSecond > 64 ?
-                Component.translatable("common.gtceu.tooltip.item_transfer_rate_stacks", itemsPerSecond / 64) :
-                Component.translatable("common.gtceu.tooltip.item_transfer_rate", itemsPerSecond);
-    }
-
-    private static Component fluidRateTooltip(int tier) {
-        var mbPerTick = PumpCover.PUMP_SCALING.applyAsInt(tier);
-        return Component.translatable("common.gtceu.transfer_rate").withStyle(ChatFormatting.AQUA)
-                .append(FormattingUtil.prepend("common.gtceu.millibucket", FormattingUtil.formatNumbers(mbPerTick)));
-    }
-
-    public static ResourceLocation getTierName(Tier tier) {
-        return TierSortingRegistry.getName(tier);
     }
 
     @FunctionalInterface

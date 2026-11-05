@@ -67,7 +67,7 @@ public class TooltipsHandler {
 
         // Block/Item custom tooltips
         String translationKey = stack.getDescriptionId();
-        if (translationKey.startsWith(ITEM_PREFIX) || translationKey.startsWith(BLOCK_PREFIX)) {
+        if (translationKey.startsWith(ITEM_PREFIX)) {
             String tooltipKey = translationKey + ".tooltip";
             if (Language.getInstance().has(tooltipKey)) {
                 tooltips.add(1, Component.translatable(tooltipKey));

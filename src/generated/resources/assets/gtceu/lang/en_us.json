@@ -4441,7 +4441,7 @@
   "machine.gtceu.wood_drum": "Wooden Barrel",
   "machine.gtceu.wooden_multiblock_tank": "Wooden Multiblock Tank",
   "machine.gtceu.wooden_tank_valve": "Wooden Tank Valve",
-  "machine.gtceu.world_accelerator.description": "Tick accelerates nearby blocks in one of 2 modes: §fTile Entity§r or §fRandom Tick§r. Use Screwdriver to change mode.",
+  "machine.gtceu.world_accelerator.description": "Tick accelerates nearby blocks in one of 2 modes: §fBlock Entity§r or §fRandom Tick§r. Use Screwdriver to change mode.",
   "machine.gtceu.world_accelerator.mode_entity": "Random Tick Mode",
   "machine.gtceu.world_accelerator.mode_tile": "Block Entity Mode",
   "machine.gtceu.world_accelerator.working_area": "§bWorking Area:",

@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
-import com.gregtechceu.gtceu.data.lang.LangUtils;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -52,21 +52,21 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         boolean hoverMode = updateHoverMode(player, stack, data.getBoolean("hover"), false);
         byte toggleTimer = data.getByte("toggleTimer");
 
-        String messageKey = null;
+        Component messageKey = null;
         if (toggleTimer == 0) {
             if (SyncedKeyMappings.JETPACK_ENABLE.isKeyDown(player)) {
                 jetpackEnabled = !jetpackEnabled;
                 IJetpack.setEngineEnabled(stack, jetpackEnabled);
-                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.flight", jetpackEnabled);
+                messageKey = LangUtil.enabledBooleanKey("armor.gtceu.jetpack.flight", jetpackEnabled);
             } else if (SyncedKeyMappings.ARMOR_HOVER.isKeyDown(player)) {
                 hoverMode = updateHoverMode(player, stack, hoverMode, true);
-                messageKey = LangUtils.enabledBoolean("armor.gtceu.jetpack.hover", hoverMode);
+                messageKey = LangUtil.enabledBooleanKey("armor.gtceu.jetpack.hover", hoverMode);
                 data.putBoolean("hover", hoverMode);
             }
 
             if (messageKey != null) {
                 toggleTimer = 5;
-                if (!world.isClientSide) player.displayClientMessage(Component.translatable(messageKey), true);
+                if (!world.isClientSide) player.displayClientMessage(messageKey, true);
             }
         }
 
