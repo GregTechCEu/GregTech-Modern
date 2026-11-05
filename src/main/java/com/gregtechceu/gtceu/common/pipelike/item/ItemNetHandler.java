@@ -483,8 +483,9 @@ public class ItemNetHandler implements IItemHandlerModifiable, IVirtualItemHandl
                 return insertIntoDestination(routePath, handler, stack, simulate, count, ignoreLimit);
             case TRANSFER_EXACT:
                 int max = allowed + arm.getBuffer();
-                count = Math.min(max, Math.min(rate, stack.getCount()));
-                if (count < rate) {
+                // insert as many whole batches as the transfer rate allows
+                count = rate <= 0 ? 0 : (Math.min(max, stack.getCount()) / rate) * rate;
+                if (count == 0) {
                     arm.buffer(allowed);
                     return stack;
                 } else {
