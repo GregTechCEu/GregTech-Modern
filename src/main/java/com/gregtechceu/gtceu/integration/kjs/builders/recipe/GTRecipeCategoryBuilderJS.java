@@ -15,12 +15,12 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Supplier;
+
 @Accessors(chain = true, fluent = true)
 public class GTRecipeCategoryBuilderJS extends BuilderBase<GTRecipeCategory> {
 
-    private final transient String name;
-    @Setter
-    private transient GTRecipeType recipeType;
+    private transient Supplier<GTRecipeType> recipeType;
     @Setter
     private transient CategoryIcon icon;
     @Setter
@@ -31,11 +31,19 @@ public class GTRecipeCategoryBuilderJS extends BuilderBase<GTRecipeCategory> {
 
     public GTRecipeCategoryBuilderJS(ResourceLocation id) {
         super(id);
-        name = id.getPath();
-        recipeType = GTRecipeTypes.DUMMY_RECIPES.value();
+        recipeType = GTRecipeTypes.DUMMY_RECIPES;
         icon = null;
         isXEIVisible = true;
         langValue = null;
+    }
+
+    public GTRecipeCategoryBuilderJS setRecipeType(Supplier<GTRecipeType> recipeType) {
+        this.recipeType = recipeType;
+        return this;
+    }
+
+    public GTRecipeCategoryBuilderJS setRecipeType(GTRecipeType recipeType) {
+        return setRecipeType(() -> recipeType);
     }
 
     public GTRecipeCategoryBuilderJS setCustomIcon(ResourceLocation location) {

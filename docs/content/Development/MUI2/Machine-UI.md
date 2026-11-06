@@ -209,7 +209,7 @@ The usual way to add a line is `additionalDisplay` on the machine builder, which
 custom machine class. It is a `BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>>`:
 
 ```java
-public static final MultiblockMachineDefinition MY_MULTIBLOCK = REGISTRATE
+public static final MachineEntry<MultiblockMachineDefinition> MY_MULTIBLOCK = REGISTRATE
         .multiblock("my_multiblock", WorkableElectricMultiblockMachine::new)
         // ... rotation, recipe types, pattern, model ...
         .additionalDisplay((controller, syncManager) -> {

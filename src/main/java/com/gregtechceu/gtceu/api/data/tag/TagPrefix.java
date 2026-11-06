@@ -1331,6 +1331,10 @@ public class TagPrefix {
         ignoredMaterials.remove(material);
     }
 
+    public void removeIgnored(Holder<Material> material) {
+        removeIgnored(material.value());
+    }
+
     public @Unmodifiable Map<Material, @Unmodifiable Collection<Supplier<? extends ItemLike>>> getIgnored() {
         return Collections.unmodifiableMap(ignoredMaterials);
     }

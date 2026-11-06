@@ -805,54 +805,54 @@ public interface GTRecipeSchema {
         //////////////////////////////////////
         // ********** DATA ***********//
         //////////////////////////////////////
+        private CompoundTag getOrCreateData() {
+            CompoundTag data = getValue(DATA);
+            if (data == null) data = new CompoundTag();
+            setValue(DATA, data);
+            return data;
+        }
+
         public GTKubeRecipe addData(String key, Tag data) {
-            if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
-            getValue(DATA).put(key, data);
+            getOrCreateData().put(key, data);
             save();
             return this;
         }
 
         @HideFromJS
         public GTKubeRecipe addData(String key, int data) {
-            if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
-            getValue(DATA).putInt(key, data);
+            getOrCreateData().putInt(key, data);
             save();
             return this;
         }
 
         @HideFromJS
         public GTKubeRecipe addData(String key, long data) {
-            if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
-            getValue(DATA).putLong(key, data);
+            getOrCreateData().putLong(key, data);
             save();
             return this;
         }
 
         public GTKubeRecipe addDataString(String key, String data) {
-            if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
-            getValue(DATA).putString(key, data);
+            getOrCreateData().putString(key, data);
             save();
             return this;
         }
 
         @HideFromJS
         public GTKubeRecipe addData(String key, float data) {
-            if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
-            getValue(DATA).putFloat(key, data);
+            getOrCreateData().putFloat(key, data);
             save();
             return this;
         }
 
         public GTKubeRecipe addDataNumber(String key, double data) {
-            if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
-            getValue(DATA).putDouble(key, data);
+            getOrCreateData().putDouble(key, data);
             save();
             return this;
         }
 
         public GTKubeRecipe addDataBool(String key, boolean data) {
-            if (getValue(DATA) == null) setValue(DATA, new CompoundTag());
-            getValue(DATA).putBoolean(key, data);
+            getOrCreateData().putBoolean(key, data);
             save();
             return this;
         }
