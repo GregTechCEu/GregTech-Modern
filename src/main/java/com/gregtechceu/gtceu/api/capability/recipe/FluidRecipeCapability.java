@@ -68,37 +68,42 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
 
     @Override
     public List<Object> compressIngredients(@Unmodifiable Collection<Object> ingredients) {
-        List<Object> list = new ArrayList<>(ingredients.size());
-        mainLoop:
-        for (Object entry : ingredients) {
-            if (entry instanceof SizedFluidIngredient ingredient) {
+        List<Object> list = new ObjectArrayList<>(ingredients.size());
+        for (Object item : ingredients) {
+            if (item instanceof SizedFluidIngredient fluid) {
+                boolean isEqual = false;
                 for (Object obj : list) {
-                    if (obj instanceof SizedFluidIngredient other) {
-                        if (ingredient.equals(other)) {
-                            continue mainLoop;
+                    if (obj instanceof SizedFluidIngredient SizedFluidIngredient) {
+                        if (fluid.equals(SizedFluidIngredient)) {
+                            isEqual = true;
+                            break;
                         }
-                    } else if (obj instanceof FluidStack other) {
-                        if (ingredient.ingredient().test(other)) {
-                            continue mainLoop;
+                    } else if (obj instanceof FluidStack fluidStack) {
+                        if (fluid.ingredient().test(fluidStack)) {
+                            isEqual = true;
+                            break;
                         }
                     }
                 }
-
-                list.add(ingredient);
-            } else if (entry instanceof FluidStack stack) {
+                if (isEqual) continue;
+                list.add(fluid);
+            } else if (item instanceof FluidStack fluidStack) {
+                boolean isEqual = false;
                 for (Object obj : list) {
-                    if (obj instanceof SizedFluidIngredient other) {
-                        if (other.ingredient().test(stack)) {
-                            continue mainLoop;
+                    if (obj instanceof SizedFluidIngredient fluidIngredient) {
+                        if (fluidIngredient.ingredient().test(fluidStack)) {
+                            isEqual = true;
+                            break;
                         }
-                    } else if (obj instanceof FluidStack other) {
-                        if (FluidStack.isSameFluidSameComponents(stack, other)) {
-                            continue mainLoop;
+                    } else if (obj instanceof FluidStack stack) {
+                        if (FluidStack.isSameFluidSameComponents(fluidStack, stack)) {
+                            isEqual = true;
+                            break;
                         }
                     }
                 }
-
-                list.add(stack);
+                if (isEqual) continue;
+                list.add(fluidStack);
             }
         }
         return list;
