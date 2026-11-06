@@ -7,10 +7,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
-import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
-import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
-import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
-import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
+import com.gregtechceu.gtceu.integration.ae2.slot.*;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -20,19 +17,17 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
-import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Comparator;
 import java.util.Objects;
-import java.util.PriorityQueue;
 import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -87,34 +82,44 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
     @Override
     public void autoIO() {
-        super.autoIO();
-        if (ticksPerCycle == 0) ticksPerCycle = ConfigHolder.INSTANCE.compat.ae2.updateIntervals; // Emergency Check to
-                                                                                                  // Avoid Crash loops.
-        if (getOffsetTimer() % ticksPerCycle == 0) {
-            if (autoPull) {
-                refreshList();
-            }
-            syncME();
+        if (!isWorkingEnabled()) {
+            return;
+        }
+        if (!shouldSyncME()) {
+            return;
+        }
+        if (ticksPerCycle == 0) {
+            ticksPerCycle = ConfigHolder.INSTANCE.compat.ae2.updateIntervals;
+        }
+        if (updateMEStatus()) {
+            updateInventorySubscription();
         }
     }
 
     @Override
-    protected void syncME() {
-        // Update the visual display for the fake items. This also is important for the item handler's
-        // getStackInSlot() method, as it uses the cached items set here.
-        MEStorage networkInv = this.getMainNode().getGrid().getStorageService().getInventory();
-        for (ExportOnlyAEItemSlot slot : this.aeItemHandler.getInventory()) {
-            var config = slot.getConfig();
-            if (config != null) {
-                // Try to fill the slot
-                var key = config.what();
-                long extracted = networkInv.extract(key, Long.MAX_VALUE, Actionable.SIMULATE, actionSource);
-                if (extracted >= minStackSize) {
-                    slot.setStock(new GenericStack(key, extracted));
-                    continue;
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        boolean wasOnline = isOnline();
+        super.onMainNodeStateChanged(reason);
+        if (isOnline() == wasOnline) {
+            return;
+        }
+        if (isOnline()) {
+            if (isAutoPull()) {
+                markForAutoPull();
+            }
+            markForRefresh();
+        } else {
+            if (isAutoPull()) {
+                getSlotList().clearInventory(0);
+            } else {
+                for (int i = 0; i < getSlotList().getConfigurableSlots(); i++) {
+                    IConfigurableSlot slot = getSlotList().getConfigurableSlot(i);
+                    if (slot == null) {
+                        continue;
+                    }
+                    slot.setStock(null);
                 }
             }
-            slot.setStock(null);
         }
     }
 
@@ -141,8 +146,21 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     }
 
     @Override
+    public void onPaintingColorChanged(int color) {
+        super.onPaintingColorChanged(color);
+        if (!isRemote()) {
+            validateConfig();
+        }
+    }
+
+    @Override
     public IConfigurableSlotList getSlotList() {
         return aeItemHandler;
+    }
+
+    @Override
+    public IActionSource getActionSource() {
+        return actionSource;
     }
 
     @Override
@@ -156,8 +174,9 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         for (MultiblockControllerMachine controller : getControllers()) {
             for (MultiblockPartMachine part : controller.getParts()) {
                 if (part instanceof MEStockingBusPartMachine bus) {
-                    // We don't need to check for ourselves, as this case is handled elsewhere.
-                    if (bus == this || bus.isDistinct()) continue;
+                    if (bus == this || bus.isDistinct() || bus.getPaintingColor() != this.getPaintingColor()) {
+                        continue;
+                    }
                     if (bus.aeItemHandler.hasStackInConfig(config, false)) {
                         return true;
                     }
@@ -175,7 +194,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
             if (!this.autoPull) {
                 this.aeItemHandler.clearInventory(0);
             } else if (updateMEStatus()) {
-                this.refreshList();
+                markForAutoPull();
                 updateInventorySubscription();
             }
         }
@@ -186,68 +205,9 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         setOffsetBound(ticksPerCycle);
     }
 
-    /**
-     * Refresh the configuration list in auto-pull mode.
-     * Sets the config to the CONFIG_SIZE items with the highest amount in the ME system.
-     */
-    private void refreshList() {
-        IGrid grid = this.getMainNode().getGrid();
-        if (grid == null) {
-            aeItemHandler.clearInventory(0);
-            return;
-        }
-
-        MEStorage networkStorage = grid.getStorageService().getInventory();
-        var counter = networkStorage.getAvailableStacks();
-
-        // Use a PriorityQueue to sort the stacks on size, take the first CONFIG_SIZE
-        // biggest stacks.
-        PriorityQueue<Object2LongMap.Entry<AEKey>> topItems = new PriorityQueue<>(
-                Comparator.comparingLong(Object2LongMap.Entry<AEKey>::getLongValue));
-
-        for (Object2LongMap.Entry<AEKey> entry : counter) {
-            long amount = entry.getLongValue();
-            AEKey what = entry.getKey();
-
-            if (amount <= 0) continue;
-            if (!(what instanceof AEItemKey itemKey)) continue;
-
-            long request = networkStorage.extract(what, amount, Actionable.SIMULATE, actionSource);
-            if (request == 0) continue;
-
-            // Ensure that it is valid to configure with this stack
-            if (autoPullTest != null && !autoPullTest.test(new GenericStack(itemKey, amount))) continue;
-            if (amount >= minStackSize) {
-                if (topItems.size() < CONFIG_SIZE) {
-                    topItems.offer(entry);
-                } else if (amount > topItems.peek().getLongValue()) {
-                    topItems.poll();
-                    topItems.offer(entry);
-                }
-            }
-        }
-
-        // Now, topItems is a PQ with CONFIG_SIZE highest amount items in the system.
-        int index;
-        int itemAmount = topItems.size();
-        for (index = 0; index < CONFIG_SIZE; index++) {
-            if (topItems.isEmpty()) break;
-            Object2LongMap.Entry<AEKey> entry = topItems.poll();
-
-            AEKey what = entry.getKey();
-            long amount = entry.getLongValue();
-
-            // If we get here, the item has already been checked by the PQ.
-            long request = networkStorage.extract(what, amount, Actionable.SIMULATE, actionSource);
-
-            // Since we want our items to be displayed from highest to lowest, but poll() returns
-            // the lowest first, we fill in the slots starting at itemAmount-1
-            var slot = this.aeItemHandler.getInventory()[itemAmount - index - 1];
-            slot.setConfig(new GenericStack(what, 1));
-            slot.setStock(new GenericStack(what, request));
-        }
-
-        aeItemHandler.clearInventory(index);
+    @Override
+    public boolean isAutoPullValid(AEKey what, long amount) {
+        return what instanceof AEItemKey && autoPullTest.test(new GenericStack(what, amount));
     }
 
     @Override
@@ -348,6 +308,16 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
         public ExportOnlyAEStockingItemSlot(@Nullable GenericStack config, @Nullable GenericStack stock) {
             super(config, stock);
+        }
+
+        @Override
+        public void setConfig(@Nullable GenericStack val) {
+            GenericStack oldConfig = getConfig();
+            boolean changed = !Objects.equals(oldConfig, val);
+            super.setConfig(val);
+            if (changed && stockingBusPartMachine != null) {
+                stockingBusPartMachine.markForRefresh();
+            }
         }
 
         @Override
