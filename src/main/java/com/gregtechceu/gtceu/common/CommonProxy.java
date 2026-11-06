@@ -265,8 +265,9 @@ public class CommonProxy {
             event.getBuilder()
                     .ticks(10)
                     .result(Items.DRAGON_EGG)
+                    .multiplyLastResult(3)
                     .result(EntityType.PIG)
-                    .multiplyResult(3)
+                    .multiplyLastResult(3)
                     .build()
                     .attachTo(GTItems.ENTITY_SPOILABLE);
         }
