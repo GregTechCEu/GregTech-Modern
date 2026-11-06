@@ -27,6 +27,10 @@ public class ItemLang {
         // Turbines
         provider.add("item.gtceu.turbine_rotor.tooltip", "Turbine Rotors for your power station");
 
+        provider.add("item.gtceu.battery_hull.tooltip", "An empty %s Battery Hull");
+        provider.addMultiline("item.gtceu.solar_panel.tooltip",
+                "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r");
+
         // General Electric Tools
         provider.add("item.gtceu.electric.tooltip", "%d/%d EU - Tier %s");
         provider.add("item.gtceu.electric.stored", "%d/%d EU (%s)");

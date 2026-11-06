@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.block.LampBlock;
@@ -74,7 +75,7 @@ public class MachineRecipeLoader {
                 .duration(80).EUt(4)
                 .save(provider);
 
-        for (ItemEntry<Item> shapeMold : SHAPE_MOLDS) {
+        for (ItemEntry<ComponentItem> shapeMold : SHAPE_MOLDS) {
             FORMING_PRESS_RECIPES.recipeBuilder("copy_mold_" + shapeMold.get())
                     .duration(120).EUt(22)
                     .notConsumable(shapeMold)
@@ -83,7 +84,7 @@ public class MachineRecipeLoader {
                     .save(provider);
         }
 
-        for (ItemEntry<Item> shapeExtruder : SHAPE_EXTRUDERS) {
+        for (ItemEntry<ComponentItem> shapeExtruder : SHAPE_EXTRUDERS) {
             if (shapeExtruder == null) continue;
             FORMING_PRESS_RECIPES.recipeBuilder("copy_shape_" + shapeExtruder.get())
                     .duration(120).EUt(22)
