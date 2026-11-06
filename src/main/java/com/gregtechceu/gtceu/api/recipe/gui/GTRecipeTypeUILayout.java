@@ -9,9 +9,9 @@ import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.value.IDoubleValue;
+import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.ProgressWidget;
-import brachy.modularui.widgets.layout.Flow;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -40,12 +40,12 @@ public class GTRecipeTypeUILayout {
     @Getter
     private final List<RecipeUIModifier> recipeUIModifiers;
     @Getter
-    private final @Nullable Function<GTRecipe, Flow> customUIBuilder;
+    private final @Nullable CustomRecipeUIBuilder customUIBuilder;
 
     public GTRecipeTypeUILayout(GTRecipeType recipeType, Map<RecipeCapability<?>, CapabilityUIInfo> capabilityInfo,
                                 List<RecipeUIModifier> recipeUIModifiers,
                                 ProgressWidgetSupplier progressWidgetSupplier,
-                                @Nullable Function<GTRecipe, Flow> customUIBuilder) {
+                                @Nullable CustomRecipeUIBuilder customUIBuilder) {
         this.recipeType = recipeType;
         this.capabilityInfo = capabilityInfo;
         this.recipeUIModifiers = recipeUIModifiers;
@@ -119,6 +119,12 @@ public class GTRecipeTypeUILayout {
         Widget<?> get(GTRecipeTypeUILayout layout, IDoubleValue<Double> value, @Nullable MetaMachine machine);
     }
 
+    @FunctionalInterface
+    public interface CustomRecipeUIBuilder {
+
+        ParentWidget<?> buildMainRow(GTRecipeViewerWidget recipeWidget, GTRecipeTypeUILayout uiLayout, GTRecipe recipe);
+    }
+
     public static class Builder {
 
         private ProgressBarTextureSet progressBar = GTGuiTextures.PROGRESS_ARROW;
@@ -128,7 +134,7 @@ public class GTRecipeTypeUILayout {
         private final List<RecipeUIModifier> recipeUIModifiers = new ObjectArrayList<>();
         private @Nullable ProgressWidgetSupplier progressWidgetSupplier = null;
 
-        private @Nullable Function<GTRecipe, Flow> customUIBuilder;
+        private @Nullable CustomRecipeUIBuilder customUIBuilder;
 
         public Builder(GTRecipeType recipeType) {
             this.recipeType = recipeType;
@@ -292,7 +298,7 @@ public class GTRecipeTypeUILayout {
          * 
          * @param customUIBuilder Custom UI builder
          */
-        public Builder customRecipeTypeUI(Function<GTRecipe, Flow> customUIBuilder) {
+        public Builder customRecipeTypeUI(CustomRecipeUIBuilder customUIBuilder) {
             this.customUIBuilder = customUIBuilder;
             return this;
         }

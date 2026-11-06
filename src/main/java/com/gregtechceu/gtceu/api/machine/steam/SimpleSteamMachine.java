@@ -51,26 +51,26 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
         super(info, isHighPressure, recipeLogic);
         this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN));
         this.exportItems = attachTrait(new NotifiableItemStackHandler(exportSlots, IO.OUT));
-        this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
-    }
 
-    public SimpleSteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
-        super(info, isHighPressure);
-        this.importItems = attachTrait(
-                new NotifiableItemStackHandler(getDefinition().getInputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
-                        IO.IN));
-        this.exportItems = attachTrait(
-                new NotifiableItemStackHandler(
-                        getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
-                        IO.OUT));
-
-        this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
+        this.exhaustVentTrait = new ExhaustVentMachineTrait();
+        attachPersistentTrait("exhaustVent", this.exhaustVentTrait);
         exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(GTMachineModelProperties.VENT_DIRECTION)) {
             // outputFacing will always be opposite the front facing on init
             setRenderState(renderState.setValue(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK));
         }
+    }
+
+    /**
+     * Creates a {@link SimpleSteamMachine} with item slot counts derived from the machine definition's recipe types.
+     *
+     * @param info {@link BlockEntityCreationInfo}
+     */
+    public SimpleSteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
+        this(info, new RecipeLogic(), isHighPressure,
+                definitionOf(info).getInputSize(ItemRecipeCapability.CAP, definitionOf(info).getRecipeTypes()),
+                definitionOf(info).getOutputSize(ItemRecipeCapability.CAP, definitionOf(info).getRecipeTypes()));
     }
 
     @Override
