@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
@@ -53,13 +54,21 @@ public record ToolBehaviors(@Unmodifiable Map<ToolBehaviorType<?>, IToolBehavior
         return behaviors.containsKey(type);
     }
 
+    public boolean hasBehavior(Supplier<? extends ToolBehaviorType<?>> type) {
+        return hasBehavior(type.get());
+    }
+
     public <T extends IToolBehavior<T>> @Nullable T getBehavior(ToolBehaviorType<T> type) {
         return (T) this.behaviors.get(type);
+    }
+
+    public <T extends IToolBehavior<T>> @Nullable T getBehavior(Supplier<ToolBehaviorType<T>> type) {
+        return getBehavior(type.get());
     }
 
     public ToolBehaviors withBehavior(IToolBehavior<?> behavior) {
         Map<ToolBehaviorType<?>, IToolBehavior<?>> behaviors = new HashMap<>(this.behaviors);
         behaviors.put(behavior.getType(), behavior);
-        return new ToolBehaviors(Collections.unmodifiableMap(behaviors));
+        return new ToolBehaviors(behaviors);
     }
 }
