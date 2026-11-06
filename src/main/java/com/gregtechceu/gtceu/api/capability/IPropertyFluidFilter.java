@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -29,7 +29,7 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
         if (fluidType.getTemperature() < CRYOGENIC_FLUID_THRESHOLD && !isCryoProof()) return false;
 
         if (fluid instanceof IAttributedFluid attributedFluid) {
-            FluidState state = attributedFluid.getState();
+            MaterialFluidState state = attributedFluid.getState();
             if (!canContain(state)) return false;
 
             for (FluidAttribute attribute : attributedFluid.getAttributes()) {
@@ -39,12 +39,12 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
             }
 
             // plasma ignores temperature requirements
-            if (state == FluidState.PLASMA) return true;
+            if (state == MaterialFluidState.PLASMA) return true;
         } else {
-            if (fluidType.isLighterThanAir() && !canContain(FluidState.GAS)) {
+            if (fluidType.isLighterThanAir() && !canContain(MaterialFluidState.GAS)) {
                 return false;
             }
-            if (!canContain(FluidState.LIQUID)) {
+            if (!canContain(MaterialFluidState.LIQUID)) {
                 return false;
             }
         }
@@ -56,13 +56,13 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
      * @param state the state to check
      * @return if the state can be contained
      */
-    boolean canContain(@NotNull FluidState state);
+    boolean canContain(MaterialFluidState state);
 
     /**
      * @param attribute the attribute to check
      * @return if the attribute can be contained
      */
-    boolean canContain(@NotNull FluidAttribute attribute);
+    boolean canContain(FluidAttribute attribute);
 
     /**
      * Set the container as able to contain an attribute
@@ -70,11 +70,10 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
      * @param attribute  the attribute to change containment status for
      * @param canContain whether the attribute can be contained
      */
-    void setCanContain(@NotNull FluidAttribute attribute, boolean canContain);
+    void setCanContain(FluidAttribute attribute, boolean canContain);
 
-    @NotNull
     @UnmodifiableView
-    Collection<@NotNull FluidAttribute> getContainedAttributes();
+    Collection<FluidAttribute> getContainedAttributes();
 
     /**
      * Append tooltips about containment info
@@ -83,7 +82,7 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
      * @param showToolsInfo       if the "hold shift" line should mention tool info
      * @param showTemperatureInfo if the temperature information should be displayed
      */
-    default void appendTooltips(@NotNull List<Component> tooltip, boolean showToolsInfo, boolean showTemperatureInfo) {
+    default void appendTooltips(List<Component> tooltip, boolean showToolsInfo, boolean showTemperatureInfo) {
         if (GTUtil.isShiftDown()) {
             if (showTemperatureInfo)
                 tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature",

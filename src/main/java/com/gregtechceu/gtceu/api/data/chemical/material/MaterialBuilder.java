@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.DeferredMaterialSt
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.RegistrateMaterialBuilderWrapper;
@@ -122,7 +122,7 @@ public class MaterialBuilder {
      * <br>
      * See {@link #fluid(FluidStorageKey, FluidBuilder)} for setting other values.
      */
-    public MaterialBuilder fluid(FluidStorageKey key, FluidState state) {
+    public MaterialBuilder fluid(FluidStorageKey key, MaterialFluidState state) {
         return fluid(key, new FluidBuilder().state(state));
     }
 
@@ -162,7 +162,7 @@ public class MaterialBuilder {
      *                                  already been added to this Material.
      */
     public MaterialBuilder liquid() {
-        return fluid(FluidStorageKeys.LIQUID, FluidState.LIQUID);
+        return fluid(FluidStorageKeys.LIQUID, MaterialFluidState.LIQUID);
     }
 
     /**
@@ -173,7 +173,7 @@ public class MaterialBuilder {
      * @see FluidBuilder
      */
     public MaterialBuilder liquid(FluidBuilder builder) {
-        return fluid(FluidStorageKeys.LIQUID, builder.state(FluidState.LIQUID));
+        return fluid(FluidStorageKeys.LIQUID, builder.state(MaterialFluidState.LIQUID));
     }
 
     /**
@@ -207,7 +207,7 @@ public class MaterialBuilder {
      *                                  already been added to this Material.
      */
     public MaterialBuilder plasma() {
-        return fluid(FluidStorageKeys.PLASMA, FluidState.PLASMA);
+        return fluid(FluidStorageKeys.PLASMA, MaterialFluidState.PLASMA);
     }
 
     /**
@@ -218,7 +218,7 @@ public class MaterialBuilder {
      * @see FluidBuilder
      */
     public MaterialBuilder plasma(FluidBuilder builder) {
-        return fluid(FluidStorageKeys.PLASMA, builder.state(FluidState.PLASMA));
+        return fluid(FluidStorageKeys.PLASMA, builder.state(MaterialFluidState.PLASMA));
     }
 
     /**
@@ -250,7 +250,7 @@ public class MaterialBuilder {
      *                                  already been added to this Material.
      */
     public MaterialBuilder gas() {
-        return fluid(FluidStorageKeys.GAS, FluidState.GAS);
+        return fluid(FluidStorageKeys.GAS, MaterialFluidState.GAS);
     }
 
     /**
@@ -261,7 +261,7 @@ public class MaterialBuilder {
      * @see FluidBuilder
      */
     public MaterialBuilder gas(FluidBuilder builder) {
-        return fluid(FluidStorageKeys.GAS, builder.state(FluidState.GAS));
+        return fluid(FluidStorageKeys.GAS, builder.state(MaterialFluidState.GAS));
     }
 
     /**
