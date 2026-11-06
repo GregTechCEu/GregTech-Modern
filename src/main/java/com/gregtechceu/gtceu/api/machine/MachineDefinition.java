@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
@@ -21,9 +22,11 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.Direction;
 import net.minecraft.core.IdMapper;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -37,6 +40,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import brachy.modularui.theme.ThemeAPI;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
@@ -66,8 +70,10 @@ public class MachineDefinition implements ItemLike {
     private DeferredHolder<Item, ? extends MetaMachineItem> itemHolder;
     @Setter
     private Supplier<BlockEntityType<? extends MetaMachine>> blockEntityTypeSupplier;
-    @Getter
-    private final GTRecipeType[] recipeTypes;
+
+    private GTRecipeType @Nullable [] recipeTypes = null;
+    private final List<DeferredHolder<RecipeType<?>, GTRecipeType>> unresolvedRecipeTypes;
+
     @Getter
     private final int tier;
     @Getter
@@ -120,7 +126,7 @@ public class MachineDefinition implements ItemLike {
         this.langValue = properties.langValue();
         this.UI = properties.ui();
         this.themeId = properties.themeId();
-        this.recipeTypes = properties.recipeTypes();
+        this.unresolvedRecipeTypes = properties.recipeTypes();
         this.blockHolder = properties.blockHolder();
         this.itemHolder = properties.itemHolder();
         this.tier = properties.tier();
@@ -142,11 +148,13 @@ public class MachineDefinition implements ItemLike {
         this.regressWhenWaiting = properties.regressWhenWaiting();
         this.allowCoverOnFront = properties.allowCoverOnFront();
 
-        for (GTRecipeType type : recipeTypes) {
-            if (type.getIconSupplier() == null) {
-                type.setIconSupplier(this::asStack);
+        for (DeferredHolder<RecipeType<?>, GTRecipeType> type : unresolvedRecipeTypes) {
+            ResourceKey<RecipeType<?>> key = type.getKey();
+            if (!GTRecipeCategory.ICON_CACHE.containsKey(key)) {
+                GTRecipeCategory.ICON_CACHE.put(key, this::asStack);
             }
         }
+
         if (properties.appearance() == null) {
             properties.appearance(() -> blockHolder.value().defaultBlockState());
         }
@@ -168,6 +176,13 @@ public class MachineDefinition implements ItemLike {
             defaultState = defaultState.setValue((Property) entry.getKey(), (Comparable) entry.getValue());
         }
         this.defaultRenderState = defaultState;
+    }
+
+    public GTRecipeType[] getRecipeTypes() {
+        if (recipeTypes != null) return recipeTypes;
+        recipeTypes = unresolvedRecipeTypes.stream().map(DeferredHolder::get).toArray(GTRecipeType[]::new);
+
+        return recipeTypes;
     }
 
     public boolean isTiered() {
@@ -289,7 +304,7 @@ public class MachineDefinition implements ItemLike {
         private RotationState rotationState = RotationState.NON_Y_AXIS;
         private boolean allowExtendedFacing = false;
         private boolean hasBER = ConfigHolder.INSTANCE.client.machinesHaveBERsByDefault;
-        private GTRecipeType[] recipeTypes = new GTRecipeType[0];
+        private List<DeferredHolder<RecipeType<?>, GTRecipeType>> recipeTypes = new ObjectArrayList<>();
         private int tier = -1;
         private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
         private IntSupplier paintingColor = () -> ConfigHolder.INSTANCE.client.getDefaultPaintingColor();

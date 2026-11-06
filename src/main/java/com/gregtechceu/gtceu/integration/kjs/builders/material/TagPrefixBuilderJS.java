@@ -36,10 +36,6 @@ public class TagPrefixBuilderJS extends BuilderBase<TagPrefix> {
     @Getter
     private final List<MaterialStack> secondaryMaterials = new ArrayList<>();
 
-    public TagPrefixBuilderJS(ResourceLocation id) {
-        super(id);
-    }
-
     @Getter
     @Setter
     private String idPattern;
@@ -99,6 +95,11 @@ public class TagPrefixBuilderJS extends BuilderBase<TagPrefix> {
     @Getter
     protected final Set<TagKey<Block>> miningToolTag = new HashSet<>();
     protected final List<TagType> tags = new ArrayList<>();
+
+    public TagPrefixBuilderJS(ResourceLocation id) {
+        super(id);
+        this.idPattern = "%s_" + id.getPath();
+    }
 
     public TagPrefixBuilderJS enableRecycling() {
         this.generateRecycling = true;

@@ -710,7 +710,7 @@ public class ToolHelper {
      * @return the silk touch drop
      */
     public static List<ItemStack> getSilkTouchDrop(ServerLevel level, BlockPos pos, BlockState state) {
-        ItemStack tool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
+        ItemStack tool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium.value(), GTToolType.PICKAXE).get().get();
         // oh wow, this exists now. cool!
         EnchantmentHelper.enchantItemFromProvider(
                 tool,

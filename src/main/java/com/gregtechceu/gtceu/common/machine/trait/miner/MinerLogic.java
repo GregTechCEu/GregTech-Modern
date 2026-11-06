@@ -144,7 +144,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         this.currentRadius = maximumRadius;
         this.maximumRadius = maximumRadius;
         this.isDone = false;
-        this.pickaxeTool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
+        this.pickaxeTool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium.value(), GTToolType.PICKAXE).get()
+                .get();
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
     }
