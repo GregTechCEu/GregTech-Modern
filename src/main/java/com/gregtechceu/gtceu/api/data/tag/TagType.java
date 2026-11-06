@@ -84,7 +84,7 @@ public class TagType {
     // spotless:on
 
     @Nullable
-    public TagKey<Item> getTag(TagPrefix prefix, Material material) {
+    public TagKey<Item> getTag(TagPrefix prefix, @Nullable Material material) {
         if (filter != null && material != null && !filter.test(material)) return null;
         return formatter.apply(prefix, material);
     }
