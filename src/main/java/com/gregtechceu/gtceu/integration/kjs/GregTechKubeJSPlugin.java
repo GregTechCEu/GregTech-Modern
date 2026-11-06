@@ -132,7 +132,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         registry.of(Registries.RECIPE_TYPE, reg -> {
             reg.add(GTCEu.id("machine"), GTRecipeTypeBuilderJS.class, GTRecipeTypeBuilderJS::new);
         });
-        registry.addDefault(GTRegistries.Keys.RECIPE_TYPE, GTRecipeTypeBuilderJS.class, GTRecipeTypeBuilderJS::new);
+
         registry.addDefault(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategoryBuilderJS.class,
                 GTRecipeCategoryBuilderJS::new);
 

@@ -48,7 +48,7 @@ In there, we simply check if the recipe logic is active, and if so, we turn the 
 
 To use it, you would do:
 ```java
-    public static final MultiblockMachineDefinition GREENHOUSE = REGISTRATE
+    public static final MachineEntry<MultiblockMachineDefinition> GREENHOUSE = REGISTRATE
         .multiblock("green_house", Greenhouse::new)
         .rotationState(RotationState.ALL)
         .recipeType(MyRecipeTypes.GREENHOUSE)

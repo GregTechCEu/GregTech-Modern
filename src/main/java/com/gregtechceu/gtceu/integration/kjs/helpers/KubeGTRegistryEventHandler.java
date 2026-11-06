@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryKubeEvent;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -30,8 +31,11 @@ public class KubeGTRegistryEventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void registerAll(RegisterEvent event) {
-        // only post the GT registry event for GT registries
+        // only post the GT registry event for GT registries (excluding the recipe type registry)
         if (!GTRegistries.getRegistryOrder().contains(event.getRegistryKey().location())) {
+            if (event.getRegistryKey().equals(Registries.RECIPE_TYPE)) {
+                handleRegistryEvent((ResourceKey) event.getRegistryKey(), event);
+            }
             return;
         }
 

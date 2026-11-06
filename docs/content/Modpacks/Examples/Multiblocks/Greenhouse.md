@@ -10,11 +10,12 @@ title: "Greenhouse"
 
 === "Java"
     ```java title="RecipeTypes.java"
-        public final static GTRecipeType GREENHOUSE_RECIPES = register(AddonMod.id("greenhouse"), MULTIBLOCK)
+        public final static GTRecipeTypeEntry GREENHOUSE_RECIPES = ADDON_REGISTRATE.recipeType("greenhouse", MULTIBLOCK)
             .setMaxIOSize(2, 1, 1, 1)
             .setEUIO(IO.IN)
             .UI(ui -> ui.setProgressBar(GTGuiTextures.PROGRESS_ARROW))
-            .setSound(GTSoundEntries.BATH);
+            .setSound(GTSoundEntries.BATH)
+            .register();
     ```
 === "JavaScript"
     ```js title="greenhouse_recipe_type.js"
@@ -31,7 +32,7 @@ title: "Greenhouse"
 
 === "Java"
     ```java title="MultiMachines.java"
-        public static final MultiblockMachineDefinition GREENHOUSE = REGISTRATE
+        public static final MachineEntry<MultiblockMachineDefinition> GREENHOUSE = REGISTRATE
             .multiblock("greenhouse", WorkableElectricMultiblockMachine::new)
             .langValue("Greenhouse")
             .rotationState(RotationState.NON_Y_AXIS)
@@ -104,15 +105,15 @@ title: "Greenhouse"
 
 === "Java"
     ```java title="Recipes.java"
-    private static void greenhouseHelper(Consumer<FinishedRecipe> provider, String id, Item input, ItemStack output_normal, ItemStack output_boosted) {
+    private static void greenhouseHelper(RecipeOutput provider, String id, Item input, ItemStack output_normal, ItemStack output_boosted) {
         greenhouseHelper(provider, AddonMod.id(id), input, List.of(output_normal), List.of(output_boosted));
     }
 
-    private static void greenhouseHelper(Consumer<FinishedRecipe> provider, String id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
+    private static void greenhouseHelper(RecipeOutput provider, String id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
         greenhouseHelper(provider, AddonMod.id(id), input, output_normal, output_boosted);
     }
 
-    private static void greenhouseHelper(Consumer<FinishedRecipe> provider, ResourceLocation id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
+    private static void greenhouseHelper(RecipeOutput provider, ResourceLocation id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
          GREENHOUSE_RECIPES.recipeBuilder(id)
                 .circuitMeta(2)
                 .notConsumable(input)
@@ -132,7 +133,7 @@ title: "Greenhouse"
                 .save(provider);
     }
 
-            private static void loadGreenhouseRecipes(Consumer<FinishedRecipe> provider){
+            private static void loadGreenhouseRecipes(RecipeOutput provider){
                VanillaRecipeHelper.addShapedRecipe(provider, true, GTCEu.id("greenhouse"),
                        GTMultiMachines.GREENHOUSE.asStack(),
                        "AWA",

@@ -39,6 +39,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -63,7 +64,7 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -92,7 +93,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private boolean defaultBlock = true;
     private boolean defaultItem = true;
 
-    protected final Set<Supplier<GTRecipeType>> unresolvedRecipeTypes = new ObjectArraySet<>();
+    protected final List<DeferredHolder<RecipeType<?>, GTRecipeType>> unresolvedRecipeTypes = new ObjectArrayList<>();
 
     private NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister = NonNullConsumer.noop();
 
@@ -337,24 +338,24 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    public SELF recipeType(Supplier<GTRecipeType> type) {
+    public SELF recipeType(DeferredHolder<RecipeType<?>, GTRecipeType> type) {
         unresolvedRecipeTypes.add(type);
         initRecipeMachineModelProperties(type);
         return getThis();
     }
 
     @SafeVarargs
-    public final SELF recipeTypes(Supplier<GTRecipeType>... types) {
+    public final SELF recipeTypes(DeferredHolder<RecipeType<?>, GTRecipeType>... types) {
         Validate.noNullElements(types, "Cannot add null recipe type to machine.");
 
-        for (Supplier<GTRecipeType> type : types) {
+        for (var type : types) {
             initRecipeMachineModelProperties(type);
             unresolvedRecipeTypes.add(type);
         }
         return getThis();
     }
 
-    protected void initRecipeMachineModelProperties(Supplier<GTRecipeType> type) {
+    protected void initRecipeMachineModelProperties(DeferredHolder<RecipeType<?>, GTRecipeType> type) {
         if (type == GTRecipeTypes.DUMMY_RECIPES) {
             return;
         }
@@ -673,8 +674,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     @SuppressWarnings({ "NullableProblems", "unchecked" })
     protected @NonNull DEFINITION createEntry() {
-        properties.recipeTypes(unresolvedRecipeTypes.stream().map(Supplier::get).map(Objects::requireNonNull)
-                .toArray(GTRecipeType[]::new));
+        properties.recipeTypes(unresolvedRecipeTypes);
         createAdditionalObjects();
         return (DEFINITION) new MachineDefinition(getOwner().makeResourceLocation(getName()), properties);
     }

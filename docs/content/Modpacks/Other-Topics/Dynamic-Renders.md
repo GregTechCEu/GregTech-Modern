@@ -98,7 +98,7 @@ public class ExampleMod {
 Use `.model([base model].andThen(b -> b.addDynamicRenderer(() -> new ...())))` when defining the machine. If the machine previously used the `.workableCasingModel(...)` shorthand, expand it into `.model(createWorkableCasingMachineModel(...).andThen(...))`:
 
 ```java
-public static final MultiblockMachineDefinition MY_MACHINE = REGISTRATE
+public static final MachineEntry<MultiblockMachineDefinition> MY_MACHINE = REGISTRATE
     .multiblock("my_machine", WorkableElectricMultiblockMachine::new)
     // ... recipe type, pattern, etc. ...
     .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)

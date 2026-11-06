@@ -64,7 +64,7 @@ import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.GregTechDatagen;
+import com.gregtechceu.gtceu.data.GTDatagen;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
@@ -136,7 +136,7 @@ public class CommonProxy {
         REGISTRATE.registerEventListeners(modBus);
 
         // Initialize the model generator before any content is loaded so machine models can use the generated data
-        GregTechDatagen.initPre();
+        GTDatagen.initPre();
 
         GTRegistries.init();
         REGISTRATE.registerEventListeners(modBus);
@@ -190,7 +190,7 @@ public class CommonProxy {
         GTParticleTypes.init(modBus);
         WorldGenLayers.init();
 
-        GregTechDatagen.initPost();
+        GTDatagen.initPost();
         GTValueProviderTypes.init(modBus);
         GTFeatures.init(modBus);
         GTPlacementModifiers.init(modBus);

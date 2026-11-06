@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 
 import dev.latvian.mods.kubejs.DevProperties;
@@ -65,6 +67,11 @@ public class GTRegistryKubeEvent<T> implements KubeStartupEvent, AdditionalObjec
     public BuilderBase<? extends T> create(Context cx, GTResourceLocation id) {
         var sourceLine = SourceLine.of(cx);
         var t = builderInfo.defaultType();
+
+        // The recipe type registry should default to the gt machine recipe type
+        if (registryKey.equals(Registries.RECIPE_TYPE)) {
+            t = builderInfo.namedType(GTCEu.id("machine"));
+        }
 
         if (t == null) {
             throw new KubeRuntimeException(

@@ -317,7 +317,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                                                                             @Nullable CategoryIcon icon,
                                                                             boolean isXEIVisible, String lang) {
         return generic(name, GTRegistries.Keys.RECIPE_CATEGORY,
-                () -> new GTRecipeCategory(makeResourceLocation(name), recipeType.get())
+                () -> new GTRecipeCategory(makeResourceLocation(name), recipeType)
                         .setIcon(icon)
                         .setXEIVisible(isXEIVisible))
                 .lang(GTRecipeCategory::getLanguageKey, lang)
@@ -329,7 +329,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                                                                             @Nullable CategoryIcon icon,
                                                                             boolean isXEIVisible) {
         return simple(name, GTRegistries.Keys.RECIPE_CATEGORY,
-                () -> new GTRecipeCategory(makeResourceLocation(name), recipeType.get())
+                () -> new GTRecipeCategory(makeResourceLocation(name), recipeType)
                         .setIcon(icon)
                         .setXEIVisible(isXEIVisible));
     }

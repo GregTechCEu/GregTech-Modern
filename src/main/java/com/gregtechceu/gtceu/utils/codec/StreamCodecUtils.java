@@ -77,6 +77,7 @@ public class StreamCodecUtils {
                 codec4.encode(buffer, getter4.apply(object));
                 codec5.encode(buffer, getter5.apply(object));
                 codec6.encode(buffer, getter6.apply(object));
+                codec7.encode(buffer, getter7.apply(object));
             }
         };
     }
