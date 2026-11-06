@@ -56,9 +56,24 @@ public class ItemMaterialData {
     public static final Map<TagKey<Item>, MaterialEntry> TAG_MATERIAL_ENTRY = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of a fluid to a material */
     public static final Map<Fluid, Material> FLUID_MATERIAL = new Object2ObjectOpenHashMap<>();
-    /** Mapping of all items that represent a "prefix, material" pair */
+    /**
+     * Mapping of all items that are explicitly registered to represent a "prefix, material" pair.
+     */
     public static final Map<MaterialEntry, List<Supplier<? extends Item>>> MATERIAL_ENTRY_ITEM_MAP = new Object2ObjectOpenHashMap<>();
+    /**
+     * Mapping of all blocks that are explicitly registered to represent a "prefix, material" pair.
+     */
     public static final Map<MaterialEntry, List<Supplier<? extends Block>>> MATERIAL_ENTRY_BLOCK_MAP = new Object2ObjectOpenHashMap<>();
+    /**
+     * Cache of item lookups for "prefix, material" pairs that have no registered entry, resolved from the currently
+     * bound item tags.
+     */
+    public static final Map<MaterialEntry, List<Supplier<? extends Item>>> MATERIAL_ENTRY_ITEM_LOOKUP_CACHE = new Object2ObjectOpenHashMap<>();
+    /**
+     * Cache of block lookups for "prefix, material" pairs that have no registered entry, resolved from the currently
+     * bound block tags.
+     */
+    public static final Map<MaterialEntry, List<Supplier<? extends Block>>> MATERIAL_ENTRY_BLOCK_LOOKUP_CACHE = new Object2ObjectOpenHashMap<>();
     /** Mapping of stone type blockState to "prefix, material" */
     public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new Object2ReferenceOpenHashMap<>();
 
@@ -163,6 +178,8 @@ public class ItemMaterialData {
         // Clear old data
         MATERIAL_ENTRY_ITEM_MAP.clear();
         MATERIAL_ENTRY_BLOCK_MAP.clear();
+        MATERIAL_ENTRY_ITEM_LOOKUP_CACHE.clear();
+        MATERIAL_ENTRY_BLOCK_LOOKUP_CACHE.clear();
         ITEM_MATERIAL_ENTRY.clear();
         FLUID_MATERIAL.clear();
 

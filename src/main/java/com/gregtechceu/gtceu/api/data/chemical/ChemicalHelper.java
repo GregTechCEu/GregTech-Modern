@@ -229,30 +229,37 @@ public class ChemicalHelper {
     }
 
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {
-        return MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> {
-            TagPrefix prefix = entry.tagPrefix();
-            var items = new ArrayList<Supplier<? extends Item>>();
-            for (TagKey<Item> tag : prefix.getItemTags(Objects.requireNonNull(entry.material()))) {
-                for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
-                    items.add(itemHolder::value);
-                }
-            }
-            if (!items.isEmpty()) return items;
+        List<Supplier<? extends Item>> suppliers = MATERIAL_ENTRY_ITEM_MAP.get(materialEntry);
+        if (suppliers == null) {
+            suppliers = MATERIAL_ENTRY_ITEM_LOOKUP_CACHE.computeIfAbsent(materialEntry, ChemicalHelper::lookupItems);
+        }
+        return suppliers.stream().map(Supplier::get).collect(Collectors.toList());
+    }
 
-            if (GTMaterialItems.MATERIAL_ITEMS.contains(entry.tagPrefix(), entry.material())) {
-                return Collections.singletonList(Objects
-                        .requireNonNull(GTMaterialItems.MATERIAL_ITEMS.get(entry.tagPrefix(), entry.material())));
+    private static List<Supplier<? extends Item>> lookupItems(MaterialEntry entry) {
+        TagPrefix prefix = entry.tagPrefix();
+        var items = new LinkedHashSet<Item>();
+        for (TagKey<Item> tag : prefix.getItemTags(Objects.requireNonNull(entry.material()))) {
+            for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
+                items.add(itemHolder.value());
             }
-            if (GTMaterialBlocks.MATERIAL_BLOCKS.contains(entry.tagPrefix(), entry.material())) {
-                return Collections.singletonList(Objects.requireNonNull(
-                        GTMaterialBlocks.MATERIAL_BLOCKS.get(entry.tagPrefix(), entry.material()))::asItem);
-            }
+        }
+        if (!items.isEmpty()) {
+            return items.stream().<Supplier<? extends Item>>map(item -> () -> item).toList();
+        }
 
-            Supplier<? extends ItemLike> fromTable = prefix.getItemFromTable(entry.material());
-            if (fromTable != null) return Collections.singletonList(fromTable.get()::asItem);
-            return List.of();
+        if (GTMaterialItems.MATERIAL_ITEMS.contains(entry.tagPrefix(), entry.material())) {
+            return Collections.singletonList(Objects
+                    .requireNonNull(GTMaterialItems.MATERIAL_ITEMS.get(entry.tagPrefix(), entry.material())));
+        }
+        if (GTMaterialBlocks.MATERIAL_BLOCKS.contains(entry.tagPrefix(), entry.material())) {
+            return Collections.singletonList(Objects.requireNonNull(
+                    GTMaterialBlocks.MATERIAL_BLOCKS.get(entry.tagPrefix(), entry.material()))::asItem);
+        }
 
-        }).stream().map(Supplier::get).collect(Collectors.toList());
+        Supplier<? extends ItemLike> fromTable = prefix.getItemFromTable(entry.material());
+        if (fromTable != null) return Collections.singletonList(fromTable.get()::asItem);
+        return List.of();
     }
 
     public static @Nullable Item getItem(MaterialEntry materialEntry) {
@@ -287,24 +294,32 @@ public class ChemicalHelper {
     }
 
     public static List<Block> getBlocks(MaterialEntry materialEntry) {
-        return MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> {
-            TagPrefix prefix = entry.tagPrefix();
-            var blocks = new ArrayList<Supplier<? extends Block>>();
-            for (TagKey<Block> tag : prefix.getBlockTags(entry.material())) {
-                for (Holder<Block> itemHolder : BuiltInRegistries.BLOCK.getTagOrEmpty(tag)) {
-                    blocks.add(itemHolder::value);
-                }
-            }
-            if (!blocks.isEmpty()) return blocks;
+        List<Supplier<? extends Block>> suppliers = MATERIAL_ENTRY_BLOCK_MAP.get(materialEntry);
+        if (suppliers == null) {
+            suppliers = MATERIAL_ENTRY_BLOCK_LOOKUP_CACHE.computeIfAbsent(materialEntry, ChemicalHelper::lookupBlocks);
+        }
+        return suppliers.stream().map(Supplier::get).collect(Collectors.toList());
+    }
 
-            if (GTMaterialBlocks.MATERIAL_BLOCKS.contains(entry.tagPrefix(), entry.material())) {
-                return Collections.singletonList(Objects
-                        .requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS.get(entry.tagPrefix(), entry.material())));
+    private static List<Supplier<? extends Block>> lookupBlocks(MaterialEntry entry) {
+        TagPrefix prefix = entry.tagPrefix();
+        var blocks = new LinkedHashSet<Block>();
+        for (TagKey<Block> tag : prefix.getBlockTags(entry.material())) {
+            for (Holder<Block> blockHolder : BuiltInRegistries.BLOCK.getTagOrEmpty(tag)) {
+                blocks.add(blockHolder.value());
             }
-            var fromTable = ItemMaterialData.convertToBlock(prefix.getItemFromTable(entry.material()));
-            if (fromTable != null) return Collections.singletonList(fromTable);
-            return List.of();
-        }).stream().map(Supplier::get).collect(Collectors.toList());
+        }
+        if (!blocks.isEmpty()) {
+            return blocks.stream().<Supplier<? extends Block>>map(block -> () -> block).toList();
+        }
+
+        if (GTMaterialBlocks.MATERIAL_BLOCKS.contains(entry.tagPrefix(), entry.material())) {
+            return Collections.singletonList(Objects
+                    .requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS.get(entry.tagPrefix(), entry.material())));
+        }
+        var fromTable = ItemMaterialData.convertToBlock(prefix.getItemFromTable(entry.material()));
+        if (fromTable != null) return Collections.singletonList(fromTable);
+        return List.of();
     }
 
     @Nullable
