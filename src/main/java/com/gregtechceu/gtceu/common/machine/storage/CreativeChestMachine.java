@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -57,13 +58,13 @@ public class CreativeChestMachine extends QuantumChestMachine {
     }
 
     private void setTicksPerCycle(int value) {
-        ticksPerCycle = value;
+        ticksPerCycle = Mth.clamp(value, 1, Integer.MAX_VALUE);
         autoOutput.setTicksPerCycle(ticksPerCycle);
         onItemChanged();
     }
 
     private void setItemsPerCycle(int value) {
-        itemsPerCycle = value;
+        itemsPerCycle = Mth.clamp(value, 1, Integer.MAX_VALUE);;
         onItemChanged();
     }
 

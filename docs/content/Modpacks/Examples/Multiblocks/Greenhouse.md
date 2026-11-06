@@ -10,7 +10,7 @@ title: "Greenhouse"
 
 === "Java"
     ```java title="RecipeTypes.java"
-        public final static GTRecipeType GREENHOUSE_RECIPES = register(AddonMod.id("greenhouse"), MULTIBLOCK)
+        public final static GTRecipeType GREENHOUSE_RECIPES = GTRecipeTypes.register(AddonMod.id("greenhouse"), MULTIBLOCK)
             .setMaxIOSize(2, 1, 1, 1)
             .setEUIO(IO.IN)
             .UI(ui -> ui.setProgressBar(GTGuiTextures.PROGRESS_ARROW))
@@ -41,7 +41,7 @@ title: "Greenhouse"
                     .slice("CKC", "CGC", "CGC", "CLC", "CNC")
                     .slice("CMC", "G#G", "G#G", "LIL", "COC")
                     .slice("CCC", "CGC", "CGC", "CLC", "CCC")
-                    .where('K', Predicates.controller(Predicates.blocks(definition.get())))
+                    .where('K', Predicates.controller(definition))
                     .where('M', Predicates.blocks(Blocks.MOSS_BLOCK)
                             .or(Predicates.blocks(Blocks.DIRT))
                             .or(Predicates.blocks(Blocks.GRASS_BLOCK)))

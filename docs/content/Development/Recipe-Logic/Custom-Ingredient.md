@@ -331,20 +331,12 @@ public class BonkPartAbilities {
 ## Creating the RecipeType
 ```java title="BonkRecipeTypes.java"
 public class BonkRecipeTypes {
-    public static final GTRecipeType LARGE_BONK_RECIPES = register(AddonMod.id("large_bonk_reactor"), MULTIBLOCK)
+    public static final GTRecipeType LARGE_BONK_RECIPES = GTRecipeTypes.register(AddonMod.id("large_bonk_reactor"), MULTIBLOCK)
             .setMaxIOSize(3, 3, 5, 4)
             .setMaxSize(IO.IN, BonkRecipeCapability.CAP, 1)
             .setEUIO(IO.IN);
 
     public static void init() {}
-    
-    public static GTRecipeType register(String name, String group, RecipeType<?>... proxyRecipes) {
-        var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);
-        GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, recipeType.registryName, recipeType);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.registryName, new GTRecipeSerializer());
-        GTRegistries.RECIPE_TYPES.register(recipeType.registryName, recipeType);
-        return recipeType;
-    }
 }
 ```
 
@@ -373,7 +365,7 @@ public class BonkRecipeCapabilities {
     public static final BonkRecipeCapability BONK = BonkRecipeCapability.CAP;
 
     public static void init() {
-        GTRegistries.RECIPE_CAPABILITIES.register(BONK.name, BONK);
+        GTRegistries.RECIPE_CAPABILITIES.register(BONK.id, BONK);
     }
 }
 ```
@@ -389,6 +381,10 @@ public class Bonk {
     private void registerMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {
         BonkMachines.init();
     }
+
+    private void registerRecipeCapabilities(GTCEuAPI.RegisterEvent<ResourceLocation, RecipeCapability<?>> event) {
+        BonkRecipeCapabilities.init();
+    }
 }
 ```
 
@@ -403,11 +399,6 @@ public class BonkGTAddon implements IGTAddon {
     @Override
     public void addRecipes(Consumer<FinishedRecipe> provider) {
         BonkRecipes.init(provider);
-    }
-
-    @Override
-    public void registerRecipeCapabilities() {
-        BonkRecipeCapabilities.init();
     }
 }
 

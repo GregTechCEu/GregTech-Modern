@@ -4160,6 +4160,7 @@
   "gui.gtceu.armor_config.no_modules": "No modules installed",
   "gui.gtceu.armor_config.select": "Select an equipped armor piece",
   "gui.gtceu.armor_config.title": "Armor Configuration",
+  "gui.gtceu.cover.direction": "Direction: §r%s",
   "gui.gtceu.equipment_foundry.applied_to": "Applied to:",
   "gui.gtceu.equipment_foundry.module_item": "Module item:",
   "gui.gtceu.equipment_foundry.supports_tiers": "Module tiers: %s-%s",
