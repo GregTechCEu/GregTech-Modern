@@ -51,6 +51,8 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected final Map<IO, List<RecipeHandlerList>> capabilitiesProxy;
     @Getter
     protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
+    @Getter
+    protected final RecipeCapabilityVersions recipeVersions;
     @SaveField
     @Getter
     protected int overclockTier;
@@ -87,6 +89,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.activeRecipeType = 0;
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
+        this.recipeVersions = new RecipeCapabilityVersions();
         this.traitSubscriptions = new ArrayList<>();
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
         this.recipeLogic = attachTrait(recipeLogic);
@@ -123,6 +126,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.activeRecipeType = 0;
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
+        this.recipeVersions = new RecipeCapabilityVersions();
         this.traitSubscriptions = new ArrayList<>();
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
         this.recipeLogic = attachTrait(recipeLogic);
@@ -174,7 +178,10 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
 
         for (var entry : ioTraits.entrySet()) {
             var handlerList = RecipeHandlerList.of(entry.getKey(), entry.getValue());
-            this.addHandlerList(handlerList);
+            ISubscription versionSubscription = this.addHandlerList(handlerList);
+            if (versionSubscription != null) {
+                traitSubscriptions.add(versionSubscription);
+            }
             traitSubscriptions.add(handlerList.subscribe(recipeLogic::updateTickSubscription));
         }
     }
