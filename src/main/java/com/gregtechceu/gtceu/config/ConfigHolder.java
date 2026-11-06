@@ -188,6 +188,13 @@ public class ConfigHolder {
     public static class CompatibilityConfigs {
 
         @Configurable
+        @Configurable.Comment({ "Whether to apply datafixers when necessary.",
+                "Do note that mods like ModernFix might interfere with this.",
+                "Default: true" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
+        public boolean doDataFixers = true;
+
+        @Configurable
         @Configurable.Comment("Config options regarding GTEU compatibility with other energy systems")
         public EnergyCompatConfig energy = new EnergyCompatConfig();
 
