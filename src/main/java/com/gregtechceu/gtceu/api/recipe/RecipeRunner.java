@@ -130,7 +130,9 @@ public class RecipeRunner {
 
         List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(io, Collections.emptyList());
         // Only sort for non-tick outputs
-        if (!isTick && io.support(IO.OUT)) {
+        if (!isTick && io.support(IO.OUT) && !handlers.isEmpty()) {
+            // Copy before we sort, capabilityProxies is a live map which we should not modify during recipe search
+            handlers = new ArrayList<>(handlers);
             handlers.sort(RecipeHandlerList.COMPARATOR.reversed());
         }
 
