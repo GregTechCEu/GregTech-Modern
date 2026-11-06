@@ -40,9 +40,9 @@ public class OreTagPrefixBuilderJS extends TagPrefixBuilderJS {
     public OreTagPrefixBuilderJS(ResourceLocation id) {
         super(id);
 
-        defaultTag("ores/%s");
-        prefixOnlyTag("ores_in_ground/%s");
-        unformattedTag("ores");
+        defaultTagPath("ores/%s");
+        prefixOnlyTagPath("ores_in_ground/%s");
+        unformattedTagPath("ores");
     }
 
     @Override

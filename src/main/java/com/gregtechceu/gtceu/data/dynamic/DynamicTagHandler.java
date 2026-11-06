@@ -188,6 +188,16 @@ public final class DynamicTagHandler {
                     }
                 }
             }
+
+            if (entry.tagPrefix() == TagPrefix.oreEndstone.value()) {
+                // Make endstone-based ores dragon-immune
+                tags.computeIfAbsent(BlockTags.DRAGON_IMMUNE.location(), $ -> new ArrayList<>()).addAll(entries);
+            }
+
+            if (entry.tagPrefix() == TagPrefix.frameGt.value()) {
+                tags.computeIfAbsent(CustomTags.SLOW_WALKABLE_BLOCKS.location(), path -> new ArrayList<>())
+                        .addAll(entries);
+            }
         });
 
         GTRegistries.MACHINES.forEach(machine -> {

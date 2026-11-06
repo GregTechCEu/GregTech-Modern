@@ -4,39 +4,38 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
 import net.minecraft.Util;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import lombok.Getter;
-import lombok.Setter;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-@ApiStatus.Internal
-public final class TagType {
+public class TagType {
 
+    private final String tagPath;
     @Getter
     private boolean isParentTag = false;
     // this is now memoized because creating tag keys interns them and that's slow
-    private final BiFunction<TagPrefix, Material, TagKey<Item>> formatter;
-    @Setter
-    private @Nullable Predicate<Material> filter;
+    private BiFunction<TagPrefix, Material, TagKey<Item>> formatter;
+    private Predicate<Material> filter;
 
-    private TagType(BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
-        this.formatter = Util.memoize(formatter);
+    private TagType(String tagPath) {
+        this.tagPath = tagPath;
     }
 
-    // spotless:off
+    // formatter:off
     /**
      * Create a tag with a specified path, with the "default" formatter, meaning
      * that there is 1 "%s" format character in the path, intended for the Material name.
      */
     public static TagType withDefaultFormatter(String tagPath, boolean isVanilla) {
-        return new TagType((prefix, mat) -> TagUtil.createItemTag(tagPath.formatted(mat.getName()), isVanilla));
+        TagType type = new TagType(tagPath);
+        type.formatter = Util
+                .memoize((prefix, mat) -> TagUtil.createItemTag(type.tagPath.formatted(mat.getName()), isVanilla));
+        return type;
     }
 
     /**
@@ -45,7 +44,10 @@ public final class TagType {
      * prefix name, and the second being the material name.
      */
     public static TagType withPrefixFormatter(String tagPath) {
-        return new TagType((prefix, mat) -> TagUtil.createItemTag(tagPath.formatted(prefix.name, mat.getName())));
+        TagType type = new TagType(tagPath);
+        type.formatter = Util.memoize((prefix, mat) -> TagUtil.createItemTag(
+                type.tagPath.formatted(prefix.name, mat.getName())));
+        return type;
     }
 
     /**
@@ -53,29 +55,36 @@ public final class TagType {
      * that there is 1 "%s" format character in the path, intended for the prefix name.
      */
     public static TagType withPrefixOnlyFormatter(String tagPath) {
-        TagType type = new TagType((prefix, mat) -> TagUtil.createItemTag(tagPath.formatted(prefix.name)));
+        TagType type = new TagType(tagPath);
+        type.formatter = Util.memoize((prefix, mat) -> TagUtil
+                .createItemTag(type.tagPath.formatted(prefix.name)));
         type.isParentTag = true;
         return type;
     }
 
     public static TagType withNoFormatter(String tagPath, boolean isVanilla) {
-        TagType type = new TagType((prefix, material) -> TagUtil.createItemTag(tagPath, isVanilla));
+        TagType type = new TagType(tagPath);
+        type.formatter = Util.memoize((prefix, material) -> TagUtil.createItemTag(type.tagPath, isVanilla));
         type.isParentTag = true;
         return type;
     }
 
-    public static TagType ofTagKey(TagKey<?> tag) {
-        TagType type = new TagType((prefix, material) -> TagKey.create(Registries.ITEM, tag.location()));
-        type.isParentTag = true;
+    public static TagType withCustomFormatter(String tagPath, BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
+        TagType type = new TagType(tagPath);
+        type.formatter = Util.memoize(formatter);
         return type;
     }
 
-    public static TagType withCustomFormatter(BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
-        return new TagType(formatter);
+    public static TagType withCustomFilter(String tagPath, boolean isVanilla, Predicate<Material> filter) {
+        TagType type = new TagType(tagPath);
+        type.filter = filter;
+        type.formatter = Util.memoize((prefix, material) -> TagUtil.createItemTag(type.tagPath, isVanilla));
+        return type;
     }
     // spotless:on
 
-    public @Nullable TagKey<Item> getTag(TagPrefix prefix, @Nullable Material material) {
+    @Nullable
+    public TagKey<Item> getTag(TagPrefix prefix, Material material) {
         if (filter != null && material != null && !filter.test(material)) return null;
         return formatter.apply(prefix, material);
     }
