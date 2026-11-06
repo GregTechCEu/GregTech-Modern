@@ -9,10 +9,11 @@ title: "Ore Processing Plant"
 
 === "Java"
     ```java title="AddonRecipeTypes.java"
-        public final static GTRecipeType ORE_PROCESSING_RECIPES = register(AddonMod.id("ore_processing_plant"), MULTIBLOCK)
+        public final static GTRecipeTypeEntry ORE_PROCESSING_RECIPES = ADDON_REGISTRATE.recipeType("ore_processing_plant", MULTIBLOCK)
             .setMaxIOSize(1, 8, 2, 1)
             .setEUIO(IO.IN)
-            .setSound(GTSoundEntries.BATH);
+            .setSound(GTSoundEntries.BATH)
+            .register();
     ```
 === "JavaScript"
     ```js title="ore_processing_plant.js"
@@ -29,7 +30,7 @@ title: "Ore Processing Plant"
 
 === "Java"
     ```java title="MultiMachines.java"
-    public static final MultiblockMachineDefinition ORE_PROCESSING_PLANT = REGISTRATE
+    public static final MachineEntry<MultiblockMachineDefinition> ORE_PROCESSING_PLANT = REGISTRATE
             .multiblock("ore_processing_plant", WorkableElectricMultiblockMachine::new)
             .langValue("Ore Processing Plant")
             .rotationState(RotationState.NON_Y_AXIS)
