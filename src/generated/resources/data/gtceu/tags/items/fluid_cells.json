@@ -1,9 +1,12 @@
 {
   "values": [
+    "gtceu:fluid_cell",
+    "gtceu:universal_fluid_cell",
     "gtceu:steel_fluid_cell",
     "gtceu:aluminium_fluid_cell",
     "gtceu:stainless_steel_fluid_cell",
     "gtceu:titanium_fluid_cell",
-    "gtceu:tungsten_steel_fluid_cell"
+    "gtceu:tungsten_steel_fluid_cell",
+    "gtceu:glass_vial"
   ]
 }

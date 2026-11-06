@@ -1,5 +1,8 @@
 {
   "values": [
-    "gtceu:wheat_dust"
+    {
+      "id": "gtceu:wheat_dust",
+      "required": false
+    }
   ]
 }
