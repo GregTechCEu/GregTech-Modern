@@ -14,8 +14,8 @@ Bedrock Fluid Veins are invisible veins that exist under the bedrock, to find Fl
     // In server events
     GTCEuServerEvents.fluidVeins(event => {
         event.add('gtceu:custom_bedrock_fluid_vein', vein => {
-            vein.dimensions('minecraft:overworld') // (1)
-            vein.fluid(() => Fluid.of('gtceu:custom_fluid').fluid) 
+            vein.addSpawnDimension('minecraft:overworld') // (1)
+            vein.fluid('gtceu:custom_fluid') 
             vein.weight(600)
             vein.minimumYield(120)
             vein.maximumYield(720)
@@ -29,6 +29,7 @@ Bedrock Fluid Veins are invisible veins that exist under the bedrock, to find Fl
     1. Dimension where fluid vein will spawn.
 
 === "Java"
+    Bedrock fluid veins are stored in a datapack registry, so in Java they are created through datagen.  
     In Java, `.dimensions()` only accepts a `Set<ResourceKey<Level>>`. For example, this is how you would assign the overworld a variable:
     ```java
     public static final Set<ResourceKey<Level>> DIM_OVERWORLD = Set.of(Level.OVERWORLD);
@@ -42,36 +43,39 @@ Bedrock Fluid Veins are invisible veins that exist under the bedrock, to find Fl
     
     ```java title="ExampleBedrockFluidVeins.java"
     public class ExampleBedrockFluidVeins {
-        public static void init() {}
         
         public static final Set<ResourceKey<Level>> DIM_OVERWORLD = Set.of(Level.OVERWORLD);
+
+        public static final ResourceKey<BedrockFluidDefinition> CUSTOM_BEDROCK_FLUID_VEIN = ResourceKey.create(
+                GTRegistries.Keys.BEDROCK_FLUID, ExampleMod.id("custom_bedrock_fluid_vein"));
         
-        public static final BedrockFluidDefinition CUSTOM_BEDROCK_FLUID_VEIN = BedrockFluidDefinition.builder(ExampleMod.id("custom_bedrock_fluid_vein"))
-                .dimensions(DIM_OVERWORLD) // (1)
-                .fluid(CustomFluid::getFluid) // (2)
-                .weight(600)
-                .yield(120, 720)
-                .depletionAmount(2)
-                .depletionChance(1)
-                .depletedYield(50)
-                .register();
+        public static void bootstrap(BootstrapContext<BedrockFluidDefinition> context) {
+            context.register(CUSTOM_BEDROCK_FLUID_VEIN, BedrockFluidDefinition.builder(context.lookup(Registries.BIOME))
+                    .dimensions(DIM_OVERWORLD) // (1)
+                    .fluid(CustomFluid.getFluid()) // (2)
+                    .weight(600)
+                    .yield(120, 720)
+                    .depletionAmount(2)
+                    .depletionChance(1)
+                    .depletedYield(50)
+                    .build());
+        }
     }
     ```
 
     1. Dimension where fluid vein will spawn.
     2. Replace `CustomFluid` with any GTMaterial you want to get the fluid from.
 
-    As the last step, you need to actually enable the registration of the veins in your class implementing IGTAddon.  
+    As the last step, you need to add the bootstrap method to your datagen, and run datagen.  
     
-    ```java title="ExampleModGTAddon.java"
-    @GTAddon
-    public class ExampleModGTAddon implements IGTAddon {
+    ```java title="ExampleModDatagen.java"
+    @SubscribeEvent
+    public static void gatherData(GatherDataEvent event) {
         // ...
-        @Override
-        public void registerFluidVeins() {
-            ExampleBedrockFluidVeins.init();
-        }
-        // ...
+        event.getGenerator().addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
+                event.getGenerator().getPackOutput(), event.getLookupProvider(),
+                new RegistrySetBuilder().add(GTRegistries.Keys.BEDROCK_FLUID, ExampleBedrockFluidVeins::bootstrap),
+                Set.of(ExampleMod.MOD_ID)));
     }
     ```
 
@@ -83,17 +87,27 @@ Bedrock Fluid Veins are invisible veins that exist under the bedrock, to find Fl
     // In server events
     GTCEuServerEvents.fluidVeins(event => {
         event.modify('gtceu:heavy_oil_deposit', vein => {
-            vein.setWeight(9999);
+            vein.weight(9999);
         });
     });
     ```
 
-=== "Java"
-    ```java title="ExampleBedrockFluidVeins.java"
-    public class ExampleBedrockFluidVeins {
-        public static void init() {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.get(GTCEu.id('heavy_oil_deposit')).setWeight(9999);
-        }
+=== "JSON"
+    Bedrock fluid veins are loaded from datapacks, so you can override a vein by placing a file with the same ID in your datapack:
+    ```json title="resources/data/gtceu/gtceu/bedrock_fluid/heavy_oil_deposit.json"
+    {
+      "depleted_yield": 20,
+      "depletion_amount": 1,
+      "depletion_chance": 100,
+      "dimension_filter": [
+        "minecraft:overworld"
+      ],
+      "fluid": "gtceu:heavy_oil",
+      "weight": 9999,
+      "yield": {
+        "max": 200,
+        "min": 100
+      }
     }
     ```
 
@@ -107,11 +121,7 @@ Bedrock Fluid Veins are invisible veins that exist under the bedrock, to find Fl
     });
     ```
 
-=== "Java"
-    ```java title="ExampleBedrockFluidVeins.java"
-    public class ExampleBedrockFluidVeins {
-        public static void init() {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.remove(GTCEu.id("heavy_oil_deposit"));
-        }
-    }
+=== "JSON"
+    ```json title="resources/data/gtceu/gtceu/bedrock_fluid/heavy_oil_deposit.json"
+        {"neoforge:conditions":[{"type":"neoforge:false"}]}
     ```

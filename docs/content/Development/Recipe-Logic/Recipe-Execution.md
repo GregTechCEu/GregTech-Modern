@@ -119,7 +119,7 @@ If it's not empty, we continue to the next distinct bus.
         if (handlerListEntry.getKey().equals(BUS_DISTINCT)) continue;
 
         // List to keep track of the remaining items for this RecipeHandlerGroup
-        Map<RecipeCapability<?>, List<Object>> copiedRecipeContents = searchRecipeContent;
+        Map<RecipeCapability<?>, List<Object>> copiedRecipeContents = searchRecipeContents;
         boolean found = false;
 
         for (RecipeHandlerList handler : handlerListEntry.getValue()) {
@@ -202,7 +202,7 @@ Then, on the next tick, we call `recipeLogic.handleRecipeWorking()`, which calls
 public ActionResult handleTickRecipe(GTRecipe recipe) {
     if (!recipe.hasTick()) return ActionResult.SUCCESS;
 
-    var result = RecipeHelper.matchTickRecipe(machine, recipe);
+    var result = RecipeHelper.matchTickRecipe(getRLMachine(), recipe);
     if (!result.isSuccess()) return result;
 
     result = handleTickRecipeIO(recipe, IO.IN);

@@ -251,6 +251,10 @@ above becomes:
 ```java
 public class MyMultiblockMachine extends WorkableElectricMultiblockMachine {
 
+    public MyMultiblockMachine(BlockEntityCreationInfo info) {
+        super(info);
+    }
+
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
         List<IWidget> widgets = super.getWidgetsForDisplay(syncManager);

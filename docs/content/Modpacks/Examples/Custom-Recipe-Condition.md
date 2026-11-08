@@ -30,7 +30,7 @@ We will set up a condition that requires that the power buffer of the machine is
 ```java
 public class ExampleCondition extends RecipeCondition<ExampleCondition> {
 
-    public static final Codec<ExampleCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance)
+    public static final MapCodec<ExampleCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
             .and(Codec.INT.fieldOf("height").forGetter(val -> val.height)
     ).apply(instance, ExampleCondition::new));
 
@@ -116,14 +116,14 @@ This creates the basic "template" that might be used for serialization. This sho
 ```java
     @Override
     protected boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        return recipeLogic.getMachine().getHolder().getCurrentPos().getY() >= height;
+        return recipeLogic.getMachine().getBlockPos().getY() >= height;
     }
 ```
 
 This is the actual condition.
 
 ```java
-    public static final Codec<ExampleCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+    public static final MapCodec<ExampleCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
             Codec.INT.fieldOf("height").forGetter(val -> val.height)
     ).apply(instance, ExampleCondition::new));
                     
@@ -133,7 +133,7 @@ This is the actual condition.
 The CODEC is how Minecraft knows how to serialize/deserialize your condition. This is needed for syncing between client/server, and storing it to json to load when the world loads.
 It consists of a few parts:
 
-- `RecordCodecBuilder.create(instance -> ` means we will start a RecordCodecBuilder, or a builder that only consists of simple types.
+- `RecordCodecBuilder.mapCodec(instance -> ` means we will start a RecordCodecBuilder, or a builder that only consists of simple types.
 - `RecipeCondition.isReverse(instance)` is a helper codec that serializes the isReverse boolean of your codec.
 - `.and(` allows adding additional fields to the codec.
 - `Codec.INT.fieldOf("height").forGetter(val -> val.height)` means we want to serialize an integer, we want to call it "height" in the JSON, and to get the value to serialize you use `ExampleCondition#height`.

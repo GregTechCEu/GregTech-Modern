@@ -14,11 +14,11 @@ MultiPredicate air(); // (2)
 MultiPredicate controller(MultiblockMachineDefinition def); // (3)
 MultiPredicate machines(MachineDefinition... definitions); // (4)
 
-MultiPredicate blocksDebug(String debugName, Block... blocks); // (5)
+MultiPredicate blocks(String debugName, Block... blocks); // (5)
 MultiPredicate blocks(Block... blocks); // (6)
-MultiPredicate statesDebug(String debugName, BlockState... allowedStates); // (7)
+MultiPredicate states(String debugName, BlockState... allowedStates); // (7)
 MultiPredicate states(BlockState... allowedStates); // (8)
-MultiPredicate fluidsDebug(String debugName, Fluid... fluids); // (9)
+MultiPredicate fluids(String debugName, Fluid... fluids); // (9)
 MultiPredicate fluids(Fluid... fluids); // (10)
 
 MultiPredicate blockTag(TagKey<Block> tag); // (11)
@@ -108,23 +108,23 @@ MultiPredicate myCustomPredicate = Predicates.blocks(GTBlocks.PLASCRETE)
 ```
 
 !!! Note "Mutations return the mutated predicate"
-    Mutations on predicates return the edited copy, so you can't do `a = Predicates.blocks(Blocks.DIRT); a.setMinLimit(2);`, since the predicate with the limit would be the return value of the .setMinLimit call.   
-    Instead, do e.g. `a = Predicates.blocks(Blocks.DIRT); a = a.setMinLimit(2);` or  
-    `a = Predicates.blocks(Blocks.DIRT).setMinLimit(2);`  
+    Mutations on predicates return the edited copy, so you can't do `a = Predicates.blocks(Blocks.DIRT); a.setMinGlobalLimited(2);`, since the predicate with the limit would be the return value of the .setMinLimit call.   
+    Instead, do e.g. `a = Predicates.blocks(Blocks.DIRT); a = a.setMinGlobalLimited(2);` or  
+    `a = Predicates.blocks(Blocks.DIRT).setMinGlobalLimited(2);`  
 
 
 !!! Note "Setting limits on composite predicates"
     Setting a limit on a predicate sets the limit on all its children and predicates. It is currently not possible to do e.g.  
-    `existingPredicate1.or(existingPredicate2).setMinLimit(4)` to mean "4 of combined either predicate",   
+    `existingPredicate1.or(existingPredicate2).setMinGlobalLimited(4)` to mean "4 of combined either predicate",   
     this instead means "either 4 of predicate 1 or 4 of predicate 2".  
-    This is possible with e.g. simple blocks by creating one predicate with all the blocks like `Predicates.blocks(Blocks.DIRT, Blocks.STONE).setMinLimit(4)`  
+    This is possible with e.g. simple blocks by creating one predicate with all the blocks like `Predicates.blocks(Blocks.DIRT, Blocks.STONE).setMinGlobalLimited(4)`  
 
 ## Predicate Internals
 `MultiPredicate`s can be composed of one or more `BasePredicate`s and other `MultiPredicates` which means any, all or one of those predicates can succeed for the `MultiPredicate` to succeed (returning no `PatternError`).
 
 `BasePredicate`s are composed of a few values,
 
-1. The `Predicate<BlockInfo, PatternError> predicateError` which runs for each block state this predicate is assigned to and returns that specific error.
+1. The `Predicate<PredicateContext> predicate` which runs for each block state this predicate is assigned to, and an `ErrorHandler` which reports the specific `PatternError` if it fails.
 
 2. The `List<BlockInfo> candidates` which are all the valid blocks for that predicate.
 
@@ -135,23 +135,18 @@ MultiPredicate myCustomPredicate = Predicates.blocks(GTBlocks.PLASCRETE)
 
 ```java title="CustomPredicate.java"
 public static MultiPredicate customPredicate() {
-    return new MultiPredicate("MyDebugName", // (1)
-            (blockInfo) -> { // (2)
-        BlockState state = blockInfo.getBlockState();
-        if (state.getBlock() == Blocks.OAK_WOOD) {
-            return null; // (3)
-        }
-        return new BlockMatchingError(blockInfo.getBlockPos(), Blocks.OAK_WOOD); // (4)
-    }, new BlockInfo(Blocks.OAK_WOOD)); // (5)
+    return new PredicateBuilder("MyDebugName") // (1)
+            .predicate(ctx -> ctx.state().is(Blocks.OAK_WOOD)) // (2)
+            .errorFunction(ctx -> new BlockMatchingError(ctx.pos(), List.of(Blocks.OAK_WOOD))) // (3)
+            .blocks(Blocks.OAK_WOOD) // (4)
+            .toMultiPredicate();
 }
 ```
 
-1. Debug name of the predicate (used in the terminal preview), optional.
+1. Debug name of the predicate (used in the terminal preview).
 
 2. The condition for if the MultiPredicate matches.
 
-3. If the predicate succeeds it MUST return null;
+3. If the predicate fails it will return some `PatternError` (see [Pattern Errors](./PatternError.md)). Optional, defaults to a placeholder error.
 
-4. If the predicate fails it will return some `PatternError` (see [Pattern Errors](./PatternError.md))
-
-5. The list of all valid candidates for this predicate (used for terminal previewing and autobuilding).
+4. The list of all valid candidates for this predicate (used for terminal previewing and autobuilding).

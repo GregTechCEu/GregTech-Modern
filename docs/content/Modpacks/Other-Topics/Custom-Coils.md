@@ -15,11 +15,11 @@ StartupEvents.registry('block', event => {
         .level(0)
         .energyDiscount(1) // (1)
         .tier(10)
-        .coilMaterial(() => GTMaterials.get('infinity'))
+        .material(() => GTRegistries.MATERIALS.get(GTCEu.id('infinity')))
         .texture('kubejs:block/example_block')
         .hardness(5)
         .requiresTool(true)
-        .material('metal')
+        .soundType('metal')
 })
 ```
 

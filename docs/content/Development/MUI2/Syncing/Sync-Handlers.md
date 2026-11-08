@@ -91,4 +91,4 @@ Here's a list of existing ByteBufAdapter:
  - `GTByteBufAdapters.PATTERN_ERRORS`  
  - `GTByteBufAdapters.GTRECIPE`  
 
-It is also possible to make your own ByteBufAdapter from a [CODEC](https://docs.minecraftforge.net/en/latest/datastorage/codecs/) using `ByteBufAdapters.makeAdapter(Codec<T> codec)`
+It is also possible to make your own ByteBufAdapter from a [CODEC](https://docs.minecraftforge.net/en/latest/datastorage/codecs/) using `ByteBufAdapters.makeAdapterFromCodec(Codec<T> codec, EqualityTest<T> equals)`

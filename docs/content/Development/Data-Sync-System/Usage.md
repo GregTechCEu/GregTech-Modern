@@ -32,6 +32,7 @@ class MySyncObject implements ISyncManaged {
     private BlockPos syncPos = BlockPos.ZERO;
     
     @Getter
+    @SyncToClient
     private String syncString = "";
      
     public MySyncObject(MetaMachine machine) {
@@ -97,8 +98,7 @@ To add support for an additional type, call one of the following:
 
 - `ValueTransformers.registerTransformer(Class<T> cls, ValueTransformer<T> transformer)`
 - `ValueTransformers.registerGenericTransformerSupplier(Class<T> cls, Supplier<ValueTransformer<T>> func)`
-- `ValueTransformers.registerCodecTransformer(Class<T> type, Codec<T> codec)`
-- `ValueTransformers.registerCodecTransformer(Class<T> type, Codec<T> codec, BiConsumer<FriendlyByteBuf, T> writePacket, Function<FriendlyByteBuf, @Nullable T> readPacket)`
+- `ValueTransformers.registerCodecTransformer(Class<T> type, Codec<T> codec, StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec)`
 - `ValueTransformers.registerRegistryTransformer(Class<T> type, Registry<T> registry)`
 
 Additionally, fields can be explicitly directed to use a specific value transformer:

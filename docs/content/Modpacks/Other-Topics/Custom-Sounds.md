@@ -32,7 +32,7 @@ After you make this class, prepare your sound, and initialize it in your main mo
 It's a bit more complicated than normal datagen, so an example can be found below.
 
 ```java
-@Mod.EventBusSubscriber(modid = ExampleMod.MOD_ID)
+@EventBusSubscriber(modid = ExampleMod.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class ExampleDataGenerators {
 
     @SubscribeEvent
@@ -42,7 +42,7 @@ public class ExampleDataGenerators {
         if (event.includeClient()) {
             event.getGenerator().addProvider(
                     true,
-                    new SoundEntryBuilder.SoundEntryProvider(packOutput, examplemod.MOD_ID));
+                    new SoundEntryBuilder.SoundEntryProvider(packOutput, ExampleMod.MOD_ID));
         }
     }
 }

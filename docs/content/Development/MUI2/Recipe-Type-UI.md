@@ -275,8 +275,8 @@ A minimal custom capability therefore looks like:
 
 ## Replacing the whole layout
 
-`customRecipeTypeUI(Function<GTRecipe, Flow>)` replaces the generated input/progress/output row
-outright and returns your own `Flow`. This overrides the grid builders, the recipe viewer capability
+`customRecipeTypeUI((recipeWidget, layout, recipe) -> ...)` replaces the generated input/progress/output row
+outright and returns your own `ParentWidget`. This overrides the grid builders, the recipe viewer capability
 layout builders and the progress bar for that recipe type, so only use it when the standard
 three-column shape does not fit.
 
@@ -286,8 +286,8 @@ KubeJS scripts do not build or touch widgets directly. `GTRecipeTypeBuilder`
 exposes the common options as plain builder methods instead:
 
 ```js
-GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
-    event.create('test_recipe_type')
+GTCEuStartupEvents.registry('minecraft:recipe_type', event => {
+    event.create('test_recipe_type', 'machine')
         .category('test')
         .setEUIO('in')
         .setMaxIOSize(3, 3, 3, 3)

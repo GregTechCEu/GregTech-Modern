@@ -17,7 +17,7 @@ Modules can have a custom UI, can be ticked (in a placeholder or not) and, most 
         @Override
         public void tick(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
             // this is only called on the logical server
-            // put all of your module's logic here instead of in getRenderer(stack)
+            // put all of your module's logic here instead of in getRenderer(...)
             // can also be left completely empty (like in the image module)
         }
 
@@ -29,7 +29,7 @@ Modules can have a custom UI, can be ticked (in a placeholder or not) and, most 
         }
 
         @Override
-        public IMonitorRenderer getRenderer(ItemStack stack) {
+        public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
             // this is only called on the logical client
             // should return a new instance of the renderer for this module (not null)
             // for examples of renderer code look in the GTCEu Modern github:
@@ -38,10 +38,12 @@ Modules can have a custom UI, can be ticked (in a placeholder or not) and, most 
         }
 
         @Override
-        public Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
-            // should create the UI for your module and return it
-            // if the module doesn't need a UI just return new WidgetGroup()
-            return new WidgetGroup();
+        public IPanelHandler createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
+                                                PanelSyncManager syncManager) {
+            // should create the UI panel for your module and return it
+            return syncManager.syncedPanel("example_module_" + group.getName(), true,
+                    (psm, handler) -> new ModularPanel<>("example_module_editor")
+                            .size(200, 50));
         }
     }
     ```
@@ -50,7 +52,7 @@ Modules can have a custom UI, can be ticked (in a placeholder or not) and, most 
 
 ### Adding custom placeholders
 
-Placeholders can be added by calling `PlaceholderHandler.addPlaceholder(...)` at any point during runtime (preferably at mod init time).
+Placeholders can be added by registering them to the `GTRegistries.Keys.PLACEHOLDER` registry, for example using a `DeferredRegister`. Placeholders are looked up in the `gtceu` namespace.
 They can take any number of arguments in the form of a `List<MultiLineComponent>`. They also take an instance of `PlaceholderContext` and
 must return a `MultiLineComponent`. Placeholders can also render literally anything, not only text, using `MultiLineComponent.addRenderer()`,
 `GraphicsComponent` and an `IPlaceholderRenderer` (that has to be registered separately using `PlaceholderHandler.addRenderer(...)`)
@@ -58,10 +60,10 @@ must return a `MultiLineComponent`. Placeholders can also render literally anyth
 ??? example "Example of a `sum` placeholder in Java"
     ```java
     public class Example {
-        // you should call this function at mod initialization
-        public static void addPlaceholders() {
-            int priority = 1; // by default the priority of all placeholders is 0 (you don't have to specify it)
-            PlaceholderHandler.addPlaceholder(new Placeholder("sum", priority) {
+        // call PLACEHOLDERS.register(modEventBus) in your mod's constructor
+        public static final DeferredRegister<Placeholder> PLACEHOLDERS = DeferredRegister.create(GTRegistries.Keys.PLACEHOLDER, GTCEu.MOD_ID);
+
+        public static final DeferredHolder<Placeholder, Placeholder> SUM = PLACEHOLDERS.register("sum", () -> new Placeholder("sum") {
                 @Override
                 public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) throws PlaceholderException {
                     PlaceholderUtils.checkArgs(args, 2); // check that there are exactly 2 arguments
@@ -69,10 +71,8 @@ must return a `MultiLineComponent`. Placeholders can also render literally anyth
                     double b = PlaceholderUtils.toDouble(args.get(1));
                     return MultiLineComponent.literal(a + b);
                 }
-            });
-            // you can call addPlaceholder as many times as you need
-            // if you want to override an existing placeholder, simply add a new one with the same name and a higher or equal priority
-        }
+        });
+        // you can register as many placeholders as you need
     }
     ```
 
@@ -92,7 +92,7 @@ You may have noticed, that some placeholders output graphics instead of text, fo
 To achieve that you have to write your own class that implements `IPlaceholderRenderer`, or use an existing one.
 They work similarly to normal renderers, except you can pass a `CompoundTag` into them from your placeholder.
 To register one, call `PlaceholderHandler.addRenderer("put_id_here", new YourRendererClassHere())`.
-After that, you can reference it from any placeholder by calling `output.addGraphics(new GraphicsComponent(x, y, "put_id_here", renderData)`
+After that, you can reference it from any placeholder by calling `output.addGraphics(new GraphicsComponent(x, y, x2, y2, "put_id_here", renderData))`
 on the object that your placeholder will return. `renderData` is the same `CompoundTag` that will be passed into your renderer as an argument.
 This is done to avoid calling rendering code on the server side, as all placeholders are processed server-side only. A neat side effect of that
 is that all players will (almost always) see the same thing on the monitor.
@@ -102,6 +102,6 @@ is that all players will (almost always) see the same thing on the monitor.
 ### Placeholder parsing
 
 You may want to add something that needs to parse a string containing placeholders. To achieve that, you can use
-`PlaceholderHandler.processPlaceholders(string, context)`. You can also use `PlaceholderHandler.placeholderExists(name)`
-to check if a placeholder exists, or `PlaceholderHandler.getAllPlaceholderNames()` to get all placeholders.
+`PlaceholderHandler.processPlaceholders(string, context)`. You can also use `GTRegistries.PLACEHOLDERS`
+to check if a placeholder exists, or to get all placeholders.
 To get a `PlaceholderContext`, you just have to call its constructor (it takes in basic parameters like `Level`, `BlockPos`, etc., most of which can be `null`).

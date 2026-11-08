@@ -113,14 +113,14 @@ You can also add flags to existing materials:
     ```java title="AddonMod.java"
     @SubscribeEvent
     public static void materialModification(PostMaterialEvent event) {
-        GTMaterials.Lead.addFlags(MaterialFlags.GENERATE_GEAR);
+        GTMaterials.Lead.get().addFlags(MaterialFlags.GENERATE_GEAR);
     }
     ```
 === "JavaScript"
     ```js title="flags.js"
     GTCEuStartupEvents.materialModification(event => {
-        GTMaterials.Lead.addFlags(GTMaterialFlags.GENERATE_GEAR); // This is for materials already in GTCEU
-        GTMaterials.get('custom_material_name').addFlags(GTMaterialFlags.GENERATE_FOIL); // This only works for materials added by GTCEU addons
+        GTMaterials.Lead.get().addFlags(GTMaterialFlags.GENERATE_GEAR); // This is for materials already in GTCEU
+        GTRegistries.MATERIALS.get(GTCEu.id('custom_material_name')).addFlags(GTMaterialFlags.GENERATE_FOIL); // This only works for materials added by GTCEU addons
     });
     ```
 
@@ -130,13 +130,13 @@ Editing the color of an existing material:
     ```java title="AddonMod.java"
     @SubscribeEvent
     public static void materialModification(PostMaterialEvent event) {
-        GTMaterials.BismuthBronze.setMaterialARGB(0x82AD92); //(1)
+        GTMaterials.BismuthBronze.get().setMaterialARGB(0x82AD92); //(1)
     }
     ```
 === "JavaScript"
     ```js title="material_modification.js"
     GTCEuStartupEvents.materialModification(event => {
-        GTMaterials.BismuthBronze.setMaterialARGB(0x82AD92) //(1)
+        GTMaterials.BismuthBronze.get().setMaterialARGB(0x82AD92) //(1)
     })
     ```
 

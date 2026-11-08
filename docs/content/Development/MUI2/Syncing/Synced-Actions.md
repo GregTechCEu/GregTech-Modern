@@ -12,8 +12,8 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
     public int number = 0;
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var panel = GTGuis.createPanel(this, 176, 168);
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panel = new ModularPanel<>("mui_test").size(176, 168);
 
         var numberSyncValue = new IntSyncValue(() -> this.number, (newValue) -> this.number = newValue);
         syncManager.syncValue("number", numberSyncValue);
@@ -22,7 +22,7 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
             this.number = getLevel().getRandom().nextInt();
         });
 
-        Column contents = new Column();
+        Flow contents = Flow.column();
         contents.child(Text.dynamic(() -> Component.literal("Number: " + number))
                 .asWidget()
                 .width(100)

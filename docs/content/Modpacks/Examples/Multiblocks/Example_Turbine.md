@@ -33,10 +33,10 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
                 .where('D', Predicates.ability(PartAbility.MUFFLER).setExactLimit(1))
                 .where('F', Predicates.ability(PartAbility.ROTOR_HOLDER).setExactLimit(1))
                 .where('E', Predicates.blocks(ChemicalHelper.getBlock(TagPrefix.frame, GTMaterials.StainlessSteel)))
-                .where('G', Predicates.controller(Predicates.blocks(definition.get())))
+                .where('G', Predicates.controller(definition))
                     .build())
-            .workableCasingModel(GTCEu.id("block/casings/steam/bronze/bottom"),
-                    GTCEu.id("block/machines/compressor"))
+            .workableCasingModel(GTCEu.id("block/casings/mechanic/machine_casing_turbine_stainless_steel"),
+                    GTCEu.id("block/multiblock/generator/large_gas_turbine"))
             .register();
     ```
 === "JavaScript"
@@ -46,7 +46,7 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
     
     GTCEuStartupEvents.registry('gtceu:machine', event => {
         event.create('hyper_gas_turbine', 'multiblock')
-            .machine((info) => new $LargeTurbineMachine(info, GTValues.LuV)) // The value shows one rotor holder tier above the recommended minimum rotor holder. The tier of rotor holder provides a boost based on the efficiency stat.
+            .blockEntityFactory((info) => new $LargeTurbineMachine(info, GTValues.LuV)) // The value shows one rotor holder tier above the recommended minimum rotor holder. The tier of rotor holder provides a boost based on the efficiency stat.
             .langValue("Hyper Gas Turbine")
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes("gas_turbine")
@@ -66,9 +66,9 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
                     .and(Predicates.autoAbilities(definition.getRecipeTypes()))
                     .and(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
                 .where("D", Predicates.ability(PartAbility.MUFFLER).setExactLimit(1))
-                .where("E", Predicates.ability(PartAbility.ROTOR_HOLDER).setExactLimit(1))
-                .where("F", Predicates.blocks("gtceu:stainless_steel_frame"))
-                .where("G", Predicates.controller(Predicates.blocks(definition.get())))
+                .where("F", Predicates.ability(PartAbility.ROTOR_HOLDER).setExactLimit(1))
+                .where("E", Predicates.blocks("gtceu:stainless_steel_frame"))
+                .where("G", Predicates.controller(definition))
                 .build())
             .workableCasingModel("gtceu:block/casings/mechanic/machine_casing_turbine_stainless_steel",
                 "gtceu:block/multiblock/generator/large_gas_turbine")

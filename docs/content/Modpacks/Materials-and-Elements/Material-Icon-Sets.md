@@ -20,7 +20,6 @@ The following icon sets are available by default:
 - `GTMaterialIconSet.FINE`
 - `GTMaterialIconSet.FLINT`
 - `GTMaterialIconSet.FLUID`
-- `GTMaterialIconSet.GAS`
 - `GTMaterialIconSet.GEM_HORIZONTAL`
 - `GTMaterialIconSet.GEM_VERTICAL`
 - `GTMaterialIconSet.GLASS`
@@ -31,6 +30,7 @@ The following icon sets are available by default:
 - `GTMaterialIconSet.NETHERSTAR`
 - `GTMaterialIconSet.OPAL`
 - `GTMaterialIconSet.QUARTZ`
+- `GTMaterialIconSet.RADIOACTIVE`
 - `GTMaterialIconSet.ROUGH`
 - `GTMaterialIconSet.RUBY`
 - `GTMaterialIconSet.SAND`
@@ -40,7 +40,7 @@ The following icon sets are available by default:
 
 ## Custom Icon Sets
 
-Custom iconsets can be specified as well, using the `gtceu:matieral_icon_set` event:
+Custom iconsets can be specified as well, using the `gtceu:material_icon_set` event:
 === "Java"
     ```java title="AddonIconSets.java"
     public static final Holder<MaterialIconSet> STARRY = ADDON_REGISTRATE.materialIconSet("starry", MaterialIconSet.SHINY);
@@ -49,6 +49,6 @@ Custom iconsets can be specified as well, using the `gtceu:matieral_icon_set` ev
     ```js title="custom_iconsets.js"
     GTCEuStartupEvents.registry('gtceu:material_icon_set', event => {
         event.create('starry')
-            .parent('shiny')
+            .parentIconset('gtceu:shiny')
     })
     ```

@@ -30,9 +30,10 @@ Custom recipe modifiers in are done through a function. For this example, we wil
     ```js title="temperature_recipe_modifier.js"
     const $GTRecipe = Java.loadClass("com.gregtechceu.gtceu.api.recipe.GTRecipe");
     const $MetaMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.MetaMachine");
+    const $RecipeModifier = Java.loadClass("com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier");
     
     function TemperatureModifier(machine, recipe) {
-        if (!machine instanceof $CoilWorkableElectricMultiblockMachine) {
+        if (!(machine instanceof $CoilWorkableElectricMultiblockMachine)) {
             return $RecipeModifier.nullWrongType($CoilWorkableElectricMultiblockMachine, machine);
         } else {
     
@@ -55,8 +56,8 @@ Custom recipe modifiers in are done through a function. For this example, we wil
 ```js title="example_temperature_multiblock.js"
 const $CoilWorkableElectricMultiblockMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine");
 
-GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
-	event.create('example_smelting')
+GTCEuStartupEvents.registry('minecraft:recipe_type', event => {
+	event.create('example_smelting', 'machine')
 		.category('multiblock')
 		.setMaxIOSize(1, 1, 0, 0)
 		.setProgressBar(GTGuiTextures.PROGRESS_FUSION)
@@ -68,15 +69,15 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 
 	event.create('example_smelter', 'multiblock')
 		.rotationState(RotationState.NON_Y_AXIS)
-		.machine((holder) => new $CoilWorkableElectricMultiblockMachine(holder)) // (1)
-		.recipeType('alchemy')
+		.blockEntityFactory((info) => new $CoilWorkableElectricMultiblockMachine(info)) // (1)
+		.recipeType('example_smelting')
 		.recipeModifiers([(machine, recipe) => TemperatureModifier(machine, recipe)]) // (2)
 		.appearanceBlock(() => Block.getBlock("gtceu:solid_machine_casing"))
 		.pattern(definition => MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
 			.slice("###","HHH","###")
 			.slice("###","H H","###")
 			.slice("#C#","HHH","###")
-			.where('C', Predicates.controller(Predicates.blocks(definition.get())))
+			.where('C', Predicates.controller(definition))
 			.where('#', Predicates.blocks("gtceu:solid_machine_casing")
 				.and(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
 				.and(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
