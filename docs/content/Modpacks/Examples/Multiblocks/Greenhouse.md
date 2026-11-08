@@ -248,7 +248,7 @@ title: "Greenhouse"
             'gtceu:greenhouse',
             ['AWA', 'ASA', 'WAW'],
             {
-                A: '#forge:circuits/mv',
+                A: '#gtceu:circuits/mv',
                 W: 'gtceu:copper_single_cable',
                 S: 'gtceu:solid_machine_casing'
             }
