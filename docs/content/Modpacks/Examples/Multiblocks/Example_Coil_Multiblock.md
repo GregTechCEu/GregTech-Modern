@@ -12,7 +12,7 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
 === "Java"
     ```java title="MultiMachines.java"
         public static final MultiblockMachineDefinition SUPERHEATED_PYROLYZING_OVEN = REGISTRATE
-                .multiblock("superheated_pyrolyzing_oven", (holder) -> new CoilWorkableElectricMultiblockMachine(holder))
+                .multiblock("superheated_pyrolyzing_oven", (info) -> new CoilWorkableElectricMultiblockMachine(info))
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(GTRecipeTypes.PYROLYSE_RECIPES)
                 .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
@@ -51,7 +51,7 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
     
     GTCEuStartupEvents.registry('gtceu:machine', event => {
         event.create("superheated_pyrolyzing_oven", "multiblock")
-            .machine((holder) => new CoilWorkableElectricMultiblockMachine(holder))
+            .machine((info) => new CoilWorkableElectricMultiblockMachine(info))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes('pyrolyse_oven')
             .recipeModifiers(

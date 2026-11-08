@@ -48,8 +48,8 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var panel = GTGuis.createPanel(this, 176, 168);
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panel = new ModularPanel<>("mui_test").size(176, 168);
         var tickSyncValue = new IntSyncValue(() -> this.ticks, (newValue) -> this.ticks = newValue);
         syncManager.syncValue("tickSyncValue", tickSyncValue);
 
@@ -101,8 +101,8 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var panel = GTGuis.createPanel(this, 176, 168);
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panel = new ModularPanel<>("mui_test").size(176, 168);
         var tickSyncValue = new IntSyncValue(() -> this.ticks, (newValue) -> this.ticks = newValue);
         syncManager.syncValue("tickSyncValue", tickSyncValue);
 
@@ -156,8 +156,8 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var panel = GTGuis.createPanel(this, 176, 168);
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panel = new ModularPanel<>("mui_test").size(176, 168);
 
         var column = Flow.column().paddingTop(3);
 
@@ -208,8 +208,8 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var panel = GTGuis.createPanel(this, 200, 200);
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panel = new ModularPanel<>("mui_test").size(200, 200);
 
         var rowsSyncValue = new IntSyncValue(() -> this.rows, (newValue) -> this.rows = newValue);
         syncManager.syncValue("rows", rowsSyncValue);

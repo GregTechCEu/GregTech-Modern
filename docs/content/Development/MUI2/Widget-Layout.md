@@ -89,7 +89,7 @@ Setting all three properties for an axis will remove one of the other properties
 ## Changing the relative Parent
 
 By default, the size and position are calculated relative to the widget's parent, but that can be changed with
-`relative(Area)`, `relative(IGuiElement)` and `relativeToScreen()`.
+`relative(Area)`, `relative(IWidget)` and `relativeToScreen()`.
 The parent of all panels is by default the screen.
 
 !!! Warning
@@ -110,7 +110,7 @@ The parent of all panels is by default the screen.
     - e.g. `Flow.row().crossAxisAlignment(Alignment.CrossAxis.CENTER)` centers the row's children vertically, given that it has a set height
 - `childPadding(int)` adds fixed spacing between children.
 - `coverChildren()` / `coverChildrenWidth()` / `coverChildrenHeight()` sizes the flow to fit its children.
-- `collapseDisabledChild()` does not consider disabled children during position calculations.
+- `collapseDisabledChildren()` does not consider disabled children during position calculations.
     - This is useful when the enabled state of children changes dynamically.
 - `reverseLayout(bool)` reverses the order that children are drawn.
 
@@ -152,12 +152,12 @@ Spacing is handled via two different concepts:
 
 ### Simple centered panel with a row of buttons
 ```java
-ModularPanel panel = new ModularPanel("example")
+ModularPanel<?> panel = new ModularPanel<>("example")
         .size(176, 168);
 
 panel.child(new ParentWidget<>()
         .size(90, 63)
-        .align(Alignment.CENTER)
+        .center()
         .child(Flow.row()
                 .coverChildren()
                 .childPadding(4)

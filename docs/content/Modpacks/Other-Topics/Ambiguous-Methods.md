@@ -58,42 +58,32 @@ Because of the way javascript indexing works, `.foo` and `["foo"]` are the same 
 This same problem can occur when trying to call a constructor.  
 For example, when you do
 ```js
-GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
-  event.create("unboxinator")
-    .setProgressBar(
-      new ResourceTexture("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
-      FillDirection.LEFT_TO_RIGHT
-    )
-    // Rest of the recipe type
+const $MaterialIconSet = Java.loadClass("com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet")
+
+GTCEuStartupEvents.registry("gtceu:material_icon_set", event => {
+  let unboxiniumIconSet = new $MaterialIconSet("kubejs:unboxinium")
+  // Rest of the script
 })
 ```
 You'd get the following error:
 ```
-dev.latvian.mods.rhino.EvaluatorException: The choice of Java constructor com.lowdragmc.lowdraglib.gui.texture.ResourceTexture matching JavaScript argument types (string) is ambiguous; candidate constructors are: 
-    ResourceTexture(net.minecraft.resources.ResourceLocation)
-    ResourceTexture(java.lang.String) (startup_scripts:example.js#17)
+dev.latvian.mods.rhino.EvaluatorException: The choice of Java constructor com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet matching JavaScript argument types (string) is ambiguous; candidate constructors are: 
+    MaterialIconSet(java.lang.String)
+    MaterialIconSet(net.minecraft.resources.ResourceLocation) (startup_scripts:example.js#4)
 ```
 
 You would want to select one of the two, and this can be done in the following way:
 ```js
-GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
-  event.create("unboxinator")
-    .setProgressBar(
-      ResourceTexture["(java.lang.String)"]("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
-      FillDirection.LEFT_TO_RIGHT
-    )
-    // Rest of the recipe type
+GTCEuStartupEvents.registry("gtceu:material_icon_set", event => {
+  let unboxiniumIconSet = $MaterialIconSet["(java.lang.String)"]("kubejs:unboxinium")
+  // Rest of the script
 })
 ```
 or
 ```js
-GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
-  event.create("unboxinator")
-    .setProgressBar(
-      ResourceTexture["(net.minecraft.resources.ResourceLocation)"]("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
-      FillDirection.LEFT_TO_RIGHT
-    )
-    // Rest of the recipe type
+GTCEuStartupEvents.registry("gtceu:material_icon_set", event => {
+  let unboxiniumIconSet = $MaterialIconSet["(net.minecraft.resources.ResourceLocation)"]("kubejs:unboxinium")
+  // Rest of the script
 })
 ```
 !!! Note

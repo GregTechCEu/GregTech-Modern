@@ -32,6 +32,7 @@ class MySyncObject implements ISyncManaged {
     private BlockPos syncPos = BlockPos.ZERO;
     
     @Getter
+    @SyncToClient
     private String syncString = "";
      
     public MySyncObject(MetaMachine machine) {

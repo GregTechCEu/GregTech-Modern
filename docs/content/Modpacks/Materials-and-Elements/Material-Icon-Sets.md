@@ -20,7 +20,6 @@ The following icon sets are available by default:
 - `MaterialIconSet.FINE`
 - `MaterialIconSet.FLINT`
 - `MaterialIconSet.FLUID`
-- `MaterialIconSet.GAS`
 - `MaterialIconSet.GEM_HORIZONTAL`
 - `MaterialIconSet.GEM_VERTICAL`
 - `MaterialIconSet.GLASS`
@@ -31,6 +30,7 @@ The following icon sets are available by default:
 - `MaterialIconSet.NETHERSTAR`
 - `MaterialIconSet.OPAL`
 - `MaterialIconSet.QUARTZ`
+- `MaterialIconSet.RADIOACTIVE`
 - `MaterialIconSet.ROUGH`
 - `MaterialIconSet.RUBY`
 - `MaterialIconSet.SAND`
@@ -40,7 +40,7 @@ The following icon sets are available by default:
 
 ## Custom Icon Sets
 
-Custom iconsets can be specified as well, using the `gtceu:matieral_icon_set` event:
+Custom iconsets can be specified as well, using the `gtceu:material_icon_set` event:
 === "Java"
     ```java title="AddonIconSets.java"
     public static final MaterialIconSet STARRY = new MaterialIconSet(ADDON_MOD.id("starry"), MaterialIconSet.SHINY);

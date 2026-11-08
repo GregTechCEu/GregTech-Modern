@@ -16,11 +16,11 @@ Materials in contexts where it might not be possible, or it might be unsafe, to 
 The following functions are available for use by packmakers:
 
 
-### `.getMaterial()`
+### `.getMaterialStack()` / `.getMaterial()`
 
-Can take almost any form of item reference (`Item`, `ItemStack`, `Ingredient` and so on) and will return the
-`Material` entry associated with it. If there is no associated Material, the method returns `null`.
-A `Fluid` may also be passed as input.
+`.getMaterialStack()` can take almost any form of item reference (`Item`, `ItemStack`, `MaterialEntry` and so on) and will return the
+`MaterialStack` (a `Material` and an amount) associated with it. If there is no associated Material, the method returns `MaterialStack.EMPTY`.
+`.getMaterial()` takes a `Fluid` as input and will return the associated `Material`, or `null` if there is none.
 
 
 ### `.getPrefix()`
@@ -45,11 +45,11 @@ Depending on the amount passed, the functions will return different items:
   material amount passed.
 
 
-### `.getTag()` / `.getBlockTag()` / `.getTags()` / `.getBlockTags()`
+### `.getTag()` / `.getBlockTag()`
 
 Takes a `TagPrefix` and a non-`null` `Material` as input and returns the first item or block tag
-(or a Java array of all item or block tags if the plural functions are used) possessed by the item represented by
-that `TagPrefix`-`Material` combination.
+possessed by the item represented by that `TagPrefix`-`Material` combination.
+To get all item or block tags, use `tagPrefix.getItemTags(material)` / `tagPrefix.getBlockTags(material)`.
 
 
 ### `.get()`
@@ -74,7 +74,7 @@ ItemStack steelBlock = ChemicalHelper.getIngot(GTMaterials.Steel, GTValues.M * 9
 ItemStack ashSmallDust = ChemicalHelper.getDust(GTMaterials.Ash, GTValues.M / 4); // (5)
 ```
 
-1. `ironMaterial` is now a reference to `GTMaterials.Iron`.
+1. `ironMaterial` is now a `MaterialStack` of `GTMaterials.Iron`, with an amount of `GTValues.M * 2`.
 2. `rawOrePrefix` is now a reference to `TagPrefix.rawOre`.
 3. `cobaltIngotStack` is now an ItemStack representing half a stack of cobalt ingots.
 4. `goldNugget` is now an ItemStack representing one gold nugget.

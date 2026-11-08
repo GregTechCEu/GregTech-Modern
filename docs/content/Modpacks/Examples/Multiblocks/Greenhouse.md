@@ -11,7 +11,7 @@ title: "Greenhouse"
 === "Java"
     ```java title="RecipeTypes.java"
         public final static GTRecipeType GREENHOUSE_RECIPES = GTRecipeTypes.register(AddonMod.id("greenhouse"), MULTIBLOCK)
-            .setMaxIOSize(2, 1, 1, 1)
+            .setMaxIOSize(3, 4, 1, 0)
             .setEUIO(IO.IN)
             .UI(ui -> ui.setProgressBar(GTGuiTextures.PROGRESS_ARROW))
             .setSound(GTSoundEntries.BATH);
@@ -64,6 +64,7 @@ title: "Greenhouse"
     ```js title="greenhouse_multiblock.js"
     const $RecipeLogic = Java.loadClass('com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic')
     const $List = Java.loadClass('java.util.List')
+    const $Vector3f = Java.loadClass('org.joml.Vector3f')
 
     GTCEuStartupEvents.registry('gtceu:machine', event => {
         event.create('greenhouse', 'multiblock')
@@ -95,7 +96,7 @@ title: "Greenhouse"
             )
             .modelProperty(GTModelProperties.RECIPE_LOGIC_STATUS, $RecipeLogic.Status.IDLE)
             .model(GTMachineModels.createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/implosion_compressor"))
-                    ["andThen(java.util.function.Consumer)"](b => b.addDynamicRenderer(() => GTDynamicRenders.makeGrowingPlantRender($List.of(new Vector3f(0, 1, -1)))))
+                    ["andThen(java.util.function.Consumer)"](b => b.addDynamicRenderer(() => GTDynamicRenders.makeGrowingPlantRender($List.of(new $Vector3f(0, 1, -1)))))
             )
         })
     ```
@@ -114,33 +115,33 @@ title: "Greenhouse"
 
     private static void greenhouseHelper(Consumer<FinishedRecipe> provider, ResourceLocation id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
          GREENHOUSE_RECIPES.recipeBuilder(id)
+                .circuitMeta(1)
+                .notConsumable(input)
+                .inputFluids(Water, 1000)
+                .outputItems(output_normal.toArray(ItemStack[]::new))
+                .duration(640)
+                .EUt(VA[MV])
+                .save(provider);
+        GREENHOUSE_RECIPES.recipeBuilder(id.withSuffix("_boosted"))
                 .circuitMeta(2)
                 .notConsumable(input)
                 .inputItems(FERTILIZER.get(), 4)
                 .inputFluids(Water, 1000)
-                .outputItems(output_normal)
+                .outputItems(output_boosted.toArray(ItemStack[]::new))
                 .duration(320)
-                .EUt(MV)
-                .save(provider);
-        GREENHOUSE_RECIPES.recipeBuilder(id.withSuffix("_boosted"))
-                .circuitMeta(1)
-                .notConsumable(input)
-                .inputFluids(Water, 1000)
-                .outputItems(output_boosted)
-                .duration(320)
-                .EUt(MV)
+                .EUt(VA[MV])
                 .save(provider);
     }
 
             private static void loadGreenhouseRecipes(Consumer<FinishedRecipe> provider){
-               VanillaRecipeHelper.addShapedRecipe(provider, true, GTCEu.id("greenhouse"),
-                       GTMultiMachines.GREENHOUSE.asStack(),
+               VanillaRecipeHelper.addShapedRecipe(provider, true, AddonMod.id("greenhouse"),
+                       MultiMachines.GREENHOUSE.asStack(),
                        "AWA",
                        "ASA",
                        "WAW",
-                       "A", CustomTags.MV_CIRCUITS,
-                       "W", ChemicalHelper.get(TagPrefix.wireGtSingle, GTMaterials.Copper),
-                       "S", GTBlocks.CASING_STEEL_SOLID.asItem());
+                       'A', CustomTags.MV_CIRCUITS,
+                       'W', ChemicalHelper.get(TagPrefix.cableGtSingle, GTMaterials.Copper),
+                       'S', GTBlocks.CASING_STEEL_SOLID.asItem());
        
                // Rubber
                greenhouseHelper(provider, "rubber_sapling", GTBlocks.RUBBER_SAPLING.asItem(),
@@ -236,7 +237,7 @@ title: "Greenhouse"
                // Brown Mushroom
                greenhouseHelper(provider, "brown_mushroom", Items.BROWN_MUSHROOM, new ItemStack(Items.BROWN_MUSHROOM, 12), new ItemStack(Items.BROWN_MUSHROOM, 24));
            }
-   ```
+    ```
 === "JavaScript"
     ```js title="greenhouse_recipes.js"
     ServerEvents.recipes(event => {
@@ -265,7 +266,7 @@ title: "Greenhouse"
                     .inputFluids(Fluid.of('minecraft:water', fluid))
                     .itemOutputs(output)
                     .duration(320)
-                    .EUt(MV)
+                    .EUt(GTValues.VA[GTValues.MV])
             } else {
                 event.recipes.gtceu.greenhouse(id)
                     .circuit(1)
@@ -273,7 +274,7 @@ title: "Greenhouse"
                     .inputFluids(Fluid.of('minecraft:water', fluid))
                     .itemOutputs(output)
                     .duration(640)
-                    .EUt(MV)
+                    .EUt(GTValues.VA[GTValues.MV])
             }
         }
         

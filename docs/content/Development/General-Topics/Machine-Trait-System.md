@@ -36,18 +36,19 @@ public class CustomMachine extends MetaMachine {
     // Registers an auto output trait that provides fluid output behaviour for the given fluid tank.
     // Instead of using an annotated field to save traits, they can also be registered to be saved.
     // The trait save name should remain the same, otherwise the trait save data won't be loaded.  
-    AutoOutputTrait autoOutput = attachPersistentTrait("autoOutput", AutoOutputTrait.ofFluids(tank));
+    AutoOutputTrait autoOutput = AutoOutputTrait.ofFluids(tank);
+    attachPersistentTrait("autoOutput", autoOutput);
     
     autoOutput.setFluidOutputDirection(Direction.DOWN);
     autoOutput.setFluidOutputDirectionValidator(d -> d == Direction.DOWN);
   }
   
   public void usingTraits() {
-      MetaMachine machine = getMachine();
+      MetaMachine machine = this;
 
-      // Traits can be queried by class.
+      // Traits can be queried by class. Returns null if the machine doesn't have a trait of that type.
       AutoOutputTrait autoOutputTrait = machine.getTrait(AutoOutputTrait.class);
-      Optional<RecipeLogic> recipeLogicOptional = machine.getTrait(RecipeLogic.class);
+      @Nullable RecipeLogic recipeLogic = machine.getTrait(RecipeLogic.class);
 
       // Gets all traits with the specified type.
       List<NotifiableItemStackHandler> allItemStackHandlers = machine.getTraits(NotifiableItemStackHandler.class);

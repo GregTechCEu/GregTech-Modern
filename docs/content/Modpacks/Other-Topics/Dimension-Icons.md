@@ -45,7 +45,7 @@ GTCEuStartupEvents.registry("gtceu:dimension_marker", event => {
 
     let upgradedNetherMarker = new DimensionMarker(
         5, 
-        Items.NETHERITE_BLOCK, 
+        () => Items.NETHERITE_BLOCK, 
         "text.mymod.super_nether" 
     )
 

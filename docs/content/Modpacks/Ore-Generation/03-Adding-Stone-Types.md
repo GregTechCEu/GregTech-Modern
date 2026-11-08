@@ -68,7 +68,8 @@ In this case you have to specify the actually generated block state in your ore 
 let UtilsJS = Java.loadClass("dev.latvian.mods.kubejs.util.UtilsJS")
 
 GTCEuStartupEvents.registry('gtceu:tag_prefix', event => {
-    event.create(type.path, 'ore')
+    event.create('blockium', 'ore')
         .stateSupplier(() => UtilsJS.parseBlockState("my_mod:blockium[some_blockstate_property=true]"))
+        // ...
 })
 ```

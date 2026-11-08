@@ -11,12 +11,12 @@ The `MultiblockControllerMachine` class has a specific ordering in how it checks
    1. Each `IBlockPattern` is run through `checkStructurePattern(name)` 
    2. If that structure is valid the structure is run through `formStructure(name)`
 
-3. The `PatternState` is added to the `MultiblockWorldSaveData` for `BlockState` listening
+3. The `PatternState` is added to the `MultiblockWorldSavedData` for `BlockState` listening
 
 
 In `checkStructurePattern`, the pattern will use its iteration method and ensure every `MultiPredicate` succeeds, for each block position that matches the predicate, that block's information will be put in the `PatternState`'s cache for future use, like retrieving multi parts for recipe logic handler collection. When a predicate fails, it puts the failure reason(s) into the `PatternState` and stops the match iteration early.
 
-In `formStructure`, every `IMultiPart` found in the `PatternState` cache is attached to that specific controller.
+In `formStructure`, every `MultiblockPartMachine` found in the `PatternState` cache is attached to that specific controller.
 
 ```java title="MultiPartGathering.java"
 
@@ -50,6 +50,7 @@ public void formStructure(String substructureName) {
 Machine classes can extend `formStructure(name)` for additional information gathering, like the coiled multiblocks. 
 ```java title="WorkableCoilElectricMultiblock.java"
 public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMultiblockMachine { // (1)
+    @SyncToClient
     @Getter
     private ICoilType coilType = CoilBlock.CoilType.CUPRONICKEL;
     @SyncToClient
@@ -81,6 +82,7 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
         if (coilType != null) {
             this.coilType = coilType;
             this.coilTier = coilType.getTier();
+            getSyncDataHolder().markClientSyncFieldDirty("coilType");
             getSyncDataHolder().markClientSyncFieldDirty("coilTier");
         }
     }

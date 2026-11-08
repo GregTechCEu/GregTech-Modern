@@ -15,7 +15,7 @@ StartupEvents.registry('block', event => {
         .level(0)
         .energyDiscount(1) // (1)
         .tier(10)
-        .coilMaterial(() => GTMaterials.get('infinity'))
+        .coilMaterial(() => GTRegistries.MATERIALS.get('infinity'))
         .texture('kubejs:block/example_block')
         .hardness(5)
         .requiresTool(true)

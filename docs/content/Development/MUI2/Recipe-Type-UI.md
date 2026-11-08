@@ -71,7 +71,7 @@ does not exist yet, construct your own:
 
 ```java
 public static final ProgressBarTextureSet ALWAYS_FULL_ARROW =
-        new ProgressBarTextureSet(20, ProgressDrawable.Direction.RIGHT, MY_ARROW_TEXTURE);
+        new ProgressBarTextureSet(20, ProgressDrawable.Direction.RIGHT, MY_ARROW_TEXTURE, null, null);
 ```
 
 For anything that is not a simple filling texture, use `setProgressBarSupplier` and return a widget.
@@ -275,8 +275,8 @@ A minimal custom capability therefore looks like:
 
 ## Replacing the whole layout
 
-`customRecipeTypeUI(Function<GTRecipe, Flow>)` replaces the generated input/progress/output row
-outright and returns your own `Flow`. This overrides the grid builders, the recipe viewer capability
+`customRecipeTypeUI((recipeWidget, layout, recipe) -> ...)` replaces the generated input/progress/output row
+outright and returns your own `ParentWidget`. This overrides the grid builders, the recipe viewer capability
 layout builders and the progress bar for that recipe type, so only use it when the standard
 three-column shape does not fit.
 

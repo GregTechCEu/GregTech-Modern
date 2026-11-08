@@ -43,8 +43,8 @@ title: "Custom Parallel Hatch"
       event
           .create("parallel_hatch", "custom") // (2)
           .tiers(GTValues.UHV, GTValues.UIV, GTValues.UEV, GTValues.UXV) // (3)
-          .machine((holder, tier, tankScaling) => {
-            return new $ParallelHatchPartMachine(holder, tier); // (4)
+          .machine((info, tier, tankScaling) => {
+            return new $ParallelHatchPartMachine(info, tier); // (4)
           })
           .definition((tier, builder) => {
             let name = "Simple";
