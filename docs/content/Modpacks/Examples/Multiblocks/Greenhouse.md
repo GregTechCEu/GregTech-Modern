@@ -107,11 +107,11 @@ title: "Greenhouse"
 === "Java"
     ```java title="Recipes.java"
     private static void greenhouseHelper(RecipeOutput provider, String id, Item input, ItemStack output_normal, ItemStack output_boosted) {
-        greenhouseHelper(provider, AddonMod.id(id), input, List.of(output_normal), List.of(output_boosted));
+        greenhouseHelper(provider, ExampleMod.id(id), input, List.of(output_normal), List.of(output_boosted));
     }
 
     private static void greenhouseHelper(RecipeOutput provider, String id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
-        greenhouseHelper(provider, AddonMod.id(id), input, output_normal, output_boosted);
+        greenhouseHelper(provider, ExampleMod.id(id), input, output_normal, output_boosted);
     }
 
     private static void greenhouseHelper(RecipeOutput provider, ResourceLocation id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
@@ -135,7 +135,7 @@ title: "Greenhouse"
     }
 
             private static void loadGreenhouseRecipes(RecipeOutput provider){
-               VanillaRecipeHelper.addShapedRecipe(provider, true, AddonMod.id("greenhouse"),
+               VanillaRecipeHelper.addShapedRecipe(provider, true, ExampleMod.id("greenhouse"),
                        MultiMachines.GREENHOUSE.asStack(),
                        "AWA",
                        "ASA",

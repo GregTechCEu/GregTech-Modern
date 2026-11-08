@@ -53,7 +53,7 @@ public class ExampleMod {
         PATTERN_ERROR_TYPES.register(modBus);
     }
 
-    private static final DeferredRegister<PatternErrorType> PATTERN_ERROR_TYPES = DeferredRegister.create(GTRegistries.Keys.PATTERN_ERROR_TYPE, ADDON_MOD_ID);
+    private static final DeferredRegister<PatternErrorType> PATTERN_ERROR_TYPES = DeferredRegister.create(GTRegistries.Keys.PATTERN_ERROR_TYPE, ExampleMod.MOD_ID);
 
     public static final DeferredHolder<PatternErrorType, PatternErrorType> MY_PATTERN_ERROR_TYPE =
             PATTERN_ERROR_TYPES.register(MyPatternError.TYPE.id().getPath(), () -> MyPatternError.TYPE);

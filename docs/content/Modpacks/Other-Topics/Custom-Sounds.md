@@ -32,7 +32,7 @@ After you make this class, prepare your sound, and initialize it in your main mo
 It's a bit more complicated than normal datagen, so an example can be found below.
 
 ```java
-@EventBusSubscriber(modid = ExampleMod.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = ExampleMod.MOD_ID)
 public class ExampleDataGenerators {
 
     @SubscribeEvent

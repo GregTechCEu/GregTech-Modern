@@ -371,7 +371,7 @@ public class BonkRecipeCapabilities {
 The following parts, you would do in your main java class and your main GTAddon class, assuming you are working off of the [Addon Template](https://github.com/JuiceyBeans/GregTech-Addon-Template):
 ```java title="Bonk.java"
 @Mod(Bonk.MOD_ID)
-@EventBusSubscriber(modid = Bonk.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Bonk.MOD_ID)
 public class Bonk {
 
     public Bonk(IEventBus modBus) {
