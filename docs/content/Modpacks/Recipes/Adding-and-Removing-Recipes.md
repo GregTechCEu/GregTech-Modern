@@ -263,7 +263,7 @@ Scanner Research, Station Research and Computation.
 
 Rock breaker recipes use AdjacentFluidConditions.
 
-To add a condition, you can use the `adjacentFluids(Fluid...)` methods, see [our other condition builder methods](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/integration/kjs/recipe/GTRecipeSchema.java#L894).
+To add a condition, you can use the `adjacentFluids(Fluid...)` methods, see [our other condition builder methods](https://github.com/GregTechCEu/GregTech-Modern/blob/1.21/src/main/java/com/gregtechceu/gtceu/integration/kjs/recipe/GTRecipeSchema.java#L960).
 
 === "Java"
     ```java title="MyGTAddon.java"

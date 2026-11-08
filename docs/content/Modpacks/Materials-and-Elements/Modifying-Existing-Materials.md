@@ -140,4 +140,4 @@ Editing the color of an existing material:
     })
     ```
 
-1. Most methods in the [``Material`` class](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/api/data/chemical/material/Material.java) can be used in the `PostMaterialEvent`/``materialModification`` event
+1. Most methods in the [``Material`` class](https://github.com/GregTechCEu/GregTech-Modern/blob/1.21/src/main/java/com/gregtechceu/gtceu/api/data/chemical/material/Material.java) can be used in the `PostMaterialEvent`/``materialModification`` event

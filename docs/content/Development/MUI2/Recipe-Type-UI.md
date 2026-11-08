@@ -54,7 +54,7 @@ Overlays are set per capability, per slot index:
 
 The item and fluid methods are shorthands for the two generic ones.
 
-Overlay textures come from [GTGuiTextures](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/common/mui/GTGuiTextures.java)
+Overlay textures come from [GTGuiTextures](https://github.com/GregTechCEu/GregTech-Modern/blob/1.21/src/main/java/com/gregtechceu/gtceu/common/mui/GTGuiTextures.java)
 and are `UITexture`s.
 
 ## Progress bars
