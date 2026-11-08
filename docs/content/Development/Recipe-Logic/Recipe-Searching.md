@@ -62,7 +62,7 @@ A trait is a type of object that gets stored on the machine on creation, e.g.
 A machine can have many different traits. One of these is `IRecipeHandler`. This trait is used when collecting the inputs/outputs for `RecipeLogic`. 
 `IRecipeHandler`s are abstractions around for example the item slots and circuit slot of an input bus, or the energy buffer of a singleblock.
 
-An example of one of these would be an `attachTrait(new NotifiableItemStackHandler(slots, IO))`. Once attached to the machine, so you don't have to link it to the `RecipeLogic` in any way. The WorkableMachine takes care of that.  
+An example of one of these would be an `attachTrait(new NotifiableItemStackHandler(slots, IO))`. Once attached to the machine, you don't have to link it to the `RecipeLogic` in any way. The WorkableMachine takes care of that.  
 
 This NotifiableHandler has a few important methods:
 

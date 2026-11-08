@@ -103,7 +103,7 @@ Assure that the material is registered with a liquid before attempting to replac
 
     ```java title="ExampleMaterials.java"
     public static void register() {
-        GLUGG_BRINE = new Material.Builder(MyMod.id("glugg_brine"))
+        GLUGG_BRINE = new Material.Builder(ExampleMod.id("glugg_brine"))
             .liquid(new FluidBuilder()).buildAndRegister();
     
         GTFluids.handleNonMaterialFluids(GLUGG_BRINE, () -> PVFluidRegistry.BRINE_FLUID_SOURCE.get());

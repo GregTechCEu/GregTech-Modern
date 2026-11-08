@@ -23,7 +23,7 @@ An example of this being used is included below.
 === "Java"
     ```java title="ExampleToolMaterial.java"
         public static Material ALUMINFROST = new Material.Builder(
-            your_mod_id.id("aluminfrost"))
+            ExampleMod.id("aluminfrost"))
             .ingot()
             .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
             .toolStats(new ToolProperty(12.0F, 7.0F, 3072, 6,
@@ -70,7 +70,7 @@ Here is an example of using the builder in a material:
 === "Java"
     ```java title="ExampleToolMaterial.java"
         public static Material ALUMINFROST = new Material.Builder(
-                ADDON_MOD.id("aluminfrost"))
+                ExampleMod.id("aluminfrost"))
                 .ingot()
                 .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
                 .toolStats(ToolProperty.Builder.of(1.8F, 1.7F, 700, 3)

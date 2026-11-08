@@ -65,7 +65,7 @@ You can change the properties of the material by adding any combination of the f
 === "Java"
     ```java title="AddonMaterials.java"
     public static Material ANDESITE_ALLOY = new Material.Builder(
-            ADDON_MOD.id("andesite_alloy"))
+            ExampleMod.id("andesite_alloy"))
             .ingot()
             .components("1x andesite", "1x iron")
             .color(0xFF0000).secondaryColor(0x840707).iconSet(MaterialIconSet.DULL)
@@ -88,7 +88,7 @@ You can change the properties of the material by adding any combination of the f
 === "Java"
     ```java title="AddonMaterials.java"
     public static Material MYSTERIOUS_DUST = new Material.Builder(
-            ADDON_MOD.id("mysterious_dust"))
+            ExampleMod.id("mysterious_dust"))
             .dust() // The harvest level and burn time can be specified in the brackets. Example: `.dust(2, 4000)`
             .color(0x7D2DDB)
             .buildAndRegister();
@@ -107,7 +107,7 @@ You can change the properties of the material by adding any combination of the f
 === "Java"
     ```java title="Gem.java"
     public static Material PURPLE_COAL = new Material.Builder(
-            ADDON_MOD.id("purple_coal"))
+            ExampleMod.id("purple_coal"))
             .gem(2, 4000)
             .element(GTElements.C)
             .ore(2, 3)
@@ -132,7 +132,7 @@ You can change the properties of the material by adding any combination of the f
 === "Java"
     ```java title="Fluid.java"
     public static Material MYSTERIOUS_OOZE = new Material.Builder(
-            your_mod_id.id("mysterious_ooze"))
+            ExampleMod.id("mysterious_ooze"))
             .fluid() // Or .liquid(Int Temperature)
             .color(0x500bbf)
             .buildAndRegister();

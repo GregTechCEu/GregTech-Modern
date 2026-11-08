@@ -10,7 +10,7 @@ title: "Greenhouse"
 
 === "Java"
     ```java title="RecipeTypes.java"
-        public final static GTRecipeType GREENHOUSE_RECIPES = GTRecipeTypes.register(AddonMod.id("greenhouse"), MULTIBLOCK)
+        public final static GTRecipeType GREENHOUSE_RECIPES = GTRecipeTypes.register(ExampleMod.id("greenhouse"), MULTIBLOCK)
             .setMaxIOSize(3, 4, 1, 0)
             .setEUIO(IO.IN)
             .UI(ui -> ui.setProgressBar(GTGuiTextures.PROGRESS_ARROW))
@@ -106,11 +106,11 @@ title: "Greenhouse"
 === "Java"
     ```java title="Recipes.java"
     private static void greenhouseHelper(Consumer<FinishedRecipe> provider, String id, Item input, ItemStack output_normal, ItemStack output_boosted) {
-        greenhouseHelper(provider, AddonMod.id(id), input, List.of(output_normal), List.of(output_boosted));
+        greenhouseHelper(provider, ExampleMod.id(id), input, List.of(output_normal), List.of(output_boosted));
     }
 
     private static void greenhouseHelper(Consumer<FinishedRecipe> provider, String id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
-        greenhouseHelper(provider, AddonMod.id(id), input, output_normal, output_boosted);
+        greenhouseHelper(provider, ExampleMod.id(id), input, output_normal, output_boosted);
     }
 
     private static void greenhouseHelper(Consumer<FinishedRecipe> provider, ResourceLocation id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
@@ -134,7 +134,7 @@ title: "Greenhouse"
     }
 
             private static void loadGreenhouseRecipes(Consumer<FinishedRecipe> provider){
-               VanillaRecipeHelper.addShapedRecipe(provider, true, AddonMod.id("greenhouse"),
+               VanillaRecipeHelper.addShapedRecipe(provider, true, ExampleMod.id("greenhouse"),
                        MultiMachines.GREENHOUSE.asStack(),
                        "AWA",
                        "ASA",

@@ -23,7 +23,7 @@ title: "Custom Parallel Hatch"
                         .modelProperty(IS_FORMED, false)
                         .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
                         .model(createWorkableTieredHullMachineModel(
-                                AddonMod.id("block/machines/parallel_hatch_mk" + (tier - 4)))
+                                ExampleMod.id("block/machines/parallel_hatch_mk" + (tier - 4)))
                                 .andThen((ctx, prov, model) -> {
                                     model.addReplaceableTextures("bottom", "top", "side");
                                 }))

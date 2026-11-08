@@ -15,7 +15,7 @@ Below is an example of making new and modifying existing dimension icons in a Ja
 ```java
 private void registerDimensionMarkers(GTCEuAPI.RegisterEvent<ResourceLocation, DimensionMarker> event) {
     // Making a new icon.
-    ResourceLocation sceneDimKey = ResourceLocation.fromNamespaceAndPath(Phantasia.MOD_ID, "scene");
+    ResourceLocation sceneDimKey = ResourceLocation.fromNamespaceAndPath(ExampleMod.MOD_ID, "scene");
     DimensionMarker sceneMarker = new DimensionMarker(
             3, // Tier
             () -> Items.DIAMOND_BLOCK, // Supplier for the actual Icon ItemStack.

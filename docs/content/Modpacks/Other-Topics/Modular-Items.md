@@ -14,7 +14,7 @@ a component, module-related tooltips won't be displayed, and `onUse` and related
 
 !!! example "Attaching a `ModularItemStack` using an event"
     ```java
-    @Mod.EventBusSubscriber(modid = "your_mod_id", bus = Mod.EventBusSubscriber.Bus.FORGE)
+    @Mod.EventBusSubscriber(modid = ExampleMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
     public static class ExampleEventListener {
         @SubscribeEvent
         public static void onAttachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
