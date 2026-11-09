@@ -38,16 +38,15 @@ import java.util.concurrent.Executor;
 @Mixin(value = ReloadableServerResources.class, priority = 2000)
 public abstract class ReloadableServerResourcesMixin {
 
-
     @WrapMethod(method = "loadResources")
     private static CompletableFuture<ReloadableServerResources> gtceu$guardReload(ResourceManager resourceManager,
-                                                                                        LayeredRegistryAccess<RegistryLayer> access,
-                                                                                        FeatureFlagSet featureFlags,
-                                                                                        Commands.CommandSelection commands,
-                                                                                        int functionCompilationLevel,
-                                                                                        Executor backgroundExecutor,
-                                                                                        Executor gameExecutor,
-                                                                                        Operation<CompletableFuture<ReloadableServerResources>> original) {
+                                                                                  LayeredRegistryAccess<RegistryLayer> access,
+                                                                                  FeatureFlagSet featureFlags,
+                                                                                  Commands.CommandSelection commands,
+                                                                                  int functionCompilationLevel,
+                                                                                  Executor backgroundExecutor,
+                                                                                  Executor gameExecutor,
+                                                                                  Operation<CompletableFuture<ReloadableServerResources>> original) {
         Runnable endReload = ReloadGuard.beginReload();
         CompletableFuture<ReloadableServerResources> future;
         try {

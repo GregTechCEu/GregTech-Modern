@@ -25,7 +25,8 @@ public class ItemEntityMixin {
     public void beforeTick(CallbackInfo ci) {
         ItemEntity entity = (ItemEntity) (Object) this;
         if (GTValues.FOOLS.getAsBoolean() && !gtceu$wasOnGround && entity.onGround() &&
-                !ReloadGuard.isReloading() && ChemicalHelper.getPrefix(entity.getItem().getItem()) == TagPrefix.rodLong.value()) {
+                !ReloadGuard.isReloading() &&
+                ChemicalHelper.getPrefix(entity.getItem().getItem()) == TagPrefix.rodLong.value()) {
             GTSoundEntries.METAL_PIPE.value().playFrom(entity, 10, 1);
         }
         gtceu$wasOnGround = entity.onGround();

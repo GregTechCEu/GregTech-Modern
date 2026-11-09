@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.data.chemical.material;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
