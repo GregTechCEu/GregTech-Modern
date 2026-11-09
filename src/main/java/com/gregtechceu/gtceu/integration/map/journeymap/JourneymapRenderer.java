@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.map.journeymap;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.ReloadGuard;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
@@ -237,7 +238,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
         ResourceLocation texture = IClientFluidTypeExtensions.of(vein.fluid()).getStillTexture();
 
         final int color;
-        Material material = ChemicalHelper.getMaterial(vein.fluid());
+        Material material = ReloadGuard.isReloading() ? null : ChemicalHelper.getMaterial(vein.fluid());
         if (material == null) {
             color = IClientFluidTypeExtensions.of(vein.fluid()).getTintColor();
         } else {

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.map.xaeros.minimap.fluid;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.ReloadGuard;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 import com.gregtechceu.gtceu.integration.map.xaeros.XaerosRenderer;
@@ -43,7 +44,7 @@ public class FluidChunkHighlighter extends ChunkHighlighter {
         var leftFluid = dimensionMap.get(new ChunkPos(chunkX - 1, chunkZ));
 
         int color = IClientFluidTypeExtensions.of(vein.fluid()).getTintColor();
-        Material material = ChemicalHelper.getMaterial(vein.fluid());
+        Material material = ReloadGuard.isReloading() ? null : ChemicalHelper.getMaterial(vein.fluid());
         if (material != null) {
             color = material.getMaterialARGB();
         }

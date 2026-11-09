@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins.emi;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ReloadGuard;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -43,7 +44,7 @@ public abstract class FluidEmiStackMixin extends EmiStack {
     @Inject(method = "render", at = @At("TAIL"), remap = false)
     private void gtceu$drawFreezingIndicator(GuiGraphics graphics, int x, int y, float delta, int flags,
                                              CallbackInfo ci) {
-        if ((flags & EmiStack.RENDER_ICON) == 0) return;
+        if ((flags & EmiStack.RENDER_ICON) == 0 || ReloadGuard.isReloading()) return;
         var material = ChemicalHelper.getMaterial(fluid);
         if (material == null || !material.requiresMetalFreezing() ||
                 !fluid.isSame(material.getFluid(FluidStorageKeys.LIQUID)))

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins.client;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ReloadGuard;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 
@@ -24,7 +25,7 @@ public class ItemEntityMixin {
     public void beforeTick(CallbackInfo ci) {
         ItemEntity entity = (ItemEntity) (Object) this;
         if (GTValues.FOOLS.getAsBoolean() && !gtceu$wasOnGround && entity.onGround() &&
-                ChemicalHelper.getPrefix(entity.getItem().getItem()) == TagPrefix.rodLong.value()) {
+                !ReloadGuard.isReloading() && ChemicalHelper.getPrefix(entity.getItem().getItem()) == TagPrefix.rodLong.value()) {
             GTSoundEntries.METAL_PIPE.value().playFrom(entity, 10, 1);
         }
         gtceu$wasOnGround = entity.onGround();

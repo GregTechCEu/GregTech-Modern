@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.material.ReloadGuard;
 import com.gregtechceu.gtceu.api.machine.trait.customlogic.SteamBoilerLogic;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.core.MixinHelpers;
@@ -22,6 +23,8 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,6 +37,29 @@ import java.util.concurrent.Executor;
 
 @Mixin(value = ReloadableServerResources.class, priority = 2000)
 public abstract class ReloadableServerResourcesMixin {
+
+
+    @WrapMethod(method = "loadResources")
+    private static CompletableFuture<ReloadableServerResources> gtceu$guardReload(ResourceManager resourceManager,
+                                                                                        LayeredRegistryAccess<RegistryLayer> access,
+                                                                                        FeatureFlagSet featureFlags,
+                                                                                        Commands.CommandSelection commands,
+                                                                                        int functionCompilationLevel,
+                                                                                        Executor backgroundExecutor,
+                                                                                        Executor gameExecutor,
+                                                                                        Operation<CompletableFuture<ReloadableServerResources>> original) {
+        Runnable endReload = ReloadGuard.beginReload();
+        CompletableFuture<ReloadableServerResources> future;
+        try {
+            future = original.call(resourceManager, access, featureFlags, commands, functionCompilationLevel,
+                    backgroundExecutor, gameExecutor);
+        } catch (Throwable t) {
+            endReload.run();
+            throw t;
+        }
+        future.whenComplete((resources, throwable) -> endReload.run());
+        return future;
+    }
 
     @Inject(method = "loadResources", at = @At("HEAD"))
     private static void gtceu$init(ResourceManager resourceManager, LayeredRegistryAccess<RegistryLayer> access,

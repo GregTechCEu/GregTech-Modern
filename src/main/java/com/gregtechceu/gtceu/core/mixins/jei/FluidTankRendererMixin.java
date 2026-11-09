@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins.jei;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ReloadGuard;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -30,6 +31,7 @@ public class FluidTankRendererMixin {
             remap = false)
     private void gtceu$drawFreezingIndicator(GuiGraphics graphics, Object ingredient, int x, int y, CallbackInfo ci) {
         if (!(ingredient instanceof FluidStack stack) || stack.isEmpty() || width < 6 || height < 6) return;
+        if (ReloadGuard.isReloading()) return;
         var fluid = stack.getFluid();
         var material = ChemicalHelper.getMaterial(fluid);
         if (material == null || !material.requiresMetalFreezing() ||

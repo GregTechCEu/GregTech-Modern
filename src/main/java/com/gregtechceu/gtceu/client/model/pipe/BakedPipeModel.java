@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.model.pipe;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ReloadGuard;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.pipenet.Node;
@@ -12,6 +13,7 @@ import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.client.util.quad.transformers.GTQuadTransformers;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.Minecraft;
@@ -25,6 +27,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
@@ -98,7 +101,14 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         if (pipeNode.getFrameMaterial() == null) {
             return quads;
         }
-        var frameBlockEntry = ChemicalHelper.getBlock(TagPrefix.frameGt, pipeNode.getFrameMaterial());
+        Block frameBlockEntry;
+        if (ReloadGuard.isReloading()) {
+            var frameEntry = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt.value(),
+                    pipeNode.getFrameMaterial());
+            frameBlockEntry = frameEntry == null ? null : frameEntry.get();
+        } else {
+            frameBlockEntry = ChemicalHelper.getBlock(TagPrefix.frameGt, pipeNode.getFrameMaterial());
+        }
         if (frameBlockEntry == null) {
             return quads;
         }

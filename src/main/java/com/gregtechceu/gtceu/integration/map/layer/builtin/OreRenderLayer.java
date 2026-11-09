@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.map.layer.builtin;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.ReloadGuard;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
@@ -47,6 +48,7 @@ public class OreRenderLayer extends MapRenderLayer {
             var blockOrMaterial = definition.indicatorGenerators().getFirst().block();
             firstMaterial = blockOrMaterial == null ? null : blockOrMaterial.map(
                     state -> {
+                        if (ReloadGuard.isReloading()) return null;
                         var matStack = ChemicalHelper.getMaterialStack(state.getBlock());
                         return matStack.isEmpty() ? null : matStack.material();
                     },
