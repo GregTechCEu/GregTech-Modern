@@ -8,7 +8,10 @@
     "package": "com.gregtechceu.gtceu.core.mixins",
     "compatibilityLevel": "JAVA_21",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
-    "client": [],
+    "client": [
+        "jei.RecipesGuiAccessor",
+        "jei.FluidTankRendererMixin"
+    ],
     "mixins": [
         "jei.FluidHelperMixin"
     ],

@@ -32,7 +32,6 @@ public class BlockTagLoader {
 
         provider.addTag(CustomTags.NEEDS_NEUTRONIUM_TOOL);
         provider.addTag(CustomTags.NEEDS_DURANIUM_TOOL);
-
         @SuppressWarnings("unchecked")
         TagKey<Block>[] newToolRequirements = new TagKey[] {
                 CustomTags.NEEDS_NEUTRONIUM_TOOL,
@@ -53,6 +52,12 @@ public class BlockTagLoader {
         // do these manually
         provider.addTag(CustomTags.INCORRECT_FOR_NEUTRONIUM_TOOL);
         provider.addTag(CustomTags.INCORRECT_FOR_DURANIUM_TOOL).addTag(CustomTags.NEEDS_NEUTRONIUM_TOOL);
+
+        provider.addTag(CustomTags.MINEABLE_WITH_SAW).addTag(BlockTags.ICE);
+        // create empty tag files for the (currently) unused ones so MC is happy
+        provider.addTag(CustomTags.MINEABLE_WITH_HAMMER);
+        provider.addTag(CustomTags.MINEABLE_WITH_CROWBAR);
+        provider.addTag(CustomTags.MINEABLE_WITH_KNIFE);
 
         // this is awful. I don't care, though.
         provider.addTag(BlockTags.REPLACEABLE)
@@ -95,6 +100,12 @@ public class BlockTagLoader {
                 .addTag(Tags.Blocks.SANDS).addTag(BlockTags.SAND) // any sand blocks
                 .addTag(BlockTags.TERRACOTTA); // any terracotta
 
-        provider.addTag(CustomTags.CLEANROOM_DOORS).add(Blocks.IRON_DOOR).addTag(BlockTags.WOODEN_DOORS);
+        provider.addTag(CustomTags.CLEANROOM_DOORS)
+                .add(Blocks.IRON_DOOR).addTag(BlockTags.WOODEN_DOORS)
+                // disallow unwaxed copper doors specifically
+                .add(Blocks.WAXED_COPPER_DOOR,
+                        Blocks.WAXED_EXPOSED_COPPER_DOOR,
+                        Blocks.WAXED_WEATHERED_COPPER_DOOR,
+                        Blocks.WAXED_OXIDIZED_COPPER_DOOR);
     }
 }
