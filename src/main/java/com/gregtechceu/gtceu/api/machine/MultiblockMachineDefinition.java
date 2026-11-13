@@ -75,7 +75,7 @@ public class MultiblockMachineDefinition extends MachineDefinition {
 
     @FunctionalInterface
     public interface MultiblockPreviewLayout {
-        MultiblockPreviewWidget getPreviewWidget(MultiblockMachineDefinition definition, MultiblockSchemaInfo schemaInfo, int width,
+        MultiblockPreviewWidget getPreviewWidget(MultiblockControllerMachine machine, MultiblockSchemaInfo schemaInfo, int width,
                                                  int height, boolean terminal);
     }
 }

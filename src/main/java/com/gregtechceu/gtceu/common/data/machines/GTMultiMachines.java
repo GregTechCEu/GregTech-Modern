@@ -924,7 +924,6 @@ public class GTMultiMachines {
 
     public static final MultiblockMachineDefinition TEST_PREVIEW_MULTI = REGISTRATE
             .multiblock("test_preview", TieredWorkableMultiMachine::new)
-
             .rotationState(RotationState.NONE)
             .recipeType(DUMMY_RECIPES)
             .appearanceBlock(BRONZE_HULL)
@@ -933,7 +932,7 @@ public class GTMultiMachines {
                     Component.translatable("gtceu.machine.charcoal_pile.tooltip.2"),
                     Component.translatable("gtceu.machine.charcoal_pile.tooltip.3"))
             .pattern(CharcoalPileIgniterMachine.getPattern())
-            .previewLayout((def, info, width, height, terminal) -> new TestMultiPreviewWidget(def.))
+            .previewLayout((def, info, width, height, terminal) -> new TestMultiPreviewWidget())
             .allowFlip(false)
             .allowExtendedFacing(false)
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
