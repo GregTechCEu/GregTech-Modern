@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -1864,10 +1864,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#changing-a-single-entry" class="md-nav__link">
+  <a href="#modifying-entries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Changing a single entry
+        Modifying Entries
       
     </span>
   </a>
@@ -1883,25 +1883,25 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#retrieving-existing-crafting-components" class="md-nav__link">
+    <nav class="md-nav" aria-label="Creating new components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-crafting-components-in-recipes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Retrieving existing crafting components
+        Using Crafting Components in Recipes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Retrieving existing crafting components">
-      <ul class="md-nav__list">
+</li>
         
           <li class="md-nav__item">
-  <a href="#builtin-crafting-components" class="md-nav__link">
+  <a href="#built-in-crafting-components" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Builtin Crafting Components
+        Built-in Crafting Components
       
     </span>
   </a>
@@ -4901,10 +4901,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#changing-a-single-entry" class="md-nav__link">
+  <a href="#modifying-entries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Changing a single entry
+        Modifying Entries
       
     </span>
   </a>
@@ -4920,25 +4920,25 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#retrieving-existing-crafting-components" class="md-nav__link">
+    <nav class="md-nav" aria-label="Creating new components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-crafting-components-in-recipes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Retrieving existing crafting components
+        Using Crafting Components in Recipes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Retrieving existing crafting components">
-      <ul class="md-nav__list">
+</li>
         
           <li class="md-nav__item">
-  <a href="#builtin-crafting-components" class="md-nav__link">
+  <a href="#built-in-crafting-components" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Builtin Crafting Components
+        Built-in Crafting Components
       
     </span>
   </a>
@@ -4979,13 +4979,16 @@
 
 
 <h1 id="crafting-components">Crafting Components</h1>
-<p>Crafting Components are a way to organize and simplify the various similar recipes that GregTech generates. For example: writing out the recipes for all tiers of an alloy smelter can be done iteratively rather than one by one.</p>
-<p>Crafting Components are a map pairing a Voltage tier (the tier number) to a value. The value can be a <code>MaterialEntry</code>, <code>ItemStack</code>, or <code>TagPrefix&lt;Item&gt;</code>.</p>
-<h2 id="changing-a-single-entry">Changing a single entry</h2>
-<p>With KubeJS it is possible to modify the predefined components of existing GTCEu Modern machine crafting recipes.
+<p>Crafting Components are a way to organize and simplify the various similar recipes that GregTech generates.
+For example: writing out the crafting recipes for all tiers of the Alloy Smelter can be done in a condensed way.</p>
+<p>GregTech makes use of its CraftingComponents to generate the majority of its recipes to make machines.</p>
+<p>Crafting Components are a map pairing a Voltage Tier (the tier number) to a value.
+The value can be a <code>MaterialEntry</code>, <code>ItemStack</code>, or <code>TagKey&lt;Item&gt;</code>.</p>
+<h2 id="modifying-entries">Modifying Entries</h2>
+<p>With KubeJS it is possible to modify the predefined components of existing GTCEu Modern Crafting Components.
 You can replace singular entries, or do bulk modification of components.
--1 is defined as a fallback value if no other entries exist.</p>
-<p><div class="highlight"><span class="filename">startup/modification.js</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">const</span><span class="w"> </span><span class="nb">Map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Java</span><span class="p">.</span><span class="nx">loadClass</span><span class="p">(</span><span class="s2">"java.util.Map"</span><span class="p">)</span>
+You can also change the fallback entry.</p>
+<div class="highlight"><span class="filename">startup/modification.js</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">const</span><span class="w"> </span><span class="nb">Map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Java</span><span class="p">.</span><span class="nx">loadClass</span><span class="p">(</span><span class="s1">'java.util.Map'</span><span class="p">)</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nx">GTCEuStartupEvents</span><span class="p">.</span><span class="nx">craftingComponents</span><span class="p">(</span><span class="nx">event</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">setItem</span><span class="p">(</span><span class="nx">GTCraftingComponents</span><span class="p">.</span><span class="nx">CIRCUIT</span><span class="p">,</span><span class="w"> </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">MV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:dirt'</span><span class="p">))</span><span class="w"> </span><span class="c1">// (1)</span>
@@ -4993,135 +4996,235 @@ You can replace singular entries, or do bulk modification of components.
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'gtceu:lv_robot_arm'</span><span class="p">),</span>
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">MV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'gtceu:mv_robot_arm'</span><span class="p">),</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">HV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'gtceu:hv_robot_arm'</span><span class="p">),</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">EV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'gtceu:ev_robot_arm'</span><span class="p">),</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">IV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'gtceu:iv_robot_arm'</span><span class="p">),</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">        </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LuV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'gtceu:luv_robot_arm'</span><span class="p">),</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">        </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">ZPM</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'gtceu:zpm_robot_arm'</span><span class="p">),</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">        </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">UV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'gtceu:uv_robot_arm'</span><span class="p">),</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span><span class="p">))</span><span class="w"> </span><span class="c1">// (2)</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">setTag</span><span class="p">(</span><span class="nx">GTCraftingComponents</span><span class="p">.</span><span class="nx">CASING</span><span class="p">,</span><span class="w"> </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">EV</span><span class="p">,</span><span class="w"> </span><span class="s1">'minecraft:logs'</span><span class="p">)</span><span class="w"> </span><span class="c1">// (3)</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">setMaterialEntry</span><span class="p">(</span><span class="nx">GTCraftingComponents</span><span class="p">.</span><span class="nx">PLATE</span><span class="p">,</span><span class="w"> </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">UEV</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'plate'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span><span class="w"> </span><span class="c1">// (4)</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">removeTier</span><span class="p">(</span><span class="s2">"sensor"</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">)</span><span class="w"> </span><span class="c1">// (5)</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="p">})</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LuV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'gtceu:luv_robot_arm'</span><span class="p">),</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="p">))</span><span class="w"> </span><span class="c1">// (2)</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">setTag</span><span class="p">(</span><span class="nx">GTCraftingComponents</span><span class="p">.</span><span class="nx">CASING</span><span class="p">,</span><span class="w"> </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">EV</span><span class="p">,</span><span class="w"> </span><span class="s1">'minecraft:logs'</span><span class="p">)</span><span class="w"> </span><span class="c1">// (3)</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">setMaterialEntry</span><span class="p">(</span><span class="nx">GTCraftingComponents</span><span class="p">.</span><span class="nx">PLATE</span><span class="p">,</span><span class="w"> </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">UEV</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'plate'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span><span class="w"> </span><span class="c1">// (4)</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">removeTier</span><span class="p">(</span><span class="nx">GTCraftingComponents</span><span class="p">.</span><span class="nx">SENSOR</span><span class="p">,</span><span class="w"> </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">HV</span><span class="p">)</span><span class="w"> </span><span class="c1">// (5)</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">setFallbackItem</span><span class="p">(</span><span class="nx">GTCraftingComponents</span><span class="p">.</span><span class="nx">MOTOR</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:stone'</span><span class="p">))</span><span class="w"> </span><span class="c1">// 6</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="p">})</span>
 </code></pre></div>
-1. Replaces the MV circuit tag in all GT machine crafting recipes with a single block of <code>minecraft:dirt</code>.
-2. Modifies all pumps in GT machine crafting recipes by replacing the pump with a robot arm.
-3. Replaces the EV casing with the <code>#minecraft:logs</code> tag. note the lack of <code>#</code> at the beginning of the tag!
-4. Adds a new entry to the plate component for UEV with prefix <code>plate</code> and material <code>gtceu:infinity</code>.
-5. Removes the 3rd offset entry <code>(HV Tier)</code> of the sensor crafting component, will default to the fallback <code>(LV Sensor)</code></p>
+<ol>
+<li>Replaces the MV circuit tag in all GT machine crafting recipes with a single block of <code>minecraft:dirt</code>.</li>
+<li>Modifies the LV, MV, HV, and LuV Pumps in GT machine crafting recipes by replacing the Pump with a Robot Arm.</li>
+<li>Replaces the EV casing with the <code>#minecraft:logs</code> tag. Note the lack of <code>#</code> at the beginning of the tag!</li>
+<li>Adds a new entry to the plate component for UEV with prefix <code>plate</code> and material <code>gtceu:infinity</code>.</li>
+<li>Removes the HV Tier entry of the Sensor Crafting Component, so it will default to the fallback for the component <code>(LV Sensor)</code></li>
+<li>Replaces the fallback item for the Motor Crafting Component with a block of <code>minecraft:stone</code>.</li>
+</ol>
+<p>All functions provided by the Crafting Components Event:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cm">/**</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="cm"> * Set a component's Item for a tier.</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="cm"> * @param component The component to modify</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="cm"> * @param tier      The tier to set the item for</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="cm"> * @param item      The ItemStack to set, as a KubeJS item string.</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="cm"> *                  E.g. `Item.of('minecraft:dirt')`.</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="cm"> */</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nx">setItem</span><span class="p">(</span><span class="nx">component</span><span class="o">:</span><span class="w"> </span><span class="kt">CraftingComponent</span><span class="p">,</span><span class="w"> </span><span class="nx">tier</span><span class="o">:</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="o">:</span><span class="w"> </span><span class="kt">ItemStack</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="cm">/**</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="cm"> * Set a component's Tag for a tier.</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="cm"> * @param component The component to modify</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="cm"> * @param tier      The tier to set the tag for</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="cm"> * @param tag       The Item Tag to set, as a ResourceLocation string.</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="cm"> *                  E.g. `'minecraft:logs'` (note the lack of '#' at the beginning).</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="cm"> */</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="nx">setTag</span><span class="p">(</span><span class="nx">component</span><span class="o">:</span><span class="w"> </span><span class="kt">CraftingComponent</span><span class="p">,</span><span class="w"> </span><span class="nx">tier</span><span class="o">:</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="nx">tag</span><span class="o">:</span><span class="w"> </span><span class="kt">Tag</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="cm">/**</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="cm"> * Set a component's MaterialEntry for a tier.</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="cm"> * @param component The component to modify</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="cm"> * @param tier      The tier to set the MaterialEntry for</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="cm"> * @param entry     The Entry to set, as a Java MaterialEntry Object.</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="cm"> *                  E.g. `new MaterialEntry('plate', 'gtceu:brass')`.</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="cm"> */</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="nx">setMaterialEntry</span><span class="p">(</span><span class="nx">component</span><span class="o">:</span><span class="w"> </span><span class="kt">CraftingComponent</span><span class="p">,</span><span class="w"> </span><span class="nx">tier</span><span class="o">:</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="nx">entry</span><span class="o">:</span><span class="w"> </span><span class="kt">MaterialEntry</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="cm">/**</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="cm"> * Set a component's Items for many tiers.</span>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="cm"> * @param component The component to modify</span>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="cm"> * @param map       The map of Tiers to ItemStacks to set</span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="cm"> *                  E.g. `Map.of(GTValues.LV, Item.of('minecraft:dirt'), GTValues.HV, Item.of('minecraft:stone'))`.</span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="cm"> */</span>
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="nx">setItems</span><span class="p">(</span><span class="nx">component</span><span class="o">:</span><span class="w"> </span><span class="kt">CraftingComponent</span><span class="p">,</span><span class="w"> </span><span class="nx">map</span><span class="o">:</span><span class="w"> </span><span class="kt">Map</span><span class="o">&lt;</span><span class="kr">int</span><span class="p">,</span><span class="w"> </span><span class="nx">ItemStack</span><span class="o">&gt;</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>
+<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="cm">/**</span>
+<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="cm"> * Set a component's Tags for many tiers.</span>
+<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="cm"> * @param component The component to modify</span>
+<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="cm"> * @param map       The map of Tiers to Item Tag ResourceLocation strings to set</span>
+<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="cm"> *                  E.g. `Map.of(GTValues.LV, 'minecraft:logs', GTValues.HV, 'forge:ingots')`.</span>
+<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="cm"> */</span>
+<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="nx">setTags</span><span class="p">(</span><span class="nx">component</span><span class="o">:</span><span class="w"> </span><span class="kt">CraftingComponent</span><span class="p">,</span><span class="w"> </span><span class="nx">map</span><span class="o">:</span><span class="w"> </span><span class="kt">Map</span><span class="o">&lt;</span><span class="kr">int</span><span class="p">,</span><span class="w"> </span><span class="nx">Tag</span><span class="o">&gt;</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a>
+<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="cm">/**</span>
+<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="cm"> * Set a component's MaterialEntries for many tiers.</span>
+<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="cm"> * @param component The component to modify</span>
+<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="cm"> * @param map       The map of Tiers to MaterialEntries to set</span>
+<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="cm"> *                  E.g. `Map.of(GTValues.LV, new MaterialEntry('plate', 'gtceu:brass'), GTValues.HV, new MaterialEntry('plate', 'gtceu:silver'))`.</span>
+<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a><span class="cm"> */</span>
+<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="nx">setMaterialEntries</span><span class="p">(</span><span class="nx">component</span><span class="o">:</span><span class="w"> </span><span class="kt">CraftingComponent</span><span class="p">,</span><span class="w"> </span><span class="nx">map</span><span class="o">:</span><span class="w"> </span><span class="kt">Map</span><span class="o">&lt;</span><span class="kr">int</span><span class="p">,</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="o">&gt;</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a>
+<a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a><span class="cm">/**</span>
+<a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a><span class="cm"> * Set a component's Objects for many tiers.</span>
+<a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a><span class="cm"> * Functions identically to `setItems`, `setTags`, and `setEntries`, but allows providing a map containing all three types of objects.</span>
+<a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a><span class="cm"> * @param component The component to modify</span>
+<a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a><span class="cm"> * @param map       The map of Tiers to Objects to set</span>
+<a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a><span class="cm"> *                  E.g. `Map.of(GTValues.LV, Item.of('minecraft:dirt'), GTValues.HV, new MaterialEntry('plate', 'gtceu:silver'))`.</span>
+<a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a><span class="cm"> */</span>
+<a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a><span class="nx">set</span><span class="p">(</span><span class="nx">component</span><span class="o">:</span><span class="w"> </span><span class="kt">CraftingComponent</span><span class="p">,</span><span class="w"> </span><span class="nx">map</span><span class="o">:</span><span class="w"> </span><span class="kt">Map</span><span class="o">&lt;</span><span class="kr">int</span><span class="p">,</span><span class="w"> </span><span class="nx">ItemStack</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">Tag</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="o">&gt;</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a>
+<a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a><span class="cm">/**</span>
+<a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a><span class="cm"> * Set a component's fallback Item.</span>
+<a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a><span class="cm"> *</span>
+<a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a><span class="cm"> * @param component The component to modify</span>
+<a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a><span class="cm"> * @param item      The ItemStack to set, as a KubeJS item string.</span>
+<a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a><span class="cm"> *                  E.g. `Item.of('minecraft:dirt')`.</span>
+<a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a><span class="cm"> */</span>
+<a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a><span class="nx">setFallbackItem</span><span class="p">(</span><span class="nx">component</span><span class="o">:</span><span class="w"> </span><span class="kt">CraftingComponent</span><span class="p">,</span><span class="w"> </span><span class="nx">item</span><span class="o">:</span><span class="w"> </span><span class="kt">ItemStack</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<a id="__codelineno-1-69" name="__codelineno-1-69" href="#__codelineno-1-69"></a>
+<a id="__codelineno-1-70" name="__codelineno-1-70" href="#__codelineno-1-70"></a><span class="cm">/**</span>
+<a id="__codelineno-1-71" name="__codelineno-1-71" href="#__codelineno-1-71"></a><span class="cm"> * Set a component's fallback Tag.</span>
+<a id="__codelineno-1-72" name="__codelineno-1-72" href="#__codelineno-1-72"></a><span class="cm"> *</span>
+<a id="__codelineno-1-73" name="__codelineno-1-73" href="#__codelineno-1-73"></a><span class="cm"> * @param component The component to modify</span>
+<a id="__codelineno-1-74" name="__codelineno-1-74" href="#__codelineno-1-74"></a><span class="cm"> * @param tag       The Item Tag to set, as a ResourceLocation string.</span>
+<a id="__codelineno-1-75" name="__codelineno-1-75" href="#__codelineno-1-75"></a><span class="cm"> *                  E.g. `'minecraft:logs'` (note the lack of '#' at the beginning).</span>
+<a id="__codelineno-1-76" name="__codelineno-1-76" href="#__codelineno-1-76"></a><span class="cm">setFallbackTag(component: CraftingComponent, tag: Tag): void;</span>
+<a id="__codelineno-1-77" name="__codelineno-1-77" href="#__codelineno-1-77"></a>
+<a id="__codelineno-1-78" name="__codelineno-1-78" href="#__codelineno-1-78"></a><span class="cm">/**</span>
+<a id="__codelineno-1-79" name="__codelineno-1-79" href="#__codelineno-1-79"></a><span class="cm"> * Set a component's fallback MaterialEntry.</span>
+<a id="__codelineno-1-80" name="__codelineno-1-80" href="#__codelineno-1-80"></a><span class="cm"> *</span>
+<a id="__codelineno-1-81" name="__codelineno-1-81" href="#__codelineno-1-81"></a><span class="cm"> * @param component The component to modify</span>
+<a id="__codelineno-1-82" name="__codelineno-1-82" href="#__codelineno-1-82"></a><span class="cm"> * @param entry     The Entry to set, as a Java MaterialEntry Object.</span>
+<a id="__codelineno-1-83" name="__codelineno-1-83" href="#__codelineno-1-83"></a><span class="cm"> *                  E.g. `new MaterialEntry('plate', 'gtceu:brass')`.</span>
+<a id="__codelineno-1-84" name="__codelineno-1-84" href="#__codelineno-1-84"></a><span class="cm"> */</span>
+<a id="__codelineno-1-85" name="__codelineno-1-85" href="#__codelineno-1-85"></a><span class="nx">setFallbackMaterialEntry</span><span class="p">(</span><span class="nx">component</span><span class="o">:</span><span class="w"> </span><span class="kt">CraftingComponent</span><span class="p">,</span><span class="w"> </span><span class="nx">entry</span><span class="o">:</span><span class="w"> </span><span class="kt">MaterialEntry</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<a id="__codelineno-1-86" name="__codelineno-1-86" href="#__codelineno-1-86"></a>
+<a id="__codelineno-1-87" name="__codelineno-1-87" href="#__codelineno-1-87"></a><span class="cm">/**</span>
+<a id="__codelineno-1-88" name="__codelineno-1-88" href="#__codelineno-1-88"></a><span class="cm"> * Remove a tier for a component.</span>
+<a id="__codelineno-1-89" name="__codelineno-1-89" href="#__codelineno-1-89"></a><span class="cm"> * Usage of the component's for the tier will default to the fallback value unless set otherwise.</span>
+<a id="__codelineno-1-90" name="__codelineno-1-90" href="#__codelineno-1-90"></a><span class="cm"> *</span>
+<a id="__codelineno-1-91" name="__codelineno-1-91" href="#__codelineno-1-91"></a><span class="cm"> * @param component The component to modify</span>
+<a id="__codelineno-1-92" name="__codelineno-1-92" href="#__codelineno-1-92"></a><span class="cm"> * @param tier      The tier to remove</span>
+<a id="__codelineno-1-93" name="__codelineno-1-93" href="#__codelineno-1-93"></a><span class="cm"> */</span>
+<a id="__codelineno-1-94" name="__codelineno-1-94" href="#__codelineno-1-94"></a><span class="nx">removeTier</span><span class="p">(</span><span class="nx">component</span><span class="o">:</span><span class="w"> </span><span class="kt">CraftingComponent</span><span class="p">,</span><span class="w"> </span><span class="nx">tier</span><span class="o">:</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+<a id="__codelineno-1-95" name="__codelineno-1-95" href="#__codelineno-1-95"></a>
+<a id="__codelineno-1-96" name="__codelineno-1-96" href="#__codelineno-1-96"></a><span class="cm">/**</span>
+<a id="__codelineno-1-97" name="__codelineno-1-97" href="#__codelineno-1-97"></a><span class="cm"> * Remove multiple tiers for a component.</span>
+<a id="__codelineno-1-98" name="__codelineno-1-98" href="#__codelineno-1-98"></a><span class="cm"> * Usage of the component's for these tiers will default to the fallback value unless set otherwise.</span>
+<a id="__codelineno-1-99" name="__codelineno-1-99" href="#__codelineno-1-99"></a><span class="cm"> *</span>
+<a id="__codelineno-1-100" name="__codelineno-1-100" href="#__codelineno-1-100"></a><span class="cm"> * @param component The component to modify</span>
+<a id="__codelineno-1-101" name="__codelineno-1-101" href="#__codelineno-1-101"></a><span class="cm"> * @param tiers     The tiers to remove</span>
+<a id="__codelineno-1-102" name="__codelineno-1-102" href="#__codelineno-1-102"></a><span class="cm"> */</span>
+<a id="__codelineno-1-103" name="__codelineno-1-103" href="#__codelineno-1-103"></a><span class="nx">removeTiers</span><span class="p">(</span><span class="nx">component</span><span class="o">:</span><span class="w"> </span><span class="kt">CraftingComponent</span><span class="p">,</span><span class="w"> </span><span class="nx">tier</span><span class="o">:</span><span class="w"> </span><span class="kt">int...</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="ow">void</span><span class="p">;</span>
+</code></pre></div></p>
 <h2 id="creating-new-components">Creating new components</h2>
 <p>It's also possible to create new crafting components with KubeJS.
-The crafting component is constructed with a id and a fallback value. You can add entries by chaining <code>.add(tier, value)</code> methods after your construction.</p>
-<div class="highlight"><span class="filename">creation.js</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">const</span><span class="w"> </span><span class="nb">Map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Java</span><span class="p">.</span><span class="nx">loadClass</span><span class="p">(</span><span class="s2">"java.util.Map"</span><span class="p">)</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kd">let</span><span class="w"> </span><span class="nx">ITEM_CRAFTING_COMPONENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="kd">let</span><span class="w"> </span><span class="nx">TAG_CRAFTING_COMPONENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="kd">let</span><span class="w"> </span><span class="nx">UNIFICATION_CRAFTING_COMPONENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nx">GTCEuServerEvents</span><span class="p">.</span><span class="nx">craftingComponents</span><span class="p">(</span><span class="nx">event</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nx">ITEM_CRAFTING_COMPONENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">event</span><span class="p">.</span><span class="nx">createItem</span><span class="p">(</span><span class="s2">"item_component"</span><span class="p">,</span><span class="w"> </span><span class="s1">'minecraft:cyan_stained_glass'</span><span class="p">)</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:cyan_stained_glass'</span><span class="p">))</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">MV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:cyan_stained_glass'</span><span class="p">))</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">HV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:cyan_stained_glass'</span><span class="p">))</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">EV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:lime_stained_glass'</span><span class="p">))</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">IV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:lime_stained_glass'</span><span class="p">))</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LuV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:lime_stained_glass'</span><span class="p">))</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">ZPM</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:magenta_stained_glass'</span><span class="p">))</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">UV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:magenta_stained_glass'</span><span class="p">))</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="c1">// (1)</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="nx">TAG_CRAFTING_COMPONENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">event</span><span class="p">.</span><span class="nx">createTag</span><span class="p">(</span><span class="s2">"tag_component"</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:barrels/wooden'</span><span class="p">)</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LV</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:chests/wooden'</span><span class="p">)</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">MV</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:chests/trapped'</span><span class="p">)</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">HV</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:chests/ender'</span><span class="p">)</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">EV</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:cobblestone'</span><span class="p">)</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">IV</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:cobblestone/normal'</span><span class="p">)</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LuV</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:cobblestone/infested'</span><span class="p">)</span>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">ZPM</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:cobblestone/mossy'</span><span class="p">)</span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">UV</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:cobblestone/deepslate'</span><span class="p">)</span>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">    </span><span class="c1">// (2)</span>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">    </span><span class="nx">UNIFICATION_CRAFTING_COMPONENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">event</span><span class="p">.</span><span class="nx">createMaterialEntry</span><span class="p">(</span><span class="s2">"material_entry_component"</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'plate'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LV</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'block'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span>
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">MV</span><span class="p">,</span><span class="w"> </span><span class="s1">'ingot'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">)</span>
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">HV</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'dust'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">EV</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'round'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">IV</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'foil'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LuV</span><span class="p">,</span><span class="w"> </span><span class="s1">'longRod'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">)</span>
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">ZPM</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'rod'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">UV</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'bolt'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span>
-<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">    </span><span class="c1">// (3)</span>
-<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="p">})</span>
-</code></pre></div>
-<ol>
-<li>Creates a new crafting component with item stack entries.</li>
-<li>Creates a new crafting component with item tag entries. note the lack of <code>#</code> at the beginning of the tag!</li>
-<li>Creates a new crafting component with UnificationEntry entries.</li>
-</ol>
-<h2 id="retrieving-existing-crafting-components">Retrieving existing crafting components</h2>
-<p>All <code>remove</code>, <code>modify*</code>, and <code>setFallback*</code> methods use a Crafting Component as its first argument, you can supply that argument with just a string matching the id of the crafting component</p>
-<div class="highlight"><span class="filename">modify.js</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">GTCEuServerEvents</span><span class="p">.</span><span class="nx">craftingComponents</span><span class="p">(</span><span class="nx">event</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">removeTier</span><span class="p">(</span><span class="s1">'robot_arm'</span><span class="p">,</span><span class="w"> </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">EV</span><span class="p">)</span><span class="w"> </span><span class="c1">// (1)</span>
+The crafting component is constructed with a id and a fallback value.</p>
+<p>You can add entries by chaining <code>.addX(tier, value)</code> method calls after construction.
+You are free to use any combination of Items, Tags, and MaterialEntries in all CraftingComponents.</p>
+<div class="highlight"><span class="filename">creation.js</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">GTCraftingComponents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Java</span><span class="p">.</span><span class="nx">loadClass</span><span class="p">(</span><span class="s1">'com.gregtechceu.gtceu.data.recipe.GTCraftingComponents'</span><span class="p">)</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kd">const</span><span class="w"> </span><span class="nb">Map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">Java</span><span class="p">.</span><span class="nx">loadClass</span><span class="p">(</span><span class="s1">'java.util.Map'</span><span class="p">)</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">removeTiers</span><span class="p">(</span><span class="s1">'pump'</span><span class="p">,</span><span class="w"> </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">EV</span><span class="p">,</span><span class="w"> </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">IV</span><span class="p">,</span><span class="w"> </span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LuV</span><span class="p">)</span><span class="w"> </span><span class="c1">// (2)</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">})</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kd">let</span><span class="w"> </span><span class="nx">ITEM_CRAFTING_COMPONENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="kd">let</span><span class="w"> </span><span class="nx">TAG_CRAFTING_COMPONENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="kd">let</span><span class="w"> </span><span class="nx">MATERIAL_ENTRY_CRAFTING_COMPONENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="nx">GTCEuServerEvents</span><span class="p">.</span><span class="nx">craftingComponents</span><span class="p">(</span><span class="nx">event</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="c1">// (1)</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="nx">ITEM_CRAFTING_COMPONENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">event</span><span class="p">.</span><span class="nx">createItem</span><span class="p">(</span><span class="s1">'item_component'</span><span class="p">,</span><span class="w"> </span><span class="s1">'minecraft:cyan_stained_glass'</span><span class="p">)</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:cyan_stained_glass'</span><span class="p">))</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">MV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:cyan_stained_glass'</span><span class="p">))</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">HV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:cyan_stained_glass'</span><span class="p">))</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">EV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:lime_stained_glass'</span><span class="p">))</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">IV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:lime_stained_glass'</span><span class="p">))</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LuV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:lime_stained_glass'</span><span class="p">))</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">ZPM</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:magenta_stained_glass'</span><span class="p">))</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">        </span><span class="p">.</span><span class="nx">addItem</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">UV</span><span class="p">,</span><span class="w"> </span><span class="nx">Item</span><span class="p">.</span><span class="k">of</span><span class="p">(</span><span class="s1">'minecraft:magenta_stained_glass'</span><span class="p">))</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">    </span><span class="c1">// (2)</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">    </span><span class="nx">TAG_CRAFTING_COMPONENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">event</span><span class="p">.</span><span class="nx">createTag</span><span class="p">(</span><span class="s1">'tag_component'</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:barrels/wooden'</span><span class="p">)</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LV</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:chests/wooden'</span><span class="p">)</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">MV</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:chests/trapped'</span><span class="p">)</span>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">HV</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:chests/ender'</span><span class="p">)</span>
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">EV</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:cobblestone'</span><span class="p">)</span>
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">IV</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:cobblestone/normal'</span><span class="p">)</span>
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LuV</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:cobblestone/infested'</span><span class="p">)</span>
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">ZPM</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:cobblestone/mossy'</span><span class="p">)</span>
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">        </span><span class="p">.</span><span class="nx">addTag</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">UV</span><span class="p">,</span><span class="w"> </span><span class="s1">'forge:cobblestone/deepslate'</span><span class="p">)</span>
+<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="w">    </span><span class="c1">// (3)</span>
+<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">    </span><span class="nx">MATERIAL_ENTRY_CRAFTING_COMPONENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">event</span><span class="p">.</span><span class="nx">createMaterialEntry</span><span class="p">(</span><span class="s1">'material_entry_component'</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'plate'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span>
+<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LV</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'block'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span>
+<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">MV</span><span class="p">,</span><span class="w"> </span><span class="s1">'ingot'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">)</span>
+<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">HV</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'dust'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span>
+<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">EV</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'round'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span>
+<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">IV</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'foil'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span>
+<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">LuV</span><span class="p">,</span><span class="w"> </span><span class="s1">'longRod'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">)</span>
+<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">ZPM</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'rod'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span>
+<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="w">        </span><span class="p">.</span><span class="nx">addMaterialEntry</span><span class="p">(</span><span class="nx">GTValues</span><span class="p">.</span><span class="nx">UV</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MaterialEntry</span><span class="p">(</span><span class="s1">'bolt'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:infinity'</span><span class="p">))</span>
+<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="p">})</span>
 </code></pre></div>
 <ol>
-<li>Finds the crafting component with id <code>robot_arm</code> and removes the entry for <code>EV</code> tier</li>
-<li>Finds the crafting component with id <code>pump</code> and removes the entry for <code>EV, IV &amp; LuV</code> tiers</li>
+<li>Creates a new crafting component with ItemStack entries.</li>
+<li>Creates a new crafting component with Item Tag entries. Note the lack of <code>#</code> at the beginning of the tag!</li>
+<li>Creates a new crafting component with MaterialEntry entries.</li>
 </ol>
-<h3 id="builtin-crafting-components">Builtin Crafting Components</h3>
+<h3 id="using-crafting-components-in-recipes">Using Crafting Components in Recipes</h3>
+<p>Currently, Crafting Components cannot be easily used to bulk-generate recipes in KubeJS.
+However, GregTech CEu Modern and addons using CraftingComponents will use KubeJS's modifications.</p>
+<h3 id="built-in-crafting-components">Built-in Crafting Components</h3>
+<p>The following is a list of built-in CraftingComponents and their associated id.</p>
 <ul>
-<li><code>CIRCUIT 'circuit'</code></li>
-<li><code>BETTER_CIRCUIT 'better_circuit'</code></li>
-<li><code>WIRE_ELECTRIC 'wire_single'</code></li>
-<li><code>WIRE_QUAD 'wire_quad'</code></li>
-<li><code>WIRE_OCT 'wire_oct'</code></li>
-<li><code>WIRE_HEX 'wire_hex'</code></li>
-<li><code>CABLE 'cable_single'</code></li>
-<li><code>CABLE_DOUBLE 'cable_double'</code></li>
-<li><code>CABLE_QUAD 'cable_quad'</code></li>
-<li><code>CABLE_OCT 'cable_oct'</code></li>
-<li><code>CABLE_HEX 'cable_hex'</code></li>
-<li><code>CABLE_TIER_UP 'cable_tier_up_single'</code></li>
-<li><code>CABLE_TIER_UP_DOUBLE 'cable_tier_up_double'</code></li>
-<li><code>CABLE_TIER_UP_QUAD 'cable_tier_up_quad'</code></li>
-<li><code>CABLE_TIER_UP_OCT 'cable_tier_up_oct'</code></li>
-<li><code>CABLE_TIER_UP_HEX 'cable_tier_up_hex'</code></li>
-<li><code>CASING 'casing'</code></li>
-<li><code>HULL 'hull'</code></li>
-<li><code>PIPE_NORMAL 'normal_pipe'</code></li>
-<li><code>PIPE_LARGE 'large_pipe'</code></li>
-<li><code>PIPE_NONUPLE 'nonuple_pipe'</code></li>
-<li><code>GLASS 'glass'</code></li>
-<li><code>PLATE 'plate'</code></li>
-<li><code>HULL_PLATE 'hull_plate'</code></li>
-<li><code>ROTOR 'rotor'</code></li>
-<li><code>GRINDER 'grinder'</code></li>
-<li><code>SAWBLADE 'sawblade'</code></li>
-<li><code>DIAMOND 'diamond'</code></li>
-<li><code>MOTOR 'motor'</code></li>
-<li><code>PUMP 'pump'</code></li>
-<li><code>PISTON 'piston'</code></li>
-<li><code>EMITTER 'emitter'</code></li>
-<li><code>SENSOR 'sensor'</code></li>
-<li><code>CONVEYOR 'conveyor'</code></li>
-<li><code>ROBOT_ARM 'robot_arm'</code></li>
-<li><code>FIELD_GENERATOR 'field_generator'</code></li>
-<li><code>COIL_HEATING 'coil_heating'</code></li>
-<li><code>COIL_HEATING_DOUBLE 'coil_heating_double'</code></li>
-<li><code>COIL_ELECTRIC 'coil_electric'</code></li>
-<li><code>STICK_MAGNETIC 'rod_magnetic'</code></li>
-<li><code>STICK_DISTILLATION 'rod_distillation'</code></li>
-<li><code>STICK_ELECTROMAGNETIC 'rod_electromagnetic'</code></li>
-<li><code>STICK_RADIOACTIVE 'rod_radioactive'</code></li>
-<li><code>PIPE_REACTOR 'pipe_reactor'</code></li>
-<li><code>POWER_COMPONENT 'power_component'</code></li>
-<li><code>VOLTAGE_COIL 'voltage_coil'</code></li>
-<li><code>SPRING 'spring'</code></li>
-<li><code>CRATE 'crate'</code></li>
-<li><code>DRUM 'drum'</code></li>
-<li><code>FRAME 'frame'</code></li>
-<li><code>SMALL_SPRING_TRANSFORMER 'small_spring_transformer'</code></li>
-<li><code>SPRING_TRANSFORMER 'spring_transformer'</code></li>
+<li><code>CIRCUIT</code>: <code>'circuit'</code></li>
+<li><code>BETTER_CIRCUIT</code>: <code>'better_circuit'</code></li>
+<li><code>WIRE_ELECTRIC</code>: <code>'wire_single'</code></li>
+<li><code>WIRE_QUAD</code>: <code>'wire_quad'</code></li>
+<li><code>WIRE_OCT</code>: <code>'wire_oct'</code></li>
+<li><code>WIRE_HEX</code>: <code>'wire_hex'</code></li>
+<li><code>CABLE</code>: <code>'cable_single'</code></li>
+<li><code>CABLE_DOUBLE</code>: <code>'cable_double'</code></li>
+<li><code>CABLE_QUAD</code>: <code>'cable_quad'</code></li>
+<li><code>CABLE_OCT</code>: <code>'cable_oct'</code></li>
+<li><code>CABLE_HEX</code>: <code>'cable_hex'</code></li>
+<li><code>CABLE_TIER_UP</code>: <code>'cable_tier_up_single'</code></li>
+<li><code>CABLE_TIER_UP_DOUBLE</code>: <code>'cable_tier_up_double'</code></li>
+<li><code>CABLE_TIER_UP_QUAD</code>: <code>'cable_tier_up_quad'</code></li>
+<li><code>CABLE_TIER_UP_OCT</code>: <code>'cable_tier_up_oct'</code></li>
+<li><code>CABLE_TIER_UP_HEX</code>: <code>'cable_tier_up_hex'</code></li>
+<li><code>CASING</code>: <code>'casing'</code></li>
+<li><code>HULL</code>: <code>'hull'</code></li>
+<li><code>PIPE_NORMAL</code>: <code>'normal_pipe'</code></li>
+<li><code>PIPE_LARGE</code>: <code>'large_pipe'</code></li>
+<li><code>PIPE_NONUPLE</code>: <code>'nonuple_pipe'</code></li>
+<li><code>GLASS</code>: <code>'glass'</code></li>
+<li><code>PLATE</code>: <code>'plate'</code></li>
+<li><code>HULL_PLATE</code>: <code>'hull_plate'</code></li>
+<li><code>ROTOR</code>: <code>'rotor'</code></li>
+<li><code>GRINDER</code>: <code>'grinder'</code></li>
+<li><code>SAWBLADE</code>: <code>'sawblade'</code></li>
+<li><code>DIAMOND</code>: <code>'diamond'</code></li>
+<li><code>MOTOR</code>: <code>'motor'</code></li>
+<li><code>PUMP</code>: <code>'pump'</code></li>
+<li><code>PISTON</code>: <code>'piston'</code></li>
+<li><code>EMITTER</code>: <code>'emitter'</code></li>
+<li><code>SENSOR</code>: <code>'sensor'</code></li>
+<li><code>CONVEYOR</code>: <code>'conveyor'</code></li>
+<li><code>ROBOT_ARM</code>: <code>'robot_arm'</code></li>
+<li><code>FIELD_GENERATOR</code>: <code>'field_generator'</code></li>
+<li><code>COIL_HEATING</code>: <code>'coil_heating'</code></li>
+<li><code>COIL_HEATING_DOUBLE</code>: <code>'coil_heating_double'</code></li>
+<li><code>COIL_ELECTRIC</code>: <code>'coil_electric'</code></li>
+<li><code>STICK_MAGNETIC</code>: <code>'rod_magnetic'</code></li>
+<li><code>STICK_DISTILLATION</code>: <code>'rod_distillation'</code></li>
+<li><code>STICK_ELECTROMAGNETIC</code>: <code>'rod_electromagnetic'</code></li>
+<li><code>STICK_RADIOACTIVE</code>: <code>'rod_radioactive'</code></li>
+<li><code>PIPE_REACTOR</code>: <code>'pipe_reactor'</code></li>
+<li><code>POWER_COMPONENT</code>: <code>'power_component'</code></li>
+<li><code>VOLTAGE_COIL</code>: <code>'voltage_coil'</code></li>
+<li><code>SPRING</code>: <code>'spring'</code></li>
+<li><code>CRATE</code>: <code>'crate'</code></li>
+<li><code>DRUM</code>: <code>'drum'</code></li>
+<li><code>FRAME</code>: <code>'frame'</code></li>
+<li><code>SMALL_SPRING_TRANSFORMER</code>: <code>'small_spring_transformer'</code></li>
+<li><code>SPRING_TRANSFORMER</code>: <code>'spring_transformer'</code></li>
 </ul>
 
 
@@ -5233,7 +5336,7 @@ The crafting component is constructed with a id and a fallback value. You can ad
       <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.sections", "navigation.indexes", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "content.code.annotate", "content.action.view"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>
