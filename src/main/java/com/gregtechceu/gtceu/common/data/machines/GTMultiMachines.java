@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.BedrockOreMinerMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.testmultis.TieredWorkableMultiMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CharcoalPileIgniterMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
@@ -31,6 +32,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultib
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.factory.CentralMonitorUIFactory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.recipeviewer.widgets.TestMultiPreviewWidget;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -918,6 +920,24 @@ public class GTMultiMachines {
                     .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createCentralMonitorRender)))
             .hasBER(true)
             .ui(CentralMonitorUIFactory.INSTANCE)
+            .register();
+
+    public static final MultiblockMachineDefinition TEST_PREVIEW_MULTI = REGISTRATE
+            .multiblock("test_preview", TieredWorkableMultiMachine::new)
+
+            .rotationState(RotationState.NONE)
+            .recipeType(DUMMY_RECIPES)
+            .appearanceBlock(BRONZE_HULL)
+            .tooltips(Component.translatable("gtceu.machine.charcoal_pile.tooltip.0"),
+                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.1"),
+                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.2"),
+                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.3"))
+            .pattern(CharcoalPileIgniterMachine.getPattern())
+            .previewLayout((def, info, width, height, terminal) -> new TestMultiPreviewWidget(def.))
+            .allowFlip(false)
+            .allowExtendedFacing(false)
+            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
+                    GTCEu.id("block/multiblock/charcoal_pile_igniter"))
             .register();
 
     public static void init() {}

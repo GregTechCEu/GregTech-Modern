@@ -2,9 +2,11 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -59,6 +61,9 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     @Getter
     @Setter
     private BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay;
+    @Getter
+    @Setter
+    private MultiblockPreviewLayout previewWidgetLayout;
 
     public MultiblockMachineDefinition(ResourceLocation id) {
         super(id);
@@ -66,5 +71,11 @@ public class MultiblockMachineDefinition extends MachineDefinition {
 
     public void setPattern(String structureName, Supplier<IBlockPattern> pattern) {
         structurePatterns.put(structureName, pattern);
+    }
+
+    @FunctionalInterface
+    public interface MultiblockPreviewLayout {
+        MultiblockPreviewWidget getPreviewWidget(MultiblockMachineDefinition definition, MultiblockSchemaInfo schemaInfo, int width,
+                                                 int height, boolean terminal);
     }
 }

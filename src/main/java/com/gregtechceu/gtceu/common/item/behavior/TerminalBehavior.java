@@ -218,8 +218,9 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
         if (controllerInfo == null) return Optional.empty();
 
         MultiblockSchemaInfo schemaInfo = loadSchemaInfo(item, controllerInfo);
+        MultiblockMachineDefinition definition = controllerInfo.definition();
 
-        MultiblockPreviewWidget previewWidget = new MultiblockPreviewWidget(controllerInfo.definition(), schemaInfo,
+        MultiblockPreviewWidget previewWidget = definition.getPreviewWidgetLayout().getPreviewWidget(definition, schemaInfo,
                 200, 200, true)
                 .setControllerPos(controllerInfo.pos())
                 .setFrontFacing(controllerInfo.facing()).setUpFacing(controllerInfo.upFace())

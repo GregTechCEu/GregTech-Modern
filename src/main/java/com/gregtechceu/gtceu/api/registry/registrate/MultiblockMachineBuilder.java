@@ -7,9 +7,12 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
@@ -51,6 +54,8 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
     private BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay = (m,
                                                                                                           sm) -> Collections
                                                                                                                   .emptyList();
+
+    private MultiblockMachineDefinition.MultiblockPreviewLayout previewLayout = MultiblockPreviewWidget::new;
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
                                     BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
@@ -118,6 +123,12 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         return getThis();
     }
 
+    @Tolerate
+    public SELF previewLayout(MultiblockMachineDefinition.MultiblockPreviewLayout layout) {
+        this.previewLayout = layout;
+        return getThis();
+    }
+
     @Override
     @HideFromJS
     public DEFINITION register() {
@@ -141,6 +152,7 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         }
         definition.setPartAppearance(partAppearance);
         definition.setAdditionalDisplay(additionalDisplay);
+        definition.setPreviewWidgetLayout(previewLayout);
         return value = definition;
     }
 }
