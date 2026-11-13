@@ -72,7 +72,7 @@ This NotifiableHandler has a few important methods:
     - `GTRecipe recipe`: the recipe that's being run
     - `List<Ingredient> left`: the remaining items to put into / take out of the handler
     - `boolean simulate`: whether this is a simulate run (for e.g. recipe checking) or to actually modify the contents of the handler
-    - returns `List<Ingredient>` a list of remaining ingredients, aka what could not be inserted / extracted. Note that if no contents are left, an empty list should be returned.
+    - returns `List<Ingredient>` a list of remaining ingredients, aka what could not be inserted / extracted.
 
 In this case it's an `NotifiableRecipeHandlerTrait<Ingredient>` (where `Ingredient` is a wrapper around `ItemStack` to help account for ranged inputs/outputs), but a recipe handler can take anything.
 
@@ -150,7 +150,7 @@ In the case it is a recipe, we check if it passes the `predicate` (the canHandle
 In the case it is a branch, we push new search frames for it, diving down into the next layer of our recipe search.
 
 ## Recipe Matching
-In this entire call stack, a canHandle predicate is passed down. In `RecipeLogic` this predicate is `r -> true`, as you might recall from earlier, so the actual check if the machine can handle the current recipe happens later, in `checkRecipe`.
+In this entire call stack, a canHandle predicate is passed down. In normal `RecipeLogic` recipe checking this predicate always returns `true`, but if you need to filter the iterator for specific recipes, you can pass your own predicate here.
 After a few layers of indirection, we arrive at `RecipeHelper.matchRecipe`
 ```java
     private static ActionResult matchRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe, boolean tick) {
