@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.cover.filter;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ItemStack;
 

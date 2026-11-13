@@ -276,7 +276,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
             if (getInventorySize(tier) == 1) {
                 mainWidget.child(grid.center());
                 Flow filterRow = Flow.row().width(9 * 18).coverChildrenHeight().childPadding(2);
-                GTMuiWidgets.createFilterRow(filterRow, filterHandler, guiData, syncManager, settings);
+                GTMuiWidgets.createFilterRow(filterRow, filterHandler, guiData, syncManager, settings, null);
                 mainWidget.child(filterRow.bottomRel(0).horizontalCenter());
                 return;
             }

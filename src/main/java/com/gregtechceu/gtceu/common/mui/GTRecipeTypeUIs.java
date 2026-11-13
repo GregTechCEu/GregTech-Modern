@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.progress.ProgressDrawable;
@@ -170,7 +170,7 @@ public class GTRecipeTypeUIs {
                 for (var researchItem : researchCondition.getData()) {
                     researchSlot = RecipeViewerSlotWidget.create(ItemStack.class)
                             .recipeSlotRole(RecipeSlotRole.CATALYST)
-                            .value(researchItem.getDataItem());
+                            .value(researchItem.dataItem());
                 }
             }
         }

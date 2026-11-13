@@ -31,7 +31,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
