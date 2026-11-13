@@ -103,19 +103,22 @@ public class GTMuiWidgets {
         return createTitleBarWithEnd(stackSupplier, panelWidth, background, null);
     }
 
-    public static Flow createTitleBar(Icon icon, String text, int panelWidth, UITexture background) {
-        return createTitleBarWithEnd(icon, text, panelWidth, background, null);
+    public static Flow createTitleBar(@Nullable Icon icon, Component title, int panelWidth, UITexture background) {
+        return createTitleBarWithEnd(icon, title, panelWidth, background, null);
+    }
+
+    public static Flow createTitleBar(Component title, int panelWidth, UITexture background) {
+        return createTitleBarWithEnd(null, title, panelWidth, background, null);
     }
 
     public static Flow createTitleBarWithEnd(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background,
                                              @Nullable Widget<?> end) {
         ItemStack stack = stackSupplier.get();
-        var name = stack.getHoverName().getString();
-        name = name.replaceAll("§.", "").trim();
-        return createTitleBarWithEnd(new ItemDrawable(stack).asIcon(), name, panelWidth, background, end);
+        return createTitleBarWithEnd(new ItemDrawable(stack).asIcon(), stack.getHoverName(), panelWidth, background,
+                end);
     }
 
-    public static Flow createTitleBarWithEnd(Icon icon, String text, int panelWidth, UITexture background,
+    public static Flow createTitleBarWithEnd(@Nullable Icon icon, Component text, int panelWidth, UITexture background,
                                              @Nullable Widget<?> end) {
         int sidePadding = 3;
         int topPadding = 3;
@@ -145,8 +148,8 @@ public class GTMuiWidgets {
                 .top(-(textHeight + topPadding))
                 .horizontalCenter()
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
-                .child(icon.size(iconSize).asWidget().size(iconSize))
-                .child(Text.str(text).asWidget().size(Math.min(minPanelWidth, textTitleWidth), textHeight))
+                .childIf(icon != null, () -> Objects.requireNonNull(icon).size(iconSize).asWidget().size(iconSize))
+                .child(Text.of(text).asWidget().size(Math.min(minPanelWidth, textTitleWidth), textHeight))
                 .childIf(end != null, () -> end);
     }
 
