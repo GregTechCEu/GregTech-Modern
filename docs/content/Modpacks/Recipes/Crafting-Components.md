@@ -27,7 +27,7 @@ GTCEuStartupEvents.craftingComponents(event => {
         GTValues.LV, Item.of('gtceu:lv_robot_arm'),
         GTValues.MV, Item.of('gtceu:mv_robot_arm'),
         GTValues.HV, Item.of('gtceu:hv_robot_arm'),
-        GTValues.LuV, Item.of('gtceu:luv_robot_arm'),
+        GTValues.LuV, Item.of('gtceu:luv_robot_arm')
     )) // (2)
     event.setTag(GTCraftingComponents.CASING, GTValues.EV, 'minecraft:logs') // (3)
     event.setMaterialEntry(GTCraftingComponents.PLATE, GTValues.UEV, new MaterialEntry('plate', 'gtceu:infinity')) // (4)
@@ -120,6 +120,7 @@ setFallbackItem(component: CraftingComponent, item: ItemStack): void;
  * @param component The component to modify
  * @param tag       The Item Tag to set, as a ResourceLocation string.
  *                  E.g. `'minecraft:logs'` (note the lack of '#' at the beginning).
+ */
 setFallbackTag(component: CraftingComponent, tag: Tag): void;
 
 /**
@@ -166,7 +167,7 @@ let ITEM_CRAFTING_COMPONENT = null
 let TAG_CRAFTING_COMPONENT = null
 let MATERIAL_ENTRY_CRAFTING_COMPONENT = null
 
-GTCEuServerEvents.craftingComponents(event => {
+GTCEuStartupEvents.craftingComponents(event => {
     // (1)
     ITEM_CRAFTING_COMPONENT = event.createItem('item_component', 'minecraft:cyan_stained_glass')
         .addItem(GTValues.LV, Item.of('minecraft:cyan_stained_glass'))
@@ -240,22 +241,22 @@ The following is a list of built-in CraftingComponents and their associated id.
 - `ROTOR`: `'rotor'`
 - `GRINDER`: `'grinder'`
 - `SAWBLADE`: `'sawblade'`
-- `DIAMOND`: `'diamond'`
 - `MOTOR`: `'motor'`
 - `PUMP`: `'pump'`
 - `PISTON`: `'piston'`
 - `EMITTER`: `'emitter'`
 - `SENSOR`: `'sensor'`
+- `SENSOR_EMITTER_GEM`: `'sensor_emitter_gem'`
 - `CONVEYOR`: `'conveyor'`
 - `ROBOT_ARM`: `'robot_arm'`
 - `FIELD_GENERATOR`: `'field_generator'`
 - `COIL_HEATING`: `'coil_heating'`
 - `COIL_HEATING_DOUBLE`: `'coil_heating_double'`
 - `COIL_ELECTRIC`: `'coil_electric'`
-- `STICK_MAGNETIC`: `'rod_magnetic'`
-- `STICK_DISTILLATION`: `'rod_distillation'`
-- `STICK_ELECTROMAGNETIC`: `'rod_electromagnetic'`
-- `STICK_RADIOACTIVE`: `'rod_radioactive'`
+- `ROD_MAGNETIC`: `'rod_magnetic'`
+- `ROD_DISTILLATION`: `'rod_distillation'`
+- `ROD_ELECTROMAGNETIC`: `'rod_electromagnetic'`
+- `ROD_RADIOACTIVE`: `'rod_radioactive'`
 - `PIPE_REACTOR`: `'pipe_reactor'`
 - `POWER_COMPONENT`: `'power_component'`
 - `VOLTAGE_COIL`: `'voltage_coil'`

@@ -73,7 +73,7 @@ Syntax: `event.recipes.gtceu.RECIPE_TYPE(string: recipe id)`
         
         @Override
         public void addRecipes(Consumer<FinishedRecipe> provider) {
-            ASSEMBLER_RECIPES.recipeBuilder(ADDON_MOD.id("test"))
+            ASSEMBLER_RECIPES.recipeBuilder(ExampleMod.id("test"))
                 .inputItems(
                     new ItemStack(Blocks.DIRT, 64),
                     new ItemStack(Items.DIAMOND, 32)
@@ -194,7 +194,7 @@ Scanner Research, Station Research and Computation.
 
         @Override
         public void addRecipes(Consumer<FinishedRecipe> provider) {
-            ASSEMBLY_LINE_RECIPES.recipeBuilder(ADDON_MOD.id("scanner_test"))
+            ASSEMBLY_LINE_RECIPES.recipeBuilder(ExampleMod.id("scanner_test"))
                 .inputItems(new ItemStack(Items.COAL, 64))
                 .outputItems(Items.DIAMOND)
                 .duration(10000)
@@ -230,7 +230,7 @@ Scanner Research, Station Research and Computation.
 
         @Override
         public void addRecipes(Consumer<FinishedRecipe> provider) {
-            ASSEMBLY_LINE_RECIPES.recipeBuilder(ADDON_MOD.id("research_station_test"))
+            ASSEMBLY_LINE_RECIPES.recipeBuilder(ExampleMod.id("research_station_test"))
                 .inputItems(new ItemStack(Items.COAL, 64))
                 .outputItems(Items.DIAMOND)
                 .duration(10000)
@@ -272,7 +272,7 @@ To add a condition, you can use the `adjacentFluids(Fluid...)` methods, see [our
 
         @Override
         public void addRecipes(Consumer<FinishedRecipe> provider) {
-            ROCK_BREAKER_RECIPES.recipeBuilder(ADDON_MOD.id("test"))
+            ROCK_BREAKER_RECIPES.recipeBuilder(ExampleMod.id("test"))
                 .notConsumable(Blocks.DIRT.asItem())
                 .outputItems(Blocks.DIRT.asItem())
                 .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)

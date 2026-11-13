@@ -92,7 +92,7 @@ Bedrock Fluid Veins are invisible veins that exist under the bedrock, to find Fl
     ```java title="ExampleBedrockFluidVeins.java"
     public class ExampleBedrockFluidVeins {
         public static void init() {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.get(GTCEu.id('heavy_oil_deposit')).setWeight(9999);
+            GTRegistries.BEDROCK_FLUID_DEFINITIONS.get(GTCEu.id("heavy_oil_deposit")).setWeight(9999);
         }
     }
     ```

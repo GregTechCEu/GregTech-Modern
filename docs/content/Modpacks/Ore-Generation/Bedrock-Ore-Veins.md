@@ -103,7 +103,7 @@ By default, the mod doesn't include any bedrock ore veins. You can add them in e
     ```java title="ExampleBedrockOreVeins.java"
     public class ExampleBedrockOreVeins {
         public static void init() {
-            GTRegistries.BEDROCK_ORE_DEFINITIONS.get(GTCEu.id('example_ore')).weight(9999);
+            GTRegistries.BEDROCK_ORE_DEFINITIONS.get(GTCEu.id("example_ore")).weight(9999);
         }
     }
     ```

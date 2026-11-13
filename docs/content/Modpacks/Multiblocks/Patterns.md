@@ -24,7 +24,7 @@ public static MultiblockMachineDefinition MY_MACHINE = REGISTRATE
                 .slice("XSX", "CCC", "CCC", "XXX")
                 .slice("XSXX", "CCCC", "CCCC", "XXXX") // (7)
                 .where('S', Predicates.controller(definition)) // (4)
-                .where('X', Predicates.blocks(GTBlocks.CASING_INVAR_HEATPROOF)
+                .where('X', Predicates.blocks(GTBlocks.CASING_INVAR_HEATPROOF.get())
                         .and(Predicates.autoAbilities(GTRecipeTypes.ASSEMBLER_RECIPES))) // (5)
                 .where('M', Predicates.autoAbilities(false, true, false))
                 .where('A', Predicates.blockTag(CustomTags.CLEANROOM_FLOORS)) // (6)

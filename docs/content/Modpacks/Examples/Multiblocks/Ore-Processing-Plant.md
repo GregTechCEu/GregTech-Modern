@@ -9,7 +9,7 @@ title: "Ore Processing Plant"
 
 === "Java"
     ```java title="AddonRecipeTypes.java"
-        public final static GTRecipeType ORE_PROCESSING_RECIPES = GTRecipeTypes.register(AddonMod.id("ore_processing_plant"), MULTIBLOCK)
+        public final static GTRecipeType ORE_PROCESSING_RECIPES = GTRecipeTypes.register(ExampleMod.id("ore_processing_plant"), MULTIBLOCK)
             .setMaxIOSize(1, 8, 2, 1)
             .setEUIO(IO.IN)
             .setSound(GTSoundEntries.BATH);

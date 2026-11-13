@@ -120,7 +120,7 @@ You can also add flags to existing materials:
     ```js title="flags.js"
     GTCEuStartupEvents.materialModification(event => {
         GTMaterials.Lead.addFlags(GTMaterialFlags.GENERATE_GEAR); // This is for materials already in GTCEU
-        GTMaterials.get('custom_material_name').addFlags(GTMaterialFlags.GENERATE_FOIL); // This only works for materials added by GTCEU addons
+        GTRegistries.MATERIALS.get('custom_material_name').addFlags(GTMaterialFlags.GENERATE_FOIL); // This only works for materials added by GTCEU addons
     });
     ```
 

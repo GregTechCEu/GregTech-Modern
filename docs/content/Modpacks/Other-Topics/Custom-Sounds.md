@@ -42,7 +42,7 @@ public class ExampleDataGenerators {
         if (event.includeClient()) {
             event.getGenerator().addProvider(
                     true,
-                    new SoundEntryBuilder.SoundEntryProvider(packOutput, examplemod.MOD_ID));
+                    new SoundEntryBuilder.SoundEntryProvider(packOutput, ExampleMod.MOD_ID));
         }
     }
 }

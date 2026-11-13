@@ -69,8 +69,8 @@ A more illustrative example, using some Applied Energistics 2 items:
 
     ```js title="setignored_usage_example.js"
     GTCEuStartupEvents.materialModification(event => { // (1)
-        TagPrefix.gemChipped.setIgnored(GTMaterials.get("fluix_crystal")) // (2)
-        TagPrefix.rock.setIgnored(GTMaterials.get("sky_stone"), AEBlocks.SKY_STONE_BLOCK) // (3)
+        TagPrefix.gemChipped.setIgnored(GTRegistries.MATERIALS.get("fluix_crystal")) // (2)
+        TagPrefix.rock.setIgnored(GTRegistries.MATERIALS.get("sky_stone"), AEBlocks.SKY_STONE_BLOCK) // (3)
         TagPrefix.ingot.removeIgnored(GTMaterials.Iron) // (4)
     })
     ```
@@ -103,7 +103,7 @@ Assure that the material is registered with a liquid before attempting to replac
 
     ```java title="ExampleMaterials.java"
     public static void register() {
-        GLUGG_BRINE = new Material.Builder(MyMod.id("glugg_brine"))
+        GLUGG_BRINE = new Material.Builder(ExampleMod.id("glugg_brine"))
             .liquid(new FluidBuilder()).buildAndRegister();
     
         GTFluids.handleNonMaterialFluids(GLUGG_BRINE, () -> PVFluidRegistry.BRINE_FLUID_SOURCE.get());

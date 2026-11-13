@@ -23,8 +23,8 @@ public class ExampleMod {
     }
     
     public void registerConditions(GTCEuAPI.RegisterEvent<ResourceLocation, RecipeConditionType<?>> event) {
-        EXAMPLE_CONDITION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS, AddonMod.id("example_condition"), // (1)
-                new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
+        EXAMPLE_CONDITION = new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC);
+        event.register(ExampleMod.id("example_condition"), EXAMPLE_CONDITION); // (1)
     }
 }
 ```
@@ -71,7 +71,7 @@ public class ExampleCondition extends RecipeCondition<ExampleCondition> {
 
     @Override
     protected boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        return recipeLogic.getMachine().getHolder().getCurrentPos().getY() >= height;
+        return recipeLogic.getMachine().getBlockPos().getY() >= height;
     }
 
     @Override
@@ -121,7 +121,7 @@ This creates the basic "template" that might be used for serialization. This sho
 ```java
     @Override
     protected boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        return recipeLogic.getMachine().getHolder().getCurrentPos().getY() >= height;
+        return recipeLogic.getMachine().getBlockPos().getY() >= height;
     }
 ```
 
