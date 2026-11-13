@@ -625,7 +625,6 @@ public class GTMachines {
     public static final MachineDefinition[] FISHER = registerTieredMachines(REGISTRATE, "fisher", FisherMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
-                    // .editableUI(FisherMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("fisher"), (tier + 1) * (tier + 1)))
                     .model(createFisherModel())
                     .langValue("%s Fisher %s".formatted(VLVH[tier], VLVT[tier]))
                     .tooltips(Component.translatable("machine.gtceu.fisher.tooltip"),
@@ -1153,11 +1152,9 @@ public class GTMachines {
             .modelProperty(IS_FORMED, false)
             .tooltips(GTCommonComponents.PART_SHARING_DISABLED,
                     Component.translatable("machine.gtceu.maintenance_hatch_cleanroom_auto.tooltip.0"),
-                    Component.translatable("machine.gtceu.maintenance_hatch_cleanroom_auto.tooltip.1"))
-            .tooltipBuilder((stack, tooltips) -> {
-                tooltips.add(Component.literal("  ").append(Component
-                        .translatable(CleanroomType.CLEANROOM.getTranslationKey()).withStyle(ChatFormatting.GREEN)));
-            })
+                    Component.translatable("machine.gtceu.maintenance_hatch_cleanroom_auto.tooltip.1"),
+                    Component.literal("  ").append(Component
+                            .translatable(CleanroomType.CLEANROOM.getTranslationKey()).withStyle(ChatFormatting.GREEN)))
             .overlayTieredHullModel(GTCEu.id("block/machine/part/cleaning_maintenance_hatch"))
             .tier(HV)
             .register();
