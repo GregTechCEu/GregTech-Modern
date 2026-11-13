@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
-import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -40,8 +39,8 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     }
 
     @Override
-    public KJSTagPrefix create(String id) {
-        return KJSTagPrefix.oreTagPrefix(id);
+    public TagPrefix create(ResourceLocation id) {
+        return TagPrefix.oreTagPrefix(id, null);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.prefix;
 
-import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -11,7 +11,7 @@ public class BasicTagPrefixBuilder extends TagPrefixBuilder {
     }
 
     @Override
-    public KJSTagPrefix create(String id) {
-        return new KJSTagPrefix(id);
+    public TagPrefix create(ResourceLocation id) {
+        return new TagPrefix(id);
     }
 }
