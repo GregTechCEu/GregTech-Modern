@@ -33,7 +33,7 @@ Steam multiblocks such as the Steam Grinder and Steam Oven use this class.
                     .where('E', Predicates.blocks(GTBlocks.BRONZE_BRICKS_HULL.get()))
                     .where('F', Predicates.blocks(GTBlocks.FIREBOX_BRONZE.get()))
                     .where('G', Predicates.blocks(GTBlocks.BRONZE_HULL.get()))
-                    .where('H', Predicates.controller(Predicates.blocks(definition.get())))
+                    .where('H', Predicates.controller(definition))
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/steam/bronze/bottom"),
                     GTCEu.id("block/machines/compressor"))
@@ -47,9 +47,9 @@ Steam multiblocks such as the Steam Grinder and Steam Oven use this class.
 
     GTCEuStartupEvents.registry('gtceu:machine', event => {
         event.create('large_steam_compressor', 'multiblock')
-            .machine((info) => new $SteamMulti(info, 4))
+            .blockEntityFactory((info) => new $SteamMulti(info, 4))
             .langValue("Large Steam Compressor")
-            // The number in holder is the max amount of parallel it can use.
+            // The number passed to the machine constructor is the max amount of parallel it can use.
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType('compressor')
             .recipeModifier((machine, recipe) => $SteamMulti.recipeModifier(machine, recipe), true)
@@ -69,7 +69,7 @@ Steam multiblocks such as the Steam Grinder and Steam Oven use this class.
                 .where('E', Predicates.blocks("gtceu:bronze_brick_casing"))
                 .where('F', Predicates.blocks("gtceu:bronze_firebox_casing"))
                 .where('G', Predicates.blocks("gtceu:bronze_machine_casing"))
-                .where('H', Predicates.controller(Predicates.blocks(definition.get())))
+                .where('H', Predicates.controller(definition))
                 .build())
             .workableCasingModel("gtceu:block/casings/steam/bronze/bottom",
                 "gtceu:block/machines/compressor")

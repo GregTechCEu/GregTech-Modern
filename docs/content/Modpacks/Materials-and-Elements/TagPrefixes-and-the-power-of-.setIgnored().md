@@ -62,16 +62,16 @@ A more illustrative example, using some Applied Energistics 2 items:
     public static void materialModification(PostMaterialEvent event) {
         TagPrefix.gemChipped.setIgnored(AddonMaterials.FLUIX_CRYSTAL);// (2)
         TagPrefix.rock.setIgnored(AddonMaterials.SKY_STONE, AEBlocks.SKY_STONE_BLOCK); // (3)
-        TagPrefix.ingot.removeIgnored(GTMaterials.Iron);// (4)
+        TagPrefix.ingot.get().removeIgnored(GTMaterials.Iron);// (4)
     }
     ```
 === "JavaScript"
 
     ```js title="setignored_usage_example.js"
     GTCEuStartupEvents.materialModification(event => { // (1)
-        TagPrefix.gemChipped.setIgnored(GTMaterials.get("fluix_crystal")) // (2)
-        TagPrefix.rock.setIgnored(GTMaterials.get("sky_stone"), AEBlocks.SKY_STONE_BLOCK) // (3)
-        TagPrefix.ingot.removeIgnored(GTMaterials.Iron) // (4)
+        TagPrefix.gemChipped.setIgnored(GTRegistries.MATERIALS.get(GTCEu.id("fluix_crystal"))) // (2)
+        TagPrefix.rock.setIgnored(GTRegistries.MATERIALS.get(GTCEu.id("sky_stone")), AEBlocks.SKY_STONE_BLOCK) // (3)
+        TagPrefix.ingot.get().removeIgnored(GTMaterials.Iron) // (4)
     })
     ```
 
@@ -93,7 +93,7 @@ material is custom, this is done using `GTCEuStartupEvents.registry()`, as depic
 
 Fluids are treated differently to items, their inclusion in a material is a property rather than a TagPrefix or MaterialFlag. 
 This makes replacing the fluid of a material with a fluid that you or another mod have created require a different approach than setIgnored. 
-The way to do this is using `GTFluids.handleNonMaterialFluids()` which can be found in the [``GTFluids`` class](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/common/data/GTFluids.java)
+The way to do this is using `GTFluids.handleNonMaterialFluids()` which can be found in the [``GTFluids`` class](https://github.com/GregTechCEu/GregTech-Modern/blob/1.21/src/main/java/com/gregtechceu/gtceu/common/data/GTFluids.java)
 
 `GTFluids.handleNonMaterialFluids()` takes in a `Material` and a `Fluid` or `Supplier<Fluid>` to replace the liquid of the material with the provided fluid.
 Assure that the material is registered with a liquid before attempting to replace it with your new fluid. An example is below.

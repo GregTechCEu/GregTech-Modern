@@ -43,10 +43,10 @@ Placeholders can be used by players in the monitor text module, or in the comput
 For example, a player may write something like this in a text module:
 ```
 Hello on day {calc {tick} / 20000}!
-Current energy buffer: {formatInt {energy}}/{formatInt {energyCapacity}} EU\
+Current energy buffer: {format_int {energy}}/{format_int {energy_capacity}} EU\
 {if {cmp {energy} < 5000000} {color red "\nLOW ENERGY!"}}
 Here's some random stuff:
-{repeat 5 {repeat {random 2 10} {block}}
+{repeat 5 {repeat {random 2 10} {block}}}
 ```
 And something like this would be displayed:
 ```

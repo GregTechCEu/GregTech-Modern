@@ -91,19 +91,19 @@ It can be chained if you want to make multiple items spoil using the same behavi
             // If spoilable is null, it means the stack cannot spoil
             if (spoilable != null) {
                 // Get amount of ticks until a completely fresh stack spoils
-                long totalTicks = spoilable.getSpoilTicks(stack);
+                long totalTicks = spoilable.getSpoilTicks();
                 // Get amount of ticks until this stack spoils (may be more than the previous value in some cases)
-                long ticksRemaining = spoilable.getTicksUntilSpoiled(stack);
-                // Get the stack this stack spoils into
-                ItemStack spoilResult = spoilable.spoilResult(stack);
+                long ticksRemaining = spoilable.getTicksUntilSpoiled();
+                // Get the stack this stack spoils into (simulate = true, so no entities are spawned)
+                ItemStack spoilResult = spoilable.spoilResult(new SpoilContext(), true);
                 // Get whether this stack should START spoiling
-                boolean shouldStartSpoiling = spoilable.shouldSpoil(stack);
-                // Get the amount of ticks until this stack spoils (may be more than spoilable.getSpoilTicks(stack))
-                spoilable.setTicksUntilSpoiled(stack, 12345);
+                boolean shouldStartSpoiling = spoilable.shouldSpoil();
+                // Set the amount of ticks until this stack spoils (may be more than spoilable.getSpoilTicks())
+                spoilable.setTicksUntilSpoiled(12345);
                 // Freeze the spoiling progress of this stack
-                spoilable.freezeSpoiling(stack);
+                spoilable.freezeSpoiling();
                 // Unfreeze the spoiling progress of this stack
-                spoilable.unfreezeSpoiling(stack);
+                spoilable.unfreezeSpoiling();
             }
         }
         
@@ -112,12 +112,6 @@ It can be chained if you want to make multiple items spoil using the same behavi
             // That may happen if it is the result of a non-GT recipe and not a crafting result for example
             SpoilUtils.update(stack, new SpoilContext(level, pos));
         }
-    
-        public void disableFrozenAndNonFrozenEquality() {
-            // If you want the player to have frozen stacks in their inventory, do this
-            // A side effect of this is that filtering by ticks remaining until spoiled will no longer work
-            SpoilUtils.FROZEN_EQUALITY = false;
-        }
     }
     ```
 
@@ -125,8 +119,8 @@ It can be chained if you want to make multiple items spoil using the same behavi
 
 ### Frozen stacks
 
-To freeze a stack's spoiling progress, you can use `spoilable.freezeSpoiling(stack)`, and `spoilable.unfreezeSpoiling(stack)`
-to unfreeze. A frozen stack's freshness will never be changed unless `spoilable.setTicksUntilSpoiled(stack, value)` is called.
+To freeze a stack's spoiling progress, you can use `spoilable.freezeSpoiling()`, and `spoilable.unfreezeSpoiling()`
+to unfreeze. A frozen stack's freshness will never be changed unless `spoilable.setTicksUntilSpoiled(value)` is called.
 Currently, a stack is frozen only if it is in a phantom slot (in a GregTech filter).
 !!! warning "`ItemHandlerHelper.canItemStacksStack` behaviour is completely different for spoilables"
 

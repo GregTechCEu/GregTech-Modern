@@ -132,7 +132,7 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
     public final static BonkRecipeCapability CAP = new BonkRecipeCapability();
 
     protected BonkRecipeCapability() {
-        super(ResourceLocation.fromNamespaceAndPath("MOD_ID", "bonk"), 0x777777, false, 5, BonkIngredient.Serializer.INSTANCE);
+        super(Bonk.id("bonk"), 0x777777, false, 5, BonkIngredient.Serializer.INSTANCE);
     }
 
     @Override
@@ -277,7 +277,7 @@ We will register the actual part, as well as a "Large Bonk Reactor" which is an 
 public class BonkMachines {
 
     public static final MachineEntry<MachineDefinition> BONK_HATCH = Bonk.REGISTRATE
-            .machine("bonk_hatch", (holder) -> new BonkHatchPartMachine(holder, ZPM, IO.IN))
+            .machine("bonk_hatch", (info) -> new BonkHatchPartMachine(info, ZPM, IO.IN))
             .langValue("Bonk Hatch")
             .rotationState(RotationState.ALL)
             .tier(ZPM)

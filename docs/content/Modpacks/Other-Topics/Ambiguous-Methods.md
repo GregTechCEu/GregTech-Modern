@@ -10,45 +10,50 @@ For example, when you do:
 ```js
 
 GTCEuStartupEvents.registry('gtceu:machine', event => {
-    event.create('unboxinator', 'multiblock')
-        .tooltips(Component.literal("I am a multiblock"))
-    // Rest of the multiblock
+    event.create('unboxinator')
+        .tiers(GTValues.LV)
+        .definition((tier, builder) => builder
+            .tooltips(Component.literal("I am a machine")))
+    // Rest of the machine
 })
 ```
 
 you'd get the error:
 ```
-Error in 'GTCEuStartupEvents.registry': The choice of Java method com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder.tooltips matching JavaScript argument types (net.minecraft.network.chat.MutableComponent) is ambiguous; candidate methods are: 
+Error in 'GTCEuStartupEvents.registry': The choice of Java method com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder.tooltips matching JavaScript argument types (net.minecraft.network.chat.MutableComponent) is ambiguous; candidate methods are: 
     class com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder tooltips(java.util.List)
     class com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder tooltips(net.minecraft.network.chat.Component[])
 ```
 
 In this case, there's ambiguity between the following 2 java functions:
 ```java
-    public MachineBuilder<DEFINITION> tooltips(@Nullable Component... components) {
-        return tooltips(Arrays.asList(components));
+    public SELF tooltips(@Nullable Component... components) {
+        // ...
     }
 
-    public MachineBuilder<DEFINITION> tooltips(List<? extends @Nullable Component> components) {
-        tooltips.addAll(components.stream().filter(Objects::nonNull).toList());
-        return this;
+    public SELF tooltips(List<? extends Component> components) {
+        // ...
     }
 ```
 
 You would want to select one of the two, and this can be done in the following way:
 ```js
 GTCEuStartupEvents.registry('gtceu:machine', event => {
-    event.create('unboxinator', 'multiblock')
-        ["tooltips(java.util.List)"]([Component.literal("I am a multiblock")])
-        // Rest of the multiblock
+    event.create('unboxinator')
+        .tiers(GTValues.LV)
+        .definition((tier, builder) => builder
+            ["tooltips(java.util.List)"]([Component.literal("I am a machine")]))
+    // Rest of the machine
 })
 ```
 or
 ```js
 GTCEuStartupEvents.registry('gtceu:machine', event => {
-    event.create('unboxinator', 'multiblock')
-        ["tooltips(net.minecraft.network.chat.Component[])"]([Component.literal("I am a multiblock")])
-        // Rest of the multiblock
+    event.create('unboxinator')
+        .tiers(GTValues.LV)
+        .definition((tier, builder) => builder
+            ["tooltips(net.minecraft.network.chat.Component[])"]([Component.literal("I am a machine")]))
+    // Rest of the machine
 })
 ```
 
@@ -58,42 +63,23 @@ Because of the way javascript indexing works, `.foo` and `["foo"]` are the same 
 This same problem can occur when trying to call a constructor.  
 For example, when you do
 ```js
-GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
-  event.create("unboxinator")
-    .setProgressBar(
-      new ResourceTexture("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
-      FillDirection.LEFT_TO_RIGHT
-    )
-    // Rest of the recipe type
+GTCEuStartupEvents.craftingComponents(event => {
+    event.setMaterialEntry(GTCraftingComponents.PLATE, GTValues.UEV, new MaterialEntry('plate', 'gtceu:infinity'))
 })
 ```
 You'd get the following error:
 ```
-dev.latvian.mods.rhino.EvaluatorException: The choice of Java constructor com.lowdragmc.lowdraglib.gui.texture.ResourceTexture matching JavaScript argument types (string) is ambiguous; candidate constructors are: 
-    ResourceTexture(net.minecraft.resources.ResourceLocation)
-    ResourceTexture(java.lang.String) (startup_scripts:example.js#17)
+dev.latvian.mods.rhino.EvaluatorException: The choice of Java constructor com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry matching JavaScript argument types (string,string) is ambiguous; candidate constructors are: 
+    MaterialEntry(com.gregtechceu.gtceu.api.data.tag.TagPrefix,com.gregtechceu.gtceu.api.data.chemical.material.Material)
+    MaterialEntry(net.minecraft.core.Holder,net.minecraft.core.Holder)
+    ... (startup_scripts:example.js#2)
 ```
 
-You would want to select one of the two, and this can be done in the following way:
+You would want to select one of them, and this can be done in the following way:
 ```js
-GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
-  event.create("unboxinator")
-    .setProgressBar(
-      ResourceTexture["(java.lang.String)"]("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
-      FillDirection.LEFT_TO_RIGHT
-    )
-    // Rest of the recipe type
-})
-```
-or
-```js
-GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
-  event.create("unboxinator")
-    .setProgressBar(
-      ResourceTexture["(net.minecraft.resources.ResourceLocation)"]("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
-      FillDirection.LEFT_TO_RIGHT
-    )
-    // Rest of the recipe type
+GTCEuStartupEvents.craftingComponents(event => {
+    event.setMaterialEntry(GTCraftingComponents.PLATE, GTValues.UEV,
+        MaterialEntry["(com.gregtechceu.gtceu.api.data.tag.TagPrefix,com.gregtechceu.gtceu.api.data.chemical.material.Material)"]('plate', 'gtceu:infinity'))
 })
 ```
 !!! Note

@@ -30,7 +30,7 @@ By default, the mod doesn't include any bedrock ore veins. You can add them in e
                 .material(GTMaterials.Limonite, 2)
                 .material(GTMaterials.Hematite, 2)
                 .material(GTMaterials.Malachite, 1)
-                .dimensions('minecraft:overworld')
+                .addSpawnDimension('minecraft:overworld')
         })
     })
     ```
@@ -38,6 +38,7 @@ By default, the mod doesn't include any bedrock ore veins. You can add them in e
     1. The diameter of the bedrock vein in chunks
     2. The second parameter defines the chance of each material being mined on each cycle
 === "Java"
+    Bedrock ore veins are stored in a datapack registry, so in Java they are created through datagen.  
     In Java, `.dimensions()` only accepts a `Set<ResourceKey<Level>>`. For example, this is how you would assign the overworld a variable:
     ```java
     public static final Set<ResourceKey<Level>> DIM_OVERWORLD = Set.of(Level.OVERWORLD);
@@ -51,39 +52,40 @@ By default, the mod doesn't include any bedrock ore veins. You can add them in e
     
     ```java title="ExampleBedrockOreVeins.java"
     public class ExampleBedrockOreVeins {
-        public static void init() {}
         
         public static final Set<ResourceKey<Level>> DIM_OVERWORLD = Set.of(Level.OVERWORLD);
+
+        public static final ResourceKey<BedrockOreDefinition> OVERWORLD_BEDROCK_ORE_VEIN_IRON = ResourceKey.create(
+                GTRegistries.Keys.BEDROCK_ORE, ExampleMod.id("overworld_bedrock_ore_vein_iron"));
         
-        public static final BedrockOreDefinition OVERWORLD_BEDROCK_ORE_VEIN_IRON = BedrockOreDefinition.builder(ExampleMod.id("overworld_bedrock_ore_vein_iron"))
-                .weight(100)
-                .size(3) // (1)
-                .yield(10, 20)
-                .materials(List.of(
-                    new WeightedMaterial(Goethite, 5), // (2)
-                    new WeightedMaterial(Limonite, 2),
-                    new WeightedMaterial(Hematite, 2),
-                    new WeightedMaterial(Gold, 1)
-                ))
-                .dimensions(DIM_OVERWORLD)
-                .register();
+        public static void bootstrap(BootstrapContext<BedrockOreDefinition> context) {
+            context.register(OVERWORLD_BEDROCK_ORE_VEIN_IRON, BedrockOreDefinition.builder(context.lookup(Registries.BIOME))
+                    .weight(100)
+                    .size(3) // (1)
+                    .yield(10, 20)
+                    .material(Goethite.get(), 5) // (2)
+                    .material(Limonite.get(), 2)
+                    .material(Hematite.get(), 2)
+                    .material(Gold.get(), 1)
+                    .dimensions(DIM_OVERWORLD)
+                    .build());
+        }
     }
     ```
     
     1. The diameter of the bedrock vein in chunks
     2. The second parameter defines the chance of each material being mined on each cycle
 
-    As the last step, you need to actually enable the registration of the veins in your class implementing IGTAddon.  
+    As the last step, you need to add the bootstrap method to your datagen, and run datagen.  
     
-    ```java title="ExampleModGTAddon.java"
-    @GTAddon
-    public class ExampleModGTAddon implements IGTAddon {
+    ```java title="ExampleModDatagen.java"
+    @SubscribeEvent
+    public static void gatherData(GatherDataEvent event) {
         // ...
-        @Override
-        public void registerBedrockOreVeins() {
-            ExampleBedrockOreVeins.init();
-        }
-        // ...
+        event.getGenerator().addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
+                event.getGenerator().getPackOutput(), event.getLookupProvider(),
+                new RegistrySetBuilder().add(GTRegistries.Keys.BEDROCK_ORE, ExampleBedrockOreVeins::bootstrap),
+                Set.of(ExampleMod.MOD_ID)));
     }
     ```
 
@@ -99,14 +101,8 @@ By default, the mod doesn't include any bedrock ore veins. You can add them in e
     });
     ```
 
-=== "Java"
-    ```java title="ExampleBedrockOreVeins.java"
-    public class ExampleBedrockOreVeins {
-        public static void init() {
-            GTRegistries.BEDROCK_ORE_DEFINITIONS.get(GTCEu.id('example_ore')).weight(9999);
-        }
-    }
-    ```
+=== "JSON"
+    Bedrock ore veins are loaded from datapacks, so you can modify a vein by overriding its file (with the same ID) in your datapack, at `data/<namespace>/gtceu/bedrock_ore/<vein id>.json`.
 
 
 ## Removing a Bedrock Ore Vein
@@ -119,11 +115,7 @@ By default, the mod doesn't include any bedrock ore veins. You can add them in e
     });
     ```
 
-=== "Java"
-    ```java title="ExampleBedrockOreVeins.java"
-    public class ExampleBedrockOreVeins {
-        public static void init() {
-            GTRegistries.BEDROCK_ORE_DEFINITIONS.remove(GTCEu.id("example_ore"));
-        }
-    }
+=== "JSON"
+    ```json title="resources/data/gtceu/gtceu/bedrock_ore/example_ore.json"
+        {"neoforge:conditions":[{"type":"neoforge:false"}]}
     ```

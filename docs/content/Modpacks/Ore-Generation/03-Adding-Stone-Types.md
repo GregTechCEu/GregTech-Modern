@@ -65,10 +65,11 @@ Some mods may generate blocks with `BlockState`s that differ from their `default
 In this case you have to specify the actually generated block state in your ore stone type's `stateSupplier`:
 
 ```js
-let UtilsJS = Java.loadClass("dev.latvian.mods.kubejs.util.UtilsJS")
-
 GTCEuStartupEvents.registry('gtceu:tag_prefix', event => {
-    event.create(type.path, 'ore')
-        .stateSupplier(() => UtilsJS.parseBlockState("my_mod:blockium[some_blockstate_property=true]"))
+    event.create('blockium', 'ore')
+        .stateSupplier(() => Block.getBlock('my_mod:blockium').defaultBlockState().setValue(BlockProperties.LIT, true)) // (1)
+        // ...
 })
 ```
+
+1. Replace `BlockProperties.LIT` with the block state property (and value) your block actually generates with.

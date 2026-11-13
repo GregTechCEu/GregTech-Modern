@@ -13,7 +13,7 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
     ```java title="MultiMachines.java"
     
         public static final MachineEntry<MultiblockMachineDefinition> SUPERHEATED_PYROLYZING_OVEN = REGISTRATE
-                .multiblock("superheated_pyrolyzing_oven", (holder) -> new CoilWorkableElectricMultiblockMachine(holder))
+                .multiblock("superheated_pyrolyzing_oven", (info) -> new CoilWorkableElectricMultiblockMachine(info))
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(GTRecipeTypes.PYROLYSE_RECIPES)
                 .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
@@ -39,7 +39,7 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
                     .where('G', Predicates.heatingCoils())
                     .where('H', Predicates.blocks(GCYMBlocks.CASING_HIGH_TEMPERATURE_SMELTING.get()))
                     .where('M', Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
-                    .where('I', Predicates.controller(Predicates.blocks(definition.get())))
+                    .where('I', Predicates.controller(definition))
                     .build())
                 .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                      GTCEu.id("block/multiblock/pyrolyse_oven"))
@@ -52,7 +52,7 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
     
     GTCEuStartupEvents.registry('gtceu:machine', event => {
         event.create("superheated_pyrolyzing_oven", "multiblock")
-            .machine((holder) => new CoilWorkableElectricMultiblockMachine(holder))
+            .blockEntityFactory((info) => new CoilWorkableElectricMultiblockMachine(info))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes('pyrolyse_oven')
             .recipeModifiers(
@@ -82,7 +82,7 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
                 .where('G', Predicates.heatingCoils())
                 .where('H', Predicates.blocks("gtceu:high_temperature_smelting_casing"))
                 .where('M', Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
-                .where('I', Predicates.controller(Predicates.blocks(definition.get())))
+                .where('I', Predicates.controller(definition))
                 .build())
             .workableCasingModel("gtceu:block/casings/solid/machine_casing_solid_steel",
                 "gtceu:block/multiblock/pyrolyse_oven");

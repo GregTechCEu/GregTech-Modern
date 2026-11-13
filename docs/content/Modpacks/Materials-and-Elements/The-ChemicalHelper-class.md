@@ -16,11 +16,11 @@ Materials in contexts where it might not be possible, or it might be unsafe, to 
 The following functions are available for use by packmakers:
 
 
-### `.getMaterial()`
+### `.getMaterialStack()` / `.getMaterial()`
 
-Can take almost any form of item reference (`Item`, `ItemStack`, `Ingredient` and so on) and will return the
-`Material` entry associated with it. If there is no associated Material, the method returns `null`.
-A `Fluid` may also be passed as input.
+`.getMaterialStack()` can take almost any form of item reference (`Item`, `ItemStack`, `MaterialEntry` and so on) and will return the
+`MaterialStack` (a `Material` and an amount) associated with it. If there is no associated Material, the method returns `MaterialStack.EMPTY`.
+`.getMaterial()` takes a `Fluid` as input and will return the associated `Material`, or `null` if there is none.
 
 
 ### `.getPrefix()`
@@ -45,10 +45,10 @@ Depending on the amount passed, the functions will return different items:
   material amount passed.
 
 
-### `.getTag()` / `.getBlockTag()` / `.getTags()` / `.getBlockTags()`
+### `.getTag()` / `.getBlockTag()` / `.getTags()`
 
 Takes a `TagPrefix` and a non-`null` `Material` as input and returns the first item or block tag
-(or a Java array of all item or block tags if the plural functions are used) possessed by the item represented by
+(or a Java list of all item tags if `.getTags()` is used) possessed by the item represented by
 that `TagPrefix`-`Material` combination.
 
 
@@ -68,13 +68,13 @@ MaterialStack ironMaterial = ChemicalHelper.getMaterialStack(doubleIronPlate); /
 TagPrefix rawOrePrefix = ChemicalHelper.getPrefix(rawPlatinum); // (2)
 ItemStack cobaltIngotStack = ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Cobalt, 32); // (3)
 
-ItemStack goldNugget = ChemicalHelper.getIngot(GTMaterials.Gold, GTValues.M / 9); // (4)
-ItemStack steelBlock = ChemicalHelper.getIngot(GTMaterials.Steel, GTValues.M * 9);
+ItemStack goldNugget = ChemicalHelper.getIngot(GTMaterials.Gold.get(), GTValues.M / 9); // (4)
+ItemStack steelBlock = ChemicalHelper.getIngot(GTMaterials.Steel.get(), GTValues.M * 9);
 
-ItemStack ashSmallDust = ChemicalHelper.getDust(GTMaterials.Ash, GTValues.M / 4); // (5)
+ItemStack ashSmallDust = ChemicalHelper.getDust(GTMaterials.Ash.get(), GTValues.M / 4); // (5)
 ```
 
-1. `ironMaterial` is now a reference to `GTMaterials.Iron`.
+1. `ironMaterial` is now a `MaterialStack` of `GTMaterials.Iron`, with an amount of `GTValues.M * 2`.
 2. `rawOrePrefix` is now a reference to `TagPrefix.rawOre`.
 3. `cobaltIngotStack` is now an ItemStack representing half a stack of cobalt ingots.
 4. `goldNugget` is now an ItemStack representing one gold nugget.
