@@ -17,7 +17,7 @@ public class BlockMatchingError extends PatternError {
 
     // spotless:off
     public static final MapCodec<BlockMatchingError> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
+            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::pos),
             BuiltInRegistries.BLOCK.byNameCodec().listOf().fieldOf("blocks").forGetter(BlockMatchingError::getBlocks))
     .apply(instance, BlockMatchingError::new));
     //spotless:on

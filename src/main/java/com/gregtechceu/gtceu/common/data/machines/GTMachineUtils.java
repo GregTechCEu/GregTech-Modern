@@ -139,7 +139,7 @@ public class GTMachineUtils {
         MachineEntry<MachineDefinition>[] definitions = new MachineEntry[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             var register = registrate
-                    .machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
+                    .machine(GTValues.VNL[tier] + "_" + name,
                             info -> factory.buildMachine(info, tier))
                     .tier(tier);
             definitions[tier] = builder.apply(tier, register);
@@ -442,7 +442,7 @@ public class GTMachineUtils {
         for (int tier : tiers) {
             long maxAmount = 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1);
             var register = registrate.machine(
-                    GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
+                    VNL[tier] + "_" + name,
                     (holder) -> new QuantumTankMachine(holder, tier, maxAmount))
                     .langValue(toEnglishName(name) + " " + LVT[tier])
                     .item(QuantumTankMachineItem::new)
@@ -546,7 +546,7 @@ public class GTMachineUtils {
         MachineEntry<MultiblockMachineDefinition>[] definitions = new MachineEntry[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             var register = registrate
-                    .multiblock(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
+                    .multiblock(GTValues.VNL[tier] + "_" + name,
                             holder -> factory.buildMachine(holder, tier))
                     .tier(tier);
             definitions[tier] = builder.apply(tier, register);
@@ -655,7 +655,6 @@ public class GTMachineUtils {
                         () -> new ItemLike[] {
                                 ChemicalHelper.getItemOrThrow(TagPrefix.dustTiny, GTMaterials.Ash) })
                 .workableCasingModel(casingTexture, overlayModel)
-                .additionalDisplay(LargeCombustionEngineMachine::additionalDisplay)
                 .tooltips(
                         Component.translatable("gtceu.universal.tooltip.base_production_eut", V[tier]),
                         Component.translatable("gtceu.universal.tooltip.uses_per_hour_lubricant",

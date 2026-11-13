@@ -222,7 +222,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                     (getMachine().hasFrontFacing() && getMachine().getFrontFacing() == outputFacing))
                 return;
             this.itemOutputDirection = outputFacing;
-            syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
+            syncDataHolder.markClientSyncFieldDirty("itemOutputDirection");
             updateItemOutputSubscription();
         }
     }

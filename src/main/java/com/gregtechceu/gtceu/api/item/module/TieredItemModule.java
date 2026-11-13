@@ -13,8 +13,6 @@ import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Locale;
-
 public abstract class TieredItemModule extends ItemModule implements ITieredItemModule {
 
     @Getter
@@ -28,7 +26,7 @@ public abstract class TieredItemModule extends ItemModule implements ITieredItem
     public TieredItemModule(ResourceLocation id, int tier) {
         super(id);
         this.tier = tier;
-        this.baseLocation = getId().withPath(p -> p.replaceFirst(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_", ""));
+        this.baseLocation = getId().withPath(p -> p.replaceFirst(GTValues.VNL[tier] + "_", ""));
     }
 
     @Override

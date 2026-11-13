@@ -724,7 +724,7 @@ public class GTItems {
 
     private static ItemEntry<ComponentItem> registerElectricMotor(int tier) {
         var builder = REGISTRATE
-                .item("%s_electric_motor".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .item("%s_electric_motor".formatted(GTValues.VNL[tier]), ComponentItem::new)
                 .lang("%s Electric Motor".formatted(GTValues.VN[tier]))
                 .onRegister(attach(new TieredBehaviour(tier)));
         if (tier <= GTValues.UV) builder.tag(CustomTags.ELECTRIC_MOTORS);
@@ -760,7 +760,7 @@ public class GTItems {
 
     private static ItemEntry<ComponentItem> registerElectricPump(int tier) {
         var builder = REGISTRATE
-                .item("%s_electric_pump".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .item("%s_electric_pump".formatted(GTValues.VNL[tier]), ComponentItem::new)
                 .lang("%s Electric Pump".formatted(GTValues.VN[tier]))
                 .onRegister(attach(new TieredBehaviour(tier)))
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[tier])))
@@ -801,7 +801,7 @@ public class GTItems {
 
     private static ItemEntry<ComponentItem> registerFluidRegulator(int tier) {
         var builder = REGISTRATE
-                .item("%s_fluid_regulator".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .item("%s_fluid_regulator".formatted(GTValues.VNL[tier]), ComponentItem::new)
                 .lang("%s Fluid Regulator".formatted(GTValues.VN[tier]))
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[tier])))
                 .onRegister(attach(new TooltipBehavior(lines -> {
@@ -841,7 +841,7 @@ public class GTItems {
 
     private static ItemEntry<ComponentItem> registerConveyorModule(int tier) {
         var builder = REGISTRATE
-                .item("%s_conveyor_module".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .item("%s_conveyor_module".formatted(GTValues.VNL[tier]), ComponentItem::new)
                 .lang("%s Conveyor Module".formatted(GTValues.VN[tier]))
                 .onRegister(attach(new TieredBehaviour(tier)))
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[tier])))
@@ -882,7 +882,7 @@ public class GTItems {
 
     private static ItemEntry<ComponentItem> registerElectricPiston(int tier) {
         var builder = REGISTRATE
-                .item("%s_electric_piston".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .item("%s_electric_piston".formatted(GTValues.VNL[tier]), ComponentItem::new)
                 .lang("%s Electric Piston".formatted(GTValues.VN[tier]))
                 .onRegister(attach(new TieredBehaviour(tier)));
         if (tier <= GTValues.UV) builder.tag(CustomTags.ELECTRIC_PISTONS);
@@ -917,7 +917,7 @@ public class GTItems {
             null;
 
     private static ItemEntry<ComponentItem> registerRobotArm(int tier) {
-        var builder = REGISTRATE.item("%s_robot_arm".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+        var builder = REGISTRATE.item("%s_robot_arm".formatted(GTValues.VNL[tier]), ComponentItem::new)
                 .lang("%s Robot Arm".formatted(GTValues.VN[tier]))
                 .onRegister(
                         attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[tier]), new TieredBehaviour(tier)))
@@ -956,7 +956,7 @@ public class GTItems {
 
     private static ItemEntry<ComponentItem> registerFieldGenerator(int tier) {
         var builder = REGISTRATE
-                .item("%s_field_generator".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+                .item("%s_field_generator".formatted(GTValues.VNL[tier]), ComponentItem::new)
                 .lang("%s Field Generator".formatted(GTValues.VN[tier]))
                 .onRegister(attach(new TieredBehaviour(tier)));
         if (tier <= GTValues.UV) builder.tag(CustomTags.FIELD_GENERATORS);
@@ -986,7 +986,7 @@ public class GTItems {
     public static ItemEntry<ComponentItem> EMITTER_OpV = GTCEuAPI.isHighTier() ? registerEmitter(GTValues.OpV) : null;
 
     private static ItemEntry<ComponentItem> registerEmitter(int tier) {
-        var builder = REGISTRATE.item("%s_emitter".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+        var builder = REGISTRATE.item("%s_emitter".formatted(GTValues.VNL[tier]), ComponentItem::new)
                 .lang("%s Emitter".formatted(GTValues.VN[tier]))
                 .onRegister(attach(new TieredBehaviour(tier)));
         if (tier <= GTValues.UV) builder.tag(CustomTags.EMITTERS);
@@ -1014,7 +1014,7 @@ public class GTItems {
     public static ItemEntry<ComponentItem> SENSOR_OpV = GTCEuAPI.isHighTier() ? registerSensor(GTValues.OpV) : null;
 
     private static ItemEntry<ComponentItem> registerSensor(int tier) {
-        var builder = REGISTRATE.item("%s_sensor".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::new)
+        var builder = REGISTRATE.item("%s_sensor".formatted(GTValues.VNL[tier]), ComponentItem::new)
                 .lang("%s Sensor".formatted(GTValues.VN[tier]))
                 .onRegister(attach(new TieredBehaviour(tier)));
         if (tier <= GTValues.UV) builder.tag(CustomTags.SENSORS);
@@ -2196,11 +2196,7 @@ public class GTItems {
                     .build())))
             .register();
 
-    public static void init() {
-        // GTMaterialItems.generateMaterialItems();
-        // GTMaterialItems.generateTools();
-        // GTMaterialItems.generateArmors();
-    }
+    public static void init() {}
 
     public static <T extends ItemLike> NonNullConsumer<T> materialInfo(Supplier<ItemMaterialInfo> materialInfo) {
         return item -> ItemMaterialData.registerMaterialInfo(item, materialInfo.get());

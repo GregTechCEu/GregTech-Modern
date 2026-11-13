@@ -148,7 +148,12 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         listWidget
                 .child(GTMultiblockTextUtil.addUnformedWarning(this, syncManager))
                 .child(GTMultiblockTextUtil.addSteamUsageLine(this.steamEnergy, syncManager))
-                .child(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager))
+                .child(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
+
+        for (var child : GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager))
+            listWidget.child(child);
+
+        listWidget
                 .child(GTMultiblockTextUtil.addProgressLine(this, syncManager))
                 .child(GTMultiblockTextUtil.addParallelLine(this, syncManager))
                 .child(GTMultiblockTextUtil.addOutputLines(this, syncManager));

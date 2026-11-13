@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.util.FakeBlockTintGetter;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -14,6 +16,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
 import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +26,10 @@ public class BlockInfo {
 
     public static final Codec<BlockInfo> CODEC = BlockState.CODEC.xmap(BlockInfo::fromBlockState,
             BlockInfo::getBlockState);
+
+    public static final StreamCodec<ByteBuf, BlockInfo> STREAM_CODEC = ByteBufCodecs
+            .idMapper(Block.BLOCK_STATE_REGISTRY)
+            .map(BlockInfo::fromBlockState, BlockInfo::getBlockState);
 
     public static final FakeBlockTintGetter FAKE_LEVEL = new FakeBlockTintGetter();
 

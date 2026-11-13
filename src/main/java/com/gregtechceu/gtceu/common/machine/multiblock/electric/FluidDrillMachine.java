@@ -13,14 +13,26 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.trait.FluidDrillLogic;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.utils.serialization.network.ByteBufAdapters;
+import brachy.modularui.value.sync.*;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -48,6 +60,45 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
                 .map(IEnergyContainer.class::cast).toList());
 
         return Math.min(this.tier + 1, Math.max(this.tier, GTUtil.getFloorTierByVoltage(energyCont.getInputVoltage())));
+    }
+
+    @Override
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        List<IWidget> widgets = new ArrayList<>();
+
+        IntSyncValue fluidAmount = new IntSyncValue(() -> getRecipeLogic().getFluidToProduce());
+
+        var veinMaterial = GenericSyncValue.<RegistryFriendlyByteBuf, Component>builder(Component.class)
+                .adapter(ByteBufAdapters.COMPONENT)
+                .getter(() -> {
+                    if (getRecipeLogic().getVeinFluid() != null) {
+                        return getRecipeLogic().getVeinFluid().getFluidType()
+                                .getDescription().copy().withStyle(ChatFormatting.GREEN);
+                    } else {
+                        return Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area")
+                                .withStyle(ChatFormatting.RED);
+                    }
+                }).build();
+
+        syncManager.syncValue("veinMaterial", veinMaterial);
+        syncManager.syncValue("fluidAmount", fluidAmount);
+
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
+
+        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.ore_rig.ore_amount",
+                Component.literal(FormattingUtil.formatNumbers(
+                        fluidAmount.getIntValue() * 20L / FluidDrillLogic.MAX_PROGRESS) + "/s")
+                        .withStyle(ChatFormatting.BLUE)))
+                .asWidget().setEnabledIf($ -> isFormed()));
+
+        widgets.add(Text
+                .dynamic(() -> Component.translatable("gtceu.multiblock.fluid_rig.drilled_fluid",
+                        veinMaterial.getValue()))
+                .asWidget()
+                .setEnabledIf($ -> isFormed()));
+
+        return widgets;
     }
 
     public static int getDepletionChance(int tier) {

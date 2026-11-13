@@ -2,24 +2,19 @@ package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.item.datacomponents.CreativeMachineInfo;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.IFluidTank;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import brachy.modularui.api.drawable.Text;
@@ -28,9 +23,9 @@ import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
-import brachy.modularui.value.sync.FluidSlotSyncHandler;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.FluidSlot;
@@ -72,13 +67,13 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     private void setTicksPerCycle(int value) {
-        ticksPerCycle = value;
-        autoOutput.setTicksPerCycle(value);
+        ticksPerCycle = Math.clamp(value, 1, Integer.MAX_VALUE);
+        autoOutput.setTicksPerCycle(ticksPerCycle);
         onFluidChanged();
     }
 
     private void setmBPerCycle(int value) {
-        mBPerCycle = value;
+        mBPerCycle = Math.clamp(value, 1, Integer.MAX_VALUE);
         onFluidChanged();
     }
 
@@ -156,7 +151,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
                                 .child(Text.lang("gtceu.creative.tank.fluid").asWidget()
                                         .marginRight(4)
                                         .verticalCenter())
-                                .child(createPhantomStoredFluidSlot(syncManager)))
+                                .child(createFluidSlot(syncManager)))
                         .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
@@ -183,73 +178,18 @@ public class CreativeTankMachine extends QuantumTankMachine {
                                         .value(ticksPerCycle))));
     }
 
-    private IWidget createPhantomStoredFluidSlot(PanelSyncManager syncManager) {
-        syncManager.syncValue("fluid_slot",
-                new FluidSlotSyncHandler(new StoredFluidTank()).controlsAmount(false).phantom(true));
+    @Override
+    protected IWidget createFluidSlot(PanelSyncManager syncManager) {
+        FluidCacheTankWrapper fluidTank = new FluidCacheTankWrapper(((InfiniteCache) cache).getInternal());
+        syncManager.syncValue("fluid_slot", SyncHandlers.fluidSlot(fluidTank)
+                .controlsAmount(false).phantom(true));
         return new FluidSlot().syncHandler("fluid_slot", 0).background(GTGuiTextures.FLUID_SLOT);
     }
 
-    private class StoredFluidTank implements IFluidTank {
-
-        @Override
-        public FluidStack getFluid() {
-            return stored;
-        }
-
-        @Override
-        public int getFluidAmount() {
-            return stored.getAmount();
-        }
-
-        @Override
-        public int getCapacity() {
-            return FluidType.BUCKET_VOLUME;
-        }
-
-        @Override
-        public boolean isFluidValid(FluidStack stack) {
-            return true;
-        }
-
-        @Override
-        public int fill(FluidStack resource, IFluidHandler.FluidAction action) {
-            if (resource.isEmpty()) return 0;
-            if (action.execute()) updateStored(resource);
-            return resource.getAmount();
-        }
-
-        @Override
-        public FluidStack drain(int maxDrain, IFluidHandler.FluidAction action) {
-            if (stored.isEmpty() || maxDrain <= 0) return FluidStack.EMPTY;
-            FluidStack drained = stored.copyWithAmount(Math.min(maxDrain, stored.getAmount()));
-            if (action.execute()) updateStored(FluidStack.EMPTY);
-            return drained;
-        }
-
-        @Override
-        public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) {
-            if (stored.isEmpty() || !FluidStack.isSameFluidSameComponents(resource, stored)) return FluidStack.EMPTY;
-            return drain(resource.getAmount(), action);
-        }
-    }
-
-    @Override
-    protected void applyImplicitComponents(DataComponentInput componentInput) {
-        super.applyImplicitComponents(componentInput);
-        CreativeMachineInfo info = componentInput.get(GTDataComponents.CREATIVE_MACHINE_INFO);
-        if (info != null) {
-            mBPerCycle = info.outputPerCycle();
-            ticksPerCycle = info.ticksPerCycle();
-        }
-    }
-
-    @Override
-    public void collectImplicitComponents(DataComponentMap.Builder components) {
-        super.collectImplicitComponents(components);
-        components.set(GTDataComponents.CREATIVE_MACHINE_INFO, new CreativeMachineInfo(mBPerCycle, ticksPerCycle));
-    }
-
     private class InfiniteCache extends FluidCache {
+
+        @Getter
+        private final FluidCache internal = new FluidCache();
 
         public InfiniteCache() {
             super();

@@ -1,11 +1,16 @@
 package com.gregtechceu.gtceu.api.transfer.item;
 
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
+
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ItemHandlerDelegate implements IItemHandlerModifiable {
+import java.util.function.ToIntFunction;
+
+public abstract class ItemHandlerDelegate implements IItemHandlerModifiable, IVirtualItemHandler {
 
     public IItemHandlerModifiable delegate;
 
@@ -57,5 +62,16 @@ public abstract class ItemHandlerDelegate implements IItemHandlerModifiable {
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return delegate.isItemValid(slot, stack);
+    }
+
+    @Override
+    public ItemStack insertItemBundle(ItemStack stack, boolean simulate) {
+        return GTTransferUtils.insertItemBundle(delegate, stack, simulate);
+    }
+
+    @Override
+    public void stockInventoryItems(IItemHandler sourceInventory, ITransferAmountLimiter transferAmountLimiter,
+                                    ToIntFunction<ItemStack> itemKeepAmountProvider) {
+        GTTransferUtils.stockInventoryItems(sourceInventory, delegate, transferAmountLimiter, itemKeepAmountProvider);
     }
 }

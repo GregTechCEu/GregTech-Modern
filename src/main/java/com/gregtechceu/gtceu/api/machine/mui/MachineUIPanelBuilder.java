@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.machine.mui;
 
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -17,15 +16,15 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 
-import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import lombok.Setter;
@@ -75,35 +74,40 @@ public class MachineUIPanelBuilder {
         this.machine = machine;
     }
 
-    public MachineUIPanel build(PanelSyncManager syncManager, UISettings settings) {
-        var panel = new MachineUIPanel(machine, settings, attachInventory, addTitleBar, drawGTLogo, gtLogoTexture);
+    public MachineUIPanel build(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panel = new MachineUIPanel(machine, data, settings, attachInventory, addTitleBar, drawGTLogo,
+                gtLogoTexture);
 
         var attachLeft = panel.getLeftConfiguratorPanel();
         var attachRight = panel.getRightConfiguratorPanel();
         var attachMain = panel.getMainContents();
 
         if (addDefaultConfigurators) {
-            if (machine instanceof IControllable controllable) {
-                attachRight.child(GTMuiWidgets.createPowerButton(controllable));
-            }
-            if (machine instanceof IVoidable voidable && machine instanceof WorkableMultiblockMachine) {
-                attachRight.child(GTMuiWidgets.createVoidingButton(voidable));
-            }
-            if (machine instanceof IDistinctPart distinctPart) {
-                attachRight.childIf(distinctPart.supportsDistinct(),
-                        () -> GTMuiWidgets.createDistinctnessButton(distinctPart));
-            }
-            if (machine.getDefinition().getRecipeModifier() instanceof RecipeModifierList rml &&
-                    Arrays.stream(rml.getModifiers()).anyMatch(m -> m == GTRecipeModifiers.BATCH_MODE) &&
-                    machine instanceof WorkableElectricMultiblockMachine workableElectric) {
-                attachRight.child(GTMuiWidgets.createBatchModeButton(workableElectric));
-            }
+            if (machine instanceof WorkableMultiblockMachine workableMultiblockMachine) {
+                attachRight.child(GTMuiWidgets.createPowerButton(workableMultiblockMachine));
 
-            if (machine.getDefinition().getRecipeTypes().length > 1 &&
-                    machine instanceof WorkableElectricMultiblockMachine workableMachine) {
-                attachRight.child(GTMuiWidgets.createRecipeTypeButton(workableMachine, syncManager));
-            }
+                if (machine.getDefinition().getRecipeModifier() instanceof RecipeModifierList rml &&
+                        Arrays.stream(rml.getModifiers()).anyMatch(m -> m == GTRecipeModifiers.BATCH_MODE) &&
+                        machine instanceof WorkableElectricMultiblockMachine workableElectric) {
+                    attachRight.child(GTMuiWidgets.createBatchModeButton(workableElectric));
+                }
 
+                attachRight.child(GTMuiWidgets.createVoidingButton(workableMultiblockMachine));
+
+                if (machine.getDefinition().getRecipeTypes().length > 1 &&
+                        machine instanceof WorkableElectricMultiblockMachine workableMachine) {
+                    attachRight.child(GTMuiWidgets.createRecipeTypeButton(workableMachine, syncManager));
+                }
+
+            } else {
+                if (machine instanceof IControllable controllable) {
+                    attachRight.child(GTMuiWidgets.createPowerButton(controllable));
+                }
+                if (machine instanceof IDistinctPart distinctPart) {
+                    attachRight.childIf(distinctPart.supportsDistinct(),
+                            () -> GTMuiWidgets.createDistinctnessButton(distinctPart));
+                }
+            }
         }
 
         leftConfigurators.accept(attachLeft);
@@ -156,11 +160,9 @@ public class MachineUIPanelBuilder {
         }
 
         for (var cover : machine.getCoverContainer().getCovers()) {
-            attachLeft.child(new ButtonWidget<>()
-                    .overlay(new ItemDrawable(cover.getAttachItem()))
-                    .onMousePressed((context, button) -> {
-                        return true;
-                    }));
+            GTMuiWidgets.createCoverWidget(attachLeft, cover,
+                    new SidedPosGuiData(data.getPlayer(), data.getBlockPos(), cover.attachedSide), syncManager,
+                    settings);
         }
 
         return panel;

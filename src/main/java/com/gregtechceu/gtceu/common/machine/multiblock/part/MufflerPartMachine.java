@@ -190,8 +190,10 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
         mainWidget
-                .child(createSquareSlotGroupFromInventory(inventory, "muffler_inventory", syncManager).margin(10)
-                        .center());
+                .child(createSquareSlotGroupFromInventory(inventory, "muffler_inventory", syncManager, s -> {
+                    s.getSlot().accessibility(false, true);
+                    return s;
+                }).margin(10).center());
     }
 
     private static class SableUtils {

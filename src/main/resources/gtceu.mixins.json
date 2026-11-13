@@ -84,6 +84,8 @@
         "emi.FillRecipePacketMixin",
         "emi.FluidEmiStackMixin",
         "jei.FluidHelperMixin",
+        "mui.ModularUIEmiRecipeAccessor",
+        "mui.ModularUIJeiRecipeAccessor",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor"
     ],

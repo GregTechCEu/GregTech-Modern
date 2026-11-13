@@ -45,5 +45,11 @@ public class GTNetwork {
                 SCPacketShareProspection::execute);
         registar.playToClient(SPacketStartProspectionShare.TYPE, SPacketStartProspectionShare.CODEC,
                 SPacketStartProspectionShare::execute);
+
+        registar.playToServer(CPacketTerminalSettings.TYPE, CPacketTerminalSettings.CODEC,
+                CPacketTerminalSettings::execute);
+
+        registar.playToClient(SPacketAutobuildHighlight.TYPE, SPacketAutobuildHighlight.CODEC,
+                SPacketAutobuildHighlight::execute);
     }
 }
