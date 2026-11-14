@@ -1,5 +1,8 @@
 {
   "values": [
-    "gtceu:treated_wood_rod"
+    {
+      "id": "gtceu:treated_wood_rod",
+      "required": false
+    }
   ]
 }

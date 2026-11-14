@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
@@ -92,134 +92,139 @@ public class CircuitRecipes {
 
         // Wafer engraving
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ilc_silicon").duration(900).EUt(VA[MV]).inputItems(SILICON_WAFER)
-                .notConsumable(CustomTags.RED_LENS).outputItems(INTEGRATED_LOGIC_CIRCUIT_WAFER).save(provider);
+                .notConsumable(GTTags.Items.LENSES_RED).outputItems(INTEGRATED_LOGIC_CIRCUIT_WAFER).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ilc_phosphorus").duration(500).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(CustomTags.RED_LENS)
+                .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_RED)
                 .outputItems(INTEGRATED_LOGIC_CIRCUIT_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ilc_naquadah").duration(200).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(CustomTags.RED_LENS)
+                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_RED)
                 .outputItems(INTEGRATED_LOGIC_CIRCUIT_WAFER, 8).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ilc_neutronium").duration(50).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(CustomTags.RED_LENS)
+                .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_RED)
                 .outputItems(INTEGRATED_LOGIC_CIRCUIT_WAFER, 16).cleanroom(CleanroomType.CLEANROOM).save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ram_silicon").duration(900).EUt(VA[MV]).inputItems(SILICON_WAFER)
-                .notConsumable(CustomTags.GREEN_LENS).outputItems(RANDOM_ACCESS_MEMORY_WAFER).save(provider);
+                .notConsumable(GTTags.Items.LENSES_GREEN).outputItems(RANDOM_ACCESS_MEMORY_WAFER).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ram_phosphorus").duration(500).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(CustomTags.GREEN_LENS)
+                .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_GREEN)
                 .outputItems(RANDOM_ACCESS_MEMORY_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ram_naquadah").duration(200).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(CustomTags.GREEN_LENS)
+                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_GREEN)
                 .outputItems(RANDOM_ACCESS_MEMORY_WAFER, 8)
                 .cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ram_neutronium").duration(50).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(CustomTags.GREEN_LENS)
+                .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_GREEN)
                 .outputItems(RANDOM_ACCESS_MEMORY_WAFER, 16).cleanroom(CleanroomType.CLEANROOM).save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_cpu_silicon").duration(900).EUt(VA[MV]).inputItems(SILICON_WAFER)
-                .notConsumable(CustomTags.LIGHT_BLUE_LENS).outputItems(CENTRAL_PROCESSING_UNIT_WAFER).save(provider);
+                .notConsumable(GTTags.Items.LENSES_LIGHT_BLUE).outputItems(CENTRAL_PROCESSING_UNIT_WAFER)
+                .save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_cpu_phosphorus").duration(500).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(CustomTags.LIGHT_BLUE_LENS)
+                .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_LIGHT_BLUE)
                 .outputItems(CENTRAL_PROCESSING_UNIT_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_cpu_naquadah").duration(200).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(CustomTags.LIGHT_BLUE_LENS)
+                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_LIGHT_BLUE)
                 .outputItems(CENTRAL_PROCESSING_UNIT_WAFER, 8).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_cpu_neutronium").duration(50).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(CustomTags.LIGHT_BLUE_LENS)
+                .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_LIGHT_BLUE)
                 .outputItems(CENTRAL_PROCESSING_UNIT_WAFER, 16).cleanroom(CleanroomType.CLEANROOM).save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ulpic_silicon").duration(900).EUt(VA[MV])
-                .inputItems(SILICON_WAFER).notConsumable(CustomTags.BLUE_LENS)
+                .inputItems(SILICON_WAFER).notConsumable(GTTags.Items.LENSES_BLUE)
                 .outputItems(ULTRA_LOW_POWER_INTEGRATED_CIRCUIT_WAFER).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ulpic_phosphorus").duration(500).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(CustomTags.BLUE_LENS)
+                .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_BLUE)
                 .outputItems(ULTRA_LOW_POWER_INTEGRATED_CIRCUIT_WAFER, 4).cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ulpic_naquadah").duration(200).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(CustomTags.BLUE_LENS)
+                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_BLUE)
                 .outputItems(ULTRA_LOW_POWER_INTEGRATED_CIRCUIT_WAFER, 8).cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ulpic_neutronium").duration(50).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(CustomTags.BLUE_LENS)
+                .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_BLUE)
                 .outputItems(ULTRA_LOW_POWER_INTEGRATED_CIRCUIT_WAFER, 16).cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_lpic_silicon").duration(900).EUt(VA[MV]).inputItems(SILICON_WAFER)
-                .notConsumable(CustomTags.ORANGE_LENS).outputItems(LOW_POWER_INTEGRATED_CIRCUIT_WAFER).save(provider);
+                .notConsumable(GTTags.Items.LENSES_ORANGE).outputItems(LOW_POWER_INTEGRATED_CIRCUIT_WAFER)
+                .save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_lpic_phosphorus").duration(500).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(CustomTags.ORANGE_LENS)
+                .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_ORANGE)
                 .outputItems(LOW_POWER_INTEGRATED_CIRCUIT_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_lpic_naquadah").duration(200).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(CustomTags.ORANGE_LENS)
+                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_ORANGE)
                 .outputItems(LOW_POWER_INTEGRATED_CIRCUIT_WAFER, 8).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_lpic_neutronium").duration(50).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(CustomTags.ORANGE_LENS)
+                .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_ORANGE)
                 .outputItems(LOW_POWER_INTEGRATED_CIRCUIT_WAFER, 16).cleanroom(CleanroomType.CLEANROOM).save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ssoc_silicon").duration(900).EUt(VA[MV]).inputItems(SILICON_WAFER)
-                .notConsumable(CustomTags.CYAN_LENS).outputItems(SIMPLE_SYSTEM_ON_CHIP_WAFER).save(provider);
+                .notConsumable(GTTags.Items.LENSES_CYAN).outputItems(SIMPLE_SYSTEM_ON_CHIP_WAFER).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ssoc_phosphorus").duration(500).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(CustomTags.CYAN_LENS)
+                .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_CYAN)
                 .outputItems(SIMPLE_SYSTEM_ON_CHIP_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ssoc_naquadah").duration(200).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(CustomTags.CYAN_LENS)
+                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_CYAN)
                 .outputItems(SIMPLE_SYSTEM_ON_CHIP_WAFER, 8)
                 .cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ssoc_neutronium").duration(50).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(CustomTags.CYAN_LENS)
+                .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_CYAN)
                 .outputItems(SIMPLE_SYSTEM_ON_CHIP_WAFER, 16).cleanroom(CleanroomType.CLEANROOM).save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_nand_phosphorus").duration(900).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(CustomTags.GRAY_LENS).outputItems(NAND_MEMORY_CHIP_WAFER)
-                .cleanroom(CleanroomType.CLEANROOM).save(provider);
+                .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_GRAY)
+                .outputItems(NAND_MEMORY_CHIP_WAFER).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_nand_naquadah").duration(500).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(CustomTags.GRAY_LENS).outputItems(NAND_MEMORY_CHIP_WAFER, 4)
-                .cleanroom(CleanroomType.CLEANROOM).save(provider);
+                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_GRAY)
+                .outputItems(NAND_MEMORY_CHIP_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_nand_neutronium").duration(200).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(CustomTags.GRAY_LENS).outputItems(NAND_MEMORY_CHIP_WAFER, 8)
+                .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_GRAY)
+                .outputItems(NAND_MEMORY_CHIP_WAFER, 8)
                 .cleanroom(CleanroomType.CLEANROOM).save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_nor_phosphorus").duration(900).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(CustomTags.PINK_LENS).outputItems(NOR_MEMORY_CHIP_WAFER)
+                .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_PINK).outputItems(NOR_MEMORY_CHIP_WAFER)
                 .cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_nor_naquadah").duration(500).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(CustomTags.PINK_LENS).outputItems(NOR_MEMORY_CHIP_WAFER, 4)
-                .cleanroom(CleanroomType.CLEANROOM).save(provider);
+                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_PINK)
+                .outputItems(NOR_MEMORY_CHIP_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_nor_neutronium").duration(200).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(CustomTags.PINK_LENS).outputItems(NOR_MEMORY_CHIP_WAFER, 8)
+                .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_PINK)
+                .outputItems(NOR_MEMORY_CHIP_WAFER, 8)
                 .cleanroom(CleanroomType.CLEANROOM).save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_pic_phosphorus").duration(900).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(CustomTags.BROWN_LENS)
+                .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_BROWN)
                 .outputItems(POWER_INTEGRATED_CIRCUIT_WAFER).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_pic_naquadah").duration(500).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(CustomTags.BROWN_LENS)
+                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_BROWN)
                 .outputItems(POWER_INTEGRATED_CIRCUIT_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_pic_neutronium").duration(200).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(CustomTags.BROWN_LENS)
+                .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_BROWN)
                 .outputItems(POWER_INTEGRATED_CIRCUIT_WAFER, 8).cleanroom(CleanroomType.CLEANROOM).save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_soc_phosphorus").duration(900).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(CustomTags.YELLOW_LENS).outputItems(SYSTEM_ON_CHIP_WAFER)
-                .cleanroom(CleanroomType.CLEANROOM).save(provider);
+                .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_YELLOW)
+                .outputItems(SYSTEM_ON_CHIP_WAFER).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_soc_naquadah").duration(500).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(CustomTags.YELLOW_LENS).outputItems(SYSTEM_ON_CHIP_WAFER, 4)
-                .cleanroom(CleanroomType.CLEANROOM).save(provider);
+                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_YELLOW)
+                .outputItems(SYSTEM_ON_CHIP_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_soc_neutronium").duration(200).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(CustomTags.YELLOW_LENS).outputItems(SYSTEM_ON_CHIP_WAFER, 8)
+                .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_YELLOW)
+                .outputItems(SYSTEM_ON_CHIP_WAFER, 8)
                 .cleanroom(CleanroomType.CLEANROOM).save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_asoc_naquadah").duration(900).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(CustomTags.PURPLE_LENS)
+                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_PURPLE)
                 .outputItems(ADVANCED_SYSTEM_ON_CHIP_WAFER)
                 .cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_asoc_neutronium").duration(500).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(CustomTags.PURPLE_LENS)
+                .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_PURPLE)
                 .outputItems(ADVANCED_SYSTEM_ON_CHIP_WAFER, 2).cleanroom(CleanroomType.CLEANROOM).save(provider);
 
         // Can replace this with a Quantum Star/Eye Lens if desired
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_hasoc_neutronium").duration(900).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(CustomTags.BLACK_LENS)
+                .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_BLACK)
                 .outputItems(HIGHLY_ADVANCED_SOC_WAFER)
                 .cleanroom(CleanroomType.CLEANROOM).save(provider);
 
@@ -680,14 +685,14 @@ public class CircuitRecipes {
         // Crystal Circuit Components
         LASER_ENGRAVER_RECIPES.recipeBuilder("crystal_cpu")
                 .inputItems(ENGRAVED_CRYSTAL_CHIP)
-                .notConsumable(CustomTags.LIME_LENS)
+                .notConsumable(GTTags.Items.LENSES_LIME)
                 .outputItems(CRYSTAL_CENTRAL_PROCESSING_UNIT)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(100).EUt(10000).save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("crystal_soc")
                 .inputItems(CRYSTAL_CENTRAL_PROCESSING_UNIT)
-                .notConsumable(CustomTags.BLUE_LENS)
+                .notConsumable(GTTags.Items.LENSES_BLUE)
                 .outputItems(CRYSTAL_SYSTEM_ON_CHIP)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(100).EUt(40000).save(provider);
@@ -977,7 +982,7 @@ public class CircuitRecipes {
                 .inputItems(PETRI_DISH)
                 .inputItems(ELECTRIC_PUMP_LuV)
                 .inputItems(SENSOR_IV)
-                .inputItems(CustomTags.IV_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_IV)
                 .inputItems(foil, NiobiumTitanium, 16)
                 .inputFluids(SterileGrowthMedium.getFluid(4000))
                 .outputItems(WETWARE_BOARD, 16)
@@ -1017,9 +1022,9 @@ public class CircuitRecipes {
 
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("electronic_circuit_lv").EUt(16).duration(200)
                 .inputItems(BASIC_CIRCUIT_BOARD)
-                .inputItems(CustomTags.RESISTORS, 2)
+                .inputItems(GTTags.Items.RESISTORS, 2)
                 .inputItems(wireGtSingle, RedAlloy, 2)
-                .inputItems(CustomTags.ULV_CIRCUITS, 2)
+                .inputItems(GTTags.Items.CIRCUITS_ULV, 2)
                 .outputItems(ELECTRONIC_CIRCUIT_LV, outputAmount)
                 .save(provider);
 
@@ -1035,7 +1040,7 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("electronic_circuit_mv").EUt(VA[LV]).duration(300)
                 .inputItems(GOOD_CIRCUIT_BOARD)
                 .inputItems(ELECTRONIC_CIRCUIT_LV, 2)
-                .inputItems(CustomTags.DIODES, 2)
+                .inputItems(GTTags.Items.DIODES, 2)
                 .inputItems(wireGtSingle, Copper, 2)
                 .outputItems(ELECTRONIC_CIRCUIT_MV)
                 .save(provider);
@@ -1046,8 +1051,8 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("integrated_circuit_lv").EUt(16).duration(200)
                 .inputItems(BASIC_CIRCUIT_BOARD)
                 .inputItems(INTEGRATED_LOGIC_CIRCUIT)
-                .inputItems(CustomTags.RESISTORS, 2)
-                .inputItems(CustomTags.DIODES, 2)
+                .inputItems(GTTags.Items.RESISTORS, 2)
+                .inputItems(GTTags.Items.DIODES, 2)
                 .inputItems(wireFine, Copper, 2)
                 .inputItems(bolt, Tin, 2)
                 .outputItems(INTEGRATED_CIRCUIT_LV, outputAmount)
@@ -1057,8 +1062,8 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("integrated_circuit_mv").EUt(24).duration(400)
                 .inputItems(GOOD_CIRCUIT_BOARD)
                 .inputItems(INTEGRATED_CIRCUIT_LV, 2)
-                .inputItems(CustomTags.RESISTORS, 2)
-                .inputItems(CustomTags.DIODES, 2)
+                .inputItems(GTTags.Items.RESISTORS, 2)
+                .inputItems(GTTags.Items.DIODES, 2)
                 .inputItems(wireFine, Gold, 4)
                 .inputItems(bolt, Silver, 4)
                 .outputItems(INTEGRATED_CIRCUIT_MV, outputAmount)
@@ -1070,7 +1075,7 @@ public class CircuitRecipes {
                                                                 // enabled
                 .inputItems(INTEGRATED_LOGIC_CIRCUIT, 2)
                 .inputItems(RANDOM_ACCESS_MEMORY, 2)
-                .inputItems(CustomTags.TRANSISTORS, 4)
+                .inputItems(GTTags.Items.TRANSISTORS, 4)
                 .inputItems(wireFine, Electrum, 8)
                 .inputItems(bolt, AnnealedCopper, 8)
                 .outputItems(INTEGRATED_CIRCUIT_HV)
@@ -1099,9 +1104,9 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("microprocessor_lv").EUt(60).duration(200)
                 .inputItems(PLASTIC_CIRCUIT_BOARD)
                 .inputItems(CENTRAL_PROCESSING_UNIT)
-                .inputItems(CustomTags.RESISTORS, 2)
-                .inputItems(CustomTags.CAPACITORS, 2)
-                .inputItems(CustomTags.TRANSISTORS, 2)
+                .inputItems(GTTags.Items.RESISTORS, 2)
+                .inputItems(GTTags.Items.CAPACITORS, 2)
+                .inputItems(GTTags.Items.TRANSISTORS, 2)
                 .inputItems(wireFine, Copper, 2)
                 .outputItems(MICROPROCESSOR_LV, ConfigHolder.INSTANCE.recipes.harderCircuitRecipes ? 2 : 3)
                 .save(provider);
@@ -1122,9 +1127,9 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("processor_mv").EUt(60).duration(200)
                 .inputItems(PLASTIC_CIRCUIT_BOARD)
                 .inputItems(CENTRAL_PROCESSING_UNIT)
-                .inputItems(CustomTags.RESISTORS, 4)
-                .inputItems(CustomTags.CAPACITORS, 4)
-                .inputItems(CustomTags.TRANSISTORS, 4)
+                .inputItems(GTTags.Items.RESISTORS, 4)
+                .inputItems(GTTags.Items.CAPACITORS, 4)
+                .inputItems(GTTags.Items.TRANSISTORS, 4)
                 .inputItems(wireFine, RedAlloy, 4)
                 .outputItems(PROCESSOR_MV, outputAmount)
                 .save(provider);
@@ -1143,8 +1148,8 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("processor_assembly_hv").EUt(VA[MV]).duration(400)
                 .inputItems(PLASTIC_CIRCUIT_BOARD)
                 .inputItems(PROCESSOR_MV, 2)
-                .inputItems(CustomTags.INDUCTORS, 4)
-                .inputItems(CustomTags.CAPACITORS, 8)
+                .inputItems(GTTags.Items.INDUCTORS, 4)
+                .inputItems(GTTags.Items.CAPACITORS, 8)
                 .inputItems(RANDOM_ACCESS_MEMORY, 4)
                 .inputItems(wireFine, RedAlloy, 8)
                 .outputItems(PROCESSOR_ASSEMBLY_HV, 2)
@@ -1155,7 +1160,7 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("workstation_ev").EUt(VA[MV]).duration(400)
                 .inputItems(PLASTIC_CIRCUIT_BOARD)
                 .inputItems(PROCESSOR_ASSEMBLY_HV, 2)
-                .inputItems(CustomTags.DIODES, 4)
+                .inputItems(GTTags.Items.DIODES, 4)
                 .inputItems(RANDOM_ACCESS_MEMORY, 4)
                 .inputItems(wireFine, Electrum, 16)
                 .inputItems(bolt, BlueAlloy, 16)
@@ -1168,8 +1173,8 @@ public class CircuitRecipes {
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("mainframe_iv").EUt(VA[HV]).duration(800)
                 .inputItems(frameGt, Aluminium, 2)
                 .inputItems(WORKSTATION_EV, 2)
-                .inputItems(CustomTags.INDUCTORS, 8)
-                .inputItems(CustomTags.CAPACITORS, 16)
+                .inputItems(GTTags.Items.INDUCTORS, 8)
+                .inputItems(GTTags.Items.CAPACITORS, 16)
                 .inputItems(RANDOM_ACCESS_MEMORY, 16)
                 .inputItems(wireGtSingle, AnnealedCopper, 16)
                 .outputItems(MAINFRAME_IV)
@@ -1583,7 +1588,7 @@ public class CircuitRecipes {
         // Data Orb
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("data_orb")
                 .inputItems(ADVANCED_CIRCUIT_BOARD)
-                .inputItems(CustomTags.HV_CIRCUITS, 2)
+                .inputItems(GTTags.Items.CIRCUITS_HV, 2)
                 .inputItems(RANDOM_ACCESS_MEMORY, 4)
                 .inputItems(NOR_MEMORY_CHIP, 32)
                 .inputItems(NAND_MEMORY_CHIP, 64)
@@ -1596,7 +1601,7 @@ public class CircuitRecipes {
         // Data Module
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("data_module")
                 .inputItems(WETWARE_CIRCUIT_BOARD)
-                .inputItems(CustomTags.ZPM_CIRCUITS, 2)
+                .inputItems(GTTags.Items.CIRCUITS_ZPM, 2)
                 .inputItems(RANDOM_ACCESS_MEMORY, 32)
                 .inputItems(NOR_MEMORY_CHIP, 64)
                 .inputItems(NAND_MEMORY_CHIP, 64)

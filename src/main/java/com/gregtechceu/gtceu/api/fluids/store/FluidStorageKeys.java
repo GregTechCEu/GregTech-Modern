@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +45,7 @@ public final class FluidStorageKeys {
      * @deprecated Use {@link #LIQUID}. Addon Support will eventually be removed and forced to use liquid.
      */
     @Deprecated
-    public static final FluidStorageKey MOLTEN = new FluidStorageKey(GTCEu.id("molten"), CustomTags.MOLTEN_FLUIDS,
+    public static final FluidStorageKey MOLTEN = new FluidStorageKey(GTCEu.id("molten"), GTTags.Fluids.MOLTEN,
             MaterialIconType.molten,
             m -> "molten_" + m.getName(),
             m -> "gtceu.fluid.molten",
