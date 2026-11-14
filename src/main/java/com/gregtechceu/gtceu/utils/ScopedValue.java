@@ -68,8 +68,15 @@ public abstract class ScopedValue implements AutoCloseable {
         /**
          * {@return Current value in this scope}
          */
-        public boolean isActive() {
+        public boolean getValue() {
             return this.value.get();
+        }
+
+        /**
+         * {@return Current value in this scope}
+         */
+        public boolean isActive() {
+            return getValue();
         }
 
         /**

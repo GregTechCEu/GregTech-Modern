@@ -307,11 +307,13 @@ public class MixinHelpers {
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.dust, material);
                     int oreMultiplier = type.isDoubleDrops() ? 2 : 1;
 
+                    var lootItem = LootItem.lootTableItem(dropItem.getItem())
+                            .apply(SetItemCountFunction.setCount(ConstantValue.exactly(oreMultiplier)));
+                    if (ConfigHolder.INSTANCE.gameplay.enableOreFortune) {
+                        lootItem.apply(ApplyBonusCount.addOreBonusCount(fortune));
+                    }
                     LootTable.Builder builder = blockLoot.createSilkTouchDispatchTable(block,
-                            blockLoot.applyExplosionDecay(block,
-                                    LootItem.lootTableItem(dropItem.getItem())
-                                            .apply(SetItemCountFunction
-                                                    .setCount(ConstantValue.exactly(oreMultiplier)))));
+                            blockLoot.applyExplosionDecay(block, lootItem));
                     // Optional Fortune is applied by the harvest handler after hammer conversion.
 
                     LootPool.Builder pool = LootPool.lootPool();
@@ -325,6 +327,7 @@ public class MixinHelpers {
                                     // .apply(ApplyBonusCount.addUniformBonusCount(fortune))
                                     .apply(LimitCount.limitCount(IntRange.range(0, 2)))
                                     .apply(ApplyExplosionDecay.explosionDecay()));
+
                             isEmpty = false;
                         }
                     }
