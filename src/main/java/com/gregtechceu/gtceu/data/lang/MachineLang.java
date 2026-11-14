@@ -835,6 +835,7 @@ public class MachineLang {
                 "Recipes will run with %fx duration, applied before overclocking.");
         provider.add("gtceu.maintenance.configurable_duration.modify", "Modify Duration:");
         provider.add("gtceu.maintenance.configurable_time", "Time: %fx");
+        provider.add("gtceu.maintenance.configurable_frequency", "Maintenance: %fx");
         provider.add("gtceu.maintenance.configurable_time.unchanged_description",
                 "Maintenance problems will occur at normal rate. Change configuration to update.");
         provider.add("gtceu.maintenance.configurable_time.changed_description",
