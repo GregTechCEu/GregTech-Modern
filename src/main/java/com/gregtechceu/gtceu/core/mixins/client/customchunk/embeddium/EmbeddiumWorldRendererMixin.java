@@ -1,7 +1,5 @@
-package com.gregtechceu.gtceu.core.mixins.client.bloom.normal.embeddium;
+package com.gregtechceu.gtceu.core.mixins.client.customchunk.embeddium;
 
-import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.integration.embeddium.GTEmbeddiumCompat;
 
 import net.minecraft.client.renderer.RenderType;
@@ -18,19 +16,18 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = SodiumWorldRenderer.class, remap = false)
-public class SodiumWorldRendererMixin {
+public class EmbeddiumWorldRendererMixin {
 
     @Shadow
     private RenderSectionManager renderSectionManager;
 
     @Inject(method = "drawChunkLayer", at = @At("RETURN"))
-    private void gtceu$drawBloomChunkLayer(RenderType renderLayer, PoseStack matrixStack, double x, double y, double z,
-                                           CallbackInfo ci,
-                                           @Local(name = "matrices") ChunkRenderMatrices matrices) {
-        if (!BloomShaderManager.isBloomActive()) return;
-
-        if (renderLayer == GTRenderTypes.bloom()) {
-            this.renderSectionManager.renderLayer(matrices, GTEmbeddiumCompat.getBloomRenderPass(), x, y, z);
+    private void gtceu$drawCustomChunkLayer(RenderType renderLayer, PoseStack poseStack,
+                                            double x, double y, double z, CallbackInfo ci,
+                                            @Local(name = "matrices") ChunkRenderMatrices matrices) {
+        var pass = GTEmbeddiumCompat.getCustomRenderPass(renderLayer);
+        if (pass != null) {
+            this.renderSectionManager.renderLayer(matrices, pass, x, y, z);
         }
     }
 }

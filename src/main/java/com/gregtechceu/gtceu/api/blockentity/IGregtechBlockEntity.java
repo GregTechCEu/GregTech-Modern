@@ -50,7 +50,7 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
         var pos = self().getBlockPos();
         var level = self().getLevel();
         if (level != null) {
-            var state = level.getBlockState(pos);
+            var state = self().getBlockState();
             if (level.isClientSide) {
                 level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
                 requestModelDataUpdate();

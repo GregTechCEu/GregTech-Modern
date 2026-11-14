@@ -41,7 +41,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.gregtechceu.gtceu.api.GTValues.MODID_EMBEDDIUM;
 import static com.gregtechceu.gtceu.client.bloom.BloomShaderManager.BLOOM_TARGET;
+import static com.gregtechceu.gtceu.core.config.GTEarlyConfig.isModLoaded;
 
 /**
  * The actual rendering logic for bloom
@@ -57,6 +59,10 @@ public class BloomRenderer {
     @ApiStatus.Internal
     static final ScopedValue.Object<Supplier<VertexConsumer>> bloomChunkContext = new ScopedValue.Object<>();
 
+    public static boolean usesChunkPassBackend() {
+        return !SafeMode.enabled() && isModLoaded(MODID_EMBEDDIUM);
+    }
+
     @ApiStatus.Internal
     static void renderBloom(Camera camera, PoseStack poseStack, Frustum frustum, Matrix4f projectionMatrix,
                             float partialTicks, LevelRenderer levelRenderer, ProfilerFiller profilerFiller) {
@@ -67,12 +73,14 @@ public class BloomRenderer {
         profilerFiller.popPush("gtceu:bloom");
         setupBloomShaderUniforms();
 
+        BLOOM_TARGET.copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
+
         GTRenderTypes.bloom().setupRenderState();
 
         renderSpecialBloom(camera, poseStack, frustum, partialTicks, profilerFiller);
 
         // safe mode disabled -> use deeper, faster hackery
-        if (!BloomRenderer.SafeMode.enabled()) {
+        if (usesChunkPassBackend()) {
             ((LevelRendererAccessor) levelRenderer).invokeRenderChunkLayer(GTRenderTypes.bloom(), poseStack,
                     camPos.x, camPos.y, camPos.z, projectionMatrix);
 
@@ -156,15 +164,13 @@ public class BloomRenderer {
 
         // Forcefully insert config values to shader
         modifyBloomPostShaders((index, shader) -> {
-            shader.safeGetUniform("DepthNear").set(GameRenderer.PROJECTION_Z_NEAR);
-            shader.safeGetUniform("DepthFar").set(Minecraft.getInstance().gameRenderer.getDepthFar());
-
             // look for blur steps & change their blur strength to match the config
             if (shader.getName().contains("blur")) {
+                // The Unreal chain starts with a horizontal blur, followed by a vertical blur.
                 if (index % 2 == 0) {
-                    shader.safeGetUniform("BlurDir").set(0.0f, config.step);
-                } else {
                     shader.safeGetUniform("BlurDir").set(config.step, 0.0f);
+                } else {
+                    shader.safeGetUniform("BlurDir").set(0.0f, config.step);
                 }
             }
 
@@ -184,7 +190,7 @@ public class BloomRenderer {
         }
     }
 
-    /// Helper function for copying bloom-enabled quads drawn with non-bloom render types
+    /// Copies bloom-enabled quads drawn with non-bloom render types
     public static void copyBloomQuad(BakedQuad quad, int[] packedLights, @Nullable RenderType renderType,
                                      Consumer<VertexConsumer> drawConsumer) {
         if (renderType == GTRenderTypes.bloom() || renderType == GTRenderTypes.entityBloomBlockSheet()) {
@@ -214,7 +220,7 @@ public class BloomRenderer {
         public static Map<SectionPos, BufferBuilder.SortState> BLOOM_BUFFER_SORT_STATES = new ConcurrentHashMap<>();
 
         public static boolean enabled() {
-            return GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE);
+            return GTMixinPlugin.isOptionEnabled(GTEarlyConfig.BLOOM_SAFE_MODE);
         }
 
         private static void drawBlockBloom(Camera camera, PoseStack poseStack, Frustum frustum,
@@ -237,7 +243,7 @@ public class BloomRenderer {
 
                     // noinspection ConstantValue it just isn't annotated :))
                     if (buffer.isInvalid() || buffer.getFormat() == null) {
-                        // return early if buffer is invalid or has no vertex data bound
+                        // return early if buffer is invalid or has no vertex data
                         continue;
                     }
 
@@ -272,6 +278,7 @@ public class BloomRenderer {
         public static void finishBloomBuffer(SectionPos sectionPos, BufferBuilder builder) {
             BufferBuilder.RenderedBuffer buffer = builder.endOrDiscardIfEmpty();
             if (buffer == null) {
+                invalidateSectionData(sectionPos);
                 return;
             }
 
@@ -322,6 +329,7 @@ public class BloomRenderer {
 
             BufferBuilder builder = BLOOM_BUFFER_BUILDERS.get(sectionPos);
             if (builder == null || !builder.building()) {
+                invalidateSectionData(sectionPos);
                 return;
             }
             builder.setQuadSorting(VertexSorting.byDistance(
@@ -361,6 +369,7 @@ public class BloomRenderer {
         static void invalidateLevelData() {
             BLOOM_RENDER_LOCK.writeLock().lock();
             try {
+                BLOOM_BUFFERS.values().forEach(SafeMode::closeBloomBuffer);
                 BLOOM_BUFFERS.clear();
                 BLOOM_BUFFER_BUILDERS.clear();
                 BLOOM_BUFFER_SORT_STATES.clear();
@@ -378,14 +387,18 @@ public class BloomRenderer {
                 VertexBuffer buffer = BLOOM_BUFFERS.remove(sectionPos);
 
                 if (buffer != null) {
-                    if (!RenderSystem.isOnRenderThread()) {
-                        RenderSystem.recordRenderCall(buffer::close);
-                    } else {
-                        buffer.close();
-                    }
+                    closeBloomBuffer(buffer);
                 }
             } finally {
                 BLOOM_RENDER_LOCK.writeLock().unlock();
+            }
+        }
+
+        private static void closeBloomBuffer(VertexBuffer buffer) {
+            if (RenderSystem.isOnRenderThread()) {
+                buffer.close();
+            } else {
+                RenderSystem.recordRenderCall(buffer::close);
             }
         }
     }
