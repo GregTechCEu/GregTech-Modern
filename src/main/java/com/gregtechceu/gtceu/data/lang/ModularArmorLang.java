@@ -122,7 +122,7 @@ public class ModularArmorLang {
         provider.add("module.gtceu.advanced_jetpack.description",
                 "Provides thrust for %1$s EU/t, or %2$s EU/t while sprinting. Sprint during Creative Flight for 2.4x speed (requires a battery module).");
         provider.add("module.gtceu.sensor", "Explosion Reporting Module (%s)");
-        provider.add("module.gtceu.sensor.message", "%s exploded at (%d, %d, %d)");
+        provider.add("module.gtceu.sensor.message", "%s exploded at (%s, %s, %s)");
         provider.add("module.gtceu.sensor.description",
                 "Reports machine explosions (for machines placed by the player)");
         provider.add("module.gtceu.wireless_charger", "Quantum Charger (%s)");

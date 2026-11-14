@@ -25,8 +25,13 @@ public final class GTCommonComponents {
             .translatable("multiblock.gtceu.part_sharing.disabled");
 
     public static final Component COMMA_SPACE = Component.literal(", ");
+
     public static final Component HOLD_SHIFT_FOR_INFO = Component.translatable("common.gtceu.tooltip.hold_shift")
             .withStyle(ChatFormatting.GRAY);
+
+    public static final Component HOLD_CTRL_FOR_INFO = Component.translatable("common.gtceu.tooltip.hold_ctrl")
+            .withStyle(ChatFormatting.GRAY);
+
 
     public static final Component FLUID_AMOUNT = Component.translatable("common.gtceu.fluid_amount");
 

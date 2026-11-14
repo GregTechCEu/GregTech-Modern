@@ -55,6 +55,7 @@ import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
+import com.gregtechceu.gtceu.utils.lang.GTCustomTooltip;
 import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.ChatFormatting;
@@ -474,15 +475,18 @@ public class GTMachineUtils {
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .simpleModel(GTCEu.id("block/machine/template/drum/" + (wooden ? "wooden" : "metal") + "_drum"))
-                .tooltipBuilder((stack, list) -> {
-                    TANK_TOOLTIPS.accept(stack, list);
-                    if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
-                        FluidPipeProperties pipeprops = material.getProperty(PropertyKey.FLUID_PIPE);
-                        pipeprops.appendTooltips(list, false, true);
-                    }
+                .tooltip(t -> {
+                    t.tooltip(TANK_TOOLTIP);
+                    t.tooltip(Component.translatable("machine.gtceu.quantum_tank.tooltip"));
+                    t.tooltip(GTCommonComponents.fluidStorageCapacity(capacity));
+
+                    t.customTooltipBuilder((s, l, tooltips) -> {
+                        if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
+                            FluidPipeProperties pipeprops = material.getPropertyOrThrow(PropertyKey.FLUID_PIPE);
+                            pipeprops.appendTooltips(tooltips, false, true);
+                        }
+                    });
                 })
-                .tooltips(Component.translatable("machine.gtceu.quantum_tank.tooltip"),
-                        GTCommonComponents.fluidStorageCapacity(capacity))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .register();
@@ -506,9 +510,11 @@ public class GTMachineUtils {
                     .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_tank"))
                             .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createQuantumTankRender)))
                     .hasBER(true)
-                    .tooltipBuilder(TANK_TOOLTIPS)
-                    .tooltips(Component.translatable("machine.gtceu.quantum_tank.tooltip"),
-                            GTCommonComponents.fluidStorageCapacity(maxAmount))
+                    .tooltip(t -> {
+                        t.tooltip(TANK_TOOLTIP);
+                        t.tooltip(Component.translatable("machine.gtceu.quantum_tank.tooltip"));
+                        t.tooltip(GTCommonComponents.fluidStorageCapacity(maxAmount));
+                    })
                     .tier(tier)
                     .register();
             TANK_CAPACITY.put(register, maxAmount);
@@ -529,10 +535,12 @@ public class GTMachineUtils {
                                 .andThen(
                                         b -> b.addDynamicRenderer(DynamicRenderHelper::createQuantumChestRender)))
                         .hasBER(true)
-                        .tooltipBuilder(CHEST_TOOLTIPS)
-                        .tooltips(Component.translatable("machine.gtceu.quantum_chest.tooltip"),
-                                GTCommonComponents.itemCapacity(tier == MAX ? Long.MAX_VALUE :
-                                        4_000_000 * (long) Math.pow(2, tier - 1)))
+                        .tooltip(t -> {
+                            t.tooltip(CHEST_TOOLTIP);
+                            t.tooltip(Component.translatable("machine.gtceu.quantum_chest.tooltip"));
+                            t.tooltip(GTCommonComponents.itemCapacity(tier == MAX ? Long.MAX_VALUE :
+                                    4_000_000 * (long) Math.pow(2, tier - 1)));
+                        })
                         .register(),
                 tiers);
     }
@@ -804,6 +812,9 @@ public class GTMachineUtils {
                 .addTooltips(Component.translatable("multiblock.gtceu.predicate.tier_must_match", VNC[tier]));
     }
 
+    public static final GTCustomTooltip.TooltipEntry DEFAULT_ENV_REQUIREMENT = new GTCustomTooltip.TooltipEntry(defaultEnvironmentRequirement(),
+            s -> ConfigHolder.INSTANCE.gameplay.environmentalHazards);
+
     // Tooltips
     public static Component explosion() {
         if (ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion)
@@ -820,23 +831,19 @@ public class GTMachineUtils {
         return environmentRequirement(GTMedicalConditions.CARBON_MONOXIDE_POISONING);
     }
 
-    public static BiConsumer<ItemStack, List<Component>> TANK_TOOLTIPS = (stack, list) -> {
-        if (stack.hasTag()) {
-            String key = stack.getTag().contains("stored") ? "stored" : "Fluid";
-            FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement(key));
-            long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
-            if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
-            list.add(1, GTCommonComponents.fluidStored(stored.getFluid(), storedAmount));
-        }
-    };
+    public static final GTCustomTooltip.TooltipEntry TANK_TOOLTIP = new GTCustomTooltip.TooltipEntry(stack -> {
+        String key = stack.getOrCreateTag().contains("stored") ? "stored" : "Fluid";
+        FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement(key));
+        long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
+        if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
+        return GTCommonComponents.fluidStored(stored.getFluid(), storedAmount);
+    }, ItemStack::hasTag);
 
-    public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
-        if (stack.hasTag()) {
-            ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
-            long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
-            list.add(1, GTCommonComponents.itemStored(itemStack.getItem(), storedAmount));
-        }
-    };
+    public static final GTCustomTooltip.TooltipEntry CHEST_TOOLTIP = new GTCustomTooltip.TooltipEntry(stack -> {
+        ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
+        long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
+        return GTCommonComponents.itemStored(itemStack.getItem(), storedAmount);
+    }, ItemStack::hasTag);
 
     public static Component[] workableTiered(int tier, long energyCapacity, GTRecipeType recipeType,
                                              long tankCapacity, boolean input) {
@@ -928,8 +935,7 @@ public class GTMachineUtils {
                             builder.recipeModifiers(GTRecipeModifiers.ENVIRONMENT_REQUIREMENT
                                     .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 100 * tier),
                                     GTRecipeModifiers.OC_NON_PERFECT)
-                                    .conditionalTooltip(defaultEnvironmentRequirement(),
-                                            ConfigHolder.INSTANCE.gameplay.environmentalHazards);
+                                    .tooltip().tooltip(DEFAULT_ENV_REQUIREMENT);
                         } else {
                             builder.recipeModifier(GTRecipeModifiers.OC_NON_PERFECT);
                         }
@@ -946,9 +952,7 @@ public class GTMachineUtils {
                         } else if (defaultTooltipLang != null) {
                             builder.tooltipLang(defaultTooltipLang);
                         }
-                        builder.tooltips(Arrays
-                                .stream(LangUtil.getSingleOrMultiLang(builder.id.toLanguageKey("machine", "tooltip")))
-                                .map(c -> c.withStyle(ChatFormatting.GRAY)).toList());
+                        builder.defaultTooltip();
 
                         builder.tooltips(workableTiered(tier, GTValues.V[tier] * 64, recipeType,
                                 tankScalingFunction.applyAsInt(tier), true));
