@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.recipe.RecipeTransaction;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.integration.ae2.gui.AEKeyStorageSyncHandler;
@@ -224,8 +225,15 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
             long changeValue = Math.min(Long.MAX_VALUE - oldValue, count);
             if (changeValue > 0) {
                 if (!simulate) {
-                    keyStorage.storage.put(key, oldValue + changeValue);
-                    keyStorage.onChanged();
+                    var storage = keyStorage;
+                    storage.storage.put(key, oldValue + changeValue);
+                    storage.onChanged();
+                    RecipeTransaction.record(() -> {
+                        var restored = storage.storage.getLong(key) - changeValue;
+                        if (restored > 0) storage.storage.put(key, restored);
+                        else storage.storage.removeLong(key);
+                        storage.onChanged();
+                    });
                 }
                 return stack.copyWithCount((int) (count - changeValue));
             } else {

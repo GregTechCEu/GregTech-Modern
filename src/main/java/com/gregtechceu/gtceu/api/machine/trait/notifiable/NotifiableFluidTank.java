@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeTransaction;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -80,6 +81,11 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         notifyListeners();
     }
 
+    private void snapshotTank(int tank) {
+        var before = storages[tank].getFluid().copy();
+        RecipeTransaction.record(() -> storages[tank].setFluid(before));
+    }
+
     @Override
     public List<FluidIngredient> handleRecipeInner(IO io, @Nullable GTRecipe recipe, List<FluidIngredient> left,
                                                    boolean simulate) {
@@ -99,6 +105,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         // Necessary for simulation since we don't actually modify the slot's contents
         // Doesn't hurt for execution, and definitely cheaper than copying the entire storage
         FluidStack[] visited = new FluidStack[storages.length];
+        boolean snapshot = !simulate && RecipeTransaction.isActive();
         for (var it = left.iterator(); it.hasNext();) {
             var ingredient = it.next();
             if (ingredient.isEmpty()) {
@@ -133,6 +140,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                 if (existing != null) {
                     FluidStack output = fluids[0].copy();
                     output.setAmount(amount);
+                    if (snapshot && visited[tank] == null) snapshotTank(tank);
                     int filled = existing.fill(output, action);
                     if (filled > 0) {
                         visited[tank] = output.copy();
@@ -156,6 +164,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                 if (io == IO.IN) {
                     if (current.isEmpty()) continue;
                     if (ingredient.test(current)) {
+                        if (snapshot && visited[tank] == null) snapshotTank(tank);
                         var drained = storages[tank].drain(Math.min(count, amount), action);
                         if (!drained.isEmpty()) {
                             visited[tank] = drained.copy();
@@ -187,6 +196,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                     output.setAmount(amount);
                     if (visited[tank] == null || visited[tank].isFluidEqual(output)) {
                         if (count < storages[tank].getCapacity()) {
+                            if (snapshot && visited[tank] == null) snapshotTank(tank);
                             int filled = storages[tank].fill(output, action);
                             if (filled > 0) {
                                 visited[tank] = output.copy();
