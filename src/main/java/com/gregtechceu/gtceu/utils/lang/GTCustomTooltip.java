@@ -315,6 +315,10 @@ public class GTCustomTooltip {
         return this;
     }
 
+    public Map<DisplayType, List<TooltipEntry>> getTooltipEntries() {
+        return tooltips;
+    }
+
     public void addTooltips(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltipList,
                        TooltipFlag flag) {
         addForType(DisplayType.NORMAL, stack, level, tooltipList);
