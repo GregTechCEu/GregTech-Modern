@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.*;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -224,7 +225,6 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         return isHighPressure ? 40 : 45;
     }
 
-    @SuppressWarnings("MethodMayBeStatic")
     protected int getCoolDownRate() {
         return 1;
     }
@@ -288,7 +288,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     @Override
     protected InteractionResult onSoftMalletClick(ExtendedUseOnContext context) {
         if (!isRemote()) {
-            context.getPlayer().sendSystemMessage(Component.translatable("behaviour.soft_hammer.ignored"));
+            context.getPlayer().sendSystemMessage(Component.translatable("common.gtceu.workable.cannot_disable"));
         }
         return InteractionResult.sidedSuccess(getLevel().isClientSide);
     }
@@ -346,7 +346,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                         .value(tempPercentage)
                         .tooltipAutoUpdate(true)
                         .tooltipBuilder((r) -> r.addLine(Text
-                                .lang("gtceu.fluid.temperature", getCurrentTemperature())))));
+                                .lang("material.gtceu.fluid_property.temperature", getCurrentTemperature())))));
     }
 
     //////////////////////////////////////
@@ -386,7 +386,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
                 mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
-            return Collections.singletonList(Component.translatable("gtceu.machine.steam_boiler.heat_amount",
+            return Collections.singletonList(Component.translatable("gui.gtceu.machine.boiler.heat",
                     FormattingUtil.formatNumbers((int) (getTemperaturePercent() * 100))));
         }
         return new ArrayList<>();

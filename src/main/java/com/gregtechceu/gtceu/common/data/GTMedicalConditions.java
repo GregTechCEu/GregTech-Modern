@@ -20,12 +20,14 @@ public class GTMedicalConditions {
 
     // General Conditions
     public static final MedicalCondition NONE = register("none", 0xffffff, 0,
-            MedicalCondition.IdleProgressionType.NONE, 0, false);
+            MedicalCondition.IdleProgressionType.NONE, 0, false)
+            .lang("Not Dangerous", "Nothing?");
     // takes 5 minutes of having burn-causing items in the player's inventory for them to get the weakness effect
     // heals 2 seconds' worth of progression every second when not holding those items
     public static final MedicalCondition CHEMICAL_BURNS = register("chemical_burns", 0xbc305a, 300,
             MedicalCondition.IdleProgressionType.HEAL, 2, false,
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS))
+            .lang("Chemical Burns")
             .setRecipeModifier(builder -> builder
                     .outputFluids(DilutedHydrochloricAcid.getFluid(500))
                     .outputFluids(DilutedSulfuricAcid.getFluid(750)));
@@ -36,6 +38,7 @@ public class GTMedicalConditions {
             MedicalCondition.IdleProgressionType.HEAL, 2, true,
             new Symptom.ConfiguredSymptom(Symptom.WEAK_POISONING),
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 300, 600))
+            .lang("Poisonous", "Poisoning")
             .setRecipeModifier(builder -> builder
                     .outputFluids(SulfurTrioxide.getFluid(1000)));
     // having weakly poisonous items in the player's inventory gives them the weak poison effect
@@ -44,6 +47,7 @@ public class GTMedicalConditions {
     public static final MedicalCondition WEAK_POISON = register("weak_poison", 0x6D7917, 1800,
             MedicalCondition.IdleProgressionType.NONE, 0, false,
             new Symptom.ConfiguredSymptom(Symptom.WEAK_POISONING, 6, 1800))
+            .lang("Weakly Poisonous", "Minor poisoning")
             .setRecipeModifier(builder -> builder
                     .outputFluids(NitricOxide.getFluid(1000)));
     // takes 2.5 minutes of having irritating items in the player's inventory for them to get the weakness effect
@@ -53,6 +57,7 @@ public class GTMedicalConditions {
             MedicalCondition.IdleProgressionType.HEAL, 5, false,
             new Symptom.ConfiguredSymptom(Symptom.RANDOM_DAMAGE),
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 300, 600))
+            .lang("Irritant", "Irritation")
             .setRecipeModifier(builder -> builder
                     .outputItems(dust, DarkAsh, 4));
     // takes 5 minutes of having nauseating items in the player's inventory for them to get the nausea effect
@@ -60,6 +65,7 @@ public class GTMedicalConditions {
     public static final MedicalCondition NAUSEA = register("nausea", 0x1D4A00, 600,
             MedicalCondition.IdleProgressionType.HEAL, 5, false,
             new Symptom.ConfiguredSymptom(Symptom.NAUSEA, 1, 420, 600))
+            .lang("Nauseating", "Nausea")
             .setRecipeModifier(builder -> builder
                     .outputFluids(CarbonMonoxide.getFluid(50)));
     /**
@@ -89,7 +95,8 @@ public class GTMedicalConditions {
             new Symptom.ConfiguredSymptom(Symptom.MINING_FATIGUE, 3600, 14400),
             new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 7200, 18000),
             // new Symptom.ConfiguredSymptom(Symptom.HUNGER, 0, 10800),
-            new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 3600, 14400));
+            new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 3600, 14400))
+            .lang("Carcinogenic", "Cancer");
 
     // Material specific Conditions
     public static final MedicalCondition ASBESTOSIS = register("asbestosis", 0xe3e3e3, 5000,
@@ -98,31 +105,38 @@ public class GTMedicalConditions {
             // new Symptom.ConfiguredSymptom(Symptom.AIR_SUPPLY_DEBUFF, 1500, 3500),
             // new Symptom.ConfiguredSymptom(Symptom.HUNGER, 500, 4000),
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 1200, 5000))
+            .lang("Asbestosis")
             .setRecipeModifier(builder -> builder
                     .outputItems(dust, Asbestos, 4));
+
     public static final MedicalCondition ARSENICOSIS = register("arsenicosis", 0xbd4b15, 1000,
             MedicalCondition.IdleProgressionType.HEAL, 1, true,
             new Symptom.ConfiguredSymptom(Symptom.WITHER),
             new Symptom.ConfiguredSymptom(Symptom.NAUSEA),
             new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 2, 500, 1000),
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, 330, 1000))
+            .lang("Arsenicosis")
             // new Symptom.ConfiguredSymptom(Symptom.HUNGER, 2, .2f))
             .setRecipeModifier(builder -> builder
                     .outputItems(dust, Arsenic, 4));
+
     public static final MedicalCondition METHANOL_POISONING = register("methanol_poisoning", 0xaa8800, 600,
             MedicalCondition.IdleProgressionType.HEAL, .5f, true,
             new Symptom.ConfiguredSymptom(Symptom.POISONING),
             new Symptom.ConfiguredSymptom(Symptom.BLINDNESS, 2, 450, 600),
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, 300, 600),
             new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 1, 150, 600))
+            .lang("Methanol Poisoning")
             .setRecipeModifier(builder -> builder
                     .outputFluids(Methanol.getFluid(1000)));
+
     public static final MedicalCondition CARBON_MONOXIDE_POISONING = register("carbon_monoxide_poisoning",
             0x041525, 2000, MedicalCondition.IdleProgressionType.HEAL, 1, true,
             new Symptom.ConfiguredSymptom(Symptom.DEATH),
             new Symptom.ConfiguredSymptom(Symptom.NAUSEA),
             new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 2, 1500, 2000),
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, 500, 2000))
+            .lang("Carbon Monoxide Poisoning")
             .setRecipeModifier(builder -> builder
                     .outputFluids(CarbonMonoxide.getFluid(1000)));
 

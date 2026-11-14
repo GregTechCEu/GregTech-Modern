@@ -44,9 +44,7 @@ public class PipeBlockItem extends BlockItem {
         super.appendHoverText(stack, level, tooltip, isAdvanced);
         if (GTUtil.isShiftDown()) {
             var tool = getBlock().getPipeTuneTool();
-            tooltip.add(Component.translatable("gtceu.tool_action." + tool.name + ".connect"));
-        } else {
-            tooltip.add(Component.translatable("gtceu.tool_action.show_tooltips"));
+            tooltip.add(Component.translatable("item.gtceu." + tool.name + ".tooltip.set_connections"));
         }
     }
 

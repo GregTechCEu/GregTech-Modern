@@ -126,7 +126,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
         if (cont.getCharge() == 0) return;
         float energyMultiplier = cont.getCharge() * 100.0F / cont.getMaxCharge();
         hud.newLine(
-                Component.translatable("hud.gtceu.armor.energy_lvl", String.format("%.1f", energyMultiplier) + "%"));
+                Component.translatable("armor.gtceu.hud.energy_level", String.format("%.1f", energyMultiplier) + "%"));
     }
 
     protected float getAbsorption() {

@@ -30,7 +30,7 @@ public class FluidRenderLayer extends MapRenderLayer {
 
         MutableComponent title = name.copy();
         if (entry.left() <= 0) {
-            title.append(" (").append(Component.translatable("gtceu.minimap.ore_vein.depleted")).append(")");
+            title.append(" (").append(Component.translatable("minimap.gtceu.ore_vein.depleted")).append(")");
         } else {
             title.append(" --- %s (%s%%)".formatted(entry.yield(), entry.left()));
         }

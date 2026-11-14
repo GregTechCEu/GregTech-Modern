@@ -83,17 +83,19 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
                         .child(Flow.col()
                                 .coverChildren()
                                 .childPadding(2)
-                                .child(Text.lang("gtceu.gui.me_network.min_stack_size").asWidget())
+                                .child(Text.lang("gui.gtceu.machine.me.stocking.min_stack_size").asWidget())
                                 .child(new TextFieldWidget()
                                         .size(120, 18)
                                         .value(SyncHandlers.intNumber(this::getMinStackSize, this::setMinStackSize)
                                                 .allowC2S())
                                         .setNumbers(1, Integer.MAX_VALUE))
-                                .child(Text.lang("gtceu.gui.me_network.ticks_per_cycle").asWidget())
+                                .child(Text.lang("gui.gtceu.machine.me.stocking.ticks_per_cycle").asWidget())
                                 .child(new TextFieldWidget()
                                         .size(120, 18)
                                         .value(SyncHandlers.intNumber(this::getTicksPerCycle, this::setTicksPerCycle)
                                                 .allowC2S())
+                                        .tooltip(t -> t.addLine(
+                                                Text.lang("gui.gtceu.machine.me.stocking.ticks_per_cycle_tooltip")))
                                         .setNumbers(1, 200))
                                 .margin(5)));
 
@@ -104,7 +106,7 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
                             .stateOverlay(GTGuiTextures.BUTTON_AUTO_PULL)
                             .tooltipAutoUpdate(true)
                             .tooltipBuilder(r -> r
-                                    .addLine(Text.lang("gtceu.gui.me_network.auto_pull_toggle"))))
+                                    .addLine(Text.lang("gui.gtceu.machine.me_stocking.auto_pull.toggle"))))
                             .child(new ButtonWidget<>()
                                     .size(18)
                                     .onMousePressed((context, b) -> {
@@ -113,7 +115,8 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
                                     })
                                     .overlay(new ItemDrawable(GTItems.TOOL_DATA_STICK.asItem()).asIcon().size(16))
                                     .tooltip(new RichTooltip()
-                                            .addLine(Text.lang("gtceu.gui.me_network.stocking_settings"))));
+                                            .addLine(
+                                                    Text.lang("gui.gtceu.machine.me.stocking.stocking_settings"))));
 
                 });
     }

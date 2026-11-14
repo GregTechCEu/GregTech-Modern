@@ -54,7 +54,7 @@ public class MachineModeProvider extends MachineInfoProvider<MetaMachine, Compou
             int currentRecipeTypeIndex = data.getInt("CurrentRecipeType");
             ListTag recipeTypesTagList = data.getList("RecipeTypes", StringTag.TAG_STRING);
             if (block.showDetails()) {
-                tooltip.add(Component.translatable("gtceu.top.machine_mode"));
+                tooltip.add(Component.translatable("integration.gtceu.jade.machine_mode"));
                 for (int i = 0; i < recipeTypesTagList.size(); i++) {
                     ResourceLocation recipeType = ResourceLocation.parse(recipeTypesTagList.getString(i));
                     MutableComponent text;
@@ -70,7 +70,7 @@ public class MachineModeProvider extends MachineInfoProvider<MetaMachine, Compou
             } else {
                 ResourceLocation recipeType = ResourceLocation.parse(
                         recipeTypesTagList.getString(currentRecipeTypeIndex));
-                tooltip.add(Component.translatable("gtceu.top.machine_mode").append(
+                tooltip.add(Component.translatable("integration.gtceu.jade.machine_mode").append(
                         Component.translatable("%s.%s".formatted(recipeType.getNamespace(), recipeType.getPath()))));
             }
 

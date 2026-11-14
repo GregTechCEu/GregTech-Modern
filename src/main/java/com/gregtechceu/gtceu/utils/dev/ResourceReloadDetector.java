@@ -43,12 +43,13 @@ public class ResourceReloadDetector {
             GTCEu.LOGGER.error("Message the GTCEu developers about this!");
             return reloadFuture.get();
         }
-        Minecraft.getInstance().player.sendSystemMessage(Component.translatable("gtceu.debug.resource_rebuild.start"));
+        Minecraft.getInstance().player
+                .sendSystemMessage(Component.translatable("command.gtceu.debug.resource_rebuild.start"));
         Instant start = Instant.now();
         // wait for the resource reload to finish, then send chat message, then let MC actually reload resources
         return process.toHandle().onExit()
                 .thenRun(() -> Minecraft.getInstance().player
-                        .sendSystemMessage(Component.translatable("gtceu.debug.resource_rebuild.done",
+                        .sendSystemMessage(Component.translatable("command.gtceu.debug.resource_rebuild.done",
                                 Duration.between(start, Instant.now()))))
                 .thenCompose($ -> reloadFuture.get());
     }

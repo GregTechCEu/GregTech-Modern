@@ -14,6 +14,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -100,10 +101,10 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
 
     @Override
     public Component getTooltips() {
-        var tooltips = Component.translatable("recipe.condition.adjacent_fluid.tooltip");
+        var tooltips = Component.translatable("recipe_condition.gtceu.adjacent_fluid");
         fluids.forEach(set -> {
             var id = set.get().get(0).get().getFluidType().getDescription();
-            tooltips.append(" ").append(id);
+            tooltips.append(CommonComponents.SPACE).append(id);
         });
         return tooltips;
     }
@@ -114,7 +115,7 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
             var row = Flow.row().coverChildrenHeight().widthRel(1);
             var fluids = getOrInitFluids(recipe);
 
-            row.child(Text.lang("recipe.condition.adjacent_fluid.tooltip").asWidget());
+            row.child(Text.lang("recipe_condition.gtceu.adjacent_fluid").asWidget());
 
             for (HolderSet<Fluid> set : fluids) {
                 if (set.size() == 0) {

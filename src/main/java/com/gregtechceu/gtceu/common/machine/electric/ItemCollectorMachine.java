@@ -277,7 +277,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
                                 .coverChildren()
                                 .childPadding(2)
                                 .horizontalCenter()
-                                .child(new TextWidget<>(Text.lang("gtceu.gui.item_collector.range")))
+                                .child(new TextWidget<>(Text.lang("gui.gtceu.machine.item_collector.range")))
                                 .child(new TextFieldWidget()
                                         .setNumbers(1, maxRange)
                                         .value(SyncHandlers.intNumber(this::getRange, this::setRange))))

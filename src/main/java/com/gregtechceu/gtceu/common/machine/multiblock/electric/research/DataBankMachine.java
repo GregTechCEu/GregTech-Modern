@@ -82,7 +82,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
 
         if (this.maintenance == null) {
             pState.setError(new PatternStringError(
-                    Component.translatable("gtceu.predicate_error.databank.missing_maintenance")));
+                    Component.translatable("multiblock.gtceu.pattern_error.databank.missing_maintenance")));
             invalidateStructure(substructureName);
             return;
         }
@@ -162,12 +162,12 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
                         getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
                     } else {
                         getRecipeLogic()
-                                .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
+                                .setWaiting(Component.translatable("gui.gtceu.recipe.insufficient_in")
                                         .append(": ").append(EURecipeCapability.CAP.getName()));
                     }
                 }
             } else {
-                getRecipeLogic().setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
+                getRecipeLogic().setWaiting(Component.translatable("gui.gtceu.recipe.insufficient_in").append(": ")
                         .append(EURecipeCapability.CAP.getName()));
             }
         }
@@ -184,8 +184,8 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, energyStoredSyncValue));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
-                () -> Component.translatable("gtceu.multiblock.data_bank.providing").withStyle(ChatFormatting.GREEN),
-                () -> Component.translatable("gtceu.multiblock.data_bank.error_power").withStyle(ChatFormatting.RED)));
+                () -> Component.translatable("gui.gtceu.machine.data_bank.working").withStyle(ChatFormatting.GREEN),
+                () -> Component.translatable("gui.gtceu.machine.data_bank.error_power").withStyle(ChatFormatting.RED)));
         widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
 
         return widgets;

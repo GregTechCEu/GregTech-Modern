@@ -63,7 +63,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
             if (part instanceof ObjectHolderMachine holder) {
                 if (holder.getFrontFacing() != getFrontFacing().getOpposite()) {
                     pState.setError(new PatternStringError(
-                            Component.translatable("gtceu.predicate_error.object_holder.direction"))
+                            Component.translatable("multiblock.gtceu.pattern_error.object_holder.direction"))
                             .pos(holder.getBlockPos()));
                     invalidateStructure(substructureName);
                     return;
@@ -79,13 +79,13 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         // should never happen, but would rather do this than have an obscure NPE
         if (computationProvider == null) {
             pState.setError(new PatternStringError(
-                    Component.translatable("gtceu.predicate_error.research.missing_computation")));
+                    Component.translatable("multiblock.gtceu.pattern_error.research.missing_computation")));
             invalidateStructure(substructureName);
         }
 
         if (objectHolder == null) {
             pState.setError(new PatternStringError(
-                    Component.translatable("gtceu.predicate_error.research.missing_object_holder")));
+                    Component.translatable("multiblock.gtceu.pattern_error.research.missing_object_holder")));
             invalidateStructure(substructureName);
         }
     }
@@ -103,7 +103,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         }
         if (objHolder != null && objHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
             patternState.setError(
-                    new PatternStringError(Component.translatable("gtceu.predicate_error.object_holder.direction"))
+                    new PatternStringError(
+                            Component.translatable("multiblock.gtceu.pattern_error.object_holder.direction"))
                             .pos(objHolder.getBlockPos()));
             invalidateStructure(name);
         }
@@ -130,7 +131,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         List<IWidget> widgets = new ArrayList<>();
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
-                () -> Component.translatable("gtceu.multiblock.research_station.researching")
+                () -> Component.translatable("gui.gtceu.machine.research_station.researching")
                         .withStyle(ChatFormatting.GREEN)));
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));

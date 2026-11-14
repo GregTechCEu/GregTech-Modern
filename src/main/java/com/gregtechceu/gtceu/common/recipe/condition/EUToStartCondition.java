@@ -41,7 +41,7 @@ public class EUToStartCondition extends RecipeCondition<EUToStartCondition> {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.eu_to_start.tooltip");
+        return Component.translatable("recipe_condition.gtceu.eu_to_start");
     }
 
     @Override

@@ -128,6 +128,7 @@ public class ModularArmorLang {
         provider.add("module.gtceu.wireless_charger", "Quantum Charger (%s)");
         provider.add("module.gtceu.wireless_charger.description",
                 "Links armor to a Battery Buffer or Power Substation across any distance and dimension (up to %s, configurable 1-16A). Right-click to link to storage.");
+        provider.add("module.gtceu.wireless_charger.linked", "Charger Linked");
         provider.add("module.gtceu.creative_flight", "Creative Flight Module");
         provider.add("module.gtceu.creative_flight.description",
                 "Uses %s EU/t to fly, can be used with thrusters for extra movement speed.");

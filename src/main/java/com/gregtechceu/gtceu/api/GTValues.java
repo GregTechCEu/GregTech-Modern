@@ -1,8 +1,12 @@
 package com.gregtechceu.gtceu.api;
 
+import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -133,11 +137,8 @@ public class GTValues {
             MODID_FTB_QUEST = "ftbquests",
             MODID_CCTWEAKED = "computercraft",
             MODID_ENDERIO = "enderio",
-            MODID_ENSORCELLATION = "ensorcellation";
-    /**
-     * Spray painting compat modids
-     */
-    public static final String MODID_TINTED = "tinted";
+            MODID_ENSORCELLATION = "ensorcellation",
+            MODID_TINTED = "tinted";
 
     /**
      * The short names for the voltages, used for registration primarily
@@ -155,6 +156,48 @@ public class GTValues {
             BLUE + BOLD + "X" +
             YELLOW + BOLD + "+" +
             RED + BOLD + value;
+
+    public static final Int2ObjectFunction<Component> MAX_PLUS_FORMAT_COMP = (value) -> Component.literal("MAX")
+            .withStyle(BOLD).withStyle(TooltipHelper.RAINBOW_HSL)
+            .append(Component.literal("+").withStyle(YELLOW, BOLD))
+            .append(Component.literal(String.valueOf(value)).withStyle(RED, BOLD));
+
+    /**
+     * Formatted components for the voltage short names
+     */
+    public static final Component[] VNC = new Component[] {
+            Component.literal("ULV").withStyle(DARK_GRAY),
+            Component.literal("LV").withStyle(GRAY),
+            Component.literal("MV").withStyle(AQUA),
+            Component.literal("HV").withStyle(GOLD),
+            Component.literal("EV").withStyle(DARK_PURPLE),
+            Component.literal("IV").withStyle(BLUE),
+            Component.literal("LuV").withStyle(LIGHT_PURPLE),
+            Component.literal("ZPM").withStyle(RED),
+            Component.literal("UV").withStyle(DARK_AQUA),
+            Component.literal("UHV").withStyle(DARK_RED),
+            Component.literal("UEV").withStyle(GREEN),
+            Component.literal("UIV").withStyle(DARK_GREEN),
+            Component.literal("UXV").withStyle(YELLOW),
+            Component.literal("OpV").withStyle(BLUE, BOLD),
+            Component.literal("MAX").withStyle(RED, BOLD),
+            MAX_PLUS_FORMAT_COMP.apply(1),
+            MAX_PLUS_FORMAT_COMP.apply(2),
+            MAX_PLUS_FORMAT_COMP.apply(3),
+            MAX_PLUS_FORMAT_COMP.apply(4),
+            MAX_PLUS_FORMAT_COMP.apply(5),
+            MAX_PLUS_FORMAT_COMP.apply(6),
+            MAX_PLUS_FORMAT_COMP.apply(7),
+            MAX_PLUS_FORMAT_COMP.apply(8),
+            MAX_PLUS_FORMAT_COMP.apply(9),
+            MAX_PLUS_FORMAT_COMP.apply(10),
+            MAX_PLUS_FORMAT_COMP.apply(11),
+            MAX_PLUS_FORMAT_COMP.apply(12),
+            MAX_PLUS_FORMAT_COMP.apply(13),
+            MAX_PLUS_FORMAT_COMP.apply(14),
+            MAX_PLUS_FORMAT_COMP.apply(15),
+            MAX_PLUS_FORMAT_COMP.apply(16),
+    };
 
     /**
      * The short names for the voltages, formatted for text
@@ -193,6 +236,9 @@ public class GTValues {
             MAX_PLUS_FORMAT.apply(16),
     };
 
+    /**
+     * Chat formatting codes for the voltage tiers
+     */
     public static final String[] VCF = new String[] {
             DARK_GRAY.toString(),
             GRAY.toString(),
@@ -228,21 +274,21 @@ public class GTValues {
             RED.toString() + BOLD + "MAX" };
 
     public static final String[] VLVT = new String[] {
-            "" + RESET,
-            "" + RESET,
-            "" + RESET,
-            "II" + RESET,
-            "III" + RESET,
-            "" + RESET,
-            "II" + RESET,
-            "III" + RESET,
-            "" + RESET,
-            "" + RESET,
-            "II" + RESET,
-            "III" + RESET,
-            "IV" + RESET,
-            "" + RESET,
-            "" + RESET };
+            "",
+            "",
+            "",
+            "II",
+            "III",
+            "",
+            "II",
+            "III",
+            "",
+            "",
+            "II",
+            "III",
+            "IV",
+            "",
+            "" };
 
     public static final String[] LVT = new String[] {
             "",

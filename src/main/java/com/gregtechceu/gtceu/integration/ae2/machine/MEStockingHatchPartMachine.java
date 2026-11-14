@@ -248,10 +248,10 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
             setAutoPull(!autoPull);
             if (autoPull) {
                 context.getPlayer().sendSystemMessage(
-                        Component.translatable("gtceu.machine.me.stocking_auto_pull_enabled"));
+                        Component.translatable("gui.gtceu.machine.me_stocking.auto_pull.enabled"));
             } else {
                 context.getPlayer().sendSystemMessage(
-                        Component.translatable("gtceu.machine.me.stocking_auto_pull_disabled"));
+                        Component.translatable("gui.gtceu.machine.me_stocking.auto_pull.disabled"));
             }
         }
         return InteractionResult.sidedSuccess(isRemote());

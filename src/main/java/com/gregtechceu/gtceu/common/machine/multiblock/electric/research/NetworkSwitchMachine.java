@@ -119,9 +119,9 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
     // MultiblockDisplayText.builder(textList, getDefaultPatternState())
     // .setWorkingStatus(true, isActive() && isWorkingEnabled()) // transform into two-state system for display
     // .setWorkingStatusKeys(
-    // "gtceu.multiblock.idling",
-    // "gtceu.multiblock.idling",
-    // "gtceu.multiblock.data_bank.providing")
+    // "gui.gtceu.machine.idling",
+    // "gui.gtceu.machine.idling",
+    // "gui.gtceu.machine.data_bank.working")
     // .addEnergyUsageExactLine(getEnergyUsage())
     // .addComputationUsageLine(computationHandler.getMaxCWUtForDisplay())
     // .addWorkingStatusLine();
@@ -132,7 +132,7 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
      * protected void addWarningText(List<Component> textList) {
      * super.addWarningText(textList);
      * if (isFormed() && computationHandler.hasNonBridgingConnections()) {
-     * textList.add(Component.translatable("gtceu.multiblock.computation.non_bridging.detailed").withStyle(
+     * textList.add(Component.translatable("gui.gtceu.machine.network_switch.non_bridging.detailed").withStyle(
      * ChatFormatting.YELLOW));
      * }
      * }

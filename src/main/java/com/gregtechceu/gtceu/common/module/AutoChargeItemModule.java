@@ -109,7 +109,7 @@ public class AutoChargeItemModule extends TieredItemModule {
                 (manager, handler) -> createSelector("charger_amps_" + id, handler, amps, 1, 16,
                         value -> value + "A"));
         settings.add(Flow.row().coverChildren().childPadding(5)
-                .child(Text.lang("gtceu.top.cable_voltage").asWidget())
+                .child(Text.lang("common.gtceu.voltage_label").asWidget())
                 .child(new ButtonWidget<>().size(50, 18)
                         .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier.getIntValue()])))
                         .onMousePressed((ctx, button) -> {
@@ -119,7 +119,7 @@ public class AutoChargeItemModule extends TieredItemModule {
                             return true;
                         })));
         settings.add(Flow.row().coverChildren().childPadding(5)
-                .child(Text.lang("gtceu.creative.energy.amperage").asWidget())
+                .child(Text.lang("common.gtceu.amperage_label").asWidget())
                 .child(new ButtonWidget<>().size(50, 18)
                         .overlay(Text.dynamic(() -> Component.literal(amps.getIntValue() + "A")))
                         .onMousePressed((ctx, button) -> {
@@ -170,7 +170,8 @@ public class AutoChargeItemModule extends TieredItemModule {
                 if (context.getLevel().isClientSide()) return InteractionResult.SUCCESS;
                 moduleContext.setData(moduleContext.getData(AutoChargeModuleData.class)
                         .withLinkedPos(GlobalPos.of(context.getLevel().dimension(), pos)));
-                if (player != null) player.sendSystemMessage(Component.translatable("behaviour.charger_linked"));
+                if (player != null)
+                    player.displayClientMessage(Component.translatable("module.gtceu.wireless_charger.linked"), true);
                 context.getLevel().playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5f,
                         1.2f);
                 return InteractionResult.CONSUME;

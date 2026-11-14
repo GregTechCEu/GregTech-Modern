@@ -148,7 +148,8 @@ public class AutobuildHelper {
             whatWeHaveAE = AEWrapper.tryGrid(whatWeDontHave, level, item, player);
         }
 
-        printBlockList(Component.translatable("gtceu.autobuild.ae_blocks").withStyle(ChatFormatting.AQUA), whatWeHaveAE,
+        printBlockList(Component.translatable("gui.gtceu.autobuild.ae_blocks").withStyle(ChatFormatting.AQUA),
+                whatWeHaveAE,
                 player);
 
         Map<Item, Integer> whatWePlaced = new Object2IntArrayMap<>();
@@ -164,7 +165,7 @@ public class AutobuildHelper {
                 level.setBlockAndUpdate(pos, blockState);
                 continue;
             }
-            var blocksLeft = whatWeHave.merge(blockState.getBlock().asItem(), -1, Integer::sum);
+            int blocksLeft = whatWeHave.merge(blockState.getBlock().asItem(), -1, Integer::sum);
             if (blocksLeft < 0) {
                 blocksLeft = whatWeHaveAE.merge(blockState.getBlock().asItem(), -1, Integer::sum);
                 if (blocksLeft < 0) continue;
@@ -184,13 +185,13 @@ public class AutobuildHelper {
                     (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
         }
 
-        printBlockList(Component.translatable("gtceu.autobuild.placed_blocks").withStyle(ChatFormatting.GREEN),
+        printBlockList(Component.translatable("gui.gtceu.autobuild.placed_blocks").withStyle(ChatFormatting.GREEN),
                 whatWePlaced, player);
-        printBlockList(Component.translatable("gtceu.autobuild.missing_blocks").withStyle(ChatFormatting.RED),
+        printBlockList(Component.translatable("gui.gtceu.autobuild.missing_blocks").withStyle(ChatFormatting.RED),
                 whatWeWant, player);
 
         if (!canNotPlaceBlocks.isEmpty()) player.displayClientMessage(
-                Component.translatable("gtceu.autobuild.unplaced_blocks").withStyle(ChatFormatting.RED), false);
+                Component.translatable("gui.gtceu.autobuild.unplaced_blocks").withStyle(ChatFormatting.RED), false);
         if (!canNotPlaceBlocks.isEmpty())
             GTNetwork.sendToPlayer(player, new SPacketAutobuildHighlight(canNotPlaceBlocks.keySet().toLongArray()));
     }
@@ -228,7 +229,7 @@ public class AutobuildHelper {
         }
     }
 
-    public class AEWrapper {
+    public static class AEWrapper {
 
         @Nullable
         public static IGrid getLinkedGrid(ItemStack stack, Level level, Player player) {
@@ -238,25 +239,25 @@ public class AutobuildHelper {
 
             var linkedPos = TerminalBehavior.getLinkedPos(stack);
             if (linkedPos == null) {
-                player.displayClientMessage(Component.translatable("gtceu.terminal.not_linked"), true);
+                player.displayClientMessage(Component.translatable("gui.gtceu.terminal.not_bound_to_me_network"), true);
                 return null;
             }
 
             var linkedLevel = serverLevel.getServer().getLevel(linkedPos.dimension());
             if (linkedLevel == null) {
-                player.displayClientMessage(Component.translatable("gtceu.terminal.network_missing"), true);
+                player.displayClientMessage(Component.translatable("gui.gtceu.terminal.me_network_invalid"), true);
                 return null;
             }
 
             var be = Platform.getTickingBlockEntity(linkedLevel, linkedPos.pos());
             if (!(be instanceof IWirelessAccessPoint accessPoint)) {
-                player.displayClientMessage(Component.translatable("gtceu.terminal.network_missing"), true);
+                player.displayClientMessage(Component.translatable("gui.gtceu.terminal.me_network_invalid"), true);
                 return null;
             }
 
             var grid = accessPoint.getGrid();
             if (grid == null) {
-                player.displayClientMessage(Component.translatable("gtceu.terminal.network_missing"), true);
+                player.displayClientMessage(Component.translatable("gui.gtceu.terminal.me_network_invalid"), true);
                 return null;
             }
             return grid;

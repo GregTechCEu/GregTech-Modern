@@ -23,11 +23,11 @@ public enum IO {
     }
 
     public static String getTitle() {
-        return "gtceu.io.title";
+        return "common.gtceu.io.title";
     }
 
     public String getTooltip() {
-        return "gtceu.io." + localeName;
+        return "common.gtceu.io." + localeName;
     }
 
     public boolean support(IO io) {

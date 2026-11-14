@@ -10,7 +10,7 @@ public class BlockStateRecipeCapability extends RecipeCapability<BlockState> {
     public final static BlockStateRecipeCapability CAP = new BlockStateRecipeCapability();
 
     protected BlockStateRecipeCapability() {
-        super(GTCEu.id("block_state"), 0xFFABABAB, false, 5, SerializerBlockState.INSTANCE);
+        super(GTCEu.id("block_state"), "Block State", 0xFFABABAB, false, 5, SerializerBlockState.INSTANCE);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.sound.ConfiguredSoundEvent;
 import com.gregtechceu.gtceu.api.sound.CustomSoundEntry;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.sound.WrappedSoundEntry;
+import com.gregtechceu.gtceu.data.lang.LangGenerationHandler;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.CachedOutput;
@@ -22,6 +23,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -60,7 +62,8 @@ public class SoundEntryBuilder {
     }
 
     protected ResourceLocation id;
-    protected String subtitle = "unregistered";
+    protected @Nullable String subtitleKey = null;
+    protected @Nullable String subtitleLang = null;
     protected SoundSource category = SoundSource.BLOCKS;
     protected List<ConfiguredSoundEvent> wrappedEvents;
     protected List<ResourceLocation> variants;
@@ -72,8 +75,8 @@ public class SoundEntryBuilder {
         this.id = id;
     }
 
-    public SoundEntryBuilder subtitle(String subtitle) {
-        this.subtitle = subtitle;
+    public SoundEntryBuilder subtitleKey(String subtitle) {
+        this.subtitleKey = subtitle;
         return this;
     }
 
@@ -83,12 +86,18 @@ public class SoundEntryBuilder {
     }
 
     public SoundEntryBuilder noSubtitle() {
-        this.subtitle = null;
+        this.subtitleKey = null;
         return this;
     }
 
     public SoundEntryBuilder category(SoundSource category) {
         this.category = category;
+        return this;
+    }
+
+    public SoundEntryBuilder subtitleLang(String lang) {
+        this.subtitleLang = lang;
+        this.subtitleKey = id.toLanguageKey("subtitles");
         return this;
     }
 
@@ -115,9 +124,13 @@ public class SoundEntryBuilder {
     }
 
     public SoundEntry build() {
+        if (subtitleLang != null) {
+            LangGenerationHandler.forNamespace(id.getNamespace()).add(p -> p.add(subtitleKey, subtitleLang));
+        }
+
         SoundEntry entry = wrappedEvents.isEmpty() ?
-                new CustomSoundEntry(id, variants, subtitle, category, attenuationDistance) :
-                new WrappedSoundEntry(id, subtitle, wrappedEvents, category, attenuationDistance);
+                new CustomSoundEntry(id, variants, subtitleKey, category, attenuationDistance) :
+                new WrappedSoundEntry(id, subtitleKey, wrappedEvents, category, attenuationDistance);
         GTRegistries.SOUNDS.register(entry.getId(), entry);
         return entry;
     }

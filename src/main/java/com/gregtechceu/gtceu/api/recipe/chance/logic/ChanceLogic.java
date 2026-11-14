@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.data.lang.LangGenerationHandler;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModLoader;
 
@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -67,16 +68,6 @@ public abstract class ChanceLogic {
             }
             return builder.build();
         }
-
-        @Override
-        public @NotNull Component getTranslation() {
-            return Component.translatable("gtceu.chance_logic.or");
-        }
-
-        @Override
-        public String toString() {
-            return "ChanceLogic{OR}";
-        }
     };
 
     /**
@@ -103,16 +94,6 @@ public abstract class ChanceLogic {
                 if (!failed) builder.addAll(chancedEntries);
             }
             return builder.build();
-        }
-
-        @Override
-        public @NotNull Component getTranslation() {
-            return Component.translatable("gtceu.chance_logic.and");
-        }
-
-        @Override
-        public String toString() {
-            return "ChanceLogic{AND}";
         }
     };
 
@@ -144,16 +125,6 @@ public abstract class ChanceLogic {
                 if (selected != null) builder.add(selected);
             }
             return builder.build();
-        }
-
-        @Override
-        public @NotNull Component getTranslation() {
-            return Component.translatable("gtceu.chance_logic.first");
-        }
-
-        @Override
-        public String toString() {
-            return "ChanceLogic{FIRST}";
         }
     };
 
@@ -241,16 +212,6 @@ public abstract class ChanceLogic {
             }
             return builder.build();
         }
-
-        @Override
-        public @NotNull Component getTranslation() {
-            return Component.translatable("gtceu.chance_logic.xor");
-        }
-
-        @Override
-        public String toString() {
-            return "ChanceLogic{XOR}";
-        }
     };
 
     /**
@@ -264,20 +225,17 @@ public abstract class ChanceLogic {
                                                          @Nullable Object2IntMap<?> cache, int times) {
             return Collections.emptyList();
         }
-
-        @Override
-        public @NotNull Component getTranslation() {
-            return Component.translatable("gtceu.chance_logic.none");
-        }
-
-        @Override
-        public String toString() {
-            return "ChanceLogic{NONE}";
-        }
     };
 
+    @Getter
+    private final ResourceLocation id;
+
     public ChanceLogic(ResourceLocation id) {
+        this.id = id;
         GTRegistries.CHANCE_LOGICS.register(id, this);
+
+        LangGenerationHandler.forNamespace(id.getNamespace())
+                .add(p -> p.add(getLanguageKey(), id.getPath().toUpperCase()));
     }
 
     private ChanceLogic(String id) {
@@ -357,8 +315,14 @@ public abstract class ChanceLogic {
         return roll(cap, chancedEntries, null, times);
     }
 
-    @NotNull
-    public abstract Component getTranslation();
+    public String getLanguageKey() {
+        return id.toLanguageKey("chance_logic");
+    }
+
+    @Override
+    public String toString() {
+        return "ChanceLogic{%s}".formatted(id.toString());
+    }
 
     @ApiStatus.Internal
     public static void init() {
