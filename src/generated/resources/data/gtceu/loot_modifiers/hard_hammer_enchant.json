@@ -1,0 +1,46 @@
+{
+  "type": "gtceu:apply_hard_hammer_enchant",
+  "conditions": [
+    {
+      "condition": "minecraft:inverted",
+      "term": {
+        "condition": "minecraft:match_tool",
+        "predicate": {
+          "predicates": {
+            "minecraft:enchantments": [
+              {
+                "enchantments": "#gtceu:prevents_hammer_crushing"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "condition": "minecraft:any_of",
+      "terms": [
+        {
+          "condition": "minecraft:match_tool",
+          "predicate": {
+            "predicates": {
+              "minecraft:enchantments": [
+                {
+                  "enchantments": "gtceu:hard_hammer",
+                  "levels": {
+                    "min": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "condition": "minecraft:match_tool",
+          "predicate": {
+            "items": "#c:tools/hammer"
+          }
+        }
+      ]
+    }
+  ]
+}
