@@ -49,9 +49,6 @@ import java.util.Optional;
  * </p>
  * <p>
  * To make an item spoilable, you can simply use {@link SpoilableBehavior#attachTo(ItemLike)}.
- * <br>
- * If you want to implement this interface yourself, please note that {@link SpoilableItemStack}
- * calls a mixin method in its {@link ISpoilableItem#updateFreshness} implementation.
  * </p>
  */
 public interface ISpoilableItem {

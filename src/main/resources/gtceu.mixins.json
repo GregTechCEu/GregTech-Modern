@@ -71,7 +71,6 @@
         "IngredientAccessor",
         "IntegerPropertyAccessor",
         "InventoryMixin",
-        "InvWrapperMixin",
         "ItemStackMixin",
         "ItemValueAccessor",
         "LevelMixin",

@@ -21,9 +21,11 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -102,7 +104,7 @@ public class SpoilableBehavior {
         }
 
         @Override
-        protected @NotNull Component getSpoilResultTooltip() {
+        protected Component getSpoilResultTooltip() {
             return spoilsIntoTooltip.apply(getStack());
         }
     }
@@ -115,9 +117,9 @@ public class SpoilableBehavior {
 
     public static class Builder {
 
-        private Function<ItemStack, Long> ticks;
-        private SpoilResultProvider result;
-        private Function<ItemStack, Component> tooltip;
+        private @Nullable Function<ItemStack, Long> ticks = null;
+        private @Nullable SpoilResultProvider result = null;
+        private @Nullable Function<ItemStack, Component> tooltip = null;
 
         private Builder() {
             ticks(100);
@@ -125,6 +127,10 @@ public class SpoilableBehavior {
         }
 
         public SpoilableBehavior build() {
+            Objects.requireNonNull(ticks, "tick provider not set");
+            Objects.requireNonNull(result, "result provider not set");
+            Objects.requireNonNull(tooltip, "tooltip provider not set");
+
             return new SpoilableBehavior(ticks, result, tooltip);
         }
 
