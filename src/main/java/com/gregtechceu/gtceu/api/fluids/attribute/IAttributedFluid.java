@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.fluids.attribute;
 
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
@@ -22,5 +22,5 @@ public interface IAttributedFluid {
     void addAttribute(@NotNull FluidAttribute attribute);
 
     @NotNull
-    FluidState getState();
+    MaterialFluidState getState();
 }

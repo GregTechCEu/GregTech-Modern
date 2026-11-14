@@ -101,6 +101,7 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
 
         var ext = IClientFluidTypeExtensions.of(fluid.getFluid());
         var fluidSprite = RenderUtil.FluidTextureType.STILL.map(ext, fluid);
+        if (fluidSprite == null) return;
 
         EnumSet<Direction> sidesToRender = EnumSet.of(frontFacing);
         VertexConsumer builder = buffer.getBuffer(Sheets.translucentCullBlockSheet());
