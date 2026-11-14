@@ -88,7 +88,7 @@ public class FluidVoidingCover extends PumpCover {
                                   UISettings settings) {
         var row = coverUIRow()
                 .child(GTMuiWidgets.createPowerButton(this));
-        GTMuiWidgets.createFilterRow(row, filterHandler, data, syncManager, settings);
+        GTMuiWidgets.createFilterRow(row, filterHandler, data, syncManager, settings, data.getSide());
 
         column.child(row);
     }

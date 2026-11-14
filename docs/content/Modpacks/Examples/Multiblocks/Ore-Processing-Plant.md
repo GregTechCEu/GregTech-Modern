@@ -9,7 +9,7 @@ title: "Ore Processing Plant"
 
 === "Java"
     ```java title="AddonRecipeTypes.java"
-        public final static GTRecipeType ORE_PROCESSING_RECIPES = register(AddonMod.id("ore_processing_plant"), MULTIBLOCK)
+        public final static GTRecipeType ORE_PROCESSING_RECIPES = GTRecipeTypes.register(AddonMod.id("ore_processing_plant"), MULTIBLOCK)
             .setMaxIOSize(1, 8, 2, 1)
             .setEUIO(IO.IN)
             .setSound(GTSoundEntries.BATH);
@@ -42,7 +42,7 @@ title: "Ore Processing Plant"
                 .slice("AFFFA", "F P F", "F P F", "F P F", " FPF ", " FMF ", " B B ")
                 .slice("AFFFA", "FG GF", "F   F", " F F ", " FFF ", "  F  ", "  B  ")
                 .slice(" AAA ", " FFF ", " FFF ", "  F  ", "     ", "     ", "     ")
-                .where('C', Predicates.controller(Predicates.blocks(definition.get())))
+                .where('C', Predicates.controller(definition))
                 .where('F', Predicates.blocks(GTBlocks.CASING_TUNGSTENSTEEL_ROBUST.get())
                     .and(Predicates.autoAbilities(definition.getRecipeTypes()))
                     .and(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))

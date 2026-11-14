@@ -115,7 +115,8 @@ public abstract class MachineTrait implements ISyncManaged {
     @Override
     public void markAsChanged() {
         if (machine == null) return;
-        getMachine().markAsChanged();
+        if (traitName != null) machine.getSyncDataHolder().markClientSyncFieldDirty("traitHolder");
+        else machine.markAsChanged();
     }
 
     public MachineRenderState getRenderState() {

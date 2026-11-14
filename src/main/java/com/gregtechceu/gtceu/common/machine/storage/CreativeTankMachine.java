@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -67,13 +68,13 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     private void setTicksPerCycle(int value) {
-        ticksPerCycle = value;
-        autoOutput.setTicksPerCycle(value);
+        ticksPerCycle = Mth.clamp(value, 1, Integer.MAX_VALUE);
+        autoOutput.setTicksPerCycle(ticksPerCycle);
         onFluidChanged();
     }
 
     private void setmBPerCycle(int value) {
-        mBPerCycle = value;
+        mBPerCycle = Mth.clamp(value, 1, Integer.MAX_VALUE);
         onFluidChanged();
     }
 

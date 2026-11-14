@@ -199,7 +199,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
 
         syncManager.syncValue("controllerMode", controllerModeValue);
 
-        return ModularPanel.defaultPanel(coverDefinition.getId().getPath(), 176, 245)
+        return ModularPanel.defaultPanel(coverDefinition.getId().getPath() + "." + data.getSide().getName(), 176, 245)
                 .child(GTMuiWidgets.createTitleBar(() -> this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND))
                 .child(Flow.col().top(7).margin(7, 0)
                         .childPadding(2)

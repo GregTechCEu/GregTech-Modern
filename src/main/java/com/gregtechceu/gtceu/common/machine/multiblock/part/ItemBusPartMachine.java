@@ -270,13 +270,21 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                                 .accessibility(inventory.handlerIO.support(IO.IN), true)));
 
         if (io == IO.OUT) {
+            if (getInventorySize(tier) == 1) {
+                mainWidget.child(grid.center());
+                Flow filterRow = Flow.row().width(9 * 18).coverChildrenHeight().childPadding(2);
+                GTMuiWidgets.createFilterRow(filterRow, filterHandler, guiData, syncManager, settings);
+                mainWidget.child(filterRow.bottomRel(0).horizontalCenter());
+                return;
+            }
             Flow filterRow = Flow.row().width(9 * 18).coverChildrenHeight().childPadding(2);
             mainWidget.child(Flow.col()
                     .coverChildren()
                     .center()
                     .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                     .child(grid)
-                    .child(GTMuiWidgets.createFilterRow(filterRow, filterHandler, guiData, syncManager, settings)));
+                    .child(GTMuiWidgets.createFilterRow(filterRow, filterHandler, guiData, syncManager, settings,
+                            null)));
         } else {
             mainWidget.child(grid.center());
         }

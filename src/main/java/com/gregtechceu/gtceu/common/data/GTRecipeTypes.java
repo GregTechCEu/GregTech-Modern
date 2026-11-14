@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.*;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.GTRecipeTypeUIs;
 import com.gregtechceu.gtceu.common.recipe.gui.GTRecipeUIModifiers;
 import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -515,9 +516,7 @@ public class GTRecipeTypes {
             .setEUIO(IO.IN)
             .setMaxSize(IO.IN, GTRecipeCapabilities.CWU, 1)
             .setMaxIOSize(2, 1, 0, 0)
-            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
-                    .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.SCANNER_OVERLAY)
-                    .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.RESEARCH_STATION_OVERLAY))
+            .UI(builder -> builder.customRecipeTypeUI(GTRecipeTypeUIs.RESEARCH_STATION))
             .setScanner(true)
             .setMaxTooltips(4)
             .setSound(GTValues.FOOLS.getAsBoolean() ? GTSoundEntries.SCIENCE : GTSoundEntries.COMPUTATION);
@@ -600,7 +599,7 @@ public class GTRecipeTypes {
     public final static GTRecipeType DISTILLATION_RECIPES = register("distillation_tower", MULTIBLOCK)
             .setMaxIOSize(0, 1, 1, 12).setEUIO(IO.IN)
             .setSound(GTSoundEntries.CHEMICAL)
-            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW_MULTIPLE))
+            .UI(builder -> builder.customRecipeTypeUI(GTRecipeTypeUIs.DISTILLATION_TOWER))
             .onRecipeBuild((recipeBuilder, provider) -> {
                 if (recipeBuilder.data.getBoolean("disable_distillery")) return;
                 if (recipeBuilder.output.containsKey(FluidRecipeCapability.CAP)) {
@@ -703,7 +702,7 @@ public class GTRecipeTypes {
 
     public final static GTRecipeType ASSEMBLY_LINE_RECIPES = register("assembly_line", MULTIBLOCK)
             .setMaxIOSize(16, 1, 4, 0).setEUIO(IO.IN)
-            .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW))
+            .UI(builder -> builder.customRecipeTypeUI(GTRecipeTypeUIs.ASSLINE))
             .setSound(GTSoundEntries.ASSEMBLER)
             .setHasResearchSlot(true)
             .onRecipeBuild(ResearchManager::createDefaultResearchRecipe);

@@ -369,7 +369,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             if (frameMaterial != null) {
                 Block.popResource(context.getLevel(), this.getBlockPos(),
                         ChemicalHelper.getItemOrThrow(TagPrefix.frameGt, frameMaterial).getDefaultInstance());
-                frameMaterial = null;
+                setFrameMaterial(null);
                 return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }
         }

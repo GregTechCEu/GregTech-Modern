@@ -1313,7 +1313,7 @@
   "gui.gtceu.module_slot.tiered": "Tiered (%s)",
   "gui.gtceu.module_slot.universal": "Universal",
   "gui.gtceu.module_slots": "Module slots:",
-  "gui.gtceu.modules": "Modules:",
+  "gui.gtceu.modules": "Modules",
   "gui.gtceu.multi_preview.clear_multiblock": "Clear Multiblock",
   "gui.gtceu.multi_preview.clear_preferences": "Clear Preferences",
   "gui.gtceu.output_settings": "Output Settings",

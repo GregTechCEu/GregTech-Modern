@@ -134,7 +134,7 @@ public class GTMultiblockTextUtil {
         return buildAmpVoltEutHoverLine(
                 () -> Component.translatable("gui.gtceu.machine.max_eut",
                         buildAmpVoltComponent(maxEnergyUsage, voltage), maxEnergyUsage.getLongValue())
-                        .withStyle(ChatFormatting.WHITE),
+                        .withStyle(ChatFormatting.GRAY),
                 buildEutHoverTooltip(maxEnergyUsage, true),
                 ($ -> isFormed.getBoolValue()));
     }

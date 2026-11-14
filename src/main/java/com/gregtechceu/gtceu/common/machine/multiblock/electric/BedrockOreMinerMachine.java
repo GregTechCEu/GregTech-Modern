@@ -106,7 +106,7 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
 
         widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.bedrock_miner.ore_amount",
                 Component.literal(FormattingUtil.formatNumbers(
-                        getRecipeLogic().getOreToProduce() * 20L / BedrockOreMinerLogic.MAX_PROGRESS) + "/s")
+                        oreAmount.getIntValue() * 20L / BedrockOreMinerLogic.MAX_PROGRESS) + "/s")
                         .withStyle(ChatFormatting.BLUE)))
                 .asWidget());
 

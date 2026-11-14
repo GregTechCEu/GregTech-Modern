@@ -122,7 +122,7 @@ public class TagPrefix {
                             .mapColor(MapColor.DIRT).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
                     ResourceLocation.withDefaultNamespace("block/andesite"));
 
-    public static final TagPrefix oreRedGranite = oreTagPrefix("red_granite", BlockTags.MINEABLE_WITH_PICKAXE)
+    public static final TagPrefix oreRedGranite = oreTagPrefix(GTCEu.id("red_granite"), BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Red Granite %s Ore")
             .registerOre(() -> GTBlocks.RED_GRANITE.getDefaultState(), () -> GTMaterials.GraniteRed,
                     BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_RED).requiresCorrectToolForDrops()
@@ -1106,20 +1106,25 @@ public class TagPrefix {
         LangGenerationHandler.forNamespace(id.getNamespace()).add(this::generateLang);
     }
 
+    /**
+     * @deprecated Use {@link #oreTagPrefix(ResourceLocation, TagKey)}
+     */
+    @Deprecated(since = "8.0.0")
     public static TagPrefix oreTagPrefix(String name, TagKey<Block> miningToolTag) {
         return oreTagPrefix(GTCEu.id(name), miningToolTag);
     }
 
-    public static TagPrefix oreTagPrefix(ResourceLocation id, TagKey<Block> miningToolTag) {
-        return new TagPrefix(id)
+    public static TagPrefix oreTagPrefix(ResourceLocation id, @Nullable TagKey<Block> miningToolTag) {
+        var prefix = new TagPrefix(id)
                 .defaultTagPath("ores/%s")
                 .prefixOnlyTagPath("ores_in_ground/%s")
                 .unformattedTagPath("ores")
                 .materialIconType(MaterialIconType.ore)
-                .miningToolTag(miningToolTag)
                 .unificationEnabled(true)
                 .blockConstructor(OreBlock::new)
                 .generationCondition(hasOreProperty);
+        if (miningToolTag != null) prefix.miningToolTag(miningToolTag);
+        return prefix;
     }
 
     public void addSecondaryMaterial(MaterialStack secondaryMaterial) {

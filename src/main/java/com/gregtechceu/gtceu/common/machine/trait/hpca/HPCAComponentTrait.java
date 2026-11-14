@@ -38,7 +38,7 @@ public class HPCAComponentTrait extends MachineTrait {
         if (!canBeDamaged) return;
         if (isDamaged != damaged) {
             isDamaged = damaged;
-            syncDataHolder.markClientSyncFieldDirty("damaged");
+            syncDataHolder.markClientSyncFieldDirty("isDamaged");
             MachineRenderState state = getRenderState();
             if (state.hasProperty(GTMachineModelProperties.IS_HPCA_PART_DAMAGED)) {
                 setRenderState(state.setValue(GTMachineModelProperties.IS_HPCA_PART_DAMAGED, damaged));
