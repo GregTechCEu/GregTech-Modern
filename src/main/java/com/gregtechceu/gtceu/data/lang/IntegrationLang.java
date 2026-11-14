@@ -39,12 +39,12 @@ public class IntegrationLang {
 
         // Fluid vein
 
-        provider.add("recipeviewer.gtceu.fluid.vein_weight", "Vein Weight: %d");
-        provider.add("recipeviewer.gtceu.fluid.min_yield", "Minimum Yield: %d");
-        provider.add("recipeviewer.gtceu.fluid.max_yield", "Maximum Yield: %d");
-        provider.add("recipeviewer.gtceu.fluid.depletion_chance", "Depletion Chance: %d%%");
-        provider.add("recipeviewer.gtceu.fluid.depletion_amount", "Depletion Amount: %d");
-        provider.add("recipeviewer.gtceu.fluid.depleted_rate", "Depleted Yield: %d");
+        provider.add("recipeviewer.gtceu.fluid.vein_weight", "Vein Weight: %s");
+        provider.add("recipeviewer.gtceu.fluid.min_yield", "Minimum Yield: %s");
+        provider.add("recipeviewer.gtceu.fluid.max_yield", "Maximum Yield: %s");
+        provider.add("recipeviewer.gtceu.fluid.depletion_chance", "Depletion Chance: %s%%");
+        provider.add("recipeviewer.gtceu.fluid.depletion_amount", "Depletion Amount: %s");
+        provider.add("recipeviewer.gtceu.fluid.depleted_rate", "Depleted Yield: %s");
 
         provider.add("recipeviewer.gtceu.fluid.dimension", "Dimensions:");
 
@@ -123,7 +123,7 @@ public class IntegrationLang {
         provider.add("integration.gtceu.jade.pattern_buffer.bound_to_pos", "Bound To - X: %s, Y: %s, Z: %s");
         provider.add("integration.gtceu.jade.pattern_buffer.proxies_bound", "Buffer Proxies Bound: %s");
 
-        provider.add("integration.gtceu.jade.energy_stored", "%d / %d EU");
+        provider.add("integration.gtceu.jade.energy_stored", "%s / %s EU");
         provider.add("integration.gtceu.jade.progress_computation", "%s / %s CWU");
         provider.add("integration.gtceu.jade.progress_sec", "%s / %s s");
         provider.add("integration.gtceu.jade.progress_tick", "%s / %s t");
@@ -173,7 +173,7 @@ public class IntegrationLang {
         provider.add("minimap.gtceu.ore_vein.depleted", "Depleted Vein");
 
         // Chat Messages
-        provider.add("map.gtceu.new_veins.amount", "Prospected %d new veins!");
+        provider.add("map.gtceu.new_veins.amount", "Prospected %s new veins!");
         provider.add("map.gtceu.new_veins.name", "Prospected %s!");
 
         // JourneyMap button names

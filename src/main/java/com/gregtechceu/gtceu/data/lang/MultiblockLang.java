@@ -13,16 +13,16 @@ public class MultiblockLang {
 
         // Pattern/Predicate Info
 
-        provider.add("multiblock.gtceu.predicate.count.exact", "Exactly: %d");
-        provider.add("multiblock.gtceu.predicate.count.range", "Between %d and %d");
-        provider.add("multiblock.gtceu.predicate.limit_max", "Maximum: %d");
-        provider.add("multiblock.gtceu.predicate.limit_min", "Minimum: %d");
-        provider.add("multiblock.gtceu.predicate.limit_layer_max", "Maximum: %d per layer");
-        provider.add("multiblock.gtceu.predicate.limit_layer_min", "Minimum: %d per layer");
+        provider.add("multiblock.gtceu.predicate.count.exact", "Exactly: %s");
+        provider.add("multiblock.gtceu.predicate.count.range", "Between %s and %s");
+        provider.add("multiblock.gtceu.predicate.limit_max", "Maximum: %s");
+        provider.add("multiblock.gtceu.predicate.limit_min", "Minimum: %s");
+        provider.add("multiblock.gtceu.predicate.limit_layer_max", "Maximum: %s per layer");
+        provider.add("multiblock.gtceu.predicate.limit_layer_min", "Minimum: %s per layer");
         provider.add("multiblock.gtceu.predicate.single", "Only this block can be used");
         provider.add("multiblock.gtceu.predicate.tier_must_match", "Can only be of tier: %s");
 
-        provider.add("multiblock.gtceu.pattern.clear_amount", "§6Must have a clear %dx%dx%d space in front§r");
+        provider.add("multiblock.gtceu.pattern.clear_amount", "§6Must have a clear %sx%sx%s space in front§r");
         provider.add("multiblock.gtceu.pattern.location_end", "§cVery End§r");
         provider.add("multiblock.gtceu.predicate.replaceable_air", "Replaceable by Air");
 
@@ -31,9 +31,9 @@ public class MultiblockLang {
 
         // Pattern Errors
 
-        provider.add("multiblock.gtceu.pattern_error.block_match_error", "Error at X: %d, Y: %d, Z: %d");
-        provider.add("multiblock.gtceu.pattern_error.mismatch_coils", "Mismatched coils: %s vs %s at (%d, %d, %d)");
-        provider.add("multiblock.gtceu.pattern_error.mismatch_filters", "Mismatched filters: %s vs %s at (%d, %d, %d)");
+        provider.add("multiblock.gtceu.pattern_error.block_match_error", "Error at X: %s, Y: %s, Z: %s");
+        provider.add("multiblock.gtceu.pattern_error.mismatch_coils", "Mismatched coils: %s vs %s at (%s, %s, %s)");
+        provider.add("multiblock.gtceu.pattern_error.mismatch_filters", "Mismatched filters: %s vs %s at (%s, %s, %s)");
 
         provider.add("multiblock.gtceu.pattern_error.active_transformer.missing_io",
                 "Missing hatches: IN - %s | OUT - %s");
@@ -42,7 +42,7 @@ public class MultiblockLang {
                 "multiblock.gtceu.pattern_error.cleanroom.not_centered",
                 "Cleanroom controller must be centered.");
         provider.add("multiblock.gtceu.pattern_error.distillery.unexpected_hatch",
-                "Fluid hatch at unexpected position (%d, %d, %d).");
+                "Fluid hatch at unexpected position (%s, %s, %s).");
         provider.add("multiblock.gtceu.pattern_error.distillery.missing_outputs", "Missing fluid output hatches.");
         provider.add("multiblock.gtceu.pattern_error.power_substation.missing_batteries", "Missing batteries.");
         provider.add("multiblock.gtceu.pattern_error.databank.missing_maintenance", "Missing maintenance hatch.");
@@ -50,7 +50,7 @@ public class MultiblockLang {
                 "Object holder must face opposite the controller.");
         provider.add("multiblock.gtceu.pattern_error.research.missing_computation", "Missing computation hatch.");
         provider.add("multiblock.gtceu.pattern_error.research.missing_object_holder", "Missing object holder hatch.");
-        provider.add("multiblock.gtceu.pattern_error.charcoal.walls", "Incorrect wall block at (%d, %d, %d).");
+        provider.add("multiblock.gtceu.pattern_error.charcoal.walls", "Incorrect wall block at (%s, %s, %s).");
         provider.add("multiblock.gtceu.pattern_error.charcoal.logs", "Must be completely filled with logs.");
         provider.add("multiblock.gtceu.pattern_error.charcoal.too_small", "Charcoal Pile is too small.");
         provider.add("multiblock.gtceu.pattern_error.steam.missing_steam_hatch", "Missing steam hatch");

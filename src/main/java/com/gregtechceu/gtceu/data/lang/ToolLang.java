@@ -109,9 +109,9 @@ public class ToolLang {
 
         // Rotors
         provider.add("item.gtceu.turbine_rotor.tooltip.primary_material", "§fMaterial: §e%s");
-        provider.add("item.gtceu.turbine_rotor.tooltip.durability", "§fDurability: §a%d / %d");
-        provider.add("item.gtceu.turbine_rotor.tooltip.efficiency", "Turbine Efficiency: §9%d%%");
-        provider.add("item.gtceu.turbine_rotor.tooltip.power", "Turbine Power: §9%d%%");
+        provider.add("item.gtceu.turbine_rotor.tooltip.durability", "§fDurability: §a%s / %s");
+        provider.add("item.gtceu.turbine_rotor.tooltip.efficiency", "Turbine Efficiency: §9%s%%");
+        provider.add("item.gtceu.turbine_rotor.tooltip.power", "Turbine Power: §9%s%%");
 
         // AOE
         provider.add("gui.gtceu.tool_aoe.rows", "Rows");

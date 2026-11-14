@@ -20,7 +20,7 @@ public class CoverLang {
 
         provider.add("cover.gtceu.ender_item_link.title", "Ender Item Link");
         provider.add("cover.gtceu.ender_redstone_link.title", "Ender Redstone Link");
-        provider.add("cover.gtceu.ender_redstone_link.label", "Redstone power: %d");
+        provider.add("cover.gtceu.ender_redstone_link.label", "Redstone power: %s");
 
         // Common cover key entries
 
@@ -133,7 +133,7 @@ public class CoverLang {
         provider.add("cover.gtceu.machine_controller.cannot_control_cover", "Cannot Control Cover");
         provider.add("cover.gtceu.machine_controller.cannot_control_machine", "Cannot Control Machine");
 
-        provider.add("cover.gtceu.machine_controller.redstone", "Min Redstone Strength: %d");
+        provider.add("cover.gtceu.machine_controller.redstone", "Min Redstone Strength: %s");
         provider.add("cover.gtceu.machine_controller.suspend_powerfail", "Prevent Power Failing:");
         provider.add("cover.gtceu.machine_controller.mode.machine", "Control Machine");
         provider.add("cover.gtceu.machine_controller.mode.cover_up", "Control Cover (Top)");

@@ -49,8 +49,7 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.NaquadahAlloy;
 import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
-import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.getAvailableRecipeMapTooltip;
-import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.registerTieredMachines;
+import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
@@ -276,11 +275,13 @@ public class GCYMMachines {
     public final static MultiblockMachineDefinition LARGE_ASSEMBLER = REGISTRATE
             .multiblock("large_assembler", WorkableElectricMultiblockMachine::new)
             .langValue("Large Assembling Factory")
-            .tooltips(Component.translatable("gui.gtceu.supports_parallel"))
-            .tooltips(Component.translatable("gui.gtceu.machine.single_energy_hatch_only.tooltip"))
-            .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(ASSEMBLER_RECIPES))
-            .conditionalTooltip(GTMachineUtils.defaultEnvironmentRequirement(),
-                    ConfigHolder.INSTANCE.gameplay.environmentalHazards)
+            .tooltip(t -> {
+                        t.tooltips(
+                                Component.translatable("gui.gtceu.supports_parallel"),
+                                Component.translatable("gui.gtceu.machine.single_energy_hatch_only.tooltip"),
+                                GTMachineUtils.getAvailableRecipeMapTooltip(ASSEMBLER_RECIPES));
+                        t.tooltip(DEFAULT_ENV_REQUIREMENT);
+            })
             .rotationState(RotationState.ALL)
             .recipeType(ASSEMBLER_RECIPES)
             .recipeModifiers(DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK,
@@ -307,11 +308,13 @@ public class GCYMMachines {
     public final static MultiblockMachineDefinition LARGE_CIRCUIT_ASSEMBLER = REGISTRATE
             .multiblock("large_circuit_assembler", WorkableElectricMultiblockMachine::new)
             .langValue("Large Circuit Assembling Facility")
-            .tooltips(Component.translatable("gui.gtceu.supports_parallel"))
-            .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(CIRCUIT_ASSEMBLER_RECIPES))
-            .tooltips(Component.translatable("gui.gtceu.machine.single_energy_hatch_only.tooltip"))
-            .conditionalTooltip(GTMachineUtils.defaultEnvironmentRequirement(),
-                    ConfigHolder.INSTANCE.gameplay.environmentalHazards)
+            .tooltip(t -> {
+                t.tooltips(
+                        Component.translatable("gui.gtceu.supports_parallel"),
+                        Component.translatable("gui.gtceu.machine.single_energy_hatch_only.tooltip"),
+                        GTMachineUtils.getAvailableRecipeMapTooltip(CIRCUIT_ASSEMBLER_RECIPES));
+                t.tooltip(DEFAULT_ENV_REQUIREMENT);
+            })
             .rotationState(RotationState.ALL)
             .recipeType(CIRCUIT_ASSEMBLER_RECIPES)
             .recipeModifiers(DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK,
@@ -370,10 +373,13 @@ public class GCYMMachines {
     public final static MultiblockMachineDefinition LARGE_ENGRAVING_LASER = REGISTRATE
             .multiblock("large_engraving_laser", WorkableElectricMultiblockMachine::new)
             .langValue("Large Engraving Laser")
-            .tooltips(Component.translatable("gui.gtceu.supports_parallel"))
-            .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(LASER_ENGRAVER_RECIPES))
-            .conditionalTooltip(GTMachineUtils.defaultEnvironmentRequirement(),
-                    ConfigHolder.INSTANCE.gameplay.environmentalHazards)
+            .tooltip(t -> {
+                t.tooltips(
+                        Component.translatable("gui.gtceu.supports_parallel"),
+                        Component.translatable("gui.gtceu.machine.single_energy_hatch_only.tooltip"),
+                        GTMachineUtils.getAvailableRecipeMapTooltip(LASER_ENGRAVER_RECIPES));
+                t.tooltip(DEFAULT_ENV_REQUIREMENT);
+            })
             .rotationState(RotationState.ALL)
             .recipeType(LASER_ENGRAVER_RECIPES)
             .recipeModifiers(DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK,

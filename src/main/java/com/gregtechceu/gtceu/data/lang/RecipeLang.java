@@ -32,11 +32,11 @@ public class RecipeLang {
                 "Hold Shift to change by Perfect OC");
 
         // Parallel
-        provider.add("gui.gtceu.recipe.running_parallel", "Performing up to %d Recipes in Parallel");
-        provider.add("gui.gtceu.recipe.total_parallel", "Performing %d Recipes at once");
-        provider.add("gui.gtceu.recipe.running_parallel.exact", "- %dx from Parallels");
-        provider.add("gui.gtceu.recipe.batch_parallel", "- %dx from Batching");
-        provider.add("gui.gtceu.recipe.subtick_parallel", "- %dx from Overclocking");
+        provider.add("gui.gtceu.recipe.running_parallel", "Performing up to %s Recipes in Parallel");
+        provider.add("gui.gtceu.recipe.total_parallel", "Performing %s Recipes at once");
+        provider.add("gui.gtceu.recipe.running_parallel.exact", "- %sx from Parallels");
+        provider.add("gui.gtceu.recipe.batch_parallel", "- %sx from Batching");
+        provider.add("gui.gtceu.recipe.subtick_parallel", "- %sx from Overclocking");
     }
 
     public static void generateChanceLang(RegistrateLangProvider provider) {
@@ -68,17 +68,17 @@ public class RecipeLang {
 
     private static void generateRecipeConditions(GTLangProvider provider) {
         // Recipe Conditions
-        provider.add("recipe_condition.gtceu.thunder", "Thunder Level: %d");
-        provider.add("recipe_condition.gtceu.rain", "Rain Level: %d");
+        provider.add("recipe_condition.gtceu.thunder", "Thunder Level: %s");
+        provider.add("recipe_condition.gtceu.rain", "Rain Level: %s");
         provider.add("recipe_condition.gtceu.dimension", "Dimension: %s");
         provider.add("recipe_condition.gtceu.dimension_marker", "Dimension:");
         provider.add("recipe_condition.gtceu.biome", "Biome: %s");
-        provider.add("recipe_condition.gtceu.pos_y", "Y Level: %d <= Y <= %d");
+        provider.add("recipe_condition.gtceu.pos_y", "Y Level: %s <= Y <= %s");
 
         provider.add("recipe_condition.gtceu.steam_vent", "Clean steam vent");
         provider.add("recipe_condition.gtceu.adjacent_fluid", "Fluid blocks around");
         provider.add("recipe_condition.gtceu.adjacent_block", "Blocks around");
-        provider.add("recipe_condition.gtceu.eu_to_start", "EU to Start: %d%s");
+        provider.add("recipe_condition.gtceu.eu_to_start", "EU to Start: %s%s");
 
         provider.add("recipe_condition.gtceu.daytime.day", "Requires day time to work");
         provider.add("recipe_condition.gtceu.daytime.night", "Requires night time to work");

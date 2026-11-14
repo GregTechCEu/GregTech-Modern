@@ -18,7 +18,7 @@ public class BlockLang {
 
         // Coil Tooltip
         provider.add("block.gtceu.wire_coil.tooltip.extended_info", "Hold SHIFT to show Coil Bonus Info");
-        provider.add("block.gtceu.wire_coil.tooltip.heat", "§cBase Heat Capacity: §f%d K");
+        provider.add("block.gtceu.wire_coil.tooltip.heat", "§cBase Heat Capacity: §f%s K");
         provider.add("block.gtceu.wire_coil.tooltip.smelter", "Multi Smelter:");
         provider.add("block.gtceu.wire_coil.tooltip.parallel_smelter", "  §5Max Parallel: §f%s");
         provider.add("block.gtceu.wire_coil.tooltip.energy_smelter", "  §aEnergy Usage: §f%s EU/t §8per recipe");
@@ -29,7 +29,7 @@ public class BlockLang {
 
         // Substation Capacitors
         provider.add("block.gtceu.substation_capacitor.tooltip.empty", "For filling space in your Power Substation");
-        provider.add("block.gtceu.substation_capacitor.tooltip.filled", "§cEnergy Capacity: §f%d EU");
+        provider.add("block.gtceu.substation_capacitor.tooltip.filled", "§cEnergy Capacity: §f%s EU");
 
         // Lamps
         provider.add("block.gtceu.lamp.tooltip.inverted", "Inverted");
@@ -39,15 +39,15 @@ public class BlockLang {
 
     private static void generatePipeKeys(GTLangProvider provider) {
         // Cables
-        provider.add("tooltip.gtceu.cable.voltage", "§aMax Voltage:§r §a%d §a(%s§a)");
-        provider.add("tooltip.gtceu.cable.amperage", "§eMax Amperage:§r §e%d");
-        provider.add("tooltip.gtceu.cable.loss_per_block", "§cLoss/Meter/Ampere:§r §c%d§7 EU-Volt");
+        provider.add("tooltip.gtceu.cable.voltage", "§aMax Voltage:§r §a%s §a(%s§a)");
+        provider.add("tooltip.gtceu.cable.amperage", "§eMax Amperage:§r §e%s");
+        provider.add("tooltip.gtceu.cable.loss_per_block", "§cLoss/Meter/Ampere:§r §c%s§7 EU-Volt");
         provider.add("tooltip.gtceu.cable.superconductor", "%s §dSuperconductor");
 
         // Fluid Pipes
-        provider.add("tooltip.gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
-        provider.add("tooltip.gtceu.fluid_pipe.throughput", "§bTransfer Rate: §f%d mB/t");
-        provider.add("tooltip.gtceu.fluid_pipe.channels", "§eChannels: §f%d");
+        provider.add("tooltip.gtceu.fluid_pipe.capacity", "§9Capacity: §f%s mB");
+        provider.add("tooltip.gtceu.fluid_pipe.throughput", "§bTransfer Rate: §f%s mB/t");
+        provider.add("tooltip.gtceu.fluid_pipe.channels", "§eChannels: §f%s");
         provider.add("tooltip.gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%s");
         provider.add("tooltip.gtceu.fluid_pipe.gas_proof", "Can handle Gases");
         provider.add("tooltip.gtceu.fluid_pipe.not_gas_proof", "Gases may leak!");
@@ -56,7 +56,7 @@ public class BlockLang {
         provider.add("tooltip.gtceu.fluid_pipe.plasma_proof", "Can handle all Plasmas");
 
         // Item Pipes
-        provider.add("tooltip.gtceu.item_pipe.priority", "§9Priority: §f%d");
+        provider.add("tooltip.gtceu.item_pipe.priority", "§9Priority: §f%s");
 
         // Duct Pipes
         provider.add("tooltip.gtceu.duct_pipe.transfer_rate", "§bAir transfer rate: %s");

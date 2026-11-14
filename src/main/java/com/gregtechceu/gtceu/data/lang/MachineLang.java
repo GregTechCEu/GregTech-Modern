@@ -131,13 +131,13 @@ public class MachineLang {
         provider.add("machine.gtceu.transformer.tooltip_tool_usage",
                 "Starts as §fTransform Down§r, use Screwdriver to change");
         provider.add("machine.gtceu.transformer.tooltip_transform_down",
-                "§aTransform Down: §f%dA %s EU (%s§f) -> %dA %s EU (%s§f)");
+                "§aTransform Down:§r %sA %s EU (%s) -> %sA %s EU (%s)");
         provider.add("machine.gtceu.transformer.message_transform_down",
-                "Transforming Down, In: %s EU %dA, Out: %s EU %dA");
+                "Transforming Down, In: %s EU %sA, Out: %s EU %sA");
         provider.add("machine.gtceu.transformer.tooltip_transform_up",
-                "§cTransform Up: §f%dA %s EU (%s§f) -> %dA %s EU (%s§f)");
+                "§cTransform Up:§r %sA %s EU (%s) -> %sA %s EU (%s)");
         provider.add("machine.gtceu.transformer.message_transform_up",
-                "Transforming Up, In: %s EU %dA, Out: %s EU %dA");
+                "Transforming Up, In: %s EU %sA, Out: %s EU %sA");
 
         // Diode
         provider.add("machine.gtceu.diode.message", "Max Amperage throughput: %s");
@@ -152,17 +152,17 @@ public class MachineLang {
         provider.add("machine.gtceu.energy_converter.tooltip_tool_usage",
                 "Starts as §fFE Converter§r, use Soft Mallet to change");
         provider.add("machine.gtceu.energy_converter.tooltip_conversion_native",
-                "§cNative Conversion: §f%d FE -> %dA %d EU (%s§f)");
+                "§cNative Conversion: §f%s FE -> %sA %s EU (%s§f)");
         provider.add("machine.gtceu.energy_converter.message_conversion_native",
-                "Converting Native Energy, In: %d FE, Out: %dA %d EU");
+                "Converting Native Energy, In: %s FE, Out: %sA %s EU");
         provider.add("machine.gtceu.energy_converter.tooltip_conversion_eu",
-                "§aEU Conversion: §f%dA %d EU (%s§f) -> %d Native");
+                "§aEU Conversion: §f%sA %s EU (%s§f) -> %s Native");
         provider.add("machine.gtceu.energy_converter.message_conversion_eu",
-                "Converting EU, In: %dA %d EU, Out: %d Native");
+                "Converting EU, In: %sA %s EU, Out: %s Native");
 
         // Pump
         provider.add("machine.gtceu.pump.tooltip", "The best way to empty Oceans!");
-        provider.add("machine.gtceu.pump.tooltip_buckets", "§f%d §rticks per Bucket");
+        provider.add("machine.gtceu.pump.tooltip_buckets", "§f%s §rticks per Bucket");
 
         // Item Collector
         provider.add("machine.gtceu.item_collector.tooltip", "Collects Items around itself");
@@ -172,9 +172,9 @@ public class MachineLang {
 
         // Fisher
         provider.add("machine.gtceu.fisher.tooltip", "Costs string to fish. Consumes one string each time.");
-        provider.add("machine.gtceu.fisher.speed", "Catches something every %d ticks");
+        provider.add("machine.gtceu.fisher.speed", "Catches something every %s ticks");
         provider.add("machine.gtceu.fisher.requirement",
-                "Requires a %dx%d centered square of water directly below.");
+                "Requires a %sx%s centered square of water directly below.");
 
         // World Accelerator
         provider.add("machine.gtceu.world_accelerator.description",
@@ -182,7 +182,7 @@ public class MachineLang {
         provider.add("machine.gtceu.world_accelerator.working_area", "§bWorking Area:");
         provider.add("machine.gtceu.world_accelerator.working_area_tile",
                 "  Block Entity Mode:§f Adjacent Blocks");
-        provider.add("machine.gtceu.world_accelerator.working_area_random", "  Random Tick Mode:§f %dx%d");
+        provider.add("machine.gtceu.world_accelerator.working_area_random", "  Random Tick Mode:§f %sx%s");
         provider.add("machine.gtceu.world_accelerator.mode_tile", "Block Entity Mode");
         provider.add("machine.gtceu.world_accelerator.mode_entity", "Random Tick Mode");
 
@@ -207,26 +207,26 @@ public class MachineLang {
         provider.addMultiline("gui.gtceu.machine.miner.chunk_mode.disabled",
                 "Chunk Mode Disabled: Click to Enable.\nSwitching requires an idle machine.");
 
-        provider.add("machine.gtceu.miner.working_area", "§bWorking Area: §f%dx%d");
+        provider.add("machine.gtceu.miner.working_area", "§bWorking Area: §f%sx%s");
         provider.add("machine.gtceu.miner.chunk_mode", "Chunk Mode");
         provider.add("machine.gtceu.miner.silk_touch", "Silk Touch Mode");
-        provider.add("machine.gtceu.miner.working_area_chunks", "§bWorking Area: §f%dx%d Chunks");
-        provider.add("machine.gtceu.miner.working_area_max", "§bMax Working Area: §f%dx%d");
-        provider.add("machine.gtceu.miner.working_area_chunks_max", "§bMax Working Area: §f%dx%d Chunks");
+        provider.add("machine.gtceu.miner.working_area_chunks", "§bWorking Area: §f%sx%s Chunks");
+        provider.add("machine.gtceu.miner.working_area_max", "§bMax Working Area: §f%sx%s");
+        provider.add("machine.gtceu.miner.working_area_chunks_max", "§bMax Working Area: §f%sx%s Chunks");
         provider.add("machine.gtceu.miner.tooltip", "Mines ores below the Miner! Starts as §f%sx%s §rarea");
 
-        provider.add("machine.gtceu.miner.per_block", "takes §f%ds §rper Block");
+        provider.add("machine.gtceu.miner.per_block", "takes §f%ss §rper Block");
 
         provider.add("gui.gtceu.machine.miner.multi.modes", "Has Silk Touch and Chunk Aligned Modes.");
         provider.add("gui.gtceu.machine.miner.multi.production",
                 "Produces §f3x§r more crushed ore than a §fMacerator§r.");
-        provider.add("gui.gtceu.machine.miner.fluid_usage", "Uses §f%d mB/t §rof §f%s§r, doubled per overclock.");
+        provider.add("gui.gtceu.machine.miner.fluid_usage", "Uses §f%s mB/t §rof §f%s§r, doubled per overclock.");
         provider.add("gui.gtceu.machine.miner.multi.description",
                 "A multiblock mining machine that covers a large area and produces huge quantity of ore.");
-        provider.add("gui.gtceu.machine.miner.x", "sX: %d, mX: %d");
-        provider.add("gui.gtceu.machine.miner.y", "sY: %d, mY: %d");
-        provider.add("gui.gtceu.machine.miner.z", "sZ: %d, mZ: %d");
-        provider.add("gui.gtceu.machine.miner.progress", "Progress: %d/%d");
+        provider.add("gui.gtceu.machine.miner.x", "sX: %s, mX: %s");
+        provider.add("gui.gtceu.machine.miner.y", "sY: %s, mY: %s");
+        provider.add("gui.gtceu.machine.miner.z", "sZ: %s, mZ: %s");
+        provider.add("gui.gtceu.machine.miner.progress", "Progress: %s/%s");
         provider.add("gui.gtceu.machine.large_miner.done", "Done!");
         provider.add("gui.gtceu.machine.large_miner.working", "Working...");
         provider.add("gui.gtceu.machine.large_miner.invfull", "Inventory Full!");
@@ -243,7 +243,7 @@ public class MachineLang {
 
         provider.add("machine.gtceu.block_breaker.tooltip",
                 "Mines block on front face and collects its drops");
-        provider.add("machine.gtceu.block_breaker.speed_bonus", "§eSpeed Bonus: §f%d%%");
+        provider.add("machine.gtceu.block_breaker.speed_bonus", "§eSpeed Bonus: §f%s%%");
 
         /// Creative Machines
 
@@ -287,7 +287,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.ldpl.pipe_count", " - Pipes: %s");
         provider.add("gui.gtceu.machine.ldpl.pos.input", " - Input: %s");
         provider.add("gui.gtceu.machine.ldpl.pos.output", " - Output: %s");
-        provider.add("machine.gtceu.long_distance_pipe.tooltip.min_length", "§bMinimum Endpoint Distance: §f%d Blocks");
+        provider.add("machine.gtceu.long_distance_pipe.tooltip.min_length", "§bMinimum Endpoint Distance: §f%s Blocks");
     }
 
     private static void generateCustomMultiblockLang(GTLangProvider provider) {
@@ -314,15 +314,15 @@ public class MachineLang {
 
         // Large Boiler
         provider.add("gui.gtceu.machine.large_boiler.max_temperature",
-                "Max Temperature: %dK, Steam Production: %dmB/t");
+                "Max Temperature: %sK, Steam Production: %smB/t");
         provider.add("gui.gtceu.machine.large_boiler.efficiency", "Efficiency: %s");
         provider.add("gui.gtceu.machine.large_boiler.temperature", "Temperature: %sK / %sK");
         provider.add("gui.gtceu.machine.large_boiler.steam_output", "Steam Output: %s mB/t");
-        provider.add("gui.gtceu.machine.large_boiler.throttle", "Throttle: %d");
+        provider.add("gui.gtceu.machine.large_boiler.throttle", "Throttle: %s");
         provider.add("gui.gtceu.machine.large_boiler.throttle.tooltip",
                 "Boiler can output less Steam and consume less fuel (efficiency is not lost, does not affect heat-up time)");
         provider.add("gui.gtceu.machine.large_boiler.throttle_modify", "Modify Throttle:");
-        provider.add("gui.gtceu.machine.large_boiler.heat_time_tooltip", "Takes §f%d seconds §rto boiling up");
+        provider.add("gui.gtceu.machine.large_boiler.heat_time_tooltip", "Takes §f%s seconds §rto boiling up");
         provider.add("gui.gtceu.machine.large_boiler.explosion_tooltip",
                 "Will explode if provided Fuel with no Water");
 
@@ -344,7 +344,7 @@ public class MachineLang {
         provider.add("machine.gtceu.extreme_combustion_engine.tooltip", "Extreme Chemical Energy Releaser");
 
         provider.add("machine.gtceu.large_combustion_engine.tooltip.lubricant_use",
-                "Uses §f%d mB/hr §7of §6Lubricant §7while working");
+                "Uses §f%s mB/hr §7of §6Lubricant §7while working");
 
         provider.add("machine.gtceu.large_combustion_engine.tooltip.boost_regular",
                 "Supply §f20 mB/s§r of §bOxygen§r to produce up to §f%s EU/t§r at §f2x§r fuel consumption.");
@@ -384,8 +384,8 @@ public class MachineLang {
         provider.add("machine.gtceu.fusion_reactor.capacity", "Maximum Energy Storage: §e%sM EU");
         provider.add("machine.gtceu.fusion_reactor.overclocking",
                 "Overclocks double energy and halve duration.");
-        provider.add("gui.gtceu.machine.fusion_reactor.energy", "EU: %d / %d");
-        provider.add("gui.gtceu.machine.fusion_reactor.heat", "Heat: %d");
+        provider.add("gui.gtceu.machine.fusion_reactor.energy", "EU: %s / %s");
+        provider.add("gui.gtceu.machine.fusion_reactor.heat", "Heat: %s");
         provider.add("machine.gtceu.luv_fusion_reactor.description",
                 "The Fusion Reactor MK 1 is a large multiblock structure used for fusing elements into heavier ones. It can only use LuV, ZPM, and UV Energy Hatches. For every Hatch it has, its buffer increases by 10M EU, and has a maximum of 160M.");
         provider.add("machine.gtceu.zpm_fusion_reactor.description",
@@ -397,7 +397,7 @@ public class MachineLang {
         provider.add("machine.gtceu.fluid_drilling_rig.description",
                 "Drills fluids from veins under bedrock.");
         provider.add("machine.gtceu.fluid_drilling_rig.production",
-                "§eProduction Multiplier: §f%dx, %fx overclocked");
+                "§eProduction Multiplier: §f%sx, %fx overclocked");
         provider.add("machine.gtceu.fluid_drilling_rig.depletion", "§bDepletion Rate: §f%s%%");
         provider.add("gui.gtceu.machine.fluid_rig.drilled_fluid", "Fluid: %s");
         provider.add("gui.gtceu.machine.fluid_rig.no_fluid_in_area", "None in Area.");
@@ -408,7 +408,7 @@ public class MachineLang {
         // Bedrock Miner
         provider.add("machine.gtceu.bedrock_ore_miner.description", "Drills ores from veins under bedrock.");
         provider.add("machine.gtceu.bedrock_ore_miner.production",
-                "§eProduction Multiplier: §f%dx, %fx overclocked");
+                "§eProduction Multiplier: §f%sx, %fx overclocked");
         provider.add("machine.gtceu.bedrock_ore_miner.depletion", "§bDepletion Rate: §f%s%%");
         provider.add("gui.gtceu.machine.bedrock_miner.drilled_ores_list", "Ores:");
         provider.add("gui.gtceu.machine.bedrock_miner.drilled_ore_entry", " - %s");
@@ -495,7 +495,7 @@ public class MachineLang {
                 "Fill and drain through the controller or tank valves.");
         provider.add("machine.gtceu.tank_valve.tooltip",
                 "Use to fill and drain multiblock tanks. Auto outputs when facing down.");
-        provider.add("machine.gtceu.fluid_tank.max_multiblock", "Max Multiblock Size: %dx%dx%d");
+        provider.add("machine.gtceu.fluid_tank.max_multiblock", "Max Multiblock Size: %sx%sx%s");
     }
 
     private static void generateCustomMultiblockPartLang(GTLangProvider provider) {
@@ -525,7 +525,7 @@ public class MachineLang {
         // Muffler Hatch
         provider.addMultiLang("machine.gtceu.muffler_hatch.tooltip", "Recovers waste from machines",
                 "DO NOT OBSTRUCT THE OUTPUT!");
-        provider.add("gui.gtceu.machine.muffler.recovery_chance", "§bRecovery Chance: §f%d%%");
+        provider.add("gui.gtceu.machine.muffler.recovery_chance", "§bRecovery Chance: §f%s%%");
 
         // Parallel Hatch
         provider.add("machine.gtceu.parallel_hatch.display", "Adjust the maximum parallel of the multiblock");
@@ -655,15 +655,15 @@ public class MachineLang {
                 "Computation Data Input for Multiblocks");
 
         // HPCA Parts
-        provider.add("machine.gtceu.hpca_component.tooltip.upkeep_eut", "§eUpkeep Energy: §f%d EU/t");
-        provider.add("machine.gtceu.hpca_component.tooltip.max_eut", "§6Max Energy: §f%d EU/t");
+        provider.add("machine.gtceu.hpca_component.tooltip.upkeep_eut", "§eUpkeep Energy: §f%s EU/t");
+        provider.add("machine.gtceu.hpca_component.tooltip.max_eut", "§6Max Energy: §f%s EU/t");
         provider.add("machine.gtceu.hpca_component.tooltip.cooler_passive", "§bCooler Type: §fPassive");
         provider.add("machine.gtceu.hpca_component.tooltip.cooler_active", "§bCooler Type: §fActive");
-        provider.add("machine.gtceu.hpca_component.tooltip.cooler_cooling", "§aProvides: §f%d Cooling");
+        provider.add("machine.gtceu.hpca_component.tooltip.cooler_cooling", "§aProvides: §f%s Cooling");
         provider.add("machine.gtceu.hpca_component.tooltip.cooler_active_coolant",
-                "§cRequires up to: §f%d mB/t %s");
-        provider.add("machine.gtceu.hpca_component.tooltip.computation_cwut", "§9Computation: §f%d CWU/t");
-        provider.add("machine.gtceu.hpca_component.tooltip.computation_cooling", "§cRequires up to: §f%d Cooling");
+                "§cRequires up to: §f%s mB/t %s");
+        provider.add("machine.gtceu.hpca_component.tooltip.computation_cwut", "§9Computation: §f%s CWU/t");
+        provider.add("machine.gtceu.hpca_component.tooltip.computation_cooling", "§cRequires up to: §f%s Cooling");
         provider.add("machine.gtceu.hpca_component.tooltip.bridge",
                 "Allows §fHPCA§r to connect to §fNetwork Switches§r");
         provider.add("machine.gtceu.hpca_component.tooltip.damaged", "Can be damaged by HPCA overheating!");
@@ -698,8 +698,8 @@ public class MachineLang {
     private static void generateCentralMonitorGuiLang(GTLangProvider provider) {
         provider.add("gui.gtceu.machine.central_monitor.low_power", "Low Power");
         provider.add("gui.gtceu.machine.central_monitor.height", "Screen Height:");
-        provider.add("gui.gtceu.machine.central_monitor.width", "Screen Width: %d");
-        provider.add("gui.gtceu.machine.central_monitor.height_modify", "Modify Height: %d");
+        provider.add("gui.gtceu.machine.central_monitor.width", "Screen Width: %s");
+        provider.add("gui.gtceu.machine.central_monitor.height_modify", "Modify Height: %s");
         provider.add("machine.gtceu.central_monitor.tooltip", "But can it run Doom?");
 
         provider.add("gui.gtceu.machine.central_monitor.pause",
@@ -995,30 +995,30 @@ public class MachineLang {
         provider.add("gui.gtceu.cover.computer_monitor.edit_displayed_text", "Edit displayed text");
         provider.add("gui.gtceu.machine.central_monitor.text_scale", "Text scale");
         provider.add("gui.gtceu.machine.central_monitor.group", "Group: %s");
-        provider.add("gui.gtceu.machine.central_monitor.group_default_name", "Group #%d");
+        provider.add("gui.gtceu.machine.central_monitor.group_default_name", "Group #%s");
         provider.add("gui.gtceu.machine.central_monitor.none", "none");
-        provider.add("gui.gtceu.machine.central_monitor.size", "Size: (%d+1+%d)x(%d+1+%d)");
+        provider.add("gui.gtceu.machine.central_monitor.size", "Size: (%s+1+%s)x(%s+1+%s)");
         provider.add("gui.gtceu.cover.computer_monitor.error.invalid_number", "Invalid number '%s'!");
-        provider.add("gui.gtceu.cover.computer_monitor.error.wrong_number_of_args", "Expected %d args, got %d!");
-        provider.add("gui.gtceu.cover.computer_monitor.error.not_enough_args", "Expected at least %d args, got %d!");
+        provider.add("gui.gtceu.cover.computer_monitor.error.wrong_number_of_args", "Expected %s args, got %s!");
+        provider.add("gui.gtceu.cover.computer_monitor.error.not_enough_args", "Expected at least %s args, got %s!");
         provider.add("gui.gtceu.cover.computer_monitor.error.no_cover", "No cover!");
         provider.add("gui.gtceu.cover.computer_monitor.error.exception", "Unexpected exception occurred: %s");
         provider.add("gui.gtceu.cover.computer_monitor.error.not_in_range",
-                "Expected %s to be between %d and %d (inclusive), got %d");
+                "Expected %s to be between %s and %s (inclusive), got %s");
         provider.add("gui.gtceu.cover.computer_monitor.error.invalid_args", "Invalid arguments!");
-        provider.add("gui.gtceu.cover.computer_monitor.error.missing_item", "Missing %s in slot %d!");
+        provider.add("gui.gtceu.cover.computer_monitor.error.missing_item", "Missing %s in slot %s!");
         provider.add("gui.gtceu.cover.computer_monitor.error.bf_invalid_num",
-                "Invalid number at index %d when processing symbol number %d");
-        provider.add("gui.gtceu.cover.computer_monitor.error.bf_invalid", "Invalid character at %d");
+                "Invalid number at index %s when processing symbol number %s");
+        provider.add("gui.gtceu.cover.computer_monitor.error.bf_invalid", "Invalid character at %s");
         provider.add("gui.gtceu.cover.computer_monitor.error.no_target",
                 "No target selected for the monitor group");
         provider.addMultiLang("gui.gtceu.cover.computer_monitor.main_textbox_tooltip",
-                "Input string to display on line %d here.",
+                "Input string to display on line %s here.",
                 "It can have placeholders, for example: 'Energy: {energy}/{energyCapacity} EU'",
                 "Placeholders can also be inside other placeholders.");
         provider.addMultiLang("gui.gtceu.cover.computer_monitor.slot_tooltip",
                 "A slot for items that some placeholders can reference",
-                "Slot number: %d");
+                "Slot number: %s");
         provider.addMultiLang("gui.gtceu.cover.computer_monitor.second_page_textbox_tooltip",
                 "Input placeholder to be used in place of %s '{}' here.",
                 "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");
@@ -1031,9 +1031,9 @@ public class MachineLang {
                 "This feature is not supported by this block/cover!");
 
         provider.add("gui.gtceu.placeholder_editor.unclosed_bracket", "Unclosed bracket (\"}\")");
-        provider.add("gui.gtceu.placeholder_editor.unclosed_brackets", "%d brackets (\"}\") are unclosed");
+        provider.add("gui.gtceu.placeholder_editor.unclosed_brackets", "%s brackets (\"}\") are unclosed");
         provider.add("gui.gtceu.placeholder_editor.unclosed_escape", "Unclosed escape (\"']\")");
-        provider.add("gui.gtceu.placeholder_editor.unclosed_escapes", "%d escapes (\"']\") are unclosed");
+        provider.add("gui.gtceu.placeholder_editor.unclosed_escapes", "%s escapes (\"']\") are unclosed");
         provider.add("gui.gtceu.placeholder_editor.extra_closing_bracket", "Extra closing bracket");
         provider.add("gui.gtceu.placeholder_editor.no_placeholder", "Placeholder with name '%s' does not exist");
 

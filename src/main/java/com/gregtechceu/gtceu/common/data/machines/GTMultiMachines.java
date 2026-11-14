@@ -192,8 +192,7 @@ public class GTMultiMachines {
 
     public static final MultiblockMachineDefinition LARGE_CHEMICAL_REACTOR = REGISTRATE
             .multiblock("large_chemical_reactor", WorkableElectricMultiblockMachine::new)
-            .conditionalTooltip(defaultEnvironmentRequirement(),
-                    ConfigHolder.INSTANCE.gameplay.environmentalHazards)
+            .tooltip(t -> t.tooltip(DEFAULT_ENV_REQUIREMENT))
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.LARGE_CHEMICAL_RECIPES)
             .recipeModifiers(DEFAULT_ENVIRONMENT_REQUIREMENT, OC_PERFECT_SUBTICK, BATCH_MODE)
@@ -697,16 +696,17 @@ public class GTMultiMachines {
                         default -> "Terrestrial Harvester";
                     })
                     .defaultTooltip()
-                    .tooltips(Component.translatable("gui.gtceu.machine.miner.multi.description"))
-                    .tooltipBuilder((stack, tooltip) -> {
+                    .tooltip(t -> {
                         int workingAreaChunks = (2 * tier - 5);
-                        tooltip.add(Component.translatable("gui.gtceu.machine.miner.multi.modes"));
-                        tooltip.add(Component.translatable("gui.gtceu.machine.miner.multi.production"));
-                        tooltip.add(Component.translatable("gui.gtceu.machine.miner.fluid_usage", 8 - (tier - 5),
+
+                        t.tooltip(Component.translatable("gui.gtceu.machine.miner.multi.description"));
+                        t.tooltip(Component.translatable("gui.gtceu.machine.miner.multi.modes"));
+                        t.tooltip(Component.translatable("gui.gtceu.machine.miner.multi.production"));
+                        t.tooltip(Component.translatable("gui.gtceu.machine.miner.fluid_usage", 8 - (tier - 5),
                                 DrillingFluid.getLocalizedName()));
-                        tooltip.add(Component.translatable("machine.gtceu.miner.working_area_chunks",
+                        t.tooltip(Component.translatable("machine.gtceu.miner.working_area_chunks",
                                 workingAreaChunks, workingAreaChunks));
-                        tooltip.add(Component.translatable("common.gtceu.tooltip.energy_tier_range",
+                        t.tooltip(Component.translatable("common.gtceu.tooltip.energy_tier_range",
                                 GTValues.VNC[tier], GTValues.VNC[tier + 1]));
                     })
                     .register(),
@@ -725,28 +725,24 @@ public class GTMultiMachines {
                     "Accepts up to §f4 Doors§7! Remains clean when the door is open.",
                     "Generators, Mufflers, Drills, and Primitive Machines are too dirty for the cleanroom!",
                     "Send power through §fHulls §7or §fDiodes §7in the walls.")
-            .tooltips(Component.translatable("machine.gtceu.cleanroom.tooltip.0"),
-                    Component.translatable("machine.gtceu.cleanroom.tooltip.1"),
-                    Component.translatable("machine.gtceu.cleanroom.tooltip.2"),
-                    Component.translatable("machine.gtceu.cleanroom.tooltip.3"))
-            .tooltipBuilder((stack, tooltip) -> {
-                if (GTUtil.isCtrlDown()) {
-                    tooltip.add(Component.empty());
-                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.4"));
-                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.5"));
-                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.6"));
-                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.7"));
-                    // tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.8"));
-                    if (GTCEu.Mods.isAE2Loaded()) {
-                        tooltip.add(
-                                Component.translatable(AEConfig.instance().getChannelMode() == ChannelMode.INFINITE ?
-                                        "machine.gtceu.cleanroom.tooltip.ae2.no_channels" :
-                                        "machine.gtceu.cleanroom.tooltip.ae2.channels"));
-                    }
-                    tooltip.add(Component.empty());
-                } else {
-                    tooltip.add(Component.translatable("machine.gtceu.cleanroom.tooltip.hold_ctrl"));
-                }
+            .tooltip(t -> {
+                t.tooltips(Component.translatable("machine.gtceu.cleanroom.tooltip.0"),
+                        Component.translatable("machine.gtceu.cleanroom.tooltip.1"),
+                        Component.translatable("machine.gtceu.cleanroom.tooltip.2"),
+                        Component.translatable("machine.gtceu.cleanroom.tooltip.3"));
+
+                t.ctrlInfoPrompt(Component.translatable("machine.gtceu.cleanroom.tooltip.hold_ctrl"));
+
+                t.ctrlTooltip(Component.empty());
+                t.ctrlTooltip(Component.translatable("machine.gtceu.cleanroom.tooltip.4"));
+                t.ctrlTooltip(Component.translatable("machine.gtceu.cleanroom.tooltip.5"));
+                t.ctrlTooltip(Component.translatable("machine.gtceu.cleanroom.tooltip.6"));
+                t.ctrlTooltip(Component.translatable("machine.gtceu.cleanroom.tooltip.7"));
+
+                t.conditionalCtrlTooltip(s -> GTCEu.Mods.isAE2Loaded(), s -> Component.translatable(AEConfig.instance().getChannelMode() == ChannelMode.INFINITE ?
+                        "machine.gtceu.cleanroom.tooltip.ae2.no_channels" :
+                        "machine.gtceu.cleanroom.tooltip.ae2.channels"));
+                t.ctrlTooltip(Component.empty());
             })
             .pattern(CleanroomMachine.getPattern())
             .allowExtendedFacing(false)

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.utils.lang;
 
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.mojang.datafixers.types.Func;
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -18,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -35,6 +33,27 @@ public class GTCustomTooltip {
     @Getter
     @Setter
     private @Nullable Style defaultComponentStyle = Style.EMPTY.withColor(ChatFormatting.GRAY);
+
+    /**
+     * The prompt displayed when holding shift displays extra tooltips.
+      */
+    @Getter
+    @Setter
+    private @Nullable Component shiftInfoPrompt = GTCommonComponents.HOLD_SHIFT_FOR_INFO;
+
+    /**
+     * The prompt displayed when holding ctrl displays extra tooltips.
+     */
+    @Getter
+    @Setter
+    private @Nullable Component ctrlInfoPrompt = GTCommonComponents.HOLD_CTRL_FOR_INFO;
+
+    /**
+     * The prompt displayed when holding alt displays extra tooltips.
+     */
+    @Getter
+    @Setter
+    private @Nullable Component altInfoPrompt = null;
 
     /**
      * Adds a custom tooltip function which can add/modify all tooltips.
@@ -85,10 +104,18 @@ public class GTCustomTooltip {
 
     /**
      * Adds a tooltip with normal display type.
+     * @param tooltip The tooltip entry
+     */
+    public GTCustomTooltip tooltip(TooltipEntry tooltip) {
+        return tooltip(DisplayType.NORMAL, tooltip);
+    }
+
+    /**
+     * Adds a tooltip with normal display type.
      * @param tooltip The tooltip component
      */
     public GTCustomTooltip tooltip(Component tooltip) {
-        return tooltip(DisplayType.NORMAL, new TooltipEntry(tooltip));
+        return tooltip(new TooltipEntry(tooltip));
     }
 
     /**
@@ -96,7 +123,7 @@ public class GTCustomTooltip {
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip tooltip(Function<ItemStack, Component> tooltipFunc) {
-        return tooltip(DisplayType.NORMAL, new TooltipEntry(tooltipFunc));
+        return tooltip(new TooltipEntry(tooltipFunc));
     }
 
     /**
@@ -105,7 +132,7 @@ public class GTCustomTooltip {
      * @param tooltip The tooltip component
      */
     public GTCustomTooltip conditionalTooltip(Predicate<ItemStack> predicate, Component tooltip) {
-        return tooltip(DisplayType.NORMAL, new TooltipEntry(tooltip, predicate));
+        return tooltip(new TooltipEntry(tooltip, predicate));
     }
 
     /**
@@ -114,7 +141,7 @@ public class GTCustomTooltip {
      * @param tooltipFunc The tooltip function.
      */
     public GTCustomTooltip conditionalTooltip(Predicate<ItemStack> predicate, Function<ItemStack, Component> tooltipFunc) {
-        return tooltip(DisplayType.NORMAL, new TooltipEntry(tooltipFunc, predicate));
+        return tooltip(new TooltipEntry(tooltipFunc, predicate));
     }
 
     /**
@@ -123,9 +150,17 @@ public class GTCustomTooltip {
      */
     public GTCustomTooltip tooltips(Component... tooltips) {
         for (var tooltip: tooltips) {
-            tooltip(DisplayType.NORMAL, tooltip);
+            tooltip(tooltip);
         }
         return this;
+    }
+
+    /**
+     * Adds a tooltip displayed when shift is held.
+     * @param tooltip The tooltip entry
+     */
+    public GTCustomTooltip shiftTooltip(TooltipEntry tooltip) {
+        return tooltip(DisplayType.SHIFT, tooltip);
     }
 
     /**
@@ -133,7 +168,7 @@ public class GTCustomTooltip {
      * @param tooltip The tooltip component
      */
     public GTCustomTooltip shiftTooltip(Component tooltip) {
-        return tooltip(DisplayType.SHIFT, new TooltipEntry(tooltip));
+        return shiftTooltip(new TooltipEntry(tooltip));
     }
 
     /**
@@ -141,7 +176,7 @@ public class GTCustomTooltip {
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip shiftTooltip(Function<ItemStack, Component> tooltipFunc) {
-        return tooltip(DisplayType.SHIFT, new TooltipEntry(tooltipFunc));
+        return shiftTooltip(new TooltipEntry(tooltipFunc));
     }
 
     /**
@@ -150,7 +185,7 @@ public class GTCustomTooltip {
      * @param tooltip The tooltip component
      */
     public GTCustomTooltip conditionalShiftTooltip(Predicate<ItemStack> predicate, Component tooltip) {
-        return tooltip(DisplayType.SHIFT, new TooltipEntry(tooltip, predicate));
+        return shiftTooltip(new TooltipEntry(tooltip, predicate));
     }
 
     /**
@@ -159,7 +194,7 @@ public class GTCustomTooltip {
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip conditionalShiftTooltip(Predicate<ItemStack> predicate, Function<ItemStack, Component> tooltipFunc) {
-        return tooltip(DisplayType.SHIFT, new TooltipEntry(tooltipFunc, predicate));
+        return shiftTooltip(new TooltipEntry(tooltipFunc, predicate));
     }
 
     /**
@@ -168,9 +203,17 @@ public class GTCustomTooltip {
      */
     public GTCustomTooltip shiftTooltips(Component... tooltips) {
         for (var tooltip: tooltips) {
-            tooltip(DisplayType.SHIFT, tooltip);
+            shiftTooltip(tooltip);
         }
         return this;
+    }
+
+    /**
+     * Adds a tooltip displayed when ctrl is held.
+     * @param tooltip The tooltip entry
+     */
+    public GTCustomTooltip ctrlTooltip(TooltipEntry tooltip) {
+        return tooltip(DisplayType.CTRL, tooltip);
     }
 
     /**
@@ -178,7 +221,7 @@ public class GTCustomTooltip {
      * @param tooltip The tooltip component
      */
     public GTCustomTooltip ctrlTooltip(Component tooltip) {
-        return tooltip(DisplayType.CTRL, new TooltipEntry(tooltip));
+        return ctrlTooltip(new TooltipEntry(tooltip));
     }
 
     /**
@@ -186,7 +229,7 @@ public class GTCustomTooltip {
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip ctrlTooltip(Function<ItemStack, Component> tooltipFunc) {
-        return tooltip(DisplayType.CTRL, new TooltipEntry(tooltipFunc));
+        return ctrlTooltip(new TooltipEntry(tooltipFunc));
     }
 
     /**
@@ -195,7 +238,7 @@ public class GTCustomTooltip {
      * @param tooltip The tooltip component
      */
     public GTCustomTooltip conditionalCtrlTooltip(Predicate<ItemStack> predicate, Component tooltip) {
-        return tooltip(DisplayType.CTRL, new TooltipEntry(tooltip, predicate));
+        return ctrlTooltip(new TooltipEntry(tooltip, predicate));
     }
 
     /**
@@ -204,7 +247,7 @@ public class GTCustomTooltip {
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip conditionalCtrlTooltip(Predicate<ItemStack> predicate, Function<ItemStack, Component> tooltipFunc) {
-        return tooltip(DisplayType.CTRL, new TooltipEntry(tooltipFunc, predicate));
+        return ctrlTooltip(new TooltipEntry(tooltipFunc, predicate));
     }
 
     /**
@@ -213,9 +256,18 @@ public class GTCustomTooltip {
      */
     public GTCustomTooltip ctrlTooltips(Component... tooltips) {
         for (var tooltip: tooltips) {
-            tooltip(DisplayType.CTRL, tooltip);
+            ctrlTooltip(tooltip);
         }
         return this;
+    }
+
+
+    /**
+     * Adds a tooltip displayed when alt is held.
+     * @param tooltip The tooltip entry
+     */
+    public GTCustomTooltip altTooltip(TooltipEntry tooltip) {
+        return tooltip(DisplayType.ALT, tooltip);
     }
 
     /**
@@ -223,7 +275,7 @@ public class GTCustomTooltip {
      * @param tooltip The tooltip component
      */
     public GTCustomTooltip altTooltip(Component tooltip) {
-        return tooltip(DisplayType.ALT, new TooltipEntry(tooltip));
+        return altTooltip(new TooltipEntry(tooltip));
     }
 
     /**
@@ -231,7 +283,7 @@ public class GTCustomTooltip {
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip altTooltip(Function<ItemStack, Component> tooltipFunc) {
-        return tooltip(DisplayType.ALT, new TooltipEntry(tooltipFunc));
+        return altTooltip(new TooltipEntry(tooltipFunc));
     }
 
     /**
@@ -240,7 +292,7 @@ public class GTCustomTooltip {
      * @param tooltip The tooltip component
      */
     public GTCustomTooltip conditionalAltTooltip(Predicate<ItemStack> predicate, Component tooltip) {
-        return tooltip(DisplayType.ALT, new TooltipEntry(tooltip, predicate));
+        return altTooltip(new TooltipEntry(tooltip, predicate));
     }
 
     /**
@@ -249,7 +301,7 @@ public class GTCustomTooltip {
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip conditionalAltTooltip(Predicate<ItemStack> predicate, Function<ItemStack, Component> tooltipFunc) {
-        return tooltip(DisplayType.ALT, new TooltipEntry(tooltipFunc, predicate));
+        return altTooltip(new TooltipEntry(tooltipFunc, predicate));
     }
 
     /**
@@ -258,7 +310,7 @@ public class GTCustomTooltip {
      */
     public GTCustomTooltip altTooltips(Component... tooltips) {
         for (var tooltip: tooltips) {
-            tooltip(DisplayType.ALT, tooltip);
+            altTooltip(tooltip);
         }
         return this;
     }
@@ -266,9 +318,30 @@ public class GTCustomTooltip {
     public void addTooltips(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltipList,
                        TooltipFlag flag) {
         addForType(DisplayType.NORMAL, stack, level, tooltipList);
-        if (GTUtil.isShiftDown()) addForType(DisplayType.SHIFT, stack, level, tooltipList);
-        if (GTUtil.isCtrlDown()) addForType(DisplayType.CTRL, stack, level, tooltipList);
-        if (GTUtil.isAltDown()) addForType(DisplayType.ALT, stack, level, tooltipList);
+        if (tooltips.containsKey(DisplayType.SHIFT) && !tooltips.get(DisplayType.SHIFT).isEmpty()) {
+            if (GTUtil.isShiftDown()) {
+                addForType(DisplayType.SHIFT, stack, level, tooltipList);
+            } else if (shiftInfoPrompt != null) {
+                tooltipList.add(shiftInfoPrompt);
+            }
+        }
+
+        if (tooltips.containsKey(DisplayType.CTRL) && !tooltips.get(DisplayType.CTRL).isEmpty()) {
+            if (GTUtil.isCtrlDown()) {
+                addForType(DisplayType.CTRL, stack, level, tooltipList);
+            } else if (ctrlInfoPrompt != null) {
+                tooltipList.add(ctrlInfoPrompt);
+            }
+        }
+
+        if (tooltips.containsKey(DisplayType.ALT) && !tooltips.get(DisplayType.ALT).isEmpty()) {
+            if (GTUtil.isAltDown()) {
+                addForType(DisplayType.ALT, stack, level, tooltipList);
+            } else if (altInfoPrompt != null) {
+                tooltipList.add(altInfoPrompt);
+            }
+        }
+
         if (flag.isAdvanced()) addForType(DisplayType.ADVANCED, stack, level, tooltipList);
     }
 

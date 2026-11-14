@@ -574,12 +574,11 @@ public class GTMachines {
             .tier(LV)
             .modelProperty(IS_FORMED, false)
             .overlayTieredHullModel("long_distance_item_pipeline_endpoint")
-            .tooltips(LangUtil.getMultiLang("machine.gtceu.long_distance_pipe.tooltip"))
-            .tooltipBuilder((stack, tooltip) -> {
-                if (ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance > 0) {
-                    tooltip.add(Component.translatable("machine.gtceu.long_distance_pipe.tooltip.min_length",
-                            ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance));
-                }
+            .tooltip(t -> {
+                t.tooltips(LangUtil.getMultiLang("machine.gtceu.long_distance_pipe.tooltip"));
+                t.conditionalTooltip(s -> ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance > 0,
+                                s -> Component.translatable("machine.gtceu.long_distance_pipe.tooltip.min_length",
+                                        ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance));
             })
             .register();
 
@@ -590,12 +589,11 @@ public class GTMachines {
             .tier(LV)
             .modelProperty(IS_FORMED, false)
             .overlayTieredHullModel("long_distance_fluid_pipeline_endpoint")
-            .tooltips(LangUtil.getMultiLang("machine.gtceu.long_distance_pipe.tooltip"))
-            .tooltipBuilder((stack, tooltip) -> {
-                if (ConfigHolder.INSTANCE.machines.ldFluidPipeMinDistance > 0) {
-                    tooltip.add(Component.translatable("machine.gtceu.long_distance_pipe.tooltip.min_length",
-                            ConfigHolder.INSTANCE.machines.ldFluidPipeMinDistance));
-                }
+            .tooltip(t -> {
+                t.tooltips(LangUtil.getMultiLang("machine.gtceu.long_distance_pipe.tooltip"));
+                t.conditionalTooltip(s -> ConfigHolder.INSTANCE.machines.ldFluidPipeMinDistance > 0,
+                        s -> Component.translatable("machine.gtceu.long_distance_pipe.tooltip.min_length",
+                                ConfigHolder.INSTANCE.machines.ldFluidPipeMinDistance));
             })
             .register();
 
@@ -658,19 +656,18 @@ public class GTMachines {
                     .langValue("%s Miner %s".formatted(VLVH[tier], VLVT[tier]))
                     .recipeType(DUMMY_RECIPES)
                     .workableTieredHullModel(GTCEu.id("block/machines/miner"))
-                    .tooltipBuilder((stack, tooltip) -> {
+                    .tooltip(t -> {
                         int maxArea = IMiner.getWorkingArea(tier * 8);
                         long energyPerTick = GTValues.V[tier - 1];
                         int tickSpeed = ConfigHolder.INSTANCE.machines.minerSpeed / (tier * 2);
-                        tooltip.add(Component.translatable("machine.gtceu.miner.tooltip", maxArea, maxArea));
-                        tooltip.add(Component.translatable("common.gtceu.tooltip.uses_per_tick", energyPerTick)
+                        t.tooltip(Component.translatable("machine.gtceu.miner.tooltip", maxArea, maxArea));
+                        t.tooltip(Component.translatable("common.gtceu.tooltip.uses_per_tick", energyPerTick)
                                 .append(GTCommonComponents.COMMA_SPACE.copy().withStyle(ChatFormatting.GRAY))
                                 .append(Component.translatable("machine.gtceu.miner.per_block", tickSpeed / 20)));
-                        tooltip.add(GTCommonComponents.voltage(IO.IN, tier));
-                        tooltip.add(GTCommonComponents.energyCapacity(GTValues.V[tier] * 64L));
+                        t.tooltip(GTCommonComponents.voltage(IO.IN, tier));
+                        t.tooltip(GTCommonComponents.energyCapacity(GTValues.V[tier] * 64L));
 
-                        tooltip.add(
-                                Component.translatable("machine.gtceu.miner.working_area_max", maxArea, maxArea));
+                        t.tooltip(Component.translatable("machine.gtceu.miner.working_area_max", maxArea, maxArea));
                     })
                     .register(),
             LV, MV, HV);
@@ -686,16 +683,16 @@ public class GTMachines {
                     .modelProperty(GTMachineModelProperties.IS_ACTIVE, false)
                     .model(createWorldAcceleratorModel(GTCEu.id("block/machines/world_accelerator_te"),
                             GTCEu.id("block/machines/world_accelerator")))
-                    .tooltipBuilder((stack, tooltip) -> {
+                    .tooltip(t -> {
                         int randTickWorkingArea = 3 + (tier - 1) * 2;
-                        tooltip.add(Component.translatable("machine.gtceu.world_accelerator.description"));
+                        t.tooltip(Component.translatable("machine.gtceu.world_accelerator.description"));
 
-                        tooltip.add(GTCommonComponents.voltage(IO.IN, tier));
-                        tooltip.add(GTCommonComponents.energyCapacity(GTValues.V[tier] * 64));
+                        t.tooltip(GTCommonComponents.voltage(IO.IN, tier));
+                        t.tooltip(GTCommonComponents.energyCapacity(GTValues.V[tier] * 64));
 
-                        tooltip.add(Component.translatable("machine.gtceu.world_accelerator.working_area"));
-                        tooltip.add(Component.translatable("machine.gtceu.world_accelerator.working_area_tile"));
-                        tooltip.add(Component.translatable("machine.gtceu.world_accelerator.working_area_random",
+                        t.tooltip(Component.translatable("machine.gtceu.world_accelerator.working_area"));
+                        t.tooltip(Component.translatable("machine.gtceu.world_accelerator.working_area_tile"));
+                        t.tooltip(Component.translatable("machine.gtceu.world_accelerator.working_area_random",
                                 randTickWorkingArea, randTickWorkingArea));
                     })
                     .register(),
@@ -767,13 +764,13 @@ public class GTMachines {
             .machine("creative_tank", CreativeTankMachine::new)
             .rotationState(RotationState.ALL)
             .allowExtendedFacing(true)
-            .tooltipBuilder((stack, list) -> {
-                CREATIVE_TOOLTIPS.accept(stack, list);
-                if (stack.hasTag()) {
-                    FluidStack f = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
-                    int perCycle = stack.getOrCreateTag().getInt("mBPerCycle");
-                    list.add(1, GTCommonComponents.fluidStored(f.getFluid(), perCycle));
-                }
+            .tooltip(t -> {
+                t.conditionalTooltip(ItemStack::hasTag, s -> {
+                    FluidStack f = FluidStack.loadFluidStackFromNBT(s.getOrCreateTagElement("stored"));
+                    int perCycle = s.getOrCreateTag().getInt("mBPerCycle");
+                    return GTCommonComponents.fluidStored(f.getFluid(), perCycle);
+                });
+                t.tooltip(GTCommonComponents.CREATIVE_NEEDED);
             })
             .model(createBasicMachineModel(GTCEu.id("block/machine/template/quantum/creative_container"))
                     .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createQuantumTankRender)))
@@ -784,13 +781,13 @@ public class GTMachines {
             .machine("creative_chest", CreativeChestMachine::new)
             .rotationState(RotationState.ALL)
             .allowExtendedFacing(true)
-            .tooltipBuilder((stack, list) -> {
-                CREATIVE_TOOLTIPS.accept(stack, list);
-                if (stack.hasTag()) {
-                    ItemStack i = ItemStack.of(stack.getOrCreateTagElement("stored"));
-                    int perCycle = stack.getOrCreateTag().getInt("itemsPerCycle");
-                    list.add(1, GTCommonComponents.itemStored(i.getItem(), perCycle));
-                }
+            .tooltip(t -> {
+                t.conditionalTooltip(ItemStack::hasTag, s -> {
+                    ItemStack i = ItemStack.of(s.getOrCreateTagElement("stored"));
+                    int perCycle = s.getOrCreateTag().getInt("itemsPerCycle");
+                    return GTCommonComponents.itemStored(i.getItem(), perCycle);
+                });
+                t.tooltip(GTCommonComponents.CREATIVE_NEEDED);
             })
             .model(createBasicMachineModel(GTCEu.id("block/machine/template/quantum/creative_container"))
                     .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createQuantumChestRender)))
@@ -1150,11 +1147,11 @@ public class GTMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .modelProperty(IS_FORMED, false)
-            .tooltips(GTCommonComponents.PART_SHARING_DISABLED,
-                    Component.translatable("machine.gtceu.maintenance_hatch_cleanroom_auto.tooltip.0"),
+            .tooltips(Component.translatable("machine.gtceu.maintenance_hatch_cleanroom_auto.tooltip.0"),
                     Component.translatable("machine.gtceu.maintenance_hatch_cleanroom_auto.tooltip.1"),
                     Component.literal("  ").append(Component
-                            .translatable(CleanroomType.CLEANROOM.getTranslationKey()).withStyle(ChatFormatting.GREEN)))
+                            .translatable(CleanroomType.CLEANROOM.getTranslationKey()).withStyle(ChatFormatting.GREEN)),
+                    GTCommonComponents.PART_SHARING_DISABLED)
             .overlayTieredHullModel(GTCEu.id("block/machine/part/cleaning_maintenance_hatch"))
             .tier(HV)
             .register();

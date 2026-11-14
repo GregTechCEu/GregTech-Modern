@@ -195,7 +195,7 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
-        definition.getTooltipBuilder().accept(stack, tooltip);
+        definition.getTooltip().addTooltips(stack, level, tooltip, flag);
     }
 
     @Override
