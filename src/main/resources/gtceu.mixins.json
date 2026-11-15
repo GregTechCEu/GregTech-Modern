@@ -69,9 +69,6 @@
         "IngredientAccessor",
         "IntegerPropertyAccessor",
         "InventoryMixin",
-        "ItemEntityMixin",
-        "ItemHandlerHelperMixin",
-        "ItemStackMixin",
         "ItemValueAccessor",
         "LevelMixin",
         "LivingEntityMixin",
@@ -111,7 +108,15 @@
         "mui.ModularUIEmiRecipeAccessor",
         "mui.ModularUIJeiRecipeAccessor",
         "registrate.AbstractRegistrateAccessor",
-        "registrate.RegistrateDataProviderAccessor"
+        "registrate.RegistrateDataProviderAccessor",
+        "spoilage.AbstractFurnaceBlockEntityMixin",
+        "spoilage.BrewingStandBlockEntityMixin",
+        "spoilage.ChestBlockEntityMixin",
+        "spoilage.HopperBlockEntityMixin",
+        "spoilage.ItemEntityMixin",
+        "spoilage.ItemHandlerHelperMixin",
+        "spoilage.ItemStackMixin",
+        "spoilage.ShulkerBoxBlockEntityMixin"
     ],
     "injectors": {
         "defaultRequire": 1,

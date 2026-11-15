@@ -21,7 +21,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -111,7 +110,8 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         // Store the ItemStack in each slot after an operation
         // Necessary for simulation since we don't actually modify the slot's contents
         // Doesn't hurt for execution, and definitely cheaper than copying the entire storage
-        @Nullable ItemStack[] visited = new ItemStack[storage.getSlots()];
+        @Nullable
+        ItemStack[] visited = new ItemStack[storage.getSlots()];
         for (var it = left.listIterator(); it.hasNext();) {
             var ingredient = it.next();
             if (ingredient.isEmpty()) {
@@ -177,7 +177,8 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
                     if (recipe != null) recipe.mutateOutput(output);
                     // Only try this slot if not visited or if visited with the same type of item
-                    if (visited[slot] == null || ItemStack.isSameItemSameTags(Objects.requireNonNull(visited[slot]), output)) {
+                    if (visited[slot] == null ||
+                            ItemStack.isSameItemSameTags(Objects.requireNonNull(visited[slot]), output)) {
                         if (count < output.getMaxStackSize() && count < storage.getSlotLimit(slot)) {
                             var remainder = recipe == null ? null :
                                     getActioned(storage, slot, recipe.ingredientActions);
