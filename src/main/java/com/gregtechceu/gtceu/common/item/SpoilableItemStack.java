@@ -14,7 +14,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ItemLike;
@@ -49,22 +48,22 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     @Getter
     private final ItemStack stack;
 
-    private final Item originalItem;
-
-    private boolean initialized;
     @Getter
     private boolean frozen = false;
     private long frozenTicks;
-    @Getter
     private long creationTick = 0;
 
     public SpoilableItemStack(ItemStack stack) {
         this.stack = stack;
-        this.originalItem = stack.getItem();
+    }
+
+    public long getCreationTick() {
+        if (stack.getTag() == null) return 0;
+        return stack.getOrCreateTag().getLong(CREATION_TICK_KEY);
     }
 
     public void setCreationTick(long creationTick) {
-        this.initialized = true;
+        stack.getOrCreateTag().putLong(CREATION_TICK_KEY, creationTick);
         this.creationTick = creationTick;
     }
 
@@ -85,10 +84,9 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
      *           be called with an empty {@link SpoilContext} and {@code createTag = false}.
      */
     public void updateFreshness(SpoilContext spoilContext, boolean createTag) {
-        if (!stack.is(originalItem)) return;
-        if (!createTag && !initialized || frozen) return;
+        if (frozen) return;
         Level level = SpoilContext.getDefaultLevel();
-        if (level != null && createTag && !initialized) {
+        if (level != null && createTag && getCreationTick() == 0) {
             setCreationTick(level.getGameTime());
         }
         if (level != null && this.shouldSpoil()) {
@@ -113,7 +111,6 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     @Override
     public long getTicksUntilSpoiled() {
-        if (!initialized) return this.getSpoilTicks();
         if (frozen) return frozenTicks;
         Level level = SpoilContext.getDefaultLevel();
         if (level != null) {
@@ -126,16 +123,16 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     @Override
     public void setTicksUntilSpoiled(long value) {
         Level level = SpoilContext.getDefaultLevel();
-        if (level != null && initialized)
-            setCreationTick(level.getGameTime() - this.getSpoilTicks() + value);
+        if (level != null) setCreationTick(level.getGameTime() - this.getSpoilTicks() + value);
     }
 
     private void setFreezeSpoiling(boolean freeze) {
         if (freeze) {
             frozenTicks = getTicksUntilSpoiled();
+            stack.getOrCreateTag().putLong(FROZEN_TICKS_KEY, frozenTicks);
             frozen = true;
         } else {
-            if (initialized && frozen) {
+            if (frozen) {
                 setTicksUntilSpoiled(frozenTicks);
                 frozen = false;
             }
@@ -203,7 +200,6 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     @Override
     public Tag serializeNBT() {
-        if (!initialized) return new CompoundTag();
         CompoundTag tag = new CompoundTag();
         tag.putLong(CREATION_TICK_KEY, getCreationTick());
         if (isFrozen())
@@ -214,13 +210,12 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     @Override
     public void deserializeNBT(Tag nbt) {
         if (nbt instanceof CompoundTag tag && !tag.isEmpty()) {
-            initialized = true;
             creationTick = tag.getLong(CREATION_TICK_KEY);
             if (tag.contains(FROZEN_TICKS_KEY, Tag.TAG_LONG)) {
                 frozenTicks = tag.getLong(FROZEN_TICKS_KEY);
                 frozen = true;
             } else frozen = false;
-        } else initialized = false;
+        }
     }
 
     /**
@@ -233,7 +228,6 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     @Override
     public void prepareForComparisonWith(INBTSerializable<Tag> other) {
         if (other instanceof SpoilableItemStack spoilable) {
-            if (!initialized || !spoilable.initialized) return;
             if (isFrozen() || spoilable.isFrozen()) {
                 return;
             }

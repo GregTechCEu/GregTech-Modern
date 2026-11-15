@@ -9,7 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import lombok.With;
@@ -20,7 +19,8 @@ import java.util.function.Consumer;
 
 /**
  * This class represents the environment in which an item spoils, for example,
- * the level and the block's position, or the entity. This info is used to, for example, spawn an entity when an item spoils.<br>
+ * the level and the block's position, or the entity. This info is used to, for example, spawn an entity when an item
+ * spoils.<br>
  * It must include a way to set the slot the itemstack is in.
  */
 @With
@@ -42,7 +42,6 @@ public record SpoilContext(@Nullable Level level,
         if (server == null) return null;
         return server.overworld();
     }
-
 
     public SpoilContext(@Nullable Level level, @Nullable BlockPos pos, IItemHandler handler, int slot) {
         this(level, pos, null, stackSetterForHandler(handler, slot));

@@ -54,7 +54,7 @@ public class SpoilUtils {
 
     public static void updatePlayer(Player player) {
         var inventory = player.getInventory();
-        for (int i=0; i<inventory.getContainerSize(); i++) {
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
             if (spoilable != null) spoilable.updateFreshness(new SpoilContext(player, i), true);
