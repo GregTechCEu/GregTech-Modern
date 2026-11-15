@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -39,15 +40,24 @@ public class SpoilUtils {
     public static void updateBlock(BlockEntity blockEntity, Direction side) {
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, side)
                 .resolve()
-                .ifPresent(handler -> updateHandler(handler, blockEntity.getLevel(), blockEntity.getBlockPos(), side));
+                .ifPresent(handler -> updateHandler(handler, blockEntity.getLevel(), blockEntity.getBlockPos()));
     }
 
-    public static void updateHandler(IItemHandler handler, Level level, @Nullable BlockPos pos,
-                                     @Nullable Direction side) {
-        SpoilContext ctx = new SpoilContext(level, pos)
-                .withItemHandlerSide(side);
+    public static void updateHandler(IItemHandler handler, Level level, @Nullable BlockPos pos) {
         for (int slot = 0; slot < handler.getSlots(); slot++) {
-            update(handler.getStackInSlot(slot), ctx.withSlot(slot));
+            var stack = handler.getStackInSlot(slot);
+            if (stack.isEmpty()) continue;
+            ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
+            if (spoilable != null) spoilable.updateFreshness(new SpoilContext(level, pos, handler, slot), true);
+        }
+    }
+
+    public static void updatePlayer(Player player) {
+        var inventory = player.getInventory();
+        for (int i=0; i<inventory.getContainerSize(); i++) {
+            ItemStack stack = inventory.getItem(i);
+            ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
+            if (spoilable != null) spoilable.updateFreshness(new SpoilContext(player, i), true);
         }
     }
 

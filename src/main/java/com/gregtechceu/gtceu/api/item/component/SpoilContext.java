@@ -1,47 +1,36 @@
 package com.gregtechceu.gtceu.api.item.component;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-
-import com.gregtechceu.gtceu.core.mixins.ItemStackMixin;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import lombok.With;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * This class represents the environment in which an item spoils, for example,
- * the level and the block's position, or the entity. It also may include a way to get an
- * {@link IItemHandler} (an instance of {@link ItemHandlerSource}) in which the item spoiled, and the slot number of the
- * item.
- * This info is used to, for example, spawn an entity when an item spoils.
+ * the level and the block's position, or the entity. This info is used to, for example, spawn an entity when an item spoils.<br>
+ * It must include a way to set the slot the itemstack is in.
  */
 @With
+@NotNullByDefault
 public record SpoilContext(@Nullable Level level,
                            @Nullable BlockPos pos,
                            @Nullable Entity entity,
-                           @Nullable ItemHandlerSource itemHandlerSource,
-                           @Nullable CompoundTag itemHandlerData,
-                           int slot) {
+                           Consumer<ItemStack> stackSetter) {
+
+    public static final SpoilContext EMPTY = new SpoilContext(null, null, null, null);
 
     /**
      * @return the {@link Level} used to determine time to calculate spoilage progress (using
@@ -54,116 +43,28 @@ public record SpoilContext(@Nullable Level level,
         return server.overworld();
     }
 
-    public SpoilContext() {
-        this((Level) null);
+
+    public SpoilContext(@Nullable Level level, @Nullable BlockPos pos, IItemHandler handler, int slot) {
+        this(level, pos, null, stackSetterForHandler(handler, slot));
     }
 
-    public SpoilContext(@Nullable Level level) {
-        this(level, null);
+    public SpoilContext(Player player, int slot) {
+        this(player.level(), player.blockPosition(), player, stackSetterForPlayerInv(player.getInventory(), slot));
     }
 
-    public SpoilContext(@Nullable Level level, @Nullable BlockPos pos) {
-        this(level, pos, null, null, null, -1);
-    }
-
-    public SpoilContext(@NotNull Entity entity) {
-        this(entity.level(), entity.blockPosition(), entity, null, null, -1);
-    }
-
-    public SpoilContext(@NotNull Player player, int slot) {
-        this(player.level(), player.blockPosition(), player, ItemHandlerSource.PLAYER_INVENTORY, null, slot);
-    }
-
-    public SpoilContext(@NotNull MetaMachine machine) {
-        this(machine.getLevel(), machine.getBlockPos(), null, null, null, -1);
+    public SpoilContext(BlockEntity be, IItemHandler handler, int slot) {
+        this(be.getLevel(), be.getBlockPos(), null, stackSetterForHandler(handler, slot));
     }
 
     public void setResultStack(ItemStack stack) {
-
+        stackSetter.accept(stack);
     }
 
-    public boolean isEmpty() {
-        return level == null;
+    public static Consumer<ItemStack> stackSetterForHandler(IItemHandler handler, int slot) {
+        return stack -> handler.extractItem(slot, 64, false);
     }
 
-    public @Nullable IItemHandler itemHandler() {
-        if (itemHandlerSource == null) return null;
-        return itemHandlerSource.getHandler(this);
-    }
-
-    public SpoilContext withItemHandlerData(String key, Tag value) {
-        CompoundTag tag = itemHandlerData == null ? new CompoundTag() : itemHandlerData.copy();
-        tag.put(key, value);
-        return this.withItemHandlerData(tag);
-    }
-
-    public SpoilContext withItemHandlerSide(Direction side) {
-        if (side == null) return this.withItemHandlerSource(ItemHandlerSource.BLOCK_CAPABILITY);
-        return this.withItemHandlerSource(ItemHandlerSource.BLOCK_CAPABILITY)
-                .withItemHandlerData("side", StringTag.valueOf(side.getSerializedName()));
-    }
-
-    /**
-     * This class represents a way to get an {@link IItemHandler} from a {@link SpoilContext}, optionally
-     * using {@link SpoilContext#itemHandlerData}. This is used instead of a normal supplier, due to the fact that
-     * it is serializable. Note that new instances of this class should not be created dynamically.
-     * <br>
-     * This class is basically equivalent to a serializable {@code Function<SpoilContext, IItemHandler>}.
-     */
-    public static abstract class ItemHandlerSource {
-
-        private static final Map<ResourceLocation, ItemHandlerSource> HANDLER_SOURCES = new HashMap<>();
-
-        public static final ItemHandlerSource BLOCK_CAPABILITY = new ItemHandlerSource(GTCEu.id("block_cap")) {
-
-            @Override
-            protected @Nullable IItemHandler getHandler(SpoilContext ctx) {
-                if (ctx.level() == null || ctx.pos() == null || ctx.itemHandlerData() == null) return null;
-                CompoundTag tag = ctx.itemHandlerData();
-                BlockEntity blockEntity = ctx.level().getBlockEntity(ctx.pos());
-                if (blockEntity == null) return null;
-                if (!tag.contains("side"))
-                    return blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().orElse(null);
-                return blockEntity
-                        .getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.byName(tag.getString("side")))
-                        .resolve().orElse(null);
-            }
-        };
-
-        /**
-         * Represents getting an item handler as a player's inventory (used if {@link SpoilContext#entity} is a
-         * {@link Player})
-         */
-        public static final ItemHandlerSource PLAYER_INVENTORY = new ItemHandlerSource(GTCEu.id("player_inventory")) {
-
-            @Override
-            protected @Nullable IItemHandler getHandler(SpoilContext ctx) {
-                if (ctx.entity instanceof Player player) {
-                    return new CustomItemStackHandler(player.getInventory().items);
-                } else return null;
-            }
-        };
-
-        private static ItemHandlerSource getById(ResourceLocation id) {
-            return HANDLER_SOURCES.get(id);
-        }
-
-        private final ResourceLocation id;
-
-        public ItemHandlerSource(ResourceLocation id) {
-            this.id = id;
-            HANDLER_SOURCES.put(id, this);
-        }
-
-        private ResourceLocation getId() {
-            return id;
-        }
-
-        @Override
-        public String toString() {
-            return id.toString();
-        }
-
-        abstract protected @Nullable IItemHandler getHandler(SpoilContext ctx);
+    public static Consumer<ItemStack> stackSetterForPlayerInv(Inventory inv, int slot) {
+        return stack -> inv.setItem(slot, stack);
     }
 }

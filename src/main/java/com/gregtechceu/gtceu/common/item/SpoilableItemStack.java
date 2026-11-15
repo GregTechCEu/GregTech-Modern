@@ -37,8 +37,6 @@ import java.util.List;
  * It leaves some methods unimplemented, such as {@link ISpoilableItem#getSpoilTicks()} and
  * {@link ISpoilableItem#spoilResult(SpoilContext, boolean)}.
  *
- * @implNote this class uses a mixin in its {@link ISpoilableItem#updateFreshness} implementation
- *
  * @see SpoilableBehavior
  * @see SpoilableBehavior#attachTo(ItemLike)
  */
@@ -180,7 +178,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     }
 
     protected Component getSpoilResultTooltip() {
-        return spoilResult(new SpoilContext(), false).getDisplayName();
+        return spoilResult(SpoilContext.EMPTY, false).getDisplayName();
     }
 
     @Override

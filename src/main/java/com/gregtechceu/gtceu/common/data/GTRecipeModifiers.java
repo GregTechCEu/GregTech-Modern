@@ -63,7 +63,7 @@ public class GTRecipeModifiers {
                 if (!(stackObject instanceof ItemStack stack)) return;
                 ISpoilableItem outputSpoilable = GTCapabilityHelper.getSpoilable(stack);
                 if (outputSpoilable == null) return;
-                SpoilUtils.update(stack, new SpoilContext(machine));
+
                 if (!r.keepSpoilingProgress) return;
                 double spoilProgress = 0;
                 int spoilableCount = 0;

@@ -115,13 +115,15 @@ public class SpoilableBehaviourTest {
         TestUtils.succeedAfterTest(helper);
         helper.setBlock(1, 1, 1, Blocks.CHEST);
         IItemHandler itemHandler = TestUtils.getItemHandler(helper, new BlockPos(1, 1, 1));
+
         ItemStack in = GTItems.SPOILABLE_1.get().getDefaultInstance().copyWithCount(41);
+        itemHandler.insertItem(0, in, false);
+
         SpoilUtils.update(in, new SpoilContext(
                 helper.getLevel(),
-                helper.absolutePos(new BlockPos(1, 1, 1)))
-                .withItemHandlerSide(null)
-                .withSlot(0));
-        itemHandler.insertItem(0, in, false);
+                helper.absolutePos(new BlockPos(1, 1, 1)),
+                itemHandler, 0));
+
         helper.runAtTickTime(70, () -> helper.assertTrue(TestUtils.isItemStackEqual(
                 GTItems.SPOILABLE_5.get().getDefaultInstance().copyWithCount(41),
                 itemHandler.getStackInSlot(0)),
@@ -200,7 +202,9 @@ public class SpoilableBehaviourTest {
         TestUtils.succeedAfterTest(helper);
         BusHolder busHolder = getBussesAndForm(helper);
         ItemStack input = new ItemStack(GTItems.SPOILABLE_4);
-        SpoilUtils.update(input, new SpoilContext());
+
+        SpoilUtils.update(input, new SpoilContext(busHolder.inputBus1, busHolder.inputBus1.getInventory(), 0));
+
         Objects.requireNonNull(GTCapabilityHelper.getSpoilable(input)).setTicksUntilSpoiled(8);
         busHolder.inputBus1.getInventory().setStackInSlot(0, input);
         helper.runAtTickTime(21, () -> {
@@ -222,7 +226,9 @@ public class SpoilableBehaviourTest {
         TestUtils.succeedAfterTest(helper);
         BusHolder busHolder = getBussesAndForm(helper);
         ItemStack input = new ItemStack(GTItems.SPOILABLE_1.get());
-        SpoilUtils.update(input, new SpoilContext());
+
+        SpoilUtils.update(input, new SpoilContext(busHolder.inputBus1, busHolder.inputBus1.getInventory(), 0));
+
         Objects.requireNonNull(GTCapabilityHelper.getSpoilable(input)).setTicksUntilSpoiled(8);
         busHolder.inputBus1.getInventory().setStackInSlot(0, input);
         helper.runAtTickTime(21, () -> {
@@ -291,8 +297,7 @@ public class SpoilableBehaviourTest {
         TestUtils.succeedAfterTest(helper);
         ItemStack stack1 = GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(9);
         ItemStack stack2 = GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(5);
-        SpoilUtils.update(stack1, new SpoilContext());
-        SpoilUtils.update(stack2, new SpoilContext());
+
         ISpoilableItem spoilable1 = GTCapabilityHelper.getSpoilable(stack1);
         ISpoilableItem spoilable2 = GTCapabilityHelper.getSpoilable(stack2);
         TestUtils.assertNotNull(helper, spoilable1, "spoilable1 was null");
