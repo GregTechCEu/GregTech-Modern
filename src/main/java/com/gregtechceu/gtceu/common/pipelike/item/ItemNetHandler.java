@@ -509,7 +509,7 @@ public class ItemNetHandler implements IItemHandlerModifiable, IVirtualItemHandl
             ItemStack slot = handler.getStackInSlot(i);
             if (slot.isEmpty()) continue;
             if (ignoreNBT && !ItemStack.isSameItem(stack, slot)) continue;
-            if (!ignoreNBT && !GTUtil.isSameItemSameTags(stack, slot)) continue;
+            if (!ignoreNBT && !ItemStack.isSameItemSameTags(stack, slot)) continue;
             if (arm.getFilterHandler().getFilter().test(slot)) {
                 count += slot.getCount();
             }

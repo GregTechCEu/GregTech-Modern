@@ -3,15 +3,12 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.item.IMergeableNBTSerializable;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +17,6 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 
@@ -40,18 +36,14 @@ import java.util.List;
  * @see SpoilableBehavior#attachTo(ItemLike)
  */
 public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformation, IDurabilityBar,
-                                         IMergeableNBTSerializable, ICapabilityProvider {
+                                         ICapabilityProvider {
 
+    public static final String FROZEN_KEY = "frozen";
     public static final String FROZEN_TICKS_KEY = "frozenRemainingTicks";
     public static final String CREATION_TICK_KEY = "creationTick";
 
     @Getter
     private final ItemStack stack;
-
-    @Getter
-    private boolean frozen = false;
-    private long frozenTicks;
-    private long creationTick = 0;
 
     public SpoilableItemStack(ItemStack stack) {
         this.stack = stack;
@@ -64,7 +56,20 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     public void setCreationTick(long creationTick) {
         stack.getOrCreateTag().putLong(CREATION_TICK_KEY, creationTick);
-        this.creationTick = creationTick;
+    }
+
+    public boolean isFrozen() {
+        if (stack.getTag() == null) return false;
+        return stack.getOrCreateTag().getBoolean(FROZEN_KEY);
+    }
+
+    public long getFrozenTicks() {
+        if (stack.getTag() == null) return 0;
+        return stack.getOrCreateTag().getLong(FROZEN_TICKS_KEY);
+    }
+
+    public void setFrozenTicks(long ticks) {
+        stack.getOrCreateTag().putLong(FROZEN_TICKS_KEY, ticks);
     }
 
     /**
@@ -84,14 +89,14 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
      *           be called with an empty {@link SpoilContext} and {@code createTag = false}.
      */
     public void updateFreshness(SpoilContext spoilContext, boolean createTag) {
-        if (frozen) return;
+        if (isFrozen()) return;
         Level level = SpoilContext.getDefaultLevel();
         if (level != null && createTag && getCreationTick() == 0) {
             setCreationTick(level.getGameTime());
         }
         if (level != null && this.shouldSpoil()) {
             long spoilTicks = this.getSpoilTicks();
-            long timeDifference = level.getGameTime() - creationTick - spoilTicks;
+            long timeDifference = level.getGameTime() - getCreationTick() - spoilTicks;
             if (timeDifference >= 0) {
                 ItemStack newStack = this.spoilResult(spoilContext, GTCEu.isClientThread());
                 spoilContext.setResultStack(newStack);
@@ -111,7 +116,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     @Override
     public long getTicksUntilSpoiled() {
-        if (frozen) return frozenTicks;
+        if (isFrozen()) return getFrozenTicks();
         Level level = SpoilContext.getDefaultLevel();
         if (level != null) {
             return this.getSpoilTicks() - level.getGameTime() +
@@ -128,13 +133,12 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     private void setFreezeSpoiling(boolean freeze) {
         if (freeze) {
-            frozenTicks = getTicksUntilSpoiled();
-            stack.getOrCreateTag().putLong(FROZEN_TICKS_KEY, frozenTicks);
-            frozen = true;
+            setFrozenTicks(getTicksUntilSpoiled());
+            stack.getOrCreateTag().putBoolean(FROZEN_KEY, true);
         } else {
-            if (frozen) {
-                setTicksUntilSpoiled(frozenTicks);
-                frozen = false;
+            if (isFrozen()) {
+                setTicksUntilSpoiled(getFrozenTicks());
+                stack.getOrCreateTag().putBoolean(FROZEN_KEY, false);
             }
         }
     }
@@ -198,26 +202,6 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
         return getCreationTick() == 0 ? 1 : (float) getTicksUntilSpoiled() / getSpoilTicks();
     }
 
-    @Override
-    public Tag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        tag.putLong(CREATION_TICK_KEY, getCreationTick());
-        if (isFrozen())
-            tag.putLong(FROZEN_TICKS_KEY, frozenTicks);
-        return tag;
-    }
-
-    @Override
-    public void deserializeNBT(Tag nbt) {
-        if (nbt instanceof CompoundTag tag && !tag.isEmpty()) {
-            creationTick = tag.getLong(CREATION_TICK_KEY);
-            if (tag.contains(FROZEN_TICKS_KEY, Tag.TAG_LONG)) {
-                frozenTicks = tag.getLong(FROZEN_TICKS_KEY);
-                frozen = true;
-            } else frozen = false;
-        }
-    }
-
     /**
      * This method averages the spoil progress of the two stacks (or, more
      * accurately, their {@link ISpoilableItem#getCreationTick()}).
@@ -225,23 +209,20 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
      * @implNote This implementation may lead to spoil progress averaging in situations other
      *           than stack merging, though I don't think this will lead to any big user-facing bugs.
      */
-    @Override
-    public void prepareForComparisonWith(INBTSerializable<Tag> other) {
-        if (other instanceof SpoilableItemStack spoilable) {
-            if (isFrozen() || spoilable.isFrozen()) {
-                return;
-            }
-            long tick1 = getCreationTick();
-            long tick2 = spoilable.getCreationTick();
-            if (tick1 != tick2) {
-                long average;
-                if (!stack.isEmpty() && !spoilable.stack.isEmpty()) {
-                    average = (tick1 * stack.getCount() + tick2 * spoilable.stack.getCount()) /
-                            (stack.getCount() + spoilable.stack.getCount());
-                } else average = tick1;
-                this.setCreationTick(average);
-                spoilable.setCreationTick(average);
-            }
+    public void prepareForComparisonWith(SpoilableItemStack spoilable) {
+        if (isFrozen() || spoilable.isFrozen()) {
+            return;
+        }
+        long tick1 = getCreationTick();
+        long tick2 = spoilable.getCreationTick();
+        if (tick1 != tick2) {
+            long average;
+            if (!stack.isEmpty() && !spoilable.stack.isEmpty()) {
+                average = (tick1 * stack.getCount() + tick2 * spoilable.stack.getCount()) /
+                        (stack.getCount() + spoilable.stack.getCount());
+            } else average = tick1;
+            this.setCreationTick(average);
+            spoilable.setCreationTick(average);
         }
     }
 

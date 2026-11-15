@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.core.mixins;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.component.*;
 
+import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +28,13 @@ public abstract class ItemStackMixin {
     // ********* //
     // Injectors //
     // ********* //
+
+    @Inject(at = @At(value = "INVOKE",
+            target = "Ljava/util/Objects;equals(Ljava/lang/Object;Ljava/lang/Object;)Z"),
+            method = "isSameItemSameTags")
+    private static void gtceu$beforeComparison(ItemStack stack, ItemStack other, CallbackInfoReturnable<Boolean> cir) {
+        SpoilUtils.mergeSpoilage(stack, other);
+    }
 
     /**
      * Allows {@link ISpoilableItem} subclasses that implement {@link IAddInformation} to

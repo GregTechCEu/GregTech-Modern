@@ -176,7 +176,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            if (!stored.isEmpty() && GTUtil.isSameItemSameTags(stored, stack)) return ItemStack.EMPTY;
+            if (!stored.isEmpty() && ItemStack.isSameItemSameTags(stored, stack)) return ItemStack.EMPTY;
             return stack;
         }
 

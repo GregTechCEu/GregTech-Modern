@@ -79,7 +79,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
             for (int slot = 0; slot < handler.getSlots(); slot++) {
                 ItemStack is = handler.getStackInSlot(slot);
-                if (!is.isEmpty() && GTUtil.isSameItemSameTags(is, itemInfo.itemStack)) {
+                if (!is.isEmpty() && ItemStack.isSameItemSameTags(is, itemInfo.itemStack)) {
                     ItemStack extracted = handler.extractItem(slot, itemToVoidAmount, false);
 
                     if (!extracted.isEmpty()) {

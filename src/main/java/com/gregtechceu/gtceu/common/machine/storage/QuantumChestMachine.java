@@ -306,7 +306,7 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
     protected class ItemCache extends MachineTrait implements IItemHandlerModifiable {
 
         private final Predicate<ItemStack> filter = i -> !isLocked() ||
-                GTUtil.isSameItemSameTags(i, getLockedItem());
+                ItemStack.isSameItemSameTags(i, getLockedItem());
 
         public ItemCache() {
             super();

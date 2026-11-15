@@ -56,7 +56,7 @@ public class StrictNBTItemStackMapIngredient extends ItemStackMapIngredient {
             }
             if (this.nbtIngredient != null) {
                 if (other.nbtIngredient != null) {
-                    return GTUtil.isSameItemSameTags(((StrictNBTIngredientAccessor) nbtIngredient).getStack(),
+                    return ItemStack.isSameItemSameTags(((StrictNBTIngredientAccessor) nbtIngredient).getStack(),
                             ((StrictNBTIngredientAccessor) other.nbtIngredient).getStack());
                 } else {
                     this.nbtIngredient.test(other.stack);

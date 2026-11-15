@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item.component;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 
+import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -18,6 +19,15 @@ import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class SpoilUtils {
+
+    public static void mergeSpoilage(ItemStack stack, ItemStack other) {
+        if (stack.isEmpty() || other.isEmpty() || !stack.hasTag() || !other.hasTag() || stack.getOrCreateTag().equals(other.getOrCreateTag())) return;
+        var cap1 = GTCapabilityHelper.getSpoilable(stack);
+        var cap2 = GTCapabilityHelper.getSpoilable(other);
+        if (cap1 instanceof SpoilableItemStack spoilable1 && cap2 instanceof SpoilableItemStack spoilable2) {
+            spoilable1.prepareForComparisonWith(spoilable2);
+        }
+    }
 
     /**
      * Initializes this ItemStack's spoilage timer if it wasn't initialized before.
@@ -56,6 +66,7 @@ public class SpoilUtils {
         var inventory = player.getInventory();
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
+            if (stack.isEmpty()) continue;
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
             if (spoilable != null) spoilable.updateFreshness(new SpoilContext(player, i), true);
         }

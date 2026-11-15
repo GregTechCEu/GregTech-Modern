@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
+import com.gregtechceu.gtceu.api.item.component.SpoilContext;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
@@ -35,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
@@ -109,7 +111,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         // Store the ItemStack in each slot after an operation
         // Necessary for simulation since we don't actually modify the slot's contents
         // Doesn't hurt for execution, and definitely cheaper than copying the entire storage
-        ItemStack[] visited = new ItemStack[storage.getSlots()];
+        @Nullable ItemStack[] visited = new ItemStack[storage.getSlots()];
         for (var it = left.listIterator(); it.hasNext();) {
             var ingredient = it.next();
             if (ingredient.isEmpty()) {
@@ -133,8 +135,8 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
             }
 
             for (int slot = 0; slot < storage.getSlots(); ++slot) {
-                ItemStack current = visited[slot] == null ? storage.getStackInSlot(slot) : visited[slot];
-                int count = current.getCount();
+                ItemStack current = visited[slot] != null ? visited[slot] : storage.getStackInSlot(slot);
+                int count = Objects.requireNonNull(current).getCount();
 
                 if (io == IO.IN) {
                     if (current.isEmpty()) continue;
@@ -166,9 +168,16 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                     }
                 } else { // IO.OUT
                     ItemStack output = items[0].copyWithCount(amount);
+
+                    var spoilage = GTCapabilityHelper.getSpoilable(output);
+
+                    if (spoilage != null) {
+                        spoilage.updateFreshness(SpoilContext.EMPTY, true);
+                    }
+
                     if (recipe != null) recipe.mutateOutput(output);
                     // Only try this slot if not visited or if visited with the same type of item
-                    if (visited[slot] == null || GTUtil.isSameItemSameTags(visited[slot], output)) {
+                    if (visited[slot] == null || ItemStack.isSameItemSameTags(Objects.requireNonNull(visited[slot]), output)) {
                         if (count < output.getMaxStackSize() && count < storage.getSlotLimit(slot)) {
                             var remainder = recipe == null ? null :
                                     getActioned(storage, slot, recipe.ingredientActions);
