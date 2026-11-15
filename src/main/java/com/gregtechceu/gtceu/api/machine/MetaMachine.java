@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -24,6 +25,7 @@ import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRedstoneSignalTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.misc.*;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
@@ -310,6 +312,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 iter.remove();
             }
         }
+
+        getTraits(NotifiableItemStackHandler.class).forEach(v -> {
+            SpoilUtils.updateHandler(v, getLevel(), getBlockPos());
+        });
     }
 
     //////////////////////////////////////
@@ -1119,10 +1125,15 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
         IOFilteredInvWrapper handlerList = new IOFilteredInvWrapper(list, io,
                 getItemCapFilter(side, IO.IN), getItemCapFilter(side, IO.OUT));
-        if (!useCoverCapability || side == null) return handlerList;
+        if (!useCoverCapability || side == null) {
+            SpoilUtils.updateHandler(handlerList, getLevel(), getBlockPos());
+            return handlerList;
+        }
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        return cover != null ? cover.getItemHandlerCap(handlerList) : handlerList;
+        var handler = cover != null ? cover.getItemHandlerCap(handlerList) : handlerList;
+        if (handler != null) SpoilUtils.updateHandler(handler, getLevel(), getBlockPos());
+        return handler;
     }
 
     /**
