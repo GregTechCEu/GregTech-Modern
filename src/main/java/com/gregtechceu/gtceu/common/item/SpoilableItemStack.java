@@ -195,7 +195,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     @Override
     public float getDurabilityForDisplay(ItemStack stack) {
-        return (float) getTicksUntilSpoiled() / getSpoilTicks();
+        return getCreationTick() == 0 ? 1 : (float) getTicksUntilSpoiled() / getSpoilTicks();
     }
 
     @Override
