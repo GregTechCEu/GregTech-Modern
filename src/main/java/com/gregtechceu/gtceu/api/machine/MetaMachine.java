@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilUtils;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -314,7 +314,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
 
         getTraits(NotifiableItemStackHandler.class).forEach(v -> {
-            SpoilUtils.updateHandler(v, getLevel(), getBlockPos());
+            SpoilUtils.updateBlockItemHandler(v, getLevel(), getBlockPos());
         });
     }
 
@@ -1126,13 +1126,13 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         IOFilteredInvWrapper handlerList = new IOFilteredInvWrapper(list, io,
                 getItemCapFilter(side, IO.IN), getItemCapFilter(side, IO.OUT));
         if (!useCoverCapability || side == null) {
-            SpoilUtils.updateHandler(handlerList, getLevel(), getBlockPos());
+            SpoilUtils.updateBlockItemHandler(handlerList, getLevel(), getBlockPos());
             return handlerList;
         }
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
         var handler = cover != null ? cover.getItemHandlerCap(handlerList) : handlerList;
-        if (handler != null) SpoilUtils.updateHandler(handler, getLevel(), getBlockPos());
+        if (handler != null) SpoilUtils.updateBlockItemHandler(handler, getLevel(), getBlockPos());
         return handler;
     }
 

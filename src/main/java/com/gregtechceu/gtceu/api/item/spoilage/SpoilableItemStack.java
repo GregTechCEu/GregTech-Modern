@@ -1,10 +1,9 @@
-package com.gregtechceu.gtceu.common.item;
+package com.gregtechceu.gtceu.api.item.spoilage;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
@@ -30,7 +29,7 @@ import java.util.List;
  * This class is a basic implementation of the {@link ISpoilableItem} capability,
  * to be attached to an item in an {@link AttachCapabilitiesEvent<ItemStack>} listener.
  * It leaves some methods unimplemented, such as {@link ISpoilableItem#getSpoilTicks()} and
- * {@link ISpoilableItem#spoilResult(SpoilContext, boolean)}.
+ * {@link ISpoilableItem#getSpoilResult(SpoilContext, long, boolean)}.
  *
  * @see SpoilableBehavior
  * @see SpoilableBehavior#attachTo(ItemLike)
@@ -74,7 +73,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     /**
      * Checks if this item should've already spoiled, and calls
-     * {@link ISpoilableItem#spoilResult(SpoilContext, boolean)}
+     * {@link ISpoilableItem#getSpoilResult(SpoilContext, boolean)}
      * and replaces this item with its return value if so.<br>
      * <br>
      * If {@code createTag = true} and the spoilage tag did not exist, creates
@@ -98,7 +97,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
             long spoilTicks = this.getSpoilTicks();
             long timeDifference = level.getGameTime() - getCreationTick() - spoilTicks;
             if (timeDifference >= 0) {
-                ItemStack newStack = this.spoilResult(spoilContext, GTCEu.isClientThread());
+                ItemStack newStack = this.getSpoilResult(spoilContext, timeDifference, GTCEu.isClientThread());
                 spoilContext.setResultStack(newStack);
 
                 ISpoilableItem newSpoilable = GTCapabilityHelper.getSpoilable(newStack);
@@ -117,29 +116,29 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     @Override
     public long getTicksUntilSpoiled() {
         if (isFrozen()) return getFrozenTicks();
+
         Level level = SpoilContext.getDefaultLevel();
-        if (level != null) {
-            return this.getSpoilTicks() - level.getGameTime() +
-                    this.getCreationTick();
+        if (level == null) {
+            return this.getSpoilTicks();
         }
-        return this.getSpoilTicks();
+        return this.getSpoilTicks() - level.getGameTime() + this.getCreationTick();
     }
 
     @Override
     public void setTicksUntilSpoiled(long value) {
         Level level = SpoilContext.getDefaultLevel();
-        if (level != null) setCreationTick(level.getGameTime() - this.getSpoilTicks() + value);
+        if (level != null) {
+            setCreationTick(level.getGameTime() - this.getSpoilTicks() + value);
+        }
     }
 
     private void setFreezeSpoiling(boolean freeze) {
         if (freeze) {
             setFrozenTicks(getTicksUntilSpoiled());
             stack.getOrCreateTag().putBoolean(FROZEN_KEY, true);
-        } else {
-            if (isFrozen()) {
-                setTicksUntilSpoiled(getFrozenTicks());
-                stack.getOrCreateTag().putBoolean(FROZEN_KEY, false);
-            }
+        } else if (isFrozen()) {
+            setTicksUntilSpoiled(getFrozenTicks());
+            stack.getOrCreateTag().putBoolean(FROZEN_KEY, false);
         }
     }
 
@@ -179,7 +178,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     }
 
     protected Component getSpoilResultTooltip() {
-        return spoilResult(SpoilContext.EMPTY, false).getDisplayName();
+        return getSpoilResult(SpoilContext.EMPTY, -1, false).getDisplayName();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.spoilage;
 
-import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilUtils;
 
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;

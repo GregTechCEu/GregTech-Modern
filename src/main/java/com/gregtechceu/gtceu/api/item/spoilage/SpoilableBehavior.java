@@ -1,11 +1,7 @@
-package com.gregtechceu.gtceu.common.item.behavior;
+package com.gregtechceu.gtceu.api.item.spoilage;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
-import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
-import com.gregtechceu.gtceu.api.item.component.SpoilContext;
-import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
-import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.RegisterSpoilablesEventJS;
 
@@ -19,6 +15,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoader;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +40,7 @@ public class SpoilableBehavior {
 
     public static void init(IEventBus eventBus) {
         RegisterSpoilablesEvent event = new RegisterSpoilablesEvent(SpoilableBehavior::builder);
-        eventBus.post(event);
+        ModLoader.get().postEventWrapContainerInModOrder(event);
         if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSCallWrapper.fireKJSEvent(event);
         }
@@ -99,8 +96,8 @@ public class SpoilableBehavior {
         }
 
         @Override
-        public ItemStack spoilResult(SpoilContext spoilContext, boolean simulate) {
-            return spoilResult.getSpoilResult(getStack(), spoilContext, simulate);
+        public ItemStack getSpoilResult(SpoilContext spoilContext, long timeDifference, boolean simulate) {
+            return spoilResult.getSpoilResult(getStack(), spoilContext, timeDifference, simulate);
         }
 
         @Override
@@ -112,7 +109,7 @@ public class SpoilableBehavior {
     @FunctionalInterface
     public interface SpoilResultProvider {
 
-        ItemStack getSpoilResult(ItemStack stack, SpoilContext spoilContext, boolean simulate);
+        ItemStack getSpoilResult(ItemStack stack, SpoilContext spoilContext, long timeDifference, boolean simulate);
     }
 
     public static class Builder {
@@ -162,7 +159,7 @@ public class SpoilableBehavior {
         }
 
         public Builder result(Function<ItemStack, ItemStack> result) {
-            return result((stack, spoilContext, simulate) -> result.apply(stack))
+            return result((stack, spoilContext, timeDifference, simulate) -> result.apply(stack))
                     .tooltip(stack -> {
                         ItemStack resultStack = result.apply(stack);
                         if (resultStack.isEmpty()) return Component.empty();
@@ -177,12 +174,12 @@ public class SpoilableBehavior {
         public Builder result(Supplier<? extends EntityType<? extends Mob>> entityType) {
             SpoilResultProvider previousResult = result;
             Function<ItemStack, Component> previousTooltip = tooltip;
-            return result((stack, spoilContext, simulate) -> {
+            return result((stack, spoilContext, timeDifference, simulate) -> {
                 if (!simulate) {
                     EntityType<? extends Mob> type = entityType.get();
                     SpoilUtils.spawnEntity(spoilContext, type, stack.getCount());
                 }
-                return previousResult.getSpoilResult(stack, spoilContext, simulate);
+                return previousResult.getSpoilResult(stack, spoilContext, timeDifference, simulate);
             }).tooltip(stack -> {
                 EntityType<? extends Mob> type = entityType.get();
                 MutableComponent component = type.getDescription().copy();
@@ -195,10 +192,10 @@ public class SpoilableBehavior {
         public Builder multiplyResult(int mult) {
             SpoilResultProvider prevResult = result;
             Function<ItemStack, Component> previousTooltip = tooltip;
-            return result((stack, spoilContext, simulate) -> {
-                ItemStack total = prevResult.getSpoilResult(stack, spoilContext, simulate);
+            return result((stack, spoilContext, timeDifference, simulate) -> {
+                ItemStack total = prevResult.getSpoilResult(stack, spoilContext, timeDifference, simulate);
                 for (int i = 1; i < mult; i++) {
-                    ItemStack temp = prevResult.getSpoilResult(stack, spoilContext, simulate);
+                    ItemStack temp = prevResult.getSpoilResult(stack, spoilContext, timeDifference, simulate);
                     if (ItemStack.isSameItemSameTags(total, temp)) total.grow(temp.getCount());
                 }
                 return total;

@@ -1,6 +1,7 @@
-package com.gregtechceu.gtceu.api.item.component;
+package com.gregtechceu.gtceu.api.item.spoilage;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -51,10 +52,11 @@ public class SpoilUtils {
     public static void updateBlock(BlockEntity blockEntity, Direction side) {
         blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, side)
                 .resolve()
-                .ifPresent(handler -> updateHandler(handler, blockEntity.getLevel(), blockEntity.getBlockPos()));
+                .ifPresent(
+                        handler -> updateBlockItemHandler(handler, blockEntity.getLevel(), blockEntity.getBlockPos()));
     }
 
-    public static void updateHandler(IItemHandler handler, Level level, @Nullable BlockPos pos) {
+    public static void updateBlockItemHandler(IItemHandler handler, Level level, @Nullable BlockPos pos) {
         for (int slot = 0; slot < handler.getSlots(); slot++) {
             var stack = handler.getStackInSlot(slot);
             if (stack.isEmpty()) continue;
@@ -71,27 +73,29 @@ public class SpoilUtils {
             if (stack.isEmpty()) continue;
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
             if (spoilable != null) spoilable
-                    .updateFreshness(new SpoilContext(player.level(), player.blockPosition(), handler, slot), true);
+                    .updateFreshness(new SpoilContext(player, handler, slot), true);
         }
     }
 
     public static void spawnEntity(SpoilContext spoilContext, EntityType<? extends Mob> type, int count) {
-        if (spoilContext.level() instanceof ServerLevel level) {
-            BlockPos pos = null;
-            if (spoilContext.entity() != null) pos = spoilContext.entity().blockPosition();
-            else if (spoilContext.pos() != null) pos = spoilContext.pos();
-            if (pos != null && type != null) {
-                if (level.getBlockState(pos).isSuffocating(level, pos)) {
-                    for (Direction direction : Direction.values()) {
-                        BlockPos relative = pos.relative(direction);
-                        if (!level.getBlockState(relative).isSuffocating(level, relative)) {
-                            pos = relative;
-                            break;
-                        }
-                    }
+        if (!(spoilContext.level() instanceof ServerLevel level)) return;
+
+        BlockPos pos;
+        if (spoilContext.entity() != null) pos = spoilContext.entity().blockPosition();
+        else if (spoilContext.pos() != null) pos = spoilContext.pos();
+        else return;
+
+        if (level.getBlockState(pos).isSuffocating(level, pos)) {
+            for (Direction side : GTUtil.DIRECTIONS) {
+                BlockPos relative = pos.relative(side);
+                if (!level.getBlockState(relative).isSuffocating(level, relative)) {
+                    pos = relative;
+                    break;
                 }
-                for (int i = 0; i < count; i++) type.spawn(level, pos, MobSpawnType.SPAWN_EGG);
             }
+        }
+        for (int i = 0; i < count; i++) {
+            type.spawn(level, pos, MobSpawnType.CONVERSION);
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.spoilage;
 
-import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilUtils;
 
 import net.minecraft.world.level.block.entity.*;
 

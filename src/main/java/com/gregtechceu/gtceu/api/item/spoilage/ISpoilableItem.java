@@ -1,7 +1,6 @@
-package com.gregtechceu.gtceu.api.item.component;
+package com.gregtechceu.gtceu.api.item.spoilage;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
@@ -59,7 +58,7 @@ public interface ISpoilableItem {
 
     /**
      * Checks if this stack is supposed to already be spoiled, and spoils it into the
-     * {@link ISpoilableItem#spoilResult}
+     * {@link ISpoilableItem#getSpoilResult}
      * 
      * @param createTag whether to start spoiling this stack if it didn't start spoiling yet (adds NBT)
      */
@@ -121,10 +120,15 @@ public interface ISpoilableItem {
     /**
      * This function may have side effects (i.e. spawning an entity) when called with
      * {@code simulate = false}.
+     *
+     * @param spoilContext   The spoil context, may contain the level, position, and entity.|
+     * @param timeDifference The ticks elapsed since this item should have spoiled. An item may not spoil immediately in
+     *                       some cases, e.g. if in an unloaded chunk.
+     * @param simulate       True if side effects should not be performed.
      * 
      * @return the stack to replace the provided stack with when it spoils
      */
-    ItemStack spoilResult(SpoilContext spoilContext, boolean simulate);
+    ItemStack getSpoilResult(SpoilContext spoilContext, long timeDifference, boolean simulate);
 
     /**
      * Note: returning {@code false} in this method won't stop the item from spoiling if the spoiling NBT has already
@@ -166,16 +170,16 @@ public interface ISpoilableItem {
      *           than stack merging, though I don't think this will lead to any big user-facing bugs.
      */
     default void prepareForComparisonWith(ISpoilableItem spoilable) {
-        if (isFrozen() || spoilable.isFrozen()) {
+        if (this.isFrozen() || spoilable.isFrozen()) {
             return;
         }
-        long tick1 = getCreationTick();
+        long tick1 = this.getCreationTick();
         long tick2 = spoilable.getCreationTick();
         if (tick1 != tick2) {
             long average;
-            if (!getStack().isEmpty() && !spoilable.getStack().isEmpty()) {
-                average = (tick1 * getStack().getCount() + tick2 * spoilable.getStack().getCount()) /
-                        (getStack().getCount() + spoilable.getStack().getCount());
+            if (!this.getStack().isEmpty() && !spoilable.getStack().isEmpty()) {
+                average = (tick1 * this.getStack().getCount() + tick2 * spoilable.getStack().getCount()) /
+                        (this.getStack().getCount() + spoilable.getStack().getCount());
             } else average = tick1;
             this.setCreationTick(average);
             spoilable.setCreationTick(average);

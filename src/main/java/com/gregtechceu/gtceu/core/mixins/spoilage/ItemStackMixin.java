@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.core.mixins.spoilage;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.component.*;
+import com.gregtechceu.gtceu.api.item.spoilage.ISpoilableItem;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilUtils;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
