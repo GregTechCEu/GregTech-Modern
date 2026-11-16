@@ -27,7 +27,7 @@ import brachy.modularui.value.sync.DynamicLinkedSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.scroll.VerticalScrollData;
-import brachy.modularui.widgets.DynamicSyncedWidget;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import lombok.Getter;
@@ -140,7 +140,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
                     return col;
                 });
 
-        flow.child(new DynamicSyncedWidget<>()
+        flow.child(new DynamicWidget<>()
                 .syncHandler(dynamicHandler)
                 .size(167, 80));
 
