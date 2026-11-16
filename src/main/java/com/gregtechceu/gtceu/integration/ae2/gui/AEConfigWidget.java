@@ -24,6 +24,7 @@ import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.SecondaryPanel;
 import brachy.modularui.screen.viewport.ModularGuiContext;
 import brachy.modularui.theme.WidgetThemeEntry;
+import brachy.modularui.utils.sides.SidedAccessHelper;
 import brachy.modularui.value.StringValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.Widget;
@@ -32,7 +33,10 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.emi.emi.api.stack.EmiStack;
+import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class AEConfigWidget extends Widget<AEConfigWidget>
                             implements Interactable, GhostIngredientSlot<ItemStack> {
@@ -134,10 +138,11 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
                 amountField.setText(resolved);
             }
             int slot = editingSlotIndex;
-            syncManager.callSyncedAction("ae_config_amount", buf -> {
-                buf.writeVarInt(slot);
-                buf.writeVarLong(amount);
-            });
+
+            var buf = SidedAccessHelper.makeRegistryByteBuf(Unpooled.buffer(0));
+            buf.writeVarInt(slot);
+            buf.writeVarLong(amount);
+            syncManager.callSyncedAction("ae_config_amount", buf);
         }
         editingSlotIndex = -1;
         amountEditorPanel.closePanel();
@@ -252,22 +257,30 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
 
         if (overConfig && !isAutoPull() && syncManager != null) {
             if (button == 1) {
-                syncManager.callSyncedAction("ae_config_clear", buf -> buf.writeVarInt(slotIndex));
+                var buf = SidedAccessHelper.makeRegistryByteBuf(Unpooled.buffer(0));
+                buf.writeVarInt(slotIndex);
+
+                syncManager.callSyncedAction("ae_config_clear", buf);
                 return Result.SUCCESS;
             } else if (button == 0) {
                 GenericStack config = configSyncHandler != null ? configSyncHandler.getClientConfig(slotIndex) : null;
-                boolean holdingItem = !Minecraft.getInstance().player.containerMenu.getCarried().isEmpty();
+                boolean holdingItem = !Objects.requireNonNull(Minecraft.getInstance().player).containerMenu.getCarried()
+                        .isEmpty();
                 if (config != null && !holdingItem) {
                     openAmountEditor(slotIndex);
                 } else {
-                    syncManager.callSyncedAction("ae_config_set", buf -> buf.writeVarInt(slotIndex));
+                    var buf = SidedAccessHelper.makeRegistryByteBuf(Unpooled.buffer(0));
+                    buf.writeVarInt(slotIndex);
+                    syncManager.callSyncedAction("ae_config_set", buf);
                 }
                 return Result.SUCCESS;
             }
         }
 
         if (overStock && !isStocking() && !isFluid && button == 0 && syncManager != null) {
-            syncManager.callSyncedAction("ae_stock_pickup", buf -> buf.writeVarInt(slotIndex));
+            var buf = SidedAccessHelper.makeRegistryByteBuf(Unpooled.buffer(0));
+            buf.writeVarInt(slotIndex);
+            syncManager.callSyncedAction("ae_stock_pickup", buf);
             return Result.SUCCESS;
         }
 
@@ -294,10 +307,10 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
                 (scrollY > 0 ? current + 1L : current - 1L);
 
         if (next > 0 && next < Integer.MAX_VALUE + 1L && syncManager != null) {
-            syncManager.callSyncedAction("ae_config_amount", buf -> {
-                buf.writeVarInt(slotIndex);
-                buf.writeVarLong(next);
-            });
+            var buf = SidedAccessHelper.makeRegistryByteBuf(Unpooled.buffer(0));
+            buf.writeVarInt(slotIndex);
+            buf.writeVarLong(next);
+            syncManager.callSyncedAction("ae_config_amount", buf);
             return true;
         }
         return false;
@@ -314,19 +327,19 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
         if (isFluid) {
             FluidUtil.getFluidContained(ingredient).ifPresent(fluid -> {
                 if (!fluid.isEmpty()) {
-                    syncManager.callSyncedAction("ae_config_set_ghost", buf -> {
-                        buf.writeVarInt(findTargetSlot());
-                        buf.writeBoolean(true);
-                        FluidStack.STREAM_CODEC.encode(buf, fluid);
-                    });
+                    var buf = SidedAccessHelper.makeRegistryByteBuf(Unpooled.buffer(0));
+                    buf.writeVarInt(findTargetSlot());
+                    buf.writeBoolean(true);
+                    FluidStack.STREAM_CODEC.encode(buf, fluid);
+                    syncManager.callSyncedAction("ae_config_set_ghost", buf);
                 }
             });
         } else {
-            syncManager.callSyncedAction("ae_config_set_ghost", buf -> {
-                buf.writeVarInt(slot);
-                buf.writeBoolean(false);
-                ItemStack.STREAM_CODEC.encode(buf, ingredient);
-            });
+            var buf = SidedAccessHelper.makeRegistryByteBuf(Unpooled.buffer(0));
+            buf.writeVarInt(slot);
+            buf.writeBoolean(false);
+            ItemStack.STREAM_CODEC.encode(buf, ingredient);
+            syncManager.callSyncedAction("ae_config_set_ghost", buf);
         }
     }
 
@@ -341,11 +354,13 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
             if (fluidStack.getAmount() <= 0) fluidStack.setAmount(1000);
             int slot = findTargetSlot();
             if (slot < 0) return false;
-            syncManager.callSyncedAction("ae_config_set_ghost", buf -> {
-                buf.writeVarInt(slot);
-                buf.writeBoolean(true);
-                FluidStack.STREAM_CODEC.encode(buf, fluidStack);
-            });
+
+            var buf = SidedAccessHelper.makeRegistryByteBuf(Unpooled.buffer(0));
+            buf.writeVarInt(slot);
+            buf.writeBoolean(true);
+            FluidStack.STREAM_CODEC.encode(buf, fluidStack);
+
+            syncManager.callSyncedAction("ae_config_set_ghost", buf);
             return true;
         } else {
             ItemStack itemStack = EmiStackConverter.ITEM.convertFrom(emiStack);
@@ -353,11 +368,13 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
             if (itemStack.getCount() <= 0) itemStack.setCount(1);
             int slot = findTargetSlot();
             if (slot < 0) return false;
-            syncManager.callSyncedAction("ae_config_set_ghost", buf -> {
-                buf.writeVarInt(slot);
-                buf.writeBoolean(false);
-                ItemStack.STREAM_CODEC.encode(buf, itemStack);
-            });
+
+            var buf = SidedAccessHelper.makeRegistryByteBuf(Unpooled.buffer(0));
+            buf.writeVarInt(slot);
+            buf.writeBoolean(false);
+            ItemStack.STREAM_CODEC.encode(buf, itemStack);
+
+            syncManager.callSyncedAction("ae_config_set_ghost", buf);
             return true;
         }
     }
