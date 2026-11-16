@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
 import com.gregtechceu.gtceu.client.model.item.CustomItemRendererWrapperModel;
+import com.gregtechceu.gtceu.client.renderer.item.LampItemRenderer;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
@@ -37,6 +38,7 @@ import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -64,6 +66,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.ModelProvider;
 import net.neoforged.neoforge.common.Tags;
@@ -1308,6 +1311,13 @@ public class GTBlocks {
                             .tag(BlockTags.MINEABLE_WITH_PICKAXE)
                             .blockstate(GTModels.lampModel(dyeColor, true))
                             .item(LampBlockItem::new)
+                            .clientExtension(() -> () -> new IClientItemExtensions() {
+
+                                @Override
+                                public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                                    return LampItemRenderer.getInstance();
+                                }
+                            })
                             .model((ctx, prov) -> prov.blockItem(ctx::get, "_on")
                                     .customLoader(CustomItemRendererWrapperModel.Builder::begin).end())
                             .build()

@@ -695,7 +695,7 @@ public class GTMultiblockTextUtil {
                             .childPadding(2)
                             .child(new FluidDrawable(stack).asWidget()
                                     .size(16)
-                                    .tooltip(r -> r.add(stack.getDisplayName())))
+                                    .tooltip(r -> r.add(stack.getHoverName())))
                             .child(
                                     Text.lang(
                                             key, stack.getHoverName(), displaycount,
@@ -709,7 +709,7 @@ public class GTMultiblockTextUtil {
                             .childPadding(2)
                             .child(new FluidDrawable(stack).asWidget()
                                     .size(16)
-                                    .tooltip(r -> r.add(stack.getDisplayName())))
+                                    .tooltip(r -> r.add(stack.getHoverName())))
                             .child(
                                     Text.lang(key, stack.getHoverName(), displaycount,
                                             FormattingUtil.formatNumber2Places(amountD / maxDurationSec))

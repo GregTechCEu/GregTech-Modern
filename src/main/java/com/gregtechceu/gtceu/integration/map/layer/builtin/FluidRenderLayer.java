@@ -22,7 +22,7 @@ public class FluidRenderLayer extends MapRenderLayer {
     }
 
     public static Component getName(ProspectorMode.FluidInfo entry) {
-        return entry.asStack().getDisplayName();
+        return entry.asStack().getHoverName();
     }
 
     public static List<Component> getTooltip(Component name, ProspectorMode.FluidInfo entry) {

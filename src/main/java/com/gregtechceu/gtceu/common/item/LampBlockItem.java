@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.client.renderer.item.LampItemRenderer;
 import com.gregtechceu.gtceu.common.block.LampBlock;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -13,14 +11,11 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -53,17 +48,6 @@ public class LampBlockItem extends BlockItem {
         for (int i = 0; i < 8; ++i) {
             items.add(this.getBlock().getStackFromIndex(i));
         }
-    }
-
-    @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(new IClientItemExtensions() {
-
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return LampItemRenderer.getInstance();
-            }
-        });
     }
 
     public record LampData(boolean inverted, boolean bloom, boolean lit) {

@@ -83,6 +83,6 @@ public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> im
 
     @Override
     public @Nullable MachineDefinition createObject() {
-        return null;
+        return tieredBuilder.createObject();
     }
 }
