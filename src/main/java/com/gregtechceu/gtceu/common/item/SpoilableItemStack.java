@@ -50,7 +50,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     }
 
     public long getCreationTick() {
-        if (stack.getTag() == null) return 0;
+        if (!stack.hasTag()) return 0;
         return stack.getOrCreateTag().getLong(CREATION_TICK_KEY);
     }
 
@@ -59,12 +59,12 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     }
 
     public boolean isFrozen() {
-        if (stack.getTag() == null) return false;
+        if (!stack.hasTag()) return false;
         return stack.getOrCreateTag().getBoolean(FROZEN_KEY);
     }
 
     public long getFrozenTicks() {
-        if (stack.getTag() == null) return 0;
+        if (!stack.hasTag()) return 0;
         return stack.getOrCreateTag().getLong(FROZEN_TICKS_KEY);
     }
 
@@ -202,32 +202,10 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
         return getCreationTick() == 0 ? 1 : (float) getTicksUntilSpoiled() / getSpoilTicks();
     }
 
-    /**
-     * This method averages the spoil progress of the two stacks (or, more
-     * accurately, their {@link ISpoilableItem#getCreationTick()}).
-     *
-     * @implNote This implementation may lead to spoil progress averaging in situations other
-     *           than stack merging, though I don't think this will lead to any big user-facing bugs.
-     */
-    public void prepareForComparisonWith(SpoilableItemStack spoilable) {
-        if (isFrozen() || spoilable.isFrozen()) {
-            return;
-        }
-        long tick1 = getCreationTick();
-        long tick2 = spoilable.getCreationTick();
-        if (tick1 != tick2) {
-            long average;
-            if (!stack.isEmpty() && !spoilable.stack.isEmpty()) {
-                average = (tick1 * stack.getCount() + tick2 * spoilable.stack.getCount()) /
-                        (stack.getCount() + spoilable.stack.getCount());
-            } else average = tick1;
-            this.setCreationTick(average);
-            spoilable.setCreationTick(average);
-        }
-    }
+    private final LazyOptional<ISpoilableItem> capability = LazyOptional.of(() -> this);
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-        return GTCapability.CAPABILITY_SPOILABLE_ITEM.orEmpty(cap, LazyOptional.of(() -> this));
+        return GTCapability.CAPABILITY_SPOILABLE_ITEM.orEmpty(cap, capability);
     }
 }

@@ -35,7 +35,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
@@ -135,8 +134,9 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
             }
 
             for (int slot = 0; slot < storage.getSlots(); ++slot) {
-                ItemStack current = visited[slot] != null ? visited[slot] : storage.getStackInSlot(slot);
-                int count = Objects.requireNonNull(current).getCount();
+                var cached = visited[slot];
+                ItemStack current = cached != null ? cached : storage.getStackInSlot(slot);
+                int count = current.getCount();
 
                 if (io == IO.IN) {
                     if (current.isEmpty()) continue;
@@ -177,8 +177,8 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
                     if (recipe != null) recipe.mutateOutput(output);
                     // Only try this slot if not visited or if visited with the same type of item
-                    if (visited[slot] == null ||
-                            ItemStack.isSameItemSameTags(Objects.requireNonNull(visited[slot]), output)) {
+                    if (cached == null ||
+                            ItemStack.isSameItemSameTags(cached, output)) {
                         if (count < output.getMaxStackSize() && count < storage.getSlotLimit(slot)) {
                             var remainder = recipe == null ? null :
                                     getActioned(storage, slot, recipe.ingredientActions);

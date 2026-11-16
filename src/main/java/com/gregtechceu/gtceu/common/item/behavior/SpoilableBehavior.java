@@ -20,7 +20,6 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.ToLongFunction;
 
 /**
  * This object holds all spoilage-related data for specific item types,
@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  */
 public class SpoilableBehavior {
 
-    private final Function<ItemStack, Long> ticks;
+    private final ToLongFunction<ItemStack> ticks;
     private final SpoilResultProvider spoilResult;
     private final Function<ItemStack, Component> spoilsIntoTooltip;
     private final List<ItemLike> attachedTo = new ArrayList<>();
@@ -53,7 +53,7 @@ public class SpoilableBehavior {
         return new Builder();
     }
 
-    private SpoilableBehavior(Function<ItemStack, Long> ticks, SpoilResultProvider spoilResult,
+    private SpoilableBehavior(ToLongFunction<ItemStack> ticks, SpoilResultProvider spoilResult,
                               Function<ItemStack, Component> spoilsIntoTooltip) {
         this.ticks = ticks;
         this.spoilResult = spoilResult;
@@ -95,7 +95,7 @@ public class SpoilableBehavior {
 
         @Override
         public long getSpoilTicks() {
-            return ticks.apply(getStack());
+            return ticks.applyAsLong(getStack());
         }
 
         @Override
@@ -112,12 +112,12 @@ public class SpoilableBehavior {
     @FunctionalInterface
     public interface SpoilResultProvider {
 
-        ItemStack getSpoilResult(@NotNull ItemStack stack, @NotNull SpoilContext spoilContext, boolean simulate);
+        ItemStack getSpoilResult(ItemStack stack, SpoilContext spoilContext, boolean simulate);
     }
 
     public static class Builder {
 
-        private @Nullable Function<ItemStack, Long> ticks = null;
+        private @Nullable ToLongFunction<ItemStack> ticks = null;
         private @Nullable SpoilResultProvider result = null;
         private @Nullable Function<ItemStack, Component> tooltip = null;
 
@@ -134,7 +134,7 @@ public class SpoilableBehavior {
             return new SpoilableBehavior(ticks, result, tooltip);
         }
 
-        public Builder ticks(Function<ItemStack, Long> ticks) {
+        public Builder ticks(ToLongFunction<ItemStack> ticks) {
             this.ticks = ticks;
             return this;
         }

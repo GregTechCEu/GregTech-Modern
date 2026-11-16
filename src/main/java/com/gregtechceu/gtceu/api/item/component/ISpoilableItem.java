@@ -53,6 +53,11 @@ import java.util.Optional;
 public interface ISpoilableItem {
 
     /**
+     * Get the item stack this capability is attached to.
+     */
+    ItemStack getStack();
+
+    /**
      * Checks if this stack is supposed to already be spoiled, and spoils it into the
      * {@link ISpoilableItem#spoilResult}
      * 
@@ -152,4 +157,28 @@ public interface ISpoilableItem {
     default Optional<Boolean> isEqualTo(ItemStack other) {
         return Optional.empty();
     };
+
+    /**
+     * This method averages the spoil progress of the two stacks (or, more
+     * accurately, their {@link ISpoilableItem#getCreationTick()}).
+     *
+     * @implNote This implementation may lead to spoil progress averaging in situations other
+     *           than stack merging, though I don't think this will lead to any big user-facing bugs.
+     */
+    default void prepareForComparisonWith(ISpoilableItem spoilable) {
+        if (isFrozen() || spoilable.isFrozen()) {
+            return;
+        }
+        long tick1 = getCreationTick();
+        long tick2 = spoilable.getCreationTick();
+        if (tick1 != tick2) {
+            long average;
+            if (!getStack().isEmpty() && !spoilable.getStack().isEmpty()) {
+                average = (tick1 * getStack().getCount() + tick2 * spoilable.getStack().getCount()) /
+                        (getStack().getCount() + spoilable.getStack().getCount());
+            } else average = tick1;
+            this.setCreationTick(average);
+            spoilable.setCreationTick(average);
+        }
+    }
 }

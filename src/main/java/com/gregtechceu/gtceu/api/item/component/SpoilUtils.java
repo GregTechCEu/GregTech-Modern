@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.item.component;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,8 +25,8 @@ public class SpoilUtils {
             return;
         var cap1 = GTCapabilityHelper.getSpoilable(stack);
         var cap2 = GTCapabilityHelper.getSpoilable(other);
-        if (cap1 instanceof SpoilableItemStack spoilable1 && cap2 instanceof SpoilableItemStack spoilable2) {
-            spoilable1.prepareForComparisonWith(spoilable2);
+        if (cap1 != null && cap2 != null) {
+            cap1.prepareForComparisonWith(cap2);
         }
     }
 
@@ -65,12 +64,14 @@ public class SpoilUtils {
     }
 
     public static void updatePlayer(Player player) {
-        var inventory = player.getInventory();
-        for (int i = 0; i < inventory.getContainerSize(); i++) {
-            ItemStack stack = inventory.getItem(i);
+        var handler = player.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().orElse(null);
+        if (handler == null) return;
+        for (int slot = 0; slot < handler.getSlots(); slot++) {
+            var stack = handler.getStackInSlot(slot);
             if (stack.isEmpty()) continue;
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
-            if (spoilable != null) spoilable.updateFreshness(new SpoilContext(player, i), true);
+            if (spoilable != null) spoilable
+                    .updateFreshness(new SpoilContext(player.level(), player.blockPosition(), handler, slot), true);
         }
     }
 
