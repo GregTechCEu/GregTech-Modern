@@ -50,29 +50,31 @@ public class AEConfigSyncHandler extends SyncHandler<AEConfigSyncHandler> {
 
     @Override
     public void detectAndSendChanges(boolean init) {
+        boolean[] changed = new boolean[slotCount];
         int changedCount = 0;
         for (int i = 0; i < slotCount; i++) {
             IConfigurableSlot slot = slotList.getConfigurableSlot(i);
-            if (!areEqual(slot.getConfig(), cachedConfig[i]) || !areEqual(slot.getStock(), cachedStock[i])) {
+            GenericStack newConfig = slot.getConfig();
+            GenericStack newStock = slot.getStock();
+            if (init || !areEqual(newConfig, cachedConfig[i]) || !areEqual(newStock, cachedStock[i])) {
+                changed[i] = true;
                 changedCount++;
+                cachedConfig[i] = copy(newConfig);
+                cachedStock[i] = copy(newStock);
             }
         }
 
         if (!init && changedCount == 0) return;
 
+        // the writer can run more than once and off the server thread, so it must only write precomputed values
+        GenericStack[] config = cachedConfig.clone();
+        GenericStack[] stock = cachedStock.clone();
         syncToClient(SYNC_SLOTS, buf -> {
             for (int i = 0; i < slotCount; i++) {
-                IConfigurableSlot slot = slotList.getConfigurableSlot(i);
-                GenericStack newConfig = slot.getConfig();
-                GenericStack newStock = slot.getStock();
-                boolean changed = init || !areEqual(newConfig, cachedConfig[i]) ||
-                        !areEqual(newStock, cachedStock[i]);
-                buf.writeBoolean(changed);
-                if (changed) {
-                    writeStack(buf, newConfig);
-                    writeStack(buf, newStock);
-                    cachedConfig[i] = copy(newConfig);
-                    cachedStock[i] = copy(newStock);
+                buf.writeBoolean(changed[i]);
+                if (changed[i]) {
+                    writeStack(buf, config[i]);
+                    writeStack(buf, stock[i]);
                 }
             }
         });
