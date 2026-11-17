@@ -173,15 +173,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
         int sampleOffsetY = random.nextInt(16);
         int sampleOffsetZ = random.nextInt(16);
 
-        NoiseSettings _noiseSettings;
-        if (level.getLevel().getChunkSource().getGenerator() instanceof NoiseBasedChunkGenerator noiseGenerator) {
-            _noiseSettings = noiseGenerator.generatorSettings().value().noiseSettings();
-        } else {
-            // hardcode the default overworld noise cell height if we're in a weird dimension that doesn't use a
-            // noise-based chunk generator.
-            _noiseSettings = DEFAULT_NOISE_SETTINGS;
-        }
-        final NoiseSettings noiseSettings = _noiseSettings.clampToHeightAccessor(level);
+        final NoiseSettings noiseSettings = DEFAULT_NOISE_SETTINGS.clampToHeightAccessor(level);
 
         int x0 = origin.getX() - radius, x1 = origin.getX() + radius;
         int z0 = origin.getZ() - radius, z1 = origin.getY() + radius;
