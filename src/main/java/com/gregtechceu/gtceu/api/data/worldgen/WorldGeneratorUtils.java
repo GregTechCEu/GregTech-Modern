@@ -11,16 +11,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -79,31 +76,6 @@ public class WorldGeneratorUtils {
 
     public static Map<ChunkPos, List<BlockPos>> groupByChunks(Collection<BlockPos> positions) {
         return positions.stream().collect(Collectors.groupingBy(ChunkPos::new));
-    }
-
-    public static Collection<ChunkPos> getChunks(Collection<BlockPos> positions) {
-        return positions.stream()
-                .collect(Collectors.groupingBy(ChunkPos::new))
-                .keySet();
-    }
-
-    public static void generateChunks(WorldGenLevel level, ChunkStatus requiredStatus, Collection<ChunkPos> chunks) {
-        List<ChunkPos> previouslyUnloadedChunks = new ObjectArrayList<>();
-        var chunkSource = level.getChunkSource();
-
-        for (ChunkPos chunkPos : chunks) {
-            var chunk = chunkSource.getChunk(chunkPos.x, chunkPos.z, false);
-
-            if (chunk == null) {
-                previouslyUnloadedChunks.add(chunkPos);
-            }
-
-            chunkSource.getChunk(chunkPos.x, chunkPos.z, requiredStatus, true);
-        }
-
-        if (level instanceof ServerLevel serverLevel) {
-            previouslyUnloadedChunks.forEach(chunk -> serverLevel.unload(serverLevel.getChunk(chunk.x, chunk.z)));
-        }
     }
 
     public static Optional<BlockPos> findBlockPos(BlockPos initialPos, Predicate<BlockPos> predicate,
