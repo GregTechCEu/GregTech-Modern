@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
@@ -12,8 +13,7 @@ import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.base.Preconditions;
-import dev.latvian.mods.kubejs.client.LangKubeEvent;
-import dev.latvian.mods.kubejs.generator.KubeAssetGenerator;
+import dev.latvian.mods.kubejs.registry.AdditionalObjectRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Setter;
@@ -26,10 +26,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 @Accessors(fluent = true, chain = true)
-public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
-                                     implements IMachineBuilderKJS {
-
-    private final MachineBuilderJS<?>[] builders = new MachineBuilderJS[TIER_COUNT];
+public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition> {
 
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
@@ -62,29 +59,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
     }
 
     @Override
-    public void generateMachineModels() {
-        for (int tier : this.tiers) {
-            this.builders[tier].generateMachineModels();
-        }
-    }
-
-    @Override
-    public void generateAssets(KubeAssetGenerator generator) {
-        for (int tier : this.tiers) {
-            this.builders[tier].generateAssets(generator);
-        }
-    }
-
-    @Override
-    public void generateLang(LangKubeEvent lang) {
-        super.generateLang(lang);
-        for (int tier : this.tiers) {
-            this.builders[tier].generateLang(lang);
-        }
-    }
-
-    @Override
-    public @Nullable MachineDefinition createObject() {
+    public void createAdditionalObjects(AdditionalObjectRegistry registry) {
         Preconditions.checkNotNull(tiers, "Tiers can't be null!");
         Preconditions.checkArgument(tiers.length > 0, "tiers must have at least one tier!");
         Preconditions.checkNotNull(machine, "You must set a machine creation function! " +
@@ -126,8 +101,12 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
                 internalBuilder.ui(GTSingleblockMachinePanels.GENERAL_MACHINE);
             }
 
-            this.builders[tier] = builder;
+            registry.add(GTRegistries.Keys.MACHINE, builder);
         }
+    }
+
+    @Override
+    public @Nullable MachineDefinition createObject() {
         return null;
     }
 

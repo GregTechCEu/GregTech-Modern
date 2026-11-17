@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
@@ -37,7 +38,7 @@ import java.util.Objects;
 import java.util.function.*;
 
 @SuppressWarnings("unused")
-public class MachineBuilderJS<SELF extends MachineBuilderJS<SELF>> extends BuilderBase<MachineDefinition>
+public class MachineBuilderJS<S extends MachineBuilderJS<S>> extends BuilderBase<MachineDefinition>
                              implements IMachineBuilderKJS {
 
     @HideFromJS
@@ -57,310 +58,320 @@ public class MachineBuilderJS<SELF extends MachineBuilderJS<SELF>> extends Build
     }
 
     @SuppressWarnings("unchecked")
-    protected SELF getThis() {
-        return (SELF) this;
+    protected S getThis() {
+        return (S) this;
     }
 
-    public SELF shape(VoxelShape shape) {
+    public S shape(VoxelShape shape) {
         internal.shape(shape);
         return getThis();
     }
 
-    public SELF rotationState(RotationState rotationState) {
+    public S rotationState(RotationState rotationState) {
         internal.rotationState(rotationState);
         return getThis();
     }
 
-    public SELF allowExtendedFacing(boolean allowExtendedFacing) {
+    public S allowExtendedFacing(boolean allowExtendedFacing) {
         internal.allowExtendedFacing(allowExtendedFacing);
         return getThis();
     }
 
-    public SELF hasBER(boolean hasBER) {
+    public S hasBER(boolean hasBER) {
         internal.hasBER(hasBER);
         return getThis();
     }
 
-    public SELF tier(int tier) {
+    public S tier(int tier) {
         internal.tier(tier);
         return getThis();
     }
 
-    public SELF recipeOutputLimits(Reference2IntMap<RecipeCapability<?>> recipeOutputLimits) {
+    public S recipeOutputLimits(Reference2IntMap<RecipeCapability<?>> recipeOutputLimits) {
         internal.recipeOutputLimits(recipeOutputLimits);
         return getThis();
     }
 
-    public SELF paintingColor(IntSupplier paintingColor) {
+    public S paintingColor(IntSupplier paintingColor) {
         internal.paintingColor(paintingColor);
         return getThis();
     }
 
-    public SELF tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
+    public S tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
         internal.tooltipBuilder(tooltipBuilder);
         return getThis();
     }
 
-    public SELF beforeWorking(BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking) {
+    public S beforeWorking(BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking) {
         internal.beforeWorking(beforeWorking);
         return getThis();
     }
 
-    public SELF onWorking(Predicate<IRecipeLogicMachine> onWorking) {
+    public S onWorking(Predicate<IRecipeLogicMachine> onWorking) {
         internal.onWorking(onWorking);
         return getThis();
     }
 
-    public SELF onWaiting(Consumer<IRecipeLogicMachine> onWaiting) {
+    public S onWaiting(Consumer<IRecipeLogicMachine> onWaiting) {
         internal.onWaiting(onWaiting);
         return getThis();
     }
 
-    public SELF afterWorking(Consumer<IRecipeLogicMachine> afterWorking) {
+    public S afterWorking(Consumer<IRecipeLogicMachine> afterWorking) {
         internal.afterWorking(afterWorking);
         return getThis();
     }
 
-    public SELF regressWhenWaiting(boolean regressWhenWaiting) {
+    public S regressWhenWaiting(boolean regressWhenWaiting) {
         internal.regressWhenWaiting(regressWhenWaiting);
         return getThis();
     }
 
-    public SELF allowCoverOnFront(boolean allowCoverOnFront) {
+    public S allowCoverOnFront(boolean allowCoverOnFront) {
         internal.allowCoverOnFront(allowCoverOnFront);
         return getThis();
     }
 
-    public SELF appearance(Supplier<BlockState> appearance) {
+    public S appearance(Supplier<BlockState> appearance) {
         internal.appearance(appearance);
         return getThis();
     }
 
-    public SELF defaultLang() {
+    public S defaultLang() {
         langValue = RegistrateLangProvider.toEnglishName(id.getPath());
         return getThis();
     }
 
-    public SELF lang(String name) {
+    public S lang(String name) {
         return langValue(name);
     }
 
-    public SELF langValue(String langValue) {
+    public S langValue(String langValue) {
         this.langValue = langValue;
         return getThis();
     }
 
-    public SELF recipeType(GTResourceLocation type) {
+    public S recipeType(GTResourceLocation type) {
         internal.recipeType(DeferredHolder.create(Registries.RECIPE_TYPE, type.wrapped()));
         return getThis();
     }
 
     @SuppressWarnings("unchecked")
-    public final SELF recipeTypes(GTResourceLocation... types) {
+    public final S recipeTypes(GTResourceLocation... types) {
         internal.recipeTypes(Arrays.stream(types)
                 .map(v -> DeferredHolder.create(Registries.RECIPE_TYPE, v.wrapped()))
                 .toArray(DeferredHolder[]::new));
         return getThis();
     }
 
-    public SELF simpleModel(ResourceLocation modelName) {
+    public S model(MachineBuilder.ModelInitializer model) {
+        internal.model(model);
+        return getThis();
+    }
+
+    public S simpleModel(ResourceLocation modelName) {
         internal.simpleModel(modelName);
         return getThis();
     }
 
-    public SELF defaultModel() {
+    public S defaultModel() {
         internal.defaultModel();
         return getThis();
     }
 
-    public SELF tieredHullModel(ResourceLocation model) {
+    public S tieredHullModel(ResourceLocation model) {
         internal.tieredHullModel(model);
         return getThis();
     }
 
-    public SELF overlayTieredHullModel(String name) {
+    public S overlayTieredHullModel(String name) {
         internal.overlayTieredHullModel(name);
         return getThis();
     }
 
-    public SELF overlayTieredHullModel(ResourceLocation overlayModel) {
+    public S overlayTieredHullModel(ResourceLocation overlayModel) {
         internal.overlayTieredHullModel(overlayModel);
         return getThis();
     }
 
-    public SELF colorOverlayTieredHullModel(String overlay) {
+    public S colorOverlayTieredHullModel(String overlay) {
         internal.colorOverlayTieredHullModel(overlay);
         return getThis();
     }
 
-    public SELF colorOverlayTieredHullModel(String overlay,
-                                            @Nullable String pipeOverlay,
-                                            @Nullable String emissiveOverlay) {
+    public S colorOverlayTieredHullModel(String overlay,
+                                         @Nullable String pipeOverlay,
+                                         @Nullable String emissiveOverlay) {
         internal.colorOverlayTieredHullModel(overlay, pipeOverlay, emissiveOverlay);
         return getThis();
     }
 
-    public SELF colorOverlayTieredHullModel(ResourceLocation overlay) {
+    public S colorOverlayTieredHullModel(ResourceLocation overlay) {
         internal.colorOverlayTieredHullModel(overlay);
         return getThis();
     }
 
-    public SELF colorOverlayTieredHullModel(ResourceLocation overlay,
-                                            @Nullable ResourceLocation pipeOverlay,
-                                            @Nullable ResourceLocation emissiveOverlay) {
+    public S colorOverlayTieredHullModel(ResourceLocation overlay,
+                                         @Nullable ResourceLocation pipeOverlay,
+                                         @Nullable ResourceLocation emissiveOverlay) {
         internal.colorOverlayTieredHullModel(overlay, pipeOverlay, emissiveOverlay);
         return getThis();
     }
 
-    public SELF overlaySteamHullModel(String name) {
+    public S overlaySteamHullModel(String name) {
         internal.overlaySteamHullModel(name);
         return getThis();
     }
 
-    public SELF overlaySteamHullModel(ResourceLocation overlayModel) {
+    public S overlaySteamHullModel(ResourceLocation overlayModel) {
         internal.overlaySteamHullModel(overlayModel);
         return getThis();
     }
 
-    public SELF colorOverlaySteamHullModel(String overlay) {
+    public S colorOverlaySteamHullModel(String overlay) {
         return colorOverlaySteamHullModel(overlay, (String) null, null);
     }
 
-    public SELF colorOverlaySteamHullModel(String overlay,
-                                           @Nullable String pipeOverlay,
-                                           @Nullable String emissiveOverlay) {
+    public S colorOverlaySteamHullModel(String overlay,
+                                        @Nullable String pipeOverlay,
+                                        @Nullable String emissiveOverlay) {
         internal.colorOverlaySteamHullModel(overlay, pipeOverlay, emissiveOverlay);
         return getThis();
     }
 
-    public SELF colorOverlaySteamHullModel(String overlay,
-                                           @Nullable ResourceLocation pipeOverlay,
-                                           @Nullable String emissiveOverlay) {
+    public S colorOverlaySteamHullModel(String overlay,
+                                        @Nullable ResourceLocation pipeOverlay,
+                                        @Nullable String emissiveOverlay) {
         internal.colorOverlaySteamHullModel(overlay, pipeOverlay, emissiveOverlay);
         return getThis();
     }
 
-    public SELF colorOverlaySteamHullModel(ResourceLocation overlay) {
+    public S colorOverlaySteamHullModel(ResourceLocation overlay) {
         return colorOverlaySteamHullModel(overlay, null, null);
     }
 
-    public SELF colorOverlaySteamHullModel(ResourceLocation overlay,
-                                           @Nullable ResourceLocation pipeOverlay,
-                                           @Nullable ResourceLocation emissiveOverlay) {
+    public S colorOverlaySteamHullModel(ResourceLocation overlay,
+                                        @Nullable ResourceLocation pipeOverlay,
+                                        @Nullable ResourceLocation emissiveOverlay) {
         internal.colorOverlaySteamHullModel(overlay, pipeOverlay, emissiveOverlay);
         return getThis();
     }
 
-    public SELF workableTieredHullModel(ResourceLocation workableModel) {
+    public S workableTieredHullModel(ResourceLocation workableModel) {
         internal.workableTieredHullModel(workableModel);
         return getThis();
     }
 
-    public SELF simpleGeneratorModel(ResourceLocation workableModel) {
+    public S simpleGeneratorModel(ResourceLocation workableModel) {
         internal.simpleGeneratorModel(workableModel);
         return getThis();
     }
 
-    public SELF workableSteamHullModel(boolean isHighPressure, ResourceLocation workableModel) {
+    public S workableSteamHullModel(boolean isHighPressure, ResourceLocation workableModel) {
         internal.workableSteamHullModel(isHighPressure, workableModel);
         return getThis();
     }
 
-    public SELF workableCasingModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
+    public S workableCasingModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
         internal.workableCasingModel(baseCasing, workableModel);
         return getThis();
     }
 
-    public SELF sidedOverlayCasingModel(ResourceLocation baseCasing,
-                                        ResourceLocation workableModel) {
+    public S sidedOverlayCasingModel(ResourceLocation baseCasing,
+                                     ResourceLocation workableModel) {
         internal.sidedOverlayCasingModel(baseCasing, workableModel);
         return getThis();
     }
 
-    public SELF sidedWorkableCasingModel(ResourceLocation baseCasing,
-                                         ResourceLocation workableModel) {
+    public S sidedWorkableCasingModel(ResourceLocation baseCasing,
+                                      ResourceLocation workableModel) {
         internal.sidedWorkableCasingModel(baseCasing, workableModel);
         return getThis();
     }
 
-    public SELF appearanceBlock(Supplier<? extends Block> block) {
+    public S appearanceBlock(Supplier<? extends Block> block) {
         internal.appearanceBlock(block);
         return getThis();
     }
 
-    public SELF tooltips(List<? extends Component> components) {
+    public S tooltips(List<? extends Component> components) {
         internal.tooltips(components);
         return getThis();
     }
 
-    public SELF conditionalTooltip(Component component, BooleanSupplier condition) {
+    public S conditionalTooltip(Component component, BooleanSupplier condition) {
         return conditionalTooltip(component, condition.getAsBoolean());
     }
 
-    public SELF conditionalTooltip(Component component, boolean condition) {
+    public S conditionalTooltip(Component component, boolean condition) {
         internal.conditionalTooltip(component, condition);
         return getThis();
     }
 
-    public SELF abilities(PartAbility... abilities) {
+    public S abilities(PartAbility... abilities) {
         internal.abilities(abilities);
         return getThis();
     }
 
-    public SELF themeId(Function<Integer, String> themeId) {
+    public S themeId(Function<Integer, String> themeId) {
         internal.themeId(themeId);
         return getThis();
     }
 
-    public <T extends Comparable<T>> SELF modelProperty(Property<T> property,
-                                                        @Nullable T defaultValue) {
+    public <T extends Comparable<T>> S modelProperty(Property<T> property,
+                                                     @Nullable T defaultValue) {
         internal.modelProperty(property, defaultValue);
         return getThis();
     }
 
     @Tolerate
-    public SELF modelProperties(Map<Property<?>, ? extends Comparable<?>> modelProperties) {
+    public S modelProperties(Map<Property<?>, ? extends Comparable<?>> modelProperties) {
         internal.modelProperties(modelProperties);
         return getThis();
     }
 
-    public SELF removeModelProperty(Property<?> property) {
+    public S removeModelProperty(Property<?> property) {
         internal.removeModelProperty(property);
         return getThis();
     }
 
-    public SELF clearModelProperties() {
+    public S clearModelProperties() {
         internal.clearModelProperties();
         return getThis();
     }
 
-    public SELF addRecipeModifier(RecipeModifier recipeModifier) {
+    public S addRecipeModifier(RecipeModifier recipeModifier) {
         internal.addRecipeModifier(recipeModifier);
         return getThis();
     }
 
-    public SELF recipeModifier(RecipeModifier recipeModifier) {
+    public S recipeModifier(RecipeModifier recipeModifier) {
         internal.recipeModifier(recipeModifier);
         return getThis();
     }
 
-    public SELF alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
+    public S alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
         internal.alwaysTryModifyRecipe(alwaysTryModifyRecipe);
         return getThis();
     }
 
-    public SELF recipeModifiers(RecipeModifier... recipeModifiers) {
+    public S recipeModifiers(RecipeModifier... recipeModifiers) {
         internal.recipeModifiers(recipeModifiers);
         return getThis();
     }
 
-    public SELF noRecipeModifier() {
+    public S noRecipeModifier() {
         internal.noRecipeModifier();
         return getThis();
     }
 
-    public SELF addOutputLimit(RecipeCapability<?> capability, int limit) {
+    public S addOutputLimit(RecipeCapability<?> capability, int limit) {
         internal.addOutputLimit(capability, limit);
+        return getThis();
+    }
+
+    public S ui(PanelFactory factory) {
+        internal.ui(factory);
         return getThis();
     }
 
@@ -380,6 +391,11 @@ public class MachineBuilderJS<SELF extends MachineBuilderJS<SELF>> extends Build
         if (langValue != null) {
             lang.add(id.getNamespace(), Objects.requireNonNull(entry).value().getDescriptionId(), langValue);
         }
+    }
+
+    @Override
+    public String getTranslationKeyGroup() {
+        return "block";
     }
 
     @Override

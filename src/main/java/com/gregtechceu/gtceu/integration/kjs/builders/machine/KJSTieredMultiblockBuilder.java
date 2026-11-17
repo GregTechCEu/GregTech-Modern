@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
@@ -10,8 +11,7 @@ import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.base.Preconditions;
-import dev.latvian.mods.kubejs.client.LangKubeEvent;
-import dev.latvian.mods.kubejs.generator.KubeAssetGenerator;
+import dev.latvian.mods.kubejs.registry.AdditionalObjectRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -20,10 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
 @Accessors(fluent = true, chain = true)
-public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition>
-                                        implements IMachineBuilderKJS {
-
-    private final MultiblockMachineBuilderJS[] builders = new MultiblockMachineBuilderJS[TIER_COUNT];
+public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition> {
 
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
@@ -37,40 +34,8 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
         this.dummyBuilder = true;
     }
 
-    public KJSTieredMultiblockBuilder(ResourceLocation id, TieredCreationFunction machine) {
-        super(id);
-        this.machine = machine;
-        this.dummyBuilder = true;
-    }
-
     @Override
-    public void generateMachineModels() {
-        for (int tier : this.tiers) {
-            this.builders[tier].generateMachineModels();
-        }
-    }
-
-    @Override
-    public void generateAssets(KubeAssetGenerator generator) {
-        for (int tier : this.tiers) {
-            this.builders[tier].generateAssets(generator);
-        }
-    }
-
-    @Override
-    public String getTranslationKeyGroup() {
-        return "block";
-    }
-
-    @Override
-    public void generateLang(LangKubeEvent lang) {
-        for (int tier : tiers) {
-            this.builders[tier].generateLang(lang);
-        }
-    }
-
-    @Override
-    public @Nullable MultiblockMachineDefinition createObject() {
+    public void createAdditionalObjects(AdditionalObjectRegistry registry) {
         Preconditions.checkNotNull(tiers, "Tiers can't be null!");
         Preconditions.checkArgument(tiers.length > 0, "tiers must have at least one tier!");
         Preconditions.checkNotNull(machine, "You must set a machine creation function! " +
@@ -92,9 +57,13 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
                     .tier(tier);
 
             this.definition.apply(tier, builder);
-            this.builders[tier] = builder;
+            registry.add(GTRegistries.Keys.MACHINE, builder);
 
         }
+    }
+
+    @Override
+    public @Nullable MultiblockMachineDefinition createObject() {
         return null;
     }
 
