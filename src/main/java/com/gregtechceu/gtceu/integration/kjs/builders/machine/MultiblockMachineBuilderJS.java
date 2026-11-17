@@ -1,25 +1,15 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.machine.*;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.*;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
 
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.state.BlockState;
 
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.value.sync.PanelSyncManager;
-import org.apache.commons.lang3.function.TriFunction;
-
-import java.util.Comparator;
-import java.util.List;
 import java.util.function.*;
 
 @SuppressWarnings("unused")
@@ -49,17 +39,17 @@ public class MultiblockMachineBuilderJS extends MachineBuilderJS<MultiblockMachi
         return getThis();
     }
 
-    public MultiblockMachineBuilderJS partAppearance(TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
+    public MultiblockMachineBuilderJS partAppearance(PartAppearanceProvider partAppearance) {
         getInternal().partAppearance(partAppearance);
         return getThis();
     }
 
-    public MultiblockMachineBuilderJS partSorter(Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter) {
+    public MultiblockMachineBuilderJS partSorter(PartSorter partSorter) {
         getInternal().partSorter(partSorter);
         return getThis();
     }
 
-    public MultiblockMachineBuilderJS additionalDisplay(BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay) {
+    public MultiblockMachineBuilderJS additionalDisplay(AdditionalDisplayWidgetProvider additionalDisplay) {
         getInternal().additionalDisplay(additionalDisplay);
         return getThis();
     }

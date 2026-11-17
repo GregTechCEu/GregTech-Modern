@@ -204,7 +204,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         widgets.add(turbinePowerDisplay);
         widgets.add(rotorDurabilityDisplay);
 
-        widgets.addAll(getDefinition().getAdditionalDisplay().apply(this, syncManager));
+        widgets.addAll(getDefinition().getAdditionalDisplay().getAdditionalWidgets(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addTotalRunsLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addOutputLines(this, syncManager));
         widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));

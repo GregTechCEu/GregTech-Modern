@@ -3,24 +3,22 @@ package com.gregtechceu.gtceu.api.registry.registrate.builder;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.multiblock.AdditionalDisplayWidgetProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAppearanceProvider;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartSorter;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.state.BlockState;
 
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.value.sync.PanelSyncManager;
 import com.tterrag.registrate.builders.BuilderCallback;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
-import org.apache.commons.lang3.function.TriFunction;
 import org.jspecify.annotations.NonNull;
 
 import java.util.*;
@@ -61,17 +59,17 @@ public class MultiblockMachineBuilder<MACHINE extends MultiblockControllerMachin
         return getThis();
     }
 
-    public MultiblockMachineBuilder<MACHINE> partSorter(Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter) {
+    public MultiblockMachineBuilder<MACHINE> partSorter(PartSorter partSorter) {
         getProperties().partSorter(partSorter);
         return getThis();
     }
 
-    public MultiblockMachineBuilder<MACHINE> partAppearance(TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
-        getProperties().partAppearance(partAppearance);
+    public MultiblockMachineBuilder<MACHINE> partAppearance(PartAppearanceProvider partAppearanceProvider) {
+        getProperties().partAppearanceProvider(partAppearanceProvider);
         return getThis();
     }
 
-    public MultiblockMachineBuilder<MACHINE> additionalDisplay(BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay) {
+    public MultiblockMachineBuilder<MACHINE> additionalDisplay(AdditionalDisplayWidgetProvider additionalDisplay) {
         getProperties().additionalDisplay(additionalDisplay);
         return getThis();
     }
