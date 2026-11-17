@@ -97,7 +97,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
                             fluidDefinition.getBiomeWeightModifier().applyAsInt(biome);
                     if (veinWeight > 0 && (fluidDefinition.getDimensionFilter() == null ||
                             fluidDefinition.getDimensionFilter().stream().anyMatch(
-                                    dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension())))) {
+                                    dim -> dim == serverLevel.dimension()))) {
                         weight -= veinWeight;
                         if (weight < 0) {
                             definition = fluidDefinition;
@@ -136,7 +136,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
             int totalWeight = 0;
             for (var definition : GTRegistries.BEDROCK_FLUID_DEFINITIONS) {
                 if (definition.getDimensionFilter() == null || definition.getDimensionFilter().stream()
-                        .anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension()))) {
+                        .anyMatch(dim -> dim == serverLevel.dimension())) {
                     totalWeight += definition.getBiomeWeightModifier().applyAsInt(biome);
                     totalWeight += definition.getWeight();
                 }

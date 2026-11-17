@@ -8,11 +8,9 @@ import com.gregtechceu.gtceu.utils.WeightedEntry;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkStatus;
@@ -57,7 +55,7 @@ public class WorldGeneratorUtils {
         public WorldOreVeinCache(ServerLevel level) {
             this.worldVeins = GTRegistries.ORE_VEINS.entries().stream()
                     .filter(entry -> entry.getValue().dimensionFilter().stream()
-                            .anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, level.dimension())))
+                            .anyMatch(dim -> dim == level.dimension()))
                     .sorted(Entry.comparingByKey())
                     .map(Entry::getValue)
                     .collect(Collectors.toList());
@@ -77,10 +75,6 @@ public class WorldGeneratorUtils {
 
     public static List<WeightedVein> getCachedBiomeVeins(ServerLevel level, Holder<Biome> biome) {
         return oreVeinCache.computeIfAbsent(level, WorldOreVeinCache::new).getEntry(biome);
-    }
-
-    public static boolean isSameDimension(ResourceKey<Level> first, ResourceKey<Level> second) {
-        return first == second;
     }
 
     public static Map<ChunkPos, List<BlockPos>> groupByChunks(Collection<BlockPos> positions) {
