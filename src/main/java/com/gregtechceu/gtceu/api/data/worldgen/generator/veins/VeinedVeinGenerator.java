@@ -59,8 +59,21 @@ import static net.minecraft.core.SectionPos.*;
 @Accessors(fluent = true, chain = true)
 public class VeinedVeinGenerator extends VeinGenerator {
 
+    // Recommended default parameters for veined veins.
+    // check out the constants in net.minecraft.world.level.levelgen.OreVeinifier for vanilla's.
+
+    public static final float DEFAULT_VEININESS_THRESHOLD = 0.01f;
+    public static final int DEFAULT_EDGE_ROUNDOFF_BEGIN = 3;
+    public static final float DEFAULT_MAX_EDGE_ROUNDOFF = 0.1f;
+    public static final float DEFAULT_VEIN_DENSITY = 1.0f;
+    public static final float DEFAULT_MIN_RICHNESS = 0.7f;
+    public static final float DEFAULT_MAX_RICHNESS = 1.0f;
+    public static final float DEFAULT_MAX_RICHNESS_THRESHOLD = 0.175f;
+    public static final float DEFAULT_RARE_BLOCK_CHANCE = 0.02f;
+
     public static final Codec<Either<List<TargetBlockState>, Material>> BLOCK_ENTRY_CODEC = Codec
             .either(TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.codec());
+    private static final Codec<Float> ZERO_TO_ONE_CODEC = Codec.floatRange(0.0f, 1.0f);
 
     // spotless:off
     public static final Codec<VeinedVeinGenerator> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
@@ -69,40 +82,70 @@ public class VeinedVeinGenerator extends VeinGenerator {
             BlockState.CODEC.fieldOf("filler_block").orElse(Blocks.AIR.defaultBlockState()).forGetter(it -> it.fillerBlock),
             Codec.INT.fieldOf("min_y").forGetter(it -> it.minYLevel),
             Codec.INT.fieldOf("max_y").forGetter(it -> it.maxYLevel),
-            Codec.FLOAT.fieldOf("veininess_threshold").orElse(0.4f).forGetter(it -> it.veininessThreshold),
-            Codec.INT.fieldOf("edge_roundoff_begin").orElse(20).forGetter(it -> it.edgeRoundoffBegin),
-            Codec.DOUBLE.fieldOf("max_edge_roundoff").orElse(0.2).forGetter(it -> it.maxEdgeRoundoff),
-            Codec.FLOAT.fieldOf("min_richness").orElse(0.1f).forGetter(it -> it.minRichness),
-            Codec.FLOAT.fieldOf("max_richness").orElse(0.3f).forGetter(it -> it.maxRichness),
-            Codec.FLOAT.fieldOf("max_richness_threshold").orElse(0.6f).forGetter(it -> it.maxRichnessThreshold),
-            Codec.FLOAT.fieldOf("rare_block_chance").orElse(0.02f).forGetter(it -> it.rareBlockChance)// ,
+            Codec.FLOAT.fieldOf("veininess_threshold").orElse(DEFAULT_VEININESS_THRESHOLD).forGetter(it -> it.veininessThreshold),
+            Codec.INT.fieldOf("edge_roundoff_begin").orElse(DEFAULT_EDGE_ROUNDOFF_BEGIN).forGetter(it -> it.edgeRoundoffBegin),
+            ZERO_TO_ONE_CODEC.fieldOf("max_edge_roundoff").orElse(DEFAULT_MAX_EDGE_ROUNDOFF).forGetter(it -> it.maxEdgeRoundoff),
+            ZERO_TO_ONE_CODEC.fieldOf("min_richness").orElse(DEFAULT_MIN_RICHNESS).forGetter(it -> it.minRichness),
+            ZERO_TO_ONE_CODEC.fieldOf("max_richness").orElse(DEFAULT_MAX_RICHNESS).forGetter(it -> it.maxRichness),
+            Codec.FLOAT.fieldOf("max_richness_threshold").orElse(DEFAULT_MAX_RICHNESS_THRESHOLD).forGetter(it -> it.maxRichnessThreshold),
+            ZERO_TO_ONE_CODEC.fieldOf("rare_block_chance").orElse(DEFAULT_RARE_BLOCK_CHANCE).forGetter(it -> it.rareBlockChance)
     ).apply(instance, VeinedVeinGenerator::new));
     // spotless:on
 
-    private static final NoiseSettings DEFAULT_NOISE_SETTINGS = new NoiseSettings(-64, 384, 1, 2);
+    private static final NoiseSettings DEFAULT_NOISE_SETTINGS = new NoiseSettings(DimensionType.MIN_Y, DimensionType.MAX_Y, 1, 2);
 
-    public List<VeinBlockDefinition> oreBlocks = new ArrayList<>();
-    public List<VeinBlockDefinition> rareBlocks = new ArrayList<>();
+    public @NotNull List<VeinBlockDefinition> oreBlocks = new ArrayList<>();
+    public @NotNull List<VeinBlockDefinition> rareBlocks = new ArrayList<>();
     @Setter
     public BlockState fillerBlock = Blocks.AIR.defaultBlockState();
     @Setter
     public int minYLevel;
     @Setter
     public int maxYLevel;
+    /**
+     * Defines how "sharp" the edges of the vein are. Higher values result in more "blurry" edges.<br>
+     * In practice, this gates the vein noise's minimum output value. No position with a value below this will
+     * have an ore.
+     * <p>
+     * Must be {@code <= maxRichnessThreshold}.
+     */
     @Setter
-    public float veininessThreshold = 0.4f;
+    public float veininessThreshold = DEFAULT_VEININESS_THRESHOLD;
+    /**
+     * The distance (in blocks) from the nearest edge of the vein that the edges of the vein will become "blurred" at to
+     * make them softer.
+     */
     @Setter
-    public int edgeRoundoffBegin = 20;
+    public int edgeRoundoffBegin = DEFAULT_EDGE_ROUNDOFF_BEGIN;
+    /**
+     * Maximum amount of edge rounding that can be done. Applied on top of {@link #veininessThreshold} when filtering
+     * valid placement locations.
+     */
     @Setter
-    public double maxEdgeRoundoff = 0.2;
+    public float maxEdgeRoundoff = DEFAULT_MAX_EDGE_ROUNDOFF;
+    /**
+     * Richness is the ratio of filler blocks to ore blocks. higher value means more ore blocks.<br>
+     * Must be {@code <= maxRichness}
+     */
     @Setter
-    public float minRichness = 0.1f;
+    public float minRichness = DEFAULT_MIN_RICHNESS;
+    /**
+     * Richness is the ratio of filler blocks to ore blocks. higher value means more ore blocks.<br>
+     * Must be {@code >= minRichness}
+     */
     @Setter
-    public float maxRichness = 0.3f;
+    public float maxRichness = DEFAULT_MAX_RICHNESS;
+    /**
+     * Defines how "dense" the vein is. Higher values result in less "filled" veins.<br>
+     * In practice, this tunes the "assumed maximum" value of veininess noise and raising this lowers the real richness
+     * of the vein.
+     * <p>
+     * Must be {@code >= veininessThreshold}.
+     */
     @Setter
-    public float maxRichnessThreshold = 0.6f;
+    public float maxRichnessThreshold = DEFAULT_MAX_RICHNESS_THRESHOLD;
     @Setter
-    public float rareBlockChance = 0.02f;
+    public float rareBlockChance = DEFAULT_RARE_BLOCK_CHANCE;
 
     public VeinedVeinGenerator(GTOreDefinition entry) {
         super(entry);
@@ -408,9 +451,12 @@ public class VeinedVeinGenerator extends VeinGenerator {
     public record VeinBlockDefinition(Either<List<TargetBlockState>, Material> block, int weight)
             implements WeightedEntry {
 
+        // spotless:off
         public static final Codec<VeinBlockDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 BLOCK_ENTRY_CODEC.fieldOf("block").forGetter(x -> x.block),
-                Codec.INT.fieldOf("weight").forGetter(x -> x.weight)).apply(instance, VeinBlockDefinition::new));
+                Codec.INT.fieldOf("weight").forGetter(x -> x.weight)
+        ).apply(instance, VeinBlockDefinition::new));
+        // spotless:on
 
         public VeinBlockDefinition(Material block, int weight) {
             this(Either.right(block), weight);
