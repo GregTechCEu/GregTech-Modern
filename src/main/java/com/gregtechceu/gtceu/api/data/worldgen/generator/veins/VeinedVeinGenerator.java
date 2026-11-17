@@ -139,19 +139,41 @@ public class VeinedVeinGenerator extends VeinGenerator {
         }
         final NoiseSettings noiseSettings = _noiseSettings.clampToHeightAccessor(level);
 
-        int minY = origin.getY() - radius;
-        int minCellY = Mth.floorDiv(minY, noiseSettings.getCellHeight());
-        int cellCountY = Mth.floorDiv(level.getLevel().getHeight(), noiseSettings.getCellHeight());
+        int x0 = origin.getX() - radius, x1 = origin.getX() + radius;
+        int z0 = origin.getZ() - radius, z1 = origin.getY() + radius;
+        int y0 = Math.max(origin.getY() - radius, this.minYLevel);
+        int y1 = Math.min(origin.getY() + radius, this.maxYLevel);
 
-        int sectionX0 = blockToSectionCoord(origin.getX() - radius);
-        int sectionX1 = blockToSectionCoord(origin.getX() + radius);
-        int sectionY0 = blockToSectionCoord(minY);
-        int sectionY1 = blockToSectionCoord(origin.getY() + radius);
-        int sectionZ0 = blockToSectionCoord(origin.getZ() - radius);
-        int sectionZ1 = blockToSectionCoord(origin.getZ() + radius);
-
+        int sectionX0 = blockToSectionCoord(x0), sectionX1 = blockToSectionCoord(x1);
+        int sectionY0 = blockToSectionCoord(y0), sectionY1 = blockToSectionCoord(y1);
+        int sectionZ0 = blockToSectionCoord(z0), sectionZ1 = blockToSectionCoord(z1);
         SectionPos.betweenClosedStream(sectionX0, sectionY0, sectionZ0, sectionX1, sectionY1, sectionZ1)
                 .forEach(pos -> {
+                    int sectionRelativeMinY = veinBounds.minY() - pos.minBlockY();
+                    if (sectionRelativeMinY > SECTION_MAX_INDEX) {
+                        // bottom Y is above this section, skip
+                        // I don't think this can actually happen, but better safe than sorry
+                        if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
+                            LOGGER.warn("Tried to place part of veined vein '{}' in section {} when start Y is above section (section top: {}, vein start: {})!",
+                                    GTRegistries.ORE_VEINS.getKey(entry), pos, pos.maxBlockY(), veinBounds.minY());
+                        }
+                        return;
+                    }
+                    int sectionRelativeMaxY = veinBounds.maxY() - pos.maxBlockY();
+                    if (sectionRelativeMaxY < 0) {
+                        // top Y is below this section, skip
+                        // I don't think this can actually happen, but better safe than sorry
+                        if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
+                            LOGGER.warn("Tried to place part of veined vein '{}' in section {} when end Y is below section (section bottom: {}, vein end: {})!",
+                                    GTRegistries.ORE_VEINS.getKey(entry), pos, pos.minBlockY(), veinBounds.maxY());
+                        }
+                        return;
+                    }
+                    int cellHeight = noiseSettings.getCellHeight();
+                    final int sectionRelativeMinCellY = Mth.floorDiv(sectionRelativeMinY, cellHeight);
+                    final int sectionRelativeCellCountY = Mth.floorDiv(sectionRelativeMaxY, cellHeight) - sectionRelativeMinCellY;
+
+
                     final long randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
                     generatedSections.put(pos.asLong(), (worldGenLevel, access, section, sectionPos) -> {
                         placeSection(worldGenLevel, access, section, entry, randomSeed, sectionPos,
@@ -164,22 +186,21 @@ public class VeinedVeinGenerator extends VeinGenerator {
 
     private void placeSection(WorldGenLevel level, BulkSectionAccess access, LevelChunkSection section,
                               GTOreDefinition entry, long randomSeed, SectionPos sectionPos,
-                              NoiseSettings noiseSettings, int minY, int minCellY, int cellCountY,
+                              NoiseSettings noiseSettings, int minYCell, int yCells,
                               int sampleOffsetX, int sampleOffsetY, int sampleOffsetZ) {
         RandomSource random = new XoroshiroRandomSource(randomSeed);
 
-        ChunkAccess chunk = level.getChunk(sectionPos.x(), sectionPos.z(), ChunkStatus.EMPTY, false);
-        if (chunk == null) return;
-        final TrimmedNoiseChunk noiseChunk = TrimmedNoiseChunk.forChunk(level, chunk, noiseSettings,
-                sampleOffsetX, sampleOffsetY, sampleOffsetZ);
+        final TrimmedNoiseChunk noiseChunk = TrimmedNoiseChunk.forChunk(level, noiseSettings,
+                sectionPos.x(), sectionPos.z(), sampleOffsetX, sampleOffsetY, sampleOffsetZ);
 
         Registry<DensityFunction> densityFunctions = level.registryAccess()
                 .registryOrThrow(Registries.DENSITY_FUNCTION);
         DensityFunction veinToggle = noiseChunk.wrap(densityFunctions.get(GTDensityFunctions.NEW_ORE_VEIN_TOGGLE));
         DensityFunction veinRidged = noiseChunk.wrap(densityFunctions.get(GTDensityFunctions.NEW_ORE_VEIN_RIDGED));
 
-        int chunkMinX = sectionPos.minBlockX();
-        int chunkMinZ = sectionPos.minBlockZ();
+        int sectionMinX = sectionPos.minBlockX();
+        int sectionMinY = sectionPos.minBlockY();
+        int sectionMinZ = sectionPos.minBlockZ();
 
         noiseChunk.initializeForFirstCellX();
         int cellWidth = noiseChunk.cellWidth();
@@ -190,30 +211,29 @@ public class VeinedVeinGenerator extends VeinGenerator {
         BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 
         for (int cellX = 0; cellX < xCells; ++cellX) {
+            // X and Z are always within the section, so we don't need to check them
             noiseChunk.advanceCellX(cellX);
             for (int cellZ = 0; cellZ < zCells; ++cellZ) {
-                for (int cellY = cellCountY - 1; cellY >= 0; --cellY) {
-                    int cellEndBlockY = (minCellY + cellY) * cellHeight;
-                    // TODO this could be optimized
-                    if (sectionPos.y() != blockToSectionCoord(cellEndBlockY)) continue;
-                    if (cellEndBlockY < minY) continue;
-
+                for (int cellY = 0; cellY < yCells; ++cellY) {
                     noiseChunk.selectCellYZ(cellY, cellZ);
 
-                    for (int inCellY = cellHeight - 1; inCellY >= 0; --inCellY) {
-                        cellEndBlockY = (minCellY + cellY) * cellHeight + inCellY;
-                        // same here
-                        if (sectionPos.y() != blockToSectionCoord(cellEndBlockY)) continue;
-                        if (cellEndBlockY < minY) continue;
+                    for (int inCellY = 0; inCellY < cellHeight; ++inCellY) {
+                        // section relative Y
+                        int sectionY = (minYCell + cellY) * cellHeight + inCellY;
+                        if (sectionY != sectionRelative(sectionY)) {
+                            printBlockPlacementWarning(entry, "veined", sectionPos, Direction.Axis.Y, sectionY);
+                            continue;
+                        }
+                        int blockY = sectionMinY + sectionY;
+                        if (blockY < veinBounds.minY() || blockY > veinBounds.maxY()) continue;
 
-                        int minBlockY = cellEndBlockY - this.minYLevel;
-                        int maxBlockY = this.maxYLevel - cellEndBlockY;
-                        if (minBlockY < 0 || maxBlockY < 0) continue;
-                        int lowY = Math.min(minBlockY, maxBlockY);
+                        noiseChunk.updateForY(inCellY, inCellY / (double) cellHeight);
 
-                        int inSectionY = sectionRelative(cellEndBlockY);
-                        double delta = (double) inCellY / (double) cellHeight;
-                        noiseChunk.updateForY(cellEndBlockY, delta);
+                        int lowY = Math.min(
+                                // Distance to top
+                                blockY - veinBounds.minY(),
+                                // Distance from bottom
+                                veinBounds.maxY() - blockY);
 
                         for (int inCellX = 0; inCellX < cellWidth; ++inCellX) {
                             int cellEndBlockX = chunkMinX + cellX * cellWidth + inCellX;
