@@ -41,7 +41,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import appeng.api.ids.AEComponents;
 import brachy.modularui.factory.ClientGUI;
 import brachy.modularui.factory.PlayerInventoryGuiData;
 import brachy.modularui.factory.inventory.InventoryTypes;
@@ -271,7 +270,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             tooltipComponents.add(info.definition().getBlock().getName());
         }
 
-        GlobalPos aeBinding = stack.get(AEComponents.WIRELESS_LINK_TARGET);
+        GlobalPos aeBinding = stack.get(GTDataComponents.TERMINAL_LINK_TARGET);
         if (aeBinding != null) {
             tooltipComponents.add(Component.translatable("gtceu.terminal.network_bound", aeBinding.dimension(),
                     aeBinding.pos().getX(), aeBinding.pos().getY(), aeBinding.pos().getZ())

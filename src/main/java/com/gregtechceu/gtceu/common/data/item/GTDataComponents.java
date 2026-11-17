@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -158,6 +159,9 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<GlobalPosWithRot>> MONITOR_TARGET = DATA_COMPONENTS
             .registerComponentType("monitor_target", builder -> builder.persistent(GlobalPosWithRot.CODEC)
                     .networkSynchronized(GlobalPosWithRot.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<GlobalPos>> TERMINAL_LINK_TARGET = DATA_COMPONENTS
+            .registerComponentType("terminal_link_target", builder -> builder.persistent(GlobalPos.CODEC)
+                    .networkSynchronized(GlobalPos.STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<UUID>> ENDER_REDSTONE_LINK_TRANSMITTER_UUID = DATA_COMPONENTS
             .registerComponentType("ender_redstone_link_transmitter_uuid",
                     builder -> builder.persistent(UUIDUtil.CODEC)
