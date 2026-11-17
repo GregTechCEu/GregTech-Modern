@@ -114,7 +114,7 @@ public class EnergyContainerList implements IEnergyContainer {
      * Checks if a number is a power of 4. Does not include 1, despite it being 4**0.
      */
     private static boolean isPowerOfFour(long l) {
-        if (!hasPrimeFactorGreaterThanTwo(l)) return false;
+        if (l <= 1 || hasPrimeFactorGreaterThanTwo(l)) return false;
         return (l & 0x5555555555555555L) != 0L;
     }
 
