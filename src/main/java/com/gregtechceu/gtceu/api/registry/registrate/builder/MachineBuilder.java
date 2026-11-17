@@ -334,7 +334,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         } else {
             this.setData(ProviderType.LANG, NonNullBiConsumer.noop());
         }
-        properties.langValue(langValue);
         return getThis();
     }
 
