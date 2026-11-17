@@ -11,8 +11,9 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(NoiseChunk.class)
 public class NoiseChunkMixin {
 
-    @ModifyExpressionValue(method = "<init>", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;oreVeinsEnabled()Z"))
+    @ModifyExpressionValue(method = "<init>",
+                           at = @At(value = "INVOKE",
+                                    target = "Lnet/minecraft/world/level/levelgen/NoiseGeneratorSettings;oreVeinsEnabled()Z"))
     private static boolean gtceu$disableVanillaLargeOreVeinsIfConfigEnabled(boolean original) {
         return original && !ConfigHolder.getInstance().worldgen.oreVeins.removeVanillaLargeOreVeins;
     }

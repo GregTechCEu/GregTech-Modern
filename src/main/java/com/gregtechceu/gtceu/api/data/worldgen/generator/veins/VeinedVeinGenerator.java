@@ -90,7 +90,8 @@ public class VeinedVeinGenerator extends VeinGenerator {
     ).apply(instance, VeinedVeinGenerator::new));
     // spotless:on
 
-    private static final NoiseSettings DEFAULT_NOISE_SETTINGS = new NoiseSettings(DimensionType.MIN_Y, DimensionType.MAX_Y, 1, 2);
+    private static final NoiseSettings DEFAULT_NOISE_SETTINGS = new NoiseSettings(DimensionType.MIN_Y,
+            DimensionType.MAX_Y, 1, 2);
 
     public @NotNull List<VeinBlockDefinition> oreBlocks = new ArrayList<>();
     public @NotNull List<VeinBlockDefinition> rareBlocks = new ArrayList<>();
@@ -191,7 +192,8 @@ public class VeinedVeinGenerator extends VeinGenerator {
                         // bottom Y is above this section, skip
                         // I don't think this can actually happen, but better safe than sorry
                         if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
-                            LOGGER.warn("Tried to place part of veined vein '{}' in section {} when start Y is above section (section top: {}, vein start: {})!",
+                            LOGGER.warn(
+                                    "Tried to place part of veined vein '{}' in section {} when start Y is above section (section top: {}, vein start: {})!",
                                     GTRegistries.ORE_VEINS.getKey(entry), pos, pos.maxBlockY(), veinBounds.minY());
                         }
                         return;
@@ -201,15 +203,16 @@ public class VeinedVeinGenerator extends VeinGenerator {
                         // top Y is below this section, skip
                         // I don't think this can actually happen, but better safe than sorry
                         if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
-                            LOGGER.warn("Tried to place part of veined vein '{}' in section {} when end Y is below section (section bottom: {}, vein end: {})!",
+                            LOGGER.warn(
+                                    "Tried to place part of veined vein '{}' in section {} when end Y is below section (section bottom: {}, vein end: {})!",
                                     GTRegistries.ORE_VEINS.getKey(entry), pos, pos.minBlockY(), veinBounds.maxY());
                         }
                         return;
                     }
                     int cellHeight = noiseSettings.getCellHeight();
                     final int sectionRelativeMinCellY = Mth.floorDiv(sectionRelativeMinY, cellHeight);
-                    final int sectionRelativeCellCountY = Mth.floorDiv(sectionRelativeMaxY, cellHeight) - sectionRelativeMinCellY;
-
+                    final int sectionRelativeCellCountY = Mth.floorDiv(sectionRelativeMaxY, cellHeight) -
+                            sectionRelativeMinCellY;
 
                     final long randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
                     generatedSections.put(pos.asLong(), (worldGenLevel, access, section, sectionPos) -> {

@@ -115,7 +115,8 @@ public class CuboidVeinGenerator extends VeinGenerator {
                         // bottom Y is above this section, skip
                         // I don't think this can actually happen, but better safe than sorry
                         if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
-                            LOGGER.warn("Tried to place part of cuboid vein '{}' in section {} when start Y is above section (section top: {}, vein start: {})!",
+                            LOGGER.warn(
+                                    "Tried to place part of cuboid vein '{}' in section {} when start Y is above section (section top: {}, vein start: {})!",
                                     GTRegistries.ORE_VEINS.getKey(entry), pos, pos.maxBlockY(), startY);
                         }
                         return;
@@ -123,8 +124,9 @@ public class CuboidVeinGenerator extends VeinGenerator {
                         // top Y is below this section, skip
                         // I don't think this can actually happen, but better safe than sorry
                         if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
-                            LOGGER.warn("Tried to place part of cuboid vein '{}' in section {} when end Y is below section (section bottom: {}, vein end: {})!",
-                                            GTRegistries.ORE_VEINS.getKey(entry), pos, pos.minBlockY(), startY + totalLayers);
+                            LOGGER.warn(
+                                    "Tried to place part of cuboid vein '{}' in section {} when end Y is below section (section bottom: {}, vein end: {})!",
+                                    GTRegistries.ORE_VEINS.getKey(entry), pos, pos.minBlockY(), startY + totalLayers);
                         }
                         return;
                     }
@@ -138,7 +140,8 @@ public class CuboidVeinGenerator extends VeinGenerator {
                         layerOffsetFromSectionBase = -sectionRelativeStartY;
                         // continuing with the same example number:
                         // ...and if the vein starts 3 blocks below this section, there should be 3 fewer layers in it
-                        layersInSection = Math.min(totalLayers - layerOffsetFromSectionBase, SECTION_MAX_INDEX - sectionRelativeStartY);
+                        layersInSection = Math.min(totalLayers - layerOffsetFromSectionBase,
+                                SECTION_MAX_INDEX - sectionRelativeStartY);
                     } else {
                         // the layers start in this section; the starting layer is 0
                         layerOffsetFromSectionBase = 0;

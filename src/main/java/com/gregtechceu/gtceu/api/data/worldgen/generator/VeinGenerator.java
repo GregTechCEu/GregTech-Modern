@@ -70,7 +70,8 @@ public abstract class VeinGenerator {
             case Z -> pos.maxBlockZ();
         };
         if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
-            LOGGER.warn("Tried to place block of {} vein '{}' in section ({}) outside section (at {}={}, section bounds: [{},{}])",
+            LOGGER.warn(
+                    "Tried to place block of {} vein '{}' in section ({}) outside section (at {}={}, section bounds: [{},{}])",
                     generatorName, GTRegistries.ORE_VEINS.getKey(entry), pos.toShortString(), axis.getName(),
                     sectionMin + sectionRelativeCoordinate, sectionMin, sectionMax);
         }
