@@ -115,7 +115,7 @@ public class EnergyContainerList implements IEnergyContainer {
      */
     private static boolean isPowerOfFour(long l) {
         if (!hasPrimeFactorGreaterThanTwo(l)) return false;
-        return (l & 0x5555555555555555L) != 0;
+        return (l & 0x5555555555555555L) != 0L;
     }
 
     @Override
