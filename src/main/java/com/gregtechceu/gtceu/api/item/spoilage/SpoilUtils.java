@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class SpoilUtils {
 
-    public static boolean enabled() {
+    public static boolean spoilageEnabled() {
         return GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SPOILAGE);
     }
 

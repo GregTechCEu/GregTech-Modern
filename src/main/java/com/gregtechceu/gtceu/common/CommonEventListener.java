@@ -402,8 +402,6 @@ public class CommonEventListener {
     public static void playerTickEvent(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         if (event.phase == TickEvent.Phase.START && !player.level().isClientSide) {
-            SpoilUtils.updateEntity(player);
-
             var speedAttrib = player.getAttribute(Attributes.MOVEMENT_SPEED);
             if (speedAttrib == null) return;
             var speedMod = speedAttrib.getModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST);

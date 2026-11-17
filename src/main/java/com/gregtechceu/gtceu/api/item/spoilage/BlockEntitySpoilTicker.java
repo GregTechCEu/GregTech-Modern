@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.api.item.spoilage;
 
-import com.gregtechceu.gtceu.utils.GTUtil;
-
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.LevelAccessor;
@@ -14,18 +11,19 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.ticks.*;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.*;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
 
 import lombok.Getter;
 
 import java.util.Set;
 
+/**
+ * Handles spoilage updates for block entities that aren't GT machines.<br>
+ * Only ticks MC containers ({@link BaseContainerBlockEntity}) by default, other BE classes can be added to the BLOCK_ENTITY_CLASSES_TO_TICK set to tick them.
+ */
 public class BlockEntitySpoilTicker extends SavedData {
 
-    public static long TICK_FREQUENCY = 2;
+    public static int MAX_TICKS_PER_UPDATE = ServerLevel.MAX_SCHEDULED_TICKS_PER_TICK;
+    public static long UPDATE_FREQUENCY = 2;
 
     public static final Set<Class<? extends BlockEntity>> BLOCK_ENTITY_CLASSES_TO_TICK = ObjectOpenHashSet.of(
             BaseContainerBlockEntity.class
@@ -47,12 +45,6 @@ public class BlockEntitySpoilTicker extends SavedData {
 
         this.level = sLvl;
         this.blockEntityTicks = new LevelTicks<>(this::isPositionTickingWithEntitiesLoaded, level.getProfilerSupplier());
-
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    private void delete() {
-        MinecraftForge.EVENT_BUS.unregister(this);
     }
 
     private <T> ScheduledTick<T> createTick(BlockPos pos, T type, long delay, TickPriority priority) {
@@ -72,7 +64,7 @@ public class BlockEntitySpoilTicker extends SavedData {
 
     public void tick() {
         long gameTime = this.level.getGameTime();
-        this.blockEntityTicks.tick(gameTime, ServerLevel.MAX_SCHEDULED_TICKS_PER_TICK, (pos, blockEntityType) -> {
+        this.blockEntityTicks.tick(gameTime, MAX_TICKS_PER_UPDATE, (pos, blockEntityType) -> {
             BlockEntity blockEntity = this.level.getBlockEntity(pos);
 
             if (blockEntity == null || blockEntity.isRemoved() || blockEntity.getType() != blockEntityType) {
@@ -85,7 +77,7 @@ public class BlockEntitySpoilTicker extends SavedData {
             SpoilUtils.updateBlock(blockEntity);
 
             // reschedule another update for the next tick
-            this.scheduleTick(pos, blockEntityType, TICK_FREQUENCY, TickPriority.NORMAL);
+            this.scheduleTick(pos, blockEntityType, UPDATE_FREQUENCY, TickPriority.NORMAL);
         });
     }
 
@@ -100,19 +92,6 @@ public class BlockEntitySpoilTicker extends SavedData {
 
     private boolean isPositionTickingWithEntitiesLoaded(long chunkPos) {
         return level.areEntitiesLoaded(chunkPos) && level.getChunkSource().isPositionTicking(chunkPos);
-    }
-
-    private boolean hasItemHandler(BlockEntity blockEntity) {
-        LazyOptional<IItemHandler> value;
-        for (Direction side : GTUtil.DIRECTIONS) {
-            value = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, side);
-            if (value.isPresent()) {
-                return true;
-            }
-        }
-        value = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
-        return value.isPresent();
-
     }
 
     @Override

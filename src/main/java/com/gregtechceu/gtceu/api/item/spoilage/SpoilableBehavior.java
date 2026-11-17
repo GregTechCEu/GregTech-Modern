@@ -39,7 +39,7 @@ public class SpoilableBehavior {
     private final List<ItemLike> attachedTo = new ArrayList<>();
 
     public static void init(IEventBus eventBus) {
-        if (!SpoilUtils.enabled()) return;
+        if (!SpoilUtils.spoilageEnabled()) return;
 
         RegisterSpoilablesEvent event = new RegisterSpoilablesEvent(SpoilableBehavior::builder);
         ModLoader.get().postEventWrapContainerInModOrder(event);

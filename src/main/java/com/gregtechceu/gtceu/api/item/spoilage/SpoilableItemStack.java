@@ -164,11 +164,16 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
                                 TooltipFlag isAdvanced) {
         var time = getTicksUntilSpoiled();
         MutableComponent timeTooltip;
+
+        if (getCreationTick() == 0) {
+            time = getSpoilTicks();
+        }
+
         if (time <= 0) {
             timeTooltip = Component.translatable("gtceu.tooltip.spoil_imminent")
                     .withStyle(ChatFormatting.DARK_GREEN);
         } else {
-            timeTooltip = Component.literal(FormattingUtil.formatTime(getTicksUntilSpoiled()))
+            timeTooltip = Component.literal(FormattingUtil.formatTime(time))
                     .withStyle(ChatFormatting.DARK_AQUA);
         }
         tooltipComponents.add(Component.translatable(
@@ -181,7 +186,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
                     "gtceu.tooltip.spoil_time_total",
                     Component.literal(FormattingUtil.formatTime(getSpoilTicks()))
                             .withStyle(ChatFormatting.GREEN)));
-            tooltipComponents.add(Component.translatable(
+            if (getCreationTick() != 0) tooltipComponents.add(Component.translatable(
                     "gtceu.tooltip.creation_tick",
                     getCreationTick()));
         }

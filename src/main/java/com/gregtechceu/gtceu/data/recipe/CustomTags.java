@@ -15,6 +15,9 @@ import net.minecraft.world.level.material.Fluid;
 
 public class CustomTags {
 
+    public static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = TagUtil.optionalTag(BuiltInRegistries.ITEM,
+            ResourceLocation.fromNamespaceAndPath("c", "hidden_from_recipe_viewers"));
+
     // Added Vanilla tags
     public static final TagKey<Item> PISTONS = TagUtil.createItemTag("pistons");
     public static final TagKey<Item> CONCRETE_ITEM = TagUtil.createItemTag("concretes");
