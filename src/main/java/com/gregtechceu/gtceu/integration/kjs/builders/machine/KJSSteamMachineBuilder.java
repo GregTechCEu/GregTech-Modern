@@ -38,11 +38,14 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
         var registrate = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace());
 
         if (hasLowPressure) {
+
+            var lowPressureId = this.id.withPath(String.format("lp_%s", this.id.getPath()));
+
             var internalLowPressure = registrate
-                    .machine(String.format("lp_%s", this.id.getPath()),
+                    .machine(lowPressureId.getPath(),
                             holder -> machine.create(holder, false));
 
-            var lowPressureBuilder = new MachineBuilderJS<>(id, internalLowPressure)
+            var lowPressureBuilder = new MachineBuilderJS<>(lowPressureId, internalLowPressure)
                     .langValue("Low Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
                     .tier(0)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)
@@ -56,11 +59,13 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
 
         if (hasHighPressure) {
 
+            var highPressureId = this.id.withPath(String.format("hp_%s", this.id.getPath()));
+
             var internalHighPressure = registrate
-                    .machine(String.format("hp_%s", this.id.getPath()),
+                    .machine(highPressureId.getPath(),
                             holder -> machine.create(holder, true));
 
-            var highPressureBuilder = new MachineBuilderJS<>(id, internalHighPressure)
+            var highPressureBuilder = new MachineBuilderJS<>(highPressureId, internalHighPressure)
                     .langValue("High Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
                     .tier(1)
                     .recipeModifier(SimpleSteamMachine::recipeModifier)

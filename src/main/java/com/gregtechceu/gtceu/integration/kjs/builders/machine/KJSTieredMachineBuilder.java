@@ -72,18 +72,20 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition> {
             final Int2IntFunction tankFunction = Objects.requireNonNullElse(tankScalingFunction,
                     GTMachineUtils.defaultTankSizeFunction);
 
+            var childId = this.id.withPath("%s_%s".formatted(tierName, this.id.getPath()));
+
             MachineBuilder<MachineDefinition, ?, ?> internalBuilder = GTRegistrate
-                    .createIgnoringListenerErrors(this.id.getNamespace())
-                    .machine(String.format("%s_%s", tierName, this.id.getPath()),
+                    .createIgnoringListenerErrors(childId.getNamespace())
+                    .machine(childId.getPath(),
                             holder -> machine.create(holder, tier, tankFunction));
 
-            var builder = new MachineBuilderJS<>(id, internalBuilder);
+            var builder = new MachineBuilderJS<>(childId, internalBuilder);
 
             builder.langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(this.id.getPath()), VLVT[tier]))
                     .tier(tier);
 
             if (this.addDefaultModel) {
-                builder.workableTieredHullModel(id.withPrefix("block/machines/"));
+                builder.workableTieredHullModel(childId.withPrefix("block/machines/"));
             }
 
             this.definition.apply(tier, builder);

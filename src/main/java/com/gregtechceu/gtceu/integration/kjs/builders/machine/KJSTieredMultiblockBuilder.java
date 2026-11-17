@@ -46,14 +46,16 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
         for (final int tier : tiers) {
             String tierName = VNL[tier];
 
+            var childId = this.id.withPath(String.format("%s_%s", tierName, this.id.getPath()));
+
             MultiblockMachineBuilder<?> internalBuilder = GTRegistrate
-                    .createIgnoringListenerErrors(this.id.getNamespace())
-                    .multiblock(String.format("%s_%s", tierName, this.id.getPath()),
+                    .createIgnoringListenerErrors(childId.getNamespace())
+                    .multiblock(childId.getPath(),
                             holder -> machine.create(holder, tier));
 
-            var builder = new MultiblockMachineBuilderJS(id, internalBuilder);
+            var builder = new MultiblockMachineBuilderJS(childId, internalBuilder);
 
-            internalBuilder.workableTieredHullModel(id.withPrefix("block/machines/"))
+            internalBuilder.workableTieredHullModel(childId.withPrefix("block/machines/"))
                     .tier(tier);
 
             this.definition.apply(tier, builder);
