@@ -404,7 +404,6 @@ public class ChemicalHelper {
         return getBlock(new MaterialEntry(orePrefix, material));
     }
 
-    @HideFromJS
     public static Block getBlockOrThrow(Holder<TagPrefix> tagPrefix, Holder<Material> material) {
         return Objects.requireNonNull(getBlock(tagPrefix, material),
                 "Block for (%s, %s) was null.".formatted(tagPrefix, material));
