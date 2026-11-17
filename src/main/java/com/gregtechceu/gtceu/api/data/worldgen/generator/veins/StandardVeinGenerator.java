@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator.veins;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
@@ -17,7 +16,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -285,45 +283,16 @@ public class StandardVeinGenerator extends VeinGenerator {
 
                         int bitSetIndex = x - xStart + (y - yStart) * sizeXZ + (z - zStart) * sizeXZ * sizeY;
                         if (tested.get(bitSetIndex)) continue;
-
                         tested.set(bitSetIndex);
+
+                        if (random.nextFloat() > entry.density()) return;
+
                         orePos.set(x, y, z);
 
-                        placeBlock(access, section, random, this.blocks, entry, orePos);
+                        OreVeinUtil.placeOreBlock(this.blocks, access, section, random, entry, orePos);
                     }
                 }
             }
         }
-    }
-
-    private static void placeBlock(BulkSectionAccess access, LevelChunkSection section, RandomSource random,
-                                   Either<List<OreConfiguration.TargetBlockState>, Material> targets,
-                                   GTOreDefinition entry, BlockPos.MutableBlockPos orePos) {
-        int sectionX = SectionPos.sectionRelative(orePos.getX());
-        int sectionY = SectionPos.sectionRelative(orePos.getY());
-        int sectionZ = SectionPos.sectionRelative(orePos.getZ());
-        BlockState originalState = section.getBlockState(sectionX, sectionY, sectionZ);
-
-        if (random.nextFloat() > entry.density()) return;
-
-        targets.ifLeft(blockStates -> {
-            for (OreConfiguration.TargetBlockState targetState : blockStates) {
-                if (OreVeinUtil.canPlaceOre(originalState, access::getBlockState, random, entry, targetState, orePos)) {
-                    section.setBlockState(sectionX, sectionY, sectionZ, targetState.state, false);
-                    break;
-                }
-            }
-        }).ifRight(material -> {
-            if (!OreVeinUtil.canPlaceOre(originalState, access::getBlockState, random, entry, orePos)) return;
-
-            BlockState currentState = access.getBlockState(orePos);
-            var prefix = ChemicalHelper.getOrePrefix(currentState);
-            if (prefix.isEmpty()) return;
-
-            Block toPlace = ChemicalHelper.getBlock(prefix.get(), material);
-            if (toPlace == null || toPlace.defaultBlockState().isAir()) return;
-
-            section.setBlockState(sectionX, sectionY, sectionZ, toPlace.defaultBlockState(), false);
-        });
     }
 }

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator.veins;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
@@ -13,8 +12,6 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
@@ -36,7 +33,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static net.minecraft.core.SectionPos.blockToSectionCoord;
-import static net.minecraft.core.SectionPos.sectionRelative;
 
 public class LayeredVeinGenerator extends VeinGenerator {
 
@@ -180,6 +176,8 @@ public class LayeredVeinGenerator extends VeinGenerator {
                     float distanceSquared = xDistanceSqr + yDistanceSqr + zDistanceSqr;
                     if (distanceSquared > 1f) continue;
 
+                    if (random.nextFloat() > entry.density()) return;
+
                     // layerCoordinate is between 0 and 3, so this is weighted to favor making
                     // veins that primarily face up
                     int layerIndex = layerCoordinate == 0 ? dz : layerCoordinate == 1 ? dx : dy;
@@ -193,43 +191,10 @@ public class LayeredVeinGenerator extends VeinGenerator {
                     Either<List<OreConfiguration.TargetBlockState>, Material> state = layer.rollBlock(random);
 
                     pos.set(xMin + dx, yMin + dy, zMin + dz);
-                    placeBlock(access, section, random, entry, state, pos);
+                    OreVeinUtil.placeOreBlock(state, access, section, random, entry, pos);
                 }
             }
         }
-    }
-
-    private static void placeBlock(BulkSectionAccess access, LevelChunkSection section, RandomSource random,
-                                   GTOreDefinition entry,
-                                   Either<List<OreConfiguration.TargetBlockState>, Material> state, BlockPos pos) {
-        int x = sectionRelative(pos.getX());
-        int y = sectionRelative(pos.getY());
-        int z = sectionRelative(pos.getZ());
-
-        BlockState current = section.getBlockState(x, y, z);
-
-        if (random.nextFloat() > entry.density()) return;
-
-        state.ifLeft(targetStates -> {
-            for (OreConfiguration.TargetBlockState targetState : targetStates) {
-                if (!OreVeinUtil.canPlaceOre(current, access::getBlockState, random, entry, targetState, pos))
-                    continue;
-                if (targetState.state.isAir()) continue;
-
-                section.setBlockState(x, y, z, targetState.state, false);
-                break;
-            }
-        }).ifRight(material -> {
-            if (!OreVeinUtil.canPlaceOre(current, access::getBlockState, random, entry, pos)) return;
-
-            var prefix = ChemicalHelper.getOrePrefix(current);
-            if (prefix.isEmpty()) return;
-
-            Block toPlace = ChemicalHelper.getBlock(prefix.get(), material);
-            if (toPlace == null || toPlace.defaultBlockState().isAir()) return;
-
-            section.setBlockState(x, y, z, toPlace.defaultBlockState(), false);
-        });
     }
 
     public LayeredVeinGenerator(List<GTLayerPattern> layerPatterns) {

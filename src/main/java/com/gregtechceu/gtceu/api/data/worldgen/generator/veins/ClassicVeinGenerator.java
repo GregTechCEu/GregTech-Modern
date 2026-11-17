@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator.veins;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
@@ -160,11 +159,10 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
                     BlockState blockState = section.getBlockState(x, y, z);
                     int layer = y - (yOrigin - yMax);
-
                     // First try to spawn "between"
                     if (layer >= startBetween && layer - startBetween + 1 <= between.layers) {
                         if (random.nextFloat() <= entry.density() / 2) {
-                            between.place(blockState, access, section, randomSeed, entry, pos);
+                            OreVeinUtil.placeOreBlock(between.target, access, section, random, entry, pos);
                             return;
                         }
                     }
@@ -172,19 +170,19 @@ public class ClassicVeinGenerator extends VeinGenerator {
                     // Then try primary/secondary
                     if (layer >= startPrimary) {
                         if (random.nextFloat() <= entry.density()) {
-                            primary.place(blockState, access, section, randomSeed, entry, pos);
+                            OreVeinUtil.placeOreBlock(primary.target, access, section, random, entry, pos);
                             return;
                         }
                     } else {
                         if (random.nextFloat() <= entry.density()) {
-                            secondary.place(blockState, access, section, randomSeed, entry, pos);
+                            OreVeinUtil.placeOreBlock(secondary.target, access, section, random, entry, pos);
                             return;
                         }
                     }
 
                     // Then lastly, try sporadic
                     if (random.nextFloat() <= entry.density() / sporadicDivisor) {
-                        sporadic.place(blockState, access, section, randomSeed, entry, pos);
+                        OreVeinUtil.placeOreBlock(sporadic.target, access, section, random, entry, pos);
                     }
                 }
             }
@@ -262,35 +260,6 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
         public final Either<List<OreConfiguration.TargetBlockState>, Material> target;
         public int layers;
-
-        public void place(BlockState blockState, BulkSectionAccess access, LevelChunkSection section, long randomSeed,
-                          GTOreDefinition entry, BlockPos pos) {
-            RandomSource random = new XoroshiroRandomSource(randomSeed);
-            int x = SectionPos.sectionRelative(pos.getX());
-            int y = SectionPos.sectionRelative(pos.getY());
-            int z = SectionPos.sectionRelative(pos.getZ());
-
-            target.ifLeft(blockStates -> {
-                for (OreConfiguration.TargetBlockState targetState : blockStates) {
-                    if (!OreVeinUtil.canPlaceOre(blockState, access::getBlockState, random, entry, targetState, pos))
-                        continue;
-                    if (targetState.state.isAir())
-                        continue;
-                    section.setBlockState(x, y, z, targetState.state, false);
-                    break;
-                }
-            }).ifRight(material -> {
-                if (!OreVeinUtil.canPlaceOre(blockState, access::getBlockState, random, entry, pos))
-                    return;
-                BlockState currentState = access.getBlockState(pos);
-                var prefix = ChemicalHelper.getOrePrefix(currentState);
-                if (prefix.isEmpty()) return;
-                Block toPlace = ChemicalHelper.getBlock(prefix.get(), material);
-                if (toPlace == null || toPlace.defaultBlockState().isAir())
-                    return;
-                section.setBlockState(x, y, z, toPlace.defaultBlockState(), false);
-            });
-        }
 
         public Layer copy() {
             return new Layer(this.target.mapBoth(ArrayList::new, Function.identity()), layers);

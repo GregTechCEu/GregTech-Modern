@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator.veins;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
@@ -15,16 +13,12 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 
 import com.google.common.base.Preconditions;
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -214,32 +208,32 @@ public class CuboidVeinGenerator extends VeinGenerator {
                     pos.set(globalX, globalY, globalZ);
                     if (layerOffset <= bottomLayer) {
                         // layers 0, 1, and 2 are bottom and spread
-                        if (!placeBottom(access, section, entry, pos, random, weightX, weightZ, sx, sy, sz)) {
-                            placeSpread(access, section, entry, pos, random, weightX, weightZ, sx, sy, sz);
+                        if (!placeBottom(access, section, entry, pos, random, weightX, weightZ)) {
+                            placeSpread(access, section, entry, pos, random, weightX, weightZ);
                         }
                     } else if (layerOffset <= middleLayer1) {
                         // layer 3 is bottom, middle, and spread
-                        if (!placeMiddle(access, section, entry, pos, random, weightX, weightZ, sx, sy, sz)) {
-                            if (!placeBottom(access, section, entry, pos, random, weightX, weightZ, sx, sy, sz)) {
-                                placeSpread(access, section, entry, pos, random, weightX, weightZ, sx, sy, sz);
+                        if (!placeMiddle(access, section, entry, pos, random, weightX, weightZ)) {
+                            if (!placeBottom(access, section, entry, pos, random, weightX, weightZ)) {
+                                placeSpread(access, section, entry, pos, random, weightX, weightZ);
                             }
                         }
                     } else if (layerOffset <= middleLayer2) {
                         // layer 4 is middle, and spread
-                        if (!placeMiddle(access, section, entry, pos, random, weightX, weightZ, sx, sy, sz)) {
-                            placeSpread(access, section, entry, pos, random, weightX, weightZ, sx, sy, sz);
+                        if (!placeMiddle(access, section, entry, pos, random, weightX, weightZ)) {
+                            placeSpread(access, section, entry, pos, random, weightX, weightZ);
                         }
                     } else if (layerOffset <= topLayer) {
                         // layers 5 and 6 is top, middle, and spread
-                        if (!placeMiddle(access, section, entry, pos, random, weightX, weightZ, sx, sy, sz)) {
-                            if (!placeTop(access, section, entry, pos, random, weightX, weightZ, sx, sy, sz)) {
-                                placeSpread(access, section, entry, pos, random, weightX, weightZ, sx, sy, sz);
+                        if (!placeMiddle(access, section, entry, pos, random, weightX, weightZ)) {
+                            if (!placeTop(access, section, entry, pos, random, weightX, weightZ)) {
+                                placeSpread(access, section, entry, pos, random, weightX, weightZ);
                             }
                         }
                     } else {
                         // layers 7 and 8 is top and spread
-                        if (!placeTop(access, section, entry, pos, random, weightX, weightZ, sx, sy, sz)) {
-                            placeSpread(access, section, entry, pos, random, weightX, weightZ, sx, sy, sz);
+                        if (!placeTop(access, section, entry, pos, random, weightX, weightZ)) {
+                            placeSpread(access, section, entry, pos, random, weightX, weightZ);
                         }
                     }
                 }
@@ -265,9 +259,9 @@ public class CuboidVeinGenerator extends VeinGenerator {
      * @return whether the ore was placed
      */
     private boolean placeTop(BulkSectionAccess access, LevelChunkSection section, GTOreDefinition entry,
-                             BlockPos pos, RandomSource random, int weightX, int weightZ, int sx, int sy, int sz) {
+                             BlockPos pos, RandomSource random, int weightX, int weightZ) {
         if (shouldPlaceOre(random, weightX, weightZ)) {
-            placeOre(access, section, pos, random, this.top.target, entry, sx, sy, sz);
+            OreVeinUtil.placeOreBlock(this.top.target, access, section, random, entry, pos);
             return true;
         }
         return false;
@@ -279,9 +273,9 @@ public class CuboidVeinGenerator extends VeinGenerator {
      * @return whether the ore was placed
      */
     private boolean placeMiddle(BulkSectionAccess access, LevelChunkSection section, GTOreDefinition entry,
-                                BlockPos pos, RandomSource random, int weightX, int weightZ, int sx, int sy, int sz) {
+                                BlockPos pos, RandomSource random, int weightX, int weightZ) {
         if (random.nextInt(2) == 0 && shouldPlaceOre(random, weightX, weightZ)) {
-            placeOre(access, section, pos, random, this.middle.target, entry, sx, sy, sz);
+            OreVeinUtil.placeOreBlock(this.middle.target, access, section, random, entry, pos);
             return true;
         }
         return false;
@@ -293,9 +287,9 @@ public class CuboidVeinGenerator extends VeinGenerator {
      * @return whether the ore was placed
      */
     private boolean placeBottom(BulkSectionAccess access, LevelChunkSection section, GTOreDefinition entry,
-                                BlockPos pos, RandomSource random, int weightX, int weightZ, int sx, int sy, int sz) {
+                                BlockPos pos, RandomSource random, int weightX, int weightZ) {
         if (shouldPlaceOre(random, weightX, weightZ)) {
-            placeOre(access, section, pos, random, this.bottom.target, entry, sx, sy, sz);
+            OreVeinUtil.placeOreBlock(this.bottom.target, access, section, random, entry, pos);
             return true;
         }
         return false;
@@ -307,41 +301,12 @@ public class CuboidVeinGenerator extends VeinGenerator {
      * @return whether the ore was placed
      */
     private boolean placeSpread(BulkSectionAccess access, LevelChunkSection section, GTOreDefinition entry,
-                                BlockPos pos, RandomSource random, int weightX, int weightZ, int sx, int sy, int sz) {
+                                BlockPos pos, RandomSource random, int weightX, int weightZ) {
         if (random.nextFloat() <= entry.density() * spreadDivisor && shouldPlaceOre(random, weightX, weightZ)) {
-            placeOre(access, section, pos, random, this.spread.target, entry, sx, sy, sz);
+            OreVeinUtil.placeOreBlock(this.spread.target, access, section, random, entry, pos);
             return true;
         }
         return false;
-    }
-
-    public void placeOre(BulkSectionAccess access, LevelChunkSection section, BlockPos pos, RandomSource random,
-                         Either<List<OreConfiguration.TargetBlockState>, Material> ore, GTOreDefinition entry,
-                         int sx, int sy, int sz) {
-        BlockState existing = section.getBlockState(sx, sy, sz);
-
-        ore.ifLeft(blockStates -> {
-            for (OreConfiguration.TargetBlockState targetState : blockStates) {
-                if (!OreVeinUtil.canPlaceOre(existing, access::getBlockState, random, entry, targetState, pos))
-                    continue;
-                if (targetState.state.isAir()) continue;
-
-                section.setBlockState(sx, sy, sz, targetState.state, false);
-                break;
-            }
-        }).ifRight(material -> {
-            if (!OreVeinUtil.canPlaceOre(existing, access::getBlockState, random, entry, pos)) return;
-
-            BlockState currentState = access.getBlockState(pos);
-            var prefix = ChemicalHelper.getOrePrefix(currentState);
-            if (prefix.isEmpty()) return;
-
-            Block toPlace = ChemicalHelper.getBlock(prefix.get(), material);
-            if (toPlace == null || toPlace.defaultBlockState().isAir())
-                return;
-
-            section.setBlockState(sx, sy, sz, toPlace.defaultBlockState(), false);
-        });
     }
 
     @Override

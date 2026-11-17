@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator.veins;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
@@ -15,7 +14,6 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -112,7 +110,6 @@ public class DikeVeinGenerator extends VeinGenerator {
         int sectionMaxY = Mth.clamp(maxYLevel, sectionPos.minBlockY(), sectionPos.maxBlockY());
 
         for (int dy = sectionMinY; dy <= sectionMaxY; dy++) {
-            int inSectionY = dy - sectionPos.minBlockY();
             // the Y coordinate is clamped to valid values only
 
             for (int dx = -radius; dx <= radius; dx++) {
@@ -129,7 +126,7 @@ public class DikeVeinGenerator extends VeinGenerator {
 
                     pos.set(globalX + dx, dy, globalZ + dz);
                     if (normalNoise.getValue(dx, dy, dz) >= 0.5 && random.nextFloat() <= entry.density()) {
-                        placeBlock(access, section, random, pos, entry, inSectionX, inSectionY, inSectionZ);
+                        placeBlock(access, section, random, pos, entry);
                     }
                 }
             }
@@ -137,33 +134,12 @@ public class DikeVeinGenerator extends VeinGenerator {
     }
 
     private void placeBlock(BulkSectionAccess access, LevelChunkSection section, RandomSource random, BlockPos pos,
-                            GTOreDefinition entry, int inSectionX, int inSectionY, int inSectionZ) {
+                            GTOreDefinition entry) {
         DikeBlockDefinition blockDefinition = GTUtil.getRandomItem(random, this.blocks);
         if (blockDefinition == null) return;
         if (pos.getY() < blockDefinition.minY() || pos.getY() > blockDefinition.maxY()) return;
 
-        BlockState current = access.getBlockState(pos);
-
-        blockDefinition.block.ifLeft(targetStates -> {
-            for (TargetBlockState targetState : targetStates) {
-                if (!OreVeinUtil.canPlaceOre(current, access::getBlockState, random, entry, targetState, pos.mutable()))
-                    continue;
-                if (targetState.state.isAir()) continue;
-
-                section.setBlockState(inSectionX, inSectionY, inSectionZ, targetState.state, false);
-                break;
-            }
-        }).ifRight(material -> {
-            if (!OreVeinUtil.canPlaceOre(current, access::getBlockState, random, entry, pos.mutable())) return;
-
-            var prefix = ChemicalHelper.getOrePrefix(current);
-            if (prefix.isEmpty()) return;
-
-            Block toPlace = ChemicalHelper.getBlock(prefix.get(), material);
-            if (toPlace == null || toPlace.defaultBlockState().isAir()) return;
-
-            section.setBlockState(inSectionX, inSectionY, inSectionZ, toPlace.defaultBlockState(), false);
-        });
+        OreVeinUtil.placeOreBlock(blockDefinition.block, access, section, random, entry, pos);
     }
 
     @Override
