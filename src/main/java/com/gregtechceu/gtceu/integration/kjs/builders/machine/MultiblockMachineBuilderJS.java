@@ -18,6 +18,7 @@ import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.PanelSyncManager;
 import org.apache.commons.lang3.function.TriFunction;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.*;
 
@@ -52,6 +53,12 @@ public class MultiblockMachineBuilderJS extends MachineBuilderJS<MultiblockMachi
         getInternal().partAppearance(partAppearance);
         return getThis();
     }
+
+    public MultiblockMachineBuilderJS partSorter(Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter) {
+        getInternal().partSorter(partSorter);
+        return getThis();
+    }
+
 
     public MultiblockMachineBuilderJS additionalDisplay(BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay) {
         getInternal().additionalDisplay(additionalDisplay);
