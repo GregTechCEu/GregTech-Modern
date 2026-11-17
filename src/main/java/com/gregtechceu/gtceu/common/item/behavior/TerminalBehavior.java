@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
-import appeng.api.ids.AEComponents;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
@@ -43,6 +42,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import appeng.api.ids.AEComponents;
 import brachy.modularui.factory.ClientGUI;
 import brachy.modularui.factory.PlayerInventoryGuiData;
 import brachy.modularui.factory.inventory.InventoryTypes;
@@ -52,6 +52,7 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.ints.*;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -272,15 +273,22 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             tooltipComponents.add(info.definition().getBlock().getName());
         }
 
-
+        GlobalPos aeBinding = null;
         if (GTCEu.Mods.isAE2Loaded()) {
-            GlobalPos aeBinding = stack.get(AEComponents.WIRELESS_LINK_TARGET);
+            aeBinding = AE2CallWrapper.getAEBinding(stack);
+        }
 
-            if (aeBinding != null) {
-                tooltipComponents.add(Component.translatable("gtceu.terminal.network_bound", aeBinding.dimension(),
-                                aeBinding.pos().getX(), aeBinding.pos().getY(), aeBinding.pos().getZ())
-                        .withStyle(ChatFormatting.GOLD));
-            }
+        if (aeBinding != null) {
+            tooltipComponents.add(Component.translatable("gtceu.terminal.network_bound", aeBinding.dimension(),
+                    aeBinding.pos().getX(), aeBinding.pos().getY(), aeBinding.pos().getZ())
+                    .withStyle(ChatFormatting.GOLD));
+        }
+    }
+
+    public static class AE2CallWrapper {
+
+        static @Nullable GlobalPos getAEBinding(ItemStack stack) {
+            return stack.get(AEComponents.WIRELESS_LINK_TARGET);
         }
     }
 
