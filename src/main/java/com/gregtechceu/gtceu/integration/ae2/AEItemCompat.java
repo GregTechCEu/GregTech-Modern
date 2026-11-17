@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.integration.ae2;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.behavior.TerminalBehavior;
 
 import net.minecraft.core.GlobalPos;
@@ -11,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.features.GridLinkables;
 import appeng.api.features.IGridLinkableHandler;
+import appeng.api.ids.AEComponents;
 
 public class AEItemCompat {
 
@@ -36,12 +36,12 @@ public class AEItemCompat {
 
         @Override
         public void link(ItemStack itemStack, GlobalPos pos) {
-            itemStack.set(GTDataComponents.TERMINAL_LINK_TARGET, pos);
+            itemStack.set(AEComponents.WIRELESS_LINK_TARGET, pos);
         }
 
         @Override
         public void unlink(ItemStack itemStack) {
-            itemStack.remove(GTDataComponents.TERMINAL_LINK_TARGET);
+            itemStack.remove(AEComponents.WIRELESS_LINK_TARGET);
         }
     }
 }

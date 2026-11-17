@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
+import appeng.api.ids.AEComponents;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -16,6 +18,7 @@ import com.gregtechceu.gtceu.api.multiblock.util.AutobuildHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.network.packets.CPacketTerminalSettings;
+import com.gregtechceu.gtceu.integration.ae2.AEItemCompat;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
 import net.minecraft.ChatFormatting;
@@ -270,11 +273,15 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
             tooltipComponents.add(info.definition().getBlock().getName());
         }
 
-        GlobalPos aeBinding = stack.get(GTDataComponents.TERMINAL_LINK_TARGET);
-        if (aeBinding != null) {
-            tooltipComponents.add(Component.translatable("gtceu.terminal.network_bound", aeBinding.dimension(),
-                    aeBinding.pos().getX(), aeBinding.pos().getY(), aeBinding.pos().getZ())
-                    .withStyle(ChatFormatting.GOLD));
+
+        if (GTCEu.Mods.isAE2Loaded()) {
+            GlobalPos aeBinding = stack.get(AEComponents.WIRELESS_LINK_TARGET);
+
+            if (aeBinding != null) {
+                tooltipComponents.add(Component.translatable("gtceu.terminal.network_bound", aeBinding.dimension(),
+                                aeBinding.pos().getX(), aeBinding.pos().getY(), aeBinding.pos().getZ())
+                        .withStyle(ChatFormatting.GOLD));
+            }
         }
     }
 
