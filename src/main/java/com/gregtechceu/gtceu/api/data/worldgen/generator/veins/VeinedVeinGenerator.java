@@ -229,30 +229,53 @@ public class VeinedVeinGenerator extends VeinGenerator {
 
                         noiseChunk.updateForY(inCellY, inCellY / (double) cellHeight);
 
-                        int lowY = Math.min(
+                        int distanceFromYEdge = Math.min(
                                 // Distance to top
                                 blockY - veinBounds.minY(),
                                 // Distance from bottom
                                 veinBounds.maxY() - blockY);
 
                         for (int inCellX = 0; inCellX < cellWidth; ++inCellX) {
-                            int cellEndBlockX = chunkMinX + cellX * cellWidth + inCellX;
-                            int inSectionX = sectionRelative(cellEndBlockX);
+                            // section relative X
+                            int sectionX = cellX * cellWidth + inCellX;
+                            if (sectionX != sectionRelative(sectionX)) {
+                                printBlockPlacementWarning(entry, "veined", sectionPos, Direction.Axis.X, sectionX);
+                                continue;
+                            }
+                            int blockX = sectionMinX + sectionX;
+                            if (blockX < veinBounds.minX() || blockX > veinBounds.maxX()) continue;
 
-                            delta = (double) inCellX / (double) cellWidth;
-                            noiseChunk.updateForX(cellEndBlockX, delta);
+                            noiseChunk.updateForX(inCellX, inCellX / (double) cellWidth);
+
+                            int distanceFromXEdge = Math.min(
+                                    // Distance from west edge
+                                    blockX - veinBounds.minX(),
+                                    // Distance from east edge
+                                    veinBounds.maxX() - blockX);
 
                             for (int inCellZ = 0; inCellZ < cellWidth; ++inCellZ) {
-                                int cellEndBlockZ = chunkMinZ + cellZ * cellWidth + inCellZ;
-                                int inSectionZ = sectionRelative(cellEndBlockZ);
+                                // section relative Z
+                                int sectionZ = cellZ * cellWidth + inCellZ;
+                                if (sectionZ != sectionRelative(sectionZ)) {
+                                    printBlockPlacementWarning(entry, "veined", sectionPos, Direction.Axis.Z, sectionZ);
+                                    continue;
+                                }
+                                int blockZ = sectionMinZ + sectionZ;
+                                if (blockZ < veinBounds.minZ() || blockZ > veinBounds.maxZ()) continue;
 
-                                delta = (double) inCellZ / (double) cellWidth;
-                                noiseChunk.updateForZ(cellEndBlockZ, delta);
+                                noiseChunk.updateForZ(inCellZ, inCellZ / (double) cellWidth);
 
-                                mutable.set(cellEndBlockX, cellEndBlockY, cellEndBlockZ);
+                                int distanceFromZEdge = Math.min(
+                                        // Distance from north edge
+                                        blockZ - veinBounds.minZ(),
+                                        // Distance from south edge
+                                        veinBounds.maxZ() - blockZ);
+
+                                mutable.set(blockX, blockY, blockZ);
                                 placeSingleBlock(access, section, entry, random,
-                                        inSectionX, inSectionY, inSectionZ, mutable,
-                                        noiseChunk, veinToggle, veinRidged, lowY);
+                                        sectionX, sectionY, sectionZ, mutable,
+                                        noiseChunk, veinToggle, veinMask,
+                                        GTMath.min(distanceFromXEdge, distanceFromYEdge, distanceFromZEdge));
                             }
                         }
                     }
