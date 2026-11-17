@@ -6,8 +6,12 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -27,6 +31,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
+import static com.gregtechceu.gtceu.GTCEu.LOGGER;
 
 public abstract class VeinGenerator {
 
@@ -49,6 +55,25 @@ public abstract class VeinGenerator {
 
     public VeinGenerator(GTOreDefinition entry) {
         this.entry = entry;
+    }
+
+    protected static void printBlockPlacementWarning(GTOreDefinition entry, String generatorName, SectionPos pos,
+                                                     Direction.Axis axis, int sectionRelativeCoordinate) {
+        int sectionMin = switch (axis) {
+            case X -> pos.minBlockX();
+            case Y -> pos.minBlockY();
+            case Z -> pos.minBlockZ();
+        };
+        int sectionMax = switch (axis) {
+            case X -> pos.maxBlockX();
+            case Y -> pos.maxBlockY();
+            case Z -> pos.maxBlockZ();
+        };
+        if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
+            LOGGER.warn("Tried to place block of {} vein '{}' in section ({}) outside section (at {}={}, section bounds: [{},{}])",
+                    generatorName, GTRegistries.ORE_VEINS.getKey(entry), pos.toShortString(), axis.getName(),
+                    sectionMin + sectionRelativeCoordinate, sectionMin, sectionMax);
+        }
     }
 
     /**

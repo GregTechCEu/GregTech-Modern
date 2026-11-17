@@ -178,7 +178,7 @@ public class CuboidVeinGenerator extends VeinGenerator {
             // section relative Y
             int sy = sectionRelativeStartY + layerOffset;
             if (sy != sectionRelative(sy)) {
-                printBlockPlacementWarning(entry, sectionPos, Direction.Axis.Y, sy + sectionPos.minBlockY());
+                printBlockPlacementWarning(entry, "cuboid", sectionPos, Direction.Axis.Y, sy);
                 continue;
             }
             int globalY = sy + sectionPos.minBlockY();
@@ -187,14 +187,14 @@ public class CuboidVeinGenerator extends VeinGenerator {
             // section relative X
             for (int sx = westBoundInSection; sx <= eastBoundInSection; sx++) {
                 if (sx != sectionRelative(sx)) {
-                    printBlockPlacementWarning(entry, sectionPos, Direction.Axis.X, sx);
+                    printBlockPlacementWarning(entry, "cuboid", sectionPos, Direction.Axis.X, sx);
                     continue;
                 }
                 int globalX = sx + sectionPos.minBlockX();
                 // section relative Z
                 for (int sz = northBoundInSection; sz <= southBoundInSection; sz++) {
                     if (sz != sectionRelative(sz)) {
-                        printBlockPlacementWarning(entry, sectionPos, Direction.Axis.Z, sz);
+                        printBlockPlacementWarning(entry, "cuboid", sectionPos, Direction.Axis.Z, sz);
                         continue;
                     }
                     int globalZ = sz + sectionPos.minBlockZ();
@@ -244,24 +244,6 @@ public class CuboidVeinGenerator extends VeinGenerator {
                     }
                 }
             }
-        }
-    }
-
-    private static void printBlockPlacementWarning(GTOreDefinition entry, SectionPos pos, Direction.Axis axis,
-                                                   int coordinate) {
-        int sectionMin = switch (axis) {
-            case X -> pos.minBlockX();
-            case Y -> pos.minBlockY();
-            case Z -> pos.minBlockZ();
-        };
-        int sectionMax = switch (axis) {
-            case X -> pos.maxBlockX();
-            case Y -> pos.maxBlockY();
-            case Z -> pos.maxBlockZ();
-        };
-        if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
-            LOGGER.warn("Tried to place block of cuboid vein '{}' in section ({}) outside section (at {}={}, section bounds: [{},{}])",
-                    GTRegistries.ORE_VEINS.getKey(entry), pos.toShortString(), axis.getName(), coordinate, sectionMin, sectionMax);
         }
     }
 
