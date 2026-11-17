@@ -121,14 +121,14 @@ public interface ISpoilableItem {
      * This function may have side effects (i.e. spawning an entity) when called with
      * {@code simulate = false}.
      *
-     * @param spoilContext   The spoil context, may contain the level, position, and entity.|
-     * @param timeDifference The ticks elapsed since this item should have spoiled. An item may not spoil immediately in
-     *                       some cases, e.g. if in an unloaded chunk.
-     * @param simulate       True if side effects should not be performed.
+     * @param spoilContext The spoil context, may contain the level, position, and entity.|
+     * @param ticksOverdue The ticks elapsed since this item should have spoiled. An item may not spoil immediately in
+     *                     some cases, e.g. if in an unloaded chunk.
+     * @param simulate     True if side effects should not be performed.
      * 
      * @return the stack to replace the provided stack with when it spoils
      */
-    ItemStack getSpoilResult(SpoilContext spoilContext, long timeDifference, boolean simulate);
+    ItemStack getSpoilResult(SpoilContext spoilContext, long ticksOverdue, boolean simulate);
 
     /**
      * Note: returning {@code false} in this method won't stop the item from spoiling if the spoiling NBT has already

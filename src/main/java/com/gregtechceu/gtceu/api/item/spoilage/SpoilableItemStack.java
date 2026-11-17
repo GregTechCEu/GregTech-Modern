@@ -9,7 +9,9 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ItemLike;
@@ -160,10 +162,18 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
+        var time = getTicksUntilSpoiled();
+        MutableComponent timeTooltip;
+        if (time <= 0) {
+            timeTooltip = Component.translatable("gtceu.tooltip.spoil_imminent")
+                    .withStyle(ChatFormatting.DARK_GREEN);
+        } else {
+            timeTooltip = Component.literal(FormattingUtil.formatTime(getTicksUntilSpoiled()))
+                    .withStyle(ChatFormatting.DARK_AQUA);
+        }
         tooltipComponents.add(Component.translatable(
                 "gtceu.tooltip.spoil_time_remaining",
-                Component.literal(FormattingUtil.formatTime(getTicksUntilSpoiled()))
-                        .withStyle(ChatFormatting.DARK_AQUA)));
+                timeTooltip));
         tooltipComponents.add(Component.translatable(
                 "gtceu.tooltip.spoils_into", getSpoilResultTooltip()));
         if (isAdvanced.isAdvanced()) {
@@ -198,7 +208,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     @Override
     public float getDurabilityForDisplay(ItemStack stack) {
-        return getCreationTick() == 0 ? 1 : (float) getTicksUntilSpoiled() / getSpoilTicks();
+        return getCreationTick() == 0 ? 1 : Mth.clamp((float) getTicksUntilSpoiled() / getSpoilTicks(), 0, 1);
     }
 
     private final LazyOptional<ISpoilableItem> capability = LazyOptional.of(() -> this);

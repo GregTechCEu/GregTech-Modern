@@ -39,6 +39,8 @@ public class SpoilableBehavior {
     private final List<ItemLike> attachedTo = new ArrayList<>();
 
     public static void init(IEventBus eventBus) {
+        if (!SpoilUtils.enabled()) return;
+
         RegisterSpoilablesEvent event = new RegisterSpoilablesEvent(SpoilableBehavior::builder);
         ModLoader.get().postEventWrapContainerInModOrder(event);
         if (GTCEu.Mods.isKubeJSLoaded()) {
@@ -96,8 +98,8 @@ public class SpoilableBehavior {
         }
 
         @Override
-        public ItemStack getSpoilResult(SpoilContext spoilContext, long timeDifference, boolean simulate) {
-            return spoilResult.getSpoilResult(getStack(), spoilContext, timeDifference, simulate);
+        public ItemStack getSpoilResult(SpoilContext spoilContext, long ticksOverdue, boolean simulate) {
+            return spoilResult.getSpoilResult(getStack(), spoilContext, ticksOverdue, simulate);
         }
 
         @Override
@@ -109,7 +111,7 @@ public class SpoilableBehavior {
     @FunctionalInterface
     public interface SpoilResultProvider {
 
-        ItemStack getSpoilResult(ItemStack stack, SpoilContext spoilContext, long timeDifference, boolean simulate);
+        ItemStack getSpoilResult(ItemStack stack, SpoilContext spoilContext, long ticksOverdue, boolean simulate);
     }
 
     public static class Builder {

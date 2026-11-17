@@ -313,6 +313,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             }
         }
 
+        if (getLevel().getGameTime() % 2 != 0) return;
         getTraits(NotifiableItemStackHandler.class).forEach(v -> {
             SpoilUtils.updateBlockItemHandler(v, getLevel(), getBlockPos());
         });

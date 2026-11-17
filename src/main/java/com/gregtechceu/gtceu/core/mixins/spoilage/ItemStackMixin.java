@@ -38,24 +38,6 @@ public abstract class ItemStackMixin {
     }
 
     /**
-     * Allows {@link ISpoilableItem} subclasses that implement {@link IAddInformation} to
-     * actually display the added tooltip.
-     */
-    @Inject(at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/world/item/Item;appendHoverText(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/Level;Ljava/util/List;Lnet/minecraft/world/item/TooltipFlag;)V"),
-            method = "getTooltipLines",
-            locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void gtceu$spoilageTooltip(Player player, TooltipFlag isAdvanced,
-                                       CallbackInfoReturnable<List<Component>> cir,
-                                       List<Component> list) {
-        ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(gtceu$self());
-        if (spoilable instanceof IAddInformation addInformation) {
-            addInformation.appendHoverText(gtceu$self(), player == null ? null : player.level(), list,
-                    isAdvanced);
-        }
-    }
-
-    /**
      * Allows {@link ISpoilableItem} subclasses that implement {@link IDurabilityBar} to
      * actually display the bar.
      */

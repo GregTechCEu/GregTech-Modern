@@ -109,14 +109,10 @@
         "mui.ModularUIJeiRecipeAccessor",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",
-        "spoilage.AbstractFurnaceBlockEntityMixin",
-        "spoilage.BrewingStandBlockEntityMixin",
-        "spoilage.ChestBlockEntityMixin",
-        "spoilage.HopperBlockEntityMixin",
         "spoilage.ItemEntityMixin",
         "spoilage.ItemHandlerHelperMixin",
         "spoilage.ItemStackMixin",
-        "spoilage.ShulkerBoxBlockEntityMixin"
+        "spoilage.LevelChunkMixin"
     ],
     "injectors": {
         "defaultRequire": 1,
