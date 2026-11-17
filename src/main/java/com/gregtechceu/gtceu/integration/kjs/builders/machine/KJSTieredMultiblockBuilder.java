@@ -4,9 +4,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 
 import net.minecraft.resources.ResourceLocation;
@@ -25,9 +23,8 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition>
                                         implements IMachineBuilderKJS {
 
-    private final MultiblockMachineBuilder<?>[] builders = new MultiblockMachineBuilder[TIER_COUNT];
-    @SuppressWarnings("unchecked")
-    private final MachineEntry<MultiblockMachineDefinition>[] machines = new MachineEntry[TIER_COUNT];
+    private final MultiblockMachineBuilderJS[] builders = new MultiblockMachineBuilderJS[TIER_COUNT];
+
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
     @Setter
@@ -49,18 +46,14 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     @Override
     public void generateMachineModels() {
         for (int tier : this.tiers) {
-            generateMachineModel(this.builders[tier], this.machines[tier].value());
+            this.builders[tier].generateMachineModels();
         }
     }
 
     @Override
     public void generateAssets(KubeAssetGenerator generator) {
         for (int tier : this.tiers) {
-            MachineEntry<MultiblockMachineDefinition> definition = this.machines[tier];
-            if (definition == null) continue;
-
-            final ResourceLocation id = definition.getId();
-            generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/")));
+            this.builders[tier].generateAssets(generator);
         }
     }
 
@@ -72,10 +65,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     @Override
     public void generateLang(LangKubeEvent lang) {
         for (int tier : tiers) {
-            var def = this.machines[tier];
-            if (def != null && def.value().getLangValue() != null) {
-                lang.add(def.getId().getNamespace(), def.value().getDescriptionId(), def.value().getLangValue());
-            }
+            this.builders[tier].generateLang(lang);
         }
     }
 
@@ -87,18 +77,23 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
                 "example: `builder.machine((holder, tier) => new SimpleTieredMachine(holder, tier, t => t * 3200)`");
         Preconditions.checkNotNull(definition, "You must set a definition function! " +
                 "See GTMachines for examples");
+
         for (final int tier : tiers) {
             String tierName = VNL[tier];
-            MultiblockMachineBuilder<?> builder = GTRegistrate
+
+            MultiblockMachineBuilder<?> internalBuilder = GTRegistrate
                     .createIgnoringListenerErrors(this.id.getNamespace())
                     .multiblock(String.format("%s_%s", tierName, this.id.getPath()),
                             holder -> machine.create(holder, tier));
 
-            builder.workableTieredHullModel(id.withPrefix("block/machines/"))
+            var builder = new MultiblockMachineBuilderJS(id, internalBuilder);
+
+            internalBuilder.workableTieredHullModel(id.withPrefix("block/machines/"))
                     .tier(tier);
+
             this.definition.apply(tier, builder);
             this.builders[tier] = builder;
-            this.machines[tier] = builder.register();
+
         }
         return null;
     }
@@ -112,6 +107,6 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     @FunctionalInterface
     public interface DefinitionFunction {
 
-        void apply(int tier, MachineBuilder<?, ?, ?> builder);
+        void apply(int tier, MultiblockMachineBuilderJS builder);
     }
 }

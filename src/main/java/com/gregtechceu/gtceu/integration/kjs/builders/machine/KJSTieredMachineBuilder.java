@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 
@@ -31,10 +29,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
                                      implements IMachineBuilderKJS {
 
-    private final MachineBuilder<?, ?, ?>[] builders = new MachineBuilder[TIER_COUNT];
-
-    @SuppressWarnings("unchecked")
-    public final MachineEntry<MachineDefinition>[] machines = new MachineEntry[TIER_COUNT];
+    private final MachineBuilderJS<?>[] builders = new MachineBuilderJS[TIER_COUNT];
 
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
@@ -69,18 +64,14 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
     @Override
     public void generateMachineModels() {
         for (int tier : this.tiers) {
-            generateMachineModel(this.builders[tier], this.machines[tier].value());
+            this.builders[tier].generateMachineModels();
         }
     }
 
     @Override
     public void generateAssets(KubeAssetGenerator generator) {
         for (int tier : this.tiers) {
-            MachineEntry<MachineDefinition> definition = this.machines[tier];
-            if (definition == null) continue;
-
-            final ResourceLocation id = definition.getId();
-            generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/")));
+            this.builders[tier].generateAssets(generator);
         }
     }
 
@@ -88,11 +79,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
     public void generateLang(LangKubeEvent lang) {
         super.generateLang(lang);
         for (int tier : this.tiers) {
-            MachineEntry<MachineDefinition> definition = this.machines[tier];
-            if (definition == null) continue;
-            if (definition.value().getLangValue() != null) {
-                lang.add(GTCEu.MOD_ID, definition.value().getDescriptionId(), definition.value().getLangValue());
-            }
+            this.builders[tier].generateLang(lang);
         }
     }
 
@@ -110,32 +97,36 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
             final Int2IntFunction tankFunction = Objects.requireNonNullElse(tankScalingFunction,
                     GTMachineUtils.defaultTankSizeFunction);
 
-            MachineBuilder<MachineDefinition, ?, ?> builder = GTRegistrate
+            MachineBuilder<MachineDefinition, ?, ?> internalBuilder = GTRegistrate
                     .createIgnoringListenerErrors(this.id.getNamespace())
                     .machine(String.format("%s_%s", tierName, this.id.getPath()),
                             holder -> machine.create(holder, tier, tankFunction));
 
+            var builder = new MachineBuilderJS<>(id, internalBuilder);
+
             builder.langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(this.id.getPath()), VLVT[tier]))
                     .tier(tier);
+
             if (this.addDefaultModel) {
                 builder.workableTieredHullModel(id.withPrefix("block/machines/"));
             }
+
             this.definition.apply(tier, builder);
 
-            if (!builder.properties().recipeTypes().isEmpty()) {
+            if (!internalBuilder.properties().recipeTypes().isEmpty()) {
                 if (tankScalingFunction != null && addDefaultTooltips) {
-                    builder.tooltips(
+                    internalBuilder.tooltips(
                             GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
-                                    () -> builder.properties().recipeTypes().stream().findFirst().orElseThrow().get(),
+                                    () -> internalBuilder.properties().recipeTypes().stream().findFirst().orElseThrow()
+                                            .get(),
                                     tankScalingFunction.applyAsInt(tier), !isGenerator));
                 }
             }
-            if (builder.properties().ui() == null) {
-                builder.ui(GTSingleblockMachinePanels.GENERAL_MACHINE);
+            if (internalBuilder.properties().ui() == null) {
+                internalBuilder.ui(GTSingleblockMachinePanels.GENERAL_MACHINE);
             }
 
             this.builders[tier] = builder;
-            machines[tier] = builder.register();
         }
         return null;
     }
@@ -149,6 +140,6 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
     @FunctionalInterface
     public interface DefinitionFunction {
 
-        void apply(int tier, MachineBuilder<?, ?, ?> builder);
+        void apply(int tier, MachineBuilderJS<?> builder);
     }
 }
