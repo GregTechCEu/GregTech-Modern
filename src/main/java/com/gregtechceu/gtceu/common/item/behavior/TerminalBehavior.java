@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.api.multiblock.util.AutobuildHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.network.packets.CPacketTerminalSettings;
-import com.gregtechceu.gtceu.integration.ae2.AEItemCompat;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
 import net.minecraft.ChatFormatting;
