@@ -142,7 +142,7 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IM
                         .tooltip(false, t -> t.add("cover.advanced_detector.latch.disabled"))
                         .tooltip(true, t -> t.add("cover.advanced_detector.latch.enabled")));
 
-        GTMuiWidgets.createFilterRow(buttonRow, filterHandler, data, syncManager, settings);
+        GTMuiWidgets.createFilterRow(buttonRow, filterHandler, data, syncManager, settings, data.getSide());
 
         column.child(coverUIRow().child(Text.lang("cover.advanced_fluid_detector.min").asWidget().width(50))
                 .child(GTMuiWidgets.createIntInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(110)))

@@ -23,6 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.connection.ConnectionType;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
@@ -44,8 +45,10 @@ import brachy.modularui.value.sync.*;
 import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
+import io.netty.buffer.Unpooled;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -143,7 +146,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     /**
      * All syncers registered through this method MUST use the {@link PanelSyncManager#getOrCreateSyncHandler} method
-     * for applying a syncer to a widget because it gets placed into a {@link DynamicSyncedWidget}.
+     * for applying a syncer to a widget because it gets placed into a {@link DynamicWidget}.
      *
      * @return A widget to represent the entry type for this cover
      */
@@ -209,6 +212,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     private void setDescription(String description) {
+        if (description.length() > 32) description = description.substring(0, 32);
         if (getEntry() != null) getEntry().setDescription(description);
     }
 
@@ -252,7 +256,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     @Override
     public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
                                   UISettings settings) {
-        var channelManager = syncManager.syncedPanel("channelManager", true,
+        var channelManager = syncManager.syncedPanel(
+                "channelManager." + data.getSide().getName().toLowerCase(Locale.ROOT), true,
                 (sm, sh) -> createChannelManagerPanel(data, sm, settings));
 
         var colorSyncer = new IntSyncValue(this::getColor);
@@ -291,7 +296,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .setMaxLength(8)
                         .setValidator(str -> COLOR_INPUT_PATTERN.matcher(str).replaceAll(""))
                         .addTooltipLine(Text.lang("cover.ender_link.tooltip.channel_name")))
-                .child(new DynamicSyncedWidget<>().syncHandler(dynamicLinkedSyncHandler))
+                .child(new DynamicWidget<>().syncHandler(dynamicLinkedSyncHandler))
                 .child(new ButtonWidget<>().onMousePressed((GuiContext context, int button) -> {
                     channelManager.openPanel();
                     return true;
@@ -308,7 +313,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         bottomRow.child(GTMuiWidgets.createPowerButton(this));
         bottomRow.child(GTMuiWidgets.createIOCycleButton(ioSync, false));
         if (getFilterHandler() != null)
-            GTMuiWidgets.createFilterRow(bottomRow, getFilterHandler(), data, syncManager, settings);
+            GTMuiWidgets.createFilterRow(bottomRow, getFilterHandler(), data, syncManager, settings, data.getSide());
         column.child(bottomRow);
     }
 
@@ -329,8 +334,10 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .child(new ButtonWidget<>().overlay(GTGuiTextures.BUTTON_CROSS).onMousePressed((context, button) -> {
                     MouseData mouseData = MouseData.create(button);
                     if (mouseData.mouseButton() == 1) {
-                        syncManager.callSyncedAction("deleteEntry",
-                                buffer -> buffer.writeCharSequence(entry.getColorStr(), StandardCharsets.UTF_8));
+                        var buf = new RegistryFriendlyByteBuf(Unpooled.buffer(0),
+                                coverHolder.getLevel().registryAccess(), ConnectionType.NEOFORGE);
+                        buf.writeCharSequence(entry.getColorStr(), StandardCharsets.UTF_8);
+                        syncManager.callSyncedAction("deleteEntry", buf);
                         return true;
                     }
                     return false;
@@ -401,7 +408,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
             }
         });
 
-        col.child(new DynamicSyncedWidget<>()
+        col.child(new DynamicWidget<>()
                 .syncHandler(dynamicLinkedSyncHandler).margin(7, 0)
                 .widthRel(1.0f).coverChildrenHeight());
 

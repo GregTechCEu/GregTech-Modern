@@ -4,8 +4,11 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
+import net.minecraft.network.chat.Component;
+
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
@@ -14,6 +17,9 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
 
@@ -25,7 +31,7 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
     @Getter
     protected final ParentWidget<?> mainContents;
 
-    public MachineUIPanel(MetaMachine machine, UISettings settings, boolean attachPlayerInventory,
+    public MachineUIPanel(MetaMachine machine, PosGuiData data, UISettings settings, boolean attachPlayerInventory,
                           boolean addTitleBar, boolean drawGTLogo, UITexture gtLogoTexture) {
         super(machine.getDefinition().getId().getPath());
 
@@ -66,6 +72,24 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
                 .background(themeBackground.getSubArea(0.25f, 0f, 1.0f, 1.0f))
                 .setEnabledIf(f -> !f.getChildren().isEmpty())
                 .decoration();
+
+        child(Flow.col()
+                .coverChildren()
+                .leftRel(1.0f)
+                .reverseLayout(true)
+                .padding(2, 0, 0, 0)
+                .top(2)
+                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                .childPadding(2)
+                .excludeAreaInRecipeViewer()
+                .setEnabledIf(f -> !f.getChildren().isEmpty())
+                .decoration()
+                .child(GTGuiTextures.INFO.asWidget().tooltip(t -> {
+                    List<Component> lines = new ArrayList<>();
+                    lines.add(machine.getDefinition().asStack().getHoverName());
+                    machine.getDefinition().getTooltipBuilder().accept(machine.getDefinition().asStack(), lines);
+                    lines.forEach(t::addLine);
+                })));
 
         Flow panelContents = Flow.col().coverChildren();
         panelContents.margin(4);

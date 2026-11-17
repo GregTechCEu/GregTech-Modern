@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
 
-import java.util.Locale;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -59,7 +58,7 @@ public class GTItemModules {
                                                                                                     int... tiers) {
         RegistryEntry<ItemModule, T>[] result = new RegistryEntry[GTValues.TIER_COUNT];
         for (int tier : tiers) {
-            ResourceLocation resourceLocation = id.withPrefix(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_");
+            ResourceLocation resourceLocation = id.withPrefix(GTValues.VNL[tier] + "_");
             result[tier] = registrate.simple(resourceLocation.getPath(), GTRegistries.Keys.ITEM_MODULE, () -> {
                 var module = constructor.apply(resourceLocation, tier);
                 module.setOtherTierModules(result);

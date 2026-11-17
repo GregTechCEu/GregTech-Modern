@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.item.datacomponents;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.utils.codec.StreamCodecUtils;
+import com.gregtechceu.gtceu.utils.codec.GTStreamCodecUtils;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -29,7 +29,7 @@ public record ToolBehaviors(@Unmodifiable Map<ToolBehaviorType<?>, IToolBehavior
             .dispatchedMap(GTRegistries.TOOL_BEHAVIORS.byNameCodec(), ToolBehaviorType::getCodec);
     public static final Codec<ToolBehaviors> CODEC = MAP_CODEC.xmap(ToolBehaviors::new, ToolBehaviors::behaviors);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, Map<ToolBehaviorType<?>, IToolBehavior<?>>> MAP_STREAM_CODEC = StreamCodecUtils.dispatchMap(
+    public static final StreamCodec<RegistryFriendlyByteBuf, Map<ToolBehaviorType<?>, IToolBehavior<?>>> MAP_STREAM_CODEC = GTStreamCodecUtils.dispatchMap(
             HashMap::new,
             ByteBufCodecs.registry(GTRegistries.Keys.TOOL_BEHAVIOR),
             type -> (StreamCodec<? super RegistryFriendlyByteBuf, IToolBehavior<?>>) type.getStreamCodec());

@@ -21,7 +21,7 @@ public class PartAbilityError extends PatternError {
 
     // spotless:off
     public static final MapCodec<PartAbilityError> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
+            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::pos),
             Codec.STRING.fieldOf("name").forGetter(PartAbilityError::getPartAbilityName))
     .apply(instance, PartAbilityError::new));
     //spotless:on

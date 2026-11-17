@@ -56,13 +56,13 @@ public class CreativeChestMachine extends QuantumChestMachine {
     }
 
     private void setTicksPerCycle(int value) {
-        ticksPerCycle = value;
+        ticksPerCycle = Math.clamp(value, 1, Integer.MAX_VALUE);
         autoOutput.setTicksPerCycle(ticksPerCycle);
         onItemChanged();
     }
 
     private void setItemsPerCycle(int value) {
-        itemsPerCycle = value;
+        itemsPerCycle = Math.clamp(value, 1, Integer.MAX_VALUE);;
         onItemChanged();
     }
 

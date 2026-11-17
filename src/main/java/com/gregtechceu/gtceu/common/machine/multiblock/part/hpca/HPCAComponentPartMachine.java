@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComputationProviderTrait;
@@ -24,6 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class HPCAComponentPartMachine extends MultiblockPartMachine {
 
     @Getter
+    @SaveField
     protected final HPCAComponentTrait hpcaComponentTrait;
     @Getter
     protected final boolean isAdvanced;

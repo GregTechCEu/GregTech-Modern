@@ -106,7 +106,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
                 "See GTMachines for examples");
 
         for (final int tier : tiers) {
-            String tierName = VN[tier].toLowerCase(Locale.ROOT);
+            String tierName = VNL[tier];
             final Int2IntFunction tankFunction = Objects.requireNonNullElse(tankScalingFunction,
                     GTMachineUtils.defaultTankSizeFunction);
 

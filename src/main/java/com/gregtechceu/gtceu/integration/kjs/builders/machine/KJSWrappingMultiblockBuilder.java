@@ -62,6 +62,6 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
 
     @Override
     public @Nullable MultiblockMachineDefinition createObject() {
-        return null;
+        return tieredBuilder.createObject();
     }
 }
