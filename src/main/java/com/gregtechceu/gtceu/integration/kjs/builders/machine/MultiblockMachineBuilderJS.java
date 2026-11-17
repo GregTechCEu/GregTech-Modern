@@ -59,7 +59,6 @@ public class MultiblockMachineBuilderJS extends MachineBuilderJS<MultiblockMachi
         return getThis();
     }
 
-
     public MultiblockMachineBuilderJS additionalDisplay(BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay) {
         getInternal().additionalDisplay(additionalDisplay);
         return getThis();
