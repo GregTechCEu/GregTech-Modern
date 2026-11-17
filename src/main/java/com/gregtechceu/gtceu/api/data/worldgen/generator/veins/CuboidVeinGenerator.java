@@ -110,7 +110,7 @@ public class CuboidVeinGenerator extends VeinGenerator {
                 .forEach(pos -> {
                     final long randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
 
-                    int sectionRelativeStartY = startY - pos.minBlockY();
+                    final int sectionRelativeStartY = startY - pos.minBlockY();
                     if (sectionRelativeStartY > SECTION_MAX_INDEX) {
                         // bottom Y is above this section, skip
                         // I don't think this can actually happen, but better safe than sorry

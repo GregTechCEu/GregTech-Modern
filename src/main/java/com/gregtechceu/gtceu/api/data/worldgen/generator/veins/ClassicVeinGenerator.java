@@ -157,7 +157,6 @@ public class ClassicVeinGenerator extends VeinGenerator {
                     int z = dz + zOrigin;
                     pos.set(x, y, z);
 
-                    BlockState blockState = section.getBlockState(x, y, z);
                     int layer = y - (yOrigin - yMax);
                     // First try to spawn "between"
                     if (layer >= startBetween && layer - startBetween + 1 <= between.layers) {

@@ -121,8 +121,7 @@ public class DikeVeinGenerator extends VeinGenerator {
                     if (inSectionZ != sectionRelative(inSectionZ)) continue;
 
                     float dist = (dx * dx) + (dz * dz);
-                    if (dist > radius * 2) continue;
-
+                    if (dist > (2f * radius)) continue;
 
                     pos.set(globalX + dx, dy, globalZ + dz);
                     if (normalNoise.getValue(dx, dy, dz) >= 0.5 && random.nextFloat() <= entry.density()) {
