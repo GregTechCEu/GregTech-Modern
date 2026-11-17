@@ -107,7 +107,7 @@ public class EnergyContainerList implements IEnergyContainer {
     }
 
     private static boolean hasPrimeFactorGreaterThanTwo(long l) {
-        return l > 1 && Long.bitCount(l) != 1;
+        return l > 1L && Long.bitCount(l) != 1;
     }
 
     /**
