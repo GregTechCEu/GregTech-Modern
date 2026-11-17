@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.IBreathingEntity;
-import com.gregtechceu.gtceu.core.IFireImmuneEntity;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -21,13 +20,11 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin implements IFireImmuneEntity, IBreathingEntity {
+public abstract class EntityMixin implements IBreathingEntity {
 
     @Shadow
     public abstract int getMaxAirSupply();
 
-    @Unique
-    private boolean gtceu$fireImmune = false;
     @Unique
     private boolean gtceu$isEntityInit = false;
 
@@ -37,10 +34,8 @@ public abstract class EntityMixin implements IFireImmuneEntity, IBreathingEntity
     @ModifyReturnValue(method = "fireImmune", at = @At("RETURN"))
     private boolean gtceu$changeFireImmune(boolean original) {
         Entity entity = (Entity) (Object) this;
-        return original || gtceu$fireImmune ||
-                (entity instanceof LivingEntity living &&
-                        living.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ModularArmorItem armor &&
-                        armor.protectsAgainstFire());
+        return original || (entity instanceof LivingEntity living &&
+                        living.getItemBySlot(EquipmentSlot.CHEST).is(CustomTags.FIRE_IMMUNE_WEARABLES));
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))
@@ -72,11 +67,6 @@ public abstract class EntityMixin implements IFireImmuneEntity, IBreathingEntity
             return gtceu$modifiedMaxAirSupply;
         }
         return original;
-    }
-
-    @Override
-    public void gtceu$setFireImmune(boolean isImmune) {
-        this.gtceu$fireImmune = isImmune;
     }
 
     @Override
