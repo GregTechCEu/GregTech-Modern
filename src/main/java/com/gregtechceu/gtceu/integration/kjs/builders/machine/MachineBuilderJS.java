@@ -377,8 +377,8 @@ public class MachineBuilderJS<SELF extends MachineBuilderJS<SELF>> extends Build
 
     @Override
     public void generateLang(LangKubeEvent lang) {
-        if (object != null && langValue != null) {
-            lang.add(id.getNamespace(), object.getDescriptionId(), langValue);
+        if (langValue != null) {
+            lang.add(id.getNamespace(), Objects.requireNonNull(entry).value().getDescriptionId(), langValue);
         }
     }
 
