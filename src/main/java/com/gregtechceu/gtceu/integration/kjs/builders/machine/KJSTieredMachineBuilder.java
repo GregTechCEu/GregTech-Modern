@@ -85,7 +85,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition> {
                     .tier(tier);
 
             if (this.addDefaultModel) {
-                builder.workableTieredHullModel(childId.withPrefix("block/machines/"));
+                builder.workableTieredHullModel(id.withPrefix("block/machines/"));
             }
 
             this.definition.apply(tier, builder);

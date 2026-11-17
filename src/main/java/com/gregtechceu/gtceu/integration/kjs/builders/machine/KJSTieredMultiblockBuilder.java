@@ -55,7 +55,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
 
             var builder = new MultiblockMachineBuilderJS(childId, internalBuilder);
 
-            internalBuilder.workableTieredHullModel(childId.withPrefix("block/machines/"))
+            internalBuilder.workableTieredHullModel(id.withPrefix("block/machines/"))
                     .tier(tier);
 
             this.definition.apply(tier, builder);
