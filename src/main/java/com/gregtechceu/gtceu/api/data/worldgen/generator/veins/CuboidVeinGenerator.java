@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.utils.logging.LogMarkers;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator.LOGGER;
+import static com.gregtechceu.gtceu.GTCEu.LOGGER;
 import static net.minecraft.core.SectionPos.*;
 
 @Accessors(fluent = true, chain = true)
@@ -120,16 +120,18 @@ public class CuboidVeinGenerator extends VeinGenerator {
                     if (sectionRelativeStartY > SECTION_MAX_INDEX) {
                         // bottom Y is above this section, skip
                         // I don't think this can actually happen, but better safe than sorry
-                        LOGGER.warn(LogMarkers.VEINDEBUG,
-                                "Tried to place part of cuboid vein '{}' in section {} when start Y is above section (section top: {}, vein start: {})!",
-                                GTRegistries.ORE_VEINS.getKey(entry), pos, pos.maxBlockY(), startY);
+                        if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
+                            LOGGER.warn("Tried to place part of cuboid vein '{}' in section {} when start Y is above section (section top: {}, vein start: {})!",
+                                    GTRegistries.ORE_VEINS.getKey(entry), pos, pos.maxBlockY(), startY);
+                        }
                         return;
                     } else if (sectionRelativeStartY + totalLayers < 0) {
                         // top Y is below this section, skip
                         // I don't think this can actually happen, but better safe than sorry
-                        LOGGER.warn(LogMarkers.VEINDEBUG,
-                                "Tried to place part of cuboid vein '{}' in section {} when end Y is below section (section bottom: {}, vein end: {})!",
-                                GTRegistries.ORE_VEINS.getKey(entry), pos, pos.minBlockY(), startY + totalLayers);
+                        if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
+                            LOGGER.warn("Tried to place part of cuboid vein '{}' in section {} when end Y is below section (section bottom: {}, vein end: {})!",
+                                            GTRegistries.ORE_VEINS.getKey(entry), pos, pos.minBlockY(), startY + totalLayers);
+                        }
                         return;
                     }
 
@@ -257,10 +259,10 @@ public class CuboidVeinGenerator extends VeinGenerator {
             case Y -> pos.maxBlockY();
             case Z -> pos.maxBlockZ();
         };
-        LOGGER.warn(LogMarkers.VEINDEBUG,
-                "Tried to place block of cuboid vein '{}' in section ({}) outside section (at {}={}, section bounds: [{},{}])",
-                GTRegistries.ORE_VEINS.getKey(entry), pos.toShortString(), axis.getName(), coordinate, sectionMin, sectionMax);
-
+        if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
+            LOGGER.warn("Tried to place block of cuboid vein '{}' in section ({}) outside section (at {}={}, section bounds: [{},{}])",
+                    GTRegistries.ORE_VEINS.getKey(entry), pos.toShortString(), axis.getName(), coordinate, sectionMin, sectionMax);
+        }
     }
 
     /**

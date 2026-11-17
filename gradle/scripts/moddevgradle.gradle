@@ -15,10 +15,6 @@ configurations.configureEach {
             if (it.requested.group == "org.lwjgl") {
                 it.useVersion("3.3.2")
                 it.because("We need a version of LWJGL that supports java 21 for RenderDoc support")
-            } else if (it.requested.group == "org.apache.logging.log4j") {
-                it.useVersion(libs.versions.log4j.get())
-                it.because("For whatever reason, we only have Log4j 2.8.1 in the compile dependencies but 2.19.0 as a runtime dependency." +
-                        "We need 2.19.0 as a compile dependency too.")
             }
         }
     }
@@ -155,10 +151,6 @@ legacyForge {
             systemProperty 'forge.logging.markers', 'REGISTRIES'
             // Enable assertions for our classes in dev environment
             jvmArgument('-ea:com.gregtechceu.gtceu...')
-
-            // enable vein placement logging
-            // All GT markers are in the {@link com.gregtechceu.gtceu.utils.logging.LogMarkers} class.
-            systemProperty 'gtceu.logging.markers.veindebug', 'ACCEPT'
 
             // jvmArgument("-XX:+AllowEnhancedClassRedefinition")
             jvmArgument("-XX:+AllowRedefinitionToAddDeleteMethods")

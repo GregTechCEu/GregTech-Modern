@@ -12,8 +12,6 @@ renderNurse = "0.0.12"
 mixin = "0.8.7"
 evalEx = "3.6.0"
 
-log4j = "2.19.0"
-
 [libraries]
 minecraft               = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 minecraftForge          = { module = "net.minecraftforge:forge", version.ref = "minecraftForge" }

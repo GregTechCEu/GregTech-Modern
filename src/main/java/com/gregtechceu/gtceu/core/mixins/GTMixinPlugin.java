@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.config.Option;
-import com.gregtechceu.gtceu.utils.logging.LogMarkers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,11 +41,6 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
     }
 
     @Override
-    public void onLoad(String mixinPackage) {
-        LogMarkers.initializeLogFilters();
-    }
-
-    @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (!mixinClassName.startsWith(MIXIN_PACKAGE_ROOT)) {
             LOGGER.error("Expected mixin '{}' to start with package root '{}', treating as foreign and disabling!",
@@ -73,6 +67,9 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
 
         return option.isEnabled();
     }
+
+    @Override
+    public void onLoad(String mixinPackage) {}
 
     @Override
     public String getRefMapperConfig() {

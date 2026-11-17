@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration>
-    <filters>
-        <MarkerFilter marker="VEINDEBUG" onMatch="${sys:gtceu.logging.marker.veindebug:-DENY}" onMismatch="NEUTRAL"/>
-    </filters>
-</Configuration>
