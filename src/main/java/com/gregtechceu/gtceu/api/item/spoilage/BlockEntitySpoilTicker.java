@@ -1,5 +1,9 @@
 package com.gregtechceu.gtceu.api.item.spoilage;
 
+import appeng.blockentity.AEBaseBlockEntity;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.utils.GTUtil;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -13,21 +17,25 @@ import net.minecraft.world.ticks.*;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.Set;
 
 /**
  * Handles spoilage updates for block entities that aren't GT machines.<br>
- * Only ticks MC containers ({@link BaseContainerBlockEntity}) by default, other BE classes can be added to the
- * BLOCK_ENTITY_CLASSES_TO_TICK set to tick them.
  */
 public class BlockEntitySpoilTicker extends SavedData {
 
     public static int MAX_TICKS_PER_UPDATE = ServerLevel.MAX_SCHEDULED_TICKS_PER_TICK;
     public static final long UPDATE_FREQUENCY = 2;
 
-    public static final Set<Class<? extends BlockEntity>> BLOCK_ENTITY_CLASSES_TO_TICK = ObjectOpenHashSet.of(
-            BaseContainerBlockEntity.class);
+    public static final Set<Class<? extends BlockEntity>> BLACKLISTED_BLOCK_ENTITIES = new ObjectOpenHashSet<>();
+
+    static {
+        if (GTCEu.Mods.isAE2Loaded()) AE2CallWrapper.blacklistAEBlockEntities();
+    }
 
     public static BlockEntitySpoilTicker get(ServerLevel level) {
         return level.getDataStorage().computeIfAbsent((tag) -> new BlockEntitySpoilTicker(level),
@@ -54,7 +62,7 @@ public class BlockEntitySpoilTicker extends SavedData {
     }
 
     public void scheduleTickIfValid(BlockEntity be, long delay, TickPriority priority) {
-        if (BLOCK_ENTITY_CLASSES_TO_TICK.stream().noneMatch(v -> v.isAssignableFrom(be.getClass()))) return;
+        if (BLACKLISTED_BLOCK_ENTITIES.stream().anyMatch(v -> v.isAssignableFrom(be.getClass()))) return;
 
         if (!this.blockEntityTicks.allContainers.containsKey(ChunkPos.asLong(be.getBlockPos()))) {
             this.blockEntityTicks.addContainer(new ChunkPos(be.getBlockPos()), new LevelChunkTicks<>());
@@ -74,8 +82,8 @@ public class BlockEntitySpoilTicker extends SavedData {
         this.blockEntityTicks.tick(gameTime, MAX_TICKS_PER_UPDATE, (pos, blockEntityType) -> {
             BlockEntity blockEntity = this.level.getBlockEntity(pos);
 
-            if (blockEntity == null || blockEntity.isRemoved() || blockEntity.getType() != blockEntityType) {
-                // if the block entity no longer exists, exit without doing anything (including rescheduling)
+            if (blockEntity == null || blockEntity.isRemoved() || blockEntity.getType() != blockEntityType || !hasItemHandler(blockEntity)) {
+                // if the block entity no longer exists or doesn't have an item handler, exit without doing anything (including rescheduling)
                 return;
             }
 
@@ -84,6 +92,18 @@ public class BlockEntitySpoilTicker extends SavedData {
             // reschedule another update
             this.scheduleTick(blockEntity, UPDATE_FREQUENCY, TickPriority.NORMAL);
         });
+    }
+
+    private boolean hasItemHandler(BlockEntity blockEntity) {
+        LazyOptional<IItemHandler> value;
+        for (Direction side : GTUtil.DIRECTIONS) {
+            value = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, side);
+            if (value.isPresent()) {
+                return true;
+            }
+        }
+        value = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
+        return value.isPresent();
     }
 
     public void chunkLoaded(LevelChunk chunk) {
@@ -102,5 +122,11 @@ public class BlockEntitySpoilTicker extends SavedData {
     @Override
     public CompoundTag save(CompoundTag compoundTag) {
         return compoundTag;
+    }
+
+    private static class AE2CallWrapper {
+        public static void blacklistAEBlockEntities() {
+            BLACKLISTED_BLOCK_ENTITIES.add(AEBaseBlockEntity.class);
+        }
     }
 }

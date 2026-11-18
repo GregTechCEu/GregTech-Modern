@@ -6,6 +6,7 @@ title: Spoilage
 Spoilable items spoil based on the amount of ticks that passed from their creation,
 or, more specifically, from one of these events (due to Minecraft's limitations):
 
+- The item is in a block entity exposing an `IItemHandler` capability
 - The item was in a block entity updated by the spoilage ticker (only mc containers by default)
 - The item was crafted in a GregTech recipe
 - The item was crafted in a crafting table
@@ -13,8 +14,8 @@ or, more specifically, from one of these events (due to Minecraft's limitations)
 - The item was dropped
 - `SpoilUtils.update(ItemStack, SpoilContext)` was called
 
-To schedule spoilable updates for a block entity, the block entity's class should be added to `BlockEntitySpoilTicker#BLOCK_ENTITY_CLASSES_TO_TICK`.
-By default, spoilage updates are only scheduled for MC containers and GT machines.
+By default, all block entities with item handlers will be updated by the spoilage handler. To blacklist a block entity from being updated, add the class to `BlockEntitySpoilTicker#BLACKLISTED_BLOCK_ENTITIES`.
+By default, all AE2 block entities are blacklisted.
 
 If you want to make an item spoil, you need to attack the `ISpoilableItem` capability to it.
 Please note that the spoilage timer still decrements even if the stack is in an unloaded chunk.
