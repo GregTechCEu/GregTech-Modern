@@ -50,8 +50,8 @@ public class LatheRecipeLogic extends RecipeLogic {
         }
     };
 
-    private static boolean isLubricatedRod(@Nullable GTRecipe recipe) {
-        return recipe != null && recipe.data.contains(LUBRICATED_ROD);
+    private static boolean isLubricatedRod(GTRecipe recipe) {
+        return recipe.data.contains(LUBRICATED_ROD);
     }
 
     @Override
