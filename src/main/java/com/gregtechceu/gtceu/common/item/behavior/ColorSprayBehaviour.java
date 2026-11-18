@@ -108,14 +108,13 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     private final Supplier<ItemStack> empty;
-    private final DyeColor color;
+    private final @Nullable DyeColor color;
     public final int totalUses;
     private final IntIntPair durabilityBarColors;
 
-    public ColorSprayBehaviour(Supplier<ItemStack> empty, int totalUses, int color) {
+    public ColorSprayBehaviour(Supplier<ItemStack> empty, int totalUses, @Nullable DyeColor color) {
         this.empty = empty;
-        DyeColor[] colors = DyeColor.values();
-        this.color = color >= colors.length || color < 0 ? null : colors[color];
+        this.color = color;
         // default to a gray color if this.color is null (like for solvent spray)
         int colorValue = this.color == null ? 0x969696 : this.color.getTextColor();
         this.totalUses = totalUses;

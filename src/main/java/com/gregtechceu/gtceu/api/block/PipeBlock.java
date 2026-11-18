@@ -40,6 +40,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.*;
@@ -55,7 +56,6 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -239,18 +239,17 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                             ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
         IPipeNode<PipeType, NodeDataType> pipeTile = getPipeTile(level, pos);
-        if (pipeTile != null) {
-            // Color pipes/cables on place if holding spray can in off-hand
-            if (placer instanceof Player player) {
-                ItemStack offhand = placer.getOffhandItem();
-                for (int i = 0; i < DyeColor.values().length; i++) {
-                    if (offhand.is(GTItems.SPRAY_CAN_DYES[i].get())) {
-                        ((IInteractionItem) GTItems.SPRAY_CAN_DYES[i].get().getComponents().get(0))
-                                .useOn(new UseOnContext(player, InteractionHand.OFF_HAND,
-                                        new BlockHitResult(Vec3.ZERO, player.getDirection(), pos, false)));
-                        break;
-                    }
-                }
+        if (pipeTile == null) return;
+        // Color pipes/cables on place if holding spray can in off-hand
+        if (!(placer instanceof Player player)) return;
+
+        ItemStack offhand = placer.getOffhandItem();
+        for (DyeColor color : DyeColor.values()) {
+            Item sprayCanItem = GTItems.SPRAY_CAN_DYES.get(color).get();
+            if (offhand.is(sprayCanItem)) {
+                sprayCanItem.useOn(new UseOnContext(player, InteractionHand.OFF_HAND,
+                        new BlockHitResult(pos.getCenter(), player.getDirection(), pos, false)));
+                break;
             }
         }
     }
