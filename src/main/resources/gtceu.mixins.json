@@ -111,7 +111,6 @@
         "registrate.RegistrateDataProviderAccessor",
         "spoilage.ItemEntityMixin",
         "spoilage.ItemHandlerHelperMixin",
-        "spoilage.ItemStackMixin",
         "spoilage.LevelChunkMixin",
         "spoilage.LevelMixin"
     ],

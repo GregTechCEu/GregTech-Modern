@@ -1,25 +1,25 @@
 package com.gregtechceu.gtceu.api.item.spoilage;
 
-import appeng.blockentity.AEBaseBlockEntity;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.ticks.*;
-
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import lombok.Getter;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
+
+import appeng.blockentity.AEBaseBlockEntity;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Getter;
 
 import java.util.Set;
 
@@ -82,8 +82,10 @@ public class BlockEntitySpoilTicker extends SavedData {
         this.blockEntityTicks.tick(gameTime, MAX_TICKS_PER_UPDATE, (pos, blockEntityType) -> {
             BlockEntity blockEntity = this.level.getBlockEntity(pos);
 
-            if (blockEntity == null || blockEntity.isRemoved() || blockEntity.getType() != blockEntityType || !hasItemHandler(blockEntity)) {
-                // if the block entity no longer exists or doesn't have an item handler, exit without doing anything (including rescheduling)
+            if (blockEntity == null || blockEntity.isRemoved() || blockEntity.getType() != blockEntityType ||
+                    !hasItemHandler(blockEntity)) {
+                // if the block entity no longer exists or doesn't have an item handler, exit without doing anything
+                // (including rescheduling)
                 return;
             }
 
@@ -125,6 +127,7 @@ public class BlockEntitySpoilTicker extends SavedData {
     }
 
     private static class AE2CallWrapper {
+
         public static void blacklistAEBlockEntities() {
             BLACKLISTED_BLOCK_ENTITIES.add(AEBaseBlockEntity.class);
         }
