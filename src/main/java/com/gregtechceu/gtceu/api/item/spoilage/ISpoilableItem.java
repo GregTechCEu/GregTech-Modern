@@ -169,20 +169,24 @@ public interface ISpoilableItem {
      * @implNote This implementation may lead to spoil progress averaging in situations other
      *           than stack merging, though I don't think this will lead to any big user-facing bugs.
      */
-    default void prepareForComparisonWith(ISpoilableItem spoilable) {
-        if (this.isFrozen() || spoilable.isFrozen()) {
+    default void prepareForComparisonWith(ISpoilableItem that) {
+        if (this.isFrozen() || that.isFrozen()) {
             return;
         }
-        long tick1 = this.getCreationTick();
-        long tick2 = spoilable.getCreationTick();
-        if (tick1 != tick2) {
+        long thisCreated = this.getCreationTick();
+        long thatCreated = that.getCreationTick();
+        if (thisCreated != thatCreated) {
+            int thisCount = this.getStack().getCount(), thatCount = that.getStack().getCount();
             long average;
-            if (!this.getStack().isEmpty() && !spoilable.getStack().isEmpty()) {
-                average = (tick1 * this.getStack().getCount() + tick2 * spoilable.getStack().getCount()) /
-                        (this.getStack().getCount() + spoilable.getStack().getCount());
-            } else average = tick1;
+            if (thisCount > 0 && thatCount > 0) {
+                average = (thisCreated * thisCount + thatCreated * thatCount) / (thisCount  + thatCount);
+            } else if (thisCount > 0) {
+                average = thisCreated;
+            } else {
+                average = thatCreated;
+            }
             this.setCreationTick(average);
-            spoilable.setCreationTick(average);
+            that.setCreationTick(average);
         }
     }
 }

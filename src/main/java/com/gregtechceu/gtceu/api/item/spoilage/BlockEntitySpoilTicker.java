@@ -68,7 +68,7 @@ public class BlockEntitySpoilTicker extends SavedData {
             this.blockEntityTicks.addContainer(new ChunkPos(be.getBlockPos()), new LevelChunkTicks<>());
         }
 
-        this.blockEntityTicks.schedule(this.createTick(be, delay, priority));
+        this.scheduleTick(be, delay, priority);
     }
 
     public void scheduleTick(BlockEntity be, long delay, TickPriority priority) {

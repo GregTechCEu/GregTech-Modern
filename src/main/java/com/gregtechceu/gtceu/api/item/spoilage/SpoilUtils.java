@@ -54,7 +54,7 @@ public class SpoilUtils {
     }
 
     public static void updateBlock(BlockEntity blockEntity) {
-        for (Direction side : Direction.values()) updateBlock(blockEntity, side);
+        for (Direction side : GTUtil.DIRECTIONS) updateBlock(blockEntity, side);
         updateBlock(blockEntity, null);
     }
 
@@ -67,10 +67,13 @@ public class SpoilUtils {
 
     public static void updateBlockItemHandler(IItemHandler handler, @Nullable Level level, @Nullable BlockPos pos) {
         for (int slot = 0; slot < handler.getSlots(); slot++) {
-            var stack = handler.getStackInSlot(slot);
+            ItemStack stack = handler.getStackInSlot(slot);
             if (stack.isEmpty()) continue;
+
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
-            if (spoilable != null) spoilable.updateFreshness(new SpoilContext(level, pos, handler, slot), true);
+            if (spoilable != null) {
+                spoilable.updateFreshness(new SpoilContext(level, pos, handler, slot), true);
+            }
         }
     }
 
@@ -105,10 +108,8 @@ public class SpoilUtils {
     public static void spawnEntity(SpoilContext spoilContext, EntityType<? extends Mob> type, int count) {
         if (!(spoilContext.level() instanceof ServerLevel level)) return;
 
-        BlockPos pos;
-        if (spoilContext.entity() != null) pos = spoilContext.entity().blockPosition();
-        else if (spoilContext.pos() != null) pos = spoilContext.pos();
-        else return;
+        BlockPos pos = spoilContext.pos();
+        if (pos == null) return;
 
         if (level.getBlockState(pos).isSuffocating(level, pos)) {
             for (Direction side : GTUtil.DIRECTIONS) {

@@ -134,7 +134,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
             }
 
             for (int slot = 0; slot < storage.getSlots(); ++slot) {
-                var cached = visited[slot];
+                ItemStack cached = visited[slot];
                 ItemStack current = cached != null ? cached : storage.getStackInSlot(slot);
                 int count = current.getCount();
 
@@ -169,16 +169,14 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                 } else { // IO.OUT
                     ItemStack output = items[0].copyWithCount(amount);
 
-                    var spoilage = GTCapabilityHelper.getSpoilable(output);
-
-                    if (spoilage != null) {
-                        spoilage.updateFreshness(SpoilContext.EMPTY, true);
+                    ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(output);
+                    if (spoilable != null) {
+                        spoilable.updateFreshness(SpoilContext.EMPTY, true);
                     }
 
                     if (recipe != null) recipe.mutateOutput(output);
                     // Only try this slot if not visited or if visited with the same type of item
-                    if (cached == null ||
-                            ItemStack.isSameItemSameTags(cached, output)) {
+                    if (cached == null || ItemStack.isSameItemSameTags(cached, output)) {
                         if (count < output.getMaxStackSize() && count < storage.getSlotLimit(slot)) {
                             var remainder = recipe == null ? null :
                                     getActioned(storage, slot, recipe.ingredientActions);

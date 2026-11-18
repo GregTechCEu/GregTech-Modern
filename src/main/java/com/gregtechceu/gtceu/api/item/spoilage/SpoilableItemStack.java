@@ -198,7 +198,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     @Override
     public int getBarColor(ItemStack stack) {
-        return FastColor.ARGB32.color(255, 255, 255, 255);
+        return 0xFFFFFFFF;
     }
 
     @Override
