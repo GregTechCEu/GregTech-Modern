@@ -24,7 +24,8 @@ public class GTDyeItem extends Item implements SignApplicator {
     }
 
     @Override
-    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target,
+                                                  InteractionHand hand) {
         if (!(target instanceof Sheep sheep)) return InteractionResult.PASS;
         if (!sheep.isAlive() || sheep.isSheared() || sheep.getColor() == this.dyeColor) return InteractionResult.PASS;
 
@@ -46,4 +47,3 @@ public class GTDyeItem extends Item implements SignApplicator {
         }
     }
 }
-
