@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.item.spoilage.BlockEntitySpoilTicker;
 import com.gregtechceu.gtceu.api.item.spoilage.SpoilUtils;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
@@ -313,7 +314,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             }
         }
 
-        if (getLevel().getGameTime() % 2 != 0) return;
+        if (getLevel().getGameTime() % BlockEntitySpoilTicker.UPDATE_FREQUENCY != 0) return;
         getTraits(NotifiableItemStackHandler.class).forEach(v -> {
             SpoilUtils.updateBlockItemHandler(v, getLevel(), getBlockPos());
         });

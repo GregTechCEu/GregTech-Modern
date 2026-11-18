@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.spoilage;
 
-
 import com.gregtechceu.gtceu.api.item.spoilage.BlockEntitySpoilTicker;
+
 import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -24,17 +24,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SuppressWarnings("UnstableApiUsage")
 @Mixin(LevelChunk.class)
-public abstract class LevelChunkMixin extends ChunkAccess implements ICapabilityProviderImpl<LevelChunk>  {
+public abstract class LevelChunkMixin extends ChunkAccess implements ICapabilityProviderImpl<LevelChunk> {
 
-    public LevelChunkMixin(ChunkPos chunkPos, UpgradeData upgradeData, LevelHeightAccessor levelHeightAccessor, Registry<Biome> biomeRegistry, long inhabitedTime, @Nullable LevelChunkSection[] sections, @Nullable BlendingData blendingData) {
+    public LevelChunkMixin(ChunkPos chunkPos, UpgradeData upgradeData, LevelHeightAccessor levelHeightAccessor,
+                           Registry<Biome> biomeRegistry, long inhabitedTime, @Nullable LevelChunkSection[] sections,
+                           @Nullable BlendingData blendingData) {
         super(chunkPos, upgradeData, levelHeightAccessor, biomeRegistry, inhabitedTime, sections, blendingData);
     }
 
-    @Inject(method = "setBlockEntity",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntity;clearRemoved()V"))
+    @Inject(method = "addAndRegisterBlockEntity",
+            at = @At(value = "INVOKE",
+                     target = "Lnet/minecraft/world/level/block/entity/BlockEntity;onLoad()V",
+                     shift = At.Shift.AFTER),
+            remap = false)
     private void gtceu$addBlockEntityToSpoilTickers(BlockEntity blockEntity, CallbackInfo ci) {
         if (blockEntity.getLevel() instanceof ServerLevel level) {
-            BlockEntitySpoilTicker.get(level).scheduleTick(blockEntity, 0L, TickPriority.EXTREMELY_HIGH);
+            BlockEntitySpoilTicker.get(level).scheduleTickIfValid(blockEntity, 0L, TickPriority.EXTREMELY_HIGH);
         }
     }
 }

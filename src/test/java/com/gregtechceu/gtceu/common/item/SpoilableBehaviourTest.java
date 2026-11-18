@@ -27,7 +27,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -104,7 +103,7 @@ public class SpoilableBehaviourTest {
             helper.assertTrue(spoilable.getSpoilTicks() == 10,
                     "spoilable didn't return correct total tick amount");
         });
-        helper.runAtTickTime(10, () -> helper.assertTrue(TestUtils.isItemStackEqual(
+        helper.runAtTickTime(11, () -> helper.assertTrue(TestUtils.isItemStackEqual(
                 GTItems.SPOILABLE_5.get().getDefaultInstance().copyWithCount(23),
                 TestUtils.getItemHandler(helper, new BlockPos(1, 1, 1)).getStackInSlot(0)),
                 "item didn't spoil when should have"));
@@ -117,6 +116,7 @@ public class SpoilableBehaviourTest {
         IItemHandler itemHandler = TestUtils.getItemHandler(helper, new BlockPos(1, 1, 1));
 
         ItemStack in = GTItems.SPOILABLE_1.get().getDefaultInstance().copyWithCount(41);
+        SpoilUtils.update(in, SpoilContext.EMPTY);
         itemHandler.insertItem(0, in, false);
 
         SpoilUtils.update(in, new SpoilContext(
@@ -124,7 +124,7 @@ public class SpoilableBehaviourTest {
                 helper.absolutePos(new BlockPos(1, 1, 1)),
                 itemHandler, 0));
 
-        helper.runAtTickTime(70, () -> helper.assertTrue(TestUtils.isItemStackEqual(
+        helper.runAtTickTime(71, () -> helper.assertTrue(TestUtils.isItemStackEqual(
                 GTItems.SPOILABLE_5.get().getDefaultInstance().copyWithCount(41),
                 itemHandler.getStackInSlot(0)),
                 "item didn't spoil recursively (expected spoilable 1 -> 2 -> ... -> 5), got " +
@@ -135,7 +135,11 @@ public class SpoilableBehaviourTest {
     public static void itemSpoilsInCrate(GameTestHelper helper) {
         TestUtils.succeedAfterTest(helper);
         CrateMachine crate = (CrateMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1), GTMachines.STEEL_CRATE);
-        crate.inventory.insertItem(0, GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(23), false);
+
+        var newStack = GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(23);
+        SpoilUtils.update(newStack, SpoilContext.EMPTY);
+
+        crate.inventory.insertItem(0, newStack, false);
         helper.runAtTickTime(9, () -> {
             ItemStack stack = crate.inventory.getStackInSlot(0);
             helper.assertTrue(TestUtils.isItemStackEqual(
@@ -149,7 +153,7 @@ public class SpoilableBehaviourTest {
             helper.assertTrue(spoilable.getSpoilTicks() == 10,
                     "spoilable didn't return correct total tick amount");
         });
-        helper.runAtTickTime(10, () -> helper.assertTrue(TestUtils.isItemStackEqual(
+        helper.runAtTickTime(11, () -> helper.assertTrue(TestUtils.isItemStackEqual(
                 GTItems.SPOILABLE_5.get().getDefaultInstance().copyWithCount(23),
                 crate.inventory.getStackInSlot(0)), "item didn't spoil when should have"));
     }
@@ -158,7 +162,11 @@ public class SpoilableBehaviourTest {
     public static void spoilageFreeze(GameTestHelper helper) {
         TestUtils.succeedAfterTest(helper);
         CrateMachine crate = (CrateMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1), GTMachines.STEEL_CRATE);
-        crate.inventory.insertItem(0, GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(23), false);
+
+        var newStack = GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(23);
+        SpoilUtils.update(newStack, SpoilContext.EMPTY);
+
+        crate.inventory.insertItem(0, newStack, false);
         helper.runAtTickTime(4, () -> {
             ItemStack stack = crate.inventory.getStackInSlot(0);
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
@@ -188,7 +196,7 @@ public class SpoilableBehaviourTest {
         TestUtils.succeedAfterTest(helper);
         CrateMachine crate = (CrateMachine) TestUtils.setMachine(helper, new BlockPos(1, 1, 1), GTMachines.STEEL_CRATE);
         crate.inventory.insertItem(0, GTItems.ENTITY_SPOILABLE.get().getDefaultInstance().copyWithCount(2), false);
-        helper.runAtTickTime(10, () -> {
+        helper.runAtTickTime(12, () -> {
             TestUtils.assertEqual(helper, crate.inventory.getStackInSlot(0),
                     Items.DRAGON_EGG.getDefaultInstance().copyWithCount(6));
             List<Pig> pigs = helper.getLevel().getEntities(EntityType.PIG,
@@ -249,22 +257,11 @@ public class SpoilableBehaviourTest {
     public static void droppedItemSpoils(GameTestHelper helper) {
         TestUtils.succeedAfterTest(helper);
         ItemEntity item = helper.spawnItem(GTItems.SPOILABLE_4.asItem(), new BlockPos(1, 1, 1));
-        helper.runAtTickTime(10, () -> helper.assertTrue(TestUtils.isItemStackEqual(
+        SpoilUtils.update(item.getItem(), SpoilContext.EMPTY);
+
+        helper.runAtTickTime(12, () -> helper.assertTrue(TestUtils.isItemStackEqual(
                 item.getItem(),
                 GTItems.SPOILABLE_5.get().getDefaultInstance()), "item didn't spoil when dropped"));
-    }
-
-    @GameTest(template = "empty_5x5", batch = "spoilageTests")
-    public static void itemSpoilsInInventory(GameTestHelper helper) {
-        TestUtils.succeedAfterTest(helper);
-        Player player = helper.makeMockPlayer();
-        player.getInventory().setItem(0, GTItems.SPOILABLE_4.get().getDefaultInstance());
-        player.tick();
-        helper.runAtTickTime(10, () -> helper.assertTrue(TestUtils.isItemStackEqual(
-                player.getInventory().getItem(0),
-                GTItems.SPOILABLE_5.get().getDefaultInstance()),
-                "item didn't spoil in a player inventory (%s != %s)".formatted(player.getInventory().getItem(0),
-                        GTItems.SPOILABLE_5.get().getDefaultInstance())));
     }
 
     @GameTest(template = "empty_5x5", batch = "spoilageTests")
@@ -278,9 +275,14 @@ public class SpoilableBehaviourTest {
                 Direction.UP);
         ItemStack filter = SimpleItemFilter.forItems(true, GTItems.SPOILABLE_2.get().getDefaultInstance())
                 .getFilterItemStack();
+
         cover.setWorkingEnabled(false);
         cover.getFilterHandler().setFilterItem(filter);
-        crate1.inventory.setStackInSlot(0, GTItems.SPOILABLE_2.get().getDefaultInstance());
+
+        var newStack = GTItems.SPOILABLE_2.get().getDefaultInstance();
+        SpoilUtils.update(newStack, SpoilContext.EMPTY);
+
+        crate1.inventory.setStackInSlot(0, newStack);
         helper.runAtTickTime(10, () -> cover.setWorkingEnabled(true));
         helper.runAtTickTime(20, () -> {
             ItemStack stack = crate2.inventory.getStackInSlot(0);

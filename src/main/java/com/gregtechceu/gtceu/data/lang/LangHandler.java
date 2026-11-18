@@ -1865,7 +1865,6 @@ public class LangHandler {
         provider.add("gtceu.tooltip.spoils_into", "Spoils into: %s");
         provider.add("gtceu.tooltip.creation_tick", "Created on overworld tick %d");
         provider.add("gtceu.tooltip.spoil_imminent", "Imminent");
-
     }
 
     /**

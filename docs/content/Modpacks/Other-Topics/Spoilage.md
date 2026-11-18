@@ -6,24 +6,27 @@ title: Spoilage
 Spoilable items spoil based on the amount of ticks that passed from their creation,
 or, more specifically, from one of these events (due to Minecraft's limitations):
 
-- The item was in an `IItemHandler` that is a capability of a `BlockEntity` that had `Level#getBlockEntity` called
+- The item was in a block entity updated by the spoilage ticker (only mc containers by default)
 - The item was crafted in a GregTech recipe
 - The item was crafted in a crafting table
 - The item was in a player's inventory for at least 1 tick
 - The item was dropped
 - `SpoilUtils.update(ItemStack, SpoilContext)` was called
 
+To schedule spoilable updates for a block entity, the block entity's class should be added to `BlockEntitySpoilTicker#BLOCK_ENTITY_CLASSES_TO_TICK`.
+By default, spoilage updates are only scheduled for MC containers and GT machines.
+
 If you want to make an item spoil, you need to attack the `ISpoilableItem` capability to it.
 Please note that the spoilage timer still decrements even if the stack is in an unloaded chunk.
 
 ### SpoilContext
 A `SpoilContext` is an object that represents the environment in which an item spoils.
-It may represent:
+It may contain:
 
-- Nothing (all values are null, obtained by just calling the constructor without arguments)
 - A block (contains `Level` and `BlockPos`)
-- A block and an item handler (contains `Level`, `BlockPos`, `IItemHandler` and the number of the slot in that `IItemHandler`, that may be `-1`)
-- An entity, usually a player (contains `Entity` and the number of the slot in that entity's inventory, that may be `-1`)
+- An entity, usually a player (contains `Entity`)
+
+The `SpoilContext` must also have a way to set the result stack, typically by setting the slot in the handler where the stack is located.
 
 This info is used to spawn entities when the item spoils, or do something more complex.
 The `SpoilableBehavior.builder()` can accept a function as a `result`, so you can do whatever you want there :)
@@ -107,18 +110,12 @@ It can be chained if you want to make multiple items spoil using the same behavi
             }
         }
         
-        public void makeStackStartSpoiling(ItemStack stack, Level level, BlockPos pos) {
+        public void makeStackStartSpoiling(ItemStack stack, Level level, BlockPos pos, IItemHandler handler, int slot) {
             // If for some reason the stack still hasn't started spoiling, you can start the spoiling progress using this
             // That may happen if it is the result of a non-GT recipe and not a crafting result for example
-            SpoilUtils.update(stack, new SpoilContext(level, pos));
+            SpoilUtils.update(stack, new SpoilContext(level, pos, handler, slot));
         }
-    
-        public void disableFrozenAndNonFrozenEquality() {
-            // If you want the player to have frozen stacks in their inventory, do this
-            // A side effect of this is that filtering by ticks remaining until spoiled will no longer work
-            SpoilUtils.FROZEN_EQUALITY = false;
-        }
-    }
+     }
     ```
 
 !!! warning "Items may spoil in other mods' filters (even if they are phantom slots)."

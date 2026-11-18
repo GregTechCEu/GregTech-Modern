@@ -51,7 +51,7 @@ public class SpoilageEventListeners {
     }
 
     @SubscribeEvent
-    public void chunkLoaded(ChunkEvent.Load event) {
+    public static void chunkLoaded(ChunkEvent.Load event) {
         if (!(event.getChunk() instanceof LevelChunk chunk)) {
             // the event is only given level chunks by forge, so something's gone funny
             return;
@@ -63,7 +63,7 @@ public class SpoilageEventListeners {
     }
 
     @SubscribeEvent
-    public void chunkUnloaded(ChunkEvent.Unload event) {
+    public static void chunkUnloaded(ChunkEvent.Unload event) {
         if (!(event.getChunk() instanceof LevelChunk chunk)) return;
         if (!(chunk.getLevel() instanceof ServerLevel level)) return;
         if (!SpoilUtils.spoilageEnabled()) return;

@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -74,6 +75,11 @@ public class SpoilUtils {
     }
 
     public static void updateEntity(Entity entity) {
+        if (entity instanceof ItemEntity itemEntity) {
+            SpoilUtils.update(itemEntity.getItem(),
+                    new SpoilContext(entity.level(), entity.blockPosition(), entity, itemEntity::setItem));
+        }
+
         // technically this updates player's armor/offhand slots 3 times, but I don't think that matters too much.
         for (Direction side : GTUtil.DIRECTIONS) updateEntity(entity, side);
         updateEntity(entity, null);

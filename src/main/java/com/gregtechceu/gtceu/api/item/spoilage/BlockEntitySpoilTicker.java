@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.api.item.spoilage;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -12,22 +11,23 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.ticks.*;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 
 import java.util.Set;
 
 /**
  * Handles spoilage updates for block entities that aren't GT machines.<br>
- * Only ticks MC containers ({@link BaseContainerBlockEntity}) by default, other BE classes can be added to the BLOCK_ENTITY_CLASSES_TO_TICK set to tick them.
+ * Only ticks MC containers ({@link BaseContainerBlockEntity}) by default, other BE classes can be added to the
+ * BLOCK_ENTITY_CLASSES_TO_TICK set to tick them.
  */
 public class BlockEntitySpoilTicker extends SavedData {
 
     public static int MAX_TICKS_PER_UPDATE = ServerLevel.MAX_SCHEDULED_TICKS_PER_TICK;
-    public static long UPDATE_FREQUENCY = 2;
+    public static final long UPDATE_FREQUENCY = 2;
 
     public static final Set<Class<? extends BlockEntity>> BLOCK_ENTITY_CLASSES_TO_TICK = ObjectOpenHashSet.of(
-            BaseContainerBlockEntity.class
-    );
+            BaseContainerBlockEntity.class);
 
     public static BlockEntitySpoilTicker get(ServerLevel level) {
         return level.getDataStorage().computeIfAbsent((tag) -> new BlockEntitySpoilTicker(level),
@@ -40,24 +40,31 @@ public class BlockEntitySpoilTicker extends SavedData {
 
     private BlockEntitySpoilTicker(LevelAccessor levelAccessor) {
         if (!(levelAccessor instanceof ServerLevel sLvl)) {
-            throw new IllegalArgumentException("SpoilageContainerTracker only works on servers!");
+            throw new IllegalArgumentException("BlockEntitySpoilTicker only works on servers!");
         }
 
         this.level = sLvl;
-        this.blockEntityTicks = new LevelTicks<>(this::isPositionTickingWithEntitiesLoaded, level.getProfilerSupplier());
+        this.blockEntityTicks = new LevelTicks<>(this::isPositionTickingWithEntitiesLoaded,
+                level.getProfilerSupplier());
     }
 
-    private <T> ScheduledTick<T> createTick(BlockPos pos, T type, long delay, TickPriority priority) {
-        return new ScheduledTick<>(type, pos, level.getLevelData().getGameTime() + delay, priority,
+    private ScheduledTick<BlockEntityType<?>> createTick(BlockEntity be, long delay, TickPriority priority) {
+        return new ScheduledTick<>(be.getType(), be.getBlockPos(), level.getLevelData().getGameTime() + delay, priority,
                 level.nextSubTickCount());
     }
 
-    public void scheduleTick(BlockPos pos, BlockEntityType<?> type, long delay, TickPriority priority) {
-        this.blockEntityTicks.schedule(this.createTick(pos, type, delay, priority));
+    public void scheduleTickIfValid(BlockEntity be, long delay, TickPriority priority) {
+        if (BLOCK_ENTITY_CLASSES_TO_TICK.stream().noneMatch(v -> v.isAssignableFrom(be.getClass()))) return;
+
+        if (!this.blockEntityTicks.allContainers.containsKey(ChunkPos.asLong(be.getBlockPos()))) {
+            this.blockEntityTicks.addContainer(new ChunkPos(be.getBlockPos()), new LevelChunkTicks<>());
+        }
+
+        this.blockEntityTicks.schedule(this.createTick(be, delay, priority));
     }
 
-    public void scheduleTick(BlockEntity blockEntity, long delay, TickPriority priority) {
-        scheduleTick(blockEntity.getBlockPos(), blockEntity.getType(), delay, priority);
+    public void scheduleTick(BlockEntity be, long delay, TickPriority priority) {
+        this.blockEntityTicks.schedule(this.createTick(be, delay, priority));
     }
 
     // region event listeners
@@ -72,12 +79,10 @@ public class BlockEntitySpoilTicker extends SavedData {
                 return;
             }
 
-            if (!BLOCK_ENTITY_CLASSES_TO_TICK.contains(blockEntity.getClass())) return;
-
             SpoilUtils.updateBlock(blockEntity);
 
-            // reschedule another update for the next tick
-            this.scheduleTick(pos, blockEntityType, UPDATE_FREQUENCY, TickPriority.NORMAL);
+            // reschedule another update
+            this.scheduleTick(blockEntity, UPDATE_FREQUENCY, TickPriority.NORMAL);
         });
     }
 

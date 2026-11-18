@@ -112,7 +112,8 @@
         "spoilage.ItemEntityMixin",
         "spoilage.ItemHandlerHelperMixin",
         "spoilage.ItemStackMixin",
-        "spoilage.LevelChunkMixin"
+        "spoilage.LevelChunkMixin",
+        "spoilage.LevelMixin"
     ],
     "injectors": {
         "defaultRequire": 1,
