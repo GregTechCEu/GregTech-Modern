@@ -35,6 +35,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.List;
@@ -113,7 +114,8 @@ public class SpoilableBehaviourTest {
     public static void itemSpoilsRecursively(GameTestHelper helper) {
         TestUtils.succeedAfterTest(helper);
         helper.setBlock(1, 1, 1, Blocks.CHEST);
-        IItemHandler itemHandler = TestUtils.getItemHandler(helper, new BlockPos(1, 1, 1));
+        IItemHandlerModifiable itemHandler = (IItemHandlerModifiable) TestUtils.getItemHandler(helper,
+                new BlockPos(1, 1, 1));
 
         ItemStack in = GTItems.SPOILABLE_1.get().getDefaultInstance().copyWithCount(41);
         SpoilUtils.update(in, SpoilContext.EMPTY);

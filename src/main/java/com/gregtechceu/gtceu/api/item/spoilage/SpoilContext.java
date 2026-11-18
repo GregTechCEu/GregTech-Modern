@@ -3,11 +3,9 @@ package com.gregtechceu.gtceu.api.item.spoilage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
@@ -43,15 +41,15 @@ public record SpoilContext(@Nullable Level level,
         return server.overworld();
     }
 
-    public SpoilContext(@Nullable Level level, @Nullable BlockPos pos, IItemHandler handler, int slot) {
+    public SpoilContext(@Nullable Level level, @Nullable BlockPos pos, IItemHandlerModifiable handler, int slot) {
         this(level, pos, null, stackSetterForHandler(handler, slot));
     }
 
-    public SpoilContext(Entity entity, IItemHandler handler, int slot) {
+    public SpoilContext(Entity entity, IItemHandlerModifiable handler, int slot) {
         this(entity.level(), entity.blockPosition(), entity, stackSetterForHandler(handler, slot));
     }
 
-    public SpoilContext(BlockEntity be, IItemHandler handler, int slot) {
+    public SpoilContext(BlockEntity be, IItemHandlerModifiable handler, int slot) {
         this(be.getLevel(), be.getBlockPos(), null, stackSetterForHandler(handler, slot));
     }
 
@@ -59,14 +57,7 @@ public record SpoilContext(@Nullable Level level,
         stackSetter.accept(stack);
     }
 
-    public static Consumer<ItemStack> stackSetterForHandler(IItemHandler handler, int slot) {
-        return stack -> {
-            if (handler instanceof IItemHandlerModifiable modifiable) {
-                modifiable.setStackInSlot(slot, stack);
-            } else {
-                handler.extractItem(slot, Item.MAX_STACK_SIZE, false);
-                handler.insertItem(slot, stack, false);
-            }
-        };
+    public static Consumer<ItemStack> stackSetterForHandler(IItemHandlerModifiable handler, int slot) {
+        return stack -> handler.setStackInSlot(slot, stack);
     }
 }

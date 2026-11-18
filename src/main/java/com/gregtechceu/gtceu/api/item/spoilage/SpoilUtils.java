@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -66,13 +67,15 @@ public class SpoilUtils {
     }
 
     public static void updateBlockItemHandler(IItemHandler handler, @Nullable Level level, @Nullable BlockPos pos) {
-        for (int slot = 0; slot < handler.getSlots(); slot++) {
-            ItemStack stack = handler.getStackInSlot(slot);
+        if (!(handler instanceof IItemHandlerModifiable modifiable)) return;
+
+        for (int slot = 0; slot < modifiable.getSlots(); slot++) {
+            ItemStack stack = modifiable.getStackInSlot(slot);
             if (stack.isEmpty()) continue;
 
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
             if (spoilable != null) {
-                spoilable.updateFreshness(new SpoilContext(level, pos, handler, slot), true);
+                spoilable.updateFreshness(new SpoilContext(level, pos, modifiable, slot), true);
             }
         }
     }
@@ -94,13 +97,15 @@ public class SpoilUtils {
     }
 
     public static void updateEntityItemHandler(IItemHandler handler, Entity entity) {
+        if (!(handler instanceof IItemHandlerModifiable modifiable)) return;
+
         for (int slot = 0; slot < handler.getSlots(); slot++) {
-            ItemStack stack = handler.getStackInSlot(slot);
+            ItemStack stack = modifiable.getStackInSlot(slot);
             if (stack.isEmpty()) continue;
 
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
             if (spoilable != null) {
-                spoilable.updateFreshness(new SpoilContext(entity, handler, slot), true);
+                spoilable.updateFreshness(new SpoilContext(entity, modifiable, slot), true);
             }
         }
     }

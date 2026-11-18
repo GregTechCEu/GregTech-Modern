@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.item.spoilage;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Direction;
@@ -16,8 +15,8 @@ import net.minecraft.world.ticks.*;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
-import appeng.blockentity.AEBaseBlockEntity;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 
@@ -32,10 +31,6 @@ public class BlockEntitySpoilTicker extends SavedData {
     public static final long UPDATE_FREQUENCY = 2;
 
     public static final Set<Class<? extends BlockEntity>> BLACKLISTED_BLOCK_ENTITIES = new ObjectOpenHashSet<>();
-
-    static {
-        if (GTCEu.Mods.isAE2Loaded()) AE2CallWrapper.blacklistAEBlockEntities();
-    }
 
     public static BlockEntitySpoilTicker get(ServerLevel level) {
         return level.getDataStorage().computeIfAbsent((tag) -> new BlockEntitySpoilTicker(level),
@@ -83,7 +78,7 @@ public class BlockEntitySpoilTicker extends SavedData {
             BlockEntity blockEntity = this.level.getBlockEntity(pos);
 
             if (blockEntity == null || blockEntity.isRemoved() || blockEntity.getType() != blockEntityType ||
-                    !hasItemHandler(blockEntity)) {
+                    !hasItemHandlerModifiable(blockEntity)) {
                 // if the block entity no longer exists or doesn't have an item handler, exit without doing anything
                 // (including rescheduling)
                 return;
@@ -96,16 +91,16 @@ public class BlockEntitySpoilTicker extends SavedData {
         });
     }
 
-    private boolean hasItemHandler(BlockEntity blockEntity) {
+    private boolean hasItemHandlerModifiable(BlockEntity blockEntity) {
         LazyOptional<IItemHandler> value;
         for (Direction side : GTUtil.DIRECTIONS) {
             value = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, side);
             if (value.isPresent()) {
-                return true;
+                return value.resolve().map(v -> v instanceof IItemHandlerModifiable).orElse(false);
             }
         }
         value = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
-        return value.isPresent();
+        return value.isPresent() && value.resolve().map(v -> v instanceof IItemHandlerModifiable).orElse(false);
     }
 
     public void chunkLoaded(LevelChunk chunk) {
@@ -124,12 +119,5 @@ public class BlockEntitySpoilTicker extends SavedData {
     @Override
     public CompoundTag save(CompoundTag compoundTag) {
         return compoundTag;
-    }
-
-    private static class AE2CallWrapper {
-
-        public static void blacklistAEBlockEntities() {
-            BLACKLISTED_BLOCK_ENTITIES.add(AEBaseBlockEntity.class);
-        }
     }
 }

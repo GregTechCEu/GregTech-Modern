@@ -179,7 +179,7 @@ public interface ISpoilableItem {
             int thisCount = this.getStack().getCount(), thatCount = that.getStack().getCount();
             long average;
             if (thisCount > 0 && thatCount > 0) {
-                average = (thisCreated * thisCount + thatCreated * thatCount) / (thisCount  + thatCount);
+                average = (thisCreated * thisCount + thatCreated * thatCount) / (thisCount + thatCount);
             } else if (thisCount > 0) {
                 average = thisCreated;
             } else {

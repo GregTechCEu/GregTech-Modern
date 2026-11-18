@@ -6,7 +6,8 @@ title: Spoilage
 Spoilable items spoil based on the amount of ticks that passed from their creation,
 or, more specifically, from one of these events (due to Minecraft's limitations):
 
-- The item is in a block entity exposing an `IItemHandler` capability
+- The item is in a block entity exposing an `IItemHandlerModifiable` capability
+- The item is in an entity exposing an `IItemHandlerModifiable` capability
 - The item was crafted in a GregTech recipe
 - The item was crafted in a crafting table
 - The item was in a player's inventory for at least 1 tick
@@ -24,7 +25,7 @@ A `SpoilContext` is an object that represents the environment in which an item s
 It may contain:
 
 - A block (contains `Level` and `BlockPos`)
-- An entity, usually a player (contains `Entity`)
+- An entity, usually a player (contains `Level`, `BlockPos`, `Entity`)
 
 The `SpoilContext` must also have a way to set the result stack, typically by setting the slot in the handler where the stack is located.
 
@@ -115,7 +116,7 @@ It can be chained if you want to make multiple items spoil using the same behavi
             // That may happen if it is the result of a non-GT recipe and not a crafting result for example
             SpoilUtils.update(stack, new SpoilContext(level, pos, handler, slot));
         }
-     }
+    }
     ```
 
 !!! warning "Items may spoil in other mods' filters (even if they are phantom slots)."
