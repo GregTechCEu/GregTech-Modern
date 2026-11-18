@@ -109,10 +109,12 @@
         "mui.ModularUIJeiRecipeAccessor",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",
+        "spoilage.AbstractContainerMenuMixin",
         "spoilage.ItemEntityMixin",
         "spoilage.ItemHandlerHelperMixin",
         "spoilage.LevelChunkMixin",
-        "spoilage.LevelMixin"
+        "spoilage.LevelMixin",
+        "spoilage.ModularContainerMenuMixin"
     ],
     "injectors": {
         "defaultRequire": 1,

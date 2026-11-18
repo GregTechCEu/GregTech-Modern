@@ -16,7 +16,8 @@ public class ItemHandlerHelperMixin {
     @Inject(at = @At(value = "INVOKE",
                      target = "Lnet/minecraft/nbt/CompoundTag;equals(Ljava/lang/Object;)Z"),
             method = { "canItemStacksStack", "canItemStacksStackRelaxed" })
-    private static void gtceu$beforeComparison(ItemStack a, ItemStack b, CallbackInfoReturnable<Boolean> cir) {
+    private static void gtceu$mergeSpoilageBeforeStackTest(ItemStack a, ItemStack b,
+                                                           CallbackInfoReturnable<Boolean> cir) {
         SpoilUtils.mergeSpoilage(a, b);
     }
 }
