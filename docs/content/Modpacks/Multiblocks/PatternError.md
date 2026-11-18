@@ -10,7 +10,7 @@ public class MyPatternError extends PatternError {
 
     // This codec is needed for serialization. It should send all the needed data to display the error on the client. 
     public static MapCodec<MyPatternError> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                    BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
+                    BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::pos),
                     Codec.list(BlockInfo.CODEC).fieldOf("candidates").forGetter(MyPatternError::getCandidates))
             .apply(instance, MyPatternError::new));
 

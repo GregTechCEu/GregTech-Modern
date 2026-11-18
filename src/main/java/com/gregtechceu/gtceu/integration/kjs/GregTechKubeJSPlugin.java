@@ -137,21 +137,22 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
                 GTRecipeCategoryBuilderJS::new);
 
         registry.of(GTRegistries.Keys.MACHINE, reg -> {
-            reg.addDefault(KJSWrappingMachineBuilder.class,
-                    (id) -> new KJSWrappingMachineBuilder(id,
-                            new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)));
 
-            reg.add(GTCEu.id("custom"), KJSWrappingMachineBuilder.class,
-                    (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)));
+            reg.addDefault(KJSTieredMachineBuilder.class,
+                    (id) -> new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false));
+            reg.add(GTCEu.id("custom"), KJSTieredMachineBuilder.class,
+                    KJSTieredMachineBuilder::new);
+
             reg.add(GTCEu.id("steam"), KJSSteamMachineBuilder.class, KJSSteamMachineBuilder::new);
-            reg.add(GTCEu.id("generator"), KJSWrappingMachineBuilder.class,
-                    (id) -> new KJSWrappingMachineBuilder(id,
-                            new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)));
+            reg.add(GTCEu.id("generator"), KJSTieredMachineBuilder.class,
+                    (id) -> new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true));
 
             reg.add(GTCEu.id("multiblock"), MultiblockMachineBuilderJS.class,
                     MultiblockMachineBuilderJS::createKJSMulti);
-            reg.add(GTCEu.id("tiered_multiblock"), KJSWrappingMultiblockBuilder.class,
-                    KJSWrappingMultiblockBuilder::new);
+
+            reg.add(GTCEu.id("tiered_multiblock"), KJSTieredMultiblockBuilder.class,
+                    KJSTieredMultiblockBuilder::new);
+
             reg.add(GTCEu.id("primitive"), MultiblockMachineBuilderJS.class,
                     (id) -> MultiblockMachineBuilderJS.createKJSMulti(id, PrimitiveWorkableMachine::new));
         });

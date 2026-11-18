@@ -28,8 +28,8 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.StringValue;
 import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.DynamicSyncedWidget;
 import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import org.jetbrains.annotations.NotNull;
@@ -108,7 +108,7 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
         ProspectorMode<?> mode = getMode(guiData.getPlayer().getItemInHand(InteractionHand.MAIN_HAND));
 
         StringValue searchValue = new StringValue("");
-        DynamicSyncedWidget<?> searchList = new DynamicSyncedWidget<>();
+        DynamicWidget<?> searchList = new DynamicWidget<>();
 
         ProspectorMapHandler<?> mapHandler = new ProspectorMapHandler<>(mode, this.radius, 1, searchValue, searchList,
                 panelSyncManager, guiData.getPlayer());

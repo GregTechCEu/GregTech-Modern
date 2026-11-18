@@ -57,6 +57,8 @@ public interface GTGuiTextures {
             "textures/gui/base/indicator_no_steam_steel.png");
     UITexture TANK_ICON = fullImage("textures/gui/base/tank_icon.png");
 
+    UITexture CLOSE_ICON = fullImage("textures/gui/icon/close.png");
+
     // BACKGROUNDS
     UITexture BACKGROUND = UITexture.builder()
             .location(GTCEu.MOD_ID, "textures/gui/base/background.png")
@@ -635,6 +637,11 @@ public interface GTGuiTextures {
             "textures/gui/progress_bar/progress_bar_coke_oven.png", 36, 36, ColorType.DEFAULT);
     UITexture PROGRESS_BAR_DISTILLATION_TOWER = progressBar(
             "textures/gui/progress_bar/progress_bar_distillation_tower.png", 66, 116, ColorType.DEFAULT);
+    UITexture PROGRESS_BAR_DISTILLATION_BUBBLES = progressBar(
+            "textures/gui/progress_bar/progress_bar_distillation_tower_bubbles.png", 11, 102, ColorType.DEFAULT);
+    UITexture PROGRESS_BAR_DISTILLATION_COIL = progressBar(
+            "textures/gui/progress_bar/progress_bar_distillation_tower_coil.png", 12, 40, ColorType.DEFAULT);
+
     UITexture PROGRESS_BAR_SOLAR_BRONZE = progressBar(
             "textures/gui/progress_bar/progress_bar_solar_bronze.png", 10, 20);
     UITexture PROGRESS_BAR_SOLAR_STEEL = progressBar(

@@ -17,7 +17,7 @@ public class SimplePatternError extends PatternError {
 
     // spotless:off
     public static final MapCodec<SimplePatternError> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
+            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::pos),
             BlockInfo.CODEC.listOf().listOf().fieldOf("candidates").forGetter(SimplePatternError::getCandidates))
     .apply(instance, SimplePatternError::new));
     //spotless:on

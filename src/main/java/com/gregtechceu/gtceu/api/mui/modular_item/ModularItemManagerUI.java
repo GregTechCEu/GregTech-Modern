@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.IPanelHandler;
@@ -73,7 +74,7 @@ public class ModularItemManagerUI implements IUIHolder<PlayerInventoryGuiData<?>
                 .horizontalCenter()
                 .coverChildren()
                 .padding(6)
-                .child(GTMuiWidgets.createTitleBar(null, "Modules", 250,
+                .child(GTMuiWidgets.createTitleBar(Component.literal("Modules"), 250,
                         GTGuiTextures.BACKGROUND))
                 .child(moduleList);
     }

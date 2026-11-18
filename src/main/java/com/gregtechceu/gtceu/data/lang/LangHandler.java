@@ -75,6 +75,12 @@ public class LangHandler {
         provider.add("gtceu.multiblock.page_switcher.io.export", "§4Outputs");
         provider.add("gtceu.multiblock.page_switcher.io.both", "§5Combined Inputs + Outputs");
 
+        provider.add("gtceu.autobuild.ae_blocks", "The following blocks are in AE:");
+        provider.add("gtceu.autobuild.placed_blocks", "The following blocks were placed:");
+        provider.add("gtceu.autobuild.missing_blocks", "The following blocks are missing:");
+        provider.add("gtceu.autobuild.unplaced_blocks",
+                "Could not place some blocks. Obstructions are highlighted in-world.");
+
         provider.add("enchantment.disjunction", "Disjunction");
 
         provider.add("item.invalid.name", "Invalid item");
@@ -339,6 +345,7 @@ public class LangHandler {
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
         multilineLang(provider, "gtceu.recipe_memory_widget.tooltip",
                 "§7Left click to automatically input this recipe into the crafting grid\n§7Shift click to lock/unlock this recipe");
+        provider.add("gui.gtceu.cover.direction", "Direction: §r%s");
         provider.add("cover.filter.blacklist.disabled", "Whitelist");
         provider.add("cover.filter.blacklist.enabled", "Blacklist");
         provider.add("cover.tag_filter.title", "Tag Filter");

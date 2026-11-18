@@ -66,7 +66,7 @@ MultiPredicate frames(Material... frameMaterials); // (22)
 
 12. Must match the fluid tag.
 
-13. Must be one of the blocks in the `PartAbility` (see [Part Abilities](./PartAbility.md))
+13. Must be one of the blocks in any of the given `PartAbility`s (see [Part Abilities](./PartAbility.md)).
 
 14. Must be one of the blocks in the `PartAbility` (see [Part Abilities](./PartAbility.md)) with one of those tier values.
 

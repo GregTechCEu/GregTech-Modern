@@ -31,6 +31,7 @@ import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -72,7 +73,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
     private String lastSearch = "";
 
     public ProspectorMapHandler(ProspectorMode<T> mode, int chunkRadius, int scanInterval,
-                                StringValue searchValue, DynamicSyncedWidget<?> searchListWidget,
+                                StringValue searchValue, DynamicWidget<?> searchListWidget,
                                 PanelSyncManager panelSyncManager, Player player) {
         super();
         this.mode = mode;

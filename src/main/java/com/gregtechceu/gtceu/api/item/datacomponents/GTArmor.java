@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.item.datacomponents;
 
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
-import com.gregtechceu.gtceu.utils.codec.StreamCodecUtils;
+import com.gregtechceu.gtceu.utils.codec.GTStreamCodecUtils;
 
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -45,7 +45,7 @@ public record GTArmor(
             Codec.BYTE.orElse((byte) 0).fieldOf("boosted_jump_timer").forGetter(GTArmor::boostedJumpTimer),
             Codec.BYTE.orElse((byte) 0).fieldOf("consumer_ticks").forGetter(GTArmor::consumerTicks)).apply(instance, GTArmor::new));
     // spotless:on
-    public static final StreamCodec<ByteBuf, GTArmor> STREAM_CODEC = StreamCodecUtils.composite(
+    public static final StreamCodec<ByteBuf, GTArmor> STREAM_CODEC = GTStreamCodecUtils.composite(
             ByteBufCodecs.BOOL, GTArmor::enabled,
             ByteBufCodecs.BOOL, GTArmor::hover,
             ByteBufCodecs.BOOL, GTArmor::canShare,

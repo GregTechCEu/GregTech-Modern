@@ -27,6 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMultiblockMachine {
 
+    @SyncToClient
     @Getter
     private ICoilType coilType = CoilBlock.CoilType.CUPRONICKEL;
     @SyncToClient
@@ -65,6 +66,7 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
         if (coilType != null) {
             this.coilType = coilType;
             this.coilTier = coilType.getTier();
+            getSyncDataHolder().markClientSyncFieldDirty("coilType");
             getSyncDataHolder().markClientSyncFieldDirty("coilTier");
         }
     }
@@ -74,7 +76,7 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        var Texlocation = (CoilBlock.CoilType.values()[coilTier].getTexture());
+        var Texlocation = this.coilType.getTexture();
 
         IDrawable leftTop = new UITexture.Builder()
                 .location(Texlocation)
@@ -118,12 +120,12 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
 
         mainWidget
                 .child(Flow.row().height(MULTI_UI_TEXT_PANEL_HEIGHT).coverChildrenWidth()
-                        .child(Flow.col().coverChildrenWidth()
+                        .child(Flow.col().width(7)
                                 .child(new IDrawable.DrawableWidget(leftTop).size(7, 4))
                                 .child(new IDrawable.DrawableWidget(leftMiddle).size(7, MULTI_UI_TEXT_PANEL_HEIGHT - 8))
                                 .child(new IDrawable.DrawableWidget(leftBottom).size(7, 4)))
                         .child(getMainTextPanel(syncManager))
-                        .child(Flow.col().coverChildrenWidth()
+                        .child(Flow.col().width(7)
                                 .child(new IDrawable.DrawableWidget(rightTop).size(7, 4))
                                 .child(new IDrawable.DrawableWidget(rightMiddle).size(7,
                                         MULTI_UI_TEXT_PANEL_HEIGHT - 8))

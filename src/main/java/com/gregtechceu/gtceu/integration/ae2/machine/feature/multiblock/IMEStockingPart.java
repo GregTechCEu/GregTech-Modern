@@ -82,6 +82,7 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
                 (sm, sh) -> PopupPanel.createPopupPanel("stocking_settings_panel", 140, 70)
                         .child(Flow.col()
                                 .coverChildren()
+                                .childPadding(2)
                                 .child(Text.lang("gtceu.gui.me_network.min_stack_size").asWidget())
                                 .child(new TextFieldWidget()
                                         .size(120, 18)

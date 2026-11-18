@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -127,10 +126,14 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
         long currentTime = getLevelTime();
         long dif = currentTime - this.timer;
         if (dif >= 20 || dif < 0) {
-            Object2IntMaps.fastForEach(this.transferredItems, entry -> {
+            var it = this.transferredItems.object2IntEntrySet().fastIterator();
+            while (it.hasNext()) {
+                var entry = it.next();
                 int rate = Math.round(entry.getKey().getProperties().getTransferRate() * Item.DEFAULT_MAX_STACK_SIZE);
-                entry.setValue(entry.getIntValue() - rate);
-            });
+                int remaining = entry.getIntValue() - rate;
+                if (remaining <= 0) it.remove();
+                else entry.setValue(remaining);
+            }
             this.timer = currentTime;
         }
     }

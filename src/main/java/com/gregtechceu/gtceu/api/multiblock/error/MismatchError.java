@@ -52,7 +52,7 @@ public abstract class MismatchError<T> extends PatternError {
                                                                            Function3<BlockPos, T, T, R> constructor) {
         // spotless:off
         return RecordCodecBuilder.mapCodec(instance -> instance.group(
-                BlockPos.CODEC.fieldOf("pos").forGetter(MismatchError::getPos),
+                BlockPos.CODEC.fieldOf("pos").forGetter(MismatchError::pos),
                 typeCodec.fieldOf("expected").forGetter(MismatchError::getExpected),
                 typeCodec.fieldOf("actual").forGetter(MismatchError::getActual))
                .apply(instance, constructor));

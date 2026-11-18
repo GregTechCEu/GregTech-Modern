@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 
@@ -12,19 +13,30 @@ public class PatternStringError extends PatternError {
 
     // spotless:off
     public static final MapCodec<PatternStringError> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ComponentSerialization.CODEC.fieldOf("component").forGetter(PatternStringError::getComponent))
-    .apply(instance, PatternStringError::new));
+            ComponentSerialization.CODEC.fieldOf("component").forGetter(PatternStringError::getComponent),
+            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::pos)
+    ).apply(instance, PatternStringError::new));
     //spotless:on
 
     @Getter
     public final Component component;
 
+    public PatternStringError(Component component, BlockPos pos) {
+        super(pos);
+        this.component = component;
+    }
+
     public PatternStringError(Component component) {
+        super();
         this.component = component;
     }
 
     public static PatternStringError of(Component component) {
         return new PatternStringError(component);
+    }
+
+    public static PatternStringError of(Component component, BlockPos pos) {
+        return new PatternStringError(component, pos);
     }
 
     public static PatternStringError literal(String s) {
