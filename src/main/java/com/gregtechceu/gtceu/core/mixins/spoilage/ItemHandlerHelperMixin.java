@@ -13,9 +13,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ItemHandlerHelper.class)
 public class ItemHandlerHelperMixin {
 
-    @Inject(at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/nbt/CompoundTag;equals(Ljava/lang/Object;)Z"),
-            method = { "canItemStacksStack", "canItemStacksStackRelaxed" })
+    @Inject(method = { "canItemStacksStack", "canItemStacksStackRelaxed" },
+            at = @At(value = "INVOKE",
+                     target = "Lnet/minecraft/nbt/CompoundTag;equals(Ljava/lang/Object;)Z"))
     private static void gtceu$mergeSpoilageBeforeStackTest(ItemStack a, ItemStack b,
                                                            CallbackInfoReturnable<Boolean> cir) {
         SpoilUtils.mergeSpoilage(a, b);
