@@ -57,6 +57,8 @@ import java.util.function.Supplier;
 
 public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IAddInformation {
 
+    public static final int SOLVENT_COLOR = 0x969696;
+
     // vanilla
     private static final ImmutableMap<DyeColor, Block> GLASS_MAP;
     private static final ImmutableMap<DyeColor, Block> GLASS_PANE_MAP;
@@ -115,9 +117,9 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     public ColorSprayBehaviour(Supplier<ItemStack> empty, int totalUses, @Nullable DyeColor color) {
         this.empty = empty;
         this.color = color;
-        // default to a gray color if this.color is null (like for solvent spray)
-        int colorValue = this.color == null ? 0x969696 : this.color.getTextColor();
         this.totalUses = totalUses;
+        // default to a gray color if this.color is null (like for solvent spray)
+        int colorValue = this.color == null ? SOLVENT_COLOR : this.color.getTextColor();
         this.durabilityBarColors = GradientUtil.getGradient(colorValue, 10);
     }
 
