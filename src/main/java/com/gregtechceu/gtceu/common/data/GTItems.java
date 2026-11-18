@@ -1742,17 +1742,18 @@ public class GTItems {
             .onRegister(attach(new MachineConfigCopyBehaviour()))
             .register();
 
-    public static final Map<DyeColor, ItemEntry<DyeItem>> CHEMICAL_DYES = new Object2ObjectOpenHashMap<>();
-    static {
+    public static final Map<DyeColor, ItemEntry<GTDyeItem>> CHEMICAL_DYES = Util.make(() -> {
+        Map<DyeColor, ItemEntry<GTDyeItem>> map = new Reference2ObjectLinkedOpenHashMap<>(DyeColor.values().length);
         for (DyeColor color : DyeColor.values()) {
-            CHEMICAL_DYES.put(color, REGISTRATE
-                    .item("chemical_%s_dye".formatted(color.getName()), (props) -> new DyeItem(color, props))
+            map.put(color, REGISTRATE
+                    .item("chemical_%s_dye".formatted(color.getName()), p -> new GTDyeItem(color, p))
                     .lang("Chemical %s Dye".formatted(toEnglishName(color.getName())))
                     .tag(Tags.Items.DYES)
                     .tag(color.getTag())
                     .register());
         }
-    }
+        return Collections.unmodifiableMap(map);
+    });
 
     public static final Map<DyeColor, ItemEntry<ComponentItem>> SPRAY_CAN_DYES = Util.make(() -> {
         Map<DyeColor, ItemEntry<ComponentItem>> map = new Reference2ObjectLinkedOpenHashMap<>(DyeColor.values().length);
