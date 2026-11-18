@@ -7,7 +7,6 @@ Spoilable items spoil based on the amount of ticks that passed from their creati
 or, more specifically, from one of these events (due to Minecraft's limitations):
 
 - The item is in a block entity exposing an `IItemHandler` capability
-- The item was in a block entity updated by the spoilage ticker (only mc containers by default)
 - The item was crafted in a GregTech recipe
 - The item was crafted in a crafting table
 - The item was in a player's inventory for at least 1 tick
