@@ -8,11 +8,11 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import org.jetbrains.annotations.Nullable;
 
 public enum FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {

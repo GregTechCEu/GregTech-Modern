@@ -164,9 +164,9 @@ public class GTMachines {
                     .recipeType(DUMMY_RECIPES)
                     .tooltips(Component.translatable("gtceu.machine.steam_miner.tooltip"),
                             Component.translatable("gtceu.universal.tooltip.uses_per_tick_steam", isHP ? 32 : 16)
-                            .append(ChatFormatting.GRAY + ", ")
-                            .append(Component.translatable("gtceu.machine.miner.per_block",
-                                    isHP ? 240 / 20 : 280 / 20)))
+                                    .append(ChatFormatting.GRAY + ", ")
+                                    .append(Component.translatable("gtceu.machine.miner.per_block",
+                                            isHP ? 240 / 20 : 280 / 20)))
                     .tooltipBuilder((item, tooltip) -> {
                         int maxArea = IMiner.getWorkingArea(isHP ? 6 : 4);
                         tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area", maxArea, maxArea));
