@@ -106,7 +106,7 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
         var tickSyncValue = new IntSyncValue(() -> this.ticks, (newValue) -> this.ticks = newValue);
         syncManager.syncValue("tickSyncValue", tickSyncValue);
 
-        DynamicLinkedSyncHandler<IntSyncValue> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(tickSyncValue)
+        DynamicLinkedSyncHandler<ByteBuf, IntSyncValue> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(tickSyncValue)
                 .widgetProvider((widgetSyncManager, intSyncHandler) -> {
                     var list = new ListWidget<>()
                             .widthRel(1)

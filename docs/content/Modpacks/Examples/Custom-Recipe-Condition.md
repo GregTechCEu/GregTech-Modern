@@ -14,7 +14,8 @@ They are registered using
 ```java
 @Mod(ExampleMod.MOD_ID)
 public class ExampleMod {
-    
+    // ... (MOD_ID, id(String), etc.)
+
     public ExampleMod(IEventBus modBus, FMLModContainer container) {
         RECIPE_CONDITIONS.register(modBus);
     }
@@ -60,7 +61,7 @@ public class ExampleCondition extends RecipeCondition<ExampleCondition> {
     }
 
     public RecipeUIModifier modifyUI() {
-        return RecipeUIModifier.textLine(Text.of(String.format("Should be ran at least at height %d", height)));
+        return RecipeUIModifier.textLine(Text.str(String.format("Should be ran at least at height %d", height)));
     }
 
 
@@ -82,7 +83,7 @@ Starting with:
 ```java
     @Override
     public RecipeConditionType<ExampleCondition> getType() {
-        return ExampleMod.EXAMPLE_CONDITION;
+        return ExampleMod.EXAMPLE_CONDITION.get();
     }
 
     @Override

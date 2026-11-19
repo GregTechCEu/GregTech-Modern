@@ -12,10 +12,10 @@ The same layout drives two different UIs:
 
 
 ## From Java
-In machine UIs, the layout is declared with `GTRecipeType::UI`, which takes a `Consumer<GTRecipeTypeUILayout.Builder>`:
+In machine UIs, the layout is declared with `GTRecipeTypeBuilder::UI`, which takes a `UnaryOperator<GTRecipeTypeUILayout.Builder>`:
 
 ```java
-public final static GTRecipeType CANNER_RECIPES = register(GTCEu.id("canner"), ELECTRIC)
+public static final GTRecipeTypeEntry CANNER_RECIPES = REGISTRATE.recipeType("canner", ELECTRIC)
         .setMaxIOSize(2, 2, 1, 1)
         .setEUIO(IO.IN)
         .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_CANNER)
@@ -24,7 +24,8 @@ public final static GTRecipeType CANNER_RECIPES = register(GTCEu.id("canner"), E
                 .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.CANISTER_OVERLAY)
                 .setFluidSlotOverlay(IO.IN, 0, GTGuiTextures.DARK_CANISTER_OVERLAY)
                 .setFluidSlotOverlay(IO.OUT, 0, GTGuiTextures.DARK_CANISTER_OVERLAY))
-        .setSound(GTSoundEntries.BATH);
+        .setSound(GTSoundEntries.BATH)
+        .register();
 ```
 
 Every recipe type starts with a default layout, so `UI` is only needed when you want to change
@@ -286,8 +287,8 @@ KubeJS scripts do not build or touch widgets directly. `GTRecipeTypeBuilder`
 exposes the common options as plain builder methods instead:
 
 ```js
-StartupEvents.registry('recipe_type', event => {
-    event.create('gtceu:test_recipe_type', 'gtceu:machine')
+GTCEuStartupEvents.registry('minecraft:recipe_type', event => {
+    event.create('test_recipe_type', 'machine')
         .category('test')
         .setEUIO('in')
         .setMaxIOSize(3, 3, 3, 3)

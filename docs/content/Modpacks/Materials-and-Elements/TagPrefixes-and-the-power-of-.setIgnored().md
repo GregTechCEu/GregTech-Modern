@@ -68,10 +68,12 @@ A more illustrative example, using some Applied Energistics 2 items:
 === "JavaScript"
 
     ```js title="setignored_usage_example.js"
+    const AEBlocks = Java.loadClass("appeng.core.definitions.AEBlocks")
+
     GTCEuStartupEvents.materialModification(event => { // (1)
         TagPrefix.gemChipped.setIgnored(GTRegistries.MATERIALS.get(GTCEu.id("fluix_crystal"))) // (2)
         TagPrefix.rock.setIgnored(GTRegistries.MATERIALS.get(GTCEu.id("sky_stone")), AEBlocks.SKY_STONE_BLOCK) // (3)
-        TagPrefix.ingot.get().removeIgnored(GTMaterials.Iron) // (4)
+        TagPrefix.ingot.get().removeIgnored(GTMaterials.Iron.get()) // (4)
     })
     ```
 

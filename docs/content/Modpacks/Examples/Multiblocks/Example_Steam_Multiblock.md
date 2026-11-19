@@ -52,7 +52,8 @@ Steam multiblocks such as the Steam Grinder and Steam Oven use this class.
             // The number passed to the machine constructor is the max amount of parallel it can use.
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType('compressor')
-            .recipeModifier((machine, recipe) => $SteamMulti.recipeModifier(machine, recipe), true)
+            .recipeModifier((machine, recipe) => $SteamMulti.recipeModifier(machine, recipe))
+            .alwaysTryModifyRecipe(true)
             .appearanceBlock(GTBlocks.BRONZE_HULL)
             .pattern(definition => MultiblockPatternBuilder.start()
                 .slice("BCCCB", "BBHBB", "BBCBB", "BBBBB", "BBBBB")

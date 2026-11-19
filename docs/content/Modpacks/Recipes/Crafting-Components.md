@@ -19,18 +19,16 @@ You can replace singular entries, or do bulk modification of components.
 You can also change the fallback entry.
 
 ```js title="startup/modification.js"
-const Map = Java.loadClass('java.util.Map')
-
 GTCEuStartupEvents.craftingComponents(event => {
     event.setItem(GTCraftingComponents.CIRCUIT, GTValues.MV, Item.of('minecraft:dirt')) // (1)
-    event.setItems(GTCraftingComponents.PUMP, Map.of(
-        GTValues.LV, Item.of('gtceu:lv_robot_arm'),
-        GTValues.MV, Item.of('gtceu:mv_robot_arm'),
-        GTValues.HV, Item.of('gtceu:hv_robot_arm'),
-        GTValues.LuV, Item.of('gtceu:luv_robot_arm')
-    )) // (2)
+    event.setItems(GTCraftingComponents.PUMP, {
+        LV: Item.of('gtceu:lv_robot_arm'),
+        MV: Item.of('gtceu:mv_robot_arm'),
+        HV: Item.of('gtceu:hv_robot_arm'),
+        LuV: Item.of('gtceu:luv_robot_arm')
+    }) // (2)
     event.setTag(GTCraftingComponents.CASING, GTValues.EV, 'minecraft:logs') // (3)
-    event.setMaterialEntry(GTCraftingComponents.PLATE, GTValues.UEV, 'plate:infinity') // (4)
+    event.setMaterialEntry(GTCraftingComponents.PLATE, GTValues.UEV, 'plate:neutronium') // (4)
     event.removeTier(GTCraftingComponents.SENSOR, GTValues.HV) // (5)
     event.setFallbackItem(GTCraftingComponents.MOTOR, Item.of('minecraft:stone')) // (6)
 })
@@ -39,7 +37,7 @@ GTCEuStartupEvents.craftingComponents(event => {
 1. Replaces the MV circuit tag in all GT machine crafting recipes with a single block of `minecraft:dirt`.
 2. Modifies the LV, MV, HV, and LuV Pumps in GT machine crafting recipes by replacing the Pump with a Robot Arm.
 3. Replaces the EV casing with the `#minecraft:logs` tag. Note the lack of `#` at the beginning of the tag!
-4. Adds a new entry to the plate component for UEV with prefix `plate` and material `gtceu:infinity`. A `MaterialEntry` can be written as a `'prefix:material'` string.
+4. Adds a new entry to the plate component for UEV with prefix `plate` and material `gtceu:neutronium`. A `MaterialEntry` can be written as a `'prefix:material'` string.
 5. Removes the HV Tier entry of the Sensor Crafting Component, so it will default to the fallback for the component `(LV Sensor)`
 6. Replaces the fallback item for the Motor Crafting Component with a block of `minecraft:stone`.
 
@@ -76,7 +74,7 @@ setMaterialEntry(component: CraftingComponent, tier: int, entry: MaterialEntry):
  * Set a component's Items for many tiers.
  * @param component The component to modify
  * @param map       The map of Tiers to ItemStacks to set
- *                  E.g. `Map.of(GTValues.LV, Item.of('minecraft:dirt'), GTValues.HV, Item.of('minecraft:stone'))`.
+ *                  E.g. `{ LV: Item.of('minecraft:dirt'), HV: Item.of('minecraft:stone') }`.
  */
 setItems(component: CraftingComponent, map: Map<int, ItemStack>): void;
 
@@ -84,7 +82,7 @@ setItems(component: CraftingComponent, map: Map<int, ItemStack>): void;
  * Set a component's Tags for many tiers.
  * @param component The component to modify
  * @param map       The map of Tiers to Item Tag ResourceLocation strings to set
- *                  E.g. `Map.of(GTValues.LV, 'minecraft:logs', GTValues.HV, 'c:ingots')`.
+ *                  E.g. `{ LV: 'minecraft:logs', HV: 'c:ingots' }`.
  */
 setTags(component: CraftingComponent, map: Map<int, Tag>): void;
 
@@ -92,7 +90,7 @@ setTags(component: CraftingComponent, map: Map<int, Tag>): void;
  * Set a component's MaterialEntries for many tiers.
  * @param component The component to modify
  * @param map       The map of Tiers to MaterialEntries to set
- *                  E.g. `Map.of(GTValues.LV, 'plate:brass', GTValues.HV, 'plate:silver')`.
+ *                  E.g. `{ LV: 'plate:brass', HV: 'plate:silver' }`.
  */
 setMaterialEntries(component: CraftingComponent, map: Map<int, MaterialEntry>): void;
 
@@ -101,7 +99,7 @@ setMaterialEntries(component: CraftingComponent, map: Map<int, MaterialEntry>): 
  * Functions identically to `setItems`, `setTags`, and `setMaterialEntries`, but allows providing a map containing all three types of objects.
  * @param component The component to modify
  * @param map       The map of Tiers to Objects to set
- *                  E.g. `Map.of(GTValues.LV, Item.of('minecraft:dirt'), GTValues.HV, 'plate:silver')`.
+ *                  E.g. `{ LV: Item.of('minecraft:dirt'), HV: 'plate:silver' }`.
  */
 set(component: CraftingComponent, map: Map<int, ItemStack | Tag | MaterialEntry>): void;
 
@@ -160,8 +158,6 @@ You can add entries by chaining `.addX(tier, value)` method calls after construc
 You are free to use any combination of Items, Tags, and MaterialEntries in all CraftingComponents.
 
 ```js title="creation.js"
-const Map = Java.loadClass('java.util.Map')
-
 let ITEM_CRAFTING_COMPONENT = null
 let TAG_CRAFTING_COMPONENT = null
 let MATERIAL_ENTRY_CRAFTING_COMPONENT = null
@@ -188,15 +184,15 @@ GTCEuStartupEvents.craftingComponents(event => {
         .addTag(GTValues.ZPM, 'c:cobblestones/mossy')
         .addTag(GTValues.UV, 'c:cobblestones/deepslate')
     // (3)
-    MATERIAL_ENTRY_CRAFTING_COMPONENT = event.createMaterialEntry('material_entry_component', 'plate:infinity')
-        .addMaterialEntry(GTValues.LV, 'block:infinity')
-        .addMaterialEntry(GTValues.MV, 'ingot', 'gtceu:infinity')
-        .addMaterialEntry(GTValues.HV, 'dust:infinity')
-        .addMaterialEntry(GTValues.EV, 'round:infinity')
-        .addMaterialEntry(GTValues.IV, 'foil:infinity')
-        .addMaterialEntry(GTValues.LuV, 'long_rod', 'gtceu:infinity')
-        .addMaterialEntry(GTValues.ZPM, 'rod:infinity')
-        .addMaterialEntry(GTValues.UV, 'bolt:infinity')
+    MATERIAL_ENTRY_CRAFTING_COMPONENT = event.createMaterialEntry('material_entry_component', 'plate:neutronium')
+        .addMaterialEntry(GTValues.LV, 'block:neutronium')
+        .addMaterialEntry(GTValues.MV, 'ingot', 'gtceu:neutronium')
+        .addMaterialEntry(GTValues.HV, 'dust:neutronium')
+        .addMaterialEntry(GTValues.EV, 'round:neutronium')
+        .addMaterialEntry(GTValues.IV, 'foil:neutronium')
+        .addMaterialEntry(GTValues.LuV, 'long_rod', 'gtceu:neutronium')
+        .addMaterialEntry(GTValues.ZPM, 'rod:neutronium')
+        .addMaterialEntry(GTValues.UV, 'bolt:neutronium')
 })
 ```
 

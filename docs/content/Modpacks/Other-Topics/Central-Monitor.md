@@ -34,7 +34,7 @@ Modules can have a custom UI, can be ticked (in a placeholder or not) and, most 
             // should return a new instance of the renderer for this module (not null)
             // for examples of renderer code look in the GTCEu Modern github:
             // https://github.com/GregTechCEu/GregTech-Modern/tree/1.21/src/main/java/com/gregtechceu/gtceu/client/renderer
-            return new MonitorTextRenderer(MultiLineComponent.of("this text is displayed on the monitor"), 1.0);
+            return new MonitorTextRenderer(MultiLineComponent.of(Component.literal("this text is displayed on the monitor")), 1.0);
         }
 
         @Override

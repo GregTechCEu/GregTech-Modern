@@ -13,7 +13,7 @@ When creating a `PatternDefinition` for either a `BlockPattern` or `ExpandablePa
 
 ```java title="ExampleBlockPattern.java"
 
-public static MultiblockMachineDefinition MY_MACHINE = REGISTRATE
+public static MachineEntry<MultiblockMachineDefinition> MY_MACHINE = REGISTRATE
         .multiblock("my_machine", (creationInfo) -> new MyMachineClass(creationInfo))
         .rotationState(RotationState.ALL)
         .recipeType(GTRecipeTypes.ASSEMBLER_RECIPES)
@@ -25,7 +25,7 @@ public static MultiblockMachineDefinition MY_MACHINE = REGISTRATE
                 .slice("XSXX", "CCCC", "CCCC", "XXXX") // (7)
                 .where('S', Predicates.controller(definition)) // (4)
                 .where('X', Predicates.blocks(GTBlocks.CASING_INVAR_HEATPROOF.get())
-                        .and(Predicates.autoAbilities(GTRecipeTypes.ASSEMBLER_RECIPES))) // (5)
+                        .and(Predicates.autoAbilities(GTRecipeTypes.ASSEMBLER_RECIPES.get()))) // (5)
                 .where('M', Predicates.autoAbilities(false, true, false))
                 .where('A', Predicates.blockTag(CustomTags.CLEANROOM_FLOORS)) // (6)
                 .build())

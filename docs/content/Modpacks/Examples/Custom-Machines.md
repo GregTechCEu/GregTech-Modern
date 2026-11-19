@@ -40,7 +40,7 @@ title: Custom Machines
     ```js title="test_electric_machine.js"
     GTCEuStartupEvents.registry('gtceu:machine', event => {
         event.create('test_electric') // (1)
-            .tiers(GTValues.LV, GTValues.MV, GTValues.HV) // (2)
+            .tiers([GTValues.LV, GTValues.MV, GTValues.HV]) // (2)
             .definition((tier, builder) => builder
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType('test_recipe_type'))
@@ -64,7 +64,7 @@ title: Custom Machines
     ```js title="test_generator.js"
     GTCEuStartupEvents.registry('gtceu:machine', event => {
         event.create('test_generator', 'generator') // (1)
-            .tiers(GTValues.LV, GTValues.MV, GTValues.HV) // (2)
+            .tiers([GTValues.LV, GTValues.MV, GTValues.HV]) // (2)
             .definition((tier, builder) => builder.recipeType('test_generator_recipe_type'))
             .tankScalingFunction(tier => tier * 3200)
     })

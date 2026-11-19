@@ -18,8 +18,8 @@ title: Custom Recipe Type
     ```
 === "JavaScript"
     ```js title="test_recipe_type.js"
-    StartupEvents.registry('recipe_type', event => {
-        event.create('gtceu:test_recipe_type', 'gtceu:machine')
+    GTCEuStartupEvents.registry('minecraft:recipe_type', event => {
+        event.create('test_recipe_type', 'machine')
             .category('test')
             .setEUIO('in')
             .setMaxIOSize(3, 3, 3, 3) // (1)

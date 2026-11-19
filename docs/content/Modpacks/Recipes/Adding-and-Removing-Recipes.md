@@ -10,9 +10,10 @@ title: "Adding & Removing Recipes"
 Removing recipes can be done from your java addon:
 
 ```java title="MyGTAddon.java"
-@GTAddon
+@GTAddon(ExampleMod.MOD_ID)
 public class MyGTAddon implements IGTAddon {
-    
+    // ...
+
     @Override
     public void removeRecipes(Consumer<ResourceLocation> consumer) {
         // Recipes can be removed by resource location
@@ -68,9 +69,10 @@ Syntax: `event.recipes.gtceu.RECIPE_TYPE(string: recipe id)`
 
 === "Java"
     ```java title="MyGTAddon.java"
-    @GTAddon
+    @GTAddon(ExampleMod.MOD_ID)
     public class MyGTAddon implements IGTAddon {
-        
+        // ...
+
         @Override
         public void addRecipes(RecipeOutput provider) {
             ASSEMBLER_RECIPES.recipeBuilder(ExampleMod.id("test"))
@@ -189,8 +191,9 @@ Scanner Research, Station Research and Computation.
 
 === "Java"
     ```java title="MyGTAddon.java"
-    @GTAddon
+    @GTAddon(ExampleMod.MOD_ID)
     public class MyGTAddon implements IGTAddon {
+        // ...
 
         @Override
         public void addRecipes(RecipeOutput provider) {
@@ -225,8 +228,9 @@ Scanner Research, Station Research and Computation.
 
 === "Java"
     ```java title="MyGTAddon.java"
-    @GTAddon
+    @GTAddon(ExampleMod.MOD_ID)
     public class MyGTAddon implements IGTAddon {
+        // ...
 
         @Override
         public void addRecipes(RecipeOutput provider) {
@@ -267,8 +271,9 @@ To add a condition, you can use the `adjacentFluids(Fluid...)` methods, see [our
 
 === "Java"
     ```java title="MyGTAddon.java"
-    @GTAddon
+    @GTAddon(ExampleMod.MOD_ID)
     public class MyGTAddon implements IGTAddon {
+        // ...
 
         @Override
         public void addRecipes(RecipeOutput provider) {

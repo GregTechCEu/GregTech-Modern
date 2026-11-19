@@ -8,56 +8,43 @@ This happens when there's multiple overloads (e.g. methods with the same name bu
 
 For example, when you do:
 ```js
-
-GTCEuStartupEvents.registry('gtceu:machine', event => {
-    event.create('unboxinator')
-        .tiers(GTValues.LV)
-        .definition((tier, builder) => builder
-            .tooltips(Component.literal("I am a machine")))
-    // Rest of the machine
+GTCEuStartupEvents.materialModification(event => {
+    TagPrefix.ingot.get().removeIgnored(GTMaterials.Iron)
 })
 ```
 
 you'd get the error:
 ```
-Error in 'GTCEuStartupEvents.registry': The choice of Java method com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder.tooltips matching JavaScript argument types (net.minecraft.network.chat.MutableComponent) is ambiguous; candidate methods are: 
-    class com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder tooltips(java.util.List)
-    class com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder tooltips(net.minecraft.network.chat.Component[])
+Error in 'GTCEuStartupEvents.materialModification': dev.latvian.mods.rhino.EvaluatorException: The choice of Java method com.gregtechceu.gtceu.api.data.tag.TagPrefix.removeIgnored matching JavaScript argument types (com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry) is ambiguous; candidate methods are: 
+    void removeIgnored(net.minecraft.core.Holder)
+    void removeIgnored(com.gregtechceu.gtceu.api.data.chemical.material.Material)
 ```
 
-In this case, there's ambiguity between the following 2 java functions:
+In this case, there's ambiguity between the following 2 java functions, because `GTMaterials.Iron` is a registry entry that KubeJS can pass as either:
 ```java
-    public SELF tooltips(@Nullable Component... components) {
+    public void removeIgnored(Material material) {
         // ...
     }
 
-    public SELF tooltips(List<? extends Component> components) {
+    public void removeIgnored(Holder<Material> material) {
         // ...
     }
 ```
 
 You would want to select one of the two, and this can be done in the following way:
 ```js
-GTCEuStartupEvents.registry('gtceu:machine', event => {
-    event.create('unboxinator')
-        .tiers(GTValues.LV)
-        .definition((tier, builder) => builder
-            ["tooltips(java.util.List)"]([Component.literal("I am a machine")]))
-    // Rest of the machine
+GTCEuStartupEvents.materialModification(event => {
+    TagPrefix.ingot.get()["removeIgnored(net.minecraft.core.Holder)"](GTMaterials.Iron)
 })
 ```
 or
 ```js
-GTCEuStartupEvents.registry('gtceu:machine', event => {
-    event.create('unboxinator')
-        .tiers(GTValues.LV)
-        .definition((tier, builder) => builder
-            ["tooltips(net.minecraft.network.chat.Component[])"]([Component.literal("I am a machine")]))
-    // Rest of the machine
+GTCEuStartupEvents.materialModification(event => {
+    TagPrefix.ingot.get()["removeIgnored(com.gregtechceu.gtceu.api.data.chemical.material.Material)"](GTMaterials.Iron.get())
 })
 ```
 
-Because of the way javascript indexing works, `.foo` and `["foo"]` are the same thing, so you can just keep chaning your functions afterward, since it's just a "normal" builder method, just called in a more specific way.
+Because of the way javascript indexing works, `.foo` and `["foo"]` are the same thing, so if the method is a builder method you can just keep chaining your functions afterward, since it's just a "normal" method, just called in a more specific way.
 
 ## Ambiguous Constructors
 This same problem can occur when trying to call a constructor.  

@@ -17,8 +17,8 @@ title: "Ore Processing Plant"
     ```
 === "JavaScript"
     ```js title="ore_processing_plant.js"
-    StartupEvents.registry('recipe_type', event => {
-        event.create('gtceu:ore_processing_plant', 'gtceu:machine')
+    GTCEuStartupEvents.registry('minecraft:recipe_type', event => {
+        event.create('ore_processing_plant', 'machine')
             .category('ore_processing_plant')
             .setEUIO('in')
             .setMaxIOSize(1, 8, 2, 1)

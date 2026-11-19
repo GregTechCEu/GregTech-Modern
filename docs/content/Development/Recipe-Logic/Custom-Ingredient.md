@@ -390,7 +390,7 @@ public class Bonk {
 ```
 
 ```java title="BonkGTAddon.java"
-@GTAddon
+@GTAddon(Bonk.MOD_ID)
 public class BonkGTAddon implements IGTAddon {
     // ...
     @Override
