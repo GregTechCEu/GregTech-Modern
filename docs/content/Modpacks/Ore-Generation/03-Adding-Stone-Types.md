@@ -26,7 +26,7 @@ GTCEuStartupEvents.registry('gtceu:tag_prefix', event => {
 })
 ```
 
-1. The first parameter for `create()` is the name that corresponds to your stone type. The second parameter is **always** `'ore'`!
+1. The first parameter for `create()` is the name that corresponds to your stone type. Without a namespace it is registered as `gtceu:blockium`; pass `'my_mod:blockium'` to register it under your own namespace instead. The lang key only uses the name, so it stays `tagprefix.blockium` either way. The second parameter is **always** `'ore'`!
 2. For `Block.getBlock()` you must use the stone type's block ID as a parameter.
 3. This is the `ResourceLocation` of the base stone type's model. If the base block uses custom rendering, you may need to create your own model.
 
