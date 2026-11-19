@@ -4181,7 +4181,7 @@
   "gui.gtceu.module_slot.tiered": "Tiered (%s)",
   "gui.gtceu.module_slot.universal": "Universal",
   "gui.gtceu.module_slots": "Module slots:",
-  "gui.gtceu.modules": "Modules:",
+  "gui.gtceu.modules": "Modules",
   "gui.gtceu.refund_all.desc": "Return Stored Contents to AE2",
   "gui.gtceu.rename.desc": "Rename Pattern Buffer",
   "gui.gtceu.share_inventory.desc.0": "Shares inserted items with all patterns within buffer!",

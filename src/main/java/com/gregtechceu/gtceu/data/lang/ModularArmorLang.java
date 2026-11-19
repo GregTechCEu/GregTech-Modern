@@ -53,7 +53,7 @@ public class ModularArmorLang {
         provider.add("gui.gtceu.module_slot.tiered", "Tiered (%s)");
         provider.add("gui.gtceu.max_module_tier", "Max Module Tier: %s");
         provider.add("gui.gtceu.module_slots", "Module slots:");
-        provider.add("gui.gtceu.modules", "Modules:");
+        provider.add("gui.gtceu.modules", "Modules");
 
         provider.add("tooltip.gtceu.armor.built_in_traits", "Built-in Traits:");
         provider.add("tooltip.gtceu.armor.trait.fall", "Fall protection");
