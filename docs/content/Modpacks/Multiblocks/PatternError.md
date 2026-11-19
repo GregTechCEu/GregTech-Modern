@@ -49,6 +49,8 @@ You also need to register your new PatternErrors statically:
 
 ```java
 public class ExampleMod {
+    // ... (MOD_ID, id(String), etc.)
+
     public ExampleMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addGenericListener(PatternError.PatternErrorType.class, this::registerPatternErrors);

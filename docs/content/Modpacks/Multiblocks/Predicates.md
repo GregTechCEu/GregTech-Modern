@@ -100,7 +100,7 @@ Do note that this only affects the limits. For example, `dirtPred.and(stonePred)
 
 ```java title="ComplexPredicate.java"
 
-MultiPredicate myCustomPredicate = Predicates.blocks(GTBlocks.PLASCRETE)
+MultiPredicate myCustomPredicate = Predicates.blocks(GTBlocks.PLASTCRETE.get())
         .and(Predicates.blocks(Blocks.DIRT))
         .and(Predicates.frames(GTMaterials.Steel).setExactLimit(20))
         .and(Predicates.autoAbilities(true, false, true));

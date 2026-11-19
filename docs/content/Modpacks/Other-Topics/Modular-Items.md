@@ -25,7 +25,13 @@ a component, module-related tooltips won't be displayed, and `onUse` and related
                 for (int i = 0; i < slots; i++) defaultSlots.add(GTItemModules.TIERED_SLOTS[maxTier]);
                 // ModularItemStack accepts a Function<ItemStack, List<ItemModuleSlot>> in the constructor
                 // The stack provided to that function is the same stack as here, so we can ignore it
-                event.addCapability(GTCEu.id("modular"), new ModularItemStack(stack, ignored -> defaultSlots));
+                LazyOptional<IModularItem> modularItem = LazyOptional.of(() -> new ModularItemStack(stack, ignored -> defaultSlots));
+                event.addCapability(GTCEu.id("modular"), new ICapabilityProvider() {
+                    @Override
+                    public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+                        return GTCapability.CAPABILITY_MODULAR_ITEM.orEmpty(cap, modularItem);
+                    }
+                });
             }
         }
     }

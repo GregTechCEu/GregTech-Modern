@@ -59,7 +59,7 @@ e.g.
 
 To make this easier as to not have to re-invent the (de)serializers, you can use what's called an `IByteBufAdapter`. They hold serialize, deserialize and equals methods. So you could do
 ```java
-        GenericSyncValue<GTRecipe> recipeSyncHandler = GenericSyncValue.<GTRecipe>builder()
+        GenericSyncValue<GTRecipe> recipeSyncHandler = GenericSyncValue.builder(GTRecipe.class)
                         .getter(() -> rlmachine.getRecipeLogic().getLastRecipe())
                         .adapter(GTByteBufAdapters.GTRECIPE)
                         .build();

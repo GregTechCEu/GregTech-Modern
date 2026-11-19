@@ -20,17 +20,17 @@ public class GreenhouseMachine extends WorkableElectricMultiblockMachine {
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
-        if (!isRemote()) {
-            tickSubscription = this.subscribeServerTick(this::turnGreenery);
+    public void formStructure(String substructureName) {
+        super.formStructure(substructureName);
+        if (!isRemote() && isFormed()) {
+            tickSubscription = this.subscribeServerTick(tickSubscription, this::turnGreenery);
         }
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
-        if (!isRemote()) {
+    public void invalidateStructure(String substructureName) {
+        super.invalidateStructure(substructureName);
+        if (!isRemote() && tickSubscription != null) {
             tickSubscription.unsubscribe();
             tickSubscription = null;
         }

@@ -18,20 +18,20 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 
 you'd get the error:
 ```
-Error in 'GTCEuStartupEvents.registry': The choice of Java method com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder.tooltips matching JavaScript argument types (net.minecraft.network.chat.MutableComponent) is ambiguous; candidate methods are: 
+Error in 'GTCEuStartupEvents.registry': The choice of Java method com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder.tooltips matching JavaScript argument types (net.minecraft.network.chat.MutableComponent) is ambiguous; candidate methods are: 
     class com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder tooltips(java.util.List)
     class com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder tooltips(net.minecraft.network.chat.Component[])
 ```
 
 In this case, there's ambiguity between the following 2 java functions:
 ```java
-    public MachineBuilder<DEFINITION> tooltips(@Nullable Component... components) {
+    public SELF tooltips(@Nullable Component... components) {
         return tooltips(Arrays.asList(components));
     }
 
-    public MachineBuilder<DEFINITION> tooltips(List<? extends @Nullable Component> components) {
+    public SELF tooltips(List<? extends @Nullable Component> components) {
         tooltips.addAll(components.stream().filter(Objects::nonNull).toList());
-        return this;
+        return getThis();
     }
 ```
 

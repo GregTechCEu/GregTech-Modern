@@ -61,7 +61,8 @@ The builder has the same arguments as the constructor, and can have chained meth
 
 - `.enchantment(Enchantment enchantment, int level)`
     - Enchantment is the default enchantment applied on tool creation.  
-      Level is the level of said enchantment.
+      Level is the level of said enchantment.  
+      Only applied when the `recipes.enchantedTools` config option is enabled (it is `false` by default).
 - `enchantability(int enchantability)`
     - Set the base enchantability of a tool made from this Material.  
       Iron is 14, Diamond is 10, Stone is 5.
@@ -114,7 +115,7 @@ You can also change the tool property of a GT material that already has a tool p
             GTMaterials.TungstenCarbide.removeProperty(PropertyKey.TOOL);
         }
         GTMaterials.TungstenCarbide.setProperty(PropertyKey.TOOL,
-            (ToolProperty.Builder.of(180, 5.9f, 2147483647, 6, GTToolType.SOFT_MALLET, GTToolType.DRILL_LV)
+            (ToolProperty.Builder.of(180, 5.9f, 2147483647, 6, GTToolType.SOFT_MALLET, GTToolType.DRILL_LV, GTToolType.BUZZSAW)
             .build()));
     }
 
@@ -129,7 +130,8 @@ You can also change the tool property of a GT material that already has a tool p
             ToolProperty.Builder.of(180, 5.9, 2147483647, 6,
             [
                 GTToolType.SOFT_MALLET,
-                GTToolType.DRILL_LV
+                GTToolType.DRILL_LV,
+                GTToolType.BUZZSAW
             ]
         ).build());
     });

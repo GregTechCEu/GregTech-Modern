@@ -95,7 +95,7 @@ Do note that to edit keys that already exist on materials, you have to remove th
     @SubscribeEvent
     public static void materialModification(PostMaterialEvent event) {
         GTMaterials.RedAlloy.removeProperty(PropertyKey.WIRE);
-        GTMaterials.RedAlloy.setProperty(PropertyKey.WIRE, new WireProperties(8, 1, 0, true));
+        GTMaterials.RedAlloy.setProperty(PropertyKey.WIRE, new WireProperties(32, 2, 0, false));
     }
     ```
 === "JavaScript"
@@ -104,7 +104,7 @@ Do note that to edit keys that already exist on materials, you have to remove th
     
     GTCEuStartupEvents.materialModification(event => {
         GTMaterials.RedAlloy.removeProperty(PropertyKey.WIRE)
-        GTMaterials.RedAlloy.setProperty(PropertyKey.WIRE, new $WireProperties(8, 1, 0, true))
+        GTMaterials.RedAlloy.setProperty(PropertyKey.WIRE, new $WireProperties(32, 2, 0, false))
     })
     ```
 You can also add flags to existing materials:

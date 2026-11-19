@@ -14,7 +14,8 @@ They are registered using
 ```java
 @Mod(ExampleMod.MOD_ID)
 public class ExampleMod {
-    
+    // ... (MOD_ID, id(String), etc.)
+
     public static RecipeConditionType<ExampleCondition> EXAMPLE_CONDITION;
 
     public ExampleMod() {
@@ -65,7 +66,7 @@ public class ExampleCondition extends RecipeCondition<ExampleCondition> {
     }
 
     public RecipeUIModifier modifyUI() {
-        return RecipeUIModifier.textLine(Text.of(String.format("Should be ran at least at height %d", height)));
+        return RecipeUIModifier.textLine(Text.str(String.format("Should be ran at least at height %d", height)));
     }
 
 

@@ -19,7 +19,7 @@ StartupEvents.registry('block', event => {
         .texture('kubejs:block/example_block')
         .hardness(5)
         .requiresTool(true)
-        .material('metal')
+        .soundType(SoundType.METAL)
 })
 ```
 

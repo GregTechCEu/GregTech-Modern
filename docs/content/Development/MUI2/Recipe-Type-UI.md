@@ -12,7 +12,7 @@ The same layout drives two different UIs:
 
 
 ## From Java
-In machine UIs, the layout is declared with `GTRecipeType::UI`, which takes a `Consumer<GTRecipeTypeUILayout.Builder>`:
+In machine UIs, the layout is declared with `GTRecipeType::UI`, which takes a `UnaryOperator<GTRecipeTypeUILayout.Builder>`:
 
 ```java
 public final static GTRecipeType CANNER_RECIPES = register(GTCEu.id("canner"), ELECTRIC)
