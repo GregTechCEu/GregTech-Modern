@@ -86,7 +86,8 @@ public class SpoilableBehaviourTest {
     @GameTest(template = "empty_5x5", batch = "spoilageTests")
     public static void itemSpoilsInChest(GameTestHelper helper) {
         helper.setBlock(1, 1, 1, Blocks.CHEST);
-        IItemHandlerModifiable itemHandler = (IItemHandlerModifiable)TestUtils.getItemHandler(helper, new BlockPos(1, 1, 1));
+        IItemHandlerModifiable itemHandler = (IItemHandlerModifiable) TestUtils.getItemHandler(helper,
+                new BlockPos(1, 1, 1));
 
         helper.startSequence()
                 .thenExecute(() -> itemHandler.insertItem(0,
@@ -107,9 +108,9 @@ public class SpoilableBehaviourTest {
                 })
                 .thenIdle(2)
                 .thenExecute(() -> helper.assertTrue(TestUtils.isItemStackEqual(
-                                                GTItems.SPOILABLE_5.get().getDefaultInstance().copyWithCount(23),
-                                                TestUtils.getItemHandler(helper, new BlockPos(1, 1, 1)).getStackInSlot(0)),
-                                        "item didn't spoil when should have"))
+                        GTItems.SPOILABLE_5.get().getDefaultInstance().copyWithCount(23),
+                        TestUtils.getItemHandler(helper, new BlockPos(1, 1, 1)).getStackInSlot(0)),
+                        "item didn't spoil when should have"))
                 .thenSucceed();
     }
 
@@ -132,8 +133,10 @@ public class SpoilableBehaviourTest {
                 })
                 .thenIdle(71)
                 .thenExecute(() -> helper.assertTrue(TestUtils.isItemStackEqual(
-                                GTItems.SPOILABLE_5.get().getDefaultInstance().copyWithCount(41), itemHandler.getStackInSlot(0)),
-                        "item didn't spoil recursively (expected spoilable 1 -> 2 -> ... -> 5), got " + itemHandler.getStackInSlot(0) + " instead"))
+                        GTItems.SPOILABLE_5.get().getDefaultInstance().copyWithCount(41),
+                        itemHandler.getStackInSlot(0)),
+                        "item didn't spoil recursively (expected spoilable 1 -> 2 -> ... -> 5), got " +
+                                itemHandler.getStackInSlot(0) + " instead"))
                 .thenSucceed();
     }
 
@@ -240,8 +243,8 @@ public class SpoilableBehaviourTest {
                 .thenExecute(() -> {
                     ItemStack stack = busHolder.outputBus1.getInventory().getStackInSlot(0);
                     helper.assertTrue(TestUtils.isItemStackEqual(
-                                    stack,
-                                    new ItemStack(GTItems.SPOILABLE_2)),
+                            stack,
+                            new ItemStack(GTItems.SPOILABLE_2)),
                             "incorrect recipe output (%s != %s)".formatted(stack.toString(),
                                     new ItemStack(GTItems.SPOILABLE_2).toString()));
                     ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
@@ -268,8 +271,8 @@ public class SpoilableBehaviourTest {
                 .thenExecute(() -> {
                     ItemStack stack = busHolder.outputBus1.getInventory().getStackInSlot(0);
                     helper.assertTrue(TestUtils.isItemStackEqual(
-                                    stack,
-                                    new ItemStack(GTItems.SPOILABLE_2)),
+                            stack,
+                            new ItemStack(GTItems.SPOILABLE_2)),
                             "incorrect recipe output (%s != %s)".formatted(stack.toString(),
                                     new ItemStack(GTItems.SPOILABLE_2).toString()));
                     ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);

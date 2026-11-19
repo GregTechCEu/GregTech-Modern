@@ -28,7 +28,7 @@ public class SpoilUtils {
         return GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SPOILAGE);
     }
 
-    public static void mergeSpoilage(ItemStack stack, ItemStack other) {
+    public static void mergeSpoilables(ItemStack stack, ItemStack other) {
         if (stack.isEmpty() || other.isEmpty() || !stack.hasTag() || !other.hasTag() ||
                 stack.getOrCreateTag().equals(other.getOrCreateTag()))
             return;

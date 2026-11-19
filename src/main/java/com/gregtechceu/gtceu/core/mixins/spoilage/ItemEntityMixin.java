@@ -18,6 +18,6 @@ public class ItemEntityMixin {
                      target = "Lnet/minecraft/nbt/CompoundTag;equals(Ljava/lang/Object;)Z"))
     private static void gtceu$mergeSpoilageBeforeEntityMerge(ItemStack a, ItemStack b,
                                                              CallbackInfoReturnable<Boolean> cir) {
-        SpoilUtils.mergeSpoilage(a, b);
+        SpoilUtils.mergeSpoilables(a, b);
     }
 }

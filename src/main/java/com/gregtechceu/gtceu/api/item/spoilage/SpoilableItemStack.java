@@ -74,7 +74,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     /**
      * Checks if this item should've already spoiled, and calls
-     * {@link ISpoilableItem#getSpoilResult(SpoilContext, boolean)}
+     * {@link ISpoilableItem#getSpoilResult(SpoilContext, long, boolean)}
      * and replaces this item with its return value if so.<br>
      * <br>
      * If {@code createTag = true} and the spoilage tag did not exist, creates
@@ -83,7 +83,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
      *
      * @param createTag Whether to create a spoilage tag if it wasn't present.
      *                  Usually {@code true} for stacks that are present in-world,
-     *                  and {@code false} for stacks in XEI, icons, quests, etc.
+     *                  and {@code false} for stacks in recipe viewers, icons, quests, etc.
      *
      * @implNote This method is injected into all of {@link ItemStack}'s getters to
      *           be called with an empty {@link SpoilContext} and {@code createTag = false}.
@@ -91,25 +91,29 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     public void updateFreshness(SpoilContext spoilContext, boolean createTag) {
         if (isFrozen()) return;
         Level level = SpoilContext.getDefaultLevel();
-        if (level != null && createTag && getCreationTick() == 0) {
+
+        if (level == null) return;
+
+        if (createTag && getCreationTick() == 0) {
             setCreationTick(level.getGameTime());
         }
-        if (level != null && this.shouldSpoil()) {
-            long spoilTicks = this.getSpoilTicks();
-            long timeDifference = level.getGameTime() - getCreationTick() - spoilTicks;
-            if (timeDifference >= 0) {
-                ItemStack newStack = this.getSpoilResult(spoilContext, timeDifference, GTCEu.isClientThread());
-                spoilContext.setResultStack(newStack);
 
-                ISpoilableItem newSpoilable = GTCapabilityHelper.getSpoilable(newStack);
-                if (newSpoilable != null) {
-                    newSpoilable.setCreationTick(level.getGameTime() - timeDifference);
-                    try {
-                        newSpoilable.updateFreshness(spoilContext, false);
-                    } catch (StackOverflowError ignored) {
-                        // if items spoil in a giant chain or a loop
-                    }
-                }
+        if (!this.shouldSpoil()) return;
+
+        long spoilTicks = this.getSpoilTicks();
+        long timeDifference = level.getGameTime() - getCreationTick() - spoilTicks;
+        if (timeDifference < 0) return;
+
+        ItemStack newStack = this.getSpoilResult(spoilContext, timeDifference, GTCEu.isClientThread());
+        spoilContext.setResultStack(newStack);
+
+        ISpoilableItem newSpoilable = GTCapabilityHelper.getSpoilable(newStack);
+        if (newSpoilable != null) {
+            newSpoilable.setCreationTick(level.getGameTime() - timeDifference);
+            try {
+                newSpoilable.updateFreshness(spoilContext, false);
+            } catch (StackOverflowError ignored) {
+                // if items spoil in a giant chain or a loop
             }
         }
     }
@@ -134,10 +138,12 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     }
 
     private void setFreezeSpoiling(boolean freeze) {
+        if (freeze == this.isFrozen()) return;
+
         if (freeze) {
             setFrozenTicks(getTicksUntilSpoiled());
             stack.getOrCreateTag().putBoolean(FROZEN_KEY, true);
-        } else if (isFrozen()) {
+        } else {
             setTicksUntilSpoiled(getFrozenTicks());
             stack.getOrCreateTag().putBoolean(FROZEN_KEY, false);
         }
@@ -161,7 +167,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        var time = getTicksUntilSpoiled();
+        long time = getTicksUntilSpoiled();
         MutableComponent timeTooltip;
 
         if (getCreationTick() == 0) {

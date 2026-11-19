@@ -18,7 +18,7 @@ public abstract class AbstractContainerMenuMixin {
                             target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameTags(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z"))
     private static boolean gtceu$mergeSpoilageBeforeSlotComparison(ItemStack stack, ItemStack other,
                                                                    Operation<Boolean> original) {
-        SpoilUtils.mergeSpoilage(stack, other);
+        SpoilUtils.mergeSpoilables(stack, other);
         return original.call(stack, other);
     }
 
@@ -26,7 +26,7 @@ public abstract class AbstractContainerMenuMixin {
                    at = @At(value = "INVOKE",
                             target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameTags(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z"))
     private boolean gtceu$mergeSpoilageBeforeMove(ItemStack stack, ItemStack other, Operation<Boolean> original) {
-        SpoilUtils.mergeSpoilage(stack, other);
+        SpoilUtils.mergeSpoilables(stack, other);
         return original.call(stack, other);
     }
 
@@ -35,7 +35,7 @@ public abstract class AbstractContainerMenuMixin {
                             target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameTags(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z"))
     private boolean gtceu$mergeSpoilageBeforeSlotStacking(ItemStack stack, ItemStack other,
                                                           Operation<Boolean> original) {
-        SpoilUtils.mergeSpoilage(stack, other);
+        SpoilUtils.mergeSpoilables(stack, other);
         return original.call(stack, other);
     }
 }

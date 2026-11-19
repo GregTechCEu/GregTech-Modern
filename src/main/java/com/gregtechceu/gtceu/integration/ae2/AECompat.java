@@ -21,7 +21,7 @@ public class AECompat {
     public static void init() {
         GridLinkables.register(GTItems.TERMINAL.get(), TERMINAL_LINKABLE_HANDLER);
 
-        BlockEntitySpoilTicker.BLACKLISTED_BLOCK_ENTITIES.add(AEBaseBlockEntity.class);
+        BlockEntitySpoilTicker.blacklistBlockEntityClass(AEBaseBlockEntity.class);
     }
 
     private static class LinkableHandler implements IGridLinkableHandler {

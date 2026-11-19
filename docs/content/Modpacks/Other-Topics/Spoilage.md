@@ -17,13 +17,14 @@ or, more specifically, from one of these events (due to Minecraft's limitations)
 By default, all block entities with item handlers will be updated by the spoilage handler. To blacklist a block entity from being updated, add the class to `BlockEntitySpoilTicker#BLACKLISTED_BLOCK_ENTITIES`.
 By default, all AE2 block entities are blacklisted.
 
-If you want to make an item spoil, you need to attack the `ISpoilableItem` capability to it.
+If you want to make an item spoil, you need to attach the `ISpoilableItem` capability to it.
 Please note that the spoilage timer still decrements even if the stack is in an unloaded chunk.
 
 ### SpoilContext
 A `SpoilContext` is an object that represents the environment in which an item spoils.
 It may contain:
 
+- Nothing, if the environment is unavailable.
 - A block (contains `Level` and `BlockPos`)
 - An entity, usually a player (contains `Level`, `BlockPos`, `Entity`)
 

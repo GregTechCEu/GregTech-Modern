@@ -17,9 +17,12 @@ import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@ApiStatus.Internal
 public class SpoilageEventListeners {
 
     @SubscribeEvent

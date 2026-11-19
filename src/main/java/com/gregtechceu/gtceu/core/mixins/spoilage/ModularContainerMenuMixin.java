@@ -18,7 +18,7 @@ public abstract class ModularContainerMenuMixin {
                             target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameTags(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z"))
     private boolean gtceu$mergeSpoilageBeforeSlotStackingMUI(ItemStack stack, ItemStack other,
                                                              Operation<Boolean> original) {
-        SpoilUtils.mergeSpoilage(stack, other);
+        SpoilUtils.mergeSpoilables(stack, other);
         return original.call(stack, other);
     }
 }
