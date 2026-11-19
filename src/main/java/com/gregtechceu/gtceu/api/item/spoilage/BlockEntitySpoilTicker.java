@@ -16,7 +16,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -33,7 +33,7 @@ public class BlockEntitySpoilTicker {
     public static final int MAX_TICKS_PER_UPDATE = ServerLevel.MAX_SCHEDULED_TICKS_PER_TICK;
     public static final long UPDATE_FREQUENCY = 2;
 
-    private static final Set<Class<?>> BLACKLISTED_BLOCK_ENTITIES = new ObjectOpenHashSet<>();
+    private static final Set<Class<? extends BlockEntity>> BLACKLISTED_BLOCK_ENTITIES = new ReferenceOpenHashSet<>();
 
     public static BlockEntitySpoilTicker get(ServerLevel level) {
         return TICKERS.get(level);
@@ -53,7 +53,7 @@ public class BlockEntitySpoilTicker {
                 level.getProfilerSupplier());
     }
 
-    public static void blacklistBlockEntityClass(Class<?> clazz) {
+    public static void blacklistBlockEntityClass(Class<? extends BlockEntity> clazz) {
         BLACKLISTED_BLOCK_ENTITIES.add(clazz);
     }
 
