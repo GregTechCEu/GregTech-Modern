@@ -46,7 +46,7 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
     
     GTCEuStartupEvents.registry('gtceu:machine', event => {
         event.create('hyper_gas_turbine', 'multiblock')
-            .blockEntityFactory((info) => new $LargeTurbineMachine(info, GTValues.LuV)) // The value shows one rotor holder tier above the recommended minimum rotor holder. The tier of rotor holder provides a boost based on the efficiency stat.
+            .instanceFactory((info) => new $LargeTurbineMachine(info, GTValues.LuV)) // The value shows one rotor holder tier above the recommended minimum rotor holder. The tier of rotor holder provides a boost based on the efficiency stat.
             .langValue("Hyper Gas Turbine")
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes("gas_turbine")

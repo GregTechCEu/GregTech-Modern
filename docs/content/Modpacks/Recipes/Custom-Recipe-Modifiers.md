@@ -69,7 +69,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 
 	event.create('example_smelter', 'multiblock')
 		.rotationState(RotationState.NON_Y_AXIS)
-		.blockEntityFactory((info) => new $CoilWorkableElectricMultiblockMachine(info)) // (1)
+		.instanceFactory((info) => new $CoilWorkableElectricMultiblockMachine(info)) // (1)
 		.recipeType('example_smelting')
 		.recipeModifiers([(machine, recipe) => TemperatureModifier(machine, recipe)]) // (2)
 		.appearanceBlock(() => Block.getBlock("gtceu:solid_machine_casing"))

@@ -47,7 +47,7 @@ Steam multiblocks such as the Steam Grinder and Steam Oven use this class.
 
     GTCEuStartupEvents.registry('gtceu:machine', event => {
         event.create('large_steam_compressor', 'multiblock')
-            .blockEntityFactory((info) => new $SteamMulti(info, 4))
+            .instanceFactory((info) => new $SteamMulti(info, 4))
             .langValue("Large Steam Compressor")
             // The number passed to the machine constructor is the max amount of parallel it can use.
             .rotationState(RotationState.NON_Y_AXIS)

@@ -52,7 +52,7 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
     
     GTCEuStartupEvents.registry('gtceu:machine', event => {
         event.create("superheated_pyrolyzing_oven", "multiblock")
-            .blockEntityFactory((info) => new CoilWorkableElectricMultiblockMachine(info))
+            .instanceFactory((info) => new CoilWorkableElectricMultiblockMachine(info))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes('pyrolyse_oven')
             .recipeModifiers(

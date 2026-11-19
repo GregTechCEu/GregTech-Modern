@@ -34,6 +34,11 @@ public class MultiblockMachineBuilderJS extends MachineBuilderJS<MultiblockMachi
         return (MultiblockMachineBuilder<?>) internal;
     }
 
+    public MultiblockMachineBuilderJS instanceFactory(MachineInstanceFactory machine) {
+        getInternal().instanceFactory(machine);
+        return getThis();
+    }
+
     public MultiblockMachineBuilderJS generator(boolean generator) {
         getInternal().generator(generator);
         return getThis();
