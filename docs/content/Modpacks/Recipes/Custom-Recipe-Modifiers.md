@@ -56,8 +56,8 @@ Custom recipe modifiers in are done through a function. For this example, we wil
 ```js title="example_temperature_multiblock.js"
 const $CoilWorkableElectricMultiblockMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine");
 
-GTCEuStartupEvents.registry('minecraft:recipe_type', event => {
-	event.create('example_smelting', 'machine')
+StartupEvents.registry('recipe_type', event => {
+	event.create('gtceu:example_smelting', 'gtceu:machine')
 		.category('multiblock')
 		.setMaxIOSize(1, 1, 0, 0)
 		.setProgressBar(GTGuiTextures.PROGRESS_FUSION)

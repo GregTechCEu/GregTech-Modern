@@ -19,8 +19,8 @@ title: "Greenhouse"
     ```
 === "JavaScript"
     ```js title="greenhouse_recipe_type.js"
-    GTCEuStartupEvents.registry('minecraft:recipe_type', event => {
-        event.create('greenhouse', 'machine')
+    StartupEvents.registry('recipe_type', event => {
+        event.create('gtceu:greenhouse', 'gtceu:machine')
             .setEUIO('in')
             .setMaxIOSize(3, 4, 1, 0)
             .setProgressBar(GTGuiTextures.PROGRESS_ARROW)

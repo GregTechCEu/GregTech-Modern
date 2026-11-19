@@ -286,8 +286,8 @@ KubeJS scripts do not build or touch widgets directly. `GTRecipeTypeBuilder`
 exposes the common options as plain builder methods instead:
 
 ```js
-GTCEuStartupEvents.registry('minecraft:recipe_type', event => {
-    event.create('test_recipe_type', 'machine')
+StartupEvents.registry('recipe_type', event => {
+    event.create('gtceu:test_recipe_type', 'gtceu:machine')
         .category('test')
         .setEUIO('in')
         .setMaxIOSize(3, 3, 3, 3)
