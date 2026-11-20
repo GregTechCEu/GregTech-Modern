@@ -177,10 +177,10 @@ public class VeinedVeinGenerator extends VeinGenerator {
         final NoiseSettings noiseSettings = DEFAULT_NOISE_SETTINGS.clampToHeightAccessor(level);
 
         int x0 = origin.getX() - radius, x1 = origin.getX() + radius;
-        int z0 = origin.getZ() - radius, z1 = origin.getY() + radius;
+        int z0 = origin.getZ() - radius, z1 = origin.getZ() + radius;
         int y0 = Math.max(origin.getY() - radius, this.minYLevel);
         int y1 = Math.min(origin.getY() + radius, this.maxYLevel);
-        final BoundingBox veinBounds = new BoundingBox(x0, y0, z0, z1, y1, z1);
+        final BoundingBox veinBounds = new BoundingBox(x0, y0, z0, x1, y1, z1);
 
         int sectionX0 = blockToSectionCoord(x0), sectionX1 = blockToSectionCoord(x1);
         int sectionY0 = blockToSectionCoord(y0), sectionY1 = blockToSectionCoord(y1);
