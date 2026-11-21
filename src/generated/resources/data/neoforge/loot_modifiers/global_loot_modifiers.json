@@ -8,7 +8,8 @@
     "gtceu:chests/extra/abandoned_mineshaft",
     "gtceu:chests/extra/village_weaponsmith",
     "gtceu:chests/extra/stronghold_crossing",
-    "gtceu:chests/extra/stronghold_corridor"
+    "gtceu:chests/extra/stronghold_corridor",
+    "gtceu:hard_hammer_enchant"
   ],
   "replace": false
 }

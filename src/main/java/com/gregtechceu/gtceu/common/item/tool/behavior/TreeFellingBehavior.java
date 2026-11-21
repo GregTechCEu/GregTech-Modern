@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 
 import net.minecraft.core.BlockPos;
@@ -63,16 +63,20 @@ public class TreeFellingBehavior implements IToolBehavior<TreeFellingBehavior> {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> onItemRightClick(@NotNull Level level,
-                                                                        Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> onItemRightClick(@NotNull Level level, Player player,
+                                                                        @NotNull InteractionHand hand) {
         ItemStack held = player.getItemInHand(hand);
-        if (level.isClientSide || !player.isShiftKeyDown()) {
+        if (!player.isShiftKeyDown()) {
             return InteractionResultHolder.pass(held);
         }
-        ToolBehaviors component = ToolHelper.getBehaviorsComponent(held);
-        component.withBehavior(new TreeFellingBehavior(!this.enabled));
-        player.sendSystemMessage(Component.translatable("item.gtceu.tool.behavior.tree_felling").append(" - ")
-                .append(Component.translatable("cover.voiding.label." + (!enabled ? "enabled" : "disabled"))));
-        return InteractionResultHolder.success(held);
+        held.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY,
+                component -> component.withBehavior(new TreeFellingBehavior(!this.enabled)));
+
+        if (level.isClientSide) {
+            player.displayClientMessage(Component.translatable("item.gtceu.tool.behavior.tree_felling").append(" - ")
+                    .append(Component.translatable("cover.voiding.label." + (!enabled ? "enabled" : "disabled"))),
+                    true);
+        }
+        return InteractionResultHolder.sidedSuccess(held, level.isClientSide);
     }
 }
