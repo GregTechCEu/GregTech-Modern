@@ -35,7 +35,7 @@ public abstract class EntityMixin implements IBreathingEntity {
     private boolean gtceu$changeFireImmune(boolean original) {
         Entity entity = (Entity) (Object) this;
         return original || (entity instanceof LivingEntity living &&
-                        living.getItemBySlot(EquipmentSlot.CHEST).is(CustomTags.FIRE_IMMUNE_WEARABLES));
+                living.getItemBySlot(EquipmentSlot.CHEST).is(CustomTags.FIRE_IMMUNE_WEARABLES));
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))

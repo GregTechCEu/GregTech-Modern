@@ -60,7 +60,7 @@ public class ModularArmorItem extends ArmorComponentItem implements IComponentIt
         }
         if (getHeatResistance() < 1.0f) {
             traits.add(Component.translatable("tooltip.gtceu.armor.trait.heat_protection",
-                   Math.round((1.0f - getHeatResistance()) * 100)));
+                    Math.round((1.0f - getHeatResistance()) * 100)));
         }
         if (stack.is(CustomTags.PPE_ARMOR)) {
             traits.add(Component.translatable("tooltip.gtceu.armor.trait.hazard_protection"));
