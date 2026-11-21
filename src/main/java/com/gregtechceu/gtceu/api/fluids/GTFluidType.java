@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -41,6 +42,10 @@ public class GTFluidType extends FluidType {
 
     @Override
     public boolean isVaporizedOnPlacement(Level level, BlockPos pos, FluidStack stack) {
+        if (!ConfigHolder.INSTANCE.gameplay.gasesVaporizeOnPlacement) {
+            return false;
+        }
+
         FluidStorage fluidStorage = material.getProperty(PropertyKey.FLUID);
         // always vaporize plasmas and gases
         Fluid plasma = fluidStorage.get(FluidStorageKeys.PLASMA);

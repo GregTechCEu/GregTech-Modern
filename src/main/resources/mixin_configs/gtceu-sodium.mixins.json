@@ -9,6 +9,11 @@
     "compatibilityLevel": "JAVA_21",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [
+        "client.sodium.BlockOcclusionCacheMixin",
+        "client.sodium.ChunkBuilderMixin",
+        "client.sodium.FluidRendererImplAccessor",
+        "client.sodium.FluidRendererImplAccessor$DefaultRenderContextAccessor",
+        "client.sodium.SodiumDefaultFluidRendererMixin",
         "client.customchunk.sodium.SodiumChunkBuildBuffersMixin",
         "client.customchunk.sodium.SodiumChunkBuilderMeshingTaskMixin",
         "client.customchunk.sodium.SodiumBlockRendererMixin",
