@@ -1113,12 +1113,13 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder outputFluids(FluidStack output) {
-        return output(FluidRecipeCapability.CAP, SizedFluidIngredient.of(output));
+        return output(FluidRecipeCapability.CAP, RecipeHelper.makeOutputSizedFluidIngredient(output));
     }
 
     public GTRecipeBuilder outputFluids(FluidStack... outputs) {
-        return output(FluidRecipeCapability.CAP,
-                Arrays.stream(outputs).map(SizedFluidIngredient::of).toArray(SizedFluidIngredient[]::new));
+        return output(FluidRecipeCapability.CAP, Arrays.stream(outputs)
+                .map(RecipeHelper::makeOutputSizedFluidIngredient)
+                .toArray(SizedFluidIngredient[]::new));
     }
 
     public GTRecipeBuilder outputFluids(SizedFluidIngredient... outputs) {
@@ -1141,7 +1142,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder outputFluidsRanged(FluidStack output, IntProvider intProvider) {
-        return outputFluidsRanged(FluidIngredient.of(output), intProvider);
+        return outputFluidsRanged(RecipeHelper.makeOutputFluidIngredient(output), intProvider);
     }
 
     //////////////////////////////////////

@@ -424,6 +424,20 @@ public class RecipeHelper {
         }
     }
 
+    public static SizedFluidIngredient makeOutputSizedFluidIngredient(FluidStack stack) {
+        return new SizedFluidIngredient(makeFluidIngredient(stack), stack.getAmount());
+    }
+
+    public static FluidIngredient makeOutputFluidIngredient(FluidStack stack) {
+        if (!stack.isComponentsPatchEmpty()) {
+            // has data components
+            return ExDataComponentFluidIngredient.of(false, stack);
+        } else {
+            // no data components
+            return FluidIngredient.of(stack);
+        }
+    }
+
     public static SizedIngredient makeSizedIngredient(ItemStack stack) {
         return new SizedIngredient(makeItemIngredient(stack), stack.getCount());
     }
