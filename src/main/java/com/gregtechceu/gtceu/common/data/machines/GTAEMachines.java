@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.integration.ae2.machine.*;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.network.chat.Component;
 
@@ -22,10 +23,10 @@ public class GTAEMachines {
             .abilities(PartAbility.IMPORT_ITEMS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_bus"))
             .tooltips(
-                    Component.translatable("gtceu.machine.item_bus.import.tooltip"),
-                    Component.translatable("gtceu.machine.me.item_import.tooltip"),
-                    Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+                    Component.translatable("machine.gtceu.item_bus.import.tooltip"),
+                    Component.translatable("machine.gtceu.me.item_import.tooltip"),
+                    Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
+                    GTCommonComponents.PART_SHARING_ENABLED)
             .register();
 
     public final static MachineDefinition STOCKING_IMPORT_BUS_ME = REGISTRATE
@@ -36,12 +37,12 @@ public class GTAEMachines {
             .abilities(PartAbility.IMPORT_ITEMS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_bus"))
             .tooltips(
-                    Component.translatable("gtceu.machine.item_bus.import.tooltip"),
-                    Component.translatable("gtceu.machine.me.stocking_item.tooltip.0"),
-                    Component.translatable("gtceu.machine.me_import_item_hatch.configs.tooltip"),
-                    Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
-                    Component.translatable("gtceu.machine.me.stocking_item.tooltip.1"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+                    Component.translatable("machine.gtceu.item_bus.import.tooltip"),
+                    Component.translatable("machine.gtceu.me.stocking_item.tooltip.0"),
+                    Component.translatable("machine.gtceu.me.stocking_item.tooltip.1"),
+                    Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
+                    Component.translatable("machine.gtceu.me.stocking_item.tooltip.2"),
+                    GTCommonComponents.PART_SHARING_ENABLED)
             .register();
 
     public final static MachineDefinition ITEM_EXPORT_BUS_ME = REGISTRATE
@@ -52,10 +53,10 @@ public class GTAEMachines {
             .abilities(PartAbility.EXPORT_ITEMS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_output_bus"))
             .tooltips(
-                    Component.translatable("gtceu.machine.item_bus.export.tooltip"),
-                    Component.translatable("gtceu.machine.me.item_export.tooltip"),
-                    Component.translatable("gtceu.machine.me.export.tooltip"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+                    Component.translatable("machine.gtceu.item_bus.export.tooltip"),
+                    Component.translatable("machine.gtceu.me.item_export.tooltip"),
+                    Component.translatable("machine.gtceu.me.export.tooltip"),
+                    GTCommonComponents.PART_SHARING_ENABLED)
             .register();
 
     public final static MachineDefinition FLUID_IMPORT_HATCH_ME = REGISTRATE
@@ -66,10 +67,10 @@ public class GTAEMachines {
             .abilities(PartAbility.IMPORT_FLUIDS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_hatch"))
             .tooltips(
-                    Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"),
-                    Component.translatable("gtceu.machine.me.fluid_import.tooltip"),
-                    Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+                    Component.translatable("machine.gtceu.fluid_hatch.import.tooltip"),
+                    Component.translatable("machine.gtceu.me.fluid_import.tooltip"),
+                    Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
+                    GTCommonComponents.PART_SHARING_ENABLED)
             .register();
 
     public final static MachineDefinition STOCKING_IMPORT_HATCH_ME = REGISTRATE
@@ -80,12 +81,12 @@ public class GTAEMachines {
             .abilities(PartAbility.IMPORT_FLUIDS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_input_hatch"))
             .tooltips(
-                    Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"),
-                    Component.translatable("gtceu.machine.me.stocking_fluid.tooltip.0"),
-                    Component.translatable("gtceu.machine.me_import_fluid_hatch.configs.tooltip"),
-                    Component.translatable("gtceu.machine.me.copy_paste.tooltip"),
-                    Component.translatable("gtceu.machine.me.stocking_fluid.tooltip.1"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+                    Component.translatable("machine.gtceu.fluid_hatch.import.tooltip"),
+                    Component.translatable("machine.gtceu.me.stocking_fluid.tooltip.0"),
+                    Component.translatable("machine.gtceu.me.stocking_fluid.tooltip.1"),
+                    Component.translatable("machine.gtceu.me.copy_paste.tooltip"),
+                    Component.translatable("machine.gtceu.me.stocking_fluid.tooltip.2"),
+                    GTCommonComponents.PART_SHARING_ENABLED)
             .register();
 
     public final static MachineDefinition FLUID_EXPORT_HATCH_ME = REGISTRATE
@@ -96,10 +97,10 @@ public class GTAEMachines {
             .abilities(PartAbility.EXPORT_FLUIDS)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_output_hatch"))
             .tooltips(
-                    Component.translatable("gtceu.machine.fluid_hatch.export.tooltip"),
-                    Component.translatable("gtceu.machine.me.fluid_export.tooltip"),
-                    Component.translatable("gtceu.machine.me.export.tooltip"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+                    Component.translatable("machine.gtceu.fluid_hatch.export.tooltip"),
+                    Component.translatable("machine.gtceu.me.fluid_export.tooltip"),
+                    Component.translatable("machine.gtceu.me.export.tooltip"),
+                    GTCommonComponents.PART_SHARING_ENABLED)
             .register();
     public static final MachineDefinition ME_PATTERN_BUFFER = REGISTRATE
             .machine("me_pattern_buffer", MEPatternBufferPartMachine::new)
@@ -109,11 +110,11 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_buffer_hatch"))
             .langValue("ME Pattern Buffer")
-            .tooltips(
-                    Component.translatable("block.gtceu.pattern_buffer.desc.0"),
-                    Component.translatable("block.gtceu.pattern_buffer.desc.1"),
-                    Component.translatable("block.gtceu.pattern_buffer.desc.2"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+            .tooltipLang("§fAllows direct §6AE2 pattern storage §ffor GregTech Multiblocks.",
+                    "§fAE2 Patterns can utilize anything stored in the §6shared inventory §fwidget.",
+                    "§fLink §6Pattern Buffer Proxies §fwith a §bdatastick §fto link machines together!")
+            .defaultTooltip()
+            .tooltips(GTCommonComponents.PART_SHARING_ENABLED)
             .register();
     public static final MachineDefinition ME_PATTERN_BUFFER_PROXY = REGISTRATE
             .machine("me_pattern_buffer_proxy", MEPatternBufferProxyPartMachine::new)
@@ -123,11 +124,11 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_buffer_hatch_proxy"))
             .langValue("ME Pattern Buffer Proxy")
-            .tooltips(
-                    Component.translatable("block.gtceu.pattern_buffer_proxy.desc.0"),
-                    Component.translatable("block.gtceu.pattern_buffer_proxy.desc.1"),
-                    Component.translatable("block.gtceu.pattern_buffer_proxy.desc.2"),
-                    Component.translatable("gtceu.part_sharing.enabled"))
+            .tooltipLang("§fAllows linking many machines to a singular §6ME Pattern Buffer§f.",
+                    "§fAll connected proxies will share the patterns held within the §6original buffer§f.",
+                    "§fLet the factory grow!")
+            .defaultTooltip()
+            .tooltips(GTCommonComponents.PART_SHARING_ENABLED)
             .register();
 
     public static void init() {}

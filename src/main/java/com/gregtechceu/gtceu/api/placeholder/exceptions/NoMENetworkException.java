@@ -5,6 +5,6 @@ import net.minecraft.network.chat.Component;
 public class NoMENetworkException extends PlaceholderException {
 
     public NoMENetworkException() {
-        super(Component.translatable("gtceu.computer_monitor_cover.error.no_ae").getString());
+        super(Component.translatable("gui.gtceu.cover.computer_monitor.error.no_ae").getString());
     }
 }

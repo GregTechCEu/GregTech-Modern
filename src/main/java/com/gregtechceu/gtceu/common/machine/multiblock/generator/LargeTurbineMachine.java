@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -158,29 +158,31 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         syncManager.syncValue("maxOutput", maxOutput);
         syncManager.syncValue("turbineVoltage", turbineVoltage);
 
-        var hasNoRotorWarning = Text.lang("gtceu.multiblock.turbine.no_rotor")
+        var hasNoRotorWarning = Text.lang("gui.gtceu.machine.large_turbine.missing_rotor")
                 .withStyle(ChatFormatting.RED)
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && !hasRotor.getBoolValue());
-        var rotorSpeedDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_speed",
+        var rotorSpeedDisplay = Text.dynamic(() -> Component.translatable("gui.gtceu.machine.large_turbine.rotor_speed",
                 FormattingUtil.formatNumbers(rotorSpeed.getIntValue()),
                 FormattingUtil.formatNumbers(maxRotorSpeed.getIntValue()))
                 .withStyle(ChatFormatting.WHITE))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue());
-        var turbineEfficiencyDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.efficiency",
-                efficiency.getIntValue())
-                .withStyle(ChatFormatting.WHITE))
+        var turbineEfficiencyDisplay = Text
+                .dynamic(() -> Component.translatable("gui.gtceu.machine.large_turbine.efficiency",
+                        efficiency.getIntValue())
+                        .withStyle(ChatFormatting.WHITE))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue());
-        var turbinePowerDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
-                FormattingUtil.formatNumbers(euOutput.getIntValue()),
-                FormattingUtil.formatNumbers(maxOutput.getIntValue()))
-                .withStyle(ChatFormatting.WHITE))
+        var turbinePowerDisplay = Text
+                .dynamic(() -> Component.translatable("gui.gtceu.machine.large_turbine.energy_per_tick",
+                        FormattingUtil.formatNumbers(euOutput.getIntValue()),
+                        FormattingUtil.formatNumbers(maxOutput.getIntValue()))
+                        .withStyle(ChatFormatting.WHITE))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue() && isActive.getBoolValue());
         var rotorDurabilityDisplay = Text
-                .dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_durability",
+                .dynamic(() -> Component.translatable("gui.gtceu.machine.large_turbine.rotor_durability",
                         rotorDurability.getIntValue())
                         .withStyle(rotorDurability.getIntValue() > MIN_DURABILITY_TO_WARN ?
                                 ChatFormatting.WHITE :
@@ -233,14 +235,14 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
         var rotorHolder = turbineMachine.getRotorHolder();
         if (rotorHolder == null)
-            return ModifierFunction.cancel(Component.translatable("gtceu.multiblock.turbine.no_rotor"));
+            return ModifierFunction.cancel(Component.translatable("gui.gtceu.machine.large_turbine.missing_rotor"));
 
         EnergyStack EUt = recipe.getOutputEUt();
         long turbineMaxVoltage = turbineMachine.getOverclockVoltage();
         double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
 
         if (EUt.isEmpty() || turbineMaxVoltage <= EUt.voltage() || holderEfficiency <= 0)
-            return ModifierFunction.cancel(Component.translatable("gtceu.multiblock.turbine.no_rotor"));
+            return ModifierFunction.cancel(Component.translatable("gui.gtceu.machine.large_turbine.missing_rotor"));
 
         // get the amount of parallel required to match the desired output voltage
         // Max Parallel is Ceilinged not Floored to ensure the output voltage is actually met,

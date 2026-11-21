@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -155,7 +156,7 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
             }
 
             if (!GTUtil.isShiftDown()) {
-                tooltipComponents.add(Component.translatable("gtceu.tooltip.hold_shift"));
+                tooltipComponents.add(GTCommonComponents.HOLD_SHIFT_FOR_INFO);
                 return;
             }
 

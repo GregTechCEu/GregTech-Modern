@@ -30,12 +30,12 @@ public class AutoOutputBlockProvider extends MachineTraitProvider<AutoOutputTrai
                               BlockEntity blockEntity, IPluginConfig config) {
         if (data.contains("autoOutputItem", Tag.TAG_COMPOUND)) {
             var tag = data.getCompound("autoOutputItem");
-            addAutoOutputInfo(tooltip, block, tag, "gtceu.top.item_auto_output");
+            addAutoOutputInfo(tooltip, block, tag, "integration.gtceu.jade.item_auto_output");
         }
 
         if (data.contains("autoOutputFluid", Tag.TAG_COMPOUND)) {
             var tag = data.getCompound("autoOutputFluid");
-            addAutoOutputInfo(tooltip, block, tag, "gtceu.top.fluid_auto_output");
+            addAutoOutputInfo(tooltip, block, tag, "integration.gtceu.jade.fluid_auto_output");
         }
     }
 
@@ -89,7 +89,7 @@ public class AutoOutputBlockProvider extends MachineTraitProvider<AutoOutputTrai
             if (allowInput || auto) {
                 var component = Component.literal(" (");
                 if (auto) {
-                    component.append(Component.translatable("gtceu.top.auto_output"));
+                    component.append(Component.translatable("integration.gtceu.jade.auto_output"));
                 }
 
                 if (allowInput && auto) {
@@ -97,7 +97,7 @@ public class AutoOutputBlockProvider extends MachineTraitProvider<AutoOutputTrai
                 }
 
                 if (allowInput) {
-                    component.append(Component.translatable("gtceu.top.allow_output_input"));
+                    component.append(Component.translatable("integration.gtceu.jade.allow_output_input"));
                 }
                 component.append(")");
                 iTooltip.append(component);

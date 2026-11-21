@@ -17,7 +17,7 @@ import java.util.*;
 @SuppressWarnings({ "UnstableApiUsage", "removal", "deprecation" })
 public non-sealed class ArgonautsOwner extends MachineOwner {
 
-    private static final Component displayName = Component.translatable("gtceu.ownership.name.argonauts");
+    private static final Component displayName = Component.translatable("integration.gtceu.ownership.name.argonauts");
 
     public ArgonautsOwner(UUID playerUUID) {
         super(playerUUID);
@@ -73,7 +73,7 @@ public non-sealed class ArgonautsOwner extends MachineOwner {
     public String getName() {
         var guild = getGuild();
         return guild != null ? guild.displayName().getString() :
-                Component.translatable("gtceu.tooltip.status.trinary.unknown").getString();
+                Component.translatable("common.gtceu.unknown").getString();
     }
 
     @Override
@@ -84,7 +84,7 @@ public non-sealed class ArgonautsOwner extends MachineOwner {
     @Override
     public void displayInfo(List<Component> compList) {
         super.displayInfo(compList);
-        compList.add(Component.translatable("behavior.portable_scanner.guild_name", getName()));
+        compList.add(Component.translatable("item.gtceu.behavior.portable_scanner.guild_name", getName()));
         MachineOwner.displayPlayerInfo(compList, playerUUID);
     }
 

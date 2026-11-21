@@ -76,7 +76,8 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
                     .value(containedOresAsItemStacks.get(i))
                     .recipeSlotRole(RecipeSlotRole.OUTPUT);
             int finalI = i;
-            oreSlot.tooltipBuilder(r -> r.add(Text.lang("gtceu.jei.ore_vein_diagram.chance", chances.get(finalI))));
+            oreSlot.tooltipBuilder(
+                    r -> r.add(Text.lang("recipeviewer.gtceu.ore_vein_diagram.chance", chances.get(finalI))));
             slots.child(oreSlot);
         }
         drawUI(slots);
@@ -96,7 +97,8 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
                     .value(containedOresAsItemStacks.get(i))
                     .recipeSlotRole(RecipeSlotRole.OUTPUT);
             int finalI = i;
-            oreSlot.tooltipBuilder(r -> r.add(Text.lang("gtceu.jei.ore_vein_diagram.chance", chances.getInt(finalI))));
+            oreSlot.tooltipBuilder(
+                    r -> r.add(Text.lang("recipeviewer.gtceu.ore_vein_diagram.chance", chances.getInt(finalI))));
             slots.child(oreSlot);
         }
         drawUI(slots);
@@ -107,13 +109,13 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
                 .child(Text.lang(nameLang).asWidget().marginBottom(3))
                 .child(contentsRow.marginBottom(3))
                 .childIf(range != null,
-                        () -> Text.lang("gtceu.jei.ore_vein_diagram.spawn_range").asWidget().marginBottom(1))
+                        () -> Text.lang("recipeviewer.gtceu.ore_vein_diagram.spawn_range").asWidget().marginBottom(1))
                 .childIf(range != null, () -> Text.str(Objects.requireNonNull(range)).asWidget().marginBottom(3))
-                .child(Text.lang("gtceu.jei.ore_vein_diagram.weight", weight).asWidget().marginBottom(3))
+                .child(Text.lang("recipeviewer.gtceu.ore_vein_diagram.weight", weight).asWidget().marginBottom(3))
                 .childIf(veinYield != null,
                         () -> Text.str(Objects.requireNonNull(veinYield)).asWidget().marginBottom(3))
                 .childIf(depleted != null, () -> Text.str(Objects.requireNonNull(depleted)).asWidget().marginBottom(3))
-                .child(Text.lang("gtceu.jei.ore_vein_diagram.dimensions").asWidget());
+                .child(Text.lang("recipeviewer.gtceu.ore_vein_diagram.dimensions").asWidget());
 
         if (this.dimensionFilter != null) {
 

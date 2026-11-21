@@ -14,8 +14,9 @@ import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.widgets.textfield.TextEditorWidget;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -169,7 +170,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     private ParentWidget<?> createTagFilterPage(TagFilter<ItemStack, Item> filter) {
         StringSyncValue filterString = new StringSyncValue(filter::getFilterString, filter::setFilterString).allowC2S();
         RichTooltip infoTooltip = new RichTooltip();
-        LangHandler.getMultiLang("cover.tag_filter.info").forEach(infoTooltip::addLine);
+        LangUtil.getListMultiLang("gui.gtceu.cover.tag_filter.info").forEach(infoTooltip::addLine);
 
         return new ParentWidget<>()
                 .size(150, 55)
@@ -194,7 +195,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         if (!player.level().isClientSide) {
             if (player.isShiftKeyDown()) {
                 player.displayClientMessage(Component.translatable(toggleActive(player.getItemInHand(hand)) ?
-                        "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"), true);
+                        "item.gtceu.behavior.item_magnet.enabled" : "item.gtceu.behavior.item_magnet.disabled"), true);
             } else {
                 UIFactories.playerInventory().openFromHand(player, hand);
             }
@@ -218,7 +219,6 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
 
     private static boolean toggleActive(ItemStack stack) {
         boolean isActive = isActive(stack);
-        // noinspection ConstantConditions
         stack.getOrCreateTag().putBoolean("IsActive", !isActive);
         return !isActive;
     }
@@ -356,7 +356,9 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines,
                                 TooltipFlag isAdvanced) {
         lines.add(Component
-                .translatable(isActive(itemStack) ? "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"));
+                .translatable(isActive(itemStack) ? "item.gtceu.behavior.item_magnet.enabled" :
+                        "item.gtceu.behavior.item_magnet.disabled")
+                .withStyle(isActive(itemStack) ? ChatFormatting.GREEN : ChatFormatting.RED));
     }
 
     private static class CuriosUtils {

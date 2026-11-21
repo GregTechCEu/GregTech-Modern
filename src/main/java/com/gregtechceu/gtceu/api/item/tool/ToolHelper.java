@@ -141,7 +141,7 @@ public class ToolHelper {
     /**
      * @return finds the registered tool with the crafting symbol
      */
-    public static GTToolType getToolFromSymbol(char symbol) {
+    public static @Nullable GTToolType getToolFromSymbol(char symbol) {
         return symbols.get(symbol);
     }
 

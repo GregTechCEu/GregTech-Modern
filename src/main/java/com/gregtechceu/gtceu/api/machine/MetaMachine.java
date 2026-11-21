@@ -494,7 +494,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             if (!isRemote()) {
                 mufflableMachine.setMuffled(!mufflableMachine.isMuffled());
                 context.getPlayer().sendSystemMessage(Component.translatable(mufflableMachine.isMuffled() ?
-                        "gtceu.machine.muffle.on" : "gtceu.machine.muffle.off"));
+                        "machine.gtceu.muffle.on" : "machine.gtceu.muffle.off"));
             }
             return InteractionResult.sidedSuccess(isRemote());
         }

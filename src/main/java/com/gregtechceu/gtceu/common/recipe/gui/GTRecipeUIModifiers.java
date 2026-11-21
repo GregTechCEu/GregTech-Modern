@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.recipe.gui.RecipeUIModifier;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -26,14 +26,14 @@ public class GTRecipeUIModifiers {
             int temp = recipe.data.getInt("ebf_temp");
 
             widget.textComponents.child(new TextWidget<>(
-                    Text.lang("gtceu.recipe.temperature", FormattingUtil.formatTemperature(temp))));
+                    Text.lang("gui.gtceu.recipe.temperature", FormattingUtil.formatTemperature(temp))));
 
             Flow coilRow = Flow.row().coverChildrenHeight();
 
             ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
             if (requiredCoil != null && requiredCoil.getMaterial() != null) {
-                coilRow.child(new TextWidget<>(Text.lang("gtceu.recipe.coil.tier",
+                coilRow.child(new TextWidget<>(Text.lang("gui.gtceu.recipe.coil.tier",
                         Component.translatable(requiredCoil.getMaterial().getUnlocalizedName())
                                 .getString())));
             }

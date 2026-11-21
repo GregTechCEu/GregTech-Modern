@@ -56,7 +56,7 @@ public class ComponentItem extends Item implements IComponentItem, IItemUIHolder
     @Getter
     protected List<IItemComponent> components;
 
-    protected ComponentItem(Properties properties) {
+    public ComponentItem(Properties properties) {
         super(properties);
         components = new ArrayList<>();
     }

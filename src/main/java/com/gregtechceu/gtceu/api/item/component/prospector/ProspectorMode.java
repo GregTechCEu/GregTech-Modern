@@ -12,8 +12,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.mui.drawable.CycleDrawable;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockStateAccessor;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -384,7 +384,7 @@ public abstract class ProspectorMode<T> {
                     float chance = (float) item.weight / totalWeight * 100;
                     tooltips.add(Component.empty().append(getDescription(item))
                             .append(" (")
-                            .append(Component.translatable("gtceu.gui.content.chance_base",
+                            .append(Component.translatable("gui.gtceu.recipe_content.chance_base",
                                     FormattingUtil.formatNumber2Places(chance)))
                             .append(") --- %s (%s%%)".formatted(item.yield, item.left)));
                 }

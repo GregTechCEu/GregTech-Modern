@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.item.module.IHUDProviderItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.ModuleData;
-import com.gregtechceu.gtceu.data.lang.LangUtils;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -85,8 +85,7 @@ public class NightVisionModule extends ItemModule implements IHUDProviderItemMod
                 nightVision = false;
                 player.displayClientMessage(Component.translatable("armor.gtceu.night_vision.error"), true);
             } else {
-                player.displayClientMessage(Component
-                        .translatable(LangUtils.enabledBoolean("armor.gtceu.night_vision", nightVision)), true);
+                player.displayClientMessage(LangUtil.enabledBooleanKey("armor.gtceu.night_vision", nightVision), true);
             }
             data = data.withNightVision(nightVision).withToggleTimer(toggleTimer);
             moduleContext.setData(data);

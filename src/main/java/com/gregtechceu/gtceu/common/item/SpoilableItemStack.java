@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.item.IMergeableNBTSerializable;
 import com.gregtechceu.gtceu.api.item.ISpoilableItemStackExtension;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -177,32 +177,34 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
         tooltipComponents.add(Component.translatable(
-                "gtceu.tooltip.spoil_time_remaining",
+                "tooltip.gtceu.spoilage.spoil_time_remaining",
                 Component.literal(FormattingUtil.formatTime(getTicksUntilSpoiled()))
                         .withStyle(ChatFormatting.DARK_AQUA)));
         tooltipComponents.add(Component.translatable(
-                "gtceu.tooltip.spoils_into", getSpoilResultTooltip()));
+                "tooltip.gtceu.spoilage.spoils_into", getSpoilResultTooltip()));
         if (isAdvanced.isAdvanced()) {
             tooltipComponents.add(Component.translatable(
-                    "gtceu.tooltip.spoil_time_total",
+                    "tooltip.gtceu.spoilage.spoil_time_total",
                     Component.literal(FormattingUtil.formatTime(getSpoilTicks()))
                             .withStyle(ChatFormatting.GREEN)));
             tooltipComponents.add(Component.translatable(
-                    "gtceu.tooltip.creation_tick",
+                    "tooltip.gtceu.spoilage.creation_tick",
                     getCreationTick()));
             SpoilContext ctx = getSpoilContext();
             if (ctx.level() != null && ctx.pos() != null)
-                tooltipComponents.add(Component.translatable("gtceu.tooltip.location",
+                tooltipComponents.add(Component.translatable("tooltip.gtceu.spoilage.location",
                         ctx.level().dimensionTypeId().location().toString(),
                         ctx.pos().getX(), ctx.pos().getY(), ctx.pos().getZ()));
-            if (ctx.entity() != null) tooltipComponents.add(Component.translatable("gtceu.tooltip.location_entity",
-                    ctx.entity().getType().getDescription()));
+            if (ctx.entity() != null)
+                tooltipComponents.add(Component.translatable("tooltip.gtceu.spoilage.location_entity",
+                        ctx.entity().getType().getDescription()));
             if (ctx.itemHandlerSource() != null) tooltipComponents
-                    .add(Component.translatable("gtceu.tooltip.item_handler_source", ctx.itemHandlerSource()));
+                    .add(Component.translatable("tooltip.gtceu.spoilage.item_handler_source", ctx.itemHandlerSource()));
             if (ctx.itemHandlerData() != null)
-                tooltipComponents.add(Component.translatable("gtceu.tooltip.item_handler_data", ctx.itemHandlerData()));
+                tooltipComponents
+                        .add(Component.translatable("tooltip.gtceu.spoilage.item_handler_data", ctx.itemHandlerData()));
             if (ctx.slot() != -1)
-                tooltipComponents.add(Component.translatable("gtceu.tooltip.location_slot", ctx.slot()));
+                tooltipComponents.add(Component.translatable("tooltip.gtceu.spoilage.location_slot", ctx.slot()));
         }
     }
 
