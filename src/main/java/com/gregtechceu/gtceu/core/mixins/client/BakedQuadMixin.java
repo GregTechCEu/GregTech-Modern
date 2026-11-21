@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.client;
 
+import com.gregtechceu.gtceu.client.model.FaceLayer;
 import com.gregtechceu.gtceu.core.util.extensions.BakedQuadExt;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -14,6 +15,8 @@ public class BakedQuadMixin implements BakedQuadExt {
 
     @Unique
     private String gtceu$textureKey = null;
+    @Unique
+    private FaceLayer gtceu$faceLayer = FaceLayer.UNCLASSIFIED;
 
     @Override
     public BakedQuad gtceu$setTextureKey(@Nullable String key) {
@@ -24,6 +27,17 @@ public class BakedQuadMixin implements BakedQuadExt {
     @Override
     public String gtceu$getTextureKey() {
         return gtceu$textureKey;
+    }
+
+    @Override
+    public BakedQuad gtceu$setFaceLayer(FaceLayer layer) {
+        this.gtceu$faceLayer = layer;
+        return (BakedQuad) (Object) this;
+    }
+
+    @Override
+    public FaceLayer gtceu$getFaceLayer() {
+        return gtceu$faceLayer;
     }
 
     // @Intrinsic means this'll be skipped if someone else does it too

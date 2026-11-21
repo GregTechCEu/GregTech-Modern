@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.client.model.FaceLayer;
 import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.client.util.ModelEventHelper;
 
@@ -54,10 +55,11 @@ public class SimpleCoverRenderer implements ICoverRenderer {
                             @NotNull CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
                             @NotNull ModelData modelData, @Nullable RenderType renderType) {
         if (side == null || side == coverBehavior.attachedSide) {
-            quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide, sprite));
+            quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide, sprite)
+                    .gtceu$setFaceLayer(FaceLayer.COVER));
             if (emissiveSprite != null) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
-                        emissiveSprite));
+                        emissiveSprite).gtceu$setFaceLayer(FaceLayer.COVER_EMISSIVE));
             }
         }
     }
