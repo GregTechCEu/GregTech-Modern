@@ -89,7 +89,7 @@ public class PlatGroupMetalsRecipes {
                 .inputItems(dust, PlatinumGroupSludge, 6)
                 .inputFluids(AquaRegia.getFluid(1200))
                 .outputItems(dust, PlatinumRaw, 3) // PtCl2
-                .outputItems(dust, PalladiumRaw, 3) // PdNH3
+                .outputItems(dust, RawPalladium, 3) // PdNH3
                 .outputItems(dust, InertMetalMixture, 2) // RhRuO4
                 .outputItems(dust, RarestMetalMixture) // IrOsO4(H2O)
                 .outputItems(dust, PlatinumSludgeResidue, 2)
@@ -106,7 +106,7 @@ public class PlatGroupMetalsRecipes {
         // PALLADIUM
 
         CHEMICAL_RECIPES.recipeBuilder("raw_palladium_separation").duration(200).EUt(VA[MV])
-                .inputItems(dust, PalladiumRaw, 5)
+                .inputItems(dust, RawPalladium, 5)
                 .inputFluids(HydrochloricAcid.getFluid(1000))
                 .outputItems(dust, Palladium)
                 .outputItems(dust, AmmoniumChloride, 2)

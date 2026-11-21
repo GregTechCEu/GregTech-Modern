@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers.collections;
 
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
-import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -53,8 +52,7 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
         if (current != null) current.clear();
         else current = new ObjectOpenHashSet<>();
         for (Tag elementTag : listTag) {
-            T value = getElemTransformer(context).deserializeNBT(
-                    TagCompatibilityFixer.stripLDLibPayloadWrapper(elementTag), getInnerElemContext(null, context));
+            T value = getElemTransformer(context).deserializeNBT(elementTag, getInnerElemContext(null, context));
             if (value != null) current.add(value);
         }
         return current;

@@ -198,7 +198,7 @@ public class SecondDegreeMaterials {
                 .components(SiliconDioxide, 4, Biotite, 1)
                 .buildAndRegister();
 
-        GraniteRed = new Material.Builder(GTCEu.id("granite_red"))
+        RedGranite = new Material.Builder(GTCEu.id("red_granite"))
                 .dust()
                 .color(0xFF0080).iconSet(ROUGH)
                 .flags(NO_SMASHING)
@@ -461,7 +461,7 @@ public class SecondDegreeMaterials {
                 .components(SiliconDioxide, 2, Gold, 3)
                 .buildAndRegister();
 
-        PalladiumRaw = new Material.Builder(GTCEu.id("palladium_raw"))
+        RawPalladium = new Material.Builder(GTCEu.id("raw_palladium"))
                 .dust()
                 .color(0x5d4e1a).secondaryColor(0x33352d).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
