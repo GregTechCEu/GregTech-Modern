@@ -1,50 +1,52 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator.veins;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 
 import com.google.common.base.Preconditions;
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
-@SuppressWarnings({ "UnusedReturnValue", "BooleanMethodIsAlwaysInverted" })
+import static com.gregtechceu.gtceu.GTCEu.LOGGER;
+import static net.minecraft.core.SectionPos.*;
+
 @Accessors(fluent = true, chain = true)
 public class CuboidVeinGenerator extends VeinGenerator {
 
+    // spotless:off
     public static final Codec<CuboidVeinGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ClassicVeinGenerator.Layer.CODEC.fieldOf("top").forGetter(val -> val.top),
             ClassicVeinGenerator.Layer.CODEC.fieldOf("middle").forGetter(val -> val.middle),
             ClassicVeinGenerator.Layer.CODEC.fieldOf("bottom").forGetter(val -> val.bottom),
             ClassicVeinGenerator.Layer.CODEC.fieldOf("spread").forGetter(val -> val.spread),
             Codec.INT.fieldOf("min_y").forGetter(val -> val.minY),
-            Codec.INT.fieldOf("max_y").forGetter(val -> val.maxY)).apply(instance, CuboidVeinGenerator::new));
+            Codec.INT.fieldOf("max_y").forGetter(val -> val.maxY)
+    ).apply(instance, CuboidVeinGenerator::new));
+    // spotless:on
 
     private ClassicVeinGenerator.Layer top;
     private ClassicVeinGenerator.Layer middle;
@@ -87,74 +89,159 @@ public class CuboidVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry,
-                                                  BlockPos origin) {
-        Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
+    public Long2ObjectMap<OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry,
+                                                   BlockPos origin) {
+        Long2ObjectMap<OreBlockPlacer> generatedSections = new Long2ObjectOpenHashMap<>();
 
-        int size = entry.clusterSize().sample(random) / 2;
+        int radius = entry.clusterSize().sample(random) / 2;
 
-        int westBound = origin.getX() - random.nextInt(size);
-        int eastBound = origin.getX() + 16 + random.nextInt(size);
-        int northBound = origin.getZ() - random.nextInt(size);
-        int southBound = origin.getZ() + 16 + random.nextInt(size);
+        int westBound = origin.getX() - random.nextInt(radius);
+        int eastBound = origin.getX() + SECTION_SIZE + random.nextInt(radius);
+        int northBound = origin.getZ() - random.nextInt(radius);
+        int southBound = origin.getZ() + SECTION_SIZE + random.nextInt(radius);
 
-        int startY = minY + random.nextInt(this.maxY - minY - 5) - 1;
+        int startY = minY + random.nextInt(maxY - minY - 5) - 1;
 
-        for (int layerOffset = 0; layerOffset <= totalLayers; layerOffset++) {
-            int layer = startY + layerOffset;
-            if (level.isOutsideBuildHeight(layer))
+        int sectionX0 = blockToSectionCoord(westBound), sectionX1 = blockToSectionCoord(eastBound);
+        int sectionY0 = blockToSectionCoord(startY), sectionY1 = blockToSectionCoord(startY + totalLayers);
+        int sectionZ0 = blockToSectionCoord(northBound), sectionZ1 = blockToSectionCoord(southBound);
+
+        SectionPos.betweenClosedStream(sectionX0, sectionY0, sectionZ0, sectionX1, sectionY1, sectionZ1)
+                .forEach(pos -> {
+                    final long randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
+
+                    final int sectionRelativeStartY = startY - pos.minBlockY();
+                    if (sectionRelativeStartY > SECTION_MAX_INDEX) {
+                        // bottom Y is above this section, skip
+                        // I don't think this can actually happen, but better safe than sorry
+                        if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
+                            LOGGER.warn(
+                                    "Tried to place part of cuboid vein '{}' in section {} when start Y is above section (section top: {}, vein start: {})!",
+                                    GTRegistries.ORE_VEINS.getKey(entry), pos, pos.maxBlockY(), startY);
+                        }
+                        return;
+                    } else if (sectionRelativeStartY + totalLayers < 0) {
+                        // top Y is below this section, skip
+                        // I don't think this can actually happen, but better safe than sorry
+                        if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
+                            LOGGER.warn(
+                                    "Tried to place part of cuboid vein '{}' in section {} when end Y is below section (section bottom: {}, vein end: {})!",
+                                    GTRegistries.ORE_VEINS.getKey(entry), pos, pos.minBlockY(), startY + totalLayers);
+                        }
+                        return;
+                    }
+
+                    final int layerOffsetFromSectionBase;
+                    final int layersInSection;
+                    if (sectionRelativeStartY < 0) {
+                        // layer offset is the layer it should start at
+                        // for example if sectionRelativeStartY = -3, then layerOffsetFromSectionBase = 3
+                        // meaning the first layer that's in this chunk section is layer 3
+                        layerOffsetFromSectionBase = -sectionRelativeStartY;
+                        // continuing with the same example number:
+                        // ...and if the vein starts 3 blocks below this section, there should be 3 fewer layers in it
+                        layersInSection = Math.min(totalLayers - layerOffsetFromSectionBase,
+                                SECTION_MAX_INDEX - sectionRelativeStartY);
+                    } else {
+                        // the layers start in this section; the starting layer is 0
+                        layerOffsetFromSectionBase = 0;
+                        // ...but the end layer might go above the chunk section, so cap it
+                        layersInSection = Math.min(totalLayers, SECTION_MAX_INDEX - sectionRelativeStartY);
+                    }
+
+                    generatedSections.put(pos.asLong(), (worldGenLevel, access, section, sectionPos) -> {
+                        placeSection(worldGenLevel, access, section, sectionPos, origin, randomSeed, entry,
+                                westBound, eastBound, northBound, southBound,
+                                sectionRelativeStartY, layerOffsetFromSectionBase, layersInSection);
+                    });
+                });
+
+        return generatedSections;
+    }
+
+    private void placeSection(WorldGenLevel level, BulkSectionAccess access, LevelChunkSection section,
+                              SectionPos sectionPos, BlockPos origin, long randomSeed, GTOreDefinition entry,
+                              int westBound, int eastBound, int northBound, int southBound,
+                              int sectionRelativeStartY, int layerOffset, int layersInSection) {
+        final int westBoundInSection = Mth.clamp(westBound - sectionPos.minBlockX(), 0, SECTION_MAX_INDEX);
+        final int eastBoundInSection = Mth.clamp(eastBound - sectionPos.minBlockX(), 0, SECTION_MAX_INDEX);
+        final int northBoundInSection = Mth.clamp(northBound - sectionPos.minBlockZ(), 0, SECTION_MAX_INDEX);
+        final int southBoundInSection = Mth.clamp(southBound - sectionPos.minBlockZ(), 0, SECTION_MAX_INDEX);
+
+        RandomSource random = new XoroshiroRandomSource(randomSeed);
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+
+        for (; layerOffset <= layersInSection; layerOffset++) {
+            // section relative Y
+            int sy = sectionRelativeStartY + layerOffset;
+            if (sy != sectionRelative(sy)) {
+                printBlockPlacementWarning(entry, "cuboid", sectionPos, Direction.Axis.Y, sy);
                 continue;
-            for (int x = westBound; x < eastBound; x++) {
-                for (int z = northBound; z < southBound; z++) {
-                    final var randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
+            }
+            int globalY = sy + sectionPos.minBlockY();
+            if (level.isOutsideBuildHeight(globalY)) continue;
+
+            // section relative X
+            for (int sx = westBoundInSection; sx <= eastBoundInSection; sx++) {
+                if (sx != sectionRelative(sx)) {
+                    printBlockPlacementWarning(entry, "cuboid", sectionPos, Direction.Axis.X, sx);
+                    continue;
+                }
+                int globalX = sx + sectionPos.minBlockX();
+                // section relative Z
+                for (int sz = northBoundInSection; sz <= southBoundInSection; sz++) {
+                    if (sz != sectionRelative(sz)) {
+                        printBlockPlacementWarning(entry, "cuboid", sectionPos, Direction.Axis.Z, sz);
+                        continue;
+                    }
+                    int globalZ = sz + sectionPos.minBlockZ();
 
                     // determine density based on distance from the origin chunk
                     // this makes the vein more concentrated towards the center
-                    int xLength = x - origin.getX();
-                    int zLength = z - origin.getZ();
-                    double volume = Math.sqrt(2 + (xLength * xLength) + (zLength * zLength));
+                    int xDistance = globalX - origin.getX();
+                    int zDistance = globalZ - origin.getZ();
+                    float volume = Mth.sqrt(2f + (xDistance * xDistance) + (zDistance * zDistance));
 
-                    int localDensity = (int) Math.max(1, 8 * entry.density() / volume);
-                    int weightX = Math.max(1, Math.max(Mth.abs(westBound - x), Mth.abs(eastBound - x)) / localDensity);
+                    int localDensity = (int) Math.max(1f, 8f * entry.density() / volume);
+                    int weightX = Math.max(1,
+                            Math.max(Mth.abs(westBound - globalX), Mth.abs(eastBound - globalX)) / localDensity);
                     int weightZ = Math.max(1,
-                            Math.max(Mth.abs(southBound - z), Mth.abs(northBound - z)) / localDensity);
+                            Math.max(Mth.abs(southBound - globalZ), Mth.abs(northBound - globalZ)) / localDensity);
 
-                    BlockPos pos = new BlockPos(x, layer, z);
+                    pos.set(globalX, globalY, globalZ);
                     if (layerOffset <= bottomLayer) {
                         // layers 0, 1, and 2 are bottom and spread
-                        if (!placeBottom(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
-                            placeSpread(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ);
+                        if (!placeBottom(access, section, entry, pos, random, weightX, weightZ)) {
+                            placeSpread(access, section, entry, pos, random, weightX, weightZ);
                         }
                     } else if (layerOffset <= middleLayer1) {
                         // layer 3 is bottom, middle, and spread
-                        if (!placeMiddle(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
-                            if (!placeBottom(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
-                                placeSpread(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ);
+                        if (!placeMiddle(access, section, entry, pos, random, weightX, weightZ)) {
+                            if (!placeBottom(access, section, entry, pos, random, weightX, weightZ)) {
+                                placeSpread(access, section, entry, pos, random, weightX, weightZ);
                             }
                         }
                     } else if (layerOffset <= middleLayer2) {
                         // layer 4 is middle, and spread
-                        if (!placeMiddle(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
-                            placeSpread(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ);
+                        if (!placeMiddle(access, section, entry, pos, random, weightX, weightZ)) {
+                            placeSpread(access, section, entry, pos, random, weightX, weightZ);
                         }
                     } else if (layerOffset <= topLayer) {
                         // layers 5 and 6 is top, middle, and spread
-                        if (!placeMiddle(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
-                            if (!placeTop(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
-                                placeSpread(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ);
+                        if (!placeMiddle(access, section, entry, pos, random, weightX, weightZ)) {
+                            if (!placeTop(access, section, entry, pos, random, weightX, weightZ)) {
+                                placeSpread(access, section, entry, pos, random, weightX, weightZ);
                             }
                         }
                     } else {
                         // layers 7 and 8 is top and spread
-                        if (!placeTop(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
-                            placeSpread(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ);
+                        if (!placeTop(access, section, entry, pos, random, weightX, weightZ)) {
+                            placeSpread(access, section, entry, pos, random, weightX, weightZ);
                         }
                     }
                 }
             }
         }
-
-        return generatedBlocks;
     }
 
     /**
@@ -163,7 +250,7 @@ public class CuboidVeinGenerator extends VeinGenerator {
      * @param random  the random to use
      * @param weightX the x weight
      * @param weightZ the z weight
-     * @return if the ore should be placed
+     * @return whether the ore should be placed
      */
     protected static boolean shouldPlaceOre(@NotNull RandomSource random, int weightX, int weightZ) {
         return random.nextInt(weightX) == 0 || random.nextInt(weightZ) == 0;
@@ -172,14 +259,12 @@ public class CuboidVeinGenerator extends VeinGenerator {
     /**
      * Place the top ore
      *
-     * @return if the ore was placed
+     * @return whether the ore was placed
      */
-    private boolean placeTop(Map<BlockPos, OreBlockPlacer> generatedBlocks, GTOreDefinition entry,
-                             long randomSeed, BlockPos pos,
-                             RandomSource random, int weightX, int weightZ) {
-        var top = this.top.target;
+    private boolean placeTop(BulkSectionAccess access, LevelChunkSection section, GTOreDefinition entry,
+                             BlockPos pos, RandomSource random, int weightX, int weightZ) {
         if (shouldPlaceOre(random, weightX, weightZ)) {
-            generatedBlocks.put(pos, (access, section) -> placeOre(access, section, pos, randomSeed, top, entry));
+            OreVeinUtil.placeOreBlock(this.top.target, access, section, random, entry, pos);
             return true;
         }
         return false;
@@ -188,14 +273,12 @@ public class CuboidVeinGenerator extends VeinGenerator {
     /**
      * Place the middle ore
      *
-     * @return if the ore was placed
+     * @return whether the ore was placed
      */
-    private boolean placeMiddle(Map<BlockPos, OreBlockPlacer> generatedBlocks, GTOreDefinition entry,
-                                long randomSeed, BlockPos pos,
-                                RandomSource random, int weightX, int weightZ) {
-        var middle = this.middle.target;
+    private boolean placeMiddle(BulkSectionAccess access, LevelChunkSection section, GTOreDefinition entry,
+                                BlockPos pos, RandomSource random, int weightX, int weightZ) {
         if (random.nextInt(2) == 0 && shouldPlaceOre(random, weightX, weightZ)) {
-            generatedBlocks.put(pos, (access, section) -> placeOre(access, section, pos, randomSeed, middle, entry));
+            OreVeinUtil.placeOreBlock(this.middle.target, access, section, random, entry, pos);
             return true;
         }
         return false;
@@ -204,14 +287,12 @@ public class CuboidVeinGenerator extends VeinGenerator {
     /**
      * Place the bottom ore
      *
-     * @return if the ore was placed
+     * @return whether the ore was placed
      */
-    private boolean placeBottom(Map<BlockPos, OreBlockPlacer> generatedBlocks, GTOreDefinition entry,
-                                long randomSeed, BlockPos pos,
-                                RandomSource random, int weightX, int weightZ) {
-        var bottom = this.bottom.target;
+    private boolean placeBottom(BulkSectionAccess access, LevelChunkSection section, GTOreDefinition entry,
+                                BlockPos pos, RandomSource random, int weightX, int weightZ) {
         if (shouldPlaceOre(random, weightX, weightZ)) {
-            generatedBlocks.put(pos, (access, section) -> placeOre(access, section, pos, randomSeed, bottom, entry));
+            OreVeinUtil.placeOreBlock(this.bottom.target, access, section, random, entry, pos);
             return true;
         }
         return false;
@@ -220,48 +301,15 @@ public class CuboidVeinGenerator extends VeinGenerator {
     /**
      * Place the spread ore
      *
-     * @return if the ore was placed
+     * @return whether the ore was placed
      */
-    private boolean placeSpread(Map<BlockPos, OreBlockPlacer> generatedBlocks, GTOreDefinition entry,
-                                long randomSeed, BlockPos pos,
-                                RandomSource random, int weightX, int weightZ) {
-        var spread = this.spread.target;
+    private boolean placeSpread(BulkSectionAccess access, LevelChunkSection section, GTOreDefinition entry,
+                                BlockPos pos, RandomSource random, int weightX, int weightZ) {
         if (random.nextFloat() <= entry.density() * spreadDivisor && shouldPlaceOre(random, weightX, weightZ)) {
-            generatedBlocks.put(pos, (access, section) -> placeOre(access, section, pos, randomSeed, spread, entry));
+            OreVeinUtil.placeOreBlock(this.spread.target, access, section, random, entry, pos);
             return true;
         }
         return false;
-    }
-
-    public void placeOre(BulkSectionAccess access, LevelChunkSection section, BlockPos pos, long randomSeed,
-                         Either<List<OreConfiguration.TargetBlockState>, Material> ore, GTOreDefinition entry) {
-        RandomSource random = new XoroshiroRandomSource(randomSeed);
-        int x = SectionPos.sectionRelative(pos.getX());
-        int y = SectionPos.sectionRelative(pos.getY());
-        int z = SectionPos.sectionRelative(pos.getZ());
-
-        BlockState existing = section.getBlockState(x, y, z);
-
-        ore.ifLeft(blockStates -> {
-            for (OreConfiguration.TargetBlockState targetState : blockStates) {
-                if (!OreVeinUtil.canPlaceOre(existing, access::getBlockState, random, entry, targetState, pos))
-                    continue;
-                if (targetState.state.isAir())
-                    continue;
-                section.setBlockState(x, y, z, targetState.state, false);
-                break;
-            }
-        }).ifRight(material -> {
-            if (!OreVeinUtil.canPlaceOre(existing, access::getBlockState, random, entry, pos))
-                return;
-            BlockState currentState = access.getBlockState(pos);
-            var prefix = ChemicalHelper.getOrePrefix(currentState);
-            if (prefix.isEmpty()) return;
-            Block toPlace = ChemicalHelper.getBlock(prefix.get(), material);
-            if (toPlace == null || toPlace.defaultBlockState().isAir())
-                return;
-            section.setBlockState(x, y, z, toPlace.defaultBlockState(), false);
-        });
     }
 
     @Override

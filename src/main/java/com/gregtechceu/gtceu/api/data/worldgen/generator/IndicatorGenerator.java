@@ -29,16 +29,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public abstract class IndicatorGenerator {
 
-    public static final Codec<Codec<? extends IndicatorGenerator>> REGISTRY_CODEC = ResourceLocation.CODEC
-            .flatXmap(rl -> Optional.ofNullable(WorldGeneratorUtils.INDICATOR_GENERATORS.get(rl))
-                    .map(DataResult::success)
-                    .orElseGet(() -> DataResult.error(() -> "No IndicatorGenerator with id " + rl + " registered")),
-                    obj -> Optional.ofNullable(WorldGeneratorUtils.INDICATOR_GENERATORS.inverse().get(obj))
-                            .map(DataResult::success)
-                            .orElseGet(() -> DataResult.error(() -> "IndicatorGenerator " + obj + " not registered")));
+    // spotless:off
+    public static final Codec<Codec<? extends IndicatorGenerator>> REGISTRY_CODEC = ResourceLocation.CODEC.flatXmap(rl -> {
+        return Optional.ofNullable(WorldGeneratorUtils.INDICATOR_GENERATORS.get(rl))
+                .map(DataResult::success)
+                .orElseGet(() -> DataResult.error(() -> "No IndicatorGenerator with id " + rl + " registered"));
+        }, obj -> {
+        return Optional.ofNullable(WorldGeneratorUtils.INDICATOR_GENERATORS.inverse().get(obj))
+                .map(DataResult::success)
+                .orElseGet(() -> DataResult.error(() -> "IndicatorGenerator " + obj + " not registered"));
+    });
 
-    public static final Codec<IndicatorGenerator> DIRECT_CODEC = REGISTRY_CODEC
-            .dispatchStable(IndicatorGenerator::codec, Function.identity());
+    public static final Codec<IndicatorGenerator> DIRECT_CODEC = REGISTRY_CODEC.dispatchStable(IndicatorGenerator::codec, Function.identity());
+    // spotless:on
 
     protected GTOreDefinition entry;
 

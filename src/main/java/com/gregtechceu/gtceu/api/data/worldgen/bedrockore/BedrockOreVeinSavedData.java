@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -106,7 +105,7 @@ public class BedrockOreVeinSavedData extends SavedData {
                             oreDefinition.biomeWeightModifier().applyAsInt(biome) : 0);
                     if (veinWeight > 0 &&
                             (oreDefinition.dimensionFilter == null || oreDefinition.dimensionFilter().stream().anyMatch(
-                                    dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension())))) {
+                                    dim -> dim == serverLevel.dimension()))) {
                         weight -= veinWeight;
                         if (weight < 0) {
                             definition = oreDefinition;
@@ -167,7 +166,7 @@ public class BedrockOreVeinSavedData extends SavedData {
             int totalWeight = 0;
             for (var definition : GTRegistries.BEDROCK_ORE_DEFINITIONS) {
                 if (definition.dimensionFilter == null || definition.dimensionFilter().stream()
-                        .anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension()))) {
+                        .anyMatch(dim -> dim == serverLevel.dimension())) {
                     totalWeight += definition.biomeWeightModifier() != null ?
                             definition.biomeWeightModifier().applyAsInt(biome) : 0;
                     totalWeight += definition.weight();
