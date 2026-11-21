@@ -189,5 +189,13 @@ public class ItemTagLoader {
         provider.addTag(Tags.Items.ENCHANTING_FUELS)
                 .add(ChemicalHelper.getItemOrThrow(gem, Lazurite))
                 .add(ChemicalHelper.getItemOrThrow(gem, Sodalite));
+
+        provider.addTag(CustomTags.HIDDEN_FROM_RECIPE_VIEWERS)
+                .addOptional(GTItems.SPOILABLE_1.getId())
+                .addOptional(GTItems.SPOILABLE_2.getId())
+                .addOptional(GTItems.SPOILABLE_3.getId())
+                .addOptional(GTItems.SPOILABLE_4.getId())
+                .addOptional(GTItems.SPOILABLE_5.getId())
+                .addOptional(GTItems.ENTITY_SPOILABLE.getId());
     }
 }

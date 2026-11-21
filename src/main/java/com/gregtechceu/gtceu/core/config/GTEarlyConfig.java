@@ -17,6 +17,7 @@ import java.util.*;
 public class GTEarlyConfig {
 
     public static final String SAFE_MODE = "client.bloom.safe_mode.";
+    public static final String SPOILAGE = "spoilage";
 
     private static final Logger LOGGER = LogManager.getLogger("GTEarlyConfig");
 
@@ -37,6 +38,9 @@ public class GTEarlyConfig {
 
         addDelegateRule("client.bloom.safemode", SAFE_MODE, false);
         addDelegateRule("client.bloom.normal", SAFE_MODE, true);
+
+        Option spoilageOption = addMixinRule(SPOILAGE, true);
+        spoilageOption.addComment("If the spoilage system should be enabled.", "Requires restarting to take effect.");
 
         // hidden rules for dev-only mixins
         addHiddenRule("dev", !FMLLoader.isProduction());
@@ -277,7 +281,7 @@ public class GTEarlyConfig {
             writer.write("# Available options:\n");
             var entries = this.options.entrySet().stream()
                     .filter(entry -> !entry.getValue().isHidden())
-                    .sorted()
+                    .sorted(Map.Entry.comparingByKey())
                     .toList();
 
             for (var entry : entries) {

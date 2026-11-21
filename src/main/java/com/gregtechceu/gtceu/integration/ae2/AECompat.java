@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.ae2;
 
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.item.spoilage.BlockEntitySpoilTicker;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.behavior.TerminalBehavior;
 
@@ -11,13 +12,16 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.features.GridLinkables;
 import appeng.api.features.IGridLinkableHandler;
+import appeng.blockentity.AEBaseBlockEntity;
 
-public class AEItemCompat {
+public class AECompat {
 
     public static final IGridLinkableHandler TERMINAL_LINKABLE_HANDLER = new LinkableHandler();
 
     public static void init() {
         GridLinkables.register(GTItems.TERMINAL.get(), TERMINAL_LINKABLE_HANDLER);
+
+        BlockEntitySpoilTicker.blacklistBlockEntityClass(AEBaseBlockEntity.class);
     }
 
     private static class LinkableHandler implements IGridLinkableHandler {
