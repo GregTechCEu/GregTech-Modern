@@ -3,13 +3,16 @@ package com.gregtechceu.gtceu.api.cover.filter;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.factory.GuiData;
+import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.Dialog;
 import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
@@ -19,6 +22,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -36,16 +40,32 @@ public abstract class Filter<T> implements Predicate<T> {
     public Filter() {}
 
     /**
+     * @param popoutHandler The IPanelHandler associated with the panel if this is opened as a popout
+     *
      * @return Filter panel when opened by itself (including the player inventory)
      */
     public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings,
-                                    boolean showPlayerInventory) {
-        return new Dialog<>(BuiltInRegistries.ITEM
-                .getKey(filterItemStack.getItem()).toString())
+                                    boolean showPlayerInventory, @Nullable IPanelHandler popoutHandler) {
+        ButtonWidget<?> closeButton = null;
+        if (popoutHandler != null) {
+            closeButton = new ButtonWidget<>()
+                    .overlay(GTGuiTextures.CLOSE_ICON)
+                    .onMousePressed((c, b) -> {
+                        popoutHandler.togglePanel();
+                        return true;
+                    }).size(12);
+        }
+
+        String name = Objects.requireNonNull(data.getLevel().registryAccess().registryOrThrow(Registries.ITEM)
+                .getKey(filterItemStack.getItem())).toString();
+        if (data instanceof SidedPosGuiData sidedData) name += "." + sidedData.getSide().getName();
+
+        return new Dialog<>(name)
                 .disablePanelsBelow(false)
                 .draggable(true)
                 .coverChildrenHeight()
-                .child(GTMuiWidgets.createTitleBar(this::getFilterItemStack, 176, GTGuiTextures.BACKGROUND))
+                .child(GTMuiWidgets.createTitleBarWithEnd(this::getFilterItemStack, 176, GTGuiTextures.BACKGROUND,
+                        closeButton))
                 .child(Flow.col().coverChildrenHeight()
                         .child(getFilterUI(data, syncManager, settings).marginTop(10).marginBottom(10))
                         .childIf(showPlayerInventory,

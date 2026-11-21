@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.jei;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.gregtechceu.gtceu.core.mixins.mui.ModularUIJeiRecipeAccessor;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -11,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.integration.jei.recipe.ModularUIJeiCategory;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -24,7 +27,9 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -39,7 +44,7 @@ public class MultiblockInfoJeiCategory extends
     private final IDrawable icon;
 
     public MultiblockInfoJeiCategory(IJeiHelpers helpers) {
-        super(v -> new MultiblockPreviewWidget(v, null, 200, 180), v -> v.getId());
+        super(v -> new MultiblockPreviewWidget(v, null, 200, 180, false), MachineDefinition::getId);
         IGuiHelper guiHelper = helpers.getGuiHelper();
         this.icon = guiHelper.createDrawableItemStack(GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack());
     }
@@ -65,10 +70,16 @@ public class MultiblockInfoJeiCategory extends
     @Override
     public void setupRecipeIngredients(IRecipeLayoutBuilder builder, MultiblockMachineDefinition definition,
                                        IFocusGroup focuses) {
-        List<ItemStack> containedBlocks = MultiblockPreviewWidget.initializeContainedBlocks(definition);
+        List<ItemStack> containedBlocks = new ArrayList<>();
 
         builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT).addIngredient(VanillaTypes.ITEM_STACK,
                 new ItemStack(definition.getBlock()));
+
+        var recipeUI = ((MultiblockPreviewWidget) ((Function<MultiblockMachineDefinition, IWidget>) ((ModularUIJeiRecipeAccessor) this)
+                .getRecipeUI()).apply(definition));
+        if (recipeUI.getMultiblockSchemaInfo() == null) return;
+        var blockCounts = recipeUI.getMultiblockSchemaInfo().getBlockCounts();
+        blockCounts.forEach((block, count) -> containedBlocks.add(new ItemStack(block.asItem(), count)));
 
         for (var stack : containedBlocks) {
             builder.addInvisibleIngredients(RecipeIngredientRole.INPUT).addIngredient(VanillaTypes.ITEM_STACK, stack);

@@ -6,10 +6,12 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.datacomponents.*;
 import com.gregtechceu.gtceu.api.item.module.ModularItemData;
+import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
 import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
 import com.gregtechceu.gtceu.common.item.behavior.ItemMagnetBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.TerminalBehavior;
 import com.gregtechceu.gtceu.common.item.datacomponents.*;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
@@ -210,6 +212,17 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> TAPED = DATA_COMPONENTS
             .registerComponentType("taped",
                     builder -> builder.persistent(Unit.CODEC).networkSynchronized(UNIT_STREAM_CODEC));
+
+    // terminal data
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<TerminalBehavior.ControllerInfo>> TERMINAL_CONTROLLER_INFO = DATA_COMPONENTS
+            .registerComponentType("terminal_controller_info", builder -> builder
+                    .persistent(TerminalBehavior.ControllerInfo.CODEC)
+                    .networkSynchronized(TerminalBehavior.ControllerInfo.STREAM_CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<MultiblockSchemaInfo>> MULTI_SCHEMA_INFO = DATA_COMPONENTS
+            .registerComponentType("multi_schema_info", builder -> builder
+                    .persistent(MultiblockSchemaInfo.CODEC)
+                    .networkSynchronized(MultiblockSchemaInfo.STREAM_CODEC));
 
     // misc
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<FacadeWrapper>> FACADE = DATA_COMPONENTS

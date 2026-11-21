@@ -78,6 +78,8 @@
         "WorldLoaderMixin",
         "dev.datagen.FixParallelKeyMappingRegistrationMixin",
         "dev.test.GameTestRegistryMixin",
+        "mui.ModularUIEmiRecipeAccessor",
+        "mui.ModularUIJeiRecipeAccessor",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor"
     ],

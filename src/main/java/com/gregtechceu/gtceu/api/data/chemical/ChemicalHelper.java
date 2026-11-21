@@ -28,6 +28,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import com.mojang.datafixers.util.Pair;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -275,19 +276,23 @@ public class ChemicalHelper {
         return items.getFirst().asItem();
     }
 
+    @HideFromJS
     public static @Nullable Item getItem(TagPrefix tagPrefix, Material material) {
         return getItem(new MaterialEntry(tagPrefix, material));
     }
 
+    @HideFromJS
     public static Item getItemOrThrow(TagPrefix tagPrefix, Material material) {
         return Objects.requireNonNull(getItem(tagPrefix, material),
                 "Item for (%s %s) was null".formatted(tagPrefix, material));
     }
 
+    @HideFromJS
     public static @Nullable Item getItem(Holder<TagPrefix> tagPrefix, Material material) {
         return getItem(new MaterialEntry(tagPrefix, material));
     }
 
+    @HideFromJS
     public static Item getItemOrThrow(Holder<TagPrefix> tagPrefix, Material material) {
         return Objects.requireNonNull(getItem(tagPrefix, material),
                 "Item for (%s %s) was null".formatted(tagPrefix, material));
@@ -310,18 +315,22 @@ public class ChemicalHelper {
         return stack;
     }
 
+    @HideFromJS
     public static ItemStack get(TagPrefix tagPrefix, Material material, int stackSize) {
         return get(new MaterialEntry(tagPrefix, material), stackSize);
     }
 
+    @HideFromJS
     public static ItemStack get(TagPrefix tagPrefix, Material material) {
         return get(tagPrefix, material, 1);
     }
 
+    @HideFromJS
     public static ItemStack get(Holder<TagPrefix> tagPrefix, Material material, int stackSize) {
         return get(new MaterialEntry(tagPrefix, material), stackSize);
     }
 
+    @HideFromJS
     public static ItemStack get(Holder<TagPrefix> tagPrefix, Material material) {
         return get(tagPrefix, material, 1);
     }
@@ -356,6 +365,7 @@ public class ChemicalHelper {
     }
 
     @Nullable
+    @HideFromJS
     public static Block getBlock(MaterialEntry materialEntry) {
         var list = getBlocks(materialEntry);
         if (list.isEmpty()) return null;
@@ -363,20 +373,24 @@ public class ChemicalHelper {
     }
 
     @Nullable
+    @HideFromJS
     public static Block getBlock(TagPrefix orePrefix, Material material) {
         return getBlock(new MaterialEntry(orePrefix, material));
     }
 
+    @HideFromJS
     public static Block getBlockOrThrow(TagPrefix tagPrefix, Material material) {
         return Objects.requireNonNull(getBlock(tagPrefix, material),
                 "Block for (%s, %s) was null.".formatted(tagPrefix, material));
     }
 
     @Nullable
+    @HideFromJS
     public static Block getBlock(Holder<TagPrefix> tagPrefix, Material material) {
         return getBlock(new MaterialEntry(tagPrefix.value(), material));
     }
 
+    @HideFromJS
     public static Block getBlockOrThrow(Holder<TagPrefix> tagPrefix, Material material) {
         return Objects.requireNonNull(getBlock(tagPrefix, material),
                 "Block for (%s, %s) was null.".formatted(tagPrefix, material));
@@ -385,6 +399,11 @@ public class ChemicalHelper {
     @Nullable
     public static Block getBlock(Holder<TagPrefix> orePrefix, Holder<Material> material) {
         return getBlock(new MaterialEntry(orePrefix, material));
+    }
+
+    public static Block getBlockOrThrow(Holder<TagPrefix> tagPrefix, Holder<Material> material) {
+        return Objects.requireNonNull(getBlock(tagPrefix, material),
+                "Block for (%s, %s) was null.".formatted(tagPrefix, material));
     }
 
     @Nullable
@@ -397,6 +416,7 @@ public class ChemicalHelper {
     }
 
     @Nullable
+    @HideFromJS
     public static TagKey<Item> getTag(TagPrefix orePrefix, Material material) {
         var tags = orePrefix.getItemTags(material);
         if (!tags.isEmpty()) {
@@ -405,24 +425,27 @@ public class ChemicalHelper {
         return null;
     }
 
-    @Nullable
-    public static TagKey<Item> getTag(Holder<TagPrefix> orePrefix, Holder<Material> material) {
-        return getTag(orePrefix.value(), material.value());
-    }
-
-    @Nullable
-    public static TagKey<Item> getTag(Holder<TagPrefix> orePrefix, Material material) {
-        return getTag(orePrefix.value(), material);
-    }
-
+    @HideFromJS
     public static TagKey<Item> getTagOrThrow(TagPrefix orePrefix, Material material) {
         return Objects.requireNonNull(getTag(orePrefix, material),
                 "No item tag for %s %s".formatted(orePrefix, material));
     }
 
+    @Nullable
+    @HideFromJS
+    public static TagKey<Item> getTag(Holder<TagPrefix> orePrefix, Material material) {
+        return getTag(orePrefix.value(), material);
+    }
+
+    @HideFromJS
     public static TagKey<Item> getTagOrThrow(Holder<TagPrefix> orePrefix, Material material) {
         return Objects.requireNonNull(getTag(orePrefix, material),
                 "No item tag for %s %s".formatted(orePrefix, material));
+    }
+
+    @Nullable
+    public static TagKey<Item> getTag(Holder<TagPrefix> orePrefix, Holder<Material> material) {
+        return getTag(orePrefix.value(), material.value());
     }
 
     public static TagKey<Item> getTagOrThrow(Holder<TagPrefix> orePrefix, Holder<Material> material) {
