@@ -1128,14 +1128,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         IOFilteredInvWrapper handlerList = new IOFilteredInvWrapper(list, io,
                 getItemCapFilter(side, IO.IN), getItemCapFilter(side, IO.OUT));
         if (!useCoverCapability || side == null) {
-            SpoilUtils.updateBlockItemHandler(handlerList, getLevel(), getBlockPos());
             return handlerList;
         }
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        var handler = cover != null ? cover.getItemHandlerCap(handlerList) : handlerList;
-        if (handler != null) SpoilUtils.updateBlockItemHandler(handler, getLevel(), getBlockPos());
-        return handler;
+        return cover != null ? cover.getItemHandlerCap(handlerList) : handlerList;
     }
 
     /**

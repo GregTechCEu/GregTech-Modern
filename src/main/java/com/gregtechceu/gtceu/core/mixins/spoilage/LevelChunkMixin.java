@@ -35,8 +35,8 @@ public abstract class LevelChunkMixin extends ChunkAccess implements ICapability
     @Inject(method = "addAndRegisterBlockEntity",
             at = @At(value = "INVOKE",
                      target = "Lnet/minecraft/world/level/block/entity/BlockEntity;onLoad()V",
-                     shift = At.Shift.AFTER),
-            remap = false)
+                     shift = At.Shift.AFTER,
+                     remap = false))
     private void gtceu$addBlockEntityToSpoilTickers(BlockEntity blockEntity, CallbackInfo ci) {
         if (blockEntity.getLevel() instanceof ServerLevel level) {
             BlockEntitySpoilTicker.get(level).scheduleTickIfValid(blockEntity, 0L, TickPriority.EXTREMELY_HIGH);

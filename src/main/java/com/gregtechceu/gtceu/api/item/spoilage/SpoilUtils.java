@@ -40,6 +40,26 @@ public class SpoilUtils {
     }
 
     /**
+     * Checks if an item and tags are the same, with support for spoilage
+     * 
+     * @return If the item stacks and their non-spoilage data are the same, and checks that the spoilage items are
+     *         compatible.
+     */
+    public static boolean isSameItemSameTagsSpoilable(ItemStack a, ItemStack b) {
+        var cap1 = GTCapabilityHelper.getSpoilable(a);
+        var cap2 = GTCapabilityHelper.getSpoilable(b);
+        if (cap1 == null || cap2 == null) return ItemStack.isSameItemSameTags(a, b);
+        if (!a.is(b.getItem())) return false;
+
+        var tag1 = a.getTag();
+        var tag2 = b.getTag();
+        if (tag1 == null || tag2 == null) return ItemStack.isSameItemSameTags(a, b);
+        tag1.remove(SpoilableItemStack.SPOILAGE_DATA_KEY);
+        tag2.remove(SpoilableItemStack.SPOILAGE_DATA_KEY);
+        return tag1.equals(tag2);
+    }
+
+    /**
      * Initializes this ItemStack's spoilage timer if it wasn't initialized before.
      * Should be called when it finishes crafting, for example.
      */

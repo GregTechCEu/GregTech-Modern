@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.api.item.spoilage;
 
+import com.gregtechceu.gtceu.GTCEu;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
@@ -12,6 +15,7 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -34,6 +38,8 @@ public record SpoilContext(@Nullable Level level,
      *         This is usually the Overworld. If it is {@code null}, all spoilage updates are ignored.
      */
     public static @Nullable Level getDefaultLevel() {
+        if (GTCEu.isClientSide()) return ClientCallWrapper.getClientLevel();
+
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server == null) return null;
         return server.overworld();
@@ -57,5 +63,12 @@ public record SpoilContext(@Nullable Level level,
 
     public static Consumer<ItemStack> stackSetterForHandler(IItemHandlerModifiable handler, int slot) {
         return stack -> handler.setStackInSlot(slot, stack);
+    }
+
+    private static class ClientCallWrapper {
+
+        private static Level getClientLevel() {
+            return Objects.requireNonNull(Minecraft.getInstance().level);
+        }
     }
 }

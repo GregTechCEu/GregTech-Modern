@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.item.spoilage;
 
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.LevelAttached;
 
@@ -33,7 +34,8 @@ public class BlockEntitySpoilTicker {
     public static final int MAX_TICKS_PER_UPDATE = ServerLevel.MAX_SCHEDULED_TICKS_PER_TICK;
     public static final long UPDATE_FREQUENCY = 2;
 
-    private static final Set<Class<? extends BlockEntity>> BLACKLISTED_BLOCK_ENTITIES = new ReferenceOpenHashSet<>();
+    private static final Set<Class<? extends BlockEntity>> BLACKLISTED_BLOCK_ENTITIES = ReferenceOpenHashSet
+            .of(MetaMachine.class);
 
     public static BlockEntitySpoilTicker get(ServerLevel level) {
         return TICKERS.get(level);
@@ -102,14 +104,19 @@ public class BlockEntitySpoilTicker {
 
     private boolean hasModifiableItemHandler(BlockEntity blockEntity) {
         LazyOptional<IItemHandler> value;
+        boolean hasModifiable = false;
         for (Direction side : GTUtil.DIRECTIONS) {
             value = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, side);
-            if (value.isPresent()) {
-                return value.resolve().map(v -> v instanceof IItemHandlerModifiable).orElse(false);
+            if (value.isPresent() && value.resolve().orElse(null) instanceof IItemHandlerModifiable) {
+                hasModifiable = true;
             }
         }
+
         value = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
-        return value.isPresent() && value.resolve().map(v -> v instanceof IItemHandlerModifiable).orElse(false);
+        if (value.isPresent() && value.resolve().orElse(null) instanceof IItemHandlerModifiable) {
+            hasModifiable = true;
+        }
+        return hasModifiable;
     }
 
     @ApiStatus.Internal

@@ -29,10 +29,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
  * Items that don't start spoiling will simply not have spoilable NBT, and as a result, won't spoil,
  * until any of the above conditions become true.
  * <p>
- * The only exception is if one of the stacks is frozen, in which case it works as normal, except that
- * frozen stacks will be equal to non-frozen stacks if all else is equal. This is done to make filtering work correctly.
- * </p>
- * <p>
  * Spoilable stacks will be frozen if they enter a phantom slot,
  * to prevent stacks spoiling in filters. If you are a developer of a mod that adds filters, consider calling
  * {@link ISpoilableItem#freezeSpoiling()} on stacks entering these filters for compatibility :)
@@ -158,6 +154,7 @@ public interface ISpoilableItem {
         }
         long thisCreated = this.getCreationTick();
         long thatCreated = that.getCreationTick();
+
         if (thisCreated != thatCreated) {
             int thisCount = this.getStack().getCount(), thatCount = that.getStack().getCount();
             long average;
