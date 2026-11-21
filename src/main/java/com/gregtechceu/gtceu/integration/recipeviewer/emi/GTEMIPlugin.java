@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICate
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 
