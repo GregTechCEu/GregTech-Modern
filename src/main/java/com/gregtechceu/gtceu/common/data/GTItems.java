@@ -299,12 +299,14 @@ public class GTItems {
 
     public static final ItemEntry<Item> SPRAY_EMPTY = REGISTRATE.item("empty_spray_can", Item::new)
             .lang("Spray Can (Empty)").register();
-    public static final ItemEntry<ComponentItem> SPRAY_SOLVENT = REGISTRATE.item("solvent_spray_can", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> SPRAY_SOLVENT = REGISTRATE
+            .item("solvent_spray_can", ComponentItem::create)
             .lang("Spray Can (Solvent)")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 1024, -1))).register();
 
-    public static final ItemEntry<ComponentItem> PORTABLE_SCANNER = REGISTRATE.item("portable_scanner", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> PORTABLE_SCANNER = REGISTRATE
+            .item("portable_scanner", ComponentItem::create)
             .lang("Portable Scanner")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.MV), new PortableScannerBehavior(0)))
@@ -412,7 +414,8 @@ public class GTItems {
             .onRegister(attach(new LighterBehavior(false, true, false, () -> new ItemStack(Items.PAPER, 1), 16)))
             .tag(CustomTags.TOOLS_IGNITER)
             .register();
-    public static final ItemEntry<ComponentItem> TOOL_LIGHTER_INVAR = REGISTRATE.item("invar_lighter", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> TOOL_LIGHTER_INVAR = REGISTRATE
+            .item("invar_lighter", ComponentItem::create)
             .lang("Invar Lighter")
             .properties(p -> p.stacksTo(1))
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
@@ -647,7 +650,8 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createBattery(2000000000000L, GTValues.ZPM, true))).register();
-    public static final ItemEntry<ComponentItem> ULTIMATE_BATTERY = REGISTRATE.item("max_battery", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> ULTIMATE_BATTERY = REGISTRATE
+            .item("max_battery", ComponentItem::create)
             .lang("Ultimate Battery")
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
@@ -990,7 +994,8 @@ public class GTItems {
     public static final ItemEntry<ComponentItem> TOOL_DATA_ORB = REGISTRATE.item("data_orb", ComponentItem::create)
             .lang("Data Orb").onRegister(attach(new DataItemBehavior(false, 64)))
             .register();
-    public static final ItemEntry<ComponentItem> TOOL_DATA_MODULE = REGISTRATE.item("data_module", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> TOOL_DATA_MODULE = REGISTRATE
+            .item("data_module", ComponentItem::create)
             .lang("Data Module").onRegister(attach(new DataItemBehavior(true, 256)))
             .register();
 
@@ -1034,11 +1039,13 @@ public class GTItems {
 
     public static final ItemEntry<Item> CENTRAL_PROCESSING_UNIT_WAFER = REGISTRATE.item("cpu_wafer", Item::new)
             .lang("CPU Wafer").register();
-    public static final ItemEntry<Item> RANDOM_ACCESS_MEMORY_WAFER = REGISTRATE.item("ram_wafer", Item::new).lang("RAM Wafer")
+    public static final ItemEntry<Item> RANDOM_ACCESS_MEMORY_WAFER = REGISTRATE.item("ram_wafer", Item::new)
+            .lang("RAM Wafer")
             .register();
     public static final ItemEntry<Item> INTEGRATED_LOGIC_CIRCUIT_WAFER = REGISTRATE.item("ilc_wafer", Item::new)
             .lang("ILC Wafer").register();
-    public static final ItemEntry<Item> NANO_CENTRAL_PROCESSING_UNIT_WAFER = REGISTRATE.item("nano_cpu_wafer", Item::new)
+    public static final ItemEntry<Item> NANO_CENTRAL_PROCESSING_UNIT_WAFER = REGISTRATE
+            .item("nano_cpu_wafer", Item::new)
             .lang("Nano CPU Wafer").register();
     public static final ItemEntry<Item> QUBIT_CENTRAL_PROCESSING_UNIT_WAFER = REGISTRATE.item("qbit_cpu_wafer", Item::new)
             .lang("Qubit CPU Wafer").register();
@@ -1054,7 +1061,8 @@ public class GTItems {
             .lang("NAND Memory Wafer").register();
     public static final ItemEntry<Item> NOR_MEMORY_CHIP_WAFER = REGISTRATE.item("nor_memory_wafer", Item::new)
             .lang("NOR Memory Wafer").register();
-    public static final ItemEntry<Item> ULTRA_LOW_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE.item("ulpic_wafer", Item::new)
+    public static final ItemEntry<Item> ULTRA_LOW_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE
+            .item("ulpic_wafer", Item::new)
             .lang("ULPIC Wafer").register();
     public static final ItemEntry<Item> LOW_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE.item("lpic_wafer", Item::new)
             .lang("LPIC Wafer").register();
@@ -1062,12 +1070,14 @@ public class GTItems {
             .lang("MPIC Wafer").register();
     public static final ItemEntry<Item> HIGH_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE.item("hpic_wafer", Item::new)
             .lang("HPIC Wafer").register();
-    public static final ItemEntry<Item> ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE.item("uhpic_wafer", Item::new)
+    public static final ItemEntry<Item> ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE
+            .item("uhpic_wafer", Item::new)
             .lang("UHPIC Wafer").register();
 
     public static final ItemEntry<Item> ENGRAVED_CRYSTAL_CHIP = REGISTRATE.item("engraved_crystal_chip", Item::new)
             .lang("Engraved Crystal Chip").register();
-    public static final ItemEntry<Item> ENGRAVED_LAPOTRON_CHIP = REGISTRATE.item("engraved_lapotron_crystal_chip", Item::new)
+    public static final ItemEntry<Item> ENGRAVED_LAPOTRON_CHIP = REGISTRATE
+            .item("engraved_lapotron_crystal_chip", Item::new)
             .lang("Engraved Lapotron Crystal Chip").register();
 
     public static final ItemEntry<Item> CENTRAL_PROCESSING_UNIT = REGISTRATE.item("cpu_chip", Item::new).lang("CPU Chip")
@@ -1110,7 +1120,8 @@ public class GTItems {
     public static final ItemEntry<Item> CRYSTAL_CENTRAL_PROCESSING_UNIT = REGISTRATE.item("crystal_cpu", Item::new)
             .lang("Crystal CPU")
             .register();
-    public static final ItemEntry<Item> CRYSTAL_SYSTEM_ON_CHIP = REGISTRATE.item("crystal_soc", Item::new).lang("Crystal SoC")
+    public static final ItemEntry<Item> CRYSTAL_SYSTEM_ON_CHIP = REGISTRATE.item("crystal_soc", Item::new)
+            .lang("Crystal SoC")
             .register();
 
     public static final ItemEntry<Item> COATED_BOARD = REGISTRATE.item("resin_circuit_board", Item::new)
@@ -1139,13 +1150,16 @@ public class GTItems {
     public static final ItemEntry<Item> BASIC_CIRCUIT_BOARD = REGISTRATE.item("resin_printed_circuit_board", Item::new)
             .lang("Resin Printed Circuit Board")
             .register();
-    public static final ItemEntry<Item> GOOD_CIRCUIT_BOARD = REGISTRATE.item("phenolic_printed_circuit_board", Item::new)
+    public static final ItemEntry<Item> GOOD_CIRCUIT_BOARD = REGISTRATE
+            .item("phenolic_printed_circuit_board", Item::new)
             .lang("Phenolic Printed Circuit Board")
             .register();
-    public static final ItemEntry<Item> PLASTIC_CIRCUIT_BOARD = REGISTRATE.item("plastic_printed_circuit_board", Item::new)
+    public static final ItemEntry<Item> PLASTIC_CIRCUIT_BOARD = REGISTRATE
+            .item("plastic_printed_circuit_board", Item::new)
             .lang("Plastic Printed Circuit Board")
             .register();
-    public static final ItemEntry<Item> ADVANCED_CIRCUIT_BOARD = REGISTRATE.item("epoxy_printed_circuit_board", Item::new)
+    public static final ItemEntry<Item> ADVANCED_CIRCUIT_BOARD = REGISTRATE
+            .item("epoxy_printed_circuit_board", Item::new)
             .lang("Epoxy Printed Circuit Board")
             .register();
     public static final ItemEntry<Item> EXTREME_CIRCUIT_BOARD = REGISTRATE
@@ -1155,7 +1169,8 @@ public class GTItems {
             .item("multilayer_fiber_reinforced_printed_circuit_board", Item::new)
             .lang("Multi-layer Fiber-Reinforced Printed Circuit Board")
             .register();
-    public static final ItemEntry<Item> WETWARE_CIRCUIT_BOARD = REGISTRATE.item("wetware_printed_circuit_board", Item::new)
+    public static final ItemEntry<Item> WETWARE_CIRCUIT_BOARD = REGISTRATE
+            .item("wetware_printed_circuit_board", Item::new)
             .lang("Wetware Printed Circuit Board")
             .register();
 
@@ -1178,15 +1193,20 @@ public class GTItems {
     public static final ItemEntry<Item> INDUCTOR = REGISTRATE.item("inductor", Item::new).lang("Inductor")
             .tag(CustomTags.INDUCTORS)
             .register();
-    public static final ItemEntry<Item> SMD_TRANSISTOR = REGISTRATE.item("smd_transistor", Item::new).lang("SMD Transistor")
+    public static final ItemEntry<Item> SMD_TRANSISTOR = REGISTRATE.item("smd_transistor", Item::new)
+            .lang("SMD Transistor")
             .tag(CustomTags.TRANSISTORS).register();
-    public static final ItemEntry<Item> SMD_RESISTOR = REGISTRATE.item("smd_resistor", Item::new).lang("SMD Resistor")
+    public static final ItemEntry<Item> SMD_RESISTOR = REGISTRATE.item("smd_resistor", Item::new)
+            .lang("SMD Resistor")
             .tag(CustomTags.RESISTORS).register();
-    public static final ItemEntry<Item> SMD_CAPACITOR = REGISTRATE.item("smd_capacitor", Item::new).lang("SMD Capacitor")
+    public static final ItemEntry<Item> SMD_CAPACITOR = REGISTRATE.item("smd_capacitor", Item::new)
+            .lang("SMD Capacitor")
             .tag(CustomTags.CAPACITORS).register();
-    public static final ItemEntry<Item> SMD_DIODE = REGISTRATE.item("smd_diode", Item::new).lang("SMD Diode")
+    public static final ItemEntry<Item> SMD_DIODE = REGISTRATE.item("smd_diode", Item::new)
+            .lang("SMD Diode")
             .tag(CustomTags.DIODES).register();
-    public static final ItemEntry<Item> SMD_INDUCTOR = REGISTRATE.item("smd_inductor", Item::new).lang("SMD Inductor")
+    public static final ItemEntry<Item> SMD_INDUCTOR = REGISTRATE.item("smd_inductor", Item::new)
+            .lang("SMD Inductor")
             .tag(CustomTags.INDUCTORS).register();
     public static final ItemEntry<Item> ADVANCED_SMD_TRANSISTOR = REGISTRATE.item("advanced_smd_transistor", Item::new)
             .lang("Advanced SMD Transistor").register();
@@ -1214,7 +1234,8 @@ public class GTItems {
     public static final ItemEntry<Item> INTEGRATED_CIRCUIT_MV = REGISTRATE.item("good_integrated_circuit", Item::new)
             .lang("Good Integrated Circuit").tag(CustomTags.MV_CIRCUITS)
             .register();
-    public static final ItemEntry<Item> INTEGRATED_CIRCUIT_HV = REGISTRATE.item("advanced_integrated_circuit", Item::new)
+    public static final ItemEntry<Item> INTEGRATED_CIRCUIT_HV = REGISTRATE
+            .item("advanced_integrated_circuit", Item::new)
             .lang("Advanced Integrated Circuit").tag(CustomTags.HV_CIRCUITS)
             .register();
 
@@ -1226,7 +1247,8 @@ public class GTItems {
             .register();
 
     // T3: Processor
-    public static final ItemEntry<Item> PROCESSOR_MV = REGISTRATE.item("micro_processor", Item::new).lang("Microprocessor")
+    public static final ItemEntry<Item> PROCESSOR_MV = REGISTRATE.item("micro_processor", Item::new)
+            .lang("Microprocessor")
             .tag(CustomTags.MV_CIRCUITS).register();
     public static final ItemEntry<Item> PROCESSOR_ASSEMBLY_HV = REGISTRATE.item("micro_processor_assembly", Item::new)
             .lang("Microprocessor Assembly").tag(CustomTags.HV_CIRCUITS)
@@ -1239,9 +1261,11 @@ public class GTItems {
             .register();
 
     // T4: Nano
-    public static final ItemEntry<Item> NANO_PROCESSOR_HV = REGISTRATE.item("nano_processor", Item::new).lang("Nanoprocessor")
+    public static final ItemEntry<Item> NANO_PROCESSOR_HV = REGISTRATE.item("nano_processor", Item::new)
+            .lang("Nanoprocessor")
             .tag(CustomTags.HV_CIRCUITS).register();
-    public static final ItemEntry<Item> NANO_PROCESSOR_ASSEMBLY_EV = REGISTRATE.item("nano_processor_assembly", Item::new)
+    public static final ItemEntry<Item> NANO_PROCESSOR_ASSEMBLY_EV = REGISTRATE
+            .item("nano_processor_assembly", Item::new)
             .lang("Nanoprocessor Assembly").tag(CustomTags.EV_CIRCUITS)
             .register();
     public static final ItemEntry<Item> NANO_COMPUTER_IV = REGISTRATE.item("nano_processor_computer", Item::new)
@@ -1261,7 +1285,8 @@ public class GTItems {
     public static final ItemEntry<Item> QUANTUM_COMPUTER_LuV = REGISTRATE.item("quantum_processor_computer", Item::new)
             .lang("Quantum Processor Supercomputer").tag(CustomTags.LuV_CIRCUITS)
             .register();
-    public static final ItemEntry<Item> QUANTUM_MAINFRAME_ZPM = REGISTRATE.item("quantum_processor_mainframe", Item::new)
+    public static final ItemEntry<Item> QUANTUM_MAINFRAME_ZPM = REGISTRATE
+            .item("quantum_processor_mainframe", Item::new)
             .lang("Quantum Processor Mainframe").tag(CustomTags.ZPM_CIRCUITS)
             .register();
 
@@ -1284,12 +1309,15 @@ public class GTItems {
             .lang("Wetware Processor").tag(CustomTags.LuV_CIRCUITS)
             .register();
     public static final ItemEntry<Item> WETWARE_PROCESSOR_ASSEMBLY_ZPM = REGISTRATE
-            .item("wetware_processor_assembly", Item::new).lang("Wetware Processor Assembly")
+            .item("wetware_processor_assembly", Item::new)
+            .lang("Wetware Processor Assembly")
             .tag(CustomTags.ZPM_CIRCUITS).register();
-    public static final ItemEntry<Item> WETWARE_SUPER_COMPUTER_UV = REGISTRATE.item("wetware_processor_computer", Item::new)
+    public static final ItemEntry<Item> WETWARE_SUPER_COMPUTER_UV = REGISTRATE
+            .item("wetware_processor_computer", Item::new)
             .lang("Wetware Processor Supercomputer").tag(CustomTags.UV_CIRCUITS)
             .register();
-    public static final ItemEntry<Item> WETWARE_MAINFRAME_UHV = REGISTRATE.item("wetware_processor_mainframe", Item::new)
+    public static final ItemEntry<Item> WETWARE_MAINFRAME_UHV = REGISTRATE
+            .item("wetware_processor_mainframe", Item::new)
             .lang("Wetware Processor Mainframe").tag(CustomTags.UHV_CIRCUITS)
             .register();
 
@@ -1298,7 +1326,8 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 8),
                     new MaterialStack(GTMaterials.Diamond, GTValues.M * 5))))
             .register();
-    public static final ItemEntry<Item> COMPONENT_GRINDER_TUNGSTEN = REGISTRATE.item("tungsten_grinding_head", Item::new)
+    public static final ItemEntry<Item> COMPONENT_GRINDER_TUNGSTEN = REGISTRATE
+            .item("tungsten_grinding_head", Item::new)
             .lang("Tungsten Grinding Head")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Tungsten, GTValues.M * 4),
                     new MaterialStack(GTMaterials.VanadiumSteel, GTValues.M * 8),
@@ -1350,7 +1379,8 @@ public class GTItems {
                     new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
             .register();
-    public static final ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE.item("fluid_tag_filter", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE
+            .item("fluid_tag_filter", ComponentItem::create)
             .lang("Fluid Tag Filter")
             .onRegister(attach(
                     new FilterBehaviour<>(FluidStack.class, stack -> new TagFilter<>(stack, FluidStack::getFluid,
@@ -1501,7 +1531,8 @@ public class GTItems {
             .register();
 
     // Solar Panels: ID 331-346
-    public static final ItemEntry<ComponentItem> COVER_SOLAR_PANEL = REGISTRATE.item("solar_panel", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> COVER_SOLAR_PANEL = REGISTRATE
+            .item("solar_panel", ComponentItem::create)
             .lang("Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", 1, GTValues.VNF[GTValues.ULV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL_BASIC)))
@@ -1600,7 +1631,8 @@ public class GTItems {
     public static final ItemEntry<Item> GELLED_TOLUENE = REGISTRATE.item("gelled_toluene", Item::new)
             .register();
 
-    public static final ItemEntry<ComponentItem> BOTTLE_PURPLE_DRINK = REGISTRATE.item("purple_drink", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> BOTTLE_PURPLE_DRINK = REGISTRATE
+            .item("purple_drink", ComponentItem::create)
             .lang("Purple Drink")
             .onRegister(attach(new FoodStats(GTFoods.DRINK, true, Items.GLASS_BOTTLE::getDefaultInstance)))
             .register();
@@ -1658,7 +1690,8 @@ public class GTItems {
             .properties(p -> p.stacksTo(1))
             .register();
     // TODO add more medications for specific conditions & then remove them from paracetamol
-    public static final ItemEntry<ComponentItem> PARACETAMOL_PILL = REGISTRATE.item("paracetamol_pill", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> PARACETAMOL_PILL = REGISTRATE
+            .item("paracetamol_pill", ComponentItem::create)
             .lang("Paracetamol Pill")
             .properties(p -> p.food(GTFoods.ANTIDOTE))
             .onRegister(attach(new AntidoteBehavior(10,
@@ -1706,7 +1739,8 @@ public class GTItems {
                             ProspectorMode.FLUID,
                             ConfigHolder.INSTANCE.machines.doBedrockOres ? ProspectorMode.BEDROCK_ORE : null)))
             .register();
-    public static final ItemEntry<ComponentItem> PROSPECTOR_LuV = REGISTRATE.item("prospector.luv", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> PROSPECTOR_LuV = REGISTRATE
+            .item("prospector.luv", ComponentItem::create)
             .lang("Super Prospector (LuV)")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(ElectricStats.createElectricItem(1_000_000_000L, GTValues.LuV),
@@ -1715,12 +1749,14 @@ public class GTItems {
                             ConfigHolder.INSTANCE.machines.doBedrockOres ? ProspectorMode.BEDROCK_ORE : null)))
             .register();
 
-    public static final ItemEntry<ComponentItem> ITEM_MAGNET_LV = REGISTRATE.item("lv_item_magnet", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> ITEM_MAGNET_LV = REGISTRATE
+            .item("lv_item_magnet", ComponentItem::create)
             .lang("LV Item Magnet")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.LV), new ItemMagnetBehavior(8)))
             .register();
-    public static final ItemEntry<ComponentItem> ITEM_MAGNET_HV = REGISTRATE.item("hv_item_magnet", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> ITEM_MAGNET_HV = REGISTRATE
+            .item("hv_item_magnet", ComponentItem::create)
             .lang("HV Item Magnet")
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(ElectricStats.createElectricItem(1_600_000L, GTValues.HV), new ItemMagnetBehavior(32)))
@@ -1778,47 +1814,56 @@ public class GTItems {
     public static final ItemEntry<Item> PETRI_DISH = REGISTRATE.item("petri_dish", Item::new)
             .register();
 
-    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_ULV = REGISTRATE.item("ulv_voltage_coil", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_ULV = REGISTRATE
+            .item("ulv_voltage_coil", ComponentItem::create)
             .lang("Ultra Low Voltage Coil")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Lead, GTValues.M * 2),
                     new MaterialStack(GTMaterials.IronMagnetic, GTValues.M / 2))))
             .register();
-    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_LV = REGISTRATE.item("lv_voltage_coil", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_LV = REGISTRATE
+            .item("lv_voltage_coil", ComponentItem::create)
             .lang("Low Voltage Coil")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 2),
                     new MaterialStack(GTMaterials.IronMagnetic, GTValues.M / 2))))
             .register();
-    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_MV = REGISTRATE.item("mv_voltage_coil", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_MV = REGISTRATE
+            .item("mv_voltage_coil", ComponentItem::create)
             .lang("Medium Voltage Coil")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Aluminium, GTValues.M * 2),
                     new MaterialStack(GTMaterials.SteelMagnetic, GTValues.M / 2))))
             .register();
-    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_HV = REGISTRATE.item("hv_voltage_coil", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_HV = REGISTRATE
+            .item("hv_voltage_coil", ComponentItem::create)
             .lang("High Voltage Coil")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BlackSteel, GTValues.M * 2),
                     new MaterialStack(GTMaterials.SteelMagnetic, GTValues.M / 2))))
             .register();
-    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_EV = REGISTRATE.item("ev_voltage_coil", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_EV = REGISTRATE
+            .item("ev_voltage_coil", ComponentItem::create)
             .lang("Extreme Voltage Coil")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Platinum, GTValues.M * 2),
                     new MaterialStack(GTMaterials.NeodymiumMagnetic, GTValues.M / 2))))
             .register();
-    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_IV = REGISTRATE.item("iv_voltage_coil", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_IV = REGISTRATE
+            .item("iv_voltage_coil", ComponentItem::create)
             .lang("Insane Voltage Coil")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Iridium, GTValues.M * 2),
                     new MaterialStack(GTMaterials.NeodymiumMagnetic, GTValues.M / 2))))
             .register();
-    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_LuV = REGISTRATE.item("luv_voltage_coil", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_LuV = REGISTRATE
+            .item("luv_voltage_coil", ComponentItem::create)
             .lang("Ludicrous Voltage Coil")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Osmiridium, GTValues.M * 2),
                     new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
             .register();
-    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_ZPM = REGISTRATE.item("zpm_voltage_coil", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_ZPM = REGISTRATE
+            .item("zpm_voltage_coil", ComponentItem::create)
             .lang("Zero Point Module Voltage Coil")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Europium, GTValues.M * 2),
                     new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
             .register();
-    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_UV = REGISTRATE.item("uv_voltage_coil", ComponentItem::create)
+    public static final ItemEntry<ComponentItem> VOLTAGE_COIL_UV = REGISTRATE
+            .item("uv_voltage_coil", ComponentItem::create)
             .lang("Ultimate Voltage Coil")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Tritanium, GTValues.M * 2),
                     new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
