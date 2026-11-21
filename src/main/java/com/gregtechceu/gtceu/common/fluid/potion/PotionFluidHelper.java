@@ -29,6 +29,7 @@ import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.util.AttributeUtil;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.crafting.CompoundFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -64,7 +65,7 @@ public class PotionFluidHelper {
     }
 
     public static SizedFluidIngredient getPotionFluidIngredientFrom(Ingredient potion, int amount) {
-        if (potion.getCustomIngredient() instanceof DataComponentIngredient component && component.isStrict()) {
+        if (potion.getCustomIngredient() instanceof DataComponentIngredient component) {
             return new SizedFluidIngredient(DataComponentFluidIngredient.of(false,
                     DataComponents.POTION_CONTENTS,
                     component.getItems().findFirst().orElse(ItemStack.EMPTY)
@@ -72,14 +73,14 @@ public class PotionFluidHelper {
                     GTFluids.POTION.get()), amount);
         }
 
-        List<FluidStack> fluids = new ArrayList<>();
+        List<FluidIngredient> fluids = new ArrayList<>();
         for (ItemStack stack : potion.getItems()) {
             FluidStack fluidStack = getFluidFromPotionItem(stack, amount);
             if (!fluidStack.isEmpty()) {
-                fluids.add(fluidStack);
+                fluids.add(DataComponentFluidIngredient.of(false, fluidStack));
             }
         }
-        return new SizedFluidIngredient(FluidIngredient.of(fluids.toArray(FluidStack[]::new)), amount);
+        return new SizedFluidIngredient(CompoundFluidIngredient.of(fluids), amount);
     }
 
     public static FluidStack getFluidFromPotionItem(ItemStack stack, int amount) {
