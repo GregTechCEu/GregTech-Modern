@@ -148,9 +148,6 @@ public class CommonProxy {
         GTCovers.init();
         GTCreativeModeTabs.init();
 
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-        GTMenuTypes.init(modBus);
-
         GTBlocks.init();
         GTFluids.init();
         GTEntityTypes.init();
@@ -178,7 +175,7 @@ public class CommonProxy {
         CustomBlockRotations.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
-        SpoilableBehavior.init(modBus);
+        SpoilableBehavior.init(FMLJavaModLoadingContext.get().getModEventBus());
 
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
