@@ -40,6 +40,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
+import net.minecraft.Util;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
@@ -75,7 +76,7 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectLinkedOpenHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -302,7 +303,8 @@ public class GTItems {
     public static ItemEntry<ComponentItem> SPRAY_SOLVENT = REGISTRATE.item("solvent_spray_can", ComponentItem::create)
             .lang("Spray Can (Solvent)")
             .properties(p -> p.stacksTo(1))
-            .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 1024, -1))).register();
+            .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 1024, null)))
+            .register();
 
     public static ItemEntry<ComponentItem> PORTABLE_SCANNER = REGISTRATE.item("portable_scanner", ComponentItem::create)
             .lang("Portable Scanner")
@@ -1740,29 +1742,30 @@ public class GTItems {
             .onRegister(attach(new MachineConfigCopyBehaviour()))
             .register();
 
-    public static final Map<DyeColor, ItemEntry<DyeItem>> CHEMICAL_DYES = new Object2ObjectOpenHashMap<>();
-    static {
+    public static final Map<DyeColor, ItemEntry<GTDyeItem>> CHEMICAL_DYES = Util.make(() -> {
+        Map<DyeColor, ItemEntry<GTDyeItem>> map = new Reference2ObjectLinkedOpenHashMap<>(DyeColor.values().length);
         for (DyeColor color : DyeColor.values()) {
-            CHEMICAL_DYES.put(color, REGISTRATE
-                    .item("chemical_%s_dye".formatted(color.getName()), (props) -> new DyeItem(color, props))
+            map.put(color, REGISTRATE
+                    .item("chemical_%s_dye".formatted(color.getName()), p -> new GTDyeItem(color, p))
                     .lang("Chemical %s Dye".formatted(toEnglishName(color.getName())))
                     .tag(Tags.Items.DYES)
                     .tag(color.getTag())
                     .register());
         }
-    }
+        return Collections.unmodifiableMap(map);
+    });
 
-    public static final ItemEntry<ComponentItem>[] SPRAY_CAN_DYES = new ItemEntry[DyeColor.values().length];
-
-    static {
-        for (int i = 0; i < DyeColor.values().length; i++) {
-            var dyeColor = DyeColor.values()[i];
-            SPRAY_CAN_DYES[i] = REGISTRATE.item("%s_dye_spray_can".formatted(dyeColor.getName()), ComponentItem::create)
-                    .lang("Spray Can (%s)".formatted(toEnglishName(dyeColor.getName())))
+    public static final Map<DyeColor, ItemEntry<ComponentItem>> SPRAY_CAN_DYES = Util.make(() -> {
+        Map<DyeColor, ItemEntry<ComponentItem>> map = new Reference2ObjectLinkedOpenHashMap<>(DyeColor.values().length);
+        for (DyeColor color : DyeColor.values()) {
+            map.put(color, REGISTRATE.item("%s_dye_spray_can".formatted(color.getName()), ComponentItem::create)
+                    .lang("Spray Can (%s)".formatted(toEnglishName(color.getName())))
                     .properties(p -> p.stacksTo(1))
-                    .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 512, i))).register();
+                    .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 512, color)))
+                    .register());
         }
-    }
+        return Collections.unmodifiableMap(map);
+    });
 
     public static ItemEntry<ComponentItem> TURBINE_ROTOR = REGISTRATE.item("turbine_rotor", ComponentItem::create)
             .lang("%s Turbine Rotor")

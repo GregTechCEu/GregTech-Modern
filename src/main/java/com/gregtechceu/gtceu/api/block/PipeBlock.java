@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
-import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
@@ -39,7 +39,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.*;
@@ -55,12 +54,12 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import com.tterrag.registrate.util.entry.ItemEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -238,19 +237,18 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
                             ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
+
         IPipeNode<PipeType, NodeDataType> pipeTile = getPipeTile(level, pos);
-        if (pipeTile != null) {
-            // Color pipes/cables on place if holding spray can in off-hand
-            if (placer instanceof Player player) {
-                ItemStack offhand = placer.getOffhandItem();
-                for (int i = 0; i < DyeColor.values().length; i++) {
-                    if (offhand.is(GTItems.SPRAY_CAN_DYES[i].get())) {
-                        ((IInteractionItem) GTItems.SPRAY_CAN_DYES[i].get().getComponents().get(0))
-                                .useOn(new UseOnContext(player, InteractionHand.OFF_HAND,
-                                        new BlockHitResult(Vec3.ZERO, player.getDirection(), pos, false)));
-                        break;
-                    }
-                }
+        if (pipeTile == null) return;
+        // Color pipes/cables on place if holding spray can in off-hand
+        if (!(placer instanceof Player player)) return;
+
+        ItemStack offhand = placer.getOffhandItem();
+        for (ItemEntry<ComponentItem> sprayCan : GTItems.SPRAY_CAN_DYES.values()) {
+            if (offhand.is(sprayCan.get())) {
+                sprayCan.get().useOn(new UseOnContext(player, InteractionHand.OFF_HAND,
+                        new BlockHitResult(pos.getCenter(), player.getDirection(), pos, false)));
+                break;
             }
         }
     }
