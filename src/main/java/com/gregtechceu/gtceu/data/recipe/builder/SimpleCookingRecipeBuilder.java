@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.gregtechceu.gtceu.api.recipe.ingredient.ExDataComponentIngredient;
-
 import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -67,7 +65,7 @@ public class SimpleCookingRecipeBuilder<T extends AbstractCookingRecipe> {
     }
 
     public SimpleCookingRecipeBuilder<T> input(TagKey<Item> tag, DataComponentPredicate components, boolean strict) {
-        return input(ExDataComponentIngredient.of(strict, components, tag));
+        return input(DataComponentIngredient.of(strict, components, BuiltInRegistries.ITEM.getOrCreateTag(tag)));
     }
 
     public SimpleCookingRecipeBuilder<T> input(ItemStack itemStack) {

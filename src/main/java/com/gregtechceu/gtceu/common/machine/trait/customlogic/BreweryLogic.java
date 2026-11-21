@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.brewing.BrewingRecipe;
 import net.neoforged.neoforge.common.brewing.IBrewingRecipe;
@@ -284,15 +285,22 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
     public void buildRepresentativeRecipes() {
-        int index = 0;
         for (PotionBrewing.Mix<Potion> mix : ((PotionBrewingAccessor) getPotionBrewing()).getPotionMixes()) {
+            Ingredient ingredient = mix.ingredient();
+            if (ingredient.hasNoItems()) continue;
+
             FluidStack fromFluid = PotionFluidHelper.getFluidFromPotion(mix.from(),
                     PotionFluidHelper.MB_PER_RECIPE);
             FluidStack toFluid = PotionFluidHelper.getFluidFromPotion(mix.to(), PotionFluidHelper.MB_PER_RECIPE);
 
+            String ingredientName = sanitize(ingredient.getItems()[0].getItem()
+                    .builtInRegistryHolder().getRegisteredName());
+            String inputName = sanitize(mix.from().getRegisteredName());
+            String outputName = sanitize(mix.to().getRegisteredName());
+
             GTRecipe recipe = GTRecipeTypes.BREWING_RECIPES
-                    .recipeBuilder("potion_vanilla_" + Potion.getName(Optional.of(mix.to()), "") + "_" + index++)
-                    .inputItems(mix.ingredient())
+                    .recipeBuilder("potion/vanilla/" + outputName + "_from_" + inputName + "_with_" + ingredientName)
+                    .inputItems(ingredient)
                     .inputFluids(fromFluid)
                     .outputFluids(toFluid)
                     .duration(400)
@@ -305,27 +313,44 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
         }
 
         for (IBrewingRecipe brewingRecipe : getPotionBrewing().getRecipes()) {
-            if (!(brewingRecipe instanceof BrewingRecipe impl) ||
+            if (!(brewingRecipe instanceof BrewingRecipe impl) || impl.getInput().hasNoItems() ||
                     !impl.getOutput().has(DataComponents.POTION_CONTENTS)) {
                 continue;
             }
 
+            Ingredient ingredient = impl.getIngredient();
+            if (ingredient.hasNoItems()) continue;
+            String ingredientName = sanitize(ingredient.getItems()[0].getItem()
+                    .builtInRegistryHolder().getRegisteredName());
+
             SizedFluidIngredient fromFluid = PotionFluidHelper.getPotionFluidIngredientFrom(impl.getInput(),
                     PotionFluidHelper.MB_PER_RECIPE);
+            if (fromFluid.ingredient().hasNoFluids()) continue; // invalid input; skip
+
+            String inputName = fromFluid.getFluids()[0].getFluid().builtInRegistryHolder().getRegisteredName();
+
+            Optional<Holder<Potion>> input = impl.getInput().getItems()[0]
+                    .getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY)
+                    .potion();
+            if (input.isPresent()) {
+                inputName = input.get().getRegisteredName();
+            }
+            inputName = sanitize(inputName);
+
             FluidStack toFluid = PotionFluidHelper.getFluidFromPotionItem(impl.getOutput(),
                     PotionFluidHelper.MB_PER_RECIPE);
-
-            String name = toFluid.getFluid().builtInRegistryHolder().key().location().getPath();
-
+            String outputName = toFluid.getFluid().builtInRegistryHolder().getRegisteredName();
             Optional<Holder<Potion>> output = impl.getOutput()
                     .getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY)
                     .potion();
             if (output.isPresent()) {
-                name = Potion.getName(output, "");
+                outputName = output.get().getRegisteredName();
             }
+            outputName = sanitize(outputName);
 
-            GTRecipe recipe = GTRecipeTypes.BREWING_RECIPES.recipeBuilder("potion_forge_" + name + "_" + index++)
-                    .inputItems(impl.getIngredient())
+            GTRecipe recipe = GTRecipeTypes.BREWING_RECIPES
+                    .recipeBuilder("potion/neoforge/" + outputName + "_from_" + inputName + "_with_" + ingredientName)
+                    .inputItems(ingredient)
                     .inputFluids(fromFluid)
                     .outputFluids(toFluid)
                     .duration(400)
@@ -335,6 +360,10 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
             recipe.setId(recipe.getId().withPrefix("/"));
             GTRecipeTypes.BREWING_RECIPES.addToMainCategory(recipe);
         }
+    }
+
+    private static String sanitize(String name) {
+        return name.replaceAll("[^0-9a-z_/.-]", "_");
     }
 
     private static PotionBrewing getPotionBrewing() {

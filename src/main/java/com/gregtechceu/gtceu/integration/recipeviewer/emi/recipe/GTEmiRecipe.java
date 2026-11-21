@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeViewerWidget;
 
 import brachy.modularui.integration.emi.EmiStackConverter;
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
+import dev.emi.emi.api.neoforge.NeoForgeEmiStack;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
@@ -80,8 +81,7 @@ public class GTEmiRecipe extends ModularUIEmiRecipe {
 
             var mapped = FluidRecipeCapability
                     .mapIngredientToEntryList(FluidRecipeCapability.CAP.of(fluidContent.content()));
-            var fluid = mapped.getStacks().get(0);
-            outputs.add(EmiStack.of(fluid.getFluid(), fluid.getAmount()).setChance(chance));
+            outputs.add(NeoForgeEmiStack.of(mapped.getStacks().get(0)).setChance(chance));
         }
 
         return outputs;
