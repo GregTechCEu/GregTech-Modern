@@ -141,6 +141,8 @@ public class DummyRecipeUtils {
         @Getter
         protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
         @Getter
+        protected final RecipeCapabilityVersions recipeVersions = new RecipeCapabilityVersions();
+        @Getter
         protected final Map<RecipeCapability<?>, Object2IntMap<?>> cacheChances = new IdentityHashMap<>();
 
         public DummyRecipeCapabilityHolder(RecipeHandlerList... handlers) {
