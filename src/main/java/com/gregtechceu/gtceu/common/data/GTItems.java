@@ -1890,7 +1890,7 @@ public class GTItems {
                     (p) -> new NanoMuscleArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.BOOTS, p))
             .lang("Nano-Fiber Suit Boots")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
-            .tag(Tags.Items.ARMORS_BOOTS)
+            .tag(Tags.Items.ARMORS_BOOTS, CustomTags.FALL_IMMUNE_WEARABLES)
             .onRegister(attach(new ModularItemComponent(4, GTValues.EV)))
             .register();
     public static ItemEntry<NanoMuscleArmorItem> NANO_HELMET = REGISTRATE
@@ -1964,8 +1964,7 @@ public class GTItems {
             .lang("Quark-Matter Suit Chestplate")
             .properties(p -> p.rarity(Rarity.RARE))
             .tag(Tags.Items.ARMORS_CHESTPLATES, CustomTags.PPE_ARMOR,
-                    ItemTags.FREEZE_IMMUNE_WEARABLES)
-            .tag(CustomTags.PPE_ARMOR)
+                    ItemTags.FREEZE_IMMUNE_WEARABLES, CustomTags.FIRE_IMMUNE_WEARABLES)
             .onRegister(attach(new ModularItemComponent(8, GTValues.MAX)))
             .register();
     public static ItemEntry<QuarkTechArmorItem> QUANTUM_LEGGINGS = REGISTRATE
@@ -1981,7 +1980,7 @@ public class GTItems {
                     (p) -> new QuarkTechArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.BOOTS, p))
             .lang("Quark-Matter Suit Boots")
             .properties(p -> p.rarity(Rarity.RARE))
-            .tag(Tags.Items.ARMORS_BOOTS, CustomTags.PPE_ARMOR)
+            .tag(Tags.Items.ARMORS_BOOTS, CustomTags.PPE_ARMOR, CustomTags.FALL_IMMUNE_WEARABLES)
             .onRegister(attach(new ModularItemComponent(8, GTValues.MAX)))
             .register();
     public static ItemEntry<QuarkTechArmorItem> QUANTUM_HELMET = REGISTRATE
