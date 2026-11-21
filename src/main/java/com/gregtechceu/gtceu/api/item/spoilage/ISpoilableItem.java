@@ -10,8 +10,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import java.util.Optional;
-
 /**
  * This is a capability! {@link Item} subclasses should not implement this directly!
  * <br>
@@ -146,20 +144,6 @@ public interface ISpoilableItem {
      * @param tick the value to set to
      */
     void setCreationTick(long tick);
-
-    /**
-     * Called when {@link ItemHandlerHelper#canItemStacksStack(ItemStack, ItemStack)} is called.
-     * If this returns an empty optional, {@link ItemHandlerHelper#canItemStacksStack(ItemStack, ItemStack)} will return
-     * its
-     * normal value, otherwise it will return the same value as this method.
-     * <br>
-     * This exists mostly for custom spoilable merging logic.
-     *
-     * @return whether these two stacks should be considered equal
-     */
-    default Optional<Boolean> isEqualTo(ItemStack other) {
-        return Optional.empty();
-    };
 
     /**
      * This method averages the spoil progress of the two stacks (or, more
