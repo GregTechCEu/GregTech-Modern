@@ -99,6 +99,11 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
         return this;
     }
 
+    public TagPrefixBuilder defaultGTCEuTagPath(String path) {
+        base.defaultGTCEuTagPath(path);
+        return this;
+    }
+
     public TagPrefixBuilder prefixTagPath(String path) {
         base.prefixTagPath(path);
         return this;
@@ -111,6 +116,11 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
 
     public TagPrefixBuilder unformattedTagPath(String path) {
         base.unformattedTagPath(path);
+        return this;
+    }
+
+    public TagPrefixBuilder unformattedGTCEuTagPath(String path) {
+        base.unformattedGTCEuTagPath(path);
         return this;
     }
 

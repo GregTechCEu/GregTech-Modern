@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.tags;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -24,10 +23,10 @@ public class BiomeTagsLoader extends BiomeTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        tag(CustomTags.IS_SWAMP).add(Biomes.SWAMP).add(Biomes.MANGROVE_SWAMP);
-        tag(CustomTags.HAS_RUBBER_TREE).addTag(CustomTags.IS_SWAMP).addTag(BiomeTags.IS_FOREST)
+        tag(GTTags.Biomes.IS_SWAMP).add(Biomes.SWAMP).add(Biomes.MANGROVE_SWAMP);
+        tag(GTTags.Biomes.HAS_RUBBER_TREE).addTag(GTTags.Biomes.IS_SWAMP).addTag(BiomeTags.IS_FOREST)
                 .addTag(BiomeTags.IS_JUNGLE);
-        tag(CustomTags.IS_SANDY).addTag(Tags.Biomes.IS_SANDY).add(Biomes.DESERT).add(Biomes.BEACH).add(Biomes.BADLANDS)
-                .add(Biomes.WOODED_BADLANDS);
+        tag(GTTags.Biomes.IS_SANDY).addTag(Tags.Biomes.IS_SANDY).add(Biomes.DESERT).add(Biomes.BEACH)
+                .add(Biomes.BADLANDS).add(Biomes.WOODED_BADLANDS);
     }
 }

@@ -1,0 +1,23 @@
+{
+  "values": [
+    "#forge:tools/butchery_knives",
+    "#forge:tools/buzzsaws",
+    "#forge:tools/chainsaws",
+    "#forge:tools/crowbars",
+    "#forge:tools/drills",
+    "#forge:tools/files",
+    "#forge:tools/hammers",
+    "#forge:tools/knives",
+    "#forge:tools/mallets",
+    "#forge:tools/mining_hammers",
+    "#forge:tools/mortars",
+    "#forge:tools/plungers",
+    "#forge:tools/saws",
+    "#forge:tools/screwdrivers",
+    "#forge:tools/scythes",
+    "#forge:tools/shears",
+    "#forge:tools/spades",
+    "#forge:tools/wire_cutters",
+    "#forge:tools/wrenches"
+  ]
+}

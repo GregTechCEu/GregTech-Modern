@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.cover.detector;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
@@ -36,7 +36,7 @@ public class ItemDetectorCover extends DetectorCover {
             return;
 
         for (int i = 0; i < handler.getSlots(); i++) {
-            if (handler.getStackInSlot(i).is(CustomTags.SKIP_ITEM_DETECTOR)) continue;
+            if (handler.getStackInSlot(i).is(GTTags.Items.SKIP_ITEM_DETECTOR)) continue;
             storedItems += handler.getStackInSlot(i).getCount();
         }
 

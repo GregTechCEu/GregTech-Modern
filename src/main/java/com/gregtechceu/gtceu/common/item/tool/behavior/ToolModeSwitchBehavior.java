@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.data.item.GTToolActions;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -73,7 +73,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
         // Copied and adapted from
         // https://github.com/Creators-of-Create/Create/blob/mc1.20.1/dev/src/main/java/com/simibubi/create/content/equipment/wrench/WrenchItem.java
         if (toolTypes.contains(GTToolType.WRENCH) && GTCEu.Mods.isCreateLoaded() &&
-                state.is(CustomTags.CREATE_WRENCH_PICKUP)) {
+                state.is(GTTags.Blocks.CREATE_WRENCH_PICKUP)) {
             if (!(world instanceof ServerLevel serverLevel))
                 return InteractionResult.SUCCESS;
             if (player != null && !player.isCreative())
