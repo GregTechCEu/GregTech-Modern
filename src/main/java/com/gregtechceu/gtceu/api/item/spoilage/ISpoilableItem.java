@@ -2,13 +2,12 @@ package com.gregtechceu.gtceu.api.item.spoilage;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.Optional;
@@ -19,8 +18,8 @@ import java.util.Optional;
  * Spoilable items will, as the name implies, spoil (who could've thought).
  * Due to Minecraft's limitations, items will only start spoiling only if:
  * <ul>
- * <li>It is in an {@link IItemHandler}, which is a capability of a {@link BlockEntity} that had
- * {@link Level#getBlockEntity(BlockPos)} called (should cover most cases)</li>
+ * <li>It is in an {@link IItemHandlerModifiable}, which is exposed as a capability of a {@link BlockEntity} or
+ * {@link Entity}
  * <li>It is an output of a {@link GTRecipe}</li>
  * <li>It enters a player's inventory and gets ticked at least once</li>
  * <li>It is dropped (exists as an entity)</li>
