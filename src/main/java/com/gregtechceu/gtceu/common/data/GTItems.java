@@ -1897,7 +1897,7 @@ public class GTItems {
                     .lang("Spray Can (%s)".formatted(toEnglishName(dyeColor.getName())))
                     .properties(p -> p.stacksTo(1))
                     .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 512, i)))
-            .register();
+                    .register();
         }
     }
 
