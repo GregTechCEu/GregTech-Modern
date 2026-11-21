@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.cctweaked.peripherals;
 
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ConfigurableMaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 
 import dan200.computercraft.api.lua.LuaFunction;
@@ -29,14 +30,14 @@ public class MaintenancePeripheral implements GenericPeripheral {
     }
 
     @LuaFunction
-    public static MethodResult getDurationMultiplier(MaintenanceHatchPartMachine maintenanceHatchPartMachine) {
-        return MethodResult.of(maintenanceHatchPartMachine.getDurationMultiplier());
+    public static MethodResult getDurationMultiplier(ConfigurableMaintenanceHatchPartMachine configurableMaintenanceHatchPartMachine) {
+        return MethodResult.of(configurableMaintenanceHatchPartMachine.getDurationMultiplier());
     }
 
     @LuaFunction
-    public static MethodResult setDurationMultiplier(MaintenanceHatchPartMachine maintenanceHatchPartMachine,
-                                                     float multiplier) {
-        maintenanceHatchPartMachine.setDurationMultiplier(multiplier);
+    public static MethodResult setDurationMultiplier(ConfigurableMaintenanceHatchPartMachine configurableMaintenanceHatchPartMachine,
+                                                     int multiplier) {
+        configurableMaintenanceHatchPartMachine.setDurationMultiplier(multiplier);
         return MethodResult.of();
     }
 

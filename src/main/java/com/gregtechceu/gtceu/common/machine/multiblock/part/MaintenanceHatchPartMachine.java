@@ -39,22 +39,21 @@ import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
-import brachy.modularui.value.sync.FloatSyncValue;
+import brachy.modularui.value.sync.ByteSyncValue;
+import brachy.modularui.value.sync.DynamicLinkedSyncHandler;
 import brachy.modularui.value.sync.InteractionSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
-import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -63,17 +62,11 @@ import java.util.stream.Stream;
 public class MaintenanceHatchPartMachine extends TieredPartMachine
                                          implements IMuiMachine {
 
-    private static final float MAX_DURATION_MULTIPLIER = 1.1f;
-    private static final float MIN_DURATION_MULTIPLIER = 0.9f;
-    private static final float DURATION_ACTION_AMOUNT = 0.01f;
-
     public static final byte ALL_PROBLEMS = 0;
     public static final byte NO_PROBLEMS = 0b111111;
 
-    @Getter
-    private final boolean isConfigurable;
     @SaveField
-    private final NotifiableItemStackHandler itemStackHandler;
+    protected final NotifiableItemStackHandler itemStackHandler;
     @Getter
     @SaveField
     @SyncToClient
@@ -86,25 +79,17 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @SaveField
     @SyncToClient
     protected byte maintenanceProblems = startProblems();
-    /**
-     * Duration modifier for recipe.
-     * It's configurable in the Configurable Maintenance Part.
-     */
-    @Getter
-    @SaveField
-    private float durationMultiplier = 1f;
     @Nullable
     protected TickableSubscription maintenanceSubs;
 
-    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info, int tier, boolean isConfigurable) {
+    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
-        this.isConfigurable = isConfigurable;
         this.itemStackHandler = attachTrait(createInventory());
         this.itemStackHandler.setFilter(itemStack -> itemStack.is(GTItems.DUCT_TAPE.get()));
     }
 
-    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info, boolean isConfigurable) {
-        this(info, isConfigurable ? GTValues.HV : GTValues.LV, isConfigurable);
+    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info) {
+        this(info, GTValues.LV);
     }
 
     public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
@@ -122,11 +107,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         return ALL_PROBLEMS;
     }
 
-    public void setDurationMultiplier(float durationMultiplier) {
-        this.durationMultiplier = durationMultiplier;
-        syncDataHolder.markClientSyncFieldDirty("durationMultiplier");
-    }
-
     //////////////////////////////////////
     // ********* Logic **********//
     //////////////////////////////////////
@@ -142,7 +122,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         }
 
         setTimeActive(getTimeActive() + duration);
-        float rate = ConfigHolder.INSTANCE.machines.maintenanceCheckRate / getTimeMultiplier();
+        float rate = ConfigHolder.INSTANCE.machines.maintenanceCheckRate;
         if (getTimeActive() >= rate) {
             setTimeActive(0);
             if (GTValues.RNG.nextInt(6000) == 0) {
@@ -187,16 +167,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
 
     @Override
     public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
-        if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
-            if (hasMaintenanceProblems()) {
-                return null;
-            }
-            var durationMultiplier = getDurationMultiplier();
-            if (durationMultiplier != 1) {
-                recipe = recipe.copy();
-                recipe.duration = Math.max(1, Math.round(recipe.duration * durationMultiplier));
-            }
-        }
+        if (ConfigHolder.INSTANCE.machines.enableMaintenance && hasMaintenanceProblems())
+            return null;
         return recipe;
     }
 
@@ -248,7 +220,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
      * 
      * @param entityPlayer the player performing the fixing
      */
-    private void fixMaintenanceProblems(@Nullable Player entityPlayer) {
+    protected void fixMaintenanceProblems(@Nullable Player entityPlayer) {
         if (!hasMaintenanceProblems())
             return;
 
@@ -365,7 +337,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         }
     }
 
-    private void fixProblemWithTool(int problemIndex, ItemStack stack, Player player) {
+    protected void fixProblemWithTool(int problemIndex, ItemStack stack, Player player) {
         setMaintenanceFixed(problemIndex);
         if (player instanceof ServerPlayer serverPlayer) {
             ToolHelper.damageItem(stack, serverPlayer, 1);
@@ -391,21 +363,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         }
     }
 
-    /**
-     * Higher {@link #getDurationMultiplier()} refers to a lower time multiplier.
-     * The lower time multiplier means more likely causing problems.
-     */
-    public float getTimeMultiplier() {
-        var result = 1f;
-        if (durationMultiplier < 1.0)
-            result = -20 * durationMultiplier + 21;
-        else
-            result = -8 * durationMultiplier + 9;
-        return BigDecimal.valueOf(result)
-                .setScale(2, RoundingMode.HALF_UP)
-                .floatValue();
-    }
-
     //////////////////////////////////////
     // ******* INTERACTION *******//
     //////////////////////////////////////
@@ -429,79 +386,61 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        InteractionSyncHandler syncHandler = new InteractionSyncHandler();
-        Flow maintenanceStatusWidget = Flow.column()
-                .crossAxisAlignment(Alignment.CrossAxis.START)
-                .coverChildren()
-                .padding(5)
-                .childPadding(2);
-        Runnable updateWidget = () -> {
-            while (!maintenanceStatusWidget.getChildren().isEmpty()) maintenanceStatusWidget.remove(0);
-            maintenanceStatusWidget.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems() ?
-                    Component.translatable("gtceu.top.maintenance_broken") :
-                    Component.translatable("gtceu.top.maintenance_fixed"))))
-                    .child(Flow.row()
-                            .coverChildren()
-                            .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
-                                    .filter(i -> ((getMaintenanceProblems() >> i) & 1) == 0)
-                                    .map(GTUtil::getMaintenanceText)
-                                    .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getFirst())))
-                                    .map(IWidget.class::cast)
-                                    .toList()));
-        };
-        syncHandler.setOnMousePressed((button) -> {
+        ByteSyncValue maintenanceProblems = new ByteSyncValue(this::getMaintenanceProblems);
+        syncManager.syncValue("maintenanceProblems", maintenanceProblems);
+
+        InteractionSyncHandler buttonSyncHandler = new InteractionSyncHandler();
+        buttonSyncHandler.setOnMousePressed((button) -> {
             fixMaintenanceProblems(guiData.getPlayer());
-            updateWidget.run();
         });
-        updateWidget.run();
-        FloatSyncValue durationSyncValue = new FloatSyncValue(this::getDurationMultiplier,
-                this::setDurationMultiplier);
-        durationSyncValue.allowC2S();
-        FloatSyncValue timeMultiplierSyncValue = new FloatSyncValue(this::getTimeMultiplier);
-        syncManager.syncValue("timeMultiplier", timeMultiplierSyncValue);
+
         mainWidget.child(Flow.column()
                 .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
-                .childIf(this.isConfigurable, () -> Flow.column()
-                        .coverChildren()
-                        .padding(5)
-                        .paddingLeft(0)
-                        .marginLeft(5)
-                        .child(Flow.row()
-                                .coverChildren()
-                                .childPadding(5)
-                                .leftRel(0)
-                                .child(new TextWidget<>(
-                                        Text.lang("gtceu.maintenance.configurable_duration.modify")))
-                                .child(new TextFieldWidget()
-                                        .setNumbersDouble(() -> MIN_DURATION_MULTIPLIER,
-                                                () -> MAX_DURATION_MULTIPLIER)
-                                        .setDefaultNumber(1)
-                                        .value(durationSyncValue)
-                                        .addTooltipElement(Text.dynamic(() -> getDurationMultiplier() == 1.0 ?
-                                                Component.translatable(
-                                                        "gtceu.maintenance.configurable_duration.unchanged_description") :
-                                                Component.translatable(
-                                                        "gtceu.maintenance.configurable_duration.changed_description")))))
-                        .child(new TextWidget<>(Text.dynamic(() -> Component.translatable(
-                                "gtceu.maintenance.configurable_time",
-                                timeMultiplierSyncValue.getValue())))
-                                .leftRel(0)))
-                .child(Flow.row()
-                        .leftRel(0.5f)
-                        .coverChildren()
-                        .padding(5)
-                        .child(new ItemSlot()
-                                .slot(new ModularSlot(itemStackHandler, 0).changeListener(
-                                        (newItem, onlyAmountChanged, client, init) -> updateWidget.run()))
-                                .background(GTGuiTextures.SLOT, GTGuiTextures.DUCT_TAPE_OVERLAY))
-                        .child(new ButtonWidget<>()
-                                .background(GTGuiTextures.BUTTON_MAINTENANCE)
-                                .disableHoverBackground()
-                                .addTooltipElement(
-                                        Text.lang("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))
-                                .syncHandler(syncHandler)))
-                .child(maintenanceStatusWidget));
+                .child(manualMaintenancePanel(buttonSyncHandler))
+                .child(new DynamicWidget<>().syncHandler(maintenanceProblemsDisplay(maintenanceProblems))));
+    }
+
+    protected Flow manualMaintenancePanel(InteractionSyncHandler syncHandler) {
+        return Flow.row()
+                .leftRel(0.5f)
+                .coverChildren()
+                .padding(5)
+                .child(new ItemSlot()
+                        .slot(new ModularSlot(itemStackHandler.storage, 0).singletonSlotGroup())
+                        .background(GTGuiTextures.SLOT, GTGuiTextures.DUCT_TAPE_OVERLAY))
+                .child(new ButtonWidget<>()
+                        .background(GTGuiTextures.BUTTON_MAINTENANCE)
+                        .disableHoverBackground()
+                        .addTooltipElement(
+                                Text.lang("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))
+                        .syncHandler(syncHandler));
+    }
+
+    protected DynamicLinkedSyncHandler maintenanceProblemsDisplay(ByteSyncValue problemsSyncValue) {
+        return new DynamicLinkedSyncHandler<>(problemsSyncValue)
+                .widgetProvider((widgetSyncManager, problemsSyncHandler) -> {
+                    var column = Flow.column()
+                            .crossAxisAlignment(Alignment.CrossAxis.START)
+                            .coverChildren()
+                            .padding(5)
+                            .childPadding(2);
+                    boolean hasMaintenanceProblems = ConfigHolder.INSTANCE.machines.enableMaintenance &&
+                            problemsSyncHandler.getValue() < 63;
+                    column.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems ?
+                            Component.translatable("gtceu.top.maintenance_broken") :
+                            Component.translatable("gtceu.top.maintenance_fixed"))))
+                            .child(Flow.row()
+                                    .coverChildren()
+                                    .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
+                                            .filter(i -> ((problemsSyncHandler.getValue() >> i) & 1) == 0)
+                                            .map(GTUtil::getMaintenanceText)
+                                            .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getFirst()))
+                                                    .size(16))
+                                            .map(IWidget.class::cast)
+                                            .toList()));
+                    return column;
+                });
     }
 
     @Override
