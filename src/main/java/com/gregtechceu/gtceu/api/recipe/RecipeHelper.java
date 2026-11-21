@@ -425,7 +425,7 @@ public class RecipeHelper {
     }
 
     public static SizedFluidIngredient makeOutputSizedFluidIngredient(FluidStack stack) {
-        return new SizedFluidIngredient(makeFluidIngredient(stack), stack.getAmount());
+        return new SizedFluidIngredient(makeOutputFluidIngredient(stack), stack.getAmount());
     }
 
     public static FluidIngredient makeOutputFluidIngredient(FluidStack stack) {
