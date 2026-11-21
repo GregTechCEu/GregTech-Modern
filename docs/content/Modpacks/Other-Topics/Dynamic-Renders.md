@@ -12,7 +12,7 @@ A `DynamicRender` is a typed renderer that is attached to a machine model. You c
 
 Each renderer needs three things:
 
-1. A `Codec` for serialization (use `Codec.unit(MyRender::new)` if it has no configuration)
+1. A `MapCodec` for serialization (use `MapCodec.unit(MyRender::new)` if it has no configuration)
 2. A `DynamicRenderType` that wraps the codec
 3. A `render(...)` method that does the actual rendering
 
@@ -21,7 +21,7 @@ public class ItemAboveControllerRender
         extends DynamicRender<WorkableElectricMultiblockMachine, ItemAboveControllerRender> {
 
     // spotless:off
-    public static final Codec<ItemAboveControllerRender> CODEC = Codec.unit(ItemAboveControllerRender::new);
+    public static final MapCodec<ItemAboveControllerRender> CODEC = MapCodec.unit(ItemAboveControllerRender::new);
     public static final DynamicRenderType<WorkableElectricMultiblockMachine, ItemAboveControllerRender> TYPE =
             new DynamicRenderType<>(ItemAboveControllerRender.CODEC);
     // spotless:on
@@ -64,7 +64,7 @@ public class ItemAboveControllerRender
     @Override
     public AABB getRenderBoundingBox(WorkableElectricMultiblockMachine machine) {
         BlockPos pos = machine.getBlockPos();
-        return new AABB(pos.offset(-1, 0, -1), pos.offset(2, 4, 2));
+        return AABB.encapsulatingFullBlocks(pos.offset(-1, 0, -1), pos.offset(1, 3, 1));
     }
 }
 ```
@@ -82,9 +82,12 @@ Register your renderer type in your mod's main java file:
 ```java title="ExampleMod.java"
 @Mod(ExampleMod.MOD_ID)
 public class ExampleMod {
-    
+    // ... (MOD_ID, id(String), etc.)
+
     public ExampleMod() {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ExampleMod::initializeDynamicRenders);
+        if (FMLEnvironment.dist.isClient()) {
+            initializeDynamicRenders();
+        }
     }
     
     public static void initializeDynamicRenders() {

@@ -12,10 +12,10 @@ The same layout drives two different UIs:
 
 
 ## From Java
-In machine UIs, the layout is declared with `GTRecipeType::UI`, which takes a `Consumer<GTRecipeTypeUILayout.Builder>`:
+In machine UIs, the layout is declared with `GTRecipeTypeBuilder::UI`, which takes a `UnaryOperator<GTRecipeTypeUILayout.Builder>`:
 
 ```java
-public final static GTRecipeType CANNER_RECIPES = register(GTCEu.id("canner"), ELECTRIC)
+public static final GTRecipeTypeEntry CANNER_RECIPES = REGISTRATE.recipeType("canner", ELECTRIC)
         .setMaxIOSize(2, 2, 1, 1)
         .setEUIO(IO.IN)
         .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_CANNER)
@@ -24,7 +24,8 @@ public final static GTRecipeType CANNER_RECIPES = register(GTCEu.id("canner"), E
                 .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.CANISTER_OVERLAY)
                 .setFluidSlotOverlay(IO.IN, 0, GTGuiTextures.DARK_CANISTER_OVERLAY)
                 .setFluidSlotOverlay(IO.OUT, 0, GTGuiTextures.DARK_CANISTER_OVERLAY))
-        .setSound(GTSoundEntries.BATH);
+        .setSound(GTSoundEntries.BATH)
+        .register();
 ```
 
 Every recipe type starts with a default layout, so `UI` is only needed when you want to change
@@ -54,7 +55,7 @@ Overlays are set per capability, per slot index:
 
 The item and fluid methods are shorthands for the two generic ones.
 
-Overlay textures come from [GTGuiTextures](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/common/mui/GTGuiTextures.java)
+Overlay textures come from [GTGuiTextures](https://github.com/GregTechCEu/GregTech-Modern/blob/1.21/src/main/java/com/gregtechceu/gtceu/common/mui/GTGuiTextures.java)
 and are `UITexture`s.
 
 ## Progress bars
@@ -275,8 +276,8 @@ A minimal custom capability therefore looks like:
 
 ## Replacing the whole layout
 
-`customRecipeTypeUI(Function<GTRecipe, Flow>)` replaces the generated input/progress/output row
-outright and returns your own `Flow`. This overrides the grid builders, the recipe viewer capability
+`customRecipeTypeUI((recipeWidget, layout, recipe) -> ...)` replaces the generated input/progress/output row
+outright and returns your own `ParentWidget`. This overrides the grid builders, the recipe viewer capability
 layout builders and the progress bar for that recipe type, so only use it when the standard
 three-column shape does not fit.
 
@@ -286,8 +287,8 @@ KubeJS scripts do not build or touch widgets directly. `GTRecipeTypeBuilder`
 exposes the common options as plain builder methods instead:
 
 ```js
-GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
-    event.create('test_recipe_type')
+GTCEuStartupEvents.registry('minecraft:recipe_type', event => {
+    event.create('test_recipe_type', 'machine')
         .category('test')
         .setEUIO('in')
         .setMaxIOSize(3, 3, 3, 3)

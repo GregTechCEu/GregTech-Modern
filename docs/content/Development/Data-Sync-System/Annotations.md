@@ -28,7 +28,7 @@ public int mySaveAndSyncInt = 10;
 @RerenderOnChanged
 public long mySyncRerenderLong = 10000L;
 
-public void serverTick() {
+public void updateValues() {
     int newIntValue = getNewIntValue();
     long newLongValue = getNewLongValue();
     if (mySaveAndSyncInt != newIntValue) {

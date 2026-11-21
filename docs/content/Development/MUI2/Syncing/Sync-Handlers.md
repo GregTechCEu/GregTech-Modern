@@ -32,11 +32,11 @@ Here's a list of the built-in `SyncHandler`s:
  - `EnumSyncValue`  
  - `FloatSyncValue`  
  - `FluidSlotSyncHandler`  
- - `GenericCollectionSyncHandler<T>`  
- - `GenericListSyncHandler<T>`  
- - `GenericMapSyncHandler<T>`  
- - `GenericSetSyncHandler<T>`  
- - `GenericSyncValue<T>`  
+ - `GenericCollectionSyncHandler<B, T, C>`  
+ - `GenericListSyncHandler<B, T>`  
+ - `GenericMapSyncHandler<B, K, V>`  
+ - `GenericSetSyncHandler<B, T>`  
+ - `GenericSyncValue<B, T>`  
  - `IntSyncValue`  
  - `LongArraySyncValue`  
  - `LongSyncValue`  
@@ -48,7 +48,7 @@ Here's a list of the built-in `SyncHandler`s:
 In the previous list, I specifically want to draw attention to the Generic- SyncHandlers. These can take in custom methods for writing- and reading data for syncing stuff that isn't in this list.
 e.g.
 ```java
-        GenericListSyncHandler<Integer> numberListSyncHandler = GenericListSyncHandler.<Integer>builder()
+        GenericListSyncHandler<FriendlyByteBuf, Integer> numberListSyncHandler = GenericListSyncHandler.<FriendlyByteBuf, Integer>builder()
                 .getter(() -> this.serverInts)
                 .setter(v -> this.serverInts = v)
                 .serializer(FriendlyByteBuf::writeInt)
@@ -59,7 +59,7 @@ e.g.
 
 To make this easier as to not have to re-invent the (de)serializers, you can use what's called an `IByteBufAdapter`. They hold serialize, deserialize and equals methods. So you could do
 ```java
-        GenericSyncValue<GTRecipe> recipeSyncHandler = GenericSyncValue.<GTRecipe>builder()
+        GenericSyncValue<RegistryFriendlyByteBuf, GTRecipe> recipeSyncHandler = GenericSyncValue.<RegistryFriendlyByteBuf, GTRecipe>builder(GTRecipe.class)
                         .getter(() -> rlmachine.getRecipeLogic().getLastRecipe())
                         .adapter(GTByteBufAdapters.GTRECIPE)
                         .build();
@@ -91,4 +91,4 @@ Here's a list of existing ByteBufAdapter:
  - `GTByteBufAdapters.PATTERN_ERRORS`  
  - `GTByteBufAdapters.GTRECIPE`  
 
-It is also possible to make your own ByteBufAdapter from a [CODEC](https://docs.minecraftforge.net/en/latest/datastorage/codecs/) using `ByteBufAdapters.makeAdapter(Codec<T> codec)`
+It is also possible to make your own ByteBufAdapter from a [CODEC](https://docs.minecraftforge.net/en/latest/datastorage/codecs/) using `ByteBufAdapters.makeAdapterFromCodec(Codec<T> codec, EqualityTest<T> equals)`

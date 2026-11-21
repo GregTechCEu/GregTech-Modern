@@ -8,92 +8,65 @@ This happens when there's multiple overloads (e.g. methods with the same name bu
 
 For example, when you do:
 ```js
-
-GTCEuStartupEvents.registry('gtceu:machine', event => {
-    event.create('unboxinator', 'multiblock')
-        .tooltips(Component.literal("I am a multiblock"))
-    // Rest of the multiblock
+GTCEuStartupEvents.materialModification(event => {
+    TagPrefix.ingot.get().removeIgnored(GTMaterials.Iron)
 })
 ```
 
 you'd get the error:
 ```
-Error in 'GTCEuStartupEvents.registry': The choice of Java method com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder.tooltips matching JavaScript argument types (net.minecraft.network.chat.MutableComponent) is ambiguous; candidate methods are: 
-    class com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder tooltips(java.util.List)
-    class com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder tooltips(net.minecraft.network.chat.Component[])
+Error in 'GTCEuStartupEvents.materialModification': dev.latvian.mods.rhino.EvaluatorException: The choice of Java method com.gregtechceu.gtceu.api.data.tag.TagPrefix.removeIgnored matching JavaScript argument types (com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry) is ambiguous; candidate methods are: 
+    void removeIgnored(net.minecraft.core.Holder)
+    void removeIgnored(com.gregtechceu.gtceu.api.data.chemical.material.Material)
 ```
 
-In this case, there's ambiguity between the following 2 java functions:
+In this case, there's ambiguity between the following 2 java functions, because `GTMaterials.Iron` is a registry entry that KubeJS can pass as either:
 ```java
-    public MachineBuilder<DEFINITION> tooltips(@Nullable Component... components) {
-        return tooltips(Arrays.asList(components));
+    public void removeIgnored(Material material) {
+        // ...
     }
 
-    public MachineBuilder<DEFINITION> tooltips(List<? extends @Nullable Component> components) {
-        tooltips.addAll(components.stream().filter(Objects::nonNull).toList());
-        return this;
+    public void removeIgnored(Holder<Material> material) {
+        // ...
     }
 ```
 
 You would want to select one of the two, and this can be done in the following way:
 ```js
-GTCEuStartupEvents.registry('gtceu:machine', event => {
-    event.create('unboxinator', 'multiblock')
-        ["tooltips(java.util.List)"]([Component.literal("I am a multiblock")])
-        // Rest of the multiblock
+GTCEuStartupEvents.materialModification(event => {
+    TagPrefix.ingot.get()["removeIgnored(net.minecraft.core.Holder)"](GTMaterials.Iron)
 })
 ```
 or
 ```js
-GTCEuStartupEvents.registry('gtceu:machine', event => {
-    event.create('unboxinator', 'multiblock')
-        ["tooltips(net.minecraft.network.chat.Component[])"]([Component.literal("I am a multiblock")])
-        // Rest of the multiblock
+GTCEuStartupEvents.materialModification(event => {
+    TagPrefix.ingot.get()["removeIgnored(com.gregtechceu.gtceu.api.data.chemical.material.Material)"](GTMaterials.Iron.get())
 })
 ```
 
-Because of the way javascript indexing works, `.foo` and `["foo"]` are the same thing, so you can just keep chaning your functions afterward, since it's just a "normal" builder method, just called in a more specific way.
+Because of the way javascript indexing works, `.foo` and `["foo"]` are the same thing, so if the method is a builder method you can just keep chaining your functions afterward, since it's just a "normal" method, just called in a more specific way.
 
 ## Ambiguous Constructors
 This same problem can occur when trying to call a constructor.  
 For example, when you do
 ```js
-GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
-  event.create("unboxinator")
-    .setProgressBar(
-      new ResourceTexture("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
-      FillDirection.LEFT_TO_RIGHT
-    )
-    // Rest of the recipe type
+GTCEuStartupEvents.craftingComponents(event => {
+    event.setMaterialEntry(GTCraftingComponents.PLATE, GTValues.UEV, new MaterialEntry('plate', 'gtceu:infinity'))
 })
 ```
 You'd get the following error:
 ```
-dev.latvian.mods.rhino.EvaluatorException: The choice of Java constructor com.lowdragmc.lowdraglib.gui.texture.ResourceTexture matching JavaScript argument types (string) is ambiguous; candidate constructors are: 
-    ResourceTexture(net.minecraft.resources.ResourceLocation)
-    ResourceTexture(java.lang.String) (startup_scripts:example.js#17)
+dev.latvian.mods.rhino.EvaluatorException: The choice of Java constructor com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry matching JavaScript argument types (string,string) is ambiguous; candidate constructors are: 
+    MaterialEntry(com.gregtechceu.gtceu.api.data.tag.TagPrefix,com.gregtechceu.gtceu.api.data.chemical.material.Material)
+    MaterialEntry(net.minecraft.core.Holder,net.minecraft.core.Holder)
+    ... (startup_scripts:example.js#2)
 ```
 
-You would want to select one of the two, and this can be done in the following way:
+You would want to select one of them, and this can be done in the following way:
 ```js
-GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
-  event.create("unboxinator")
-    .setProgressBar(
-      ResourceTexture["(java.lang.String)"]("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
-      FillDirection.LEFT_TO_RIGHT
-    )
-    // Rest of the recipe type
-})
-```
-or
-```js
-GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
-  event.create("unboxinator")
-    .setProgressBar(
-      ResourceTexture["(net.minecraft.resources.ResourceLocation)"]("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
-      FillDirection.LEFT_TO_RIGHT
-    )
-    // Rest of the recipe type
+GTCEuStartupEvents.craftingComponents(event => {
+    event.setMaterialEntry(GTCraftingComponents.PLATE, GTValues.UEV,
+        MaterialEntry["(com.gregtechceu.gtceu.api.data.tag.TagPrefix,com.gregtechceu.gtceu.api.data.chemical.material.Material)"]('plate', 'gtceu:infinity'))
 })
 ```
 !!! Note

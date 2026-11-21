@@ -59,7 +59,11 @@ This is a very big function, so we will go through it in steps:
 private ActionResult handleContents() {
     if (recipeContents.isEmpty()) return ActionResult.SUCCESS;
     if (!capabilityProxies.containsKey(io)) {
-        return ActionResult.FAIL_NO_CAPABILITIES;
+        return ActionResult.fail(
+                Component.translatable("gtceu.recipe_logic.no_capabilities")
+                        .append(Component.literal(": "))
+                        .append(Component.translatable(io.getTooltip())),
+                null, io);
     }
 
     List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(io, Collections.emptyList());
@@ -89,43 +93,58 @@ we take care of the grouping `RecipeHandlerList`s by their respective group, and
                 if (res.isEmpty()) break;
             }
         }
-        if (res.isEmpty()) {
-            if (!simulated) {
-                // Actually consume the contents of this handler and also all the bypassed handlers
-                recipeContents = handler.handleRecipe(io, recipe, recipeContents, false);
-                if (!recipeContents.isEmpty()) {
-                    for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
-                            Collections.emptyList())) {
-                        recipeContents = bypassHandler.handleRecipe(io, recipe, recipeContents, false);
-                        if (recipeContents.isEmpty()) break;
-                    }
+        if (io == IO.OUT) {
+            if (hasAnyNonVoidingContents(res)) {
+                recordLeftover(res);
+                continue;
+            }
+        } else if (io == IO.IN) {
+            if (!res.isEmpty()) {
+                recordLeftover(res);
+                continue;
+            }
+        }
+        if (!simulated) {
+            // Actually consume the contents of this handler and also all the bypassed handlers
+            recipeContents = handler.handleRecipe(io, recipe, recipeContents, false);
+            if (!recipeContents.isEmpty()) {
+                for (RecipeHandlerList bypassHandler : handlerGroups.getOrDefault(BYPASS_DISTINCT,
+                        Collections.emptyList())) {
+                    recipeContents = bypassHandler.handleRecipe(io, recipe, recipeContents, false);
+                    if (recipeContents.isEmpty()) break;
                 }
             }
-            recipeContents.clear();
-            return ActionResult.SUCCESS;
         }
+        recipeContents.clear();
+        return ActionResult.SUCCESS;
     }
 ```
 This is the first block of logic that actually checks and consumes.
 Do note the last argument of `handleRecipe` is the `simulate` argument. `true` doesn't actually consume the items, `false` does consume the items.
 So we start off by looping through each `BUS_DISTINCT` `RecipeHandlerList`, and making it check the recipe.
 Then, if the list of remaining items is not empty yet, we check the `RecipeHandlerList`s that are in the `BYPASS_DISTINCT` group.
-If it is empty, then the simulation is a success. If `simulated` is false, we can run the code again, this time actually consuming the recipe contents. 
-If it's not empty, we continue to the next distinct bus.
+If nothing is left over (for outputs: nothing that can't be voided), the simulation is a success. If `simulated` is false, we run the handlers again, this time actually consuming the recipe contents.
+Otherwise the leftover is recorded with `recordLeftover` (so the closest attempt can be reported as the failure reason) and we continue to the next distinct bus.
 
 ```java title="RecipeRunner.java"
-    // Check the other groups.
+    // Check the other groups. For every group, try consuming the ingredients,
+    // see if it succeeds.
     for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
         if (handlerListEntry.getKey().equals(BUS_DISTINCT)) continue;
 
+        if (handlerListEntry.getKey() instanceof RecipeHandlerGroupColor coloredGroup) {
+            if (io == IO.IN && simulated && !isTick) {
+                groupColor = coloredGroup.color();
+            } else if (coloredGroup.color() != -1 && coloredGroup.color() != groupColor) {
+                continue;
+            }
+        }
         // List to keep track of the remaining items for this RecipeHandlerGroup
-        Map<RecipeCapability<?>, List<Object>> copiedRecipeContents = searchRecipeContent;
-        boolean found = false;
+        Map<RecipeCapability<?>, List<Object>> copiedRecipeContents = searchRecipeContents;
 
         for (RecipeHandlerList handler : handlerListEntry.getValue()) {
             copiedRecipeContents = handler.handleRecipe(io, recipe, copiedRecipeContents, true);
             if (copiedRecipeContents.isEmpty()) {
-                found = true;
                 break;
             }
         }
@@ -135,13 +154,22 @@ If it's not empty, we continue to the next distinct bus.
                     Collections.emptyList())) {
                 copiedRecipeContents = bypassHandler.handleRecipe(io, recipe, copiedRecipeContents, true);
                 if (copiedRecipeContents.isEmpty()) {
-                    found = true;
                     break;
                 }
             }
         }
 
-        if (!found) continue;
+        if (io == IO.OUT) {
+            if (hasAnyNonVoidingContents(copiedRecipeContents)) {
+                recordLeftover(copiedRecipeContents);
+                continue;
+            }
+        } else if (io == IO.IN) {
+            if (!copiedRecipeContents.isEmpty()) {
+                recordLeftover(copiedRecipeContents);
+                continue;
+            }
+        }
         if (simulated) return ActionResult.SUCCESS;
         // Start actually removing items.
         // Keep track of the remaining items for this RecipeHandlerGroup
@@ -166,34 +194,70 @@ If it's not empty, we continue to the next distinct bus.
     }
 
     for (var entry : recipeContents.entrySet()) {
+        // void excess real output contents if it can be voided
+        if (!simulated && io == IO.OUT && this.outputVoid.test(entry.getKey())) {
+            entry.getValue().clear();
+        }
         if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-            return ActionResult.fail(null, entry.getKey(), io);
+            RecipeCapability<?> failedCap = entry.getKey();
+            if (simulated && bestLeftover != null) {
+                for (var leftoverEntry : bestLeftover.entrySet()) {
+                    if (leftoverEntry.getValue() != null && !leftoverEntry.getValue().isEmpty() &&
+                            leftoverEntry.getKey() != null) {
+                        failedCap = leftoverEntry.getKey();
+                    }
+                }
+            }
+            return ActionResult.fail(null, failedCap, io, bestScore);
         }
     }
 
-    return ActionResult.FAIL_NO_REASON;
+    // if, post voiding, we don't have stuff, pass instead of fail
+    boolean containsStuff = false;
+    for (var entry : recipeContents.entrySet()) {
+        if (!entry.getValue().isEmpty()) {
+            containsStuff = true;
+            break;
+        }
+    }
+    if (!containsStuff) {
+        return ActionResult.PASS_NO_CONTENTS;
+    }
+
+    return ActionResult.fail(null, null, io, bestScore);
 }
 ```
 
 This is the same loop of logic as we had before, but a little more complicated. 
 Instead of checking each `RecipeHandlerList` individually like we did for `BUS_DISTINCT`, we check all the busses in each group at once. 
 There's also the caveat of `BYPASS_DISTINCT` having to be checked with every group, but not with itself, so there's additional logic in place for that.
-The rest is relatively the same.
+Colored groups are also locked to a single color per recipe: during the simulated input check, `groupColor` is set to the color of the group being tried, and when consuming inputs, handling outputs or handling tick contents, colored groups of any other color are skipped.
+After all groups have been tried, any output contents that can be voided are voided, and the result is either a failure for the capability that was short (using the best recorded leftover), or `PASS_NO_CONTENTS` if nothing was left to handle.
 
 This is how the logic for RecipeHelper.handleRecipeIO works. The same can be said for tick ingredients, except the tick inputs are passed in, as well as the sorting step in the start. The rest remains the same.
 
 ## The rest of RecipeLogic
 To recap, this is what happens during `RecipeLogic.setupRecipe(recipe)` after the recipe is found.
+The chanced contents are pre-rolled first (`RecipeHelper.doPrerolls`), and the resulting `runningRecipe` is what gets consumed.
 Then, if that returns a success, a bunch of RecipeLogic related variables are set, like:
 ```java title="RecipeLogic.java"
-    var handledIO = handleRecipeIO(recipe, IO.IN);
+    var handledIO = handleRecipeIO(runningRecipe, IO.IN);
     if (handledIO.isSuccess()) {
+        if (lastRecipe != null && !runningRecipe.equals(lastRecipe)) {
+            chanceCaches.clear();
+        }
+        clearFailureReason();
         recipeDirty = false;
-        lastRecipe = recipe;
+        lastRecipe = runningRecipe;
         setStatus(Status.WORKING);
         progress = 0;
-        duration = recipe.duration;
+        duration = runningRecipe.duration;
         isActive = true;
+        syncDataHolder.resyncAllFields();
+    } else {
+        lastRecipe = null;
+        lastUnrolledRecipe = null;
+        syncDataHolder.markClientSyncFieldDirty("lastUnrolledRecipe");
     }
 ```
 This is all that happens in this tick (see [RecipeLogic.serverTick](./Recipe-Logic.md)).
@@ -202,17 +266,25 @@ Then, on the next tick, we call `recipeLogic.handleRecipeWorking()`, which calls
 public ActionResult handleTickRecipe(GTRecipe recipe) {
     if (!recipe.hasTick()) return ActionResult.SUCCESS;
 
-    var result = RecipeHelper.matchTickRecipe(machine, recipe);
+    var result = RecipeHelper.matchTickRecipe(getRLMachine(), recipe);
     if (!result.isSuccess()) return result;
 
-    result = handleTickRecipeIO(recipe, IO.IN);
+    if (lastUnrolledRecipe == null) {
+        GTCEu.LOGGER.warn("Last Displayed Recipe is null! Ingredients may roll incorrectly.");
+        this.lastUnrolledRecipe = lastRecipe.copy();
+        syncDataHolder.markClientSyncFieldDirty("lastUnrolledRecipe");
+        markLastRecipeDirty();
+    }
+    GTRecipe runningRecipe = RecipeHelper.doTickPrerolls(recipe, chanceCaches, lastUnrolledRecipe);
+
+    result = handleTickRecipeIO(runningRecipe, IO.IN);
     if (!result.isSuccess()) return result;
 
-    result = handleTickRecipeIO(recipe, IO.OUT);
+    result = handleTickRecipeIO(runningRecipe, IO.OUT);
     return result;
 }
 ```
-Where `handleTickRecipeIO` calls `handleRecipe` with the `recipe.tickInputs` / `recipe.tickOutputs` and `tick=true`.
+Where the tick contents are pre-rolled from `lastUnrolledRecipe` (`RecipeHelper.doTickPrerolls`), and `handleTickRecipeIO` calls `handleRecipe` with the `recipe.tickInputs` / `recipe.tickOutputs` and `tick=true`.
 
 Then, if the `recipeLogic.progress >= recipeLogic.duration`, it calls `onRecipeFinish()`
 This calls `machine.afterWorking()` and `handleRecipeIO(lastRecipe, IO.OUT)`, which outputs the recipe's output into the output busses.

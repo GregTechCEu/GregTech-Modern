@@ -10,13 +10,13 @@ Gregtech will iterate through all materials and all tag prefixes possible for th
 
 ```java title="TagPrefixRecipes.java"
 
-public static void recipeAddition(RecipeOutput consumer) {
+public static void recipeAddition(RecipeOutput provider) {
 
     for (Material material : GTRegistries.MATERIALS) {
-            if (material.hasFlag(MaterialFlags.NO_UNIFICATION)) {
+            if (material.hasFlag(MaterialFlags.DISABLE_MATERIAL_RECIPES)) {
                 continue;
             }
-        MaterialRecipeHandler.run(provider, material)
+        MaterialRecipeHandler.run(provider, material);
     }
 
 } 
@@ -39,7 +39,7 @@ private static void processFrame(@NotNull RecipeOutput provider, @NotNull Materi
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("frame_%s", material.getName()),
                     ChemicalHelper.get(frameGt, material, 2),
                     "SSS", isWoodenFrame ? "SsS" : "SwS", "SSS",
-                    'S', new UnificationEntry(rod, material));
+                    'S', new MaterialEntry(rod, material));
 
             ASSEMBLER_RECIPES.recipeBuilder("assemble_" + material.getName() + "_frame")
                     .inputItems(rod, material, 4)

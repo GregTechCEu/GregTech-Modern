@@ -59,5 +59,5 @@ Combining sections 0/2, 2/3, 5/4, and 3/1, we can generate a texture in the shap
         }
     }
     ```
-    The CTM texture layout is [here](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/resources/assets/gtceu/textures/block/ctm_test.png) for the unconnected texture and [here](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/resources/assets/gtceu/textures/block/ctm_test_ctm.png) for its connections.
-    Its MCMeta metadata file is [this one](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/resources/assets/gtceu/textures/block/ctm_test.png.mcmeta).
+    The CTM texture layout is [here](https://github.com/GregTechCEu/GregTech-Modern/blob/1.21/src/main/resources/assets/gtceu/textures/block/ctm_test.png) for the unconnected texture and [here](https://github.com/GregTechCEu/GregTech-Modern/blob/1.21/src/main/resources/assets/gtceu/textures/block/ctm_test_ctm.png) for its connections.
+    Its MCMeta metadata file is [this one](https://github.com/GregTechCEu/GregTech-Modern/blob/1.21/src/main/resources/assets/gtceu/textures/block/ctm_test.png.mcmeta).
