@@ -7,7 +7,7 @@ title: Custom Recipe Type
 
 === "Java"
     ```java title="AddonRecipeTypes.java"
-    public static final GTRecipeType TEST_RECIPE_TYPE = GTRecipeTypes.register(AddonMod.id("test_recipe_type"), GTRecipeTypes.ELECTRIC)
+    public static final GTRecipeType TEST_RECIPE_TYPE = GTRecipeTypes.register(ExampleMod.id("test_recipe_type"), GTRecipeTypes.ELECTRIC)
         .setEUIO(IO.IN)
         .setMaxIOSize(3, 3, 3, 3) // (1)
         .UI(ui -> ui.setProgressBar(GTGuiTextures.PROGRESS_ARROW)

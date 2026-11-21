@@ -40,7 +40,7 @@ In Java, these are also available, as well as simpler `.[n]eq(key, [type] value)
 
     public static void init(Consumer<FinishedRecipe> provider) {
         ASSEMBLER_RECIPES.recipeBuilder("test_nbt")
-                .inputItemNbtPredicate(new ItemStack(Items.dirt, 1), NBTPredicates.eq("charge", "23"))
+                .inputItemNbtPredicate(new ItemStack(Items.DIRT, 1), NBTPredicates.eq("charge", "23"))
                 .outputItems(new ItemStack(Items.STICK))
                 .duration(100)
                 .EUt(30)
@@ -75,7 +75,7 @@ The following number comparison operators exist:
 
     public static void init(Consumer<FinishedRecipe> provider) {
         ASSEMBLER_RECIPES.recipeBuilder("test_nbt")
-                .inputItemNbtPredicate(new ItemStack(Items.dirt, 1), NBTPredicates.lt("charge", 23))
+                .inputItemNbtPredicate(new ItemStack(Items.DIRT, 1), NBTPredicates.lt("charge", 23))
                 .outputItems(new ItemStack(Items.STICK))
                 .duration(100)
                 .EUt(30)
@@ -113,11 +113,11 @@ The following list operators exist:
 
     public static void init(Consumer<FinishedRecipe> provider) {
         ASSEMBLER_RECIPES.recipeBuilder("test_nbt")
-                .inputItemNbtPredicate(new ItemStack(Items.dirt, 1),
-                    NBTPredicates.all([
+                .inputItemNbtPredicate(new ItemStack(Items.DIRT, 1),
+                    NBTPredicates.all(
                         NBTPredicates.lt("charge", 23),
                         NBTPredicates.eqString("color", "blue")
-                    ]))
+                    ))
                 .outputItems(new ItemStack(Items.STICK))
                 .duration(100)
                 .EUt(30)
@@ -138,7 +138,7 @@ The negation operators exists:
 
     ServerEvents.recipes(event => {
         event.recipes.gtceu.assembler('test_nbt')
-            .inputItemNbtPredicate(new ItemStack(Items.dirt, 1),
+            .inputItemNbtPredicate('minecraft:dirt',
                 NBTPredicates.not(
                     NBTPredicates.all([
                         NBTPredicates.lt("charge", 23),
@@ -158,12 +158,12 @@ The negation operators exists:
 
     public static void init(Consumer<FinishedRecipe> provider) {
         ASSEMBLER_RECIPES.recipeBuilder("test_nbt")
-                .inputItemNbtPredicate(new ItemStack(Items.dirt, 1),
+                .inputItemNbtPredicate(new ItemStack(Items.DIRT, 1),
                     NBTPredicates.not(
-                        NBTPredicates.all([
+                        NBTPredicates.all(
                             NBTPredicates.lt("charge", 23),
                             NBTPredicates.eqString("color", "blue")
-                        ])
+                        )
                     )
                 )
                 .outputItems(new ItemStack(Items.STICK))

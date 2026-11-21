@@ -9,7 +9,7 @@ Properties can be applied to a material to decide how they behave. An example of
 
 === "Java"
     ```java
-    public static Material MY_MATERIAL = new Material.Builder(ADDON_MOD.id("my_material"))
+    public static Material MY_MATERIAL = new Material.Builder(ExampleMod.id("my_material"))
     /// ...
     .blastTemp(3700, BlastProperty.GasTier.MID, GTValues.VA[GTValues.EV], 1600)
     .buildAndRegister();
@@ -34,11 +34,10 @@ Properties can be applied to a material to decide how they behave. An example of
 !!! tip "ABS Recipe Generation"
     For an ABS recipe to actually generate from your material, you must set `.components()`. To disable the alloy blast smelter recipes from generating while `.components` and `.blastTemp` are set, check out [DISABLE_ALLOY_BLAST](./Material-Flags.md#dust-flags)
  
-- `.durationOverride(int duration)`
-    - `int duration` -> Overrides the EBF's default behaviour for recipe durations.
-
-- `.eutOverride(int EU/t)`
+- `.blast(b => b.temp(...).blastStats(int EU/t, int duration))`
     - `int EU/t` -> Overrides the EBF's default behaviour for EU/t.
+    - `int duration` -> Overrides the EBF's default behaviour for recipe durations.
+    - `.vacuumStats(int EU/t, int duration)` does the same for the Vacuum Freezer recipe of the hot ingot.
 
 ## `Fluid Pipe Property`
 - `.fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof)` -> this will create an fluid pipe from this material

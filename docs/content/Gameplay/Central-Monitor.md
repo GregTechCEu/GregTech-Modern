@@ -46,7 +46,7 @@ Hello on day {calc {tick} / 20000}!
 Current energy buffer: {formatInt {energy}}/{formatInt {energyCapacity}} EU\
 {if {cmp {energy} < 5000000} {color red "\nLOW ENERGY!"}}
 Here's some random stuff:
-{repeat 5 {repeat {random 2 10} {block}}
+{repeat 5 {repeat {random 2 10} {block}}}
 ```
 And something like this would be displayed:
 ```

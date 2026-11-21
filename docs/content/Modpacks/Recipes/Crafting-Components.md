@@ -27,10 +27,10 @@ GTCEuStartupEvents.craftingComponents(event => {
         GTValues.LV, Item.of('gtceu:lv_robot_arm'),
         GTValues.MV, Item.of('gtceu:mv_robot_arm'),
         GTValues.HV, Item.of('gtceu:hv_robot_arm'),
-        GTValues.LuV, Item.of('gtceu:luv_robot_arm'),
+        GTValues.LuV, Item.of('gtceu:luv_robot_arm')
     )) // (2)
     event.setTag(GTCraftingComponents.CASING, GTValues.EV, 'minecraft:logs') // (3)
-    event.setMaterialEntry(GTCraftingComponents.PLATE, GTValues.UEV, new MaterialEntry('plate', 'gtceu:infinity')) // (4)
+    event.setMaterialEntry(GTCraftingComponents.PLATE, GTValues.UEV, new MaterialEntry('plate', 'gtceu:neutronium')) // (4)
     event.removeTier(GTCraftingComponents.SENSOR, GTValues.HV) // (5)
     event.setFallbackItem(GTCraftingComponents.MOTOR, Item.of('minecraft:stone')) // 6
 })
@@ -39,7 +39,7 @@ GTCEuStartupEvents.craftingComponents(event => {
 1. Replaces the MV circuit tag in all GT machine crafting recipes with a single block of `minecraft:dirt`.
 2. Modifies the LV, MV, HV, and LuV Pumps in GT machine crafting recipes by replacing the Pump with a Robot Arm.
 3. Replaces the EV casing with the `#minecraft:logs` tag. Note the lack of `#` at the beginning of the tag!
-4. Adds a new entry to the plate component for UEV with prefix `plate` and material `gtceu:infinity`.
+4. Adds a new entry to the plate component for UEV with prefix `plate` and material `gtceu:neutronium`.
 5. Removes the HV Tier entry of the Sensor Crafting Component, so it will default to the fallback for the component `(LV Sensor)`
 6. Replaces the fallback item for the Motor Crafting Component with a block of `minecraft:stone`.
 
@@ -120,6 +120,7 @@ setFallbackItem(component: CraftingComponent, item: ItemStack): void;
  * @param component The component to modify
  * @param tag       The Item Tag to set, as a ResourceLocation string.
  *                  E.g. `'minecraft:logs'` (note the lack of '#' at the beginning).
+ */
 setFallbackTag(component: CraftingComponent, tag: Tag): void;
 
 /**
@@ -160,13 +161,12 @@ You are free to use any combination of Items, Tags, and MaterialEntries in all C
 
 ```js title="creation.js"
 const GTCraftingComponents = Java.loadClass('com.gregtechceu.gtceu.data.recipe.GTCraftingComponents')
-const Map = Java.loadClass('java.util.Map')
 
 let ITEM_CRAFTING_COMPONENT = null
 let TAG_CRAFTING_COMPONENT = null
 let MATERIAL_ENTRY_CRAFTING_COMPONENT = null
 
-GTCEuServerEvents.craftingComponents(event => {
+GTCEuStartupEvents.craftingComponents(event => {
     // (1)
     ITEM_CRAFTING_COMPONENT = event.createItem('item_component', 'minecraft:cyan_stained_glass')
         .addItem(GTValues.LV, Item.of('minecraft:cyan_stained_glass'))
@@ -188,15 +188,15 @@ GTCEuServerEvents.craftingComponents(event => {
         .addTag(GTValues.ZPM, 'forge:cobblestone/mossy')
         .addTag(GTValues.UV, 'forge:cobblestone/deepslate')
     // (3)
-    MATERIAL_ENTRY_CRAFTING_COMPONENT = event.createMaterialEntry('material_entry_component', new MaterialEntry('plate', 'gtceu:infinity'))
-        .addMaterialEntry(GTValues.LV, new MaterialEntry('block', 'gtceu:infinity'))
-        .addMaterialEntry(GTValues.MV, 'ingot', 'gtceu:infinity')
-        .addMaterialEntry(GTValues.HV, new MaterialEntry('dust', 'gtceu:infinity'))
-        .addMaterialEntry(GTValues.EV, new MaterialEntry('round', 'gtceu:infinity'))
-        .addMaterialEntry(GTValues.IV, new MaterialEntry('foil', 'gtceu:infinity'))
-        .addMaterialEntry(GTValues.LuV, 'longRod', 'gtceu:infinity')
-        .addMaterialEntry(GTValues.ZPM, new MaterialEntry('rod', 'gtceu:infinity'))
-        .addMaterialEntry(GTValues.UV, new MaterialEntry('bolt', 'gtceu:infinity'))
+    MATERIAL_ENTRY_CRAFTING_COMPONENT = event.createMaterialEntry('material_entry_component', new MaterialEntry('plate', 'gtceu:neutronium'))
+        .addMaterialEntry(GTValues.LV, new MaterialEntry('block', 'gtceu:neutronium'))
+        .addMaterialEntry(GTValues.MV, 'ingot', 'gtceu:neutronium')
+        .addMaterialEntry(GTValues.HV, new MaterialEntry('dust', 'gtceu:neutronium'))
+        .addMaterialEntry(GTValues.EV, new MaterialEntry('round', 'gtceu:neutronium'))
+        .addMaterialEntry(GTValues.IV, new MaterialEntry('foil', 'gtceu:neutronium'))
+        .addMaterialEntry(GTValues.LuV, 'longRod', 'gtceu:neutronium')
+        .addMaterialEntry(GTValues.ZPM, new MaterialEntry('rod', 'gtceu:neutronium'))
+        .addMaterialEntry(GTValues.UV, new MaterialEntry('bolt', 'gtceu:neutronium'))
 })
 ```
 
@@ -240,22 +240,22 @@ The following is a list of built-in CraftingComponents and their associated id.
 - `ROTOR`: `'rotor'`
 - `GRINDER`: `'grinder'`
 - `SAWBLADE`: `'sawblade'`
-- `DIAMOND`: `'diamond'`
 - `MOTOR`: `'motor'`
 - `PUMP`: `'pump'`
 - `PISTON`: `'piston'`
 - `EMITTER`: `'emitter'`
 - `SENSOR`: `'sensor'`
+- `SENSOR_EMITTER_GEM`: `'sensor_emitter_gem'`
 - `CONVEYOR`: `'conveyor'`
 - `ROBOT_ARM`: `'robot_arm'`
 - `FIELD_GENERATOR`: `'field_generator'`
 - `COIL_HEATING`: `'coil_heating'`
 - `COIL_HEATING_DOUBLE`: `'coil_heating_double'`
 - `COIL_ELECTRIC`: `'coil_electric'`
-- `STICK_MAGNETIC`: `'rod_magnetic'`
-- `STICK_DISTILLATION`: `'rod_distillation'`
-- `STICK_ELECTROMAGNETIC`: `'rod_electromagnetic'`
-- `STICK_RADIOACTIVE`: `'rod_radioactive'`
+- `ROD_MAGNETIC`: `'rod_magnetic'`
+- `ROD_DISTILLATION`: `'rod_distillation'`
+- `ROD_ELECTROMAGNETIC`: `'rod_electromagnetic'`
+- `ROD_RADIOACTIVE`: `'rod_radioactive'`
 - `PIPE_REACTOR`: `'pipe_reactor'`
 - `POWER_COMPONENT`: `'power_component'`
 - `VOLTAGE_COIL`: `'voltage_coil'`

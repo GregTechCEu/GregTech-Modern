@@ -82,7 +82,8 @@ Register your renderer type in your mod's main java file:
 ```java title="ExampleMod.java"
 @Mod(ExampleMod.MOD_ID)
 public class ExampleMod {
-    
+    // ... (MOD_ID, id(String), etc.)
+
     public ExampleMod() {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ExampleMod::initializeDynamicRenders);
     }

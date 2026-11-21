@@ -12,7 +12,8 @@ Removing recipes can be done from your java addon:
 ```java title="MyGTAddon.java"
 @GTAddon
 public class MyGTAddon implements IGTAddon {
-    
+    // ...
+
     @Override
     public void removeRecipes(Consumer<ResourceLocation> consumer) {
         // Recipes can be removed by resource location
@@ -70,10 +71,11 @@ Syntax: `event.recipes.gtceu.RECIPE_TYPE(string: recipe id)`
     ```java title="MyGTAddon.java"
     @GTAddon
     public class MyGTAddon implements IGTAddon {
-        
+        // ...
+
         @Override
         public void addRecipes(Consumer<FinishedRecipe> provider) {
-            ASSEMBLER_RECIPES.recipeBuilder(ADDON_MOD.id("test"))
+            ASSEMBLER_RECIPES.recipeBuilder(ExampleMod.id("test"))
                 .inputItems(
                     new ItemStack(Blocks.DIRT, 64),
                     new ItemStack(Items.DIAMOND, 32)
@@ -191,10 +193,11 @@ Scanner Research, Station Research and Computation.
     ```java title="MyGTAddon.java"
     @GTAddon
     public class MyGTAddon implements IGTAddon {
+        // ...
 
         @Override
         public void addRecipes(Consumer<FinishedRecipe> provider) {
-            ASSEMBLY_LINE_RECIPES.recipeBuilder(ADDON_MOD.id("scanner_test"))
+            ASSEMBLY_LINE_RECIPES.recipeBuilder(ExampleMod.id("scanner_test"))
                 .inputItems(new ItemStack(Items.COAL, 64))
                 .outputItems(Items.DIAMOND)
                 .duration(10000)
@@ -227,10 +230,11 @@ Scanner Research, Station Research and Computation.
     ```java title="MyGTAddon.java"
     @GTAddon
     public class MyGTAddon implements IGTAddon {
+        // ...
 
         @Override
         public void addRecipes(Consumer<FinishedRecipe> provider) {
-            ASSEMBLY_LINE_RECIPES.recipeBuilder(ADDON_MOD.id("research_station_test"))
+            ASSEMBLY_LINE_RECIPES.recipeBuilder(ExampleMod.id("research_station_test"))
                 .inputItems(new ItemStack(Items.COAL, 64))
                 .outputItems(Items.DIAMOND)
                 .duration(10000)
@@ -269,10 +273,11 @@ To add a condition, you can use the `adjacentFluids(Fluid...)` methods, see [our
     ```java title="MyGTAddon.java"
     @GTAddon
     public class MyGTAddon implements IGTAddon {
+        // ...
 
         @Override
         public void addRecipes(Consumer<FinishedRecipe> provider) {
-            ROCK_BREAKER_RECIPES.recipeBuilder(ADDON_MOD.id("test"))
+            ROCK_BREAKER_RECIPES.recipeBuilder(ExampleMod.id("test"))
                 .notConsumable(Blocks.DIRT.asItem())
                 .outputItems(Blocks.DIRT.asItem())
                 .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
