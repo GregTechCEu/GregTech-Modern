@@ -176,8 +176,7 @@ public class ClientProxy {
 
             @Override
             public int getTintColor(@NotNull FluidStack stack) {
-                return stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY)
-                        .getColor() | 0xff000000;
+                return stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor() | 0xff000000;
             }
         }, GTFluids.POTION.getType());
     }
