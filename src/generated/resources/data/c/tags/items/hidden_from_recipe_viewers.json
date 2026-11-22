@@ -1,0 +1,28 @@
+{
+  "values": [
+    {
+      "id": "gtceu:spoilable_1",
+      "required": false
+    },
+    {
+      "id": "gtceu:spoilable_2",
+      "required": false
+    },
+    {
+      "id": "gtceu:spoilable_3",
+      "required": false
+    },
+    {
+      "id": "gtceu:spoilable_4",
+      "required": false
+    },
+    {
+      "id": "gtceu:spoilable_5",
+      "required": false
+    },
+    {
+      "id": "gtceu:entity_spoilable",
+      "required": false
+    }
+  ]
+}

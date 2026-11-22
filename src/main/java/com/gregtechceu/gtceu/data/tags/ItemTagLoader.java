@@ -208,6 +208,14 @@ public class ItemTagLoader {
                 .add(GTItems.RUBBER_GLOVES.get());
         provider.addTag(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "head")))
                 .add(GTItems.FACE_MASK.get());
+
+        provider.addTag(CustomTags.HIDDEN_FROM_RECIPE_VIEWERS)
+                .addOptional(GTItems.SPOILABLE_1.getId())
+                .addOptional(GTItems.SPOILABLE_2.getId())
+                .addOptional(GTItems.SPOILABLE_3.getId())
+                .addOptional(GTItems.SPOILABLE_4.getId())
+                .addOptional(GTItems.SPOILABLE_5.getId())
+                .addOptional(GTItems.ENTITY_SPOILABLE.getId());
     }
 
     private static IntrinsicHolderTagsProvider.IntrinsicTagAppender<Item> addTag(RegistrateItemTagsProvider provider,

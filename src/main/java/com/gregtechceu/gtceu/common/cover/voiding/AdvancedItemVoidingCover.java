@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.cover.voiding;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilUtils;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
@@ -78,7 +79,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
             for (int slot = 0; slot < handler.getSlots(); slot++) {
                 ItemStack is = handler.getStackInSlot(slot);
-                if (!is.isEmpty() && ItemStack.isSameItemSameComponents(is, itemInfo.itemStack)) {
+                if (!is.isEmpty() && SpoilUtils.isSameItemSameTagsSpoilable(is, itemInfo.itemStack)) {
                     ItemStack extracted = handler.extractItem(slot, itemToVoidAmount, false);
 
                     if (!extracted.isEmpty()) {

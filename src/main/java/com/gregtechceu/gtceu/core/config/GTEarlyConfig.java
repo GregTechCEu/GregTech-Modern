@@ -18,6 +18,7 @@ public class GTEarlyConfig {
 
     public static final String BLOOM_SAFE_MODE = "client.bloom.safe_mode.";
     public static final String FACE_LAYER_SAFE_MODE = "client.face_layer.safe_mode.";
+    public static final String SPOILAGE = "spoilage";
 
     private static final Logger LOGGER = LogManager.getLogger("GTEarlyConfig");
 
@@ -44,6 +45,9 @@ public class GTEarlyConfig {
                 "Whether to use a 'safe mode' for layered block faces",
                 "NOTE: uses the standard chunk render path, which may restore visual artifacts, but is considerably more stable and less prone to compatibility issues with other mods.",
                 "Requires restarting the client to take effect.");
+
+        Option spoilageOption = addMixinRule(SPOILAGE, true);
+        spoilageOption.addComment("If the spoilage system should be enabled.", "Requires restarting to take effect.");
 
         // hidden rules for dev-only mixins
         addHiddenRule("dev", !FMLLoader.isProduction());

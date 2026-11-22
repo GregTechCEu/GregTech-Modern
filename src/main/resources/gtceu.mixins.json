@@ -54,8 +54,6 @@
         "GrowingPlantBlockAccessor",
         "IntegerPropertyAccessor",
         "InventoryMixin",
-        "InvWrapperMixin",
-        "ItemStackMixin",
         "LevelMixin",
         "LivingEntityMixin",
         "LootPoolAccessor",
@@ -87,7 +85,12 @@
         "mui.ModularUIEmiRecipeAccessor",
         "mui.ModularUIJeiRecipeAccessor",
         "registrate.AbstractRegistrateAccessor",
-        "registrate.RegistrateDataProviderAccessor"
+        "registrate.RegistrateDataProviderAccessor",
+        "spoilage.AbstractContainerMenuMixin",
+        "spoilage.ItemEntityMixin",
+        "spoilage.ItemHandlerHelperMixin",
+        "spoilage.LevelMixin",
+        "spoilage.ModularContainerMenuMixin"
     ],
     "injectors": {
         "defaultRequire": 1,

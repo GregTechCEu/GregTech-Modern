@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
@@ -20,8 +19,6 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
-import com.gregtechceu.gtceu.api.item.component.IAddInformation;
-import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.module.AttributeItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
@@ -119,7 +116,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Either;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
@@ -626,14 +622,6 @@ public class CommonEventListener {
         if (!stack.has(GTDataComponents.DATA_COPY_POS)) {
             stack.addToTooltip(GTDataComponents.RESEARCH_ITEM, event.getContext(),
                     event::addTooltipLines, event.getContext().flag());
-        }
-        if (stack.has(GTDataComponents.SPOILABLE)) {
-            ISpoilableItem spoilable = stack.getCapability(GTCapability.CAPABILITY_SPOILABLE_ITEM);
-            if (spoilable instanceof IAddInformation tooltipProvider) {
-                List<Component> tmp = new ArrayList<>();
-                tooltipProvider.appendHoverText(stack, event.getContext(), tmp, event.getContext().flag());
-                event.addTooltipLines(tmp.toArray(Component[]::new));
-            }
         }
     }
 

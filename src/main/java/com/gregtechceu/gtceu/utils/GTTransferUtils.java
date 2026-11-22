@@ -349,7 +349,7 @@ public class GTTransferUtils {
     public static ItemStack insertItemBundle(IItemHandler targetInventory, ItemStack stack, boolean simulate) {
         return targetInventory instanceof IBundleInsertable bundle ?
                 bundle.insertItemBundle(stack, simulate) :
-                ItemHandlerHelper.insertItem(targetInventory, stack, simulate);
+                ItemHandlerHelper.insertItemStacked(targetInventory, stack, simulate);
     }
 
     @AllArgsConstructor

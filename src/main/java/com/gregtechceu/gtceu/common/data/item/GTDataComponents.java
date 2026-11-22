@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.item.module.ModularItemData;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
-import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
 import com.gregtechceu.gtceu.common.item.behavior.ItemMagnetBehavior;
 import com.gregtechceu.gtceu.common.item.behavior.TerminalBehavior;
 import com.gregtechceu.gtceu.common.item.datacomponents.*;
@@ -166,10 +165,14 @@ public class GTDataComponents {
             .registerComponentType("placeholder_uuid",
                     builder -> builder.persistent(UUIDUtil.CODEC)
                             .networkSynchronized(UUIDUtil.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SpoilableItemStack.SpoilableData>> SPOILABLE = DATA_COMPONENTS
-            .registerComponentType("spoilable", builder -> builder
-                    .persistent(SpoilableItemStack.SpoilableData.CODEC)
-                    .networkSynchronized(SpoilableItemStack.SpoilableData.STREAM_CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> SPOILAGE_CREATION_TICK = DATA_COMPONENTS
+            .registerComponentType("spoilage_creation_tick",
+                    builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> SPOILAGE_FREEZE_TICK = DATA_COMPONENTS
+            .registerComponentType("spoilage_freeze_tick",
+                    builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
 
     // Filters
 

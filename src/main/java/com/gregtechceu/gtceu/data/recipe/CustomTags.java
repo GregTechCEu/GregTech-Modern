@@ -17,6 +17,9 @@ import net.neoforged.neoforge.common.Tags;
 
 public class CustomTags {
 
+    public static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = TagUtil.optionalTag(Registries.ITEM,
+            ResourceLocation.fromNamespaceAndPath("c", "hidden_from_recipe_viewers"));
+
     // Added Vanilla tags
     public static final TagKey<Item> PISTONS = TagUtil.createItemTag("pistons");
     // common/mod compat tags

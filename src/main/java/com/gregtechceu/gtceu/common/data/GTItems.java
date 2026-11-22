@@ -79,7 +79,7 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -91,7 +91,7 @@ import static com.gregtechceu.gtceu.common.data.models.GTModels.overrideModel;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({ "unused", "DataFlowIssue" })
 public class GTItems {
 
     //////////////////////////////////////
@@ -1643,12 +1643,6 @@ public class GTItems {
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[8])))
             .register();
 
-    // Plugin
-    public static ItemEntry<Item> PLUGIN_TEXT;
-    public static ItemEntry<Item> PLUGIN_ONLINE_PIC;
-    public static ItemEntry<Item> PLUGIN_FAKE_GUI;
-    public static ItemEntry<Item> PLUGIN_ADVANCED_MONITOR;
-
     public static ItemEntry<ComponentItem> PROGRAMMED_CIRCUIT = REGISTRATE
             .item("programmed_circuit", ComponentItem::new)
             .lang("Programmed Circuit")
@@ -1798,8 +1792,6 @@ public class GTItems {
             .onRegister(attach(ElectricStats.createElectricItem(1_600_000L, GTValues.HV), new ItemMagnetBehavior(32)))
             .register();
 
-    public static ItemEntry<Item> WIRELESS;
-    public static ItemEntry<Item> CAMERA;
     public static ItemEntry<ComponentItem> TERMINAL = REGISTRATE.item("terminal", ComponentItem::new)
             .lang("Terminal")
             .properties(p -> p.stacksTo(1))
@@ -1899,8 +1891,6 @@ public class GTItems {
                     materialInfo(() -> new ItemMaterialInfo(new MaterialStack(GTMaterials.Tritanium, GTValues.M * 2),
                             new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
             .register();
-
-    public static ItemEntry<Item> CLIPBOARD;
 
     public static ItemEntry<ArmorComponentItem> NIGHTVISION_GOGGLES = REGISTRATE
             .item("nightvision_goggles",
@@ -2154,12 +2144,12 @@ public class GTItems {
             .onRegister(attach(new GuiModuleBehaviour()))
             .register();
 
-    public static ItemEntry<Item> SPOILABLE_1;
-    public static ItemEntry<Item> SPOILABLE_2;
-    public static ItemEntry<Item> SPOILABLE_3;
-    public static ItemEntry<Item> SPOILABLE_4;
-    public static ItemEntry<Item> SPOILABLE_5;
-    public static ItemEntry<Item> ENTITY_SPOILABLE;
+    public static @Nullable ItemEntry<Item> SPOILABLE_1;
+    public static @Nullable ItemEntry<Item> SPOILABLE_2;
+    public static @Nullable ItemEntry<Item> SPOILABLE_3;
+    public static @Nullable ItemEntry<Item> SPOILABLE_4;
+    public static @Nullable ItemEntry<Item> SPOILABLE_5;
+    public static @Nullable ItemEntry<Item> ENTITY_SPOILABLE;
 
     static {
         if (GTCEu.isDev()) {
@@ -2203,8 +2193,8 @@ public class GTItems {
     }
 
     public static <P, T extends Item,
-            S2 extends ItemBuilder<T, P>> NonNullFunction<S2, S2> unificationItem(@NotNull TagPrefix tagPrefix,
-                                                                                  @NotNull Material mat) {
+            S2 extends ItemBuilder<T, P>> NonNullFunction<S2, S2> unificationItem(TagPrefix tagPrefix,
+                                                                                  Material mat) {
         return builder -> {
             builder.onRegister(item -> {
                 Supplier<ItemLike> supplier = GTMemoizer.memoize(() -> item);

@@ -1,12 +1,8 @@
-package com.gregtechceu.gtceu.common.item.behavior;
+package com.gregtechceu.gtceu.api.item.spoilage;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
-import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
-import com.gregtechceu.gtceu.api.item.component.SpoilContext;
-import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
-import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.RegisterSpoilablesEventJS;
 
@@ -22,10 +18,11 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToLongFunction;
@@ -43,6 +40,8 @@ public class SpoilableBehavior {
     private final List<ItemLike> attachedTo = new ArrayList<>();
 
     public static void init() {
+        if (!SpoilUtils.spoilageEnabled()) return;
+
         RegisterSpoilablesEvent event = new RegisterSpoilablesEvent(SpoilableBehavior::builder);
         ModLoader.postEvent(event);
         if (GTCEu.Mods.isKubeJSLoaded()) {
@@ -93,16 +92,16 @@ public class SpoilableBehavior {
 
         @Override
         public long getSpoilTicks() {
-            return SpoilableBehavior.this.ticks.applyAsLong(getStack());
+            return ticks.applyAsLong(getStack());
         }
 
         @Override
-        public ItemStack spoilResult(SpoilContext spoilContext, boolean simulate) {
-            return spoilResult.getSpoilResult(getStack(), spoilContext, simulate);
+        public ItemStack getSpoilResult(SpoilContext spoilContext, long ticksOverdue, boolean simulate) {
+            return spoilResult.getSpoilResult(getStack(), spoilContext, ticksOverdue, simulate);
         }
 
         @Override
-        protected @NotNull Component getSpoilResultTooltip() {
+        protected Component getSpoilResultTooltip() {
             return spoilsIntoTooltip.apply(getStack());
         }
     }
@@ -110,16 +109,16 @@ public class SpoilableBehavior {
     @FunctionalInterface
     public interface SpoilResultProvider {
 
-        ItemStack getSpoilResult(@NotNull ItemStack stack, @NotNull SpoilContext spoilContext, boolean simulate);
+        ItemStack getSpoilResult(ItemStack stack, SpoilContext spoilContext, long ticksOverdue, boolean simulate);
     }
 
     @Accessors(fluent = true)
     @Setter
     public static class Builder {
 
-        private ToLongFunction<ItemStack> ticks;
-        private SpoilResultProvider result;
-        private Function<ItemStack, Component> tooltip;
+        private @Nullable ToLongFunction<ItemStack> ticks = null;
+        private @Nullable SpoilResultProvider result = null;
+        private @Nullable Function<ItemStack, Component> tooltip = null;
 
         private Builder() {
             ticks(100);
@@ -127,6 +126,10 @@ public class SpoilableBehavior {
         }
 
         public SpoilableBehavior build() {
+            Objects.requireNonNull(ticks, "tick provider not set");
+            Objects.requireNonNull(result, "result provider not set");
+            Objects.requireNonNull(tooltip, "tooltip provider not set");
+
             return new SpoilableBehavior(ticks, result, tooltip);
         }
 
@@ -147,7 +150,7 @@ public class SpoilableBehavior {
 
         @Tolerate
         public Builder result(Function<ItemStack, ItemStack> result) {
-            return result((stack, spoilContext, simulate) -> result.apply(stack))
+            return result((stack, spoilContext, timeDifference, simulate) -> result.apply(stack))
                     .tooltip(stack -> {
                         ItemStack resultStack = result.apply(stack);
                         if (resultStack.isEmpty()) return Component.empty();
@@ -164,12 +167,12 @@ public class SpoilableBehavior {
         public Builder result(Supplier<? extends EntityType<? extends Mob>> entityType) {
             SpoilResultProvider previousResult = result;
             Function<ItemStack, Component> previousTooltip = tooltip;
-            return result((stack, spoilContext, simulate) -> {
+            return result((stack, spoilContext, timeDifference, simulate) -> {
                 if (!simulate) {
                     EntityType<? extends Mob> type = entityType.get();
                     SpoilUtils.spawnEntity(spoilContext, type, stack.getCount());
                 }
-                return previousResult.getSpoilResult(stack, spoilContext, simulate);
+                return previousResult.getSpoilResult(stack, spoilContext, timeDifference, simulate);
             }).tooltip(stack -> {
                 EntityType<? extends Mob> type = entityType.get();
                 MutableComponent component = type.getDescription().copy();
@@ -182,10 +185,10 @@ public class SpoilableBehavior {
         public Builder multiplyResult(int mult) {
             SpoilResultProvider prevResult = result;
             Function<ItemStack, Component> previousTooltip = tooltip;
-            return result((stack, spoilContext, simulate) -> {
-                ItemStack total = prevResult.getSpoilResult(stack, spoilContext, simulate);
+            return result((stack, spoilContext, timeDifference, simulate) -> {
+                ItemStack total = prevResult.getSpoilResult(stack, spoilContext, timeDifference, simulate);
                 for (int i = 1; i < mult; i++) {
-                    ItemStack temp = prevResult.getSpoilResult(stack, spoilContext, simulate);
+                    ItemStack temp = prevResult.getSpoilResult(stack, spoilContext, timeDifference, simulate);
                     if (ItemStack.isSameItemSameComponents(total, temp)) total.grow(temp.getCount());
                 }
                 return total;
