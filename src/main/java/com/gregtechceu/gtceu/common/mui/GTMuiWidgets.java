@@ -85,7 +85,7 @@ public class GTMuiWidgets {
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth) {
         UITexture background = GTGuiTextures.BACKGROUND;
         if (!definition.getThemeId().equals(ThemeAPI.DEFAULT_ID)) {
-            background = (UITexture) ThemeAPI.INSTANCE.getTheme(definition.getThemeId()).getPanelTheme().theme()
+            background = (UITexture) ThemeAPI.INSTANCE.getTheme(definition.getThemeId()).getPanelThemeEntry().theme()
                     .getBackground();
         }
         if (background == null) {

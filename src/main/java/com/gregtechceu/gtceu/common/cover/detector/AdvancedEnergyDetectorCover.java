@@ -150,7 +150,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
                         .child(new ToggleButton()
                                 .value(new BooleanSyncValue(this::isUsePercent, this::setUsePercent).allowC2S())
                                 .background(true, ThemeAPI.INSTANCE.getTheme(settings.getTheme())
-                                        .getToggleButtonTheme().theme().getBackground())
+                                        .getToggleButtonThemeEntry().theme().getBackground())
                                 .overlay(false, GTGuiTextures.BUTTON_EU)
                                 .overlay(true, GTGuiTextures.BUTTON_PERCENT)
                                 .tooltip(false,

@@ -179,7 +179,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                     syncManager.syncValue("import", i, syncHandler);
                     return new ItemSlot()
                             .syncHandler("import", i)
-                            .background(theme.getItemSlotTheme().theme().getBackground(),
+                            .background(theme.getItemSlotThemeEntry().theme().getBackground(),
                                     (i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY : (i == 1) ?
                                             GTGuiTextures.PRIMITIVE_DUST_OVERLAY :
                                             GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY);
@@ -202,7 +202,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                     syncManager.syncValue("export", i, syncHandler);
                     return new ItemSlot()
                             .syncHandler("export", i)
-                            .background(theme.getItemSlotTheme().theme().getBackground(),
+                            .background(theme.getItemSlotThemeEntry().theme().getBackground(),
                                     (i == 0) ? GTGuiTextures.PRIMITIVE_INGOT_OVERLAY :
                                             GTGuiTextures.PRIMITIVE_DUST_OVERLAY);
                 })

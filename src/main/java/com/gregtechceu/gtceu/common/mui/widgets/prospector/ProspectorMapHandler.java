@@ -137,7 +137,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
                                         () -> Objects.equals(this.getSelected(), uniqueId),
                                         v -> this.setSelected(v ? uniqueId : null, syncManager.isClient()));
 
-                                return new ToggleButton().widgetTheme(IThemeApi.TOGGLE_BUTTON)
+                                return new ToggleButton().widgetThemeKey(IThemeApi.TOGGLE_BUTTON)
                                         .value(selected)
                                         .widthRel(1f).height(18)
                                         .background(GuiTextures.BUTTON_CLEAN)
