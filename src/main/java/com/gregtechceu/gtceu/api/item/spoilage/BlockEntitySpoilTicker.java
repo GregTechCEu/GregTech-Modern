@@ -20,6 +20,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -31,8 +32,9 @@ public class BlockEntitySpoilTicker {
     private static final LevelAttached<BlockEntitySpoilTicker> TICKERS = new LevelAttached<>(
             BlockEntitySpoilTicker::new);
 
-    public static final int MAX_TICKS_PER_UPDATE = ServerLevel.MAX_SCHEDULED_TICKS_PER_TICK;
-    public static final long UPDATE_FREQUENCY = 2;
+    public static final int MAX_TICKS_PER_UPDATE = 128;
+    public static final long UPDATE_FREQUENCY = 10;
+    public static final long INITIAL_TICK_DELAY = 5;
 
     private static final Set<Class<? extends BlockEntity>> BLACKLISTED_BLOCK_ENTITIES = ReferenceOpenHashSet
             .of(MetaMachine.class);
@@ -88,18 +90,38 @@ public class BlockEntitySpoilTicker {
         this.blockEntityTicks.tick(gameTime, MAX_TICKS_PER_UPDATE, (pos, blockEntityType) -> {
             BlockEntity blockEntity = this.level.getBlockEntity(pos);
 
-            if (blockEntity == null || blockEntity.isRemoved() || blockEntity.getType() != blockEntityType ||
-                    !hasModifiableItemHandler(blockEntity)) {
-                // if the block entity no longer exists or doesn't have an item handler, exit without doing anything
-                // (including rescheduling)
+            if (blockEntity == null || blockEntity.isRemoved() || blockEntity.getType() != blockEntityType) {
+                // if the block entity no longer exists exit without doing anything
                 return;
             }
 
-            SpoilUtils.updateBlock(blockEntity);
+            IItemHandlerModifiable handler;
+            boolean anyHandlerPresent = false;
+
+            for (Direction side : GTUtil.DIRECTIONS) {
+                handler = resolveHandler(blockEntity, side);
+                if (handler != null) {
+                    anyHandlerPresent = true;
+                    SpoilUtils.updateBlockItemHandler(handler, blockEntity.getLevel(), blockEntity.getBlockPos());
+                }
+            }
+
+            handler = resolveHandler(blockEntity, null);
+            if (handler != null) {
+                anyHandlerPresent = true;
+                SpoilUtils.updateBlockItemHandler(handler, blockEntity.getLevel(), blockEntity.getBlockPos());
+            }
+
+            if (!anyHandlerPresent) return;
 
             // reschedule another update
             this.scheduleTick(blockEntity, UPDATE_FREQUENCY, TickPriority.NORMAL);
         });
+    }
+
+    private @Nullable IItemHandlerModifiable resolveHandler(BlockEntity be, @Nullable Direction side) {
+        return be.getCapability(ForgeCapabilities.ITEM_HANDLER, side).resolve()
+                .map(v -> v instanceof IItemHandlerModifiable m ? m : null).orElse(null);
     }
 
     private boolean hasModifiableItemHandler(BlockEntity blockEntity) {

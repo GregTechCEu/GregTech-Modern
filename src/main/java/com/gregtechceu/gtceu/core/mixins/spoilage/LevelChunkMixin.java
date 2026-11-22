@@ -39,7 +39,7 @@ public abstract class LevelChunkMixin extends ChunkAccess implements ICapability
                      remap = false))
     private void gtceu$addBlockEntityToSpoilTickers(BlockEntity blockEntity, CallbackInfo ci) {
         if (blockEntity.getLevel() instanceof ServerLevel level) {
-            BlockEntitySpoilTicker.get(level).scheduleTickIfValid(blockEntity, 0L, TickPriority.EXTREMELY_HIGH);
+            BlockEntitySpoilTicker.get(level).scheduleTickIfValid(blockEntity, BlockEntitySpoilTicker.INITIAL_TICK_DELAY, TickPriority.EXTREMELY_HIGH);
         }
     }
 }
