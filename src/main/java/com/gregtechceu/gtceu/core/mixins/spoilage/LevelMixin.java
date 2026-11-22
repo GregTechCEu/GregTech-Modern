@@ -27,7 +27,8 @@ public abstract class LevelMixin {
     private Consumer<BlockEntity> gtceu$addBlockEntityToSpoilTickers(Consumer<BlockEntity> original) {
         if ((Object) this instanceof ServerLevel serverLevel) {
             BlockEntitySpoilTicker ticker = BlockEntitySpoilTicker.get(serverLevel);
-            return original.andThen(be -> ticker.scheduleTickIfValid(be, BlockEntitySpoilTicker.INITIAL_TICK_DELAY, TickPriority.EXTREMELY_HIGH));
+            return original.andThen(be -> ticker.scheduleTickIfValid(be, BlockEntitySpoilTicker.INITIAL_TICK_DELAY,
+                    TickPriority.EXTREMELY_HIGH));
         } else {
             return original;
         }
