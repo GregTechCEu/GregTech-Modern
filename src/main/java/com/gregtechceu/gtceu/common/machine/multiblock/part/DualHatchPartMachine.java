@@ -18,14 +18,12 @@ import net.neoforged.neoforge.fluids.FluidType;
 
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.value.sync.FluidSlotSyncHandler;
-import brachy.modularui.value.sync.ItemSlotSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.slot.ItemSlot;
-import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
 import org.jetbrains.annotations.Nullable;
 
@@ -165,23 +163,20 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
                             UISettings settings) {
         String slotGroupName = "inv_slot_group";
         SlotGroup slotGroup = new SlotGroup(slotGroupName, getDualHatchInventorySize(getTier()));
+        syncManager.registerSlotGroup(slotGroup);
+
         mainWidget.child(SlotGroupWidget.builder()
                 .matrix(Arrays.stream(GTMuiMachineUtil.createSquareMatrix(getDualHatchInventorySize(getTier()), 'I'))
                         .map(s -> s + 'F')
                         .toArray(String[]::new))
-                .key('I', i -> {
-                    ModularSlot slot = new ModularSlot(getInventory(), i)
-                            .accessibility(io.support(IO.IN), true);
-                    ItemSlotSyncHandler syncHandler = new ItemSlotSyncHandler(slot.slotGroup(slotGroup));
-                    syncManager.syncValue(slotGroupName, i, syncHandler);
-                    return new ItemSlot().syncHandler(slotGroupName, i);
-                })
-                .key('F', i -> {
-                    FluidSlotSyncHandler syncHandler = new FluidSlotSyncHandler(tank.getStorages()[i])
-                            .canFillSlot(io.support(IO.IN))
-                            .canDrainSlot(true);
-                    syncManager.syncValue(slotGroupName + "_fluid", i, syncHandler);
-                    return new FluidSlot().syncHandler(slotGroupName + "_fluid", i);
-                }).build().margin(7, 10).center());
+                .key('I', i -> new ItemSlot()
+                        .slot(SyncHandlers.itemSlot(getInventory().storage, i)
+                                .slotGroup(slotGroup)
+                                .accessibility(io.support(IO.IN), true)))
+                .key('F', i -> new FluidSlot()
+                        .syncHandler(SyncHandlers.fluidSlot(tank.getStorages()[i])
+                                .canFillSlot(io.support(IO.IN))
+                                .canDrainSlot(true)))
+                .build().margin(7, 10).center());
     }
 }
