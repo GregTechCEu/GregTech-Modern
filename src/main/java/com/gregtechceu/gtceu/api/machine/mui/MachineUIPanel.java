@@ -38,11 +38,11 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
         UITexture themeBackground = null;
         if (!machine.getDefinition().getThemeId().equals(ThemeAPI.DEFAULT_ID)) {
             themeBackground = (UITexture) ThemeAPI.INSTANCE.getTheme(machine.getDefinition().getThemeId())
-                    .getPanelTheme()
+                    .getPanelThemeEntry()
                     .theme().getBackground();
         }
         if (themeBackground == null) {
-            themeBackground = (UITexture) ThemeAPI.INSTANCE.getTheme(settings.getTheme()).getPanelTheme()
+            themeBackground = (UITexture) ThemeAPI.INSTANCE.getTheme(settings.getTheme()).getPanelThemeEntry()
                     .theme().getBackground();
         }
 
