@@ -91,7 +91,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
     // spotless:on
 
     private static final NoiseSettings DEFAULT_NOISE_SETTINGS = new NoiseSettings(DimensionType.MIN_Y,
-            DimensionType.MAX_Y, 1, 2);
+            DimensionType.Y_SIZE, 1, 2);
 
     public @NotNull List<VeinBlockDefinition> oreBlocks = new ArrayList<>();
     public @NotNull List<VeinBlockDefinition> rareBlocks = new ArrayList<>();
