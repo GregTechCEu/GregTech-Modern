@@ -39,8 +39,8 @@ public class AEStackDisplayWidget extends Widget<AEStackDisplayWidget> {
     }
 
     @Override
-    protected WidgetThemeEntry<?> getWidgetThemeInternal(ITheme theme) {
-        return theme.getItemSlotTheme();
+    protected WidgetThemeEntry<?> getWidgetThemeEntryInternal(ITheme theme) {
+        return theme.getItemSlotThemeEntry();
     }
 
     @OnlyIn(Dist.CLIENT)
