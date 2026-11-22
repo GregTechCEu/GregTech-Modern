@@ -35,7 +35,6 @@ import com.gregtechceu.gtceu.common.item.modules.TextModuleBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.gregtechceu.gtceu.integration.ae2.AEItemCompat;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
@@ -2100,12 +2099,6 @@ public class GTItems {
         GTMaterialItems.generateMaterialItems();
         GTMaterialItems.generateTools();
         GTMaterialItems.generateArmors();
-    }
-
-    public static void postInit() {
-        if (GTCEu.Mods.isAE2Loaded()) {
-            AEItemCompat.init();
-        }
     }
 
     public static <T extends ItemLike> NonNullConsumer<T> materialInfo(ItemMaterialInfo materialInfo) {

@@ -4,9 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
-import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
-import com.gregtechceu.gtceu.api.item.component.SpoilContext;
-import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
+import com.gregtechceu.gtceu.api.item.spoilage.ISpoilableItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
@@ -63,7 +61,7 @@ public class GTRecipeModifiers {
                 if (!(stackObject instanceof ItemStack stack)) return;
                 ISpoilableItem outputSpoilable = GTCapabilityHelper.getSpoilable(stack);
                 if (outputSpoilable == null) return;
-                SpoilUtils.update(stack, new SpoilContext(machine));
+
                 if (!r.keepSpoilingProgress) return;
                 double spoilProgress = 0;
                 int spoilableCount = 0;
