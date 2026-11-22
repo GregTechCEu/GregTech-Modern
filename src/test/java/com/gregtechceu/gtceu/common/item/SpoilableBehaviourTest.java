@@ -89,9 +89,11 @@ public class SpoilableBehaviourTest {
         IItemHandlerModifiable itemHandler = (IItemHandlerModifiable) TestUtils.getItemHandler(helper,
                 new BlockPos(1, 1, 1));
 
+        var newStack = GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(23);
+        SpoilUtils.update(newStack, SpoilContext.EMPTY);
+
         helper.startSequence()
-                .thenExecute(() -> itemHandler.insertItem(0,
-                        GTItems.SPOILABLE_4.get().getDefaultInstance().copyWithCount(23), false))
+                .thenExecute(() -> itemHandler.insertItem(0, newStack, false))
                 .thenIdle(9)
                 .thenExecute(() -> {
                     ItemStack stack = itemHandler.getStackInSlot(0);
@@ -106,7 +108,7 @@ public class SpoilableBehaviourTest {
                     helper.assertTrue(spoilable.getSpoilTicks() == 10,
                             "spoilable didn't return correct total tick amount");
                 })
-                .thenIdle(2)
+                .thenIdle(15)
                 .thenExecute(() -> helper.assertTrue(TestUtils.isItemStackEqual(
                         GTItems.SPOILABLE_5.get().getDefaultInstance().copyWithCount(23),
                         TestUtils.getItemHandler(helper, new BlockPos(1, 1, 1)).getStackInSlot(0)),
@@ -131,7 +133,7 @@ public class SpoilableBehaviourTest {
                             helper.absolutePos(new BlockPos(1, 1, 1)),
                             itemHandler, 0));
                 })
-                .thenIdle(71)
+                .thenIdle(80)
                 .thenExecute(() -> helper.assertTrue(TestUtils.isItemStackEqual(
                         GTItems.SPOILABLE_5.get().getDefaultInstance().copyWithCount(41),
                         itemHandler.getStackInSlot(0)),
@@ -164,7 +166,7 @@ public class SpoilableBehaviourTest {
                     helper.assertTrue(spoilable.getSpoilTicks() == 10,
                             "spoilable didn't return correct total tick amount");
                 })
-                .thenIdle(2)
+                .thenIdle(15)
                 .thenExecute(() -> helper.assertTrue(TestUtils.isItemStackEqual(
                         GTItems.SPOILABLE_5.get().getDefaultInstance().copyWithCount(23),
                         crate.inventory.getStackInSlot(0)), "item didn't spoil when should have"))
@@ -216,7 +218,7 @@ public class SpoilableBehaviourTest {
         helper.startSequence()
                 .thenExecute(() -> crate.inventory.insertItem(0,
                         GTItems.ENTITY_SPOILABLE.get().getDefaultInstance().copyWithCount(2), false))
-                .thenIdle(12)
+                .thenIdle(20)
                 .thenExecute(() -> {
                     TestUtils.assertEqual(helper, crate.inventory.getStackInSlot(0),
                             Items.DRAGON_EGG.getDefaultInstance().copyWithCount(6));

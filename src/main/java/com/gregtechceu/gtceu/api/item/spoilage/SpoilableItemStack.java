@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
@@ -39,7 +38,6 @@ import java.util.List;
 public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformation, IDurabilityBar,
                                          ICapabilityProvider {
 
-    public static final String SPOILAGE_DATA_KEY = "spoilageData";
     public static final String FROZEN_KEY = "frozen";
     public static final String FROZEN_TICKS_KEY = "frozenRemainingTicks";
     public static final String CREATION_TICK_KEY = "creationTick";
@@ -51,33 +49,27 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
         this.stack = stack;
     }
 
-    private CompoundTag getOrCreateSpoilageDataTag() {
-        if (!stack.getOrCreateTag().contains(SPOILAGE_DATA_KEY))
-            stack.getOrCreateTag().put(SPOILAGE_DATA_KEY, new CompoundTag());
-        return stack.getOrCreateTag().getCompound(SPOILAGE_DATA_KEY);
-    }
-
     public long getCreationTick() {
         if (!stack.hasTag()) return 0;
-        return getOrCreateSpoilageDataTag().getLong(CREATION_TICK_KEY);
+        return stack.getOrCreateTag().getLong(CREATION_TICK_KEY);
     }
 
     public void setCreationTick(long creationTick) {
-        getOrCreateSpoilageDataTag().putLong(CREATION_TICK_KEY, creationTick);
+        stack.getOrCreateTag().putLong(CREATION_TICK_KEY, creationTick);
     }
 
     public boolean isFrozen() {
         if (!stack.hasTag()) return false;
-        return getOrCreateSpoilageDataTag().getBoolean(FROZEN_KEY);
+        return stack.getOrCreateTag().getBoolean(FROZEN_KEY);
     }
 
     public long getFrozenTicks() {
         if (!stack.hasTag()) return 0;
-        return getOrCreateSpoilageDataTag().getLong(FROZEN_TICKS_KEY);
+        return stack.getOrCreateTag().getLong(FROZEN_TICKS_KEY);
     }
 
     public void setFrozenTicks(long ticks) {
-        getOrCreateSpoilageDataTag().putLong(FROZEN_TICKS_KEY, ticks);
+        stack.getOrCreateTag().putLong(FROZEN_TICKS_KEY, ticks);
     }
 
     /**
@@ -98,11 +90,11 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
      */
     public void updateFreshness(SpoilContext spoilContext, boolean createTag) {
         if (isFrozen()) return;
+        if (!createTag && getCreationTick() == 0) return;
+
         Level level = SpoilContext.getDefaultLevel();
 
         if (level == null) return;
-
-        if (!createTag && getCreationTick() == 0) return;
 
         if (createTag && getCreationTick() == 0) {
             setCreationTick(level.getGameTime());
@@ -149,7 +141,6 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     private void setFreezeSpoiling(boolean freeze) {
         if (freeze == this.isFrozen()) return;
-
         Level level = SpoilContext.getDefaultLevel();
 
         if (getCreationTick() == 0 && level != null) {
@@ -158,10 +149,10 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
         if (freeze) {
             setFrozenTicks(getTicksUntilSpoiled());
-            getOrCreateSpoilageDataTag().putBoolean(FROZEN_KEY, true);
+            stack.getOrCreateTag().putBoolean(FROZEN_KEY, true);
         } else {
             setTicksUntilSpoiled(getFrozenTicks());
-            getOrCreateSpoilageDataTag().putBoolean(FROZEN_KEY, false);
+            stack.getOrCreateTag().putBoolean(FROZEN_KEY, false);
         }
     }
 

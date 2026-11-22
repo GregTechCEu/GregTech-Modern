@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.item.spoilage;
 
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
@@ -7,6 +8,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -46,17 +48,29 @@ public class SpoilUtils {
      *         compatible.
      */
     public static boolean isSameItemSameTagsSpoilable(ItemStack a, ItemStack b) {
-        var cap1 = GTCapabilityHelper.getSpoilable(a);
-        var cap2 = GTCapabilityHelper.getSpoilable(b);
-        if (cap1 == null || cap2 == null) return ItemStack.isSameItemSameTags(a, b);
-        if (!a.is(b.getItem())) return false;
+        if (!ItemStack.isSameItem(a, b)) return false; // both have same item
+        if (a.isEmpty() != b.isEmpty()) return false; // only one is empty, the other isn't
+        if ((!a.hasTag() || a.getOrCreateTag().isEmpty()) || (!b.hasTag() || b.getOrCreateTag().isEmpty())) {
+            return ItemStack.isSameItemSameTags(a, b); // at least one doesn't have any NBT tags, fall back to vanilla
+        }
 
-        var tag1 = a.getTag();
-        var tag2 = b.getTag();
-        if (tag1 == null || tag2 == null) return ItemStack.isSameItemSameTags(a, b);
-        tag1.remove(SpoilableItemStack.SPOILAGE_DATA_KEY);
-        tag2.remove(SpoilableItemStack.SPOILAGE_DATA_KEY);
-        return tag1.equals(tag2);
+        var aCap = a.getCapability(GTCapability.CAPABILITY_SPOILABLE_ITEM);
+        var bCap = b.getCapability(GTCapability.CAPABILITY_SPOILABLE_ITEM);
+
+        if (!aCap.isPresent() || !bCap.isPresent()) return ItemStack.isSameItemSameTags(a, b); // at least one doesn't
+                                                                                               // have the capability,
+                                                                                               // fall back to vanilla
+
+        CompoundTag aTag = a.getOrCreateTag().copy();
+        aTag.remove(SpoilableItemStack.FROZEN_TICKS_KEY);
+        aTag.remove(SpoilableItemStack.FROZEN_KEY);
+        aTag.remove(SpoilableItemStack.CREATION_TICK_KEY);
+        CompoundTag bTag = b.getOrCreateTag().copy();
+        bTag.remove(SpoilableItemStack.FROZEN_TICKS_KEY);
+        bTag.remove(SpoilableItemStack.FROZEN_KEY);
+        bTag.remove(SpoilableItemStack.CREATION_TICK_KEY);
+
+        return aTag.equals(bTag);
     }
 
     /**

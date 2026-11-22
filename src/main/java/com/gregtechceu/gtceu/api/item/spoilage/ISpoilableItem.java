@@ -14,7 +14,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
  * This is a capability! {@link Item} subclasses should not implement this directly!
  * <br>
  * Spoilable items will, as the name implies, spoil (who could've thought).
- * Due to Minecraft's limitations, items will only start spoiling only if:
+ * Due to Minecraft's limitations, items will only start spoiling if:
  * <ul>
  * <li>It is in an {@link IItemHandlerModifiable}, which is exposed as a capability of a {@link BlockEntity} or
  * {@link Entity}
