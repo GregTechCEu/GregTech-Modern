@@ -33,7 +33,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.JsonOps;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -148,10 +148,10 @@ public class OreVeinUtil {
         return getMaxVeinSearchDistance() + (int) Math.ceil((double) GTOres.getLargestIndicatorOffset() / 16.0);
     }
 
-    @Nullable
-    public static Supplier<HolderSet<Biome>> resolveBiomes(List<String> biomes) {
-        if (biomes.isEmpty())
-            return null;
+    public static Supplier<@NotNull HolderSet<Biome>> resolveBiomes(List<String> biomes) {
+        if (biomes.isEmpty()) {
+            return HolderSet::direct;
+        }
 
         RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         JsonElement codecInput = resolveBiomeCodecInput(biomes);

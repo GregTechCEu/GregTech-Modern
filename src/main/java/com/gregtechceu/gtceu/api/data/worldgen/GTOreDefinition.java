@@ -34,6 +34,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -52,37 +53,39 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Accessors(chain = true, fluent = true)
 public class GTOreDefinition {
 
-    public static final Codec<GTOreDefinition> CODEC = ResourceLocation.CODEC
-            .flatXmap(rl -> Optional.ofNullable(GTRegistries.ORE_VEINS.get(rl))
-                    .map(DataResult::success)
-                    .orElseGet(() -> DataResult.error(() -> "No GTOreDefinition with id " + rl + " registered")),
-                    obj -> Optional.ofNullable(GTRegistries.ORE_VEINS.getKey(obj))
-                            .map(DataResult::success)
-                            .orElseGet(() -> DataResult.error(() -> "GTOreDefinition " + obj + " not registered")));
-    public static final Codec<GTOreDefinition> FULL_CODEC = RecordCodecBuilder.create(
-            instance -> instance.group(
-                    IntProvider.NON_NEGATIVE_CODEC.fieldOf("cluster_size").forGetter(ft -> ft.clusterSize),
-                    Codec.floatRange(0.0F, 1.0F).fieldOf("density").forGetter(ft -> ft.density),
-                    Codec.INT.fieldOf("weight").forGetter(ft -> ft.weight),
-                    GTRegistries.WORLD_GEN_LAYERS.codec().fieldOf("layer").forGetter(ft -> ft.layer),
-                    ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter")
-                            .forGetter(ft -> new ArrayList<>(ft.dimensionFilter)),
-                    HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(ft -> ft.range),
-                    Codec.floatRange(0.0F, 1.0F).fieldOf("discard_chance_on_air_exposure")
-                            .forGetter(ft -> ft.discardChanceOnAirExposure),
-                    RegistryCodecs.homogeneousList(Registries.BIOME).optionalFieldOf("biomes", HolderSet.direct())
-                            .forGetter(ext -> ext.biomes == null ? HolderSet.direct() : ext.biomes.get()),
-                    BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", BiomeWeightModifier.EMPTY)
-                            .forGetter(ext -> ext.biomeWeightModifier),
-                    VeinGenerator.DIRECT_CODEC.fieldOf("generator").forGetter(ft -> ft.veinGenerator),
-                    Codec.list(IndicatorGenerator.DIRECT_CODEC).fieldOf("indicators")
-                            .forGetter(ft -> ft.indicatorGenerators))
-                    .apply(instance,
-                            (clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure,
-                             biomes, biomeWeightModifier, veinGenerator, indicatorGenerators) -> new GTOreDefinition(
-                                     clusterSize, density, weight, layer, new HashSet<>(dimensionFilter), range,
-                                     discardChanceOnAirExposure, biomes == null ? HolderSet::direct : () -> biomes,
-                                     biomeWeightModifier, veinGenerator, indicatorGenerators)));
+    // spotless:off
+    public static final Codec<GTOreDefinition> CODEC = ResourceLocation.CODEC.flatXmap(
+            rl -> {
+                return Optional.ofNullable(GTRegistries.ORE_VEINS.get(rl))
+                        .map(DataResult::success)
+                        .orElseGet(() -> DataResult.error(() -> "No GTOreDefinition with id " + rl + " registered"));
+            },
+            obj -> {
+                return Optional.ofNullable(GTRegistries.ORE_VEINS.getKey(obj))
+                        .map(DataResult::success)
+                        .orElseGet(() -> DataResult.error(() -> "GTOreDefinition " + obj + " not registered"));
+            });
+
+    private static final Codec<Supplier<HolderSet<Biome>>> LAZY_BIOME_HOLDERSET_CODEC = RegistryCodecs.homogeneousList(Registries.BIOME)
+            .orElse(HolderSet.direct())
+            .xmap(holders -> (() -> holders), Supplier::get);
+    private static final Codec<Set<ResourceKey<Level>>> DIMENSIONS_SET_CODEC = ResourceKey.codec(Registries.DIMENSION).listOf()
+            .xmap(HashSet::new, ArrayList::new);
+
+    public static final Codec<GTOreDefinition> FULL_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            IntProvider.NON_NEGATIVE_CODEC.fieldOf("cluster_size").forGetter(GTOreDefinition::clusterSize),
+            Codec.floatRange(0.0F, 1.0F).fieldOf("density").forGetter(GTOreDefinition::density),
+            Codec.INT.fieldOf("weight").forGetter(GTOreDefinition::weight),
+            GTRegistries.WORLD_GEN_LAYERS.codec().fieldOf("layer").forGetter(GTOreDefinition::layer),
+            DIMENSIONS_SET_CODEC.fieldOf("dimension_filter").forGetter(GTOreDefinition::dimensionFilter),
+            HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(GTOreDefinition::range),
+            Codec.floatRange(0.0F, 1.0F).fieldOf("discard_chance_on_air_exposure").forGetter(GTOreDefinition::discardChanceOnAirExposure),
+            LAZY_BIOME_HOLDERSET_CODEC.fieldOf("biomes").forGetter(GTOreDefinition::biomes),
+            BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", BiomeWeightModifier.EMPTY).forGetter(GTOreDefinition::biomeWeightModifier),
+            VeinGenerator.DIRECT_CODEC.fieldOf("generator").forGetter(GTOreDefinition::veinGenerator),
+            IndicatorGenerator.DIRECT_CODEC.listOf().fieldOf("indicators").forGetter(GTOreDefinition::indicatorGenerators)
+    ).apply(instance, GTOreDefinition::new));
+    // spotless:on
 
     private final InferredProperties inferredProperties = new InferredProperties();
 
@@ -104,10 +107,10 @@ public class GTOreDefinition {
     @Setter
     private float discardChanceOnAirExposure;
     @Getter
-    private @Nullable Supplier<HolderSet<Biome>> biomes;
+    private @NotNull Supplier<@NotNull HolderSet<Biome>> biomes;
     @Getter
     @Setter
-    private BiomeWeightModifier biomeWeightModifier = BiomeWeightModifier.EMPTY;
+    private BiomeWeightModifier biomeWeightModifier;
 
     @Getter
     @Setter
@@ -118,15 +121,14 @@ public class GTOreDefinition {
     private List<IndicatorGenerator> indicatorGenerators;
 
     public GTOreDefinition(GTOreDefinition other) {
-        this(
-                other.clusterSize, other.density, other.weight, other.layer,
+        this(other.clusterSize, other.density, other.weight, other.layer,
                 Set.copyOf(other.dimensionFilter), other.range, other.discardChanceOnAirExposure,
                 other.biomes, other.biomeWeightModifier, other.veinGenerator, List.copyOf(other.indicatorGenerators));
     }
 
     public GTOreDefinition(IntProvider clusterSize, float density, int weight, IWorldGenLayer layer,
                            Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range,
-                           float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes,
+                           float discardChanceOnAirExposure, Supplier<@NotNull HolderSet<Biome>> biomes,
                            @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator,
                            @Nullable List<IndicatorGenerator> indicatorGenerators) {
         this.clusterSize = clusterSize;
@@ -143,9 +145,8 @@ public class GTOreDefinition {
     }
 
     public boolean isForBiome(Holder<Biome> biome) {
-        if (biomes == null) return true;
-        var set = biomes.get();
-        return set.size() == 0 || set.contains(biome);
+        HolderSet<Biome> resolved = this.biomes.get();
+        return resolved.size() == 0 || resolved.contains(biome);
     }
 
     public int weightForBiome(Holder<Biome> biome) {
@@ -228,7 +229,7 @@ public class GTOreDefinition {
     }
 
     @HideFromJS
-    public GTOreDefinition biomes(Supplier<HolderSet<Biome>> biomes) {
+    public GTOreDefinition biomes(Supplier<@NotNull HolderSet<Biome>> biomes) {
         this.biomes = biomes;
         return this;
     }
@@ -328,11 +329,13 @@ public class GTOreDefinition {
     @Tolerate
     @RemapForJS("customVeinGenerator")
     public @Nullable VeinGenerator veinGenerator(ResourceLocation id) {
-        if (veinGenerator == null) {
-            veinGenerator = WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ?
-                    WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id).apply(this) : null;
+        if (this.veinGenerator == null) {
+            var generatorProvider = WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id);
+            if (generatorProvider != null) {
+                this.veinGenerator = generatorProvider.apply(this);
+            }
         }
-        return veinGenerator;
+        return this.veinGenerator;
     }
 
     public GTOreDefinition surfaceIndicatorGenerator(Consumer<SurfaceIndicatorGenerator> config) {
@@ -342,16 +345,16 @@ public class GTOreDefinition {
 
     private <T extends IndicatorGenerator> T getOrCreateIndicatorGenerator(Class<T> indicatorClass,
                                                                            Function<GTOreDefinition, T> constructor) {
-        var existingGenerator = indicatorGenerators.stream()
+        var existingGenerator = this.indicatorGenerators.stream()
                 .filter(indicatorClass::isInstance)
                 .map(indicatorClass::cast)
-                .findFirst().orElse(null);
+                .findFirst();
+        if (existingGenerator.isPresent()) {
+            return existingGenerator.get();
+        }
 
-        if (existingGenerator != null)
-            return existingGenerator;
-
-        var generator = constructor.apply(this);
-        indicatorGenerators.add(generator);
+        T generator = constructor.apply(this);
+        this.indicatorGenerators.add(generator);
         return generator;
     }
 
