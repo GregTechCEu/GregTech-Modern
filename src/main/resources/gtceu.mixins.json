@@ -63,7 +63,6 @@
         "BlockMixin",
         "BlockPropertiesAccessor",
         "BlockStateAccessor",
-        "BulkSectionAccessAccessor",
         "CapabilityDispatcherAccessor",
         "CapabilityDispatcherMixin",
         "ChunkGeneratorMixin",

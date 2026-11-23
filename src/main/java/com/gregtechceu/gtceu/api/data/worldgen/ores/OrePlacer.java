@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.core.mixins.BulkSectionAccessAccessor;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.SectionPos;
@@ -62,7 +61,8 @@ public class OrePlacer {
 
     public void placeVein(long sectionPos, WorldGenLevel level, BulkSectionAccess access,
                           GeneratedVein generatedVein, @Nullable RuleTest targetOverride) {
-        LevelChunkSection section = getSection(level, access, sectionPos);
+        // suboptimal but there's no overload that accepts a section pos
+        LevelChunkSection section = access.getSection(SectionPos.of(sectionPos).origin());
         if (section == null) return;
 
         // TODO readd this check
@@ -82,28 +82,5 @@ public class OrePlacer {
         if (placer == null) return;
 
         placer.placeIndicators(access, level);
-    }
-
-    @Nullable
-    private static LevelChunkSection getSection(WorldGenLevel level, BulkSectionAccess _access, long packedSectionPos) {
-        BulkSectionAccessAccessor access = (BulkSectionAccessAccessor) _access;
-        int idx = level.getSectionIndexFromSectionY(SectionPos.y(packedSectionPos));
-        if (idx < 0 || idx >= level.getSectionsCount()) {
-            return null;
-        }
-
-        LevelChunkSection lastSection = access.getLastSection();
-        if (lastSection == null || access.getLastSectionKey() != packedSectionPos) {
-            lastSection = access.getAcquiredSections().computeIfAbsent(packedSectionPos, (pos) -> {
-                ChunkAccess chunk = level.getChunk(SectionPos.x(pos), SectionPos.z(pos));
-                LevelChunkSection section = chunk.getSection(idx);
-                section.acquire();
-                return section;
-            });
-            access.setLastSection(lastSection);
-            access.setLastSectionKey(packedSectionPos);
-        }
-
-        return lastSection;
     }
 }
