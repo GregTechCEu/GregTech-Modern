@@ -48,8 +48,8 @@ public class OreGenerator {
     public List<GeneratedVeinMetadata> generateMetadata(final WorldGenLevel level, ChunkGenerator chunkGenerator,
                                                         ChunkPos chunkPos) {
         return createConfigs(level, chunkGenerator, chunkPos).stream()
-                .map(OreGenerator::logVeinGeneration)
                 .map(entry -> entry.data)
+                .peek(OreGenerator::logVeinGeneration)
                 .peek(data -> {
                     int gridX = Math.floorDiv(chunkPos.x, ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize);
                     int gridZ = Math.floorDiv(chunkPos.z, ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize);
@@ -157,12 +157,10 @@ public class OreGenerator {
     // ********* LOGGING ********* //
     // /////////////////////////// //
 
-    private static VeinConfiguration logVeinGeneration(VeinConfiguration config) {
+    private static void logVeinGeneration(GeneratedVeinMetadata data) {
         if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
-            GTCEu.LOGGER.debug("Generating vein {} at {}", config.data.id(), config.data.center());
+            GTCEu.LOGGER.debug("Generating vein {} at {}", data.id(), data.center());
         }
-
-        return config;
     }
 
     private static void logEmptyVein(VeinConfiguration config) {
