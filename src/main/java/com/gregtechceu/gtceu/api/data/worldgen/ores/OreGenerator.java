@@ -98,6 +98,7 @@ public class OreGenerator {
         Long2ObjectMap<OreBlockPlacer> oresBySection = definition.veinGenerator()
                 .generate(level, config.forkRandom(), definition, config.data.center());
 
+        // TODO figure out a way to skip completely empty veins again
         if (oresBySection.isEmpty()) {
             logEmptyVein(config);
             return Optional.empty();
