@@ -36,6 +36,7 @@ import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 
 import com.google.common.collect.Sets;
@@ -341,7 +342,7 @@ public class GTCommands {
         OreGenerator generator = placer.getOreGenCache().getOreGenerator();
 
         GeneratedVeinMetadata metadata = new GeneratedVeinMetadata(id, chunkPos, sourcePos, vein);
-        RandomSource random = level.random;
+        RandomSource random = new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong());
 
         try (BulkSectionAccess access = new BulkSectionAccess(level)) {
             var generated = generator.generateOres(new OreGenerator.VeinConfiguration(metadata, random), level,
