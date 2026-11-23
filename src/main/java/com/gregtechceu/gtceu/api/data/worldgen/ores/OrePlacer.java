@@ -15,9 +15,8 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import lombok.Getter;
 
-import java.util.List;
+import java.util.stream.Stream;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -45,14 +44,14 @@ public class OrePlacer {
         if (!ConfigHolder.INSTANCE.dev.doSuperflatOres && chunkGenerator instanceof FlatLevelSource) return;
 
         final ChunkPos chunkPos = chunk.getPos();
-        List<GeneratedVein> generatedVeins = oreGenCache.consumeChunkVeins(level, chunkGenerator, chunk);
+        Stream<GeneratedVein> generatedVeins = oreGenCache.consumeChunkVeins(level, chunkGenerator, chunk);
 
         final int minSection = level.getMinSection(), maxSection = level.getMaxSection();
         try (BulkSectionAccess access = new BulkSectionAccess(level)) {
             generatedVeins.forEach(vein -> {
                 for (int y = minSection; y < maxSection; y++) {
                     long sectionPos = SectionPos.asLong(chunkPos.x, y, chunkPos.z);
-                    placeVein(sectionPos, level, access, vein, null);
+                    placeVein(sectionPos, level, access, vein, vein.getLayer().getTarget());
                 }
                 placeIndicators(level, chunkPos, access, vein);
             });
@@ -60,17 +59,13 @@ public class OrePlacer {
     }
 
     public void placeVein(long sectionPos, WorldGenLevel level, BulkSectionAccess access,
-                          GeneratedVein generatedVein, @Nullable RuleTest targetOverride) {
+                          GeneratedVein generatedVein, RuleTest layerTarget) {
         // suboptimal but there's no overload that accepts a section pos
         LevelChunkSection section = access.getSection(SectionPos.of(sectionPos).origin());
         if (section == null) return;
 
-        // TODO readd this check
-        RuleTest layerTarget = targetOverride != null ? targetOverride : generatedVein.getLayer().getTarget();
-
         OreBlockPlacer placer = generatedVein.consumeOres(sectionPos);
         if (placer == null) return;
-
         placer.placeSectionBlocks(level, access, section, layerTarget, SectionPos.of(sectionPos));
     }
 

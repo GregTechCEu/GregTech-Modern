@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
@@ -47,7 +48,7 @@ public class OreGenerator {
 
     public List<GeneratedVeinMetadata> generateMetadata(final WorldGenLevel level, ChunkGenerator chunkGenerator,
                                                         ChunkPos chunkPos) {
-        return createConfigs(level, chunkGenerator, chunkPos).stream()
+        return createConfigs(level, chunkGenerator, chunkPos)
                 .map(entry -> entry.data)
                 .peek(OreGenerator::logVeinGeneration)
                 .peek(data -> {
@@ -106,23 +107,23 @@ public class OreGenerator {
         return Optional.of(new GeneratedVein(chunkPos, definition.layer(), oresBySection, generatedIndicators));
     }
 
-    private List<VeinConfiguration> createConfigs(WorldGenLevel level, ChunkGenerator generator, ChunkPos chunkPos) {
-        var random = new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong());
+    private Stream<VeinConfiguration> createConfigs(WorldGenLevel level, ChunkGenerator generator, ChunkPos chunkPos) {
+        RandomSource random = new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong());
 
         return OreVeinUtil.getVeinCenter(chunkPos, random).stream()
                 .flatMap(veinCenter -> getEntries(level, veinCenter, random).map(entry -> {
                     if (entry == null) return null;
-                    var id = GTRegistries.ORE_VEINS.getKey(entry);
+                    ResourceLocation id = GTRegistries.ORE_VEINS.getKey(entry);
 
                     BlockPos origin = computeVeinOrigin(level, generator, chunkPos, random, veinCenter, entry)
                             .orElseThrow(() -> new IllegalStateException(
                                     "Cannot determine y coordinate for the vein at " + veinCenter));
 
                     return new VeinConfiguration(new GeneratedVeinMetadata(id, chunkPos, origin, entry), random);
-                })).toList();
+                }));
     }
 
-    private Stream<GTOreDefinition> getEntries(WorldGenLevel level, BlockPos veinCenter, XoroshiroRandomSource random) {
+    private Stream<GTOreDefinition> getEntries(WorldGenLevel level, BlockPos veinCenter, RandomSource random) {
         return GTRegistries.WORLD_GEN_LAYERS.values().stream()
                 .filter(layer -> layer.existsInDimension(level.getLevel().dimension()))
                 .map(layer -> getEntry(level, level.getBiome(veinCenter), random, layer))
@@ -132,7 +133,7 @@ public class OreGenerator {
     private @Nullable GTOreDefinition getEntry(WorldGenLevel level, Holder<Biome> biome, RandomSource random,
                                                IWorldGenLayer layer) {
         var veins = WorldGeneratorUtils.getCachedBiomeVeins(level.getLevel(), biome).stream()
-                .filter(vein -> vein.vein().layer().equals(layer))
+                .filter(entry -> entry.vein().layer().equals(layer))
                 .toList();
         var randomVein = GTUtil.getRandomItem(random, veins);
         return randomVein == null ? null : randomVein.vein();

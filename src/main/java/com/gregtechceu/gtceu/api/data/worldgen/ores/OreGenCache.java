@@ -54,7 +54,7 @@ public class OreGenCache {
             .build();
 
     private List<GeneratedVeinMetadata> getOrCreateVeinMetadata(WorldGenLevel level, ChunkGenerator generator,
-                                                                ChunkPos chunkPos) {
+                                                                  ChunkPos chunkPos) {
         try {
             return veinMetadataByOrigin.get(chunkPos, () -> oreGenerator.generateMetadata(level, generator, chunkPos));
         } catch (ExecutionException e) {
@@ -69,7 +69,7 @@ public class OreGenCache {
      * <p>
      * The search radius depends on the largest registered vein size, as well as the relevant config options.
      */
-    public List<GeneratedVein> consumeChunkVeins(WorldGenLevel level, ChunkGenerator generator, ChunkAccess chunk) {
+    public Stream<GeneratedVein> consumeChunkVeins(WorldGenLevel level, ChunkGenerator generator, ChunkAccess chunk) {
         final int maxSearchDistance = OreVeinUtil.getMaxIndicatorSearchDistance();
         return getSurroundingChunks(chunk.getPos(), maxSearchDistance).flatMap(chunkPos -> {
             try {
@@ -81,7 +81,7 @@ public class OreGenCache {
                 GTCEu.LOGGER.error("Cannot create vein in chunk {}", chunkPos, e);
                 return Stream.empty();
             }
-        }).filter(Objects::nonNull).toList();
+        }).filter(Objects::nonNull);
     }
 
     private Stream<ChunkPos> getSurroundingChunks(ChunkPos center, int searchDistance) {
