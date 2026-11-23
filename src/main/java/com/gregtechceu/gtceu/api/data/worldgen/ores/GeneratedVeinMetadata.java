@@ -56,6 +56,7 @@ public final class GeneratedVeinMetadata {
     @Getter
     @NotNull
     private final ChunkPos originChunk;
+    // TODO rename to `origin` (needs a datafixer for the NBT)
     @Getter
     @NotNull
     private final BlockPos center;
@@ -88,17 +89,19 @@ public final class GeneratedVeinMetadata {
 
     public static GeneratedVeinMetadata readFromPacket(FriendlyByteBuf buf) {
         ResourceLocation id = buf.readResourceLocation();
-        ChunkPos origin = new ChunkPos(buf.readVarLong());
-        BlockPos center = BlockPos.of(buf.readVarLong());
+        ChunkPos originChunk = buf.readChunkPos();
+        BlockPos origin = buf.readBlockPos();
         GTOreDefinition def = ClientProxy.CLIENT_ORE_VEINS.get(buf.readResourceLocation());
-        return new GeneratedVeinMetadata(id, origin, center, def, false);
+        boolean depleted = buf.readBoolean();
+        return new GeneratedVeinMetadata(id, originChunk, origin, def, depleted);
     }
 
     public void writeToPacket(FriendlyByteBuf buf) {
         buf.writeResourceLocation(this.id);
-        buf.writeVarLong(this.originChunk.toLong());
-        buf.writeVarLong(this.center.asLong());
+        buf.writeChunkPos(this.originChunk);
+        buf.writeBlockPos(this.center);
         buf.writeResourceLocation(GTRegistries.ORE_VEINS.getKey(this.definition));
+        buf.writeBoolean(this.depleted);
     }
 
     @Override
@@ -106,16 +109,20 @@ public final class GeneratedVeinMetadata {
         if (this == object) return true;
         if (!(object instanceof GeneratedVeinMetadata that)) return false;
 
-        return id.equals(that.id) && originChunk.equals(that.originChunk) && center.equals(that.center) &&
-                definition.equals(that.definition);
+        return this.id.equals(that.id) &&
+                this.originChunk.equals(that.originChunk) &&
+                this.center.equals(that.center) &&
+                this.definition.equals(that.definition) &&
+                this.depleted == that.depleted;
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + originChunk.hashCode();
-        result = 31 * result + center.hashCode();
-        result = 31 * result + definition.hashCode();
+        int result = this.id.hashCode();
+        result = 31 * result + this.originChunk.hashCode();
+        result = 31 * result + this.center.hashCode();
+        result = 31 * result + this.definition.hashCode();
+        result = 31 * result + Boolean.hashCode(this.depleted);
         return result;
     }
 }
