@@ -19,14 +19,20 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomSupport;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
-import net.minecraft.world.level.levelgen.placement.PlacementContext;
+import net.minecraft.world.level.levelgen.placement.*;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -38,6 +44,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class OreGenerator {
+
+    public static final PlacementModifier GENERATION_ATTEMPTS = CountPlacement.of(8);
+    private static final LoadingCache<Integer, PlacementModifier> BELOW_SURFACE_FILTER_CACHE = CacheBuilder.newBuilder()
+            .expireAfterAccess(30, TimeUnit.SECONDS)
+            .softValues()
+            .build(CacheLoader.from(OreGenerator::createBelowSurfaceFilter));
 
     public record VeinConfiguration(GeneratedVeinMetadata data, RandomSource random) {
 
@@ -144,13 +156,27 @@ public class OreGenerator {
                                                         GTOreDefinition entry) {
         String layerName = GTRegistries.WORLD_GEN_LAYERS.getKey(entry.layer()).toString();
         RandomSupport.Seed128bit layerSeed = RandomSupport.seedFromHashOf(layerName);
-
-        RandomSource layeredRandom = new XoroshiroRandomSource(random.nextLong() ^ layerSeed.seedLo(),
-                random.nextLong() ^ layerSeed.seedHi());
+        RandomSupport.Seed128bit actualSeed = layerSeed.xor(random.nextLong(), random.nextLong());
+        RandomSource layeredRandom = new XoroshiroRandomSource(actualSeed);
 
         veinCenter = OreVeinUtil.getVeinCenter(pos, layeredRandom).orElse(veinCenter);
+
+        // maximum depth at which there will for sure be a block to place
+        int maxDepth = entry.clusterSize().getMinValue();
+        PlacementModifier _belowSurface;
+        try {
+            _belowSurface = BELOW_SURFACE_FILTER_CACHE.get(maxDepth);
+        } catch (ExecutionException e) {
+            GTCEu.LOGGER.error("Cannot cache depth filter for depth {}", maxDepth, e);
+            _belowSurface = createBelowSurfaceFilter(maxDepth);
+        }
+        final PlacementModifier belowSurface = _belowSurface;
+
         PlacementContext placementContext = new PlacementContext(level, generator, Optional.empty());
-        return entry.range().getPositions(placementContext, layeredRandom, veinCenter)
+        return Stream.of(veinCenter)
+                .flatMap(p -> GENERATION_ATTEMPTS.getPositions(placementContext, layeredRandom, p))
+                .flatMap(p -> entry.range().getPositions(placementContext, layeredRandom, p))
+                .flatMap(p -> belowSurface.getPositions(placementContext, layeredRandom, p))
                 .findFirst();
     }
 
@@ -168,5 +194,9 @@ public class OreGenerator {
         if (ConfigHolder.INSTANCE.dev.debugWorldgen) {
             GTCEu.LOGGER.debug("No blocks generated for vein {} at {}", config.data.id(), config.data.center());
         }
+    }
+
+    private static PlacementModifier createBelowSurfaceFilter(int maxDepth) {
+        return SurfaceRelativeThresholdFilter.of(Heightmap.Types.WORLD_SURFACE_WG, Integer.MIN_VALUE, maxDepth);
     }
 }
