@@ -93,31 +93,29 @@ public class ClassicVeinGenerator extends VeinGenerator {
                                                    BlockPos origin) {
         Long2ObjectMap<OreBlockPlacer> generatedSections = new Long2ObjectOpenHashMap<>();
 
-        int radius = entry.clusterSize().sample(random) / 2;
-        int ySize = radius / 2;
-        int xy2 = radius * radius * ySize * ySize;
-        int xz2 = radius * radius * radius * radius;
-        int yz2 = ySize * ySize * radius * radius;
-        int xyz2 = xy2 * radius * radius;
+        int xzRadius = entry.clusterSize().sample(random) / 2;
+
+        int xzRadiusSqr = xzRadius * xzRadius;
+        int yRadiusSqr = this.yRadius * this.yRadius;
+        int xySqr = xzRadiusSqr * yRadiusSqr;
+        int xzSqr = xzRadiusSqr * xzRadiusSqr;
+        int xyzSqr = xzSqr * yRadiusSqr;
 
         int xPos = origin.getX();
         int yPos = origin.getY();
         int zPos = origin.getZ();
 
-        int max = Math.max(ySize, radius);
-        int yMax = Math.min(max, yRadius);
-
         int sectionX = SectionPos.blockToSectionCoord(xPos);
         int sectionY = SectionPos.blockToSectionCoord(yPos);
         int sectionZ = SectionPos.blockToSectionCoord(zPos);
 
-        SectionPos.betweenClosedStream(sectionX - max, sectionY - yMax, sectionZ - max,
-                sectionX + max, sectionY + yMax, sectionZ + max)
+        SectionPos.betweenClosedStream(sectionX - xzRadius, sectionY - this.yRadius, sectionZ - xzRadius,
+                sectionX + xzRadius, sectionY + this.yRadius, sectionZ + xzRadius)
                 .forEach(pos -> {
                     final long randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
                     generatedSections.put(pos.asLong(), (worldGenLevel, access, section, layerTarget, sectionPos) -> {
-                        placeSection(worldGenLevel, access, section, layerTarget, randomSeed, entry,
-                                sectionPos, origin, max, yMax, xy2, xz2, yz2, xyz2);
+                        placeSection(worldGenLevel, access, section, layerTarget, randomSeed, entry, sectionPos, origin,
+                                xzRadius, xySqr, xzSqr, xyzSqr);
                     });
                 });
 
@@ -126,7 +124,7 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
     private void placeSection(WorldGenLevel level, BulkSectionAccess access, LevelChunkSection section,
                               RuleTest layerTarget, long randomSeed, GTOreDefinition entry, SectionPos sectionPos,
-                              BlockPos origin, int max, int yMax, int xy2, int xz2, int yz2, int xyz2) {
+                              BlockPos origin, int xzRadius, int xySqr, int xzSqr, int xyzSqr) {
         int xOrigin = origin.getX();
         int yOrigin = origin.getY();
         int zOrigin = origin.getZ();
@@ -136,33 +134,33 @@ public class ClassicVeinGenerator extends VeinGenerator {
         BlockPos.MutableBlockPos pos = origin.mutable();
 
         // TODO optimize these loops to not have all the useless iteration
-        for (int dx = -max; dx <= max; dx++) {
-            int xr = yz2 * dx * dx;
-            if (xr > xyz2) continue;
-            if (SectionPos.blockToSectionCoord(xOrigin + xr) != sectionPos.x()) continue;
+        for (int dx = -xzRadius; dx <= xzRadius; dx++) {
+            int xr = xzSqr * dx * dx;
+            if (xr > xyzSqr) continue;
+            int x = dx + xOrigin;
+            if (SectionPos.blockToSectionCoord(x) != sectionPos.x()) continue;
 
-            for (int dy = -yMax; dy <= yMax; dy++) {
-                int yr = xr + xz2 * dy * dy + xy2;
-                if (yr > xyz2) continue;
-                if (SectionPos.blockToSectionCoord(yOrigin + yr) != sectionPos.y()) continue;
-                if (level.isOutsideBuildHeight(dy + yOrigin)) continue;
+            for (int dy = -this.yRadius; dy <= this.yRadius; dy++) {
+                int yr = xr + xzSqr * dy * dy + xySqr;
+                if (yr > xyzSqr) continue;
+                int y = dy + yOrigin;
+                if (SectionPos.blockToSectionCoord(y) != sectionPos.y()) continue;
+                if (level.isOutsideBuildHeight(y)) continue;
 
-                for (int dz = -max; dz <= max; dz++) {
-                    int zr = yr + xy2 * dz * dz;
-                    if (zr > xyz2) continue;
-                    if (SectionPos.blockToSectionCoord(zOrigin + zr) != sectionPos.z()) continue;
-
-                    int x = dx + xOrigin;
-                    int y = dy + yOrigin;
+                for (int dz = -xzRadius; dz <= xzRadius; dz++) {
+                    int zr = yr + xySqr * dz * dz;
+                    if (zr > xyzSqr) continue;
                     int z = dz + zOrigin;
+                    if (SectionPos.blockToSectionCoord(z) != sectionPos.z()) continue;
+
                     pos.set(x, y, z);
 
-                    int layer = y - (yOrigin - yMax);
+                    int layer = y - (yOrigin - this.yRadius);
                     // First try to spawn "between"
                     if (layer >= startBetween && (layer - startBetween + 1) <= between.layers) {
                         if (random.nextFloat() <= entry.density() / 2.0f) {
                             OreVeinUtil.placeOreBlock(between.target, access, section, layerTarget, random, entry, pos);
-                            return;
+                            continue;
                         }
                     }
 
@@ -170,12 +168,12 @@ public class ClassicVeinGenerator extends VeinGenerator {
                     if (layer >= startPrimary) {
                         if (random.nextFloat() <= entry.density()) {
                             OreVeinUtil.placeOreBlock(primary.target, access, section, layerTarget, random, entry, pos);
-                            return;
+                            continue;
                         }
                     } else {
                         if (random.nextFloat() <= entry.density()) {
                             OreVeinUtil.placeOreBlock(secondary.target, access, section, layerTarget, random, entry, pos);
-                            return;
+                            continue;
                         }
                     }
 
