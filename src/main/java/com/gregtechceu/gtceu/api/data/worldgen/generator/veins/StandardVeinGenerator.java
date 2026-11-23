@@ -18,7 +18,6 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
@@ -154,11 +153,13 @@ public class StandardVeinGenerator extends VeinGenerator {
         float dir = random.nextFloat() * (float) Math.PI;
         float spreadXZ = size / 8.0F;
         int maxRadius = Mth.ceil((size / 16.0F * 2.0F + 1.0F) / 2.0F);
-        double x0 = origin.getX() + Math.sin(dir) * spreadXZ;
-        double x1 = origin.getX() - Math.sin(dir) * spreadXZ;
-        double z0 = origin.getZ() + Math.cos(dir) * spreadXZ;
-        double z1 = origin.getZ() - Math.cos(dir) * spreadXZ;
-        double y0 = origin.getY() + random.nextInt(3) - SPREAD_Y;
+        double xOffset = Math.sin(dir) * spreadXZ;
+        double zOffset = Math.cos(dir) * spreadXZ;
+        double x0 = origin.getX() + xOffset;
+        double x1 = origin.getX() - xOffset;
+        double z0 = origin.getZ() + zOffset;
+        double z1 = origin.getZ() - zOffset;
+        double y0 = origin.getY() - random.nextInt(3) + SPREAD_Y;
         double y1 = origin.getY() + random.nextInt(3) - SPREAD_Y;
 
         int xStart = origin.getX() - Mth.ceil(spreadXZ) - maxRadius;
@@ -167,34 +168,8 @@ public class StandardVeinGenerator extends VeinGenerator {
         int sizeXZ = 2 * (Mth.ceil(spreadXZ) + maxRadius);
         int sizeY = 2 * (SPREAD_Y + maxRadius);
 
-        for (int x = xStart; x <= xStart + sizeXZ; ++x) {
-            for (int z = zStart; z <= zStart + sizeXZ; ++z) {
-                if (yStart > level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, x, z)) {
-                    continue;
-                }
-
-                this.doPlaceNormal(generatedSections, level, random, entry, size,
-                        x0, x1, z0, z1, y0, y1, xStart, yStart, zStart, sizeXZ, sizeY);
-
-                // Stop after first successful placement attempt
-                if (!generatedSections.isEmpty()) {
-                    return generatedSections;
-                }
-            }
-        }
-
-        return generatedSections;
-    }
-
-    @SuppressWarnings("PointlessArithmeticExpression")
-    protected void doPlaceNormal(Long2ObjectMap<OreBlockPlacer> generatedSections,
-                                 WorldGenLevel level, RandomSource random, GTOreDefinition entry, int size,
-                                 double x0, double x1, double z0, double z1, double y0, double y1,
-                                 int xStart, int yStart, int zStart, int sizeXZ, int sizeY) {
         BitSet tested = new BitSet(sizeXZ * sizeY * sizeXZ);
-
         double[] data = new double[size * 4];
-
         for (int i = 0; i < size; ++i) {
             double step = (double) i / size;
             double xx = Mth.lerp(step, x0, x1);
@@ -204,6 +179,7 @@ public class StandardVeinGenerator extends VeinGenerator {
             double ss = random.nextDouble() * (double) size / 16.0D;
             double randomShapeOffset = ((Math.sin(Math.PI * step) + 1.0D) * ss + 1.0D) / 2.0D;
 
+            // noinspection PointlessArithmeticExpression
             data[i * 4 + 0] = xx;
             data[i * 4 + 1] = yy;
             data[i * 4 + 2] = zz;
@@ -216,16 +192,17 @@ public class StandardVeinGenerator extends VeinGenerator {
             for (int j = i + 1; j < size; ++j) {
                 if (data[j * 4 + 3] <= 0.0D) continue;
 
+                // noinspection PointlessArithmeticExpression
                 double dx = data[i * 4 + 0] - data[j * 4 + 0];
                 double dy = data[i * 4 + 1] - data[j * 4 + 1];
                 double dz = data[i * 4 + 2] - data[j * 4 + 2];
-                double randomShapeOffsetDifference = data[i * 4 + 3] - data[j * 4 + 3];
+                double dRandomShapeOffset = data[i * 4 + 3] - data[j * 4 + 3];
 
-                if (randomShapeOffsetDifference * randomShapeOffsetDifference <= (dx * dx) + (dy * dy) + (dz * dz)) {
+                if (dRandomShapeOffset * dRandomShapeOffset <= (dx * dx) + (dy * dy) + (dz * dz)) {
                     continue;
                 }
 
-                if (randomShapeOffsetDifference > 0.0D) {
+                if (dRandomShapeOffset > 0.0D) {
                     data[j * 4 + 3] = -1.0D;
                 } else {
                     data[i * 4 + 3] = -1.0D;
@@ -242,9 +219,10 @@ public class StandardVeinGenerator extends VeinGenerator {
                                 xStart, yStart, zStart, sizeXZ, sizeY, tested);
                     });
                 });
+
+        return generatedSections;
     }
 
-    @SuppressWarnings("PointlessArithmeticExpression")
     private void placeSection(WorldGenLevel level, BulkSectionAccess access, LevelChunkSection section,
                               SectionPos sectionPos, GTOreDefinition entry, int sampledSize, long randomSeed,
                               double[] data, int xStart, int yStart, int zStart, int sizeXZ, int sizeY, BitSet tested) {
@@ -255,6 +233,7 @@ public class StandardVeinGenerator extends VeinGenerator {
             double randomShapeOffset = data[i * 4 + 3];
             if (randomShapeOffset < 0.0) continue;
 
+            // noinspection PointlessArithmeticExpression
             double xx = data[i * 4 + 0];
             double yy = data[i * 4 + 1];
             double zz = data[i * 4 + 2];
