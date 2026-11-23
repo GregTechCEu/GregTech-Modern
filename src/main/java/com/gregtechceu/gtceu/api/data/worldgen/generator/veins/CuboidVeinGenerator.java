@@ -17,6 +17,7 @@ import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
@@ -149,9 +150,9 @@ public class CuboidVeinGenerator extends VeinGenerator {
                         layersInSection = Math.min(totalLayers, SECTION_MAX_INDEX - sectionRelativeStartY);
                     }
 
-                    generatedSections.put(pos.asLong(), (worldGenLevel, access, section, sectionPos) -> {
-                        placeSection(worldGenLevel, access, section, sectionPos, origin, randomSeed, entry,
-                                westBound, eastBound, northBound, southBound,
+                    generatedSections.put(pos.asLong(), (worldGenLevel, access, section, layerTarget, sectionPos) -> {
+                        placeSection(worldGenLevel, access, section, layerTarget, sectionPos, origin, randomSeed,
+                                entry, westBound, eastBound, northBound, southBound,
                                 sectionRelativeStartY, layerOffsetFromSectionBase, layersInSection);
                     });
                 });
@@ -160,8 +161,8 @@ public class CuboidVeinGenerator extends VeinGenerator {
     }
 
     private void placeSection(WorldGenLevel level, BulkSectionAccess access, LevelChunkSection section,
-                              SectionPos sectionPos, BlockPos origin, long randomSeed, GTOreDefinition entry,
-                              int westBound, int eastBound, int northBound, int southBound,
+                              RuleTest layerTarget, SectionPos sectionPos, BlockPos origin, long randomSeed,
+                              GTOreDefinition entry, int westBound, int eastBound, int northBound, int southBound,
                               int sectionRelativeStartY, int layerOffset, int layersInSection) {
         final int westBoundInSection = Mth.clamp(westBound - sectionPos.minBlockX(), 0, SECTION_MAX_INDEX);
         final int eastBoundInSection = Mth.clamp(eastBound - sectionPos.minBlockX(), 0, SECTION_MAX_INDEX);
@@ -211,32 +212,32 @@ public class CuboidVeinGenerator extends VeinGenerator {
                     pos.set(globalX, globalY, globalZ);
                     if (layerOffset <= bottomLayer) {
                         // layers 0, 1, and 2 are bottom and spread
-                        if (!placeBottom(access, section, entry, pos, random, weightX, weightZ)) {
-                            placeSpread(access, section, entry, pos, random, weightX, weightZ);
+                        if (!placeBottom(access, section, layerTarget, entry, pos, random, weightX, weightZ)) {
+                            placeSpread(access, section, layerTarget, entry, pos, random, weightX, weightZ);
                         }
                     } else if (layerOffset <= middleLayer1) {
                         // layer 3 is bottom, middle, and spread
-                        if (!placeMiddle(access, section, entry, pos, random, weightX, weightZ)) {
-                            if (!placeBottom(access, section, entry, pos, random, weightX, weightZ)) {
-                                placeSpread(access, section, entry, pos, random, weightX, weightZ);
+                        if (!placeMiddle(access, section, layerTarget, entry, pos, random, weightX, weightZ)) {
+                            if (!placeBottom(access, section, layerTarget, entry, pos, random, weightX, weightZ)) {
+                                placeSpread(access, section, layerTarget, entry, pos, random, weightX, weightZ);
                             }
                         }
                     } else if (layerOffset <= middleLayer2) {
                         // layer 4 is middle, and spread
-                        if (!placeMiddle(access, section, entry, pos, random, weightX, weightZ)) {
-                            placeSpread(access, section, entry, pos, random, weightX, weightZ);
+                        if (!placeMiddle(access, section, layerTarget, entry, pos, random, weightX, weightZ)) {
+                            placeSpread(access, section, layerTarget, entry, pos, random, weightX, weightZ);
                         }
                     } else if (layerOffset <= topLayer) {
                         // layers 5 and 6 is top, middle, and spread
-                        if (!placeMiddle(access, section, entry, pos, random, weightX, weightZ)) {
-                            if (!placeTop(access, section, entry, pos, random, weightX, weightZ)) {
-                                placeSpread(access, section, entry, pos, random, weightX, weightZ);
+                        if (!placeMiddle(access, section, layerTarget, entry, pos, random, weightX, weightZ)) {
+                            if (!placeTop(access, section, layerTarget, entry, pos, random, weightX, weightZ)) {
+                                placeSpread(access, section, layerTarget, entry, pos, random, weightX, weightZ);
                             }
                         }
                     } else {
                         // layers 7 and 8 is top and spread
-                        if (!placeTop(access, section, entry, pos, random, weightX, weightZ)) {
-                            placeSpread(access, section, entry, pos, random, weightX, weightZ);
+                        if (!placeTop(access, section, layerTarget, entry, pos, random, weightX, weightZ)) {
+                            placeSpread(access, section, layerTarget, entry, pos, random, weightX, weightZ);
                         }
                     }
                 }
@@ -261,10 +262,10 @@ public class CuboidVeinGenerator extends VeinGenerator {
      *
      * @return whether the ore was placed
      */
-    private boolean placeTop(BulkSectionAccess access, LevelChunkSection section, GTOreDefinition entry,
-                             BlockPos pos, RandomSource random, int weightX, int weightZ) {
+    private boolean placeTop(BulkSectionAccess access, LevelChunkSection section, RuleTest layerTarget,
+                             GTOreDefinition entry, BlockPos pos, RandomSource random, int weightX, int weightZ) {
         if (shouldPlaceOre(random, weightX, weightZ)) {
-            OreVeinUtil.placeOreBlock(this.top.target, access, section, random, entry, pos);
+            OreVeinUtil.placeOreBlock(this.top.target, access, section, layerTarget, random, entry, pos);
             return true;
         }
         return false;
@@ -275,10 +276,10 @@ public class CuboidVeinGenerator extends VeinGenerator {
      *
      * @return whether the ore was placed
      */
-    private boolean placeMiddle(BulkSectionAccess access, LevelChunkSection section, GTOreDefinition entry,
-                                BlockPos pos, RandomSource random, int weightX, int weightZ) {
+    private boolean placeMiddle(BulkSectionAccess access, LevelChunkSection section, RuleTest layerTarget,
+                                GTOreDefinition entry, BlockPos pos, RandomSource random, int weightX, int weightZ) {
         if (random.nextInt(2) == 0 && shouldPlaceOre(random, weightX, weightZ)) {
-            OreVeinUtil.placeOreBlock(this.middle.target, access, section, random, entry, pos);
+            OreVeinUtil.placeOreBlock(this.middle.target, access, section, layerTarget, random, entry, pos);
             return true;
         }
         return false;
@@ -289,10 +290,10 @@ public class CuboidVeinGenerator extends VeinGenerator {
      *
      * @return whether the ore was placed
      */
-    private boolean placeBottom(BulkSectionAccess access, LevelChunkSection section, GTOreDefinition entry,
-                                BlockPos pos, RandomSource random, int weightX, int weightZ) {
+    private boolean placeBottom(BulkSectionAccess access, LevelChunkSection section, RuleTest layerTarget,
+                                GTOreDefinition entry, BlockPos pos, RandomSource random, int weightX, int weightZ) {
         if (shouldPlaceOre(random, weightX, weightZ)) {
-            OreVeinUtil.placeOreBlock(this.bottom.target, access, section, random, entry, pos);
+            OreVeinUtil.placeOreBlock(this.bottom.target, access, section, layerTarget, random, entry, pos);
             return true;
         }
         return false;
@@ -303,10 +304,10 @@ public class CuboidVeinGenerator extends VeinGenerator {
      *
      * @return whether the ore was placed
      */
-    private boolean placeSpread(BulkSectionAccess access, LevelChunkSection section, GTOreDefinition entry,
-                                BlockPos pos, RandomSource random, int weightX, int weightZ) {
+    private boolean placeSpread(BulkSectionAccess access, LevelChunkSection section, RuleTest layerTarget,
+                                GTOreDefinition entry, BlockPos pos, RandomSource random, int weightX, int weightZ) {
         if (random.nextFloat() <= entry.density() * spreadDivisor && shouldPlaceOre(random, weightX, weightZ)) {
-            OreVeinUtil.placeOreBlock(this.spread.target, access, section, random, entry, pos);
+            OreVeinUtil.placeOreBlock(this.spread.target, access, section, layerTarget, random, entry, pos);
             return true;
         }
         return false;

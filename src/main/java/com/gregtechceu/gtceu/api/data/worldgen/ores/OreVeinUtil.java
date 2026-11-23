@@ -25,6 +25,7 @@ import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import com.google.common.base.Suppliers;
 import com.google.gson.JsonArray;
@@ -48,13 +49,14 @@ public class OreVeinUtil {
     private OreVeinUtil() {}
 
     public static void placeOreBlock(Either<List<OreConfiguration.TargetBlockState>, Material> blockOrMaterial,
-                                     BulkSectionAccess access, LevelChunkSection section,
+                                     BulkSectionAccess access, LevelChunkSection section, RuleTest layerTarget,
                                      RandomSource random, GTOreDefinition entry, BlockPos pos) {
         int sx = SectionPos.sectionRelative(pos.getX());
         int sy = SectionPos.sectionRelative(pos.getY());
         int sz = SectionPos.sectionRelative(pos.getZ());
 
         BlockState existing = section.getBlockState(sx, sy, sz);
+        if (!layerTarget.test(existing, random)) return;
 
         blockOrMaterial.ifLeft(targetStates -> {
             for (OreConfiguration.TargetBlockState target : targetStates) {

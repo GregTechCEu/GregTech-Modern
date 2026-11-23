@@ -115,18 +115,18 @@ public class ClassicVeinGenerator extends VeinGenerator {
                 sectionX + max, sectionY + yMax, sectionZ + max)
                 .forEach(pos -> {
                     final long randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
-                    generatedSections.put(pos.asLong(), (worldGenLevel, access, section, sectionPos) -> {
-                        placeSection(worldGenLevel, access, section, randomSeed, entry, sectionPos, origin, max, yMax,
-                                xy2, xz2, yz2, xyz2);
+                    generatedSections.put(pos.asLong(), (worldGenLevel, access, section, layerTarget, sectionPos) -> {
+                        placeSection(worldGenLevel, access, section, layerTarget, randomSeed, entry,
+                                sectionPos, origin, max, yMax, xy2, xz2, yz2, xyz2);
                     });
                 });
 
         return generatedSections;
     }
 
-    private void placeSection(WorldGenLevel level, BulkSectionAccess access, LevelChunkSection section, long randomSeed,
-                              GTOreDefinition entry, SectionPos sectionPos, BlockPos origin, int max, int yMax,
-                              int xy2, int xz2, int yz2, int xyz2) {
+    private void placeSection(WorldGenLevel level, BulkSectionAccess access, LevelChunkSection section,
+                              RuleTest layerTarget, long randomSeed, GTOreDefinition entry, SectionPos sectionPos,
+                              BlockPos origin, int max, int yMax, int xy2, int xz2, int yz2, int xyz2) {
         int xOrigin = origin.getX();
         int yOrigin = origin.getY();
         int zOrigin = origin.getZ();
@@ -159,9 +159,9 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
                     int layer = y - (yOrigin - yMax);
                     // First try to spawn "between"
-                    if (layer >= startBetween && layer - startBetween + 1 <= between.layers) {
-                        if (random.nextFloat() <= entry.density() / 2) {
-                            OreVeinUtil.placeOreBlock(between.target, access, section, random, entry, pos);
+                    if (layer >= startBetween && (layer - startBetween + 1) <= between.layers) {
+                        if (random.nextFloat() <= entry.density() / 2.0f) {
+                            OreVeinUtil.placeOreBlock(between.target, access, section, layerTarget, random, entry, pos);
                             return;
                         }
                     }
@@ -169,19 +169,19 @@ public class ClassicVeinGenerator extends VeinGenerator {
                     // Then try primary/secondary
                     if (layer >= startPrimary) {
                         if (random.nextFloat() <= entry.density()) {
-                            OreVeinUtil.placeOreBlock(primary.target, access, section, random, entry, pos);
+                            OreVeinUtil.placeOreBlock(primary.target, access, section, layerTarget, random, entry, pos);
                             return;
                         }
                     } else {
                         if (random.nextFloat() <= entry.density()) {
-                            OreVeinUtil.placeOreBlock(secondary.target, access, section, random, entry, pos);
+                            OreVeinUtil.placeOreBlock(secondary.target, access, section, layerTarget, random, entry, pos);
                             return;
                         }
                     }
 
                     // Then lastly, try sporadic
                     if (random.nextFloat() <= entry.density() / sporadicDivisor) {
-                        OreVeinUtil.placeOreBlock(sporadic.target, access, section, random, entry, pos);
+                        OreVeinUtil.placeOreBlock(sporadic.target, access, section, layerTarget, random, entry, pos);
                     }
                 }
             }

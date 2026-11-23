@@ -16,6 +16,7 @@ import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -99,8 +100,8 @@ public class LayeredVeinGenerator extends VeinGenerator {
         SectionPos.betweenClosedStream(sectionX0, sectionY0, sectionZ0, sectionX1, sectionY1, sectionZ1)
                 .forEach(pos -> {
                     final long randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
-                    generatedSections.put(pos.asLong(), (worldGenLevel, access, section, sectionPos) -> {
-                        placeSection(worldGenLevel, access, section, sectionPos, randomSeed, entry, size,
+                    generatedSections.put(pos.asLong(), (worldGenLevel, access, section, layerTarget, sectionPos) -> {
+                        placeSection(worldGenLevel, access, section, layerTarget, sectionPos, randomSeed, entry, size,
                                 resolvedLayers, layerDiameterOffsets, layerCoordinate, slantyCoordinate, slope,
                                 xMin, yMin, zMin);
                     });
@@ -143,8 +144,8 @@ public class LayeredVeinGenerator extends VeinGenerator {
     }
 
     private void placeSection(WorldGenLevel level, BulkSectionAccess access, LevelChunkSection section,
-                              SectionPos sectionPos, long randomSeed, GTOreDefinition entry, int size,
-                              List<GTLayerPattern.Layer> resolvedLayers, FloatList layerDiameterOffsets,
+                              RuleTest layerTarget, SectionPos sectionPos, long randomSeed, GTOreDefinition entry,
+                              int size, List<GTLayerPattern.Layer> resolvedLayers, FloatList layerDiameterOffsets,
                               int layerCoordinate, int slantyCoordinate, float slope,
                               int xMin, int yMin, int zMin) {
         RandomSource random = new XoroshiroRandomSource(randomSeed);
@@ -191,7 +192,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
                     Either<List<OreConfiguration.TargetBlockState>, Material> state = layer.rollBlock(random);
 
                     pos.set(xMin + dx, yMin + dy, zMin + dz);
-                    OreVeinUtil.placeOreBlock(state, access, section, random, entry, pos);
+                    OreVeinUtil.placeOreBlock(state, access, section, layerTarget, random, entry, pos);
                 }
             }
         }

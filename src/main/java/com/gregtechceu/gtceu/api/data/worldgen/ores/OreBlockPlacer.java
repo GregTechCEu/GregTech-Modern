@@ -4,6 +4,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 /**
  * Responsible for actually placing a vein's blocks in a section.
@@ -19,5 +20,5 @@ public interface OreBlockPlacer {
      * Place blocks at the (precomputed) location this placer is mapped to.
      */
     void placeSectionBlocks(WorldGenLevel worldGenLevel, BulkSectionAccess access,
-                            LevelChunkSection section, SectionPos sectionPos);
+                            LevelChunkSection section, RuleTest layerTarget, SectionPos sectionPos);
 }

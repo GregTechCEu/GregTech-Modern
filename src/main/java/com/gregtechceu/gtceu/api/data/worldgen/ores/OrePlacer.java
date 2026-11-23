@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.core.mixins.BulkSectionAccessAccessor;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.SectionPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
@@ -13,7 +12,6 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
-import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import lombok.Getter;
@@ -48,7 +46,6 @@ public class OrePlacer {
         if (!ConfigHolder.INSTANCE.dev.doSuperflatOres && chunkGenerator instanceof FlatLevelSource) return;
 
         final ChunkPos chunkPos = chunk.getPos();
-        RandomSource random = new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong());
         List<GeneratedVein> generatedVeins = oreGenCache.consumeChunkVeins(level, chunkGenerator, chunk);
 
         final int minSection = level.getMinSection(), maxSection = level.getMaxSection();
@@ -56,14 +53,14 @@ public class OrePlacer {
             generatedVeins.forEach(vein -> {
                 for (int y = minSection; y < maxSection; y++) {
                     long sectionPos = SectionPos.asLong(chunkPos.x, y, chunkPos.z);
-                    placeVein(sectionPos, random, level, access, vein, null);
+                    placeVein(sectionPos, level, access, vein, null);
                 }
                 placeIndicators(level, chunkPos, access, vein);
             });
         }
     }
 
-    public void placeVein(long sectionPos, RandomSource random, WorldGenLevel level, BulkSectionAccess access,
+    public void placeVein(long sectionPos, WorldGenLevel level, BulkSectionAccess access,
                           GeneratedVein generatedVein, @Nullable RuleTest targetOverride) {
         LevelChunkSection section = getSection(level, access, sectionPos);
         if (section == null) return;
@@ -74,9 +71,7 @@ public class OrePlacer {
         OreBlockPlacer placer = generatedVein.consumeOres(sectionPos);
         if (placer == null) return;
 
-        // if (layerTarget.test(blockState, random)) {
-        placer.placeSectionBlocks(level, access, section, SectionPos.of(sectionPos));
-        // }
+        placer.placeSectionBlocks(level, access, section, layerTarget, SectionPos.of(sectionPos));
     }
 
     private void placeIndicators(WorldGenLevel level, ChunkPos chunkPos, BulkSectionAccess access,

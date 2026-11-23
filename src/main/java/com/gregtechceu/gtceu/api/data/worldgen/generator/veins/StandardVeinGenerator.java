@@ -20,6 +20,7 @@ import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
 import com.mojang.datafixers.util.Either;
@@ -214,8 +215,8 @@ public class StandardVeinGenerator extends VeinGenerator {
                 blockToSectionCoord(x1), blockToSectionCoord(y1), blockToSectionCoord(z1))
                 .forEach(pos -> {
                     final long randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
-                    generatedSections.put(pos.asLong(), (worldGenLevel, access, section, sectionPos) -> {
-                        placeSection(worldGenLevel, access, section, sectionPos, entry, size, randomSeed, data,
+                    generatedSections.put(pos.asLong(), (worldGenLevel, access, section, layerTarget, sectionPos) -> {
+                        placeSection(worldGenLevel, access, section, layerTarget, sectionPos, entry, size, randomSeed, data,
                                 xStart, yStart, zStart, sizeXZ, sizeY, tested);
                     });
                 });
@@ -224,8 +225,9 @@ public class StandardVeinGenerator extends VeinGenerator {
     }
 
     private void placeSection(WorldGenLevel level, BulkSectionAccess access, LevelChunkSection section,
-                              SectionPos sectionPos, GTOreDefinition entry, int sampledSize, long randomSeed,
-                              double[] data, int xStart, int yStart, int zStart, int sizeXZ, int sizeY, BitSet tested) {
+                              RuleTest layerTarget, SectionPos sectionPos, GTOreDefinition entry, int sampledSize,
+                              long randomSeed, double[] data, int xStart, int yStart, int zStart,
+                              int sizeXZ, int sizeY, BitSet tested) {
         RandomSource random = new XoroshiroRandomSource(randomSeed);
         BlockPos.MutableBlockPos orePos = new BlockPos.MutableBlockPos();
 
@@ -268,7 +270,7 @@ public class StandardVeinGenerator extends VeinGenerator {
 
                         orePos.set(x, y, z);
 
-                        OreVeinUtil.placeOreBlock(this.blocks, access, section, random, entry, orePos);
+                        OreVeinUtil.placeOreBlock(this.blocks, access, section, layerTarget, random, entry, orePos);
                     }
                 }
             }

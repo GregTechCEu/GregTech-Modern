@@ -351,7 +351,7 @@ public class GTCommands {
                         id.toString(), sourcePos.toString()));
             }
             for (long sectionPos : generated.get().getGeneratedSections()) {
-                placer.placeVein(sectionPos, random, level, access, generated.get(), AlwaysTrueTest.INSTANCE);
+                placer.placeVein(sectionPos, level, access, generated.get(), AlwaysTrueTest.INSTANCE);
                 ChunkAccess chunk = level.getChunk(SectionPos.x(sectionPos), SectionPos.z(sectionPos), ChunkStatus.FULL,
                         false);
                 if (chunk != null) {

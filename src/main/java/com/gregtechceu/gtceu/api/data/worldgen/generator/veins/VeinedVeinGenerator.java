@@ -30,6 +30,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
@@ -215,8 +216,8 @@ public class VeinedVeinGenerator extends VeinGenerator {
                             sectionRelativeMinCellY;
 
                     final long randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
-                    generatedSections.put(pos.asLong(), (worldGenLevel, access, section, sectionPos) -> {
-                        placeSection(worldGenLevel, access, section, entry, randomSeed, sectionPos, veinBounds,
+                    generatedSections.put(pos.asLong(), (worldGenLevel, access, section, layerTarget, sectionPos) -> {
+                        placeSection(worldGenLevel, access, section, layerTarget, sectionPos, entry, randomSeed, veinBounds,
                                 noiseSettings, sectionRelativeMinCellY, sectionRelativeCellCountY,
                                 sampleOffsetX, sampleOffsetY, sampleOffsetZ);
                     });
@@ -225,8 +226,8 @@ public class VeinedVeinGenerator extends VeinGenerator {
     }
 
     private void placeSection(WorldGenLevel level, BulkSectionAccess access, LevelChunkSection section,
-                              GTOreDefinition entry, long randomSeed, SectionPos sectionPos, BoundingBox veinBounds,
-                              NoiseSettings noiseSettings, int minYCell, int yCells,
+                              RuleTest layerTarget, SectionPos sectionPos, GTOreDefinition entry, long randomSeed,
+                              BoundingBox veinBounds, NoiseSettings noiseSettings, int minYCell, int yCells,
                               int sampleOffsetX, int sampleOffsetY, int sampleOffsetZ) {
         RandomSource random = new XoroshiroRandomSource(randomSeed);
 
@@ -312,9 +313,8 @@ public class VeinedVeinGenerator extends VeinGenerator {
                                         veinBounds.maxZ() - blockZ);
 
                                 mutable.set(blockX, blockY, blockZ);
-                                placeSingleBlock(access, section, entry, random,
-                                        sectionX, sectionY, sectionZ, mutable,
-                                        noiseChunk, veinToggle, veinMask,
+                                placeSingleBlock(access, section, layerTarget, entry, random,
+                                        sectionX, sectionY, sectionZ, mutable, noiseChunk, veinToggle, veinMask,
                                         GTMath.min(distanceFromXEdge, distanceFromYEdge, distanceFromZEdge));
                             }
                         }
@@ -328,11 +328,10 @@ public class VeinedVeinGenerator extends VeinGenerator {
         noiseChunk.stopInterpolation();
     }
 
-    protected void placeSingleBlock(BulkSectionAccess access, LevelChunkSection section, GTOreDefinition entry,
-                                    RandomSource random, int sectionX, int sectionY, int sectionZ, BlockPos worldPos,
-                                    DensityFunction.FunctionContext functionContext,
-                                    DensityFunction veinToggle, DensityFunction veinMask,
-                                    int distanceFromNearestEdge) {
+    protected void placeSingleBlock(BulkSectionAccess access, LevelChunkSection section, RuleTest layerTarget,
+                                    GTOreDefinition entry, RandomSource random, int sectionX, int sectionY, int sectionZ,
+                                    BlockPos worldPos, DensityFunction.FunctionContext functionContext,
+                                    DensityFunction veinToggle, DensityFunction veinMask, int distanceFromNearestEdge) {
         if (entry.density() < 1.0f && random.nextFloat() > entry.density()) return;
         if (veinMask.compute(functionContext) >= 0.0) return;
 
@@ -354,16 +353,17 @@ public class VeinedVeinGenerator extends VeinGenerator {
             if (!rareBlocks.isEmpty() && rareBlockChance > 0.0f && random.nextFloat() < rareBlockChance) {
                 VeinBlockDefinition ore = GTUtil.getRandomItem(random, rareBlocks);
                 if (ore == null) return;
-                OreVeinUtil.placeOreBlock(ore.block, access, section, random, entry, worldPos);
+                OreVeinUtil.placeOreBlock(ore.block, access, section, layerTarget, random, entry, worldPos);
             } else {
                 VeinBlockDefinition ore = GTUtil.getRandomItem(random, oreBlocks);
                 if (ore == null) return;
-                OreVeinUtil.placeOreBlock(ore.block, access, section, random, entry, worldPos);
+                OreVeinUtil.placeOreBlock(ore.block, access, section, layerTarget, random, entry, worldPos);
             }
         } else {
             if (fillerBlock == null || fillerBlock.isAir()) return;
-            BlockState current = section.getBlockState(sectionX, sectionY, sectionZ);
-            if (!OreVeinUtil.canPlaceOre(current, access::getBlockState, random, entry, worldPos)) return;
+            BlockState existing = section.getBlockState(sectionX, sectionY, sectionZ);
+            if (!layerTarget.test(existing, random)) return;
+            if (!OreVeinUtil.canPlaceOre(existing, access::getBlockState, random, entry, worldPos)) return;
 
             section.setBlockState(sectionX, sectionY, sectionZ, fillerBlock, false);
         }
