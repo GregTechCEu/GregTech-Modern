@@ -111,7 +111,7 @@ public class DikeVeinGenerator extends VeinGenerator {
         int sectionMaxY = Mth.clamp(maxYLevel, sectionPos.minBlockY(), sectionPos.maxBlockY());
 
         for (int dy = sectionMinY; dy <= sectionMaxY; dy++) {
-            // the Y coordinate is clamped to valid values only
+            // the Y coordinate is already clamped to valid values only
 
             for (int dx = -radius; dx <= radius; dx++) {
                 int inSectionX = globalX + dx - sectionPos.minBlockX();

@@ -115,14 +115,14 @@ public class OreVeinUtil {
         int gridSize = ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinGridSize;
         int randomOffset = ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinRandomOffset;
 
-        if (chunkPos.x % gridSize != 0 || chunkPos.z % gridSize != 0)
+        if (chunkPos.x % gridSize != 0 || chunkPos.z % gridSize != 0) {
             return Optional.empty();
+        }
 
-        var chunkCenter = chunkPos.getMiddleBlockPosition(0);
-
-        if (randomOffset == 0)
+        BlockPos chunkCenter = chunkPos.getMiddleBlockPosition(0);
+        if (randomOffset == 0) {
             return Optional.of(chunkCenter);
-
+        }
         return Optional.of(chunkCenter.offset(
                 random.nextInt(-randomOffset, +randomOffset),
                 0,

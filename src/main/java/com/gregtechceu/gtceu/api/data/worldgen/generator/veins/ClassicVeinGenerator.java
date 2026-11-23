@@ -15,6 +15,8 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
@@ -41,13 +43,15 @@ import java.util.function.Supplier;
 @Accessors(fluent = true, chain = true)
 public class ClassicVeinGenerator extends VeinGenerator {
 
+    public static final int DEFAULT_Y_RADIUS = 6;
+
     // spotless:off
     public static final Codec<ClassicVeinGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Layer.CODEC.fieldOf("primary").forGetter(val -> val.primary),
             Layer.CODEC.fieldOf("secondary").forGetter(val -> val.secondary),
             Layer.CODEC.fieldOf("between").forGetter(val -> val.between),
             Layer.CODEC.fieldOf("sporadic").forGetter(val -> val.sporadic),
-            ExtraCodecs.POSITIVE_INT.optionalFieldOf("y_radius", 3).forGetter(val -> val.yRadius)
+            ExtraCodecs.POSITIVE_INT.optionalFieldOf("y_radius", DEFAULT_Y_RADIUS).forGetter(val -> val.yRadius)
     ).apply(instance, ClassicVeinGenerator::new));
     // spotless:on
 
@@ -56,7 +60,7 @@ public class ClassicVeinGenerator extends VeinGenerator {
     private Layer between;
     private Layer sporadic;
     @Setter
-    private int yRadius = 6;
+    private int yRadius = DEFAULT_Y_RADIUS;
 
     // Provided for readability
     private int sporadicDivisor;
@@ -178,7 +182,7 @@ public class ClassicVeinGenerator extends VeinGenerator {
                     }
 
                     // Then lastly, try sporadic
-                    if (random.nextFloat() <= entry.density() / sporadicDivisor) {
+                    if (random.nextFloat() <= (entry.density() / sporadicDivisor)) {
                         OreVeinUtil.placeOreBlock(sporadic.target, access, section, layerTarget, random, entry, pos);
                     }
                 }
