@@ -19,18 +19,8 @@ public class QuarkTechArmorItem extends ModularArmorItem {
     }
 
     @Override
-    public boolean protectsAgainstFalls() {
-        return getType() == Type.BOOTS;
-    }
-
-    @Override
     public float getHeatResistance() {
         return getType() == Type.CHESTPLATE ? 0.5f : 1.0f;
-    }
-
-    @Override
-    public boolean protectsAgainstFire() {
-        return getType() == Type.CHESTPLATE;
     }
 
     @Override
@@ -39,9 +29,8 @@ public class QuarkTechArmorItem extends ModularArmorItem {
         var texture = super.getArmorTexture(stack, entity, slot, layer, innerModel);
         if (texture != null) return texture;
 
-        String armorTexture = "quark_tech_suite";
         return slot != EquipmentSlot.LEGS ?
-                GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)) :
-                GTCEu.id(String.format("textures/armor/%s_2.png", armorTexture));
+                GTCEu.id("textures/armor/quark_tech_suite_1.png") :
+                GTCEu.id("textures/armor/quark_tech_suite_2.png");
     }
 }

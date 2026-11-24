@@ -19,11 +19,6 @@ public class NanoMuscleArmorItem extends ModularArmorItem {
     }
 
     @Override
-    public boolean protectsAgainstFalls() {
-        return getType() == Type.BOOTS;
-    }
-
-    @Override
     public float getHeatResistance() {
         return getType() == Type.CHESTPLATE ? 0.75f : 1.0f;
     }
@@ -34,9 +29,8 @@ public class NanoMuscleArmorItem extends ModularArmorItem {
         var texture = super.getArmorTexture(stack, entity, slot, layer, innerModel);
         if (texture != null) return texture;
 
-        String armorTexture = "nano_muscle_suite";
         return slot != EquipmentSlot.LEGS ?
-                GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)) :
-                GTCEu.id(String.format("textures/armor/%s_2.png", armorTexture));
+                GTCEu.id("textures/armor/nano_muscle_suite_1.png") :
+                GTCEu.id("textures/armor/nano_muscle_suite_2.png");
     }
 }
