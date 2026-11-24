@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.generator;
 
-import brachy.modularui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -30,6 +29,7 @@ import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.LongSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.TextWidget;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -204,8 +204,9 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     }
 
     protected Component getBoostPrompt() {
-        return Component.translatable(isExtreme() ? "gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost" :
-                "gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost");
+        return Component
+                .translatable(isExtreme() ? "gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost" :
+                        "gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost");
     }
 
     protected Component getBoostMessage() {

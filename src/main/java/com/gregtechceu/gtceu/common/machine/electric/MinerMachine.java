@@ -146,13 +146,16 @@ public class MinerMachine extends WorkableTieredMachine
                                 getRecipeLogic().getCustomProgressLine().copy()))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component.translatable("gtceu.machine.miner.x", startX.getIntValue(), mineX.getIntValue()))
+                        () -> Component.translatable("gtceu.machine.miner.x", startX.getIntValue(),
+                                mineX.getIntValue()))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component.translatable("gtceu.machine.miner.y", startY.getIntValue(), mineY.getIntValue()))
+                        () -> Component.translatable("gtceu.machine.miner.y", startY.getIntValue(),
+                                mineY.getIntValue()))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component.translatable("gtceu.machine.miner.z", startZ.getIntValue(), mineZ.getIntValue()))
+                        () -> Component.translatable("gtceu.machine.miner.z", startZ.getIntValue(),
+                                mineZ.getIntValue()))
                         .asWidget())
                 .child(Text
                         .dynamic(() -> Component.translatable("gtceu.universal.tooltip.working_area",

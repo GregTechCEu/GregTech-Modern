@@ -90,10 +90,10 @@ public class GTMultiblockTextUtil {
                     if (PatternError.CONTROLLER.equals(pos)) pos = controller.getBlockPos();
                     final BlockPos fpos = pos;
                     unformed.child(new ButtonWidget<>()
-                                    .coverChildren()
-                                    .padding(5)
-                                    .child(Text.lang("gtceu.multiblock.show_error_pos")
-                                            .asWidget())
+                            .coverChildren()
+                            .padding(5)
+                            .child(Text.lang("gtceu.multiblock.show_error_pos")
+                                    .asWidget())
                             .onMousePressed((c, b) -> {
                                 ((ModularGuiContext) c).getScreen().getMainPanel().closeIfOpen();
                                 AABBHighlightRenderer.INSTANCE.addHighlight(AABBHighlightRenderer.builder()

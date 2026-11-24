@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
-import brachy.modularui.drawable.GuiTextures;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.multiblock.predicates.SettingsHolder;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
@@ -9,15 +7,16 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
@@ -75,7 +74,7 @@ public class SinglePredicateError extends PatternError {
     public PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
             ItemStack[] candidateItems = candidates.stream().map(BlockInfo::getItemStackForm)
-                            .toArray(ItemStack[]::new);
+                    .toArray(ItemStack[]::new);
 
             parent.child(Flow.row()
                     .coverChildrenHeight()

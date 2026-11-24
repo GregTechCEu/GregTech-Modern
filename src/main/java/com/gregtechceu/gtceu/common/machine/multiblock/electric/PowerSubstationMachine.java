@@ -27,9 +27,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
@@ -42,7 +40,6 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigInteger;
@@ -354,7 +351,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         widgets.add(Text.dynamic(() -> {
             var avgInComponent = Component.literal(FormattingUtil.formatNumbers(inputPerSec.getLongValue() / 20));
             return Component.translatable("gtceu.multiblock.power_substation.average_in",
-                            avgInComponent.withStyle(ChatFormatting.GREEN));
+                    avgInComponent.withStyle(ChatFormatting.GREEN));
         })
                 .asWidget()
                 .tooltip(t -> t.addLine(Component.translatable("gtceu.multiblock.power_substation.average_in_hover"))));
@@ -367,7 +364,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                             avgOutComponent.withStyle(ChatFormatting.RED));
         })
                 .asWidget()
-                .tooltip(t -> t.addLine(Component.translatable("gtceu.multiblock.power_substation.average_out_hover"))));
+                .tooltip(
+                        t -> t.addLine(Component.translatable("gtceu.multiblock.power_substation.average_out_hover"))));
 
         widgets.add(Text.dynamic(() -> {
             if (inputPerSec.getLongValue() <= outputPerSec.getLongValue())
@@ -378,8 +376,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                     getTimeToFillDrainText(timeToFillSeconds).withStyle(ChatFormatting.GREEN));
         })
                 .asWidget()
-                .setEnabledIf((widget) ->
-                        inputPerSec.getLongValue() > outputPerSec.getLongValue()));
+                .setEnabledIf((widget) -> inputPerSec.getLongValue() > outputPerSec.getLongValue()));
 
         widgets.add(Text.dynamic(() -> {
             if (inputPerSec.getLongValue() >= outputPerSec.getLongValue())
