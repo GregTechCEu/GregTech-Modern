@@ -75,6 +75,7 @@ public class GTMultiblockTextUtil {
                 .widgetProvider((widgetSyncManager, listSyncHandler) -> {
                     Flow unformed = Flow.col().coverChildrenHeight()
                             .collapseDisabledChildren()
+                            .childPadding(2)
                             .crossAxisAlignment(Alignment.CrossAxis.START)
                             .widthRel(1);
 
@@ -89,6 +90,10 @@ public class GTMultiblockTextUtil {
                     if (PatternError.CONTROLLER.equals(pos)) pos = controller.getBlockPos();
                     final BlockPos fpos = pos;
                     unformed.child(new ButtonWidget<>()
+                                    .coverChildren()
+                                    .padding(5)
+                                    .child(Text.lang("gtceu.multiblock.show_error_pos")
+                                            .asWidget())
                             .onMousePressed((c, b) -> {
                                 ((ModularGuiContext) c).getScreen().getMainPanel().closeIfOpen();
                                 AABBHighlightRenderer.INSTANCE.addHighlight(AABBHighlightRenderer.builder()

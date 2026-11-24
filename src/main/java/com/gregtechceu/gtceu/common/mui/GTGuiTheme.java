@@ -56,7 +56,7 @@ public class GTGuiTheme {
             .build();
 
     public static final GTGuiTheme MULTIBLOCK_DISPLAY = templateBuilder("gtceu:multiblock_display")
-            .textColor(Objects.requireNonNull(ChatFormatting.GRAY.getColor()))
+            .textColor(0xFFFFFFFF)
             .build();
 
     // TODO Multiblock theme for display texture, logo changes

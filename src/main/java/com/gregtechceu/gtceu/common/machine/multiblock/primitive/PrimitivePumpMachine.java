@@ -150,8 +150,8 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine implements
                 () -> new IntSyncValue(() -> this.hatchModifier, value -> this.hatchModifier = value));
 
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
-        widgets.add(Text
-                .dynamic(() -> Text
+        widgets.add(Text.dynamic(() ->
+                        Text
                         .lang("gtceu.top.primitive_pump_production",
                                 FormattingUtil.formatNumbers(this.getFluidProduction())))
                 .asWidget()

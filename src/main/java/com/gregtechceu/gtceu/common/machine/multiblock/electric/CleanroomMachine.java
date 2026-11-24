@@ -121,8 +121,9 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     //////////////////////////////////////
 
     @Override
-    public void formStructure(@NotNull String substructureName) {
+    public void formStructure(String substructureName) {
         super.formStructure(substructureName);
+
         var pState = patternStates.get(substructureName);
 
         bounds = boundsFunction().apply(getLevel(), getBlockPos().mutable(), getFrontFacing(), getUpwardsFacing());
@@ -448,8 +449,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         BooleanSyncValue cleanroomTypeIsNull = new BooleanSyncValue(() -> this.cleanroomType == null);
         syncManager.syncValue("cleanroomTypeIsNull", cleanroomTypeIsNull);
 
-        BooleanSyncValue cleanroomProviderTraitIsActive = new BooleanSyncValue(
-                () -> this.cleanroomProviderTrait != null && this.cleanroomProviderTrait.isActive());
+        BooleanSyncValue cleanroomProviderTraitIsActive = new BooleanSyncValue(this.cleanroomProviderTrait::isActive);
         syncManager.syncValue("cleanroomProviderTrait", cleanroomProviderTraitIsActive);
 
         IntSyncValue cleanAmount = new IntSyncValue(() -> this.cleanAmount);

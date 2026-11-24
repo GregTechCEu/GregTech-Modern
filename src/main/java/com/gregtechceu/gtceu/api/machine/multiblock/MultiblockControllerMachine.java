@@ -572,7 +572,7 @@ public class MultiblockControllerMachine extends MetaMachine {
         listWidget
                 .width(width - 6)
                 .height(height - 6)
-                .childSeparator(Icon.EMPTY.asIcon().height(3))
+                .childSeparator(Icon.EMPTY_2PX)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .collapseDisabledChildren()
                 .posRel(Alignment.CenterLeft)

@@ -987,6 +987,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.hpca.info_coolant_name", "PCB Coolant");
         provider.add("gtceu.multiblock.hpca.info_bridging_enabled", "Bridging Enabled");
         provider.add("gtceu.multiblock.hpca.info_bridging_disabled", "Bridging Disabled");
+        provider.add("gtceu.multiblock.show_error_pos", "Show Error Position");
 
         provider.add("gtceu.creative.chest.item", "Item");
         provider.add("gtceu.creative.chest.ipc", "Items per Cycle");
