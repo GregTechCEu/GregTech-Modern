@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.item.tool;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
@@ -10,12 +9,11 @@ import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -24,26 +22,25 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
-import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerDestroyItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 @EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class ToolEventHandlers {
@@ -108,44 +105,22 @@ public class ToolEventHandlers {
     }
 
     /**
-     * Handles saws harvesting ice without leaving water behind
-     * Handles mined blocks teleporting straight into inventory
-     * Handles drop conversion when a hammer tool (or tool with hard hammer enchantment) is used
+     * <ul>
+     * <li>Handles saws harvesting ice without leaving water behind</li>
+     * <li>Handles mined blocks teleporting straight into the player's inventory</li>
+     * <li>Handles drop conversion when a hammer tool (or tool with the Hard Hammer enchantment) is used</li>
+     * </ul>
      */
-    public static List<ItemStack> onHarvestDrops(Player player, ItemStack tool, ServerLevel level,
-                                                 BlockPos pos, BlockState state, boolean isSilkTouch,
-                                                 int fortuneLevel, List<ItemStack> drops,
-                                                 float dropChance) {
-        boolean gtTool = tool.getItem() instanceof IGTTool;
-        if (gtTool && !isSilkTouch) {
-            drops = new ArrayList<>(drops);
-            ToolHelper.applyHammerDropConversion(level, pos, tool, state, drops, fortuneLevel, dropChance,
-                    player.getRandom());
-        }
-        if (!isSilkTouch && fortuneLevel > 0 && ConfigHolder.INSTANCE.gameplay.enableOreFortune &&
-                state.getBlock() instanceof OreBlock) {
-            var context = ToolHelper.createBlockLootContext(level, state, new LootParams.Builder(level)
-                    .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-                    .withParameter(LootContextParams.TOOL, tool));
-            var multiplier = ToolHelper.getOrInitOreDropMultiplier(level.registryAccess());
-            List<ItemStack> boostedDrops = new ArrayList<>();
-            for (ItemStack drop : drops) {
-                ItemStack boosted = multiplier.apply(drop.copy(), context);
-                while (!boosted.isEmpty()) {
-                    boostedDrops.add(boosted.split(boosted.getMaxStackSize()));
-                }
-            }
-            drops = boostedDrops;
-        }
-        if (!gtTool || !ToolHelper.hasBehaviorsComponent(tool)) return drops;
-
-        ToolBehaviors behaviorTag = ToolHelper.getBehaviorsComponent(tool);
+    public static List<ItemStack> onHarvestDrops(@Nullable Entity entity, ItemStack tool, ServerLevel level,
+                                                 BlockPos pos, BlockState state, List<ItemStack> drops) {
+        ToolBehaviors behaviors = ToolHelper.getBehaviorsComponent(tool);
         Block block = state.getBlock();
-        if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.hasBehavior(GTToolBehaviors.HARVEST_ICE.value())) {
+        if (state.is(BlockTags.ICE) && !EnchantmentHelper.hasTag(tool, EnchantmentTags.PREVENTS_ICE_MELTING) &&
+                behaviors.hasBehavior(GTToolBehaviors.HARVEST_ICE)) {
             Item iceBlock = block.asItem();
-            if (drops.stream().noneMatch(drop -> drop.getItem() == iceBlock)) {
-                drops.add(new ItemStack(iceBlock));
-                level.getServer().tell(new TickTask(0, () -> {
+            if (drops.stream().noneMatch(drop -> drop.is(iceBlock))) {
+                drops.add(iceBlock.getDefaultInstance());
+                level.getServer().execute(() -> {
                     BlockState oldState = level.getBlockState(pos);
                     if (oldState.getFluidState().isSourceOfType(Fluids.WATER)) {
                         // I think it may be a waterlogged block, although the probability is very small
@@ -154,32 +129,41 @@ public class ToolEventHandlers {
                                 Blocks.AIR.defaultBlockState();
                         level.setBlockAndUpdate(pos, newState);
                     }
-                }));
-                ((IGTTool) tool.getItem()).playSound(player);
+                });
+                if (entity != null && tool.getItem() instanceof IGTTool gtTool) {
+                    gtTool.playSound(entity);
+                }
             }
         }
-        if (tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS)) {
+
+        if (tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS) && entity instanceof Player player) {
             drops = new ArrayList<>(drops);
-            Iterator<ItemStack> dropItr = drops.iterator();
+            ListIterator<ItemStack> dropItr = drops.listIterator();
             while (dropItr.hasNext()) {
                 ItemStack dropStack = dropItr.next();
+
                 // Place close to the player for sanity reasons (Instead of XYZ=0,0,0)
                 ItemEntity drop = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), dropStack);
+                // make the player attempt picking the item up immediately
+                drop.pickupDelay = 0;
+                drop.setTarget(player.getUUID());
+                drop.playerTouch(player);
 
-                if (isPickupAllowedByEvent(drop, player) && player.addItem(dropStack)) {
-                    EventHooks.fireItemPickupPost(drop, player, dropStack.copy());
+                // item entities discard themselves if they're picked up completely
+                if (drop.isRemoved()) {
+                    // if the whole stack was picked up, remove the item from the list of drops
                     dropItr.remove();
+                } else {
+                    // otherwise replace it with the new item
+                    dropStack = drop.getItem();
+                    dropItr.set(dropStack);
+                    // and destroy the item entity ourselves
+                    drop.discard();
                 }
-
-                // Just in case, destroy it
-                drop.discard();
             }
         }
-        return drops;
-    }
 
-    public static boolean isPickupAllowedByEvent(ItemEntity drop, Player player) {
-        return !EventHooks.fireItemPickupPre(drop, player).canPickup().isFalse();
+        return drops;
     }
 
     /**
@@ -213,15 +197,19 @@ public class ToolEventHandlers {
         if (!tool.has(GTDataComponents.RELOCATE_MOB_DROPS)) {
             return;
         }
-        Iterator<ItemEntity> dropItr = event.getDrops().iterator();
 
-        while (dropItr.hasNext()) {
-            ItemEntity drop = dropItr.next();
-            ItemStack dropStack = drop.getItem();
+        // copy the list of drops so we can remove discarded entities from the original safely
+        List<ItemEntity> dropsCopy = new ArrayList<>(event.getDrops());
+        for (ItemEntity drop : dropsCopy) {
+            // make the player attempt picking the item up immediately
+            drop.pickupDelay = 0;
+            drop.setTarget(player.getUUID());
+            drop.playerTouch(player);
 
-            if (isPickupAllowedByEvent(drop, player) && player.addItem(dropStack)) {
-                EventHooks.fireItemPickupPost(drop, player, dropStack.copy());
-                dropItr.remove();
+            // item entities discard themselves if they're picked up completely
+            if (drop.isRemoved()) {
+                // if the whole stack was picked up, remove the item from the list of drops
+                event.getDrops().remove(drop);
             }
         }
     }

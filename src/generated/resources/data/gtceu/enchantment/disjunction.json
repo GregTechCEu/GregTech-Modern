@@ -1,0 +1,173 @@
+{
+  "anvil_cost": 2,
+  "description": {
+    "translate": "enchantment.gtceu.disjunction"
+  },
+  "effects": {
+    "minecraft:damage": [
+      {
+        "effect": {
+          "type": "minecraft:add",
+          "value": {
+            "type": "minecraft:linear",
+            "base": 2.5,
+            "per_level_above_first": 2.5
+          }
+        },
+        "requirements": {
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "type": "#gtceu:sensitive_to_disjunction"
+          }
+        }
+      }
+    ],
+    "minecraft:post_attack": [
+      {
+        "affected": "victim",
+        "effect": {
+          "type": "minecraft:apply_mob_effect",
+          "max_amplifier": {
+            "type": "minecraft:clamped",
+            "max": 255.0,
+            "min": 1.0,
+            "value": {
+              "type": "minecraft:fraction",
+              "denominator": 7.0,
+              "numerator": {
+                "type": "minecraft:linear",
+                "base": 5.0,
+                "per_level_above_first": 5.0
+              }
+            }
+          },
+          "max_duration": {
+            "type": "minecraft:linear",
+            "base": 10.0,
+            "per_level_above_first": 10.0
+          },
+          "min_amplifier": {
+            "type": "minecraft:clamped",
+            "max": 255.0,
+            "min": 1.0,
+            "value": {
+              "type": "minecraft:fraction",
+              "denominator": 7.0,
+              "numerator": {
+                "type": "minecraft:linear",
+                "base": 5.0,
+                "per_level_above_first": 5.0
+              }
+            }
+          },
+          "min_duration": {
+            "type": "minecraft:linear",
+            "base": 10.0,
+            "per_level_above_first": 10.0
+          },
+          "to_apply": "minecraft:weakness"
+        },
+        "enchanted": "attacker",
+        "requirements": {
+          "condition": "minecraft:all_of",
+          "terms": [
+            {
+              "condition": "minecraft:entity_properties",
+              "entity": "this",
+              "predicate": {
+                "type": "#gtceu:sensitive_to_disjunction"
+              }
+            },
+            {
+              "condition": "minecraft:damage_source_properties",
+              "predicate": {
+                "is_direct": true
+              }
+            }
+          ]
+        }
+      },
+      {
+        "affected": "victim",
+        "effect": {
+          "type": "minecraft:apply_mob_effect",
+          "max_amplifier": {
+            "type": "minecraft:clamped",
+            "max": 255.0,
+            "min": 1.0,
+            "value": {
+              "type": "minecraft:fraction",
+              "denominator": 7.0,
+              "numerator": {
+                "type": "minecraft:linear",
+                "base": 5.0,
+                "per_level_above_first": 5.0
+              }
+            }
+          },
+          "max_duration": {
+            "type": "minecraft:linear",
+            "base": 10.0,
+            "per_level_above_first": 10.0
+          },
+          "min_amplifier": {
+            "type": "minecraft:clamped",
+            "max": 255.0,
+            "min": 1.0,
+            "value": {
+              "type": "minecraft:fraction",
+              "denominator": 7.0,
+              "numerator": {
+                "type": "minecraft:linear",
+                "base": 5.0,
+                "per_level_above_first": 5.0
+              }
+            }
+          },
+          "min_duration": {
+            "type": "minecraft:linear",
+            "base": 10.0,
+            "per_level_above_first": 10.0
+          },
+          "to_apply": "minecraft:slowness"
+        },
+        "enchanted": "attacker",
+        "requirements": {
+          "condition": "minecraft:all_of",
+          "terms": [
+            {
+              "condition": "minecraft:entity_properties",
+              "entity": "this",
+              "predicate": {
+                "type": "#gtceu:sensitive_to_disjunction"
+              }
+            },
+            {
+              "condition": "minecraft:damage_source_properties",
+              "predicate": {
+                "is_direct": true
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "exclusive_set": "#minecraft:exclusive_set/damage",
+  "max_cost": {
+    "base": 25,
+    "per_level_above_first": 8
+  },
+  "max_level": 5,
+  "min_cost": {
+    "base": 5,
+    "per_level_above_first": 8
+  },
+  "primary_items": "#minecraft:enchantable/sword",
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#minecraft:enchantable/weapon",
+  "weight": 5
+}

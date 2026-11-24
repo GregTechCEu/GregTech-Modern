@@ -78,7 +78,7 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
             if (checkAndPlaceTorch(context, slotStack)) {
                 final int finalI = i;
                 stack.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY,
-                        val -> val.withBehavior(new TorchPlaceBehavior(this.cacheSlotKey, -(finalI + 1))));
+                        component -> component.withBehavior(new TorchPlaceBehavior(this.cacheSlotKey, -(finalI + 1))));
                 return InteractionResult.SUCCESS;
             }
         }
@@ -87,7 +87,7 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
             if (checkAndPlaceTorch(context, slotStack)) {
                 final int finalI = i;
                 stack.update(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY,
-                        val -> val.withBehavior(new TorchPlaceBehavior(this.cacheSlotKey, finalI)));
+                        component -> component.withBehavior(new TorchPlaceBehavior(this.cacheSlotKey, finalI)));
                 return InteractionResult.SUCCESS;
             }
         }
