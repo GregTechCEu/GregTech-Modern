@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
+import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.multiblock.predicates.SettingsHolder;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
@@ -15,6 +17,7 @@ import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
@@ -71,15 +74,22 @@ public class SinglePredicateError extends PatternError {
     @Override
     public PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
-            parent.child(Text.of(Component.translatable(debugName)).asWidget());
-            this.type.appendComponent(parent, this);
-            parent.child(new ContextMenuButton<>("predicate")
-                    .menuList(l -> l
-                            .maxSize(40)
-                            .children(candidates, candidate -> {
-                                return new ItemDrawable(candidate.getItemStackForm()).asWidget()
-                                        .tooltip(r -> r.add(candidate.getItemStackForm().getHoverName()));
-                            })));
+            ItemStack[] candidateItems = candidates.stream().map(BlockInfo::getItemStackForm)
+                            .toArray(ItemStack[]::new);
+
+            parent.child(Flow.row()
+                    .coverChildrenHeight()
+                    .childPadding(4)
+                    .child(new ContextMenuButton<>("predicate")
+                            .size(20)
+                            .overlay(new ItemDrawable(candidateItems).asIcon().size(18))
+                            .menuList(l -> l
+                                    .maxSize(40)
+                                    .children(candidates, candidate -> {
+                                        return new ItemDrawable(candidate.getItemStackForm()).asWidget()
+                                                .tooltip(r -> r.add(candidate.getItemStackForm().getHoverName()));
+                                    })))
+                    .child(Text.of(this.type.getComponent(this)).asWidget()));
         };
     }
 
