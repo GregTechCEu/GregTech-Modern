@@ -182,6 +182,14 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         recipeLogic.updateTickSubscription();
     }
 
+    @Override
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
+        if (shouldUpdateActiveBlocks()) {
+            updateActiveBlocks(false);
+        }
+    }
+
     //////////////////////////////////////
     // ****** RECIPE LOGIC *******//
     //////////////////////////////////////
