@@ -22,11 +22,10 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPa
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComputationProviderTrait;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCACoolantProviderTrait;
-import com.gregtechceu.gtceu.common.mui.GTByteBufAdapters;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.GTStringUtils;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.ChatFormatting;
@@ -46,15 +45,11 @@ import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.screen.RichTooltip;
-import brachy.modularui.value.sync.GenericSyncValue;
-import brachy.modularui.value.sync.LongSyncValue;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.value.sync.*;
 import brachy.modularui.widgets.layout.Grid;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
@@ -72,9 +67,9 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     private static final double IDLE_TEMPERATURE = 200;
     private static final double DAMAGE_TEMPERATURE = 1000;
 
-    private MaintenanceHatchPartMachine maintenance;
+    private @Nullable MaintenanceHatchPartMachine maintenance;
     private IEnergyContainer energyContainer;
-    private IFluidHandler coolantHandler;
+    private @Nullable IFluidHandler coolantHandler;
     @SaveField
     @SyncToClient
     private final HPCAGridHandler hpcaHandler;
@@ -94,8 +89,12 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         this.hpcaHandler = new HPCAGridHandler(this);
     }
 
+    public List<HPCAComponentTrait> getComponents() {
+        return hpcaHandler.components;
+    }
+
     @Override
-    public void formStructure(@NotNull String substructureName) {
+    public void formStructure(String substructureName) {
         super.formStructure(substructureName);
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         List<IFluidHandler> coolantContainers = new ArrayList<>();
@@ -182,7 +181,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     }
 
     public void tick() {
-        if (isWorkingEnabled() && consumeEnergy() && isActive()) {
+        if (isWorkingEnabled() && consumeEnergy() && isActive() && coolantHandler != null) {
             // forcibly use active coolers at full rate if temperature is half-way to damaging temperature
             double midpoint = (DAMAGE_TEMPERATURE - IDLE_TEMPERATURE) / 2;
             double temperatureChange = hpcaHandler.calculateTemperatureChange(coolantHandler, temperature >= midpoint) /
@@ -251,40 +250,122 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                         isFlipped());
             }
         }
-        GenericSyncValue<Component> text = GenericSyncValue.builder(Component.class)
-                .adapter(GTByteBufAdapters.COMPONENT)
-                .getter(() -> {
-                    List<Component> list = new ArrayList<>();
-                    hpcaHandler.addErrors(list);
-                    hpcaHandler.addWarnings(list);
-                    hpcaHandler.addInfo(list);
-                    return GTStringUtils.toComponent(list);
-                })
-                .build();
-        syncManager.syncValue("text", text);
-
-        LongSyncValue currentEUt = new LongSyncValue(hpcaHandler::getCurrentEUt);
-        syncManager.syncValue("currentEUt", currentEUt);
 
         List<IWidget> widgets = new ArrayList<>();
+
+        LongSyncValue currentEUt = new LongSyncValue(hpcaHandler::getCurrentEUt);
+
+        BooleanSyncValue anyDamaged = new BooleanSyncValue(() -> getComponents().stream().anyMatch(HPCAComponentTrait::isDamaged));
+        BooleanSyncValue missingComputation = new BooleanSyncValue(hpcaHandler.computationProviders::isEmpty);
+        IntSyncValue numBridges = new IntSyncValue(() -> hpcaHandler.numBridges);
+
+        IntSyncValue maxCoolingDemand = new IntSyncValue(hpcaHandler::getMaxCoolingDemand);
+        IntSyncValue maxCoolingAmount = new IntSyncValue(hpcaHandler::getMaxCoolingAmount);
+
+        IntSyncValue currentCWU = new IntSyncValue(() -> hpcaHandler.cachedCWUt);
+        IntSyncValue maxCWU = new IntSyncValue(this::getMaxCWUt);
+        DoubleSyncValue temperature = new DoubleSyncValue(this::getTemperature);
+
+        syncManager.syncValue("currentEUt", currentEUt);
+        syncManager.syncValue("anyDamaged", anyDamaged);
+        syncManager.syncValue("missingComputation", missingComputation);
+        syncManager.syncValue("numBridges", numBridges);
+        syncManager.syncValue("maxCoolingDemand", maxCoolingDemand);
+        syncManager.syncValue("maxCoolingAmount", maxCoolingAmount);
+        syncManager.syncValue("currentCWU", currentCWU);
+        syncManager.syncValue("maxCWU", maxCWU);
+        syncManager.syncValue("temperature", temperature);
+
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
                 () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
                 () -> Component.translatable("gtceu.multiblock.hpca.error_power").withStyle(ChatFormatting.RED)));
+
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, currentEUt));
         widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
-        widgets.add(new TextWidget<>(Text.dynamic(text::getValue)));
+
+        widgets.add(Text.lang("gtceu.multiblock.hpca.error_damaged").withStyle(ChatFormatting.RED)
+                .asWidget()
+                .setEnabledIf($ -> anyDamaged.getBoolValue()));
+
+        widgets.add(Text.lang("gtceu.multiblock.hpca.warning_structure_header")
+                .withStyle(ChatFormatting.YELLOW)
+                .asWidget()
+                .setEnabledIf(w -> numBridges.getIntValue() > 1 || missingComputation.getBoolValue() ||
+                        maxCoolingDemand.getIntValue() > maxCoolingAmount.getIntValue()));
+
+        widgets.add(Text.lang("gtceu.multiblock.hpca.warning_multiple_bridges").withStyle(ChatFormatting.YELLOW)
+                .asWidget()
+                .setEnabledIf(w -> numBridges.getIntValue() > 1));
+
+        widgets.add(Text.lang("gtceu.multiblock.hpca.warning_no_computation").withStyle(ChatFormatting.YELLOW)
+                .asWidget()
+                .setEnabledIf(w -> missingComputation.getBoolValue()));
+
+        widgets.add(Text.lang("gtceu.multiblock.hpca.warning_low_cooling").withStyle(ChatFormatting.YELLOW)
+                .asWidget()
+                .setEnabledIf(w -> maxCoolingDemand.getIntValue() > maxCoolingAmount.getIntValue()));
+
+        // CWU/t
+        widgets.add(Text.dynamic(() -> {
+            Component cwutInfo = Component.literal(currentCWU.getIntValue() + " / " + maxCWU.getIntValue() + " CWU/t")
+                    .withStyle(ChatFormatting.AQUA);
+            return Component.translatable("gtceu.multiblock.hpca.computation", cwutInfo);
+        }).asWidget());
+
+        // Temperature
+        widgets.add(Text.dynamic(() -> {
+            Component tempInfo = Component.literal(Math.round(temperature.getDoubleValue() / 10.0D) + " °C")
+                    .withStyle(getDisplayTemperatureColor(temperature.getDoubleValue()));
+            return Component.translatable("gtceu.multiblock.hpca.temperature", tempInfo);
+        }).asWidget());
+
+        // Cooling
+        widgets.add(Text.dynamic(() -> {
+            var coolingAmount = maxCoolingAmount.getIntValue();
+            var coolingDemand = maxCoolingDemand.getDoubleValue();
+            ChatFormatting coolingColor = coolingAmount < coolingDemand ? ChatFormatting.RED :
+                    ChatFormatting.GREEN;
+            MutableComponent data = Component.literal(FormattingUtil.formatNumbers(coolingDemand)).withStyle(coolingColor);
+            return Component.translatable("gtceu.multiblock.hpca.info_cooling_demand", data, FormattingUtil.formatNumbers(coolingAmount));
+        }).asWidget());
+
+        // Coolant Required
+        widgets.add(Text.dynamic(() -> {
+            MutableComponent data;
+            if (maxCoolingDemand.getIntValue() > 0) {
+                data = Component.translatable("gtceu.universal.liters", maxCoolingDemand.getIntValue())
+                        .withStyle(ChatFormatting.YELLOW).append(" ");
+                Component coolantName = Component.translatable("gtceu.multiblock.hpca.info_coolant_name")
+                        .withStyle(ChatFormatting.YELLOW);
+                data.append(coolantName);
+            } else {
+                data = Component.literal("0").withStyle(ChatFormatting.GREEN);
+            }
+            return Component.translatable("gtceu.multiblock.hpca.info_max_coolant_required", data);
+        }).asWidget());
+
+        // Bridging
+        widgets.add(Text.lang("gtceu.multiblock.hpca.info_bridging_enabled").withStyle(ChatFormatting.GREEN)
+                .asWidget()
+                .setEnabledIf(w -> numBridges.getIntValue() > 0));
+
+        widgets.add(Text.lang("gtceu.multiblock.hpca.info_bridging_disabled").withStyle(ChatFormatting.RED)
+                .asWidget()
+                .setEnabledIf(w -> numBridges.getIntValue() == 0));
+
         widgets.add(new Grid()
                 .gridOfSizeWidth(9, 3, (x, y, i) -> hpcaHandler.getComponentTexture(i).asWidget()
                         .tooltip(hpcaHandler.getComponentTooltip(i)))
                 .horizontalCenter());
+
         return widgets;
     }
 
-    private ChatFormatting getDisplayTemperatureColor() {
-        if (temperature < 500) {
+    private static ChatFormatting getDisplayTemperatureColor(double temp) {
+        if (temp < 500) {
             return ChatFormatting.GREEN;
-        } else if (temperature < 750) {
+        } else if (temp < 750) {
             return ChatFormatting.YELLOW;
         }
         return ChatFormatting.RED;
@@ -485,7 +566,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             return maxCWUt;
         }
 
-        /** The current EU/t this HPCA should use, considering passive drain, current computation, etc.. */
+        /** The current EU/t this HPCA should use, considering passive drain, current computation, etc. */
         public long getCurrentEUt() {
             long maximumCWUt = Math.max(1, getMaxCWUt()); // behavior is no different setting this to 1 if it is 0
             long maximumEUt = getMaxEUt();
@@ -556,71 +637,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 maxCoolant += coolantProvider.getMaxCoolantPerTick();
             }
             return maxCoolant;
-        }
-
-        public void addInfo(List<Component> textList) {
-            // CWU/t
-            Component cwutInfo = Component.literal(cachedCWUt + " / " + getMaxCWUt() + " CWU/t")
-                    .withStyle(ChatFormatting.AQUA);
-            textList.add(Component.translatable("gtceu.multiblock.hpca.computation", cwutInfo));
-
-            // Temperature
-            Component tempInfo = Component.literal(Math.round(controller.temperature / 10.0D) + " °C")
-                    .withStyle(controller.getDisplayTemperatureColor());
-            textList.add(Component.translatable("gtceu.multiblock.hpca.temperature", tempInfo));
-
-            // Cooling
-            ChatFormatting coolingColor = getMaxCoolingAmount() < getMaxCoolingDemand() ? ChatFormatting.RED :
-                    ChatFormatting.GREEN;
-            MutableComponent data = Component.literal(Integer.toString(getMaxCoolingDemand())).withStyle(coolingColor);
-            textList.add(
-                    Component.translatable("gtceu.multiblock.hpca.info_cooling_demand", data, getMaxCoolingAmount()));
-
-            // Coolant Required
-            if (getMaxCoolantDemand() > 0) {
-                data = Component.translatable("gtceu.universal.liters", getMaxCoolantDemand())
-                        .withStyle(ChatFormatting.YELLOW).append(" ");
-                Component coolantName = Component.translatable("gtceu.multiblock.hpca.info_coolant_name")
-                        .withStyle(ChatFormatting.YELLOW);
-                data.append(coolantName);
-            } else {
-                data = Component.literal("0").withStyle(ChatFormatting.GREEN);
-            }
-            textList.add(Component.translatable("gtceu.multiblock.hpca.info_max_coolant_required", data));
-
-            // Bridging
-            if (numBridges > 0) {
-                textList.add(Component.translatable("gtceu.multiblock.hpca.info_bridging_enabled")
-                        .withStyle(ChatFormatting.GREEN));
-            } else {
-                textList.add(Component.translatable("gtceu.multiblock.hpca.info_bridging_disabled")
-                        .withStyle(ChatFormatting.RED));
-            }
-        }
-
-        public void addWarnings(List<Component> textList) {
-            List<Component> warnings = new ArrayList<>();
-            if (numBridges > 1) {
-                warnings.add(Component.translatable("gtceu.multiblock.hpca.warning_multiple_bridges"));
-            }
-            if (computationProviders.isEmpty()) {
-                warnings.add(Component.translatable("gtceu.multiblock.hpca.warning_no_computation"));
-            }
-            if (getMaxCoolingDemand() > getMaxCoolingAmount()) {
-                warnings.add(Component.translatable("gtceu.multiblock.hpca.warning_low_cooling"));
-            }
-            if (!warnings.isEmpty()) {
-                textList.add(Component.translatable("gtceu.multiblock.hpca.warning_structure_header")
-                        .withStyle(ChatFormatting.YELLOW));
-                textList.addAll(warnings);
-            }
-        }
-
-        public void addErrors(List<Component> textList) {
-            if (components.stream().anyMatch(HPCAComponentTrait::isDamaged)) {
-                textList.add(
-                        Component.translatable("gtceu.multiblock.hpca.error_damaged").withStyle(ChatFormatting.RED));
-            }
         }
 
         public IDrawable getComponentTexture(int index) {
