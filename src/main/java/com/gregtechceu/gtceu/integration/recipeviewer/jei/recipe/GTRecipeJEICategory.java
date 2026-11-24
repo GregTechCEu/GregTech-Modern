@@ -87,11 +87,7 @@ public class GTRecipeJEICategory extends ModularUIJeiCategory<GTRecipe> {
             var mapped = FluidRecipeCapability
                     .mapIngredientToEntryList(FluidRecipeCapability.CAP.of(fluidContent.content()));
 
-            mapped.getStacks()
-                    .stream()
-                    .filter(stack -> !stack.isEmpty())
-                    .toList().forEach(
-                    stack -> builder.addSlot(RecipeIngredientRole.INPUT).addIngredient(ForgeTypes.FLUID_STACK, stack));
+            builder.addSlot(RecipeIngredientRole.INPUT).addIngredients(ForgeTypes.FLUID_STACK, mapped.getStacks());
         }
 
         for (var itemContent : itemOut) {
@@ -105,11 +101,7 @@ public class GTRecipeJEICategory extends ModularUIJeiCategory<GTRecipe> {
             var mapped = FluidRecipeCapability
                     .mapIngredientToEntryList(FluidRecipeCapability.CAP.of(fluidContent.content()));
 
-            mapped.getStacks()
-                    .stream()
-                    .filter(stack -> !stack.isEmpty())
-                    .toList().forEach(
-                    stack -> builder.addSlot(RecipeIngredientRole.OUTPUT).addIngredient(ForgeTypes.FLUID_STACK, stack));
+            builder.addSlot(RecipeIngredientRole.OUTPUT).addIngredients(ForgeTypes.FLUID_STACK, mapped.getStacks());
         }
     }
 
