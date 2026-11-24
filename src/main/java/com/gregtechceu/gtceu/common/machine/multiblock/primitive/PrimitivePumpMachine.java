@@ -153,8 +153,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine implements
         widgets.add(Text
                 .dynamic(() -> Text
                         .lang("gtceu.top.primitive_pump_production",
-                                FormattingUtil.formatNumbers(this.getFluidProduction()))
-                        .withStyle(ChatFormatting.WHITE))
+                                FormattingUtil.formatNumbers(this.getFluidProduction())))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));
 

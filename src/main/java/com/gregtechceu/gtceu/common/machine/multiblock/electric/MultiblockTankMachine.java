@@ -85,8 +85,7 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
                         .margin(8, 0, 8, 0))
                 .child(Text.dynamic(
                         () -> Component.literal(
-                                FormattingUtil.formatBuckets(bucketSyncer.getIntValue()))
-                                .withStyle(ChatFormatting.WHITE))
+                                FormattingUtil.formatBuckets(bucketSyncer.getIntValue())))
                         .asWidget()
                         .margin(8, 0, 20, 0))
                 .child(Flow.column()

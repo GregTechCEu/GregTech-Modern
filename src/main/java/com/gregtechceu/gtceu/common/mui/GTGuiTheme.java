@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -51,6 +53,10 @@ public class GTGuiTheme {
             .fluidSlot(GTGuiTextures.IDs.STANDARD_FLUID_SLOT)
             .color(ConfigHolder.INSTANCE.client.ui.getDefaultUIColor())
             .textColor(IMuiCover.UI_TEXT_COLOR)
+            .build();
+
+    public static final GTGuiTheme MULTIBLOCK_DISPLAY = templateBuilder("gtceu:multiblock_display")
+            .textColor(Objects.requireNonNull(ChatFormatting.GRAY.getColor()))
             .build();
 
     // TODO Multiblock theme for display texture, logo changes
@@ -91,10 +97,6 @@ public class GTGuiTheme {
 
     public String getId() {
         return themeId;
-    }
-
-    public ITheme getMuiTheme() {
-        return IThemeApi.get().getTheme(themeId);
     }
 
     public @Nullable UITexture getLogo() {

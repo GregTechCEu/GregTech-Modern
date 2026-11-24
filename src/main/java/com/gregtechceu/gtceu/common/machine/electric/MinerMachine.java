@@ -143,23 +143,20 @@ public class MinerMachine extends WorkableTieredMachine
                 .childSeparator(IIcon.EMPTY_2PX)
                 .child(Text
                         .dynamic(() -> Objects.requireNonNull(
-                                getRecipeLogic().getCustomProgressLine().copy().withStyle(ChatFormatting.WHITE)))
+                                getRecipeLogic().getCustomProgressLine().copy()))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component.translatable("gtceu.machine.miner.x", startX.getIntValue(), mineX.getIntValue())
-                                .withStyle(ChatFormatting.WHITE))
+                        () -> Component.translatable("gtceu.machine.miner.x", startX.getIntValue(), mineX.getIntValue()))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component.translatable("gtceu.machine.miner.y", startY.getIntValue(), mineY.getIntValue())
-                                .withStyle(ChatFormatting.WHITE))
+                        () -> Component.translatable("gtceu.machine.miner.y", startY.getIntValue(), mineY.getIntValue()))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component.translatable("gtceu.machine.miner.z", startZ.getIntValue(), mineZ.getIntValue())
-                                .withStyle(ChatFormatting.WHITE))
+                        () -> Component.translatable("gtceu.machine.miner.z", startZ.getIntValue(), mineZ.getIntValue()))
                         .asWidget())
                 .child(Text
                         .dynamic(() -> Component.translatable("gtceu.universal.tooltip.working_area",
-                                workingArea.getIntValue(), workingArea.getIntValue()).withStyle(ChatFormatting.WHITE))
+                                workingArea.getIntValue(), workingArea.getIntValue()))
                         .asWidget())
                 .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.done")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))).asWidget()
