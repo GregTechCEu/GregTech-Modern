@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 
-import brachy.modularui.integration.jei.JeiIngredientHandler;
 import brachy.modularui.integration.jei.recipe.ModularUIJeiCategory;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
