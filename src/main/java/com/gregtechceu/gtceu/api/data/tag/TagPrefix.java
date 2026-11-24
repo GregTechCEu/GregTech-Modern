@@ -227,7 +227,7 @@ public class TagPrefix {
     public static final TagPrefixEntry crushedRefined = REGISTRATE.tagPrefix("refined_ore")
             .idPattern("refined_%s_ore")
             .defaultTagPath("refined_ores/%s")
-            .defaultTagPath("refined_ores")
+            .unformattedTagPath("refined_ores")
             .lang("Refined %s Ore")
             .materialIconType(MaterialIconType.crushedRefined)
             .unificationEnabled(true)
@@ -238,7 +238,7 @@ public class TagPrefix {
     public static final TagPrefixEntry crushedPurified = REGISTRATE.tagPrefix("purified_ore")
             .idPattern("purified_%s_ore")
             .defaultTagPath("purified_ores/%s")
-            .defaultTagPath("purified_ores")
+            .unformattedTagPath("purified_ores")
             .customTagPredicate("siftables", false, m -> m.hasProperty(PropertyKey.GEM))
             .lang("Purified %s Ore")
             .materialIconType(MaterialIconType.crushedPurified)
@@ -269,8 +269,8 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.ingotHot)
             .unificationEnabled(true)
             .generateItem(true)
-            .generationCondition(
-                    hasBlastProperty.and(mat -> mat.getProperty(PropertyKey.BLAST).getBlastTemperature() > 1750))
+            .generationCondition(hasBlastProperty
+                    .and(mat -> mat.getPropertyOrThrow(PropertyKey.BLAST).getBlastTemperature() > 1750))
             .register();
 
     // A regular Ingot.
@@ -673,7 +673,7 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.BUZZSAW_LV)))
+                    .and(mat -> mat.getPropertyOrThrow(PropertyKey.TOOL).hasType(GTToolType.BUZZSAW_LV)))
             .register();
 
     // made of 1 Ingots.
@@ -686,7 +686,7 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_LONG_ROD))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.SCREWDRIVER_LV)))
+                    .and(mat -> mat.getPropertyOrThrow(PropertyKey.TOOL).hasType(GTToolType.SCREWDRIVER_LV)))
             .register();
 
     // made of 4 Ingots.
@@ -699,7 +699,7 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.DRILL_LV)))
+                    .and(mat -> mat.getPropertyOrThrow(PropertyKey.TOOL).hasType(GTToolType.DRILL_LV)))
             .register();
 
     // made of 2 Ingots.
@@ -712,7 +712,7 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.CHAINSAW_LV)))
+                    .and(mat -> mat.getPropertyOrThrow(PropertyKey.TOOL).hasType(GTToolType.CHAINSAW_LV)))
             .register();
 
     // made of 4 Ingots.
@@ -725,7 +725,7 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WRENCH_LV)))
+                    .and(mat -> mat.getPropertyOrThrow(PropertyKey.TOOL).hasType(GTToolType.WRENCH_LV)))
             .register();
 
     public static final TagPrefixEntry toolHeadWireCutter = REGISTRATE.tagPrefix("wire_cutter_head")
@@ -737,7 +737,7 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WIRE_CUTTER_LV)))
+                    .and(mat -> mat.getPropertyOrThrow(PropertyKey.TOOL).hasType(GTToolType.WIRE_CUTTER_LV)))
             .register();
 
     // made of 5 Ingots.
@@ -793,7 +793,8 @@ public class TagPrefix {
     // Prefix to determine which kind of Rock this is.
     // Also has a base tag path of only the material, for things like obsidian etc.
     public static final TagPrefixEntry rock = REGISTRATE.tagPrefix("rock")
-            .defaultTagPath("%s")
+            // the 2nd 's' makes the tag plural, which is what Common tags are expected to be.
+            .defaultTagPath("%ss")
             .lang("%s")
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(false)
@@ -1026,9 +1027,9 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry surfaceRock = REGISTRATE.tagPrefix("surface_rock")
-            .lang("%s Surface Rock")
             .defaultTagPath("surface_rocks/%s")
             .unformattedTagPath("surface_rocks")
+            .lang("%s Surface Rock")
             .materialAmount(GTValues.M / 3)
             .register();
 
@@ -1036,7 +1037,7 @@ public class TagPrefix {
 
         public static final Predicate<Material> hasToolProperty = mat -> mat.hasProperty(PropertyKey.TOOL);
         public static final Predicate<Material> hasNoCraftingToolProperty = hasToolProperty
-                .and(mat -> !mat.getProperty(PropertyKey.TOOL).isIgnoreCraftingTools());
+                .and(mat -> !mat.getPropertyOrThrow(PropertyKey.TOOL).isIgnoreCraftingTools());
         public static final Predicate<Material> hasOreProperty = mat -> mat.hasProperty(PropertyKey.ORE);
         public static final Predicate<Material> hasGemProperty = mat -> mat.hasProperty(PropertyKey.GEM);
         public static final Predicate<Material> hasDustProperty = mat -> mat.hasProperty(PropertyKey.DUST);
