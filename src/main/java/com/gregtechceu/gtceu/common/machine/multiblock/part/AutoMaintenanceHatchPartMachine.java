@@ -17,7 +17,7 @@ import brachy.modularui.widget.ParentWidget;
 public class AutoMaintenanceHatchPartMachine extends MaintenanceHatchPartMachine {
 
     public AutoMaintenanceHatchPartMachine(BlockEntityCreationInfo info) {
-        super(info, GTValues.HV, false);
+        super(info, GTValues.HV);
     }
 
     @Override
