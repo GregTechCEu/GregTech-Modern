@@ -81,7 +81,10 @@ public class GTRecipeJEICategory extends ModularUIJeiCategory<GTRecipe> {
             var mapped = ItemRecipeCapability
                     .mapIngredientToEntryList(ItemRecipeCapability.CAP.of(itemContent.content()));
 
-            JeiIngredientHandler.toJeiIngredient(mapped).forEach(
+            mapped.getStacks()
+                    .stream()
+                    .filter(stack -> !stack.isEmpty())
+                    .toList().forEach(
                     stack -> builder.addSlot(RecipeIngredientRole.INPUT).addIngredient(VanillaTypes.ITEM_STACK, stack));
         }
 
@@ -89,7 +92,10 @@ public class GTRecipeJEICategory extends ModularUIJeiCategory<GTRecipe> {
             var mapped = FluidRecipeCapability
                     .mapIngredientToEntryList(FluidRecipeCapability.CAP.of(fluidContent.content()));
 
-            JeiIngredientHandler.toJeiIngredient(mapped).forEach(
+            mapped.getStacks()
+                    .stream()
+                    .filter(stack -> !stack.isEmpty())
+                    .toList().forEach(
                     stack -> builder.addSlot(RecipeIngredientRole.INPUT).addIngredient(ForgeTypes.FLUID_STACK, stack));
         }
 
@@ -97,7 +103,10 @@ public class GTRecipeJEICategory extends ModularUIJeiCategory<GTRecipe> {
             var mapped = ItemRecipeCapability
                     .mapIngredientToEntryList(ItemRecipeCapability.CAP.of(itemContent.content()));
 
-            JeiIngredientHandler.toJeiIngredient(mapped).forEach(stack -> builder.addSlot(RecipeIngredientRole.OUTPUT)
+            mapped.getStacks()
+                    .stream()
+                    .filter(stack -> !stack.isEmpty())
+                    .toList().forEach(stack -> builder.addSlot(RecipeIngredientRole.OUTPUT)
                     .addIngredient(VanillaTypes.ITEM_STACK, stack));
         }
 
@@ -105,7 +114,10 @@ public class GTRecipeJEICategory extends ModularUIJeiCategory<GTRecipe> {
             var mapped = FluidRecipeCapability
                     .mapIngredientToEntryList(FluidRecipeCapability.CAP.of(fluidContent.content()));
 
-            JeiIngredientHandler.toJeiIngredient(mapped).forEach(
+            mapped.getStacks()
+                    .stream()
+                    .filter(stack -> !stack.isEmpty())
+                    .toList().forEach(
                     stack -> builder.addSlot(RecipeIngredientRole.OUTPUT).addIngredient(ForgeTypes.FLUID_STACK, stack));
         }
     }
