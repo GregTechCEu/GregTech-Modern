@@ -13,25 +13,29 @@ public class OrPredicate extends MultiPredicate {
 
     @Override
     protected boolean testGlobalMin(PredicateContext ctx) {
-        boolean result = TestType.GLOBAL_MIN.testCounts(this, ctx);
+        boolean self = TestType.GLOBAL_MIN.testCounts(this, ctx);
+        if (predicates().isEmpty() && children().isEmpty()) return self;
+        boolean any = false;
         for (BasePredicate predicate : predicates()) {
-            result |= predicate.testGlobalMin(ctx);
+            any |= predicate.testGlobalMin(ctx);
         }
         for (MultiPredicate child : children()) {
-            result |= child.testGlobalMin(ctx);
+            any |= child.testGlobalMin(ctx);
         }
-        return result;
+        return self && any;
     }
 
     @Override
     protected boolean testSliceMin(PredicateContext ctx) {
-        boolean result = TestType.SLICE_MIN.testCounts(this, ctx);
+        boolean self = TestType.SLICE_MIN.testCounts(this, ctx);
+        if (predicates().isEmpty() && children().isEmpty()) return self;
+        boolean any = false;
         for (BasePredicate predicate : predicates()) {
-            result |= predicate.testSliceMin(ctx);
+            any |= predicate.testSliceMin(ctx);
         }
         for (MultiPredicate child : children()) {
-            result |= child.testSliceMin(ctx);
+            any |= child.testSliceMin(ctx);
         }
-        return result;
+        return self && any;
     }
 }
