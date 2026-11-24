@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.api.recipe.ingredient.ExDataComponentFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -25,6 +24,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
@@ -416,11 +416,26 @@ public class RecipeHelper {
     }
 
     public static FluidIngredient makeFluidIngredient(FluidStack stack) {
-        var tagKey = TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(stack.getFluid()).getPath());
+        var tag = TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(stack.getFluid()).getPath());
         if (stack.isComponentsPatchEmpty()) {
-            return FluidIngredient.tag(tagKey);
+            return FluidIngredient.tag(tag);
         } else {
-            return ExDataComponentFluidIngredient.of(true, stack.getComponents(), tagKey);
+            return DataComponentFluidIngredient.of(true, stack.getComponents(),
+                    BuiltInRegistries.FLUID.getOrCreateTag(tag));
+        }
+    }
+
+    public static SizedFluidIngredient makeOutputSizedFluidIngredient(FluidStack stack) {
+        return new SizedFluidIngredient(makeOutputFluidIngredient(stack), stack.getAmount());
+    }
+
+    public static FluidIngredient makeOutputFluidIngredient(FluidStack stack) {
+        if (!stack.isComponentsPatchEmpty()) {
+            // has data components
+            return DataComponentFluidIngredient.of(false, stack);
+        } else {
+            // no data components
+            return FluidIngredient.of(stack);
         }
     }
 

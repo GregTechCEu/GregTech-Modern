@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICate
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -96,8 +95,7 @@ public class GTEMIPlugin implements EmiPlugin {
         registry.addEmiStack(EmiStack.of(IntCircuitBehaviour.stack(0)));
         registry.addWorkstation(ProgrammedCircuitEmiCategory.CATEGORY, EmiStack.of(IntCircuitBehaviour.stack(0)));
 
-        Comparison potionComparison = Comparison.compareData(
-                stack -> stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY));
+        Comparison potionComparison = Comparison.compareData(stack -> stack.get(DataComponents.POTION_CONTENTS));
         PotionFluid potionFluid = GTFluids.POTION.get();
         registry.setDefaultComparison(potionFluid.getSource(), potionComparison);
         registry.setDefaultComparison(potionFluid.getFlowing(), potionComparison);
