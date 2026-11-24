@@ -16,7 +16,6 @@ import net.minecraft.network.chat.Component;
 
 import brachy.modularui.integration.jei.recipe.ModularUIJeiCategory;
 import mezz.jei.api.constants.RecipeTypes;
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
