@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.ChatFormatting;
@@ -42,31 +43,30 @@ public class ModularArmorItem extends ArmorComponentItem implements IComponentIt
         if (battery != null) ArmorUtils.chargeCarriedItems(player, stack, battery, battery.getTransferLimit());
     }
 
-    public boolean protectsAgainstFalls() {
-        return false;
-    }
-
-    public boolean protectsAgainstFire() {
-        return false;
-    }
-
     public float getHeatResistance() {
         return 1.0f;
     }
 
     public void appendBuiltInTraits(ItemStack stack, List<Component> tooltip) {
         List<Component> traits = new ArrayList<>();
-        if (protectsAgainstFalls()) traits.add(Component.translatable("tooltip.gtceu.armor.trait.fall"));
-        if (protectsAgainstFire()) traits.add(Component.translatable("tooltip.gtceu.armor.trait.fire"));
+        if (stack.is(CustomTags.FALL_IMMUNE_WEARABLES)) {
+            traits.add(Component.translatable("tooltip.gtceu.armor.trait.fall_protection"));
+        }
+        if (stack.is(CustomTags.FIRE_IMMUNE_WEARABLES)) {
+            traits.add(Component.translatable("tooltip.gtceu.armor.trait.fire_protection"));
+        }
         if (stack.is(ItemTags.FREEZE_IMMUNE_WEARABLES)) {
-            traits.add(Component.translatable("tooltip.gtceu.armor.trait.freeze"));
+            traits.add(Component.translatable("tooltip.gtceu.armor.trait.freeze_protection"));
         }
         if (getHeatResistance() < 1.0f) {
-            traits.add(Component.translatable("tooltip.gtceu.armor.trait.heat",
+            traits.add(Component.translatable("tooltip.gtceu.armor.trait.heat_protection",
                     Math.round((1.0f - getHeatResistance()) * 100)));
         }
-        if (stack.is(CustomTags.PPE_ARMOR)) traits.add(Component.translatable("tooltip.gtceu.armor.trait.hazard"));
+        if (stack.is(CustomTags.PPE_ARMOR)) {
+            traits.add(Component.translatable("tooltip.gtceu.armor.trait.hazard_protection"));
+        }
         if (traits.isEmpty()) return;
+
         tooltip.add(Component.translatable("tooltip.gtceu.armor.built_in_traits"));
         for (Component trait : traits) {
             tooltip.add(Component.literal(" - ").append(trait).withStyle(ChatFormatting.GRAY));
@@ -84,19 +84,19 @@ public class ModularArmorItem extends ArmorComponentItem implements IComponentIt
 
     @Override
     public @Nullable String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        var modular = GTCapabilityHelper.getModularItem(stack);
-        if (modular == null) return super.getArmorTexture(stack, entity, slot, type);
-
-        for (var module : modular.getAllModuleInstances()) {
-            ResourceLocation texture = module.getModule().getArmorTexture(module, entity, slot, type);
-            if (texture != null) return texture.toString();
+        IModularItem modular = GTCapabilityHelper.getModularItem(stack);
+        if (modular != null) {
+            for (var ctx : modular.getAllModuleInstances()) {
+                ResourceLocation texture = ctx.getModule().getArmorTexture(ctx, entity, slot, type);
+                if (texture != null) return texture.toString();
+            }
         }
         return super.getArmorTexture(stack, entity, slot, type);
     }
 
     @Override
     public boolean isPPE(ItemStack stack) {
-        var modular = GTCapabilityHelper.getModularItem(stack);
+        IModularItem modular = GTCapabilityHelper.getModularItem(stack);
         if (modular != null) {
             for (var ctx : modular.getAllModuleInstances()) {
                 if (ctx.getModule().isPPE(ctx)) return true;

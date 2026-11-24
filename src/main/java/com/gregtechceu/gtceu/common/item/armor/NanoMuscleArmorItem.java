@@ -17,24 +17,17 @@ public class NanoMuscleArmorItem extends ModularArmorItem {
     }
 
     @Override
-    public boolean protectsAgainstFalls() {
-        return getType() == Type.BOOTS;
-    }
-
-    @Override
     public float getHeatResistance() {
         return getType() == Type.CHESTPLATE ? 0.75f : 1.0f;
     }
 
     @Override
-    public @Nullable String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
-                                            String type) {
-        var texture = super.getArmorTexture(stack, entity, slot, type);
+    public @Nullable String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+        String texture = super.getArmorTexture(stack, entity, slot, type);
         if (texture != null) return texture;
 
-        String armorTexture = "nano_muscle_suite";
         return slot != EquipmentSlot.LEGS ?
-                GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)).toString() :
-                GTCEu.id(String.format("textures/armor/%s_2.png", armorTexture)).toString();
+                GTCEu.id("textures/armor/nano_muscle_suite_1.png").toString() :
+                GTCEu.id("textures/armor/nano_muscle_suite_2.png").toString();
     }
 }
