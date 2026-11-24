@@ -9,6 +9,7 @@
     "compatibilityLevel": "JAVA_21",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [
+        "client.embeddium.EmbeddiumFluidRendererMixin",
         "client.customchunk.embeddium.EmbeddiumChunkBuildBuffersMixin",
         "client.customchunk.embeddium.EmbeddiumChunkBuilderMeshingTaskMixin",
         "client.customchunk.embeddium.EmbeddiumBlockRendererMixin",

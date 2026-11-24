@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -65,7 +65,7 @@ public class ElementMaterials {
         Arsenic = REGISTRATE.material("arsenic", builder -> builder
                 .dust()
                 .gas(new FluidBuilder()
-                        .state(FluidState.GAS)
+                        .state(MaterialFluidState.GAS)
                         .temperature(887))
                 .color(0x9c9c8d).secondaryColor(0x676756)
                 .element(GTElements.As)
@@ -145,7 +145,7 @@ public class ElementMaterials {
                 .element(GTElements.Ce));
 
         Chlorine = REGISTRATE.material("chlorine", builder -> builder
-                .gas(new FluidBuilder().state(FluidState.GAS).customStill())
+                .gas(new FluidBuilder().state(MaterialFluidState.GAS).customStill())
                 .element(GTElements.Cl)
         // TODO hazard
         );
@@ -205,7 +205,7 @@ public class ElementMaterials {
                 .element(GTElements.Ds));
 
         Deuterium = REGISTRATE.material("deuterium", builder -> builder
-                .gas(new FluidBuilder().state(FluidState.GAS).customStill())
+                .gas(new FluidBuilder().state(MaterialFluidState.GAS).customStill())
                 .element(GTElements.D));
 
         Dubnium = REGISTRATE.material("dubnium", builder -> builder
@@ -251,7 +251,7 @@ public class ElementMaterials {
                 .element(GTElements.Fl));
 
         Fluorine = REGISTRATE.material("fluorine", builder -> builder
-                .gas(new FluidBuilder().state(FluidState.GAS).customStill())
+                .gas(new FluidBuilder().state(MaterialFluidState.GAS).customStill())
                 .element(GTElements.F)
                 .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.CHEMICAL_BURNS, false));
 
@@ -306,7 +306,7 @@ public class ElementMaterials {
                 .element(GTElements.H));
 
         Helium = REGISTRATE.material("helium", builder -> builder
-                .gas(new FluidBuilder().state(FluidState.GAS).customStill())
+                .gas(new FluidBuilder().state(MaterialFluidState.GAS).customStill())
                 .plasma()
                 .liquid(new FluidBuilder()
                         .temperature(4)
@@ -788,7 +788,7 @@ public class ElementMaterials {
                         .vacuumStats(VA[HV])));
 
         Tritium = REGISTRATE.material("tritium", builder -> builder
-                .gas(new FluidBuilder().state(FluidState.GAS).customStill())
+                .gas(new FluidBuilder().state(MaterialFluidState.GAS).customStill())
                 .color(0xff316b).secondaryColor(0xd00000)
                 .iconSet(METALLIC)
                 .element(GTElements.T)
@@ -894,7 +894,7 @@ public class ElementMaterials {
 
         Neutronium = REGISTRATE.material("neutronium", builder -> builder
                 .ingot(6)
-                .liquid(new FluidBuilder().temperature(100_000))
+                .liquid(new FluidBuilder().block().temperature(100_000).density(-1000))
                 .color(0xFFFFFF).secondaryColor(0x000000)
                 .appendFlags(EXT_METAL, GENERATE_BOLT_SCREW, GENERATE_FRAME, GENERATE_GEAR, GENERATE_LONG_ROD)
                 .element(GTElements.Nt)

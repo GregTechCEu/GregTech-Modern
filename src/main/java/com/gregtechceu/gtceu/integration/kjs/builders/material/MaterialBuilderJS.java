@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.DeferredMaterialSt
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -79,7 +79,7 @@ public class MaterialBuilderJS extends BuilderBase<Material> {
 
             Can be called multiple times to add multiple fluids.
             """)
-    public MaterialBuilderJS fluid(FluidStorageKey key, FluidState state) {
+    public MaterialBuilderJS fluid(FluidStorageKey key, MaterialFluidState state) {
         internal.fluid(key, state);
         return this;
     }
