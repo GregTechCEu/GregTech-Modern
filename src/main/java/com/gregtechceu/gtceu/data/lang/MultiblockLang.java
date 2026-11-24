@@ -64,6 +64,12 @@ public class MultiblockLang {
         provider.add("multiblock.gtceu.pattern_error.charcoal.too_small", "Charcoal Pile is too small.");
         provider.add("multiblock.gtceu.pattern_error.steam.missing_steam_hatch", "Missing steam hatch");
 
+        provider.add("multiblock.gtceu.pattern_error.limit_max", "§cMaximum:§r %d, §cHas:§r %d");
+        provider.add("multiblock.gtceu.pattern_error.limit_min", "§cMinimum:§r %d, §cHas:§r %d");
+        provider.add("multiblock.gtceu.pattern_error.limit_layer_max", "§cMaximum:§r %d per layer, §cHas:§r %d");
+        provider.add("multiblock.gtceu.pattern_error.limit_layer_min", "§cMinimum:§r %d per layer, §cHas:§r %d");
+
+
         // Autobuilding, Multiblock Preview & Terminal
 
         provider.add("gui.gtceu.multi_preview.clear_preferences", "Clear Preferences");
