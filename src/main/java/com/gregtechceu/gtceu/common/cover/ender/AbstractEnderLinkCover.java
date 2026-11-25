@@ -317,18 +317,17 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     protected ParentWidget<?> getChannelStatusRowShort(PanelSyncManager syncManager, VirtualEntry entry, int idx) {
-        RichTextWidget str = new RichTextWidget().size(98, 12);
+        TextWidget<?> str;
         if (entry.getDescription().isBlank()) {
-            str.textBuilder((txt) -> txt.add(
-                    Text.lang("cover.ender_link.description_empty").color(Color.GREY.darker(1))));
+            str = Text.lang("cover.ender_link.description_empty").asWidget().size(98, 12)
+                    .color(Color.GREY.darker(1));
         } else {
-            str.textBuilder((txt) -> txt.add(Text.str(entry.getDescription())));
+            str = Text.str(entry.getDescription()).asWidget().size(98, 12);
         }
         return coverUIRow()
-                .child(attachSetChannelButton(syncManager, entry)
-                        .child(createColorBlock(entry::getColor, 18).asWidget()
-                                .tooltip(t -> t.addLine(entry.getColorStr()))
-                                .size(18, 18)))
+                .child(createColorBlock(entry::getColor, 18).asWidget()
+                        .tooltip(t -> t.addLine(entry.getColorStr()))
+                        .size(18, 18))
                 .child(str)
                 .child(createVirtualEntryWidget(syncManager, entry, 18, 18, idx))
                 .child(new ButtonWidget<>().overlay(GTGuiTextures.BUTTON_CROSS).onMousePressed((context, button) -> {
