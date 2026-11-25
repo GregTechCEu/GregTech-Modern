@@ -146,7 +146,6 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 .posRel(Alignment.CenterLeft);
 
         listWidget
-                .child(GTMultiblockTextUtil.addUnformedWarning(this, syncManager))
                 .child(GTMultiblockTextUtil.addSteamUsageLine(this.steamEnergy, syncManager))
                 .child(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
 

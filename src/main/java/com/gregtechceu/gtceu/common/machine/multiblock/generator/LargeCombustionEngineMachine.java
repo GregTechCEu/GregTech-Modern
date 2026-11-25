@@ -258,7 +258,6 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
         List<IWidget> widgets = new ArrayList<>();
 
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
 
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, euOutput, engineVoltage, true));

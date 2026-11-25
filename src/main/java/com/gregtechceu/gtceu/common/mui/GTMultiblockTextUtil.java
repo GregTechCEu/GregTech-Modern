@@ -235,7 +235,7 @@ public class GTMultiblockTextUtil {
                 .coverChildren()
                 .childPadding(2)
                 .child(widget)
-                .child(GTGuiTextures.INFO.asIcon().size(9).marginTop(-2).asWidget().size(9).tooltip(tooltip))
+                .child(GTGuiTextures.INFO.asIcon().size(9).marginTop(-1).asWidget().size(8).tooltip(tooltip))
                 .tooltip(tooltip) // has to be added twice, one for the line of text one for the icon
                 .setEnabledIf(enabledConditions);
     }

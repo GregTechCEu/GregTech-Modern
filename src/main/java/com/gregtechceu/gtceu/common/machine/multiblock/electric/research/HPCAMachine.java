@@ -276,7 +276,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         syncManager.syncValue("maxCWU", maxCWU);
         syncManager.syncValue("temperature", temperature);
 
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
                 () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
                 () -> Component.translatable("gtceu.multiblock.hpca.error_power").withStyle(ChatFormatting.RED)));

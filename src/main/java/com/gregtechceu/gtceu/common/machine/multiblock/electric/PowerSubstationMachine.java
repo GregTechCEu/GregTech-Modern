@@ -305,8 +305,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         LongSyncValue outputPerSec = new LongSyncValue(() -> this.outputPerSec);
         syncManager.syncValue("outputPerSec", outputPerSec);
 
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
-
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
                 () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
                 () -> Component.translatable("gtceu.multiblock.waiting").withStyle(ChatFormatting.RED)));

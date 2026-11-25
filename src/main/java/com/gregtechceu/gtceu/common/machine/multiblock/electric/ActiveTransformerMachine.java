@@ -198,8 +198,6 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
         LongSyncValue outputPerSec = new LongSyncValue(this.powerOutput::getOutputPerSec);
         syncManager.syncValue("outputPerSec", outputPerSec);
 
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
-
         widgets.add(Text.lang("gtceu.multiblock.work_paused")
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !workingEnabled.getBoolValue()));

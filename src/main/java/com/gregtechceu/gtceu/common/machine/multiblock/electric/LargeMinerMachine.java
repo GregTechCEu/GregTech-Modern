@@ -273,8 +273,6 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isFormed));
 
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
-
         widgets.add(Text
                 .dynamic(() -> Component.translatable("gtceu.machine.miner.x", x.getLongValue(), startX.getLongValue()))
                 .asWidget()
