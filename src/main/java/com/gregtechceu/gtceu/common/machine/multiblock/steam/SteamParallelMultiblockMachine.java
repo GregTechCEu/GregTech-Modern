@@ -137,7 +137,6 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
         List<IWidget> widgets = new ArrayList<>();
 
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addSteamUsageLine(this.steamEnergy, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
 
