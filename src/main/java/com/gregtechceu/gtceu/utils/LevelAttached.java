@@ -6,12 +6,16 @@
  */
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.world.level.LevelAccessor;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.level.LevelEvent;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.Cleaner;
 import java.lang.ref.WeakReference;
@@ -25,6 +29,7 @@ import java.util.function.Function;
  * "https://github.com/Engine-Room/Flywheel/blob/04933a534326032333c3b39c94f4f364a30d9aaf/common/src/lib/java/dev/engine_room/flywheel/lib/util/LevelAttached.java">class
  * from Flywheel</a> with the same name.
  */
+@EventBusSubscriber(modid = GTCEu.MOD_ID)
 public final class LevelAttached<T> {
 
     private static final ConcurrentLinkedDeque<WeakReference<LevelAttached<?>>> ALL = new ConcurrentLinkedDeque<>();
@@ -44,7 +49,7 @@ public final class LevelAttached<T> {
                 .build(new CacheLoader<>() {
 
                     @Override
-                    public @NotNull T load(@NotNull LevelAccessor key) {
+                    public T load(LevelAccessor key) {
                         return factory.apply(key);
                     }
                 });
@@ -92,5 +97,10 @@ public final class LevelAttached<T> {
             ALL.remove(ref);
             cache.invalidateAll();
         }
+    }
+
+    @SubscribeEvent
+    public static void onLevelUnload(LevelEvent.Unload event) {
+        invalidateLevel(event.getLevel());
     }
 }

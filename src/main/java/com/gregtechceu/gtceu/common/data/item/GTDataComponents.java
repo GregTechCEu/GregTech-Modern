@@ -166,12 +166,13 @@ public class GTDataComponents {
                     builder -> builder.persistent(UUIDUtil.CODEC)
                             .networkSynchronized(UUIDUtil.STREAM_CODEC));
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> SPOILAGE_CREATION_TICK = DATA_COMPONENTS
-            .registerComponentType("spoilage_creation_tick",
+    // Spoilage
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> SPOILABLE_CREATION_TIME = DATA_COMPONENTS
+            .registerComponentType("spoilable_creation_time",
                     builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> SPOILAGE_FREEZE_TICK = DATA_COMPONENTS
-            .registerComponentType("spoilage_freeze_tick",
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> FROZEN_SPOILABLE_REMAINING_TIME = DATA_COMPONENTS
+            .registerComponentType("frozen_spoilable_remaining_time",
                     builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
 
     // Filters

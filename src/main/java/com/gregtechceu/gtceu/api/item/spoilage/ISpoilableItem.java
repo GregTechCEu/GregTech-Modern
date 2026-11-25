@@ -6,7 +6,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 /**
@@ -15,7 +15,7 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
  * Spoilable items will, as the name implies, spoil (who could've thought).
  * Due to Minecraft's limitations, items will only start spoiling if:
  * <ul>
- * <li>It is in an {@link IItemHandlerModifiable}, which is exposed as a capability of a {@link BlockEntity} or
+ * <li>It is in an {@link IItemHandlerModifiable}, which is exposed as a capability of a {@link Block} or
  * {@link Entity}
  * <li>It is an output of a {@link GTRecipe}</li>
  * <li>It enters a player's inventory and gets ticked at least once</li>
@@ -52,9 +52,9 @@ public interface ISpoilableItem {
      * Checks if this stack is supposed to already be spoiled, and spoils it into the
      * {@link ISpoilableItem#getSpoilResult}
      * 
-     * @param createTag whether to start spoiling this stack if it didn't start spoiling yet (adds NBT)
+     * @param startSpoiling whether to start spoiling this stack if it didn't start spoiling yet
      */
-    void updateFreshness(SpoilContext spoilContext, boolean createTag);
+    void updateFreshness(SpoilContext spoilContext, boolean startSpoiling);
 
     /**
      * Should return the amount of ticks that this item can stay fresh.
@@ -148,6 +148,12 @@ public interface ISpoilableItem {
         }
         long thisCreated = this.getCreationTick();
         long thatCreated = that.getCreationTick();
+
+        if (thisCreated == Long.MAX_VALUE ^ thatCreated == Long.MAX_VALUE) {
+            boolean useThis = thisCreated != Long.MAX_VALUE;
+            if (useThis) that.setCreationTick(thisCreated);
+            else this.setCreationTick(thatCreated);
+        }
 
         if (thisCreated != thatCreated) {
             int thisCount = this.getStack().getCount(), thatCount = that.getStack().getCount();

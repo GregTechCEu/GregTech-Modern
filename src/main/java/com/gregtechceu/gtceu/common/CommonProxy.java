@@ -21,7 +21,7 @@ import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.item.spoilage.SpoilableBehavior;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilUtils;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.misc.forge.QuantumFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
@@ -204,7 +204,7 @@ public class CommonProxy {
         CustomBlockRotations.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
-        SpoilableBehavior.init();
+        SpoilUtils.initSpoilage();
 
         GTCreativeModeTabs.init();
         GTAttachmentTypes.init(modBus);

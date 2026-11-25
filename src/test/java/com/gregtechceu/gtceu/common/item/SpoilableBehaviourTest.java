@@ -246,7 +246,7 @@ public class SpoilableBehaviourTest {
         helper.startSequence()
                 .thenExecute(() -> {
                     ItemStack input = new ItemStack(SPOILABLE_4.get());
-                    SpoilUtils.update(input, new SpoilContext(inputBus, inputBus.getInventory(), 0));
+                    SpoilUtils.update(input, new SpoilContext(inputBus.getLevel(), inputBus.getBlockPos(), inputBus.getInventory(), 0));
                     Objects.requireNonNull(GTCapabilityHelper.getSpoilable(input)).setTicksUntilSpoiled(8);
                     inputBus.getInventory().setStackInSlot(0, input);
                 })
@@ -274,7 +274,7 @@ public class SpoilableBehaviourTest {
         helper.startSequence()
                 .thenExecute(() -> {
                     ItemStack input = new ItemStack(SPOILABLE_1.get());
-                    SpoilUtils.update(input, new SpoilContext(inputBus, inputBus.getInventory(), 0));
+                    SpoilUtils.update(input, new SpoilContext(inputBus.getLevel(), inputBus.getBlockPos(), inputBus.getInventory(), 0));
                     Objects.requireNonNull(GTCapabilityHelper.getSpoilable(input)).setTicksUntilSpoiled(8);
                     inputBus.getInventory().setStackInSlot(0, input);
                 })

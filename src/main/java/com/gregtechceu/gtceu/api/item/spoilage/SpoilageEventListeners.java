@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.item.spoilage;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 
@@ -12,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -21,9 +20,14 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 
-@EventBusSubscriber(modid = GTCEu.MOD_ID)
 @ApiStatus.Internal
 public class SpoilageEventListeners {
+
+    public static void init() {
+        if (SpoilUtils.spoilageEnabled()) {
+            NeoForge.EVENT_BUS.register(SpoilageEventListeners.class);
+        }
+    }
 
     @SubscribeEvent
     public static void addSpoilageTooltips(ItemTooltipEvent event) {
@@ -31,7 +35,6 @@ public class SpoilageEventListeners {
         Player player = event.getEntity();
         List<Component> tooltips = event.getToolTip();
         TooltipFlag flag = event.getFlags();
-        if (!SpoilUtils.spoilageEnabled()) return;
 
         ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
         if (spoilable instanceof IAddInformation withTooltip) {
@@ -42,9 +45,8 @@ public class SpoilageEventListeners {
     @SubscribeEvent
     public static void levelTick(LevelTickEvent.Pre event) {
         if (!(event.getLevel() instanceof ServerLevel level)) return;
-        if (!SpoilUtils.spoilageEnabled()) return;
 
-        BlockEntitySpoilTicker.get(level).tick();
+        BlockSpoilTicker.get(level).tick();
 
         for (Entity entity : level.getAllEntities()) {
             // process spoilage updates for all loaded entities
@@ -59,17 +61,15 @@ public class SpoilageEventListeners {
             return;
         }
         if (!(chunk.getLevel() instanceof ServerLevel level)) return;
-        if (!SpoilUtils.spoilageEnabled()) return;
 
-        BlockEntitySpoilTicker.get(level).chunkLoaded(chunk);
+        BlockSpoilTicker.get(level).chunkLoaded(chunk);
     }
 
     @SubscribeEvent
     public static void chunkUnloaded(ChunkEvent.Unload event) {
         if (!(event.getChunk() instanceof LevelChunk chunk)) return;
         if (!(chunk.getLevel() instanceof ServerLevel level)) return;
-        if (!SpoilUtils.spoilageEnabled()) return;
 
-        BlockEntitySpoilTicker.get(level).chunkUnloaded(chunk);
+        BlockSpoilTicker.get(level).chunkUnloaded(chunk);
     }
 }

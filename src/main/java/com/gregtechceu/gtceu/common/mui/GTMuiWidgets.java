@@ -114,8 +114,7 @@ public class GTMuiWidgets {
     public static Flow createTitleBarWithEnd(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background,
                                              @Nullable Widget<?> end) {
         ItemStack stack = stackSupplier.get();
-        return createTitleBarWithEnd(new ItemDrawable(stack).asIcon(), stack.getHoverName(), panelWidth, background,
-                end);
+        return createTitleBarWithEnd(new ItemDrawable(stack).asIcon(), stack.getHoverName().plainCopy(), panelWidth, background, end);
     }
 
     public static Flow createTitleBarWithEnd(@Nullable Icon icon, Component text, int panelWidth, UITexture background,
@@ -153,8 +152,7 @@ public class GTMuiWidgets {
                 .childIf(end != null, () -> end);
     }
 
-    public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture texture,
-                                                  String langKey) {
+    public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture texture, String langKey) {
         var value = new BooleanSyncValue(getter, setter).allowC2S();
         return new ToggleButton()
                 .value(value)
@@ -266,8 +264,7 @@ public class GTMuiWidgets {
                 .setEnabledIf((W) -> workableMultiblock.getRecipeTypes().length > 0);
     }
 
-    private static IntSyncValue createCircuitSlotSyncValue(Consumer<ItemStack> circuitSetter,
-                                                           Supplier<ItemStack> circuitGetter) {
+    private static IntSyncValue createCircuitSlotSyncValue(Consumer<ItemStack> circuitSetter, Supplier<ItemStack> circuitGetter) {
         return new IntSyncValue(() -> {
             if (circuitGetter.get().isEmpty()) return -1;
             return IntCircuitBehaviour.getCircuitConfiguration(circuitGetter.get());

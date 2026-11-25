@@ -8,7 +8,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
@@ -38,7 +37,7 @@ public record SpoilContext(@Nullable Level level,
      *         This is usually the Overworld. If it is {@code null}, all spoilage updates are ignored.
      */
     public static @Nullable Level getDefaultLevel() {
-        if (GTCEu.isClientSide()) return ClientCallWrapper.getClientLevel();
+        if (GTCEu.isClientThread()) return ClientCallWrapper.getClientLevel();
 
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server == null) return null;
@@ -51,10 +50,6 @@ public record SpoilContext(@Nullable Level level,
 
     public SpoilContext(Entity entity, IItemHandlerModifiable handler, int slot) {
         this(entity.level(), entity.blockPosition(), entity, stackSetterForHandler(handler, slot));
-    }
-
-    public SpoilContext(BlockEntity be, IItemHandlerModifiable handler, int slot) {
-        this(be.getLevel(), be.getBlockPos(), null, stackSetterForHandler(handler, slot));
     }
 
     public void setResultStack(ItemStack stack) {

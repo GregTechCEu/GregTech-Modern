@@ -18,7 +18,7 @@ public class GTEarlyConfig {
 
     public static final String BLOOM_SAFE_MODE = "client.bloom.safe_mode.";
     public static final String FACE_LAYER_SAFE_MODE = "client.face_layer.safe_mode.";
-    public static final String SPOILAGE = "spoilage";
+    public static final String SPOILAGE = "spoilage.";
 
     private static final Logger LOGGER = LogManager.getLogger("GTEarlyConfig");
 

@@ -1,10 +1,14 @@
 package com.gregtechceu.gtceu.api.item.spoilage;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.RegisterSpoilablesEventJS;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
@@ -17,7 +21,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -26,12 +30,25 @@ import org.jetbrains.annotations.Nullable;
 
 public class SpoilUtils {
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean spoilageEnabled() {
         return GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SPOILAGE);
     }
 
+    public static void initSpoilage() {
+        if (!SpoilUtils.spoilageEnabled()) return;
+
+        SpoilageEventListeners.init();
+
+        RegisterSpoilablesEvent event = new RegisterSpoilablesEvent(SpoilableBehavior::builder);
+        ModLoader.postEvent(event);
+        if (GTCEu.Mods.isKubeJSLoaded()) {
+            KJSCallWrapper.fireKJSEvent(event);
+        }
+    }
+
     public static void mergeSpoilables(ItemStack stack, ItemStack other) {
-        if (stack.isEmpty() || other.isEmpty()) return;
+        if (stack.isEmpty() || other.isEmpty() || !ItemStack.isSameItem(stack, other)) return;
 
         var cap1 = GTCapabilityHelper.getSpoilable(stack);
         var cap2 = GTCapabilityHelper.getSpoilable(other);
@@ -41,29 +58,30 @@ public class SpoilUtils {
     }
 
     /**
-     * Checks if an item and tags are the same, with support for spoilage
+     * Checks if two items and their components are the same, ignoring spoilage data
      * 
      * @return If the item stacks and their non-spoilage data are the same, and checks that the spoilage items are
      *         compatible.
      */
-    public static boolean isSameItemSameTagsSpoilable(ItemStack a, ItemStack b) {
+    public static boolean isSameItemSameComponentsIgnoringSpoilable(ItemStack a, ItemStack b) {
         if (!ItemStack.isSameItem(a, b)) return false; // both have same item
         if (a.isEmpty() != b.isEmpty()) return false; // only one is empty, the other isn't
 
         var aCap = a.getCapability(GTCapability.CAPABILITY_SPOILABLE_ITEM);
         var bCap = b.getCapability(GTCapability.CAPABILITY_SPOILABLE_ITEM);
 
-        if (aCap == null || bCap == null) return ItemStack.isSameItemSameComponents(a, b); // at least one doesn't
-                                                                                           // have the capability,
-                                                                                           // fall back to vanilla
+        if (aCap == null || bCap == null) {
+            // at least one doesn't have the capability, fall back to vanilla
+            return ItemStack.isSameItemSameComponents(a, b);
+        }
 
         ItemStack aCopy = a.copy();
-        aCopy.remove(GTDataComponents.SPOILAGE_CREATION_TICK);
-        aCopy.remove(GTDataComponents.SPOILAGE_FREEZE_TICK);
+        aCopy.remove(GTDataComponents.SPOILABLE_CREATION_TIME);
+        aCopy.remove(GTDataComponents.FROZEN_SPOILABLE_REMAINING_TIME);
 
         ItemStack bCopy = b.copy();
-        bCopy.remove(GTDataComponents.SPOILAGE_CREATION_TICK);
-        bCopy.remove(GTDataComponents.SPOILAGE_FREEZE_TICK);
+        bCopy.remove(GTDataComponents.SPOILABLE_CREATION_TIME);
+        bCopy.remove(GTDataComponents.FROZEN_SPOILABLE_REMAINING_TIME);
 
         return ItemStack.isSameItemSameComponents(aCopy, bCopy);
     }
@@ -80,10 +98,6 @@ public class SpoilUtils {
     public static void updateBlock(Level level, BlockPos pos) {
         for (Direction side : GTUtil.DIRECTIONS) updateBlock(level, pos, side);
         updateBlock(level, pos, null);
-    }
-
-    public static void updateBlock(BlockEntity blockEntity) {
-        updateBlock(blockEntity.getLevel(), blockEntity.getBlockPos());
     }
 
     public static void updateBlock(Level level, BlockPos pos, @Nullable Direction side) {
@@ -112,7 +126,6 @@ public class SpoilUtils {
         }
 
         var cap = entity.getCapability(Capabilities.ItemHandler.ENTITY);
-
         if (cap != null) updateEntityItemHandler(cap, entity);
     }
 
@@ -147,6 +160,13 @@ public class SpoilUtils {
         }
         for (int i = 0; i < count; i++) {
             type.spawn(level, pos, MobSpawnType.CONVERSION);
+        }
+    }
+
+    private static class KJSCallWrapper {
+
+        public static void fireKJSEvent(RegisterSpoilablesEvent event) {
+            GTCEuStartupEvents.REGISTER_SPOILABLES.post(new RegisterSpoilablesEventJS(event));
         }
     }
 }

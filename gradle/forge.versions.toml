@@ -1,7 +1,7 @@
 [versions]
 registrate = "MC1.21-1.3.0+67"
 configuration = "3.1.1-neoforge"
-jei = "19.25.1.328"
+jei = "19.70.0.469"
 emi = "1.1.24+1.21.1"
 ae2 = "19.2.8"
 mui = "3.3.1-SNAPSHOT"

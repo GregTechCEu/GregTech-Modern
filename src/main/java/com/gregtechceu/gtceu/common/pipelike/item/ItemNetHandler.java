@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilUtils;
 import com.gregtechceu.gtceu.api.transfer.item.ITransferAmountLimiter;
 import com.gregtechceu.gtceu.api.transfer.item.IVirtualItemHandler;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
@@ -511,7 +512,7 @@ public class ItemNetHandler implements IItemHandlerModifiable, IVirtualItemHandl
             ItemStack slot = handler.getStackInSlot(i);
             if (slot.isEmpty()) continue;
             if (ignoreNBT && !ItemStack.isSameItem(stack, slot)) continue;
-            if (!ignoreNBT && !ItemStack.isSameItemSameComponents(stack, slot)) continue;
+            if (!ignoreNBT && !SpoilUtils.isSameItemSameComponentsIgnoringSpoilable(stack, slot)) continue;
             if (arm.getFilterHandler().getFilter().test(slot)) {
                 count += slot.getCount();
             }

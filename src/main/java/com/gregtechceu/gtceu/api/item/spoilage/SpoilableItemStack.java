@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -17,9 +16,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -32,7 +29,7 @@ import java.util.List;
  * @see SpoilableBehavior
  * @see SpoilableBehavior#attachTo(ItemLike)
  */
-public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformation, IDurabilityBar {
+public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformation {
 
     @Getter
     private final ItemStack stack;
@@ -42,23 +39,23 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     }
 
     public long getCreationTick() {
-        return stack.getOrDefault(GTDataComponents.SPOILAGE_CREATION_TICK, Long.MAX_VALUE);
+        return stack.getOrDefault(GTDataComponents.SPOILABLE_CREATION_TIME, Long.MAX_VALUE);
     }
 
     public void setCreationTick(long creationTick) {
-        stack.set(GTDataComponents.SPOILAGE_CREATION_TICK, creationTick);
+        stack.set(GTDataComponents.SPOILABLE_CREATION_TIME, creationTick);
     }
 
     public boolean isFrozen() {
-        return stack.has(GTDataComponents.SPOILAGE_FREEZE_TICK);
+        return stack.has(GTDataComponents.FROZEN_SPOILABLE_REMAINING_TIME);
     }
 
-    public long getFrozenTicks() {
-        return stack.getOrDefault(GTDataComponents.SPOILAGE_FREEZE_TICK, Long.MAX_VALUE);
+    public long getFrozenRemainingTicks() {
+        return stack.getOrDefault(GTDataComponents.FROZEN_SPOILABLE_REMAINING_TIME, Long.MAX_VALUE);
     }
 
-    public void setFrozenTicks(long ticks) {
-        stack.set(GTDataComponents.SPOILAGE_FREEZE_TICK, ticks);
+    public void setFrozenRemainingTicks(long ticks) {
+        stack.set(GTDataComponents.FROZEN_SPOILABLE_REMAINING_TIME, ticks);
     }
 
     /**
@@ -70,22 +67,21 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
      * the tag and sets the creation tick to this tick.<br>
      * If {@code createTag = false} and the spoilage tag isn't present, does nothing.
      *
-     * @param createTag Whether to create a spoilage tag if it wasn't present.
-     *                  Usually {@code true} for stacks that are present in-world,
-     *                  and {@code false} for stacks in recipe viewers, icons, quests, etc.
+     * @param startSpoiling Whether to create a spoilage tag if it wasn't present.
+     *                      Usually {@code true} for stacks that are present in-world,
+     *                      and {@code false} for stacks in recipe viewers, icons, quests, etc.
      *
      * @implNote This method is injected into all of {@link ItemStack}'s getters to
      *           be called with an empty {@link SpoilContext} and {@code createTag = false}.
      */
-    public void updateFreshness(SpoilContext spoilContext, boolean createTag) {
+    public void updateFreshness(SpoilContext spoilContext, boolean startSpoiling) {
         if (isFrozen()) return;
-        if (!createTag && getCreationTick() == Long.MAX_VALUE) return;
+        if (!startSpoiling && !stack.has(GTDataComponents.SPOILABLE_CREATION_TIME)) return;
 
         Level level = SpoilContext.getDefaultLevel();
-
         if (level == null) return;
 
-        if (createTag && getCreationTick() == Long.MAX_VALUE) {
+        if (startSpoiling && !stack.has(GTDataComponents.SPOILABLE_CREATION_TIME)) {
             setCreationTick(level.getGameTime());
         }
 
@@ -111,7 +107,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     @Override
     public long getTicksUntilSpoiled() {
-        if (isFrozen()) return getFrozenTicks();
+        if (isFrozen()) return getFrozenRemainingTicks();
 
         Level level = SpoilContext.getDefaultLevel();
         if (level == null) {
@@ -132,15 +128,16 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
         if (freeze == this.isFrozen()) return;
         Level level = SpoilContext.getDefaultLevel();
 
-        if (!stack.has(GTDataComponents.SPOILAGE_CREATION_TICK) && level != null) {
-            setCreationTick(level.getGameTime());
+        if (!stack.has(GTDataComponents.SPOILABLE_CREATION_TIME) && level != null) {
+            setCreationTick(level.getGameTime() - getSpoilTicks());
         }
 
         if (freeze) {
-            setFrozenTicks(getTicksUntilSpoiled());
+            setFrozenRemainingTicks(getTicksUntilSpoiled());
+            stack.remove(GTDataComponents.SPOILABLE_CREATION_TIME);
         } else {
-            setTicksUntilSpoiled(getFrozenTicks());
-            stack.remove(GTDataComponents.SPOILAGE_FREEZE_TICK);
+            setTicksUntilSpoiled(getFrozenRemainingTicks());
+            stack.remove(GTDataComponents.FROZEN_SPOILABLE_REMAINING_TIME);
         }
     }
 
@@ -194,25 +191,5 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     protected Component getSpoilResultTooltip() {
         return getSpoilResult(SpoilContext.EMPTY, -1, false).getDisplayName();
-    }
-
-    @Override
-    public int getBarColor(ItemStack stack) {
-        return 0xFFFFFFFF;
-    }
-
-    @Override
-    public boolean doDamagedStateColors(ItemStack itemStack) {
-        return false;
-    }
-
-    @Override
-    public @Nullable IntIntPair getDurabilityColorsForDisplay(ItemStack itemStack) {
-        return IntIntPair.of(getBarColor(itemStack), getBarColor(itemStack));
-    }
-
-    @Override
-    public float getDurabilityForDisplay(ItemStack stack) {
-        return getCreationTick() == Long.MAX_VALUE ? 1 : Mth.clamp((float) getTicksUntilSpoiled() / getSpoilTicks(), 0, 1);
     }
 }

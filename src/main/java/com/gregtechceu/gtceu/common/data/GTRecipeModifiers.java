@@ -31,8 +31,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -60,16 +58,18 @@ public class GTRecipeModifiers {
     public static final RecipeModifier OC_NON_PERFECT_SUBTICK = ELECTRIC_OVERCLOCK.apply(NON_PERFECT_OVERCLOCK_SUBTICK);
     public static final RecipeModifier SPOILAGE_TRANSFER = (machine, recipe) -> ModifierFunction.builder()
             .modifyItemOutputs((r, stackObject) -> {
+                if (!r.keepSpoilingProgress) return;
                 if (!(stackObject instanceof ItemStack stack)) return;
+
                 ISpoilableItem outputSpoilable = GTCapabilityHelper.getSpoilable(stack);
                 if (outputSpoilable == null) return;
 
-                if (!r.keepSpoilingProgress) return;
                 double spoilProgress = 0;
                 int spoilableCount = 0;
                 ConsumedInputsData inputs = machine.getTraitOptional(RecipeLogic.class)
                         .map(RecipeLogic::getConsumedInputs).orElse(null);
                 if (inputs == null) return;
+
                 for (Object inObject : inputs.getConsumedInputs(ItemRecipeCapability.CAP)) {
                     if (!(inObject instanceof SizedIngredient ingredient)) continue;
                     if (ingredient.getItems().length == 0) continue;
@@ -81,6 +81,7 @@ public class GTRecipeModifiers {
                                 spoilable.getSpoilTicks();
                     }
                 }
+
                 if (outputSpoilable.shouldSpoil() && spoilableCount > 0) {
                     double spoiled = spoilProgress / spoilableCount;
                     outputSpoilable.setTicksUntilSpoiled((long) (spoiled * outputSpoilable.getSpoilTicks()));
@@ -124,7 +125,7 @@ public class GTRecipeModifiers {
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Parallel Multiblock
      */
-    public static @NotNull ModifierFunction hatchParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction hatchParallel(MetaMachine machine, GTRecipe recipe) {
         if (machine instanceof MultiblockControllerMachine controller && controller.isFormed()) {
             int parallels = controller.getParallelHatch()
                     .map(hatch -> ParallelLogic.getParallelAmount(machine, recipe, hatch.getCurrentParallel()))
@@ -140,7 +141,7 @@ public class GTRecipeModifiers {
         return ModifierFunction.IDENTITY;
     }
 
-    public static @NotNull ModifierFunction batchMode(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction batchMode(MetaMachine machine, GTRecipe recipe) {
         if (machine instanceof MultiblockControllerMachine controller && controller.isFormed() &&
                 controller.isBatchEnabled()) {
             if (recipe.duration < ConfigHolder.INSTANCE.machines.batchDuration) {
@@ -172,7 +173,7 @@ public class GTRecipeModifiers {
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Cracker
      */
-    public static @NotNull ModifierFunction crackerOverclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction crackerOverclock(MetaMachine machine, GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
@@ -204,7 +205,7 @@ public class GTRecipeModifiers {
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Blast Furnace
      */
-    public static @NotNull ModifierFunction ebfOverclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction ebfOverclock(MetaMachine machine, GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
@@ -242,8 +243,7 @@ public class GTRecipeModifiers {
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Pyrolyse Oven
      */
-    public static @NotNull ModifierFunction pyrolyseOvenOverclock(@NotNull MetaMachine machine,
-                                                                  @NotNull GTRecipe recipe) {
+    public static ModifierFunction pyrolyseOvenOverclock(MetaMachine machine, GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
@@ -277,8 +277,7 @@ public class GTRecipeModifiers {
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Multi Smelter
      */
-    public static @NotNull ModifierFunction multiSmelterParallel(@NotNull MetaMachine machine,
-                                                                 @NotNull GTRecipe recipe) {
+    public static ModifierFunction multiSmelterParallel(MetaMachine machine, GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
