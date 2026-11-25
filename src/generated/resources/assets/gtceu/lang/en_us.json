@@ -2114,6 +2114,7 @@
   "cover.ender_link.tooltip.channel_name": "Channel ID (32-bit hexadecimal value)",
   "cover.ender_link.tooltip.clear_button": "Clear channel description",
   "cover.ender_link.tooltip.list_button": "Show channel list",
+  "cover.ender_link.tooltip.select_button": "Click to set channel",
   "cover.ender_redstone_link.title": "Ender Redstone Link",
   "cover.filter.blacklist.disabled": "Whitelist",
   "cover.filter.blacklist.enabled": "Blacklist",

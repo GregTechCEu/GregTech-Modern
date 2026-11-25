@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -325,9 +326,11 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
             str = Text.str(entry.getDescription()).asWidget().size(98, 12);
         }
         return coverUIRow()
-                .child(createColorBlock(entry::getColor, 18).asWidget()
-                        .tooltip(t -> t.addLine(entry.getColorStr()))
-                        .size(18, 18))
+                .child(attachSetChannelButton(syncManager, entry)
+                        .child(createColorBlock(entry::getColor, 18).asWidget()
+                                .tooltip(t -> t.addLine(entry.getColorStr())
+                                        .addLine(Component.translatable("cover.ender_link.tooltip.select_button")))
+                                .size(18, 18)))
                 .child(str)
                 .child(createVirtualEntryWidget(syncManager, entry, 18, 18, idx))
                 .child(new ButtonWidget<>().overlay(GTGuiTextures.BUTTON_CROSS).onMousePressed((context, button) -> {
