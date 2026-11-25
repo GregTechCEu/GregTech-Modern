@@ -22,8 +22,13 @@ public class MyPatternError extends PatternError {
 
     // The UI modifier adds the widget to be displayed to the user if this error occurs.
     public PatternErrorUI getPatternErrorUIModifier() {
+        ItemStack[] candidateItems = candidates.stream().map(BlockInfo::getItemStackForm)
+                .toArray(ItemStack[]::new);
+
         return (widget) -> {
             widget.child(new ContextMenuButton<>("predicate")
+                    .size(20)
+                    .overlay(new ItemDrawable(candidateItems).asIcon().size(18))
                     .menuList(l -> l
                             .maxSize(40)
                             .children(candidates, candidate -> {

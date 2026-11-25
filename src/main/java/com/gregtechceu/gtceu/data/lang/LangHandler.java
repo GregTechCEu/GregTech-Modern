@@ -1196,10 +1196,12 @@ public class LangHandler {
         multilineLang(provider, "gtceu.multiblock.pattern.error", "Expected components at:\n  %s, %s, %s.");
         provider.add("gtceu.multiblock.pattern.error.limited.exact", "§cExactly: %d§r");
         provider.add("gtceu.multiblock.pattern.error.limited.range", "§cBetween %d and %d§r");
-        provider.add("gtceu.multiblock.pattern.error.limited.max_count", "§cMaximum:§r %d has %d");
-        provider.add("gtceu.multiblock.pattern.error.limited.min_count", "§cMinimum:§r %d has %d");
-        provider.add("gtceu.multiblock.pattern.error.limited.max_layer_count", "§cMaximum:§r %d per layer, has %d");
-        provider.add("gtceu.multiblock.pattern.error.limited.min_layer_count", "§cMinimum:§r %d per layer, has %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.max_count", "§cMaximum:§r %d, §cHas:§r %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.min_count", "§cMinimum:§r %d, §cHas:§r %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.max_layer_count",
+                "§cMaximum:§r %d per layer, §cHas:§r %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.min_layer_count",
+                "§cMinimum:§r %d per layer, §cHas:§r %d");
         provider.add("gtceu.multiblock.pattern.error.coils", "§cAll heating coils must be the same§r");
         provider.add("gtceu.multiblock.pattern.error.filters", "§cAll filters must be the same§r");
         provider.add("gtceu.multiblock.pattern.error.batteries", "§cAll batteries must be the same§r");

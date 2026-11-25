@@ -28,7 +28,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -267,15 +266,22 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         IntSyncValue totalMine = syncManager.getOrCreateSyncHandler("totalMine", IntSyncValue.class,
                 () -> new IntSyncValue(() -> getRecipeLogic().getMaxProgress()));
 
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(this::isFormed));
+
         widgets.add(Text
                 .dynamic(() -> Component.translatable("gtceu.machine.miner.x", x.getLongValue(), startX.getLongValue()))
-                .asWidget());
+                .asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue()));
         widgets.add(Text
                 .dynamic(() -> Component.translatable("gtceu.machine.miner.y", y.getLongValue(), startY.getLongValue()))
-                .asWidget());
+                .asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue()));
         widgets.add(Text
                 .dynamic(() -> Component.translatable("gtceu.machine.miner.z", z.getLongValue(), startZ.getLongValue()))
-                .asWidget());
+                .asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue()));
+
         widgets.add(Text.dynamic(() -> {
             if (chunk.getBoolValue()) {
                 return Component.translatable("gtceu.universal.tooltip.working_area_chunks",
@@ -283,68 +289,18 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
             }
             return Component.translatable("gtceu.universal.tooltip.working_area", workingArea.getIntValue(),
                     workingArea.getIntValue());
-        }).asWidget());
-        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.done")
-                .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)))
+        }).asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
+        widgets.add(Text.lang("gtceu.multiblock.large_miner.done")
+                .withStyle(ChatFormatting.GREEN)
                 .asWidget()
-                .setEnabledIf((w) -> done.getBoolValue()));
+                .setEnabledIf((w) -> isFormed.getBoolValue() && done.getBoolValue()));
+
         widgets.add(Text.dynamic(() -> Component.translatable("gtceu.machine.miner.progress",
-                mineProgress.getIntValue(), totalMine.getIntValue())).asWidget());
+                mineProgress.getIntValue(), totalMine.getIntValue())).asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue()));
 
         return widgets;
     }
-
-    //////////////////////////////////////
-    // *********** GUI ***********//
-    //////////////////////////////////////
-    // @Override
-    // public void addDisplayText(List<Component> textList) {
-    // super.addDisplayText(textList);
-    // if (this.isFormed()) {
-    // int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
-    // int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-    // textList.add(Component.translatable("gtceu.machine.miner.startx",
-    // getRecipeLogic().getX() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getX()));
-    // textList.add(Component.translatable("gtceu.machine.miner.starty",
-    // getRecipeLogic().getY() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getY()));
-    // textList.add(Component.translatable("gtceu.machine.miner.startz",
-    // getRecipeLogic().getZ() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getZ()));
-    // textList.add(Component.translatable("gtceu.universal.tooltip.silk_touch")
-    // .append(ComponentPanelWidget.withButton(Component.literal("[")
-    // .append(getRecipeLogic().isSilkTouchMode() ?
-    // Component.translatable("gtceu.creative.activity.on") :
-    // Component.translatable("gtceu.creative.activity.off"))
-    // .append(Component.literal("]")), "silk_touch")));
-    // textList.add(Component.translatable("gtceu.universal.tooltip.chunk_mode")
-    // .append(ComponentPanelWidget.withButton(Component.literal("[")
-    // .append(getRecipeLogic().isChunkMode() ?
-    // Component.translatable("gtceu.creative.activity.on") :
-    // Component.translatable("gtceu.creative.activity.off"))
-    // .append(Component.literal("]")), "chunk_mode")));
-    // if (getRecipeLogic().isChunkMode()) {
-    // textList.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks", workingAreaChunks,
-    // workingAreaChunks));
-    // } else {
-    // textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
-    // }
-    // if (getRecipeLogic().isDone()) {
-    // textList.add(Component.translatable("gtceu.multiblock.large_miner.done")
-    // .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
-    // }
-    // }
-    // }
-    //
-    // @Override
-    // public void handleDisplayClick(String componentData, ClickData clickData) {
-    // if (!clickData.isRemote) {
-    // if (componentData.equals("chunk_mode")) {
-    // getRecipeLogic().setChunkMode(!getRecipeLogic().isChunkMode());
-    // }
-    // if (componentData.equals("silk_touch")) {
-    // getRecipeLogic().setSilkTouchMode(!getRecipeLogic().isSilkTouchMode());
-    // }
-    // }
-    // }
 
     //////////////////////////////////////
     // ******* Interaction *******//
