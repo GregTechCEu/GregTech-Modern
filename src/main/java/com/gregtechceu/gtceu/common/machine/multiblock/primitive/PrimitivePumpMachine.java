@@ -141,15 +141,13 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine implements
 
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isFormed));
-        // Sync these values for use in getFluidProduction()
-        syncManager.getOrCreateSyncHandler("biomeModifier", IntSyncValue.class,
-                () -> new IntSyncValue(() -> this.biomeModifier));
-        syncManager.getOrCreateSyncHandler("hatchModifier", IntSyncValue.class,
-                () -> new IntSyncValue(() -> this.hatchModifier));
+
+        IntSyncValue fluidProduction = syncManager.getOrCreateSyncHandler("fluidProduction", IntSyncValue.class,
+                () -> new IntSyncValue(this::getFluidProduction));
 
         widgets.add(Text.dynamic(() -> Text
                 .lang("gtceu.top.primitive_pump_production",
-                        FormattingUtil.formatNumbers(this.getFluidProduction())))
+                        FormattingUtil.formatNumbers(fluidProduction.getIntValue())))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));
 

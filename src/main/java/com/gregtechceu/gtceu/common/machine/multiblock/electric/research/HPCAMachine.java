@@ -255,15 +255,17 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         LongSyncValue currentEUt = new LongSyncValue(hpcaHandler::getCurrentEUt);
 
-        BooleanSyncValue anyDamaged = new BooleanSyncValue(() -> getComponents().stream().anyMatch(HPCAComponentTrait::isDamaged));
+        BooleanSyncValue anyDamaged = new BooleanSyncValue(
+                () -> getComponents().stream().anyMatch(HPCAComponentTrait::isDamaged));
         BooleanSyncValue missingComputation = new BooleanSyncValue(hpcaHandler.computationProviders::isEmpty);
         IntSyncValue numBridges = new IntSyncValue(() -> hpcaHandler.numBridges);
 
         IntSyncValue maxCoolingDemand = new IntSyncValue(hpcaHandler::getMaxCoolingDemand);
         IntSyncValue maxCoolingAmount = new IntSyncValue(hpcaHandler::getMaxCoolingAmount);
+        IntSyncValue fluidCoolantDemand = new IntSyncValue(hpcaHandler::getMaxCoolantDemand);
 
         IntSyncValue currentCWU = new IntSyncValue(() -> hpcaHandler.cachedCWUt);
-        IntSyncValue maxCWU = new IntSyncValue(this::getMaxCWUt);
+        IntSyncValue maxCWU = new IntSyncValue(hpcaHandler::getMaxCWUt);
         DoubleSyncValue temperature = new DoubleSyncValue(this::getTemperature);
 
         syncManager.syncValue("currentEUt", currentEUt);
@@ -272,6 +274,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         syncManager.syncValue("numBridges", numBridges);
         syncManager.syncValue("maxCoolingDemand", maxCoolingDemand);
         syncManager.syncValue("maxCoolingAmount", maxCoolingAmount);
+        syncManager.syncValue("fluidCoolantDemand", fluidCoolantDemand);
         syncManager.syncValue("currentCWU", currentCWU);
         syncManager.syncValue("maxCWU", maxCWU);
         syncManager.syncValue("temperature", temperature);
@@ -325,15 +328,18 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             var coolingDemand = maxCoolingDemand.getDoubleValue();
             ChatFormatting coolingColor = coolingAmount < coolingDemand ? ChatFormatting.RED :
                     ChatFormatting.GREEN;
-            MutableComponent data = Component.literal(FormattingUtil.formatNumbers(coolingDemand)).withStyle(coolingColor);
-            return Component.translatable("gtceu.multiblock.hpca.info_cooling_demand", data, FormattingUtil.formatNumbers(coolingAmount));
+            MutableComponent data = Component.literal(FormattingUtil.formatNumbers(coolingDemand))
+                    .withStyle(coolingColor);
+            return Component.translatable("gtceu.multiblock.hpca.info_cooling_demand", data,
+                    FormattingUtil.formatNumbers(coolingAmount));
         }).asWidget());
 
         // Coolant Required
         widgets.add(Text.dynamic(() -> {
             MutableComponent data;
-            if (maxCoolingDemand.getIntValue() > 0) {
-                data = Component.translatable("gtceu.universal.liters", maxCoolingDemand.getIntValue())
+
+            if (fluidCoolantDemand.getIntValue() > 0) {
+                data = Component.translatable("gtceu.universal.liters", fluidCoolantDemand.getIntValue())
                         .withStyle(ChatFormatting.YELLOW).append(" ");
                 Component coolantName = Component.translatable("gtceu.multiblock.hpca.info_coolant_name")
                         .withStyle(ChatFormatting.YELLOW);

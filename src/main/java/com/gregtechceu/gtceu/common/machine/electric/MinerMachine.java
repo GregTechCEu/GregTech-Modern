@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
@@ -141,6 +142,7 @@ public class MinerMachine extends WorkableTieredMachine
                 .coverChildrenWidth()
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .childSeparator(IIcon.EMPTY_2PX)
+                .themeOverride(GTGuiTheme.MULTIBLOCK_DISPLAY.getId())
                 .child(Text
                         .dynamic(() -> Objects.requireNonNull(
                                 getRecipeLogic().getCustomProgressLine().copy()))
