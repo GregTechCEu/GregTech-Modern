@@ -1862,6 +1862,7 @@
   "config.gtceu.option.enableFEConverters": "enableFEConverters",
   "config.gtceu.option.enableMaceratorRecycling": "enableMaceratorRecycling",
   "config.gtceu.option.enableMaintenance": "enableMaintenance",
+  "config.gtceu.option.enableOreFortune": "enableOreFortune",
   "config.gtceu.option.enableResearch": "enableResearch",
   "config.gtceu.option.enableTieredCasings": "enableTieredCasings",
   "config.gtceu.option.enableWorldAccelerators": "enableWorldAccelerators",
