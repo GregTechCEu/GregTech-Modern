@@ -4930,7 +4930,7 @@
   "item.gtceu.tool.tooltip.attack_damage": "§c攻撃力 %s",
   "item.gtceu.tool.tooltip.attack_speed": "§9攻撃速度 %s",
   "item.gtceu.tool.tooltip.crafting_uses": "§aあと§l%s§r§a回クラフトに利用できる",
-  "item.gtceu.tool.tooltip.default_enchantments": "§5デフォルトエンチャント:",
+  "item.gtceu.tool.tooltip.innate_enchantments": "§5デフォルトエンチャント:",
   "item.gtceu.tool.tooltip.general_uses": "§bあと§l%s§b回使用可能",
   "item.gtceu.tool.tooltip.harvest_level": "§e採掘レベル %s",
   "item.gtceu.tool.tooltip.harvest_level_extra": "§e採掘レベル %s §f(%s§f)",

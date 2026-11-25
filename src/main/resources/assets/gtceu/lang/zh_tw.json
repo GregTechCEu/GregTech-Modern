@@ -4866,7 +4866,7 @@
     "item.gtceu.tool.tooltip.attack_damage": "§c攻擊傷害§r：%s",
     "item.gtceu.tool.tooltip.attack_speed": "§9攻擊速度§r：%s",
     "item.gtceu.tool.tooltip.crafting_uses": "§a合成耐久度§r：%s",
-    "item.gtceu.tool.tooltip.default_enchantments": "§5預設附魔：",
+    "item.gtceu.tool.tooltip.innate_enchantments": "§5預設附魔：",
     "item.gtceu.tool.tooltip.general_uses": "§b耐久度§r：%s",
     "item.gtceu.tool.tooltip.harvest_level": "§e採掘等級：%s",
     "item.gtceu.tool.tooltip.harvest_level_extra": "§e採掘等級：%s§f（%s§f）",

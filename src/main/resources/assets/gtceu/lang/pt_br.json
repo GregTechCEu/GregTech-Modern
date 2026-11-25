@@ -4878,7 +4878,7 @@
   "item.gtceu.tool.tooltip.attack_damage": "%s §cDano de Ataque",
   "item.gtceu.tool.tooltip.attack_speed": "%s §9Velocidade de Ataque",
   "item.gtceu.tool.tooltip.crafting_uses": "%s §aUsos de Fabricação",
-  "item.gtceu.tool.tooltip.default_enchantments": "§5Encantamentos Padrão:",
+  "item.gtceu.tool.tooltip.innate_enchantments": "§5Encantamentos Padrão:",
   "item.gtceu.tool.tooltip.general_uses": "%s §bDurabilidade",
   "item.gtceu.tool.tooltip.harvest_level": "§eNível de Coleta %s",
   "item.gtceu.tool.tooltip.harvest_level_extra": "§eNível de Coleta %s §f(%s§f)",
