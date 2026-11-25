@@ -9,8 +9,6 @@ import brachy.modularui.value.StringValue;
 import brachy.modularui.widgets.textfield.BaseTextFieldWidget;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-
 /**
  * A syncable, multiline text input widget. Meant to edit large amounts of text.
  */
@@ -69,11 +67,11 @@ public class TextEditorWidget<W extends TextEditorWidget<W>> extends BaseTextFie
                 int startY = this.handler.getStartCursor().y;
                 int endY = this.handler.getEndCursor().y;
                 for (int y = startY; y < endY; y++) {
-                    this.handler.getText().set(y, "    " + this.handler.getText().get(y));
+                    this.handler.setLine(y, "    " + this.handler.getText().get(y));
                 }
             } else {
                 int y = this.handler.getMainCursor().y;
-                this.handler.getText().set(y, "    " + this.handler.getText().get(y));
+                this.handler.setLine(y, "    " + this.handler.getText().get(y));
             }
         }
         return super.onCharTyped(codePoint, modifiers);
@@ -85,8 +83,7 @@ public class TextEditorWidget<W extends TextEditorWidget<W>> extends BaseTextFie
     }
 
     public void setText(@NotNull String text) {
-        this.handler.getText().clear();
-        this.handler.getText().addAll(Arrays.stream(text.split("\n")).toList());
+        this.handler.setText(text);
     }
 
     public W value(IStringValue<?> stringValue) {
