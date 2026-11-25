@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.kjs.builders;
+package com.gregtechceu.gtceu.integration.kjs.builders.worldgen;
 
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.Set;
 
 @Accessors(fluent = true, chain = true)
-public class WorldGenLayerBuilder extends BuilderBase<SimpleWorldGenLayer> {
+public class WorldGenLayerBuilderJS extends BuilderBase<SimpleWorldGenLayer> {
 
     public transient List<IWorldGenLayer.RuleTestSupplier> targets = new ObjectArrayList<>();
     public transient List<ResourceLocation> dimensions = new ObjectArrayList<>();
 
-    public WorldGenLayerBuilder(ResourceLocation id) {
+    public WorldGenLayerBuilderJS(ResourceLocation id) {
         super(id);
     }
 
@@ -34,12 +34,12 @@ public class WorldGenLayerBuilder extends BuilderBase<SimpleWorldGenLayer> {
         return value;
     }
 
-    public WorldGenLayerBuilder targets(IWorldGenLayer.RuleTestSupplier... targets) {
+    public WorldGenLayerBuilderJS targets(IWorldGenLayer.RuleTestSupplier... targets) {
         Collections.addAll(this.targets, targets);
         return this;
     }
 
-    public WorldGenLayerBuilder dimensions(ResourceLocation... dimension) {
+    public WorldGenLayerBuilderJS dimensions(ResourceLocation... dimension) {
         this.dimensions.addAll(Arrays.asList(dimension));
         return this;
     }

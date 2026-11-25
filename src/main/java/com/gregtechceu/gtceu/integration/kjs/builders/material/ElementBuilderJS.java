@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.kjs.builders;
+package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
@@ -11,7 +11,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Accessors(fluent = true, chain = true)
-public class ElementBuilder extends BuilderBase<Element> {
+public class ElementBuilderJS extends BuilderBase<Element> {
 
     public transient final String name;
 
@@ -28,7 +28,7 @@ public class ElementBuilder extends BuilderBase<Element> {
     @Setter
     public transient boolean isIsotope;
 
-    public ElementBuilder(ResourceLocation id) {
+    public ElementBuilderJS(ResourceLocation id) {
         super(id);
         this.id = id;
         name = id.getPath();

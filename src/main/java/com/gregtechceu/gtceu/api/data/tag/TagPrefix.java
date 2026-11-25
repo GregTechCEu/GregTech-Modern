@@ -56,6 +56,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -1091,6 +1092,12 @@ public class TagPrefix {
                 .generationCondition(hasOreProperty);
         if (miningToolTag != null) prefix.miningToolTag(miningToolTag);
         return prefix;
+    }
+
+    @ApiStatus.Internal
+    public void setTags(List<TagType> tags) {
+        this.tags.clear();
+        this.tags.addAll(tags);
     }
 
     public void addSecondaryMaterial(MaterialStack secondaryMaterial) {

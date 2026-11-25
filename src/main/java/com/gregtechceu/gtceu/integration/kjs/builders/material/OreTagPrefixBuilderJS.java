@@ -1,9 +1,12 @@
-package com.gregtechceu.gtceu.integration.kjs.builders.prefix;
+package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
+import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
+import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTOreByProduct;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -14,10 +17,11 @@ import lombok.experimental.Accessors;
 
 import java.util.function.Supplier;
 
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasOreProperty;
 import static com.gregtechceu.gtceu.integration.kjs.Validator.*;
 
 @Accessors(fluent = true, chain = true)
-public class OreTagPrefixBuilder extends TagPrefixBuilder {
+public class OreTagPrefixBuilderJS extends TagPrefixBuilderJS {
 
     @Setter
     public transient Supplier<BlockState> stateSupplier;
@@ -34,13 +38,22 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     @Setter
     public transient boolean shouldDropAsItem = false;
 
-    public OreTagPrefixBuilder(ResourceLocation id) {
+    public OreTagPrefixBuilderJS(ResourceLocation id) {
         super(id);
+
+        defaultTagPath("ores/%s");
+        prefixOnlyTagPath("ores_in_ground/%s");
+        unformattedTagPath("ores");
     }
 
     @Override
     public TagPrefix create(ResourceLocation id) {
-        return TagPrefix.oreTagPrefix(id, null);
+        materialIconType(MaterialIconType.ore);
+        unificationEnabled(true);
+        blockConstructor(OreBlock::new);
+        generationCondition(hasOreProperty);
+
+        return super.create(id);
     }
 
     @Override
@@ -54,7 +67,17 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
                 }),
                 errorIfNull(baseModelLocation, "baseModelLocation"));
 
-        return value = base.registerOre(stateSupplier, materialSupplier, templateProperties, baseModelLocation,
-                doubleDrops, isSand, shouldDropAsItem);
+        TagPrefix newPrefix = create(id);
+
+        newPrefix.setTags(tags);
+        newPrefix.miningToolTag().addAll(miningToolTag);
+
+        TagPrefix.ORES.put(newPrefix, new TagPrefix.OreType(stateSupplier, materialSupplier, templateProperties,
+                baseModelLocation, doubleDrops, isSand, shouldDropAsItem));
+        if (shouldDropAsItem) {
+            GTOreByProduct.addOreByProductPrefix(newPrefix);
+        }
+
+        return newPrefix;
     }
 }

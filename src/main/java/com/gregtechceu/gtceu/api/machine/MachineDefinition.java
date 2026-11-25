@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.*;
 
 /**
@@ -49,10 +50,6 @@ public class MachineDefinition implements Supplier<MetaMachineBlock>, ItemLike {
 
     @Getter
     private final ResourceLocation id;
-    // This is only stored here for KJS use.
-    @Getter
-    @Setter
-    private String langValue;
     @Setter
     private Supplier<? extends Block> blockSupplier;
     @Setter
@@ -212,10 +209,10 @@ public class MachineDefinition implements Supplier<MetaMachineBlock>, ItemLike {
         return id.hashCode();
     }
 
-    static final ThreadLocal<MachineDefinition> STATE = new ThreadLocal<>();
+    static final ThreadLocal<@Nullable MachineDefinition> STATE = new ThreadLocal<>();
 
     public static MachineDefinition getBuilt() {
-        return STATE.get();
+        return Objects.requireNonNull(STATE.get());
     }
 
     public static void setBuilt(MachineDefinition state) {

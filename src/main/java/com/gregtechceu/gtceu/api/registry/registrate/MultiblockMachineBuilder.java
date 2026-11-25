@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.PanelSyncManager;
-import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -119,7 +118,6 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
     }
 
     @Override
-    @HideFromJS
     public DEFINITION register() {
         var definition = super.register();
         definition.setGenerator(generator);
@@ -141,6 +139,6 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         }
         definition.setPartAppearance(partAppearance);
         definition.setAdditionalDisplay(additionalDisplay);
-        return value = definition;
+        return definition;
     }
 }

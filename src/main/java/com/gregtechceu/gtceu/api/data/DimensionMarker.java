@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.integration.kjs.Validator;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
@@ -71,19 +70,16 @@ public class DimensionMarker {
 
     @Setter
     @Accessors(fluent = true, chain = true)
-    public static class Builder extends BuilderBase<DimensionMarker> {
+    public static class Builder {
 
+        public final ResourceLocation id;
         private Supplier<Item> iconSupplier;
         private int tier = 0;
         @Nullable
         private String overrideName;
 
         public Builder(ResourceLocation dimKey) {
-            super(dimKey);
-        }
-
-        public Builder(ResourceLocation dimKey, Object... args) {
-            this(dimKey);
+            this.id = dimKey;
         }
 
         @HideFromJS
@@ -97,9 +93,8 @@ public class DimensionMarker {
             return marker;
         }
 
-        @Override
         public DimensionMarker register() {
-            return value = buildAndRegister();
+            return buildAndRegister();
         }
     }
 }

@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -35,7 +34,6 @@ import net.minecraftforge.fluids.FluidStack;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
@@ -571,10 +569,10 @@ public final class Material implements Comparable<Material> {
         calculateDecompositionType();
     }
 
-    @RemapPrefixForJS("kjs$")
-    @SuppressWarnings("unused") // API, need to treat all of these as used
-    public static class Builder extends BuilderBase<Material> {
+    @SuppressWarnings({ "unused", "UnusedReturnValue" }) // API, need to treat all of these as used
+    public static class Builder {
 
+        public final ResourceLocation id;
         private final MaterialInfo materialInfo;
         private final MaterialProperties properties;
         private final MaterialFlags flags;
@@ -608,7 +606,7 @@ public final class Material implements Comparable<Material> {
          * @since GTCEu 2.0.0
          */
         public Builder(ResourceLocation resourceLocation) {
-            super(resourceLocation);
+            this.id = resourceLocation;
             String name = resourceLocation.getPath();
             if (name.charAt(name.length() - 1) == '_')
                 throw new IllegalArgumentException("Material name cannot end with a '_'!");
@@ -1895,15 +1893,13 @@ public final class Material implements Comparable<Material> {
             return mat;
         }
 
-        @Override
-        @HideFromJS
         public @NotNull Material register() {
-            return value = buildAndRegister();
+            return buildAndRegister();
         }
     }
 
     /**
-     * Holds the basic info for a Material, like the name, color, id, etc..
+     * Holds the basic info for a Material, like the name, color, id, etc.
      */
     @Accessors(chain = true)
     private static class MaterialInfo {

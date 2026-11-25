@@ -152,6 +152,10 @@ public class GTRegistryInfo<K, V> {
             type.postEvent();
 
             for (var builder : type.objects.values()) {
+                builder.registerAdditional();
+            }
+
+            for (var builder : type.objects.values()) {
                 if (DevProperties.get().debugInfo) {
                     ConsoleJS.STARTUP.info("+ " + registry + " | " + builder.id);
                 }

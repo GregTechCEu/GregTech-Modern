@@ -17,6 +17,7 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import com.mojang.serialization.Codec;
 import dev.emi.emi.config.EmiConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +29,10 @@ public class GTCEu {
 
     public static final String MOD_ID = "gtceu";
     private static final ResourceLocation TEMPLATE_LOCATION = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
+    public static final Codec<ResourceLocation> GTCEU_ID = Codec.STRING.comapFlatMap(
+            str -> ResourceLocation.read(appendIdString(str)),
+            s -> s.getNamespace().equals(MOD_ID) ? s.getPath() : s.toString());
+
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 

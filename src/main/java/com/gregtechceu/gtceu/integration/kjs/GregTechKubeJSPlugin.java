@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
-import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
@@ -57,8 +56,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.MapIngredientPool;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeManagerHandler;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.data.*;
@@ -75,12 +73,19 @@ import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
-import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.ActiveBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
-import com.gregtechceu.gtceu.integration.kjs.builders.prefix.BasicTagPrefixBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.ElementBuilderJS;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialIconSetBuilderJS;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialIconTypeBuilderJS;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.OreTagPrefixBuilderJS;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.TagPrefixBuilderJS;
+import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilderJS;
+import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilderJS;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.DimensionMarkerBuilderJS;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.WorldGenLayerBuilderJS;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
@@ -144,48 +149,46 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     @Override
     public void init() {
         super.init();
-        GTRegistryInfo.ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new, true);
+        GTRegistryInfo.ELEMENT.addType("basic", ElementBuilderJS.class, ElementBuilderJS::new, true);
 
-        GTRegistryInfo.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new,
+        GTRegistryInfo.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilderJS.class, MaterialIconSetBuilderJS::new,
                 true);
-        GTRegistryInfo.MATERIAL_ICON_TYPE.addType("basic", MaterialIconTypeBuilder.class, MaterialIconTypeBuilder::new,
+        GTRegistryInfo.MATERIAL_ICON_TYPE.addType("basic", MaterialIconTypeBuilderJS.class,
+                MaterialIconTypeBuilderJS::new,
                 true);
 
         GTRegistryInfo.MATERIAL.addType("basic", Material.Builder.class, Material.Builder::new, true);
 
-        GTRegistryInfo.RECIPE_TYPE.addType("basic", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new, true);
-        GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new,
+        GTRegistryInfo.RECIPE_TYPE.addType("basic", GTRecipeTypeBuilderJS.class, GTRecipeTypeBuilderJS::new, true);
+        GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilderJS.class, GTRecipeCategoryBuilderJS::new,
                 true);
 
-        GTRegistryInfo.MACHINE.addType("simple", KJSWrappingMachineBuilder.class,
-                (id) -> new KJSWrappingMachineBuilder(id,
-                        new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)),
+        GTRegistryInfo.MACHINE.addType("simple", KJSTieredMachineBuilder.class,
+                (id) -> new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false),
                 true);
-        GTRegistryInfo.MACHINE.addType("custom", KJSWrappingMachineBuilder.class,
-                (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)),
-                false);
+        GTRegistryInfo.MACHINE.addType("custom", KJSTieredMachineBuilder.class,
+                KJSTieredMachineBuilder::new, false);
         GTRegistryInfo.MACHINE.addType("steam", KJSSteamMachineBuilder.class,
                 KJSSteamMachineBuilder::new, false);
-        GTRegistryInfo.MACHINE.addType("generator", KJSWrappingMachineBuilder.class,
-                (id) -> new KJSWrappingMachineBuilder(id,
-                        new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)),
+        GTRegistryInfo.MACHINE.addType("generator", KJSTieredMachineBuilder.class,
+                (id) -> new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true),
                 false);
         GTRegistryInfo.MACHINE.addType("multiblock",
-                (Class<? extends BuilderBase<? extends MachineDefinition>>) (Class<?>) MultiblockMachineBuilder.class,
-                KJSWrappingMultiblockBuilder::createKJSMulti, false);
-        GTRegistryInfo.MACHINE.addType("tiered_multiblock", KJSWrappingMultiblockBuilder.class,
-                (id) -> new KJSWrappingMultiblockBuilder(id, new KJSTieredMultiblockBuilder(id)), false);
-        GTRegistryInfo.MACHINE.addType("primitive",
-                (Class<? extends BuilderBase<? extends MachineDefinition>>) (Class<?>) MultiblockMachineBuilder.class,
-                (id) -> KJSWrappingMultiblockBuilder.createKJSMulti(id, PrimitiveWorkableMachine::new),
+                MultiblockMachineBuilderJS.class,
+                MultiblockMachineBuilderJS::createKJSMulti, false);
+        GTRegistryInfo.MACHINE.addType("tiered_multiblock", KJSTieredMultiblockBuilder.class,
+                KJSTieredMultiblockBuilder::new, false);
+        GTRegistryInfo.MACHINE.addType("primitive", MultiblockMachineBuilderJS.class,
+                (id) -> MultiblockMachineBuilderJS.createKJSMulti(id, PrimitiveWorkableMachine::new),
                 false);
 
-        GTRegistryInfo.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
+        GTRegistryInfo.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilderJS.class, WorldGenLayerBuilderJS::new,
+                true);
 
-        GTRegistryInfo.TAG_PREFIX.addType("basic", BasicTagPrefixBuilder.class, BasicTagPrefixBuilder::new, true);
-        GTRegistryInfo.TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new, false);
+        GTRegistryInfo.TAG_PREFIX.addType("basic", TagPrefixBuilderJS.class, TagPrefixBuilderJS::new, true);
+        GTRegistryInfo.TAG_PREFIX.addType("ore", OreTagPrefixBuilderJS.class, OreTagPrefixBuilderJS::new, false);
 
-        GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarker.Builder.class, DimensionMarker.Builder::new,
+        GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarkerBuilderJS.class, DimensionMarkerBuilderJS::new,
                 true);
 
         RegistryInfo.BLOCK.addType("gtceu:active", ActiveBlockBuilder.class, ActiveBlockBuilder::new);
@@ -206,9 +209,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     public static void generateMachineBlockModels() {
         GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> {
-            try {
-                builderBase.generateAssetJsons(null);
-            } catch (IllegalStateException ignored) {}
+            if (builderBase instanceof IMachineBuilderKJS machineBuilder) {
+                try {
+                    machineBuilder.generateMachineModels();
+                } catch (IllegalStateException ignored) {}
+            }
         });
     }
 
@@ -357,139 +362,95 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("CapeRegistry", CapeRegistry.class);
     }
 
+    private <T> void registryObjectTypeWrapper(TypeWrappers typeWrappers, Class<T> clazz,
+                                               GTRegistry<ResourceLocation, T> registry) {
+        typeWrappers.registerSimple(clazz, o -> {
+            o = Wrapper.unwrapped(o);
+            if (clazz.isInstance(o)) return clazz.cast(o);
+            GTResourceLocation wrapper = GTResourceLocation.wrap(o);
+            if (wrapper == null) return null;
+            return registry.get(wrapper.wrapped());
+        });
+    }
+
     @Override
-    public void registerTypeWrappers(ScriptType type, TypeWrappers typeWrappers) {
-        super.registerTypeWrappers(type, typeWrappers);
-        typeWrappers.registerSimple(GTRecipeType.class, o -> {
-            if (o instanceof Wrapper w) {
-                o = w.unwrap();
-            }
-            if (o instanceof GTRecipeType recipeType) return recipeType;
-            if (o instanceof CharSequence chars) return GTRecipeTypes.get(chars.toString());
-            return null;
-        });
-        typeWrappers.registerSimple(GTRecipeCategory.class, o -> {
-            if (o instanceof Wrapper w) {
-                o = w.unwrap();
-            }
-            if (o instanceof GTRecipeCategory recipeCategory) return recipeCategory;
-            if (o instanceof CharSequence chars) return GTRecipeCategories.get(chars.toString());
-            return null;
-        });
+    public void registerTypeWrappers(ScriptType type, TypeWrappers registry) {
+        super.registerTypeWrappers(type, registry);
+        registry.registerSimple(GTResourceLocation.class, GTResourceLocation::wrap);
 
-        typeWrappers.registerSimple(Element.class, o -> {
-            if (o instanceof Element element) return element;
-            if (o instanceof CharSequence chars) return GTRegistries.ELEMENTS.get(GTCEu.id(chars.toString()));
-            return null;
-        });
-        typeWrappers.registerSimple(Material.class, o -> {
-            if (o instanceof Material material) return material;
-            if (o instanceof CharSequence chars) return GTMaterials.get(chars.toString());
-            return null;
-        });
-        typeWrappers.registerSimple(MachineDefinition.class, o -> {
-            if (o instanceof MachineDefinition definition) return definition;
-            if (o instanceof CharSequence chars) return GTMachines.get(chars.toString());
-            return null;
-        });
+        registryObjectTypeWrapper(registry, GTRecipeType.class, GTRegistries.RECIPE_TYPES);
+        registryObjectTypeWrapper(registry, GTRecipeCategory.class, GTRegistries.RECIPE_CATEGORIES);
+        registryObjectTypeWrapper(registry, ChanceLogic.class, GTRegistries.CHANCE_LOGICS);
+        registryObjectTypeWrapper(registry, Element.class, GTRegistries.ELEMENTS);
+        registryObjectTypeWrapper(registry, Material.class, GTRegistries.MATERIALS);
+        registryObjectTypeWrapper(registry, MaterialIconSet.class, GTRegistries.MATERIAL_ICON_SETS);
+        registryObjectTypeWrapper(registry, MachineDefinition.class, GTRegistries.MACHINES);
+        registryObjectTypeWrapper(registry, TagPrefix.class, GTRegistries.TAG_PREFIXES);
+        registryObjectTypeWrapper(registry, IWorldGenLayer.class, GTRegistries.WORLD_GEN_LAYERS);
+        registryObjectTypeWrapper(registry, MedicalCondition.class, GTRegistries.MEDICAL_CONDITIONS);
 
-        typeWrappers.registerSimple(TagPrefix.class, o -> {
-            if (o instanceof TagPrefix tagPrefix) return tagPrefix;
-            if (o instanceof CharSequence chars) return GTRegistries.TAG_PREFIXES.get(GTCEu.id(chars.toString()));
-            return null;
-        });
-        typeWrappers.registerSimple(MaterialEntry.class, MaterialEntry::of);
-        typeWrappers.registerSimple(RecipeCapability.class, o -> {
-            if (o instanceof RecipeCapability<?> capability) return capability;
-            if (o instanceof ResourceLocation loc) return GTRegistries.RECIPE_CAPABILITIES.get(loc);
-            if (o instanceof CharSequence chars)
-                return GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(chars.toString()));
-            return null;
-        });
-        typeWrappers.registerSimple(ChanceLogic.class, o -> {
-            if (o instanceof ChanceLogic capability) return capability;
-            if (o instanceof CharSequence chars) return GTRegistries.CHANCE_LOGICS.get(GTCEu.id(chars.toString()));
-            return null;
-        });
-        typeWrappers.registerSimple(ExtendedOutputItem.class, ExtendedOutputItem::of);
+        registry.registerSimple(MaterialEntry.class, MaterialEntry::of);
+        registry.registerSimple(ExtendedOutputItem.class, ExtendedOutputItem::of);
 
-        typeWrappers.registerSimple(MaterialIconSet.class, o -> {
-            if (o instanceof MaterialIconSet iconSet) return iconSet;
-            if (o instanceof CharSequence chars) return GTRegistries.MATERIAL_ICON_SETS
-                    .get(GTCEu.id(chars.toString()));
-            return null;
-        });
-        typeWrappers.registerSimple(MaterialStack.class, o -> {
+        registry.registerSimple(MaterialStack.class, o -> {
             if (o instanceof MaterialStack stack) return stack;
             if (o instanceof Material material) return new MaterialStack(material, 1);
             if (o instanceof CharSequence chars) return MaterialStack.fromString(chars);
             return null;
         });
-        typeWrappers.registerSimple(MaterialStackWrapper.class, o -> {
+        registry.registerSimple(MaterialStackWrapper.class, o -> {
             if (o instanceof MaterialStackWrapper wrapper) return wrapper;
             if (o instanceof MaterialStack stack) return new MaterialStackWrapper(stack::material, stack.amount());
             if (o instanceof Material material) return new MaterialStackWrapper(() -> material, 1);
             if (o instanceof CharSequence chars) return MaterialStackWrapper.fromString(chars);
             return null;
         });
-
-        typeWrappers.registerSimple(IWorldGenLayer.class, o -> {
-            if (o instanceof IWorldGenLayer layer) return layer;
-            if (o instanceof CharSequence chars) return GTRegistries.WORLD_GEN_LAYERS
-                    .get(GTCEu.id(chars.toString()));
-            return null;
-        });
-        typeWrappers.registerSimple(HeightRangePlacement.class, o -> {
+        registry.registerSimple(HeightRangePlacement.class, o -> {
             if (o instanceof HeightRangePlacement placement) return placement;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> HeightRangePlacement.CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
-        typeWrappers.registerSimple(BiomeWeightModifier.class, o -> {
+        registry.registerSimple(BiomeWeightModifier.class, o -> {
             if (o instanceof BiomeWeightModifier modifier) return modifier;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> BiomeWeightModifier.CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
-        typeWrappers.registerSimple(VeinGenerator.class, o -> {
+        registry.registerSimple(VeinGenerator.class, o -> {
             if (o instanceof VeinGenerator generator) return generator;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> VeinGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
-        typeWrappers.registerSimple(IndicatorGenerator.class, o -> {
+        registry.registerSimple(IndicatorGenerator.class, o -> {
             if (o instanceof IndicatorGenerator generator) return generator;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> IndicatorGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
-        typeWrappers.registerSimple(IndicatorPlacement.class, o -> {
+        registry.registerSimple(IndicatorPlacement.class, o -> {
             if (o instanceof IndicatorPlacement placement) return placement;
             if (o instanceof CharSequence str) return IndicatorPlacement.getByName(str.toString());
             return null;
         });
-        typeWrappers.registerSimple(MedicalCondition.class, o -> {
-            if (o instanceof MedicalCondition condition) return condition;
-            if (o instanceof CharSequence str) return GTRegistries.MEDICAL_CONDITIONS.get(GTCEu.id(str.toString()));
-            return null;
-        });
-        typeWrappers.registerSimple(IWorldGenLayer.RuleTestSupplier.class, o -> {
+        registry.registerSimple(IWorldGenLayer.RuleTestSupplier.class, o -> {
             if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
             return () -> BlockStatePredicate.ruleTestOf(o);
         });
-        typeWrappers.registerSimple(CraftingComponent.class, o -> {
+        registry.registerSimple(CraftingComponent.class, o -> {
             if (o instanceof CraftingComponent comp) return comp;
             if (o instanceof CharSequence str) return CraftingComponent.ALL_COMPONENTS.get(str.toString());
             return null;
         });
-        typeWrappers.registerSimple(GTRecipeComponents.FluidIngredientJS.class,
+        registry.registerSimple(GTRecipeComponents.FluidIngredientJS.class,
                 GTRecipeComponents.FluidIngredientJS::of);
-        typeWrappers.registerSimple(EnergyStack.class, KJSHelpers::parseEnergyStack);
-        typeWrappers.registerSimple(EnergyStack.WithIO.class, KJSHelpers::parseIOEnergyStack);
+        registry.registerSimple(EnergyStack.class, KJSHelpers::parseEnergyStack);
+        registry.registerSimple(EnergyStack.WithIO.class, KJSHelpers::parseIOEnergyStack);
     }
 
     @Override
