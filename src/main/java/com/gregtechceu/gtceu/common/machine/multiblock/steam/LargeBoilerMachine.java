@@ -15,11 +15,9 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -216,7 +214,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
         List<IWidget> widgets = new ArrayList<>();
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         // Machine generic sync handlers
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isFormed));
@@ -240,20 +237,18 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
         widgets.add(Text.dynamic(() -> {
             if (!isFormed.getBoolValue()) return Component.empty();
             return Component.translatable("gtceu.multiblock.large_boiler.temperature",
-                    currentTemperature.getIntValue() + 274, maxTemperature.getIntValue() + 274)
-                    .withStyle(ChatFormatting.WHITE);
+                    currentTemperature.getIntValue() + 274, maxTemperature.getIntValue() + 274);
         })
                 .asWidget()
                 .setEnabledIf((w) -> isFormed.getBoolValue()));
         widgets.add(Text.dynamic(() -> {
             if (!isFormed.getBoolValue()) return Component.empty();
             return Component.translatable("gtceu.multiblock.large_boiler.steam_output",
-                    steamGenerated.getIntValue() / TICKS_PER_STEAM_GENERATION).withStyle(ChatFormatting.WHITE);
+                    steamGenerated.getIntValue() / TICKS_PER_STEAM_GENERATION);
         })
                 .asWidget()
                 .setEnabledIf((w) -> isFormed.getBoolValue()));
-        widgets.add(Text.of(Component.translatable("gtceu.multiblock.large_boiler.throttle_modify")
-                .withStyle(ChatFormatting.WHITE))
+        widgets.add(Text.of(Component.translatable("gtceu.multiblock.large_boiler.throttle_modify"))
                 .asWidget().setEnabledIf((w) -> isFormed.getBoolValue()));
         widgets.add(createIntInputWithButtons(throttle)
                 .setEnabledIf((w) -> isFormed.getBoolValue()));

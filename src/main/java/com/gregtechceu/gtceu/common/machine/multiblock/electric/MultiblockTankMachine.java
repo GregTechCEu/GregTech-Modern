@@ -9,10 +9,10 @@ import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -79,13 +79,13 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
 
         mainWidget
                 .background(GTGuiTextures.DISPLAY)
+                .themeOverride(GTGuiTheme.MULTIBLOCK_DISPLAY.getId())
                 .child(Text.lang("gtceu.gui.fluid_amount").asWidget()
                         .color(0xffffff)
                         .margin(8, 0, 8, 0))
                 .child(Text.dynamic(
                         () -> Component.literal(
-                                FormattingUtil.formatBuckets(bucketSyncer.getIntValue()))
-                                .withStyle(ChatFormatting.WHITE))
+                                FormattingUtil.formatBuckets(bucketSyncer.getIntValue())))
                         .asWidget()
                         .margin(8, 0, 20, 0))
                 .child(Flow.column()

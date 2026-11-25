@@ -586,8 +586,9 @@ public class MachineLang {
                 "The Fusion Reactor MK 2 is a large multiblock structure used for fusing elements into heavier ones. It can only use ZPM and UV Energy Hatches. For every Hatch it has, its buffer increases by 20M EU, and has a maximum of 320M.");
         provider.add("gtceu.multiblock.uv_fusion_reactor.description",
                 "The Fusion Reactor MK 3 is a large multiblock structure used for fusing elements into heavier ones. It can only use UV Energy Hatches. For every Hatch it has, its buffer increases by 40M EU, and has a maximum of 640M.");
-        provider.add("gtceu.multiblock.fusion_reactor.energy", "EU: %d / %d");
-        provider.add("gtceu.multiblock.fusion_reactor.heat", "Heat: %d");
+        provider.add("gtceu.multiblock.fusion_reactor.heat", "Heat: %s EU");
+        provider.add("gtceu.multiblock.fusion_reactor.stored", "Stored: %s EU");
+        provider.add("gtceu.multiblock.fusion_reactor.capacity", "Capacity: %s EU");
         provider.add("gtceu.multiblock.large_chemical_reactor.description",
                 "The Large Chemical Reactor performs chemical reactions at 100%% energy efficiency. Overclocks multiply both speed and energy by 4. The multiblock requires exactly 1 Cupronickel Coil Block, which must be placed adjacent to the PTFE Pipe casing located in the center.");
         // Primitive pump
@@ -988,6 +989,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.hpca.info_coolant_name", "PCB Coolant");
         provider.add("gtceu.multiblock.hpca.info_bridging_enabled", "Bridging Enabled");
         provider.add("gtceu.multiblock.hpca.info_bridging_disabled", "Bridging Disabled");
+        provider.add("gtceu.multiblock.show_error_pos", "Show Error Position");
 
         provider.add("gtceu.creative.chest.item", "Item");
         provider.add("gtceu.creative.chest.ipc", "Items per Cycle");
