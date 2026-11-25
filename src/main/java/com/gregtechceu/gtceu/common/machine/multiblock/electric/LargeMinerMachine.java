@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
+import brachy.modularui.widgets.TextWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
@@ -20,6 +21,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -52,6 +54,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -266,15 +270,24 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         IntSyncValue totalMine = syncManager.getOrCreateSyncHandler("totalMine", IntSyncValue.class,
                 () -> new IntSyncValue(() -> getRecipeLogic().getMaxProgress()));
 
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(this::isFormed));
+
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
+
         widgets.add(Text
                 .dynamic(() -> Component.translatable("gtceu.machine.miner.x", x.getLongValue(), startX.getLongValue()))
-                .asWidget());
+                .asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue()));
         widgets.add(Text
                 .dynamic(() -> Component.translatable("gtceu.machine.miner.y", y.getLongValue(), startY.getLongValue()))
-                .asWidget());
+                .asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue()));
         widgets.add(Text
                 .dynamic(() -> Component.translatable("gtceu.machine.miner.z", z.getLongValue(), startZ.getLongValue()))
-                .asWidget());
+                .asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue()));
+
         widgets.add(Text.dynamic(() -> {
             if (chunk.getBoolValue()) {
                 return Component.translatable("gtceu.universal.tooltip.working_area_chunks",
@@ -282,14 +295,15 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
             }
             return Component.translatable("gtceu.universal.tooltip.working_area", workingArea.getIntValue(),
                     workingArea.getIntValue());
-        }).asWidget());
+        }).asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
         widgets.add(Text.lang("gtceu.multiblock.large_miner.done")
                 .withStyle(ChatFormatting.GREEN)
                 .asWidget()
-                .setEnabledIf((w) -> done.getBoolValue()));
+                .setEnabledIf((w) -> isFormed.getBoolValue() && done.getBoolValue()));
 
         widgets.add(Text.dynamic(() -> Component.translatable("gtceu.machine.miner.progress",
-                mineProgress.getIntValue(), totalMine.getIntValue())).asWidget());
+                mineProgress.getIntValue(), totalMine.getIntValue())).asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue()));
 
         return widgets;
     }

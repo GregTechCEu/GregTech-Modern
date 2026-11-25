@@ -289,22 +289,14 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
         List<IWidget> widgets = new ArrayList<>();
-        BooleanSyncValue power = syncManager.getOrCreateSyncHandler("workingEnabled", BooleanSyncValue.class,
-                () -> new BooleanSyncValue(this.recipeLogic::isWorkingEnabled, this.recipeLogic::setWorkingEnabled));
-        BooleanSyncValue active = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
-                () -> new BooleanSyncValue(this.recipeLogic::isActive));
-        BooleanSyncValue waiting = syncManager.getOrCreateSyncHandler("isWaiting", BooleanSyncValue.class,
-                () -> new BooleanSyncValue(this.recipeLogic::isWaiting));
 
-        BigIntegerSyncValue energyStored = new BigIntegerSyncValue(
-                energyBank::getStored, $ -> {});
+        BigIntegerSyncValue energyStored = new BigIntegerSyncValue(energyBank::getStored, null);
         syncManager.syncValue("energyStored", energyStored);
 
-        BigIntegerSyncValue capacity = new BigIntegerSyncValue(
-                energyBank::getCapacity, $ -> {});
+        BigIntegerSyncValue capacity = new BigIntegerSyncValue(energyBank::getCapacity, null);
         syncManager.syncValue("capacity", capacity);
 
-        LongSyncValue passiveDrain = new LongSyncValue(null, null, this::getPassiveDrain, null);
+        LongSyncValue passiveDrain = new LongSyncValue(this::getPassiveDrain);
         syncManager.syncValue("passiveDrain", passiveDrain);
 
         LongSyncValue inputPerSec = new LongSyncValue(() -> this.inputPerSec);
@@ -315,20 +307,9 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
 
-        // Generic machine lines
-        widgets.add(Text.lang("gtceu.multiblock.work_paused")
-                .asWidget()
-                .setEnabledIf((widget) -> !power.getBoolValue()));
-        widgets.add(Text.lang("gtceu.multiblock.running")
-                .asWidget()
-                .setEnabledIf((widget) -> active.getBoolValue()));
-        widgets.add(Text.lang("gtceu.multiblock.idling")
-                .asWidget()
-                .setEnabledIf((widget) -> !active.getBoolValue() && power.getBoolValue()));
-        widgets.add(Text.lang("gtceu.multiblock.waiting")
-                .withStyle(ChatFormatting.RED)
-                .asWidget()
-                .setEnabledIf((widget) -> waiting.getBoolValue()));
+        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
+                () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
+                () -> Component.translatable("gtceu.multiblock.waiting").withStyle(ChatFormatting.RED)));
 
         widgets.add(Text.dynamic(() -> {
             var storedComponent = Component.literal(FormattingUtil.formatNumbers(energyStored.getValue()));

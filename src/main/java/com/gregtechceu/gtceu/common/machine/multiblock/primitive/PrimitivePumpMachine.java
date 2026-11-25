@@ -144,9 +144,9 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine implements
                 () -> new BooleanSyncValue(this::isFormed));
         // Sync these values for use in getFluidProduction()
         syncManager.getOrCreateSyncHandler("biomeModifier", IntSyncValue.class,
-                () -> new IntSyncValue(() -> this.biomeModifier, value -> this.biomeModifier = value));
+                () -> new IntSyncValue(() -> this.biomeModifier));
         syncManager.getOrCreateSyncHandler("hatchModifier", IntSyncValue.class,
-                () -> new IntSyncValue(() -> this.hatchModifier, value -> this.hatchModifier = value));
+                () -> new IntSyncValue(() -> this.hatchModifier));
 
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(Text.dynamic(() -> Text
