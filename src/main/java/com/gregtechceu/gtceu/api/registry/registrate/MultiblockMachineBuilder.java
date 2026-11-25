@@ -4,28 +4,26 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.multiblock.AdditionalDisplayWidgetProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAppearanceProvider;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartSorter;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.value.sync.PanelSyncManager;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
-import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.*;
 import java.util.function.*;
@@ -41,16 +39,14 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
                                      extends MachineBuilder<DEFINITION, MACHINE, SELF> {
 
     private boolean generator;
-    private Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
+    private final Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
-    private Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter = (c) -> (a, b) -> 0;
-    private TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance;
+    private PartSorter partSorter = PartSorter.DEFAULT;
+    private PartAppearanceProvider partAppearance = PartAppearanceProvider.DEFAULT;
 
     @Getter
-    private BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay = (m,
-                                                                                                          sm) -> Collections
-                                                                                                                  .emptyList();
+    private AdditionalDisplayWidgetProvider additionalDisplay = AdditionalDisplayWidgetProvider.DEFAULT;
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
                                     BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
@@ -86,17 +82,17 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         return getThis();
     }
 
-    public SELF partSorter(Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter) {
+    public SELF partSorter(PartSorter partSorter) {
         this.partSorter = partSorter;
         return getThis();
     }
 
-    public SELF partAppearance(TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
+    public SELF partAppearance(PartAppearanceProvider partAppearance) {
         this.partAppearance = partAppearance;
         return getThis();
     }
 
-    public SELF additionalDisplay(BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay) {
+    public SELF additionalDisplay(AdditionalDisplayWidgetProvider additionalDisplay) {
         this.additionalDisplay = additionalDisplay;
         return getThis();
     }
@@ -135,10 +131,7 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
             definition.setRecoveryItems(
                     () -> recoveryItems.stream().map(Supplier::get).flatMap(Arrays::stream).toArray(ItemStack[]::new));
         }
-        definition.setPartSorter(GTMemoizer.memoizeFunctionWeakIdent(partSorter));
-        if (partAppearance == null) {
-            partAppearance = (controller, part, side) -> definition.getAppearance().get();
-        }
+        definition.setPartSorter(partSorter);
         definition.setPartAppearance(partAppearance);
         definition.setAdditionalDisplay(additionalDisplay);
         return value = definition;
