@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.value.sync.LongSyncValue;
-import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IFusionCasingType;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
@@ -36,6 +33,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.LongSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.TextWidget;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
