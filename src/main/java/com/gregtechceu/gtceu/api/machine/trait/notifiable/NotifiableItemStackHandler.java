@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
-import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
+import com.gregtechceu.gtceu.api.item.spoilage.ISpoilableItem;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilContext;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
@@ -21,7 +21,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -83,7 +82,6 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     public void onContentsChanged() {
         isEmpty = null;
-        SpoilUtils.updateHandler(storage, getLevel(), getBlockPos(), null);
         syncDataHolder.markClientSyncFieldDirty("storage");
         notifyListeners();
     }
@@ -111,6 +109,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         // Store the ItemStack in each slot after an operation
         // Necessary for simulation since we don't actually modify the slot's contents
         // Doesn't hurt for execution, and definitely cheaper than copying the entire storage
+        @Nullable
         ItemStack[] visited = new ItemStack[storage.getSlots()];
         for (var it = left.listIterator(); it.hasNext();) {
             var ingredient = it.next();
@@ -135,7 +134,8 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
             }
 
             for (int slot = 0; slot < storage.getSlots(); ++slot) {
-                ItemStack current = visited[slot] == null ? storage.getStackInSlot(slot) : visited[slot];
+                ItemStack cached = visited[slot];
+                ItemStack current = cached != null ? cached : storage.getStackInSlot(slot);
                 int count = current.getCount();
 
                 if (io == IO.IN) {
@@ -168,9 +168,15 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                     }
                 } else { // IO.OUT
                     ItemStack output = items[0].copyWithCount(amount);
+
+                    ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(output);
+                    if (spoilable != null) {
+                        spoilable.updateFreshness(SpoilContext.EMPTY, true);
+                    }
+
                     if (recipe != null) recipe.mutateOutput(output);
                     // Only try this slot if not visited or if visited with the same type of item
-                    if (visited[slot] == null || GTUtil.isSameItemSameTags(visited[slot], output)) {
+                    if (cached == null || ItemStack.isSameItemSameTags(cached, output)) {
                         if (count < output.getMaxStackSize() && count < storage.getSlotLimit(slot)) {
                             var remainder = recipe == null ? null :
                                     getActioned(storage, slot, recipe.ingredientActions);

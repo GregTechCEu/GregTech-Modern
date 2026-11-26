@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
@@ -142,28 +143,25 @@ public class MinerMachine extends WorkableTieredMachine
                 .coverChildrenWidth()
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .childSeparator(IIcon.EMPTY_2PX)
+                .themeOverride(GTGuiTheme.MULTIBLOCK_DISPLAY.getId())
                 .child(Text
                         .dynamic(() -> Objects.requireNonNull(
-                                getRecipeLogic().getCustomProgressLine().copy().withStyle(ChatFormatting.WHITE)))
+                                getRecipeLogic().getCustomProgressLine().copy()))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component
-                                .translatable("gui.gtceu.machine.miner.x", startX.getIntValue(), mineX.getIntValue())
-                                .withStyle(ChatFormatting.WHITE))
+                        () -> Component.translatable("gui.gtceu.machine.miner.x", startX.getIntValue(),
+                                mineX.getIntValue()))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component
-                                .translatable("gui.gtceu.machine.miner.y", startY.getIntValue(), mineY.getIntValue())
-                                .withStyle(ChatFormatting.WHITE))
+                        () -> Component.translatable("gui.gtceu.machine.miner.y", startY.getIntValue(),
+                                mineY.getIntValue()))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component
-                                .translatable("gui.gtceu.machine.miner.z", startZ.getIntValue(), mineZ.getIntValue())
-                                .withStyle(ChatFormatting.WHITE))
+                        () -> Component.translatable("gui.gtceu.machine.miner.z", startZ.getIntValue(),
+                                mineZ.getIntValue()))
                         .asWidget())
-                .child(Text
-                        .dynamic(() -> Component.translatable("machine.gtceu.miner.working_area",
-                                workingArea.getIntValue(), workingArea.getIntValue()).withStyle(ChatFormatting.WHITE))
+                .child(Text.dynamic(() -> Component.translatable("machine.gtceu.miner.working_area",
+                        workingArea.getIntValue(), workingArea.getIntValue()))
                         .asWidget())
                 .child(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.large_miner.done")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))).asWidget()

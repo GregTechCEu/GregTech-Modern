@@ -86,7 +86,7 @@ public class GTMuiWidgets {
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth) {
         UITexture background = GTGuiTextures.BACKGROUND;
         if (!definition.getThemeId().equals(ThemeAPI.DEFAULT_ID)) {
-            background = (UITexture) ThemeAPI.INSTANCE.getTheme(definition.getThemeId()).getPanelTheme().theme()
+            background = (UITexture) ThemeAPI.INSTANCE.getTheme(definition.getThemeId()).getPanelThemeEntry().theme()
                     .getBackground();
         }
         if (background == null) {
@@ -448,7 +448,7 @@ public class GTMuiWidgets {
                 .tooltip(r -> {
                     r.addFromItem(cover.getAttachItem());
                     r.addLine(
-                            Component.translatable("gui.gtceu.cover.direction", cover.attachedSide.getSerializedName())
+                            Component.translatable("cover.gtceu.direction", cover.attachedSide.getSerializedName())
                                     .withStyle(ChatFormatting.DARK_PURPLE));
                 })
                 .onMousePressed((context, button) -> {

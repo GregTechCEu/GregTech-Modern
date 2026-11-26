@@ -27,7 +27,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -264,18 +263,21 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         IntSyncValue totalMine = syncManager.getOrCreateSyncHandler("totalMine", IntSyncValue.class,
                 () -> new IntSyncValue(() -> getRecipeLogic().getMaxProgress()));
 
-        widgets.add(Text
-                .dynamic(() -> Component.translatable("gui.gtceu.machine.miner.x", x.getLongValue(),
-                        startX.getLongValue()))
-                .asWidget());
-        widgets.add(Text
-                .dynamic(() -> Component.translatable("gui.gtceu.machine.miner.y", y.getLongValue(),
-                        startY.getLongValue()))
-                .asWidget());
-        widgets.add(Text
-                .dynamic(() -> Component.translatable("gui.gtceu.machine.miner.z", z.getLongValue(),
-                        startZ.getLongValue()))
-                .asWidget());
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(this::isFormed));
+
+        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.miner.x", x.getLongValue(),
+                startX.getLongValue()))
+                .asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue()));
+        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.miner.y", y.getLongValue(),
+                startY.getLongValue()))
+                .asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue()));
+        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.miner.z", z.getLongValue(),
+                startZ.getLongValue()))
+                .asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue()));
         widgets.add(Text.dynamic(() -> {
             if (chunk.getBoolValue()) {
                 return Component.translatable("machine.gtceu.miner.working_area_chunks",
@@ -283,20 +285,19 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
             }
             return Component.translatable("machine.gtceu.miner.working_area", workingArea.getIntValue(),
                     workingArea.getIntValue());
-        }).asWidget());
-        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.large_miner.done")
-                .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)))
+        }).asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
+
+        widgets.add(Text.lang("gui.gtceu.machine.large_miner.done")
+                .withStyle(ChatFormatting.GREEN)
                 .asWidget()
-                .setEnabledIf((w) -> done.getBoolValue()));
+                .setEnabledIf((w) -> isFormed.getBoolValue() && done.getBoolValue()));
+
         widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.miner.progress",
-                mineProgress.getIntValue(), totalMine.getIntValue())).asWidget());
+                mineProgress.getIntValue(), totalMine.getIntValue())).asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue()));
 
         return widgets;
     }
-
-    //////////////////////////////////////
-    // *********** GUI ***********//
-    //////////////////////////////////////
 
     //////////////////////////////////////
     // ******* Interaction *******//

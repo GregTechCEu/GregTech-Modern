@@ -9,6 +9,8 @@ public class CoverLang {
     }
 
     private static void generateCoverKeys(GTLangProvider provider) {
+        provider.add("cover.gtceu.direction", "Direction: %s");
+
         // todo uses
         provider.add("cover.gtceu.filter.blacklist.disabled", "Whitelist");
         provider.add("cover.gtceu.filter.blacklist.enabled", "Blacklist");

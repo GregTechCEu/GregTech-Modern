@@ -7,10 +7,12 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -71,15 +73,22 @@ public class SinglePredicateError extends PatternError {
     @Override
     public PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
-            parent.child(Text.of(Component.translatable(debugName)).asWidget());
-            this.type.appendComponent(parent, this);
-            parent.child(new ContextMenuButton<>("predicate")
-                    .menuList(l -> l
-                            .maxSize(40)
-                            .children(candidates, candidate -> {
-                                return new ItemDrawable(candidate.getItemStackForm()).asWidget()
-                                        .tooltip(r -> r.add(candidate.getItemStackForm().getHoverName()));
-                            })));
+            ItemStack[] candidateItems = candidates.stream().map(BlockInfo::getItemStackForm)
+                    .toArray(ItemStack[]::new);
+
+            parent.child(Flow.row()
+                    .coverChildrenHeight()
+                    .childPadding(4)
+                    .child(new ContextMenuButton<>("predicate")
+                            .size(20)
+                            .overlay(new ItemDrawable(candidateItems).asIcon().size(18))
+                            .menuList(l -> l
+                                    .maxSize(40)
+                                    .children(candidates, candidate -> {
+                                        return new ItemDrawable(candidate.getItemStackForm()).asWidget()
+                                                .tooltip(r -> r.add(candidate.getItemStackForm().getHoverName()));
+                                    })))
+                    .child(Text.of(this.type.getComponent(this)).asWidget()));
         };
     }
 
@@ -130,13 +139,13 @@ public class SinglePredicateError extends PatternError {
 
         private Component getComponent(SinglePredicateError error) {
             return switch (this) {
-                case MAX_COUNT -> Component.translatable("multiblock.gtceu.predicate.limit_max",
+                case MAX_COUNT -> Component.translatable("multiblock.gtceu.pattern_error.limit_max",
                         error.predMaxCount, error.actualCount);
-                case MIN_COUNT -> Component.translatable("multiblock.gtceu.predicate.limit_min",
+                case MIN_COUNT -> Component.translatable("multiblock.gtceu.pattern_error.limit_min",
                         error.predMinCount, error.actualCount);
-                case MAX_LAYER_COUNT -> Component.translatable("multiblock.gtceu.predicate.limit_layer_max",
+                case MAX_LAYER_COUNT -> Component.translatable("multiblock.gtceu.pattern_error.limit_layer_max",
                         error.predMaxLayerCount, error.actualCount);
-                case MIN_LAYER_COUNT -> Component.translatable("multiblock.gtceu.predicate.limit_layer_min",
+                case MIN_LAYER_COUNT -> Component.translatable("multiblock.gtceu.pattern_error.limit_layer_min",
                         error.predMinLayerCount, error.actualCount);
             };
         }

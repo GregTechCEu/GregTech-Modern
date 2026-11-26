@@ -181,7 +181,6 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
 
         List<IWidget> widgets = new ArrayList<>();
 
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, energyStoredSyncValue));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
                 () -> Component.translatable("gui.gtceu.machine.data_bank.working").withStyle(ChatFormatting.GREEN),

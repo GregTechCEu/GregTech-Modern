@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
-import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
 import com.gregtechceu.gtceu.api.item.module.AttributeItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
@@ -342,15 +341,15 @@ public class CommonEventListener {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onEntityLivingFallEvent(LivingFallEvent event) {
         LivingEntity entity = event.getEntity();
-        if (entity.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof ModularArmorItem armor &&
-                armor.protectsAgainstFalls()) {
+        if (entity.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.FALL_IMMUNE_WEARABLES)) {
             entity.fallDistance = 0;
             event.setCanceled(true);
             return;
         }
-        if (event.getEntity() instanceof ServerPlayer player) {
-            if (player.fallDistance < 3.2f)
+        if (entity instanceof ServerPlayer player) {
+            if (player.fallDistance < 3.2f) {
                 return;
+            }
 
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 
@@ -369,8 +368,7 @@ public class CommonEventListener {
     public static void onLivingTick(LivingEvent.LivingTickEvent event) {
         LivingEntity entity = event.getEntity();
 
-        if (entity.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ModularArmorItem armor &&
-                armor.protectsAgainstFire()) {
+        if (entity.getItemBySlot(EquipmentSlot.CHEST).is(CustomTags.FIRE_IMMUNE_WEARABLES)) {
             entity.clearFire();
         }
 
@@ -529,10 +527,9 @@ public class CommonEventListener {
     public static void onLivingHurt(LivingHurtEvent event) {
         final LivingEntity entity = event.getEntity();
         final DamageSource source = event.getSource();
-        // GT heat also has the fire tag; hot ingots use the separate insulation multiplier.
+        // GT heat also has the fire tag; hot ingots use a separate insulation multiplier.
         if (source.is(DamageTypeTags.IS_FIRE) && !source.is(GTDamageTypes.HEAT.key) &&
-                entity.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ModularArmorItem armor &&
-                armor.protectsAgainstFire()) {
+                entity.getItemBySlot(EquipmentSlot.CHEST).is(CustomTags.FIRE_IMMUNE_WEARABLES)) {
             entity.clearFire();
             event.setCanceled(true);
             return;

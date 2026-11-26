@@ -392,6 +392,9 @@ public class MachineLang {
                 "The Fusion Reactor MK 2 is a large multiblock structure used for fusing elements into heavier ones. It can only use ZPM and UV Energy Hatches. For every Hatch it has, its buffer increases by 20M EU, and has a maximum of 320M.");
         provider.add("machine.gtceu.uv_fusion_reactor.description",
                 "The Fusion Reactor MK 3 is a large multiblock structure used for fusing elements into heavier ones. It can only use UV Energy Hatches. For every Hatch it has, its buffer increases by 40M EU, and has a maximum of 640M.");
+        provider.add("machine.gtceu.fusion_reactor.heat", "Heat: %s EU");
+        provider.add("machine.gtceu.fusion_reactor.stored", "Stored: %s EU");
+        provider.add("machine.gtceu.fusion_reactor.capacity", "Capacity: %s EU");
 
         // Fluid Drilling Rig
         provider.add("machine.gtceu.fluid_drilling_rig.description",
@@ -468,6 +471,8 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.hpca.computation", "Providing: %s");
         provider.add("gui.gtceu.machine.hpca.energy", "Using: %s / %s EU/t (%s)");
         provider.add("gui.gtceu.machine.hpca.temperature", "Temperature: %s");
+        provider.add("gui.gtceu.machine.hpca.cooling_demand", "Cooling Demand: %s / %s");
+
         provider.add("gui.gtceu.machine.hpca.hover_for_info", "Hover for details");
         provider.add("gui.gtceu.machine.hpca.error_damaged", "Damaged component in structure!");
         provider.add("gui.gtceu.machine.hpca.error_temperature",

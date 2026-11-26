@@ -56,11 +56,11 @@ public class ModularArmorLang {
         provider.add("gui.gtceu.modules", "Modules");
 
         provider.add("tooltip.gtceu.armor.built_in_traits", "Built-in Traits:");
-        provider.add("tooltip.gtceu.armor.trait.fall", "Fall protection");
-        provider.add("tooltip.gtceu.armor.trait.fire", "Fire immunity");
-        provider.add("tooltip.gtceu.armor.trait.freeze", "Freeze protection");
-        provider.add("tooltip.gtceu.armor.trait.heat", "Reduces damage from hot ingots by %s%%");
-        provider.add("tooltip.gtceu.armor.trait.hazard", "Hazard protection");
+        provider.add("tooltip.gtceu.armor.trait.fall_protection", "Fall damage protection");
+        provider.add("tooltip.gtceu.armor.trait.fire_protection", "Fire protection");
+        provider.add("tooltip.gtceu.armor.trait.freeze_protection", "Freezing protection");
+        provider.add("tooltip.gtceu.armor.trait.heat_protection", "Reduces damage from hot ingots by %s%%");
+        provider.add("tooltip.gtceu.armor.trait.hazard_protection", "Hazard protection");
 
         // Module names/descriptions
 

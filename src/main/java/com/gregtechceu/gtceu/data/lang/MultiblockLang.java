@@ -31,9 +31,18 @@ public class MultiblockLang {
 
         // Pattern Errors
 
+        provider.add("gui.gtceu.multiblock_highlight_error", "Highlight Error");
+
         provider.add("multiblock.gtceu.pattern_error.block_match_error", "Error at X: %d, Y: %d, Z: %d");
         provider.add("multiblock.gtceu.pattern_error.mismatch_coils", "Mismatched coils: %s vs %s at (%d, %d, %d)");
         provider.add("multiblock.gtceu.pattern_error.mismatch_filters", "Mismatched filters: %s vs %s at (%d, %d, %d)");
+
+        provider.add("multiblock.gtceu.pattern_error.limit_max", "§cMaximum:§r %d, §cHas:§r %d");
+        provider.add("multiblock.gtceu.pattern_error.limit_min", "§cMinimum:§r %d, §cHas:§r %d");
+        provider.add("multiblock.gtceu.pattern_error.limit_layer_max",
+                "§cMaximum:§r %d per layer, §cHas:§r %d");
+        provider.add("multiblock.gtceu.pattern_error.limit_layer_min",
+                "§cMinimum:§r %d per layer, §cHas:§r %d");
 
         provider.add("multiblock.gtceu.pattern_error.active_transformer.missing_io",
                 "Missing hatches: IN - %s | OUT - %s");

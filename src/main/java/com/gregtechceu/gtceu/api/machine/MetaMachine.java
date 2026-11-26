@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.item.spoilage.BlockEntitySpoilTicker;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilUtils;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -24,6 +26,7 @@ import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRedstoneSignalTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.misc.*;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
@@ -310,6 +313,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 iter.remove();
             }
         }
+
+        if (getLevel().getGameTime() % BlockEntitySpoilTicker.UPDATE_FREQUENCY != 0) return;
+        getTraits(NotifiableItemStackHandler.class).forEach(v -> {
+            SpoilUtils.updateBlockItemHandler(v, getLevel(), getBlockPos());
+        });
     }
 
     //////////////////////////////////////
@@ -1119,7 +1127,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
         IOFilteredInvWrapper handlerList = new IOFilteredInvWrapper(list, io,
                 getItemCapFilter(side, IO.IN), getItemCapFilter(side, IO.OUT));
-        if (!useCoverCapability || side == null) return handlerList;
+        if (!useCoverCapability || side == null) {
+            return handlerList;
+        }
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
         return cover != null ? cover.getItemHandlerCap(handlerList) : handlerList;
