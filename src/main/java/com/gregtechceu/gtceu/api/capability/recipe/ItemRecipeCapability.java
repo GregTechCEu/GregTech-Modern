@@ -347,6 +347,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                     inventory.addTo(entry.getKey(), entry.getLongValue());
                 }
             }
+            grouped.add(bypassDistinct);
         }
 
         return grouped;
