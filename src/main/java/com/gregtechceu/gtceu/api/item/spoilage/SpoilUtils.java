@@ -63,11 +63,9 @@ public class SpoilUtils {
 
         CompoundTag aTag = a.getOrCreateTag().copy();
         aTag.remove(SpoilableItemStack.FROZEN_TICKS_KEY);
-        aTag.remove(SpoilableItemStack.FROZEN_KEY);
         aTag.remove(SpoilableItemStack.CREATION_TICK_KEY);
         CompoundTag bTag = b.getOrCreateTag().copy();
         bTag.remove(SpoilableItemStack.FROZEN_TICKS_KEY);
-        bTag.remove(SpoilableItemStack.FROZEN_KEY);
         bTag.remove(SpoilableItemStack.CREATION_TICK_KEY);
 
         return aTag.equals(bTag);

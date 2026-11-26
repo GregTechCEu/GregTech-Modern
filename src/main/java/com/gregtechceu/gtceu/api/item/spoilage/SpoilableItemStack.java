@@ -10,7 +10,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ItemLike;
@@ -20,7 +19,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,10 +33,9 @@ import java.util.List;
  * @see SpoilableBehavior
  * @see SpoilableBehavior#attachTo(ItemLike)
  */
-public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformation, IDurabilityBar,
+public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformation,
                                          ICapabilityProvider {
 
-    public static final String FROZEN_KEY = "frozen";
     public static final String FROZEN_TICKS_KEY = "frozenRemainingTicks";
     public static final String CREATION_TICK_KEY = "creationTick";
 
@@ -50,7 +47,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     }
 
     public long getCreationTick() {
-        if (!stack.hasTag()) return 0;
+        if (!stack.hasTag()) return Long.MAX_VALUE;
         return stack.getOrCreateTag().getLong(CREATION_TICK_KEY);
     }
 
@@ -59,16 +56,15 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     }
 
     public boolean isFrozen() {
-        if (!stack.hasTag()) return false;
-        return stack.getOrCreateTag().getBoolean(FROZEN_KEY);
+        return stack.hasTag() && stack.getOrCreateTag().contains(FROZEN_TICKS_KEY);
     }
 
-    public long getFrozenTicks() {
-        if (!stack.hasTag()) return 0;
+    public long getFrozenRemainingTicks() {
+        if (!stack.hasTag()) return Long.MAX_VALUE;
         return stack.getOrCreateTag().getLong(FROZEN_TICKS_KEY);
     }
 
-    public void setFrozenTicks(long ticks) {
+    public void setFrozenRemainingTicks(long ticks) {
         stack.getOrCreateTag().putLong(FROZEN_TICKS_KEY, ticks);
     }
 
@@ -90,13 +86,13 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
      */
     public void updateFreshness(SpoilContext spoilContext, boolean createTag) {
         if (isFrozen()) return;
-        if (!createTag && getCreationTick() == 0) return;
+        if (!createTag && (!stack.hasTag() || !stack.getOrCreateTag().contains(CREATION_TICK_KEY))) return;
 
         Level level = SpoilContext.getDefaultLevel();
 
         if (level == null) return;
 
-        if (createTag && getCreationTick() == 0) {
+        if (createTag && (!stack.hasTag() || !stack.getOrCreateTag().contains(CREATION_TICK_KEY))) {
             setCreationTick(level.getGameTime());
         }
 
@@ -122,7 +118,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     @Override
     public long getTicksUntilSpoiled() {
-        if (isFrozen()) return getFrozenTicks();
+        if (isFrozen()) return getFrozenRemainingTicks();
 
         Level level = SpoilContext.getDefaultLevel();
         if (level == null) {
@@ -143,16 +139,16 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
         if (freeze == this.isFrozen()) return;
         Level level = SpoilContext.getDefaultLevel();
 
-        if (getCreationTick() == 0 && level != null) {
+        if ((!stack.hasTag() || !stack.getOrCreateTag().contains(CREATION_TICK_KEY)) && level != null) {
             setCreationTick(level.getGameTime());
         }
 
         if (freeze) {
-            setFrozenTicks(getTicksUntilSpoiled());
-            stack.getOrCreateTag().putBoolean(FROZEN_KEY, true);
+            setFrozenRemainingTicks(getTicksUntilSpoiled());
+            stack.getOrCreateTag().remove(CREATION_TICK_KEY);
         } else {
-            setTicksUntilSpoiled(getFrozenTicks());
-            stack.getOrCreateTag().putBoolean(FROZEN_KEY, false);
+            setTicksUntilSpoiled(getFrozenRemainingTicks());
+            stack.getOrCreateTag().remove(FROZEN_TICKS_KEY);
         }
     }
 
@@ -177,7 +173,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
         long time = getTicksUntilSpoiled();
         MutableComponent timeTooltip;
 
-        if (getCreationTick() == 0) {
+        if (getCreationTick() == Long.MAX_VALUE) {
             time = getSpoilTicks();
         }
 
@@ -198,7 +194,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
                     "gtceu.tooltip.spoil_time_total",
                     Component.literal(FormattingUtil.formatTime(getSpoilTicks()))
                             .withStyle(ChatFormatting.GREEN)));
-            if (getCreationTick() != 0) tooltipComponents.add(Component.translatable(
+            if (getCreationTick() != Long.MAX_VALUE) tooltipComponents.add(Component.translatable(
                     "gtceu.tooltip.creation_tick",
                     getCreationTick()));
         }
@@ -206,26 +202,6 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     protected Component getSpoilResultTooltip() {
         return getSpoilResult(SpoilContext.EMPTY, -1, false).getDisplayName();
-    }
-
-    @Override
-    public int getBarColor(ItemStack stack) {
-        return 0xFFFFFFFF;
-    }
-
-    @Override
-    public boolean doDamagedStateColors(ItemStack itemStack) {
-        return false;
-    }
-
-    @Override
-    public @Nullable IntIntPair getDurabilityColorsForDisplay(ItemStack itemStack) {
-        return IntIntPair.of(getBarColor(itemStack), getBarColor(itemStack));
-    }
-
-    @Override
-    public float getDurabilityForDisplay(ItemStack stack) {
-        return getCreationTick() == 0 ? 1 : Mth.clamp((float) getTicksUntilSpoiled() / getSpoilTicks(), 0, 1);
     }
 
     private final LazyOptional<ISpoilableItem> capability = LazyOptional.of(() -> this);
