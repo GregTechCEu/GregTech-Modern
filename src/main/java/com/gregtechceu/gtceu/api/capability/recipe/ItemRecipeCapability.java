@@ -340,6 +340,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                     inventory.addTo(entry.getKey(), entry.getLongValue());
                 }
             }
+            grouped.add(bypassDistinct);
         }
 
         return grouped;
