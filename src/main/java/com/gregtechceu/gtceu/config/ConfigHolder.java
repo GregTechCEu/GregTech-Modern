@@ -71,12 +71,6 @@ public class ConfigHolder {
         public boolean disableManualCompression = true; // default true
         @Configurable
         @Configurable.Comment({
-                "Change the recipe of Rods in the Lathe to 1 Rod and 2 Small Piles of Dust, instead of 2 Rods.",
-                "Default: true" })
-        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
-        public boolean harderRods = true; // default true
-        @Configurable
-        @Configurable.Comment({
                 "Whether to make crafting recipes for Bricks, Firebricks, Nether Bricks, and Coke Bricks harder.",
                 "Default: false" })
         @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
@@ -837,6 +831,8 @@ public class ConfigHolder {
                 "Disable if experiencing performance issues.", "Default: true" })
         public boolean machinesHaveBERsByDefault = true;
         @Configurable
+        public boolean aprilFoolsMode = false;
+        @Configurable
         @Configurable.Comment({ "Whether or not sounds should be played when using tools outside of crafting.",
                 "Default: true" })
         public boolean toolUseSounds = true;
@@ -973,6 +969,13 @@ public class ConfigHolder {
                     "Whether or not to color wire/cable highlights based on voltage tier or material color",
                     "Default: true" })
             public boolean coloredWireOutline = true;
+
+            @Configurable
+            @Configurable.Comment({ "The color of the assembly line lasers",
+                    "Default: #1FA1FC" })
+            @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
+            @Configurable.Gui.ColorValue
+            public String assemblyLineLaser = "#1FA1FC";
         }
 
         public static class TankItemFluidPreview {

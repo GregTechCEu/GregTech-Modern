@@ -53,9 +53,8 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
         CompoundTag data = new CompoundTag();
         if (recipeLogic.isWorking()) {
             data.putBoolean("Working", recipeLogic.isWorking());
-            var recipe = recipeLogic.getLastRecipe();
+            var recipe = recipeLogic.getLastUnrolledRecipe();
             if (recipe != null) {
-
                 var itemContents = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidContents = recipe.getOutputContents(FluidRecipeCapability.CAP);
                 int runs = recipe.getTotalRuns();
@@ -64,7 +63,6 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
                 for (var item : itemContents) {
                     CompoundTag itemTag;
                     if (item.content() instanceof IntProviderIngredient provider) {
-                        // don't roll for output but do copy for chance and batch
                         IntProviderIngredient chanced = provider;
                         if (item.chance() < item.maxChance()) {
                             double countD = ((double) runs * item.chance()) / item.maxChance();

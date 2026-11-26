@@ -586,8 +586,9 @@ public class MachineLang {
                 "The Fusion Reactor MK 2 is a large multiblock structure used for fusing elements into heavier ones. It can only use ZPM and UV Energy Hatches. For every Hatch it has, its buffer increases by 20M EU, and has a maximum of 320M.");
         provider.add("gtceu.multiblock.uv_fusion_reactor.description",
                 "The Fusion Reactor MK 3 is a large multiblock structure used for fusing elements into heavier ones. It can only use UV Energy Hatches. For every Hatch it has, its buffer increases by 40M EU, and has a maximum of 640M.");
-        provider.add("gtceu.multiblock.fusion_reactor.energy", "EU: %d / %d");
-        provider.add("gtceu.multiblock.fusion_reactor.heat", "Heat: %d");
+        provider.add("gtceu.multiblock.fusion_reactor.heat", "Heat: %s EU");
+        provider.add("gtceu.multiblock.fusion_reactor.stored", "Stored: %s EU");
+        provider.add("gtceu.multiblock.fusion_reactor.capacity", "Capacity: %s EU");
         provider.add("gtceu.multiblock.large_chemical_reactor.description",
                 "The Large Chemical Reactor performs chemical reactions at 100%% energy efficiency. Overclocks multiply both speed and energy by 4. The multiblock requires exactly 1 Cupronickel Coil Block, which must be placed adjacent to the PTFE Pipe casing located in the center.");
         // Primitive pump
@@ -866,6 +867,14 @@ public class MachineLang {
         provider.add("gtceu.machine.object_holder.tooltip", "Advanced Holding Mechanism for Research Station");
 
         // Multiblock tooltips
+        provider.add("gtceu.multiblock.general.max_power", "Max Power: %s");
+        provider.add("gtceu.multiblock.general.energy_consumption", "Using %s");
+        provider.add("gtceu.multiblock.general.energy_production", "Producing %s");
+        provider.add("gtceu.multiblock.general.energy_consumption_waiting", "Trying to Use %s");
+        provider.add("gtceu.multiblock.general.energy_production_waiting", "Trying to Produce %s");
+        provider.add("gtceu.multiblock.general.amp_volt", "%s §cA§a @ %s §r");
+        provider.add("gtceu.multiblock.general.amp_volt_eut", "%s §cA§a @ %s §r(%s EU/t)");
+        provider.add("gtceu.multiblock.general.eut", "%s EU/t");
         provider.add("gtceu.multiblock.blast_furnace.max_temperature", "Heat Capacity: %s");
         provider.add("gtceu.multiblock.multi_furnace.heating_coil_level", "Heating Coil Level: %s");
         provider.add("gtceu.multiblock.multi_furnace.heating_coil_discount", "Heating Coil EU Boost: %sx");
@@ -876,20 +885,23 @@ public class MachineLang {
                 "Liquid Oxygen Amount: %sL");
         provider.add("gtceu.multiblock.large_combustion_engine.oxygen_boosted", "§bOxygen boosted.");
         provider.add("gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted",
-                "§bLiquid Oxygen boosted.");
+                "§9Liquid Oxygen boosted.");
         provider.add("gtceu.multiblock.large_combustion_engine.boost_disallowed",
                 "§bUpgrade the Dynamo Hatch to enable Oxygen Boosting.");
         provider.add("gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost",
-                "Supply Oxygen to boost.");
+                "Supply §bOxygen§7 to boost.");
         provider.add("gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost",
-                "Supply Liquid Oxygen to boost.");
+                "Supply §9Liquid Oxygen§7 to boost.");
+        provider.add("gtceu.multiblock.large_combustion_engine.output", "Producing %s EU/t");
         provider.add("gtceu.multiblock.large_combustion_engine.obstructed", "Engine Intakes Obstructed.");
+        provider.add("gtceu.multiblock.large_combustion_engine.no_lubricant", "Machine needs Lubricant to run");
         provider.add("gtceu.multiblock.turbine.fuel_amount", "Fuel Amount: %sL (%s)");
         provider.add("gtceu.multiblock.turbine.rotor_speed", "Rotor Speed: %s/%s RPM");
         provider.add("gtceu.multiblock.turbine.rotor_durability", "Rotor Durability: %s%%");
         provider.add("gtceu.multiblock.turbine.efficiency", "Turbine Efficiency: %s%%");
         provider.add("gtceu.multiblock.turbine.energy_per_tick", "Energy Output: %s/%s EU/t");
         provider.add("gtceu.multiblock.turbine.energy_per_tick_maxed", "Energy Output: %s EU/t");
+        provider.add("gtceu.multiblock.turbine.no_rotor", "Missing Rotor");
         provider.add("gtceu.multiblock.turbine.obstructed", "Turbine Face Obstructed");
         provider.add("gtceu.multiblock.turbine.efficiency_tooltip",
                 "Each Rotor Holder above %s§7 adds §f10%% efficiency and multiplies EU/t by 2§7.");
@@ -976,6 +988,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.hpca.info_coolant_name", "PCB Coolant");
         provider.add("gtceu.multiblock.hpca.info_bridging_enabled", "Bridging Enabled");
         provider.add("gtceu.multiblock.hpca.info_bridging_disabled", "Bridging Disabled");
+        provider.add("gtceu.multiblock.show_error_pos", "Show Error Position");
 
         provider.add("gtceu.creative.chest.item", "Item");
         provider.add("gtceu.creative.chest.ipc", "Items per Cycle");

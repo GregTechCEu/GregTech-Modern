@@ -61,7 +61,7 @@ public abstract class MaterialPipeBlock<
         PipeType pipeType = pipeTile.getPipeType();
         Material material = ((MaterialPipeBlock<PipeType, NodeDataType, WorldPipeNetType>) pipeTile
                 .getPipeBlock()).material;
-        if (pipeType == null || material.isNull()) {
+        if (pipeType == null || material == null) {
             return getFallbackType();
         }
         return createProperties(pipeType, material);

@@ -92,6 +92,22 @@ public class GTRenderTypes extends RenderType {
                     .setTextureState(NO_TEXTURE)
                     .createCompositeState(true));
 
+    private static final RenderType ASSEMBLY_LINE = RenderType.create("assembly_line",
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.QUADS, RenderType.TRANSIENT_BUFFER_SIZE, false, false,
+            RenderType.CompositeState.builder()
+                    .setCullState(CULL)
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setTransparencyState(new TransparencyStateShard("sto", () -> {
+                        RenderSystem.enableBlend();
+                        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,
+                                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                    }, () -> {
+                        RenderSystem.disableBlend();
+                        RenderSystem.defaultBlendFunc();
+                    }))
+                    .createCompositeState(false));
+
     private static final Function<ResourceLocation, RenderType> GUI_TEXTURE = Util.memoize((texture) -> {
         return create("gui_texture", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS,
                 RenderType.TRANSIENT_BUFFER_SIZE, false, true,
@@ -172,6 +188,10 @@ public class GTRenderTypes extends RenderType {
 
     public static RenderType blockHighlightQuads() {
         return BLOCK_HIGHLIGHT_QUADS;
+    }
+
+    public static RenderType assemblyLine() {
+        return ASSEMBLY_LINE;
     }
 
     public static RenderType getMonitor() {

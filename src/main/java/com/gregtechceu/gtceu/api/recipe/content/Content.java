@@ -21,9 +21,13 @@ public record Content(Object content, int chance, int maxChance) {
         this.maxChance = maxChance;
     }
 
+    public static <T> Codec<T> ingredientCodec(RecipeCapability<T> capability) {
+        return capability.serializer.codec();
+    }
+
     public static <T> Codec<Content> codec(RecipeCapability<T> capability) {
         return RecordCodecBuilder.create(instance -> instance.group(
-                capability.serializer.codec().fieldOf("content").forGetter(val -> capability.of(val.content)),
+                ingredientCodec(capability).fieldOf("content").forGetter(val -> capability.of(val.content)),
                 ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("chance", ChanceLogic.getMaxChancedValue())
                         .forGetter(val -> val.chance),
                 ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("maxChance", ChanceLogic.getMaxChancedValue())
@@ -62,22 +66,6 @@ public record Content(Object content, int chance, int maxChance) {
 
     public boolean isChanced() {
         return chance > 0 && chance < maxChance;
-    }
-
-    /**
-     * Attempts to fix and round the given chance boost due to potential differences
-     * between the max chance and {@link ChanceLogic#getMaxChancedValue()}.
-     * <br />
-     * The worst case would be {@code 5,001 / 10,000} , meaning the boost would
-     * have to be halved to have the intended effect.
-     *
-     * @param chanceBoost the chance boost to be fixed
-     * @return the fixed chance boost
-     */
-    private int fixBoost(int chanceBoost) {
-        float error = (float) ChanceLogic.getMaxChancedValue() / maxChance;
-        int fixed = Math.round(Math.abs(chanceBoost) / error);
-        return chanceBoost < 0 ? -fixed : fixed;
     }
 
     public static void addChanceTooltips(RichTooltip tooltip, Content content, ChanceLogic logic) {

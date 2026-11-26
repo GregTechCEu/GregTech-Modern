@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.item;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.CombinedCapabilityProvider;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -409,9 +410,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
         }
 
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(repair.getItem());
-        if (entry.isEmpty()) return false;
 
-        if (entry.material() == this.getMaterial()) {
+        if (entry != null && entry.material() == this.getMaterial()) {
             // special case wood to allow Wood Planks
             if (VanillaRecipeHelper.isMaterialWood(entry.material())) {
                 return entry.tagPrefix() == TagPrefix.planks;
@@ -695,7 +695,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
         // electric info
         if (this.isElectric()) {
-            ElectricStats.addCurrentChargeTooltip(tooltip, getCharge(stack), getMaxCharge(stack), getElectricTier(),
+            IElectricItem.addCurrentChargeTooltip(tooltip, getCharge(stack), getMaxCharge(stack), getElectricTier(),
                     false);
         }
 
@@ -822,10 +822,11 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
         }
     }
 
-    ResourceLocation COFH_SMASHING_ENCHANT_ID = new ResourceLocation(GTValues.MODID_ENSORCELLATION, "smashing");
+    ResourceLocation COFH_SMASHING_ENCHANT_ID = ResourceLocation.fromNamespaceAndPath(GTValues.MODID_ENSORCELLATION,
+            "smashing");
     Set<ResourceLocation> AUTOSMELT_ENCHANT_IDS = Util.make(new HashSet<>(), set -> {
-        set.add(new ResourceLocation(GTValues.MODID_ENDERIO, "auto_smelt")); // EnderIO
-        set.add(new ResourceLocation(GTValues.MODID_ENSORCELLATION, "smelting")); // CoFH
+        set.add(ResourceLocation.fromNamespaceAndPath(GTValues.MODID_ENDERIO, "auto_smelt")); // EnderIO
+        set.add(ResourceLocation.fromNamespaceAndPath(GTValues.MODID_ENSORCELLATION, "smelting")); // CoFH
     });
 
     default boolean definition$canApplyAtEnchantingTable(@NotNull ItemStack stack, Enchantment enchantment) {

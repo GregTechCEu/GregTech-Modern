@@ -36,12 +36,6 @@ repositories {
         url = "https://modmaven.dev"
     }
 
-    maven { // LDLib, Shimmer
-        name = "FirstDarkDev Maven"
-        url = "https://maven.firstdark.dev/snapshots"
-    }
-
-
     exclusiveContent { // Create, Ponder, Flywheel
         forRepository { maven { url = "https://maven.createmod.net" } }
         filter {

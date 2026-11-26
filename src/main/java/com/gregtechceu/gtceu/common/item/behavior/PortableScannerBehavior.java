@@ -320,7 +320,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 // Recipe logic for EU production/consumption
                 RecipeLogic recipeLogic = machine.getTrait(RecipeLogic.class);
                 if (recipeLogic != null) {
-                    GTRecipe recipe = recipeLogic.getLastRecipe();
+                    GTRecipe recipe = recipeLogic.getLastUnrolledRecipe();
                     if (recipeLogic.getStatus().equals(RecipeLogic.Status.WAITING) &&
                             recipeLogic.getBestFailureReason() != null) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
@@ -471,11 +471,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
             list.add(Component.translatable("behavior.portable_scanner.divider"));
             list.add(Component.literal("Save data"));
-            nbtFormat(list, syncBlockEntity.getSyncDataHolder().serializeNBT(false));
-
-            list.add(Component.translatable("behavior.portable_scanner.divider"));
-            list.add(Component.literal("Update packet"));
-            nbtFormat(list, syncBlockEntity.getSyncDataHolder().serializeNBT(true, true));
+            nbtFormat(list, syncBlockEntity.getSyncDataHolder().serializeNBT(level.registryAccess()));
         }
 
         return energyCost;

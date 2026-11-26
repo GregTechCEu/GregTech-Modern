@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -41,6 +42,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class GTMultiblockTextUtil {
@@ -51,17 +53,15 @@ public class GTMultiblockTextUtil {
                 () -> new BooleanSyncValue(controller::isFormed));
         BooleanSyncValue hasSyncError = syncManager.getOrCreateSyncHandler("hasSyncError", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(
-                        () -> controller.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).getErrors() !=
-                                null));
+                        () -> controller.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).hasErrors()));
         GenericListSyncHandler<PatternError> patternErrors = syncManager.getOrCreateSyncHandler("patternErrors",
                 GenericListSyncHandler.class,
                 () -> GenericListSyncHandler.<PatternError>builder()
                         .getter(() -> {
                             var list = new ArrayList<PatternError>();
                             for (String structureName : controller.getStructurePatterns().keySet()) {
-                                var errors = controller.getPatternState(structureName)
-                                        .getErrors();
-                                if (errors != null && !errors.isEmpty()) {
+                                var errors = controller.getPatternState(structureName).getErrors();
+                                if (!errors.isEmpty()) {
                                     list.addAll(errors);
                                 }
                             }
@@ -75,6 +75,7 @@ public class GTMultiblockTextUtil {
                 .widgetProvider((widgetSyncManager, listSyncHandler) -> {
                     Flow unformed = Flow.col().coverChildrenHeight()
                             .collapseDisabledChildren()
+                            .childPadding(2)
                             .crossAxisAlignment(Alignment.CrossAxis.START)
                             .widthRel(1);
 
@@ -85,12 +86,18 @@ public class GTMultiblockTextUtil {
                     if (listSyncHandler.getValue().isEmpty()) {
                         return unformed;
                     }
-                    BlockPos pos = listSyncHandler.getValue().stream().toList().get(0).getPos();
+                    BlockPos pos = listSyncHandler.getValue().stream().toList().get(0).pos();
+                    if (PatternError.CONTROLLER.equals(pos)) pos = controller.getBlockPos();
+                    final BlockPos fpos = pos;
                     unformed.child(new ButtonWidget<>()
+                            .coverChildren()
+                            .padding(5)
+                            .child(Text.lang("gtceu.multiblock.show_error_pos")
+                                    .asWidget())
                             .onMousePressed((c, b) -> {
                                 ((ModularGuiContext) c).getScreen().getMainPanel().closeIfOpen();
                                 AABBHighlightRenderer.INSTANCE.addHighlight(AABBHighlightRenderer.builder()
-                                        .aabb(pos)
+                                        .aabb(fpos)
                                         .colorARGB(255, 255, 0, 0)
                                         .thickness(0.025)
                                         .durationMillis(10000)
@@ -98,7 +105,7 @@ public class GTMultiblockTextUtil {
                                         .build());
                                 return true;
                             })
-                            .setEnabledIf(w -> pos != null)
+                            .setEnabledIf(w -> fpos != controller.getBlockPos())
                             .tooltip(r -> r.add("Highlight the missing predicate in world")));
 
                     for (var error : listSyncHandler.getValue()) {
@@ -114,66 +121,123 @@ public class GTMultiblockTextUtil {
                 .syncHandler(dynamicLinkedSyncHandler);
     }
 
-    public static TextWidget<?> addEnergyUsageLine(WorkableElectricMultiblockMachine weMachine,
-                                                   PanelSyncManager syncManager) {
-        LongSyncValue energyUsage = syncManager.getOrCreateSyncHandler("energyUsage", LongSyncValue.class,
+    /**
+     * displays the maximum power draw a machine can run at, as A @ V with EU/t in a hover tooltip
+     */
+    public static Flow addEnergyUsageLine(WorkableElectricMultiblockMachine weMachine,
+                                          PanelSyncManager syncManager) {
+        LongSyncValue maxEnergyUsage = syncManager.getOrCreateSyncHandler("maxEnergyUsage", LongSyncValue.class,
                 () -> new LongSyncValue(() -> {
                     var energyList = weMachine.getEnergyContainer();
                     return Math.max(energyList.getInputVoltage(), energyList.getOutputVoltage());
                 }));
+        LongSyncValue voltage = syncManager.getOrCreateSyncHandler("machineVoltage", LongSyncValue.class,
+                () -> new LongSyncValue(weMachine::getDisplayWorkingVoltage));
+
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(weMachine::isFormed));
-        BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
-                () -> new BooleanSyncValue(() -> weMachine.getRecipeLogic().isActive()));
 
-        var widget = Text.dynamic(() -> {
-            String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
-
-            byte voltageTier = GTUtil.getFloorTierByVoltage(energyUsage.getLongValue());
-            Component voltageName = Component.literal(
-                    GTValues.VNF[voltageTier]);
-
-            MutableComponent bodyText = Component.translatable("gtceu.multiblock.max_energy_per_tick",
-                    energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
-            Component hoverText = Component.translatable("gtceu.multiblock.max_energy_per_tick_hover")
-                    .withStyle(ChatFormatting.GRAY);
-            return bodyText
-                    .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText)))
-                    .withStyle(ChatFormatting.WHITE);
-        })
-                .asWidget()
-                .setEnabledIf($ -> isFormed.getBoolValue() && isActive.getBoolValue());
-
-        return widget;
+        return buildAmpVoltEutHoverLine(
+                () -> Component.translatable("gtceu.multiblock.general.max_power",
+                        buildAmpVoltComponent(maxEnergyUsage, voltage)),
+                buildEutHoverTooltip(maxEnergyUsage, true),
+                ($ -> isFormed.getBoolValue()));
     }
 
-    public static TextWidget<?> addEnergyUsageExactLine(WorkableElectricMultiblockMachine weMachine,
-                                                        PanelSyncManager syncManager) {
+    /**
+     * displays the exact EU a machine is actively consuming, as A @ V with EU/t in a hover tooltip
+     * Pulls voltage from machine and EU/t from recipe
+     */
+    public static Flow addEnergyUsageExactLine(WorkableElectricMultiblockMachine weMachine,
+                                               PanelSyncManager syncManager) {
         LongSyncValue energyUsage = syncManager.getOrCreateSyncHandler("energyUsage", LongSyncValue.class,
-                () -> new LongSyncValue(() -> {
-                    var energyList = weMachine.getEnergyContainer();
-                    return Math.max(energyList.getInputVoltage(), energyList.getOutputVoltage());
-                }));
+                () -> new LongSyncValue(weMachine::getRecipeEUt));
         return addEnergyUsageExactLine(weMachine, syncManager, energyUsage);
     }
 
-    public static TextWidget<?> addEnergyUsageExactLine(WorkableElectricMultiblockMachine weMachine,
-                                                        PanelSyncManager syncManager, LongSyncValue energyUsage) {
+    /**
+     * displays the exact EU a machine is actively consuming, as A @ V with EU/t in a hover tooltip
+     * Pulls voltage from machine, takes EU/t as a param
+     */
+    public static Flow addEnergyUsageExactLine(WorkableElectricMultiblockMachine weMachine,
+                                               PanelSyncManager syncManager, LongSyncValue energyUsage) {
+        LongSyncValue voltage = syncManager.getOrCreateSyncHandler("machineVoltage", LongSyncValue.class,
+                () -> new LongSyncValue(weMachine::getDisplayWorkingVoltage));
+
+        return addEnergyUsageExactLine(weMachine, syncManager, energyUsage, voltage, weMachine.isGenerator());
+    }
+
+    /**
+     * displays the exact EU a machine is actively consuming, as A @ V with EU/t in a hover tooltip
+     * Takes voltage and EU/t as params
+     */
+    public static Flow addEnergyUsageExactLine(WorkableElectricMultiblockMachine weMachine,
+                                               PanelSyncManager syncManager, LongSyncValue energyUsage,
+                                               LongSyncValue displayVoltage, boolean isGenerator) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(weMachine::isFormed));
+        BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isActive));
+        BooleanSyncValue isWaiting = syncManager.getOrCreateSyncHandler("isWaiting", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isWaiting));
+        BooleanSyncValue isSuspend = syncManager.getOrCreateSyncHandler("isSuspend", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isSuspend));
 
-        return Text.dynamic(() -> {
-            if (energyUsage.getLongValue() <= 0) return Component.empty();
+        Supplier<Component> productionLine = () -> {
+            if (isWaiting.getBoolValue() || isSuspend.getBoolValue()) {
+                return Component.translatable((isGenerator ?
+                        "gtceu.multiblock.general.energy_production_waiting" :
+                        "gtceu.multiblock.general.energy_consumption_waiting"),
+                        buildAmpVoltComponent(energyUsage, displayVoltage));
+            } else {
+                return Component.translatable((isGenerator ?
+                        "gtceu.multiblock.general.energy_production" :
+                        "gtceu.multiblock.general.energy_consumption"),
+                        buildAmpVoltComponent(energyUsage, displayVoltage));
+            }
+        };
+
+        return buildAmpVoltEutHoverLine(productionLine,
+                buildEutHoverTooltip(energyUsage, false),
+                (flow -> isFormed.getBoolValue() && isActive.getBoolValue()));
+    }
+
+    public static Component buildAmpVoltComponent(LongSyncValue energyUsage, LongSyncValue voltage) {
+        long EUt = energyUsage.getLongValue();
+        long V = voltage.getLongValue();
+        float minAmperage = (V == 0 ? 0 : (float) EUt / V);
+        int tier = GTUtil.getTierByVoltage(V);
+
+        return Component.translatable("gtceu.multiblock.general.amp_volt", // A @ V
+                Component.literal(FormattingUtil.formatNumber2Places(minAmperage))
+                        .withStyle(ChatFormatting.RED),
+                tier < GTValues.TIER_COUNT ? Component.literal(GTValues.VNF[tier]) : V);
+    }
+
+    public static RichTooltip buildEutHoverTooltip(LongSyncValue energyUsage, boolean isMaxAvailable) {
+        return new RichTooltip().autoUpdate(true).tooltipBuilder(builder -> {
             String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
-            // wrap in text component to keep it from being formatted
-            Component voltageName = Component.literal(
-                    GTValues.VNF[GTUtil.getTierByVoltage(energyUsage.getLongValue())]);
 
-            return Component.translatable("gtceu.multiblock.energy_consumption",
-                    energyFormatted, voltageName).withStyle(ChatFormatting.GRAY);
-        })
-                .asWidget()
-                .setEnabledIf(widget -> isFormed.getBoolValue());
+            builder.addLine(Component.translatable("gtceu.multiblock.general.eut",
+                    energyFormatted));
+            if (isMaxAvailable)
+                builder.addLine(Component.translatable("gtceu.multiblock.max_energy_per_tick_hover")
+                        .withStyle(ChatFormatting.GRAY));
+        });
+    }
+
+    public static Flow buildAmpVoltEutHoverLine(Supplier<Component> ampVolt, RichTooltip tooltip,
+                                                Predicate<Flow> enabledConditions) {
+        var widget = Text.dynamic(ampVolt)
+                .asWidget();
+
+        return Flow.row()
+                .coverChildren()
+                .childPadding(2)
+                .child(widget)
+                .child(GTGuiTextures.INFO.asIcon().size(9).marginTop(-1).asWidget().size(8).tooltip(tooltip))
+                .tooltip(tooltip) // has to be added twice, one for the line of text one for the icon
+                .setEnabledIf(enabledConditions);
     }
 
     public static Component addEnergyTierLine(boolean formed, int tier) {
@@ -183,7 +247,7 @@ public class GTMultiblockTextUtil {
         Component voltageName = Component.literal(GTValues.VNF[tier]);
         MutableComponent bodyText = Component.translatable(
                 "gtceu.multiblock.max_recipe_tier",
-                voltageName).withStyle(ChatFormatting.GRAY);
+                voltageName);
         Component hoverText = Component.translatable("gtceu.multiblock.max_recipe_tier_hover")
                 .withStyle(ChatFormatting.GRAY);
         return Text.dynamic(() -> bodyText
@@ -208,8 +272,7 @@ public class GTMultiblockTextUtil {
             float current = (float) currentProgress.getDoubleValue() / 20.f;
             float max = (float) maxProgress.getDoubleValue() / 20.f;
             return Component.translatable("gtceu.multiblock.progress",
-                    String.format("%.2f", current), String.format("%.2f", max), progress)
-                    .withStyle(ChatFormatting.WHITE);
+                    String.format("%.2f", current), String.format("%.2f", max), progress);
         })
                 .asWidget()
                 .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
@@ -226,8 +289,7 @@ public class GTMultiblockTextUtil {
 
         return Text.dynamic(() -> {
             int currentProgress = (int) (progressPercent.getDoubleValue() * 100);
-            return Component.translatable("gtceu.multiblock.progress_percent", currentProgress)
-                    .withStyle(ChatFormatting.WHITE);
+            return Component.translatable("gtceu.multiblock.progress_percent", currentProgress);
         })
                 .asWidget()
                 .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
@@ -245,7 +307,7 @@ public class GTMultiblockTextUtil {
             Component voltageName = Component.literal(GTValues.VNF[tier.getIntValue()]);
             return Component.translatable(
                     "gtceu.multiblock.max_recipe_tier",
-                    voltageName).withStyle(ChatFormatting.GRAY);
+                    voltageName);
         })
                 .asWidget()
                 .tooltip(new RichTooltip().add(Component.translatable("gtceu.multiblock.max_recipe_tier_hover")
@@ -255,17 +317,13 @@ public class GTMultiblockTextUtil {
 
     public static TextWidget<?> addParallelLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         IntSyncValue parallelAmount = syncManager.getOrCreateSyncHandler("parallelAmount", IntSyncValue.class,
-                () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastRecipe().parallels;
-                }));
+                () -> new IntSyncValue(() -> rlMachine.getParallelHatch()
+                        .map(ParallelHatchPartMachine::getCurrentParallel).orElse(0)));
 
         return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(parallelAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
-            String key = "gtceu.multiblock.parallel";
-            return Component.translatable(key, runs)
-                    .withStyle(ChatFormatting.GRAY);
+            return Component.translatable("gtceu.multiblock.parallel", runs);
         }).asWidget()
                 .setEnabledIf(widget -> parallelAmount.getIntValue() > 1);
     }
@@ -275,16 +333,15 @@ public class GTMultiblockTextUtil {
                 () -> new BooleanSyncValue(rlMachine::isBatchEnabled));
         IntSyncValue batchAmount = syncManager.getOrCreateSyncHandler("batchAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastRecipe().batchParallels;
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().batchParallels;
                 }));
 
         return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(batchAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
             String key = "gtceu.multiblock.batch_enabled";
-            return Component.translatable(key, runs)
-                    .withStyle(ChatFormatting.GRAY);
+            return Component.translatable(key, runs);
         }).asWidget()
                 .setEnabledIf(widget -> batchEnabled.getBoolValue() && batchAmount.getIntValue() > 1);
     }
@@ -293,16 +350,15 @@ public class GTMultiblockTextUtil {
                                                         PanelSyncManager syncManager) {
         IntSyncValue subtickAmount = syncManager.getOrCreateSyncHandler("subtickAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastRecipe().subtickParallels;
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().subtickParallels;
                 }));
 
         return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(subtickAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
             String key = "gtceu.multiblock.subtick_parallels";
-            return Component.translatable(key, runs)
-                    .withStyle(ChatFormatting.GRAY);
+            return Component.translatable(key, runs);
         }).asWidget()
                 .setEnabledIf(widget -> subtickAmount.getIntValue() > 1);
     }
@@ -310,16 +366,15 @@ public class GTMultiblockTextUtil {
     public static TextWidget<?> addTotalRunsLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         IntSyncValue totalRunAmount = syncManager.getOrCreateSyncHandler("totalRunAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastRecipe().getTotalRuns();
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().getTotalRuns();
                 }));
 
         return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(totalRunAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
             String key = "gtceu.multiblock.total_runs";
-            return Component.translatable(key, runs)
-                    .withStyle(ChatFormatting.GRAY);
+            return Component.translatable(key, runs);
         }).asWidget()
                 .setEnabledIf(widget -> totalRunAmount.getIntValue() > 1);
     }
@@ -343,7 +398,7 @@ public class GTMultiblockTextUtil {
         return Text
                 .dynamic(() -> Component.translatable("gtceu.multiblock.steam.steam_stored",
                         FormattingUtil.formatNumbers(steamAmount.getIntValue()),
-                        FormattingUtil.formatNumbers(steamCapacity.getIntValue())).withStyle(ChatFormatting.WHITE))
+                        FormattingUtil.formatNumbers(steamCapacity.getIntValue())))
                 .asWidget()
                 .setEnabledIf((w) -> hasSteamHandler.getBoolValue());
     }
@@ -461,8 +516,7 @@ public class GTMultiblockTextUtil {
         return Text
                 .dynamic(() -> Component.translatable("gtceu.gui.machinemode",
                         Component.literal(recipeTypeName.getStringValue())
-                                .withStyle(ChatFormatting.GOLD))
-                        .withStyle(ChatFormatting.GRAY))
+                                .withStyle(ChatFormatting.GOLD)))
                 .asWidget()
                 .tooltip((tooltip) -> tooltip.add(Component.translatable("gtceu.gui.machinemode.title")))
                 .setEnabledIf((w) -> rlMachine.getRecipeTypes().length > 1);
@@ -475,11 +529,15 @@ public class GTMultiblockTextUtil {
                 "GTRecipe",
                 GenericSyncValue.class,
                 () -> GenericSyncValue.builder(GTRecipe.class)
-                        .getter(() -> rlmachine.getRecipeLogic().getLastRecipe())
+                        .getter(() -> rlmachine.getRecipeLogic().getLastUnrolledRecipe())
                         .setter((newRecipe) -> {})
                         .adapter(GTByteBufAdapters.GTRECIPE)
                         .copy(GTRecipe::copy)
                         .build());
+
+        BooleanSyncValue hasRunningRecipe = syncManager.getOrCreateSyncHandler("hasRunningRecipe",
+                BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlmachine.getRecipeLogic().getLastRecipe() != null));
 
         DynamicLinkedSyncHandler<GenericSyncValue<GTRecipe>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(
                 recipeSyncValue)
@@ -494,13 +552,13 @@ public class GTMultiblockTextUtil {
                     for (var output : recipe.getOutputContents(ItemRecipeCapability.CAP)) {
                         var widget = createItemLineForOutput(output, recipe);
                         if (widget.isEmpty()) continue;
-                        list.child(widget.get().width(187 - 3 - 3 - 2 - 2));
+                        list.child(widget.get());
                     }
 
                     for (var output : recipe.getOutputContents(FluidRecipeCapability.CAP)) {
                         var widget = createFluidLineForOutput(output, recipe);
                         if (widget.isEmpty()) continue;
-                        list.child(widget.get().width(187 - 3 - 3 - 2 - 2));
+                        list.child(widget.get());
                     }
 
                     return list;
@@ -510,7 +568,7 @@ public class GTMultiblockTextUtil {
                 .widthRel(1)
                 .coverChildrenHeight()
                 .syncHandler(dynamicLinkedSyncHandler)
-                .setEnabledIf(w -> rlmachine.getRecipeLogic().getLastRecipe() != null);
+                .setEnabledIf(w -> hasRunningRecipe.getBoolValue());
     }
 
     public static Optional<Widget<?>> createItemLineForOutput(Content itemOutput, GTRecipe recipe) {
@@ -538,7 +596,7 @@ public class GTMultiblockTextUtil {
         } else {
             var stacks = ItemRecipeCapability.CAP.of(itemOutput.content()).getItems();
             if (stacks.length == 0) return Optional.empty();
-            stack = stacks[0];
+            stack = stacks[0].copy();
             count = stack.getCount();
             countD *= count;
             if (itemOutput.chance() < itemOutput.maxChance()) {
@@ -553,7 +611,7 @@ public class GTMultiblockTextUtil {
             String key = "gtceu.multiblock.output_line." + (rounded ? "2" : "0");
             return Optional.of(
                     Flow.row()
-                            .coverChildren()
+                            .coverChildrenHeight()
                             .childPadding(2)
                             .child(new ItemDrawable(stack).asWidget()
                                     .size(16)
@@ -567,7 +625,7 @@ public class GTMultiblockTextUtil {
             String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
             return Optional.of(
                     Flow.row()
-                            .coverChildren()
+                            .coverChildrenHeight()
                             .childPadding(2)
                             .child(new ItemDrawable(stack).asWidget()
                                     .size(16)
@@ -606,7 +664,7 @@ public class GTMultiblockTextUtil {
         } else {
             var stacks = FluidRecipeCapability.CAP.of(fluidOutput.content()).getStacks();
             if (stacks.length == 0) return Optional.empty();
-            stack = stacks[0];
+            stack = stacks[0].copy();
             amount = stack.getAmount();
             amountD *= amount;
             if (fluidOutput.chance() < fluidOutput.maxChance()) {
@@ -621,7 +679,7 @@ public class GTMultiblockTextUtil {
             String key = "gtceu.multiblock.output_line." + (rounded ? "2" : "0");
             return Optional.of(
                     Flow.row()
-                            .coverChildren()
+                            .coverChildrenHeight()
                             .childPadding(2)
                             .child(new FluidDrawable(stack).asWidget()
                                     .size(16)
@@ -635,7 +693,7 @@ public class GTMultiblockTextUtil {
             String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
             return Optional.of(
                     Flow.row()
-                            .coverChildren()
+                            .coverChildrenHeight()
                             .childPadding(2)
                             .child(new FluidDrawable(stack).asWidget()
                                     .size(16)

@@ -2,9 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
-import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
-import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
-import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
+import com.gregtechceu.gtceu.integration.kjs.events.*;
 
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
@@ -28,4 +26,6 @@ public interface GTCEuStartupEvents {
     EventHandler REGISTRY = GROUP.startup("registry", () -> GTRegistryEventJS.class).extra(REGISTRY_EXTRA);
     EventHandler MATERIAL_MODIFICATION = GROUP.startup("materialModification", () -> MaterialModificationEventJS.class);
     EventHandler CRAFTING_COMPONENTS = GROUP.startup("craftingComponents", () -> CraftingComponentsEventJS.class);
+    EventHandler MACHINE_MODIFICATION = GROUP.startup("machineModification", () -> ModifyMachineEventJS.class);
+    EventHandler REGISTER_SPOILABLES = GROUP.startup("registerSpoilables", () -> RegisterSpoilablesEventJS.class);
 }

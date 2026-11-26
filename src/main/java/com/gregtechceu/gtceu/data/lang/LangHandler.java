@@ -30,6 +30,7 @@ public class LangHandler {
         ToolLang.init(provider);
         ConfigurationLang.init(provider);
         RecipeLogicLang.init(provider);
+        ModularArmorLang.init(provider);
 
         provider.add("gtceu.gui.editor.tips.citation", "Number of citations");
         provider.add("gtceu.gui.editor.group.recipe_type", "cap");
@@ -77,6 +78,12 @@ public class LangHandler {
         provider.add("gtceu.multiblock.page_switcher.io.import", "§2Inputs");
         provider.add("gtceu.multiblock.page_switcher.io.export", "§4Outputs");
         provider.add("gtceu.multiblock.page_switcher.io.both", "§5Combined Inputs + Outputs");
+
+        provider.add("gtceu.autobuild.ae_blocks", "The following blocks are in AE:");
+        provider.add("gtceu.autobuild.placed_blocks", "The following blocks were placed:");
+        provider.add("gtceu.autobuild.missing_blocks", "The following blocks are missing:");
+        provider.add("gtceu.autobuild.unplaced_blocks",
+                "Could not place some blocks. Obstructions are highlighted in-world.");
 
         provider.add("enchantment.disjunction", "Disjunction");
 
@@ -350,58 +357,7 @@ public class LangHandler {
         provider.add("item.gtceu.uxv_voltage_coil.tooltip", "Epic Coil");
         provider.add("item.gtceu.opv_voltage_coil.tooltip", "Legendary Coil");
         provider.add("item.gtceu.max_voltage_coil.tooltip", "Maximum Coil");
-        provider.add("metaitem.liquid_fuel_jetpack.tooltip", "Uses Combustion Generator Fuels for Thrust");
-        provider.add("metaarmor.nms.nightvision.enabled", "NanoMuscle™ Suite: NightVision Enabled");
-        provider.add("metaarmor.nms.nightvision.disabled", "NanoMuscle™ Suite: NightVision Disabled");
-        provider.add("metaarmor.nms.nightvision.error", "NanoMuscle™ Suite: §cNot enough power!");
-        provider.add("metaarmor.qts.nightvision.enabled", "QuarkTech™ Suite: NightVision Enabled");
-        provider.add("metaarmor.qts.nightvision.disabled", "QuarkTech™ Suite: NightVision Disabled");
-        provider.add("metaarmor.qts.nightvision.error", "QuarkTech™ Suite: §cNot enough power!");
-        provider.add("metaarmor.nms.step_assist.disabled", "NanoMuscle™ Suite: StepAssist Disabled");
-        provider.add("metaarmor.nms.step_assist.enabled", "NanoMuscle™ Suite: StepAssist Enabled");
-        provider.add("metaarmor.qts.step_assist.disabled", "QuarkTech™ Suite: StepAssist Disabled");
-        provider.add("metaarmor.qts.step_assist.enabled", "QuarkTech™ Suite: StepAssist Enabled");
-        provider.add("metaarmor.qts.boosted_jump.enabled", "QuarkTech™ Suite: Jump Boost Enabled");
-        provider.add("metaarmor.qts.boosted_jump.disabled", "QuarkTech™ Suite: Jump Boost Disabled");
-        provider.add("metaarmor.jetpack.flight.enable", "Jetpack: Flight Enabled");
-        provider.add("metaarmor.jetpack.flight.disable", "Jetpack: Flight Disabled");
-        provider.add("metaarmor.jetpack.hover.enable", "Jetpack: Hover Mode Enabled");
-        provider.add("metaarmor.jetpack.hover.disable", "Jetpack: Hover Mode Disabled");
-        provider.add("metaarmor.jetpack.emergency_hover_mode", "Emergency Hover Mode Enabled!");
-        provider.add("metaarmor.nms.share.enable", "NanoMuscle™ Suite: Charging Enabled");
-        provider.add("metaarmor.nms.share.disable", "NanoMuscle™ Suite: Charging Disabled");
-        provider.add("metaarmor.nms.share.error", "NanoMuscle™ Suite: §cNot enough power for charging!");
-        provider.add("metaarmor.qts.share.enable", "QuarkTech™ Suite: Charging Enabled");
-        provider.add("metaarmor.qts.share.disable", "QuarkTech™ Suite: Charging Disabled");
-        provider.add("metaarmor.qts.share.error", "QuarkTech™ Suite: §cNot enough power for charging!");
-        provider.add("metaarmor.message.nightvision.enabled", "§bNightVision: §aOn");
-        provider.add("metaarmor.message.nightvision.disabled", "§bNightVision: §cOff");
-        provider.add("metaarmor.message.nightvision.error", "§cNot enough power!");
-        provider.add("metaarmor.message.step_assist.enabled", "§bStep-Assist: §aOn");
-        provider.add("metaarmor.message.step_assist.disabled", "§bStep-Assist: §cOff");
-        provider.add("metaarmor.tooltip.stepassist", "Provides Step-Assist");
-        provider.add("metaarmor.tooltip.speed", "Increases Running Speed");
-        provider.add("metaarmor.tooltip.jump", "Increases Jump Height and Distance");
-        provider.add("metaarmor.tooltip.falldamage", "Nullifies Fall Damage");
-        provider.add("metaarmor.tooltip.potions", "Nullifies Harmful Effects");
-        provider.add("metaarmor.tooltip.burning", "Nullifies Burning");
-        provider.add("metaarmor.tooltip.freezing", "Prevents Freezing");
-        provider.add("metaarmor.tooltip.breath", "Replenishes Underwater Breath Bar");
-        provider.add("metaarmor.tooltip.autoeat", "Replenishes Food Bar by Using Food from Inventory");
-        provider.add("metaarmor.hud.status.enabled", "§aON");
-        provider.add("metaarmor.hud.status.disabled", "§cOFF");
-        provider.add("metaarmor.hud.energy_lvl", "Energy Level: %s");
-        provider.add("metaarmor.hud.engine_enabled", "Engine Enabled: %s");
-        provider.add("metaarmor.hud.fuel_lvl", "Fuel Level: %s");
-        provider.add("metaarmor.hud.hover_mode", "Hover Mode: %s");
-        provider.add("mataarmor.hud.supply_mode", "Supply Mode: %s");
-        provider.add("metaarmor.hud.gravi_engine", "GraviEngine: %s");
-        provider.add("metaarmor.energy_share.error", "Energy Supply: §cNot enough power for gadgets charging!");
-        provider.add("metaarmor.energy_share.enable", "Energy Supply: Gadgets charging enabled");
-        provider.add("metaarmor.energy_share.disable", "Energy Supply: Gadgets charging disabled");
-        provider.add("metaarmor.energy_share.tooltip", "Supply mode: %s");
-        provider.add("metaarmor.energy_share.tooltip.guide",
-                "To change mode shift-right click when holding item");
+        provider.add("emi.category.gtceu.equipment_foundry", "Equipment Foundry");
         provider.add("metaitem.record.sus.tooltip", "§7Leonz - Among Us Drip");
         provider.add("item.gtceu.nan_certificate.tooltip", "Challenge Accepted!");
         provider.add("item.gtceu.blacklight.tooltip", "Long-Wave §dUltraviolet§7 light source");
@@ -410,6 +366,7 @@ public class LangHandler {
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
         multilineLang(provider, "gtceu.recipe_memory_widget.tooltip",
                 "§7Left click to automatically input this recipe into the crafting grid\n§7Shift click to lock/unlock this recipe");
+        provider.add("gui.gtceu.cover.direction", "Direction: §r%s");
         provider.add("cover.filter.blacklist.disabled", "Whitelist");
         provider.add("cover.filter.blacklist.enabled", "Blacklist");
         provider.add("cover.tag_filter.title", "Tag Filter");
@@ -466,6 +423,7 @@ public class LangHandler {
         provider.add("cover.voiding.message.disabled", "Voiding Cover Disabled");
         provider.add("cover.voiding.message.enabled", "Voiding Cover Enabled");
         provider.add("cover.item_smart_filter.title", "Smart Item Filter");
+        provider.add("cover.item_smart_filter.recipe_type", "Recipe Type");
         provider.add("cover.item_smart_filter.filtering_mode.electrolyzer", "Electrolyzer");
         provider.add("cover.item_smart_filter.filtering_mode.centrifuge", "Centrifuge");
         provider.add("cover.item_smart_filter.filtering_mode.sifter", "Sifter");
@@ -765,6 +723,7 @@ public class LangHandler {
         provider.add("item.gtceu.small_iridium_metal_residue_dust", "Small Pile of Iridium Metal Residue");
         provider.add("item.gtceu.iridium_metal_residue_dust", "Iridium Metal Residue");
 
+        provider.add("behaviour.charger_linked", "Linked charger");
         provider.add("behaviour.hoe", "Can till dirt");
         provider.add("behaviour.soft_hammer", "Activates and Deactivates Machines");
         provider.add("behaviour.soft_hammer.enabled", "Working Enabled");
@@ -1059,6 +1018,7 @@ public class LangHandler {
         provider.add("gtceu.fluid.gas_vapor", "%s Vapor");
         provider.add("gtceu.fluid.plasma", "%s Plasma");
         provider.add("gtceu.fluid.molten", "Molten %s");
+        provider.add("gtceu.fluid.requires_metal_freezing", "Requires metal freezing");
         provider.add("gtceu.fluid.empty", "Empty");
         provider.add("gtceu.fluid.amount", "§9Amount: %d/%d mB");
         provider.add("gtceu.fluid.temperature", "§cTemperature: %s");
@@ -1229,13 +1189,19 @@ public class LangHandler {
         provider.add("gtceu.multiblock.preview.zoom", "Use mousewheel or right-click + drag to zoom");
         provider.add("gtceu.multiblock.preview.rotate", "Click and drag to rotate");
         provider.add("gtceu.multiblock.preview.select", "Right-click to check candidates");
+        provider.add("gtceu.multiblock.pattern.exact_count", "§cExactly: %d§r");
+        provider.add("gtceu.multiblock.pattern.between_count", "§cBetween %d and %d§r");
+        provider.add("gtceu.multiblock.pattern.min_count", "§cAt least: %d§r");
+        provider.add("gtceu.multiblock.pattern.max_count", "§cAt most: %d§r");
         multilineLang(provider, "gtceu.multiblock.pattern.error", "Expected components at:\n  %s, %s, %s.");
         provider.add("gtceu.multiblock.pattern.error.limited.exact", "§cExactly: %d§r");
         provider.add("gtceu.multiblock.pattern.error.limited.range", "§cBetween %d and %d§r");
-        provider.add("gtceu.multiblock.pattern.error.limited.max_count", "§cMaximum:§r %d has %d");
-        provider.add("gtceu.multiblock.pattern.error.limited.min_count", "§cMinimum:§r %d has %d");
-        provider.add("gtceu.multiblock.pattern.error.limited.max_layer_count", "§cMaximum:§r %d per layer, has %d");
-        provider.add("gtceu.multiblock.pattern.error.limited.min_layer_count", "§cMinimum:§r %d per layer, has %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.max_count", "§cMaximum:§r %d, §cHas:§r %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.min_count", "§cMinimum:§r %d, §cHas:§r %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.max_layer_count",
+                "§cMaximum:§r %d per layer, §cHas:§r %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.min_layer_count",
+                "§cMinimum:§r %d per layer, §cHas:§r %d");
         provider.add("gtceu.multiblock.pattern.error.coils", "§cAll heating coils must be the same§r");
         provider.add("gtceu.multiblock.pattern.error.filters", "§cAll filters must be the same§r");
         provider.add("gtceu.multiblock.pattern.error.batteries", "§cAll batteries must be the same§r");
@@ -1288,13 +1254,10 @@ public class LangHandler {
         provider.add("monitor.gui.title.config", "Config");
         provider.add("fluid.tile.lava", "Lava");
         provider.add("fluid.tile.water", "Water");
-        provider.add("gtceu.key.armor_mode_switch", "Armor Mode Switch");
+        provider.add("gtceu.key.enable_night_vision", "Enable Night Vision");
         provider.add("gtceu.key.armor_hover", "Armor Hover Toggle");
         provider.add("gtceu.key.enable_jetpack", "Enable Jetpack");
-        provider.add("gtceu.key.enable_boots", "Enable Boosted Jump");
-        provider.add("gtceu.key.armor_charging", "Armor Charging to Inventory Toggle");
         provider.add("gtceu.key.tool_aoe_change", "Tool AoE Mode Switch");
-        provider.add("gtceu.key.enable_step_assist", "Enable StepAssist");
         provider.add("gtceu.debug.f3_h.enabled",
                 "GregTech has modified the debug info! For Developers: enable the misc:debug config option in the GregTech config file to see more");
         provider.add("gtceu.debug.resource_rebuild.done", "Gradle resource rebuild done in %s");
@@ -1324,6 +1287,7 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
         provider.add("config.jade.plugin_gtceu.energy_converter_provider", "[GTCEu] Energy Converter Mode");
         provider.add("config.jade.plugin_gtceu.diode_provider", "[GTCEu] Diode Info");
+        provider.add("config.jade.plugin_gtceu.programmed_circuit_info", "[GTCEu] Programmed Circuit Info");
 
         provider.add("config.jade.plugin_gtceu.ldp_endpoint", "[GTCEu] Long Distance Pipeline Endpoint Info");
 
@@ -1895,8 +1859,14 @@ public class LangHandler {
                 "You may wish to select a target that is not in the multiblock, you have to use the wireless transmitter cover for that.",
                 "Place the cover on the target block, right-click it with a data stick and put that data stick into a data access hatch in the multiblock.",
                 "Then select the data access hatch as the target, and set the slot index of your data stick in the number field that appeared.");
+
         provider.add("gtceu.tooltip.player_bind", "Bound to player: %s");
         provider.add("gtceu.gui.item_collector.range", "Range: ");
+        provider.add("gtceu.tooltip.spoil_time_remaining", "Time until spoils: %s");
+        provider.add("gtceu.tooltip.spoil_time_total", "Total spoil time: %s");
+        provider.add("gtceu.tooltip.spoils_into", "Spoils into: %s");
+        provider.add("gtceu.tooltip.creation_tick", "Created on overworld tick %d");
+        provider.add("gtceu.tooltip.spoil_imminent", "Imminent");
     }
 
     /**

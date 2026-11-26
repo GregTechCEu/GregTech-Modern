@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.data.lang.LangUtils;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.nbt.CompoundTag;
@@ -41,15 +42,15 @@ public class NightvisionGoggles extends ArmorLogicSuite {
                 ArmorUtils.NIGHTVISION_DURATION;
         if (type == ArmorItem.Type.HELMET) {
             boolean nightVision = data.contains("nightVision") && data.getBoolean("nightVision");
-            if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
+            if (toggleTimer == 0 && SyncedKeyMappings.NIGHT_VISION_ENABLE.isKeyDown(player)) {
                 nightVision = !nightVision;
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
-                    player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
+                    player.displayClientMessage(Component.translatable("armor.gtceu.night_vision.error"), true);
                 } else {
                     player.displayClientMessage(Component
-                            .translatable("metaarmor.nms.nightvision." + (nightVision ? "enabled" : "disabled")), true);
+                            .translatable(LangUtils.enabledBoolean("armor.gtceu.night_vision", nightVision)), true);
                 }
             }
 
@@ -76,11 +77,11 @@ public class NightvisionGoggles extends ArmorLogicSuite {
         data.putByte("toggleTimer", toggleTimer);
     }
 
-    public static void disableNightVision(@NotNull Level world, Player player, boolean sendMsg) {
+    public static void disableNightVision(Level world, Player player, boolean sendMsg) {
         if (!world.isClientSide) {
             player.removeEffect(MobEffects.NIGHT_VISION);
             if (sendMsg)
-                player.displayClientMessage(Component.translatable("metaarmor.message.nightvision.disabled"), true);
+                player.displayClientMessage(Component.translatable("armor.gtceu.night_vision.disabled"), true);
         }
     }
 
@@ -96,9 +97,9 @@ public class NightvisionGoggles extends ArmorLogicSuite {
             CompoundTag nbtData = itemStack.getOrCreateTag();
             boolean nv = nbtData.getBoolean("nightVision");
             if (nv) {
-                lines.add(Component.translatable("metaarmor.message.nightvision.enabled"));
+                lines.add(Component.translatable("armor.gtceu.night_vision.enabled"));
             } else {
-                lines.add(Component.translatable("metaarmor.message.nightvision.disabled"));
+                lines.add(Component.translatable("armor.gtceu.night_vision.disabled"));
             }
         }
     }

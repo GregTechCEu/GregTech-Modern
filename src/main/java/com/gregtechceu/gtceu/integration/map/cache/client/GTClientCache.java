@@ -38,7 +38,7 @@ public class GTClientCache extends WorldCache implements IClientCache {
             var name = Component.translatable(veinId.replace("gtceu:", "gtceu.jei.ore_vein."));
             var material = OreRenderLayer.getMaterial(vein);
 
-            if (!material.isNull()) {
+            if (material != null) {
                 var center = vein.center();
                 name.setStyle(name.getStyle().withColor(material.getMaterialRGB()).withHoverEvent(new HoverEvent(
                         HoverEvent.Action.SHOW_TEXT,

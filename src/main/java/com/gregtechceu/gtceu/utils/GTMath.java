@@ -22,6 +22,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
@@ -37,6 +38,30 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GTMath {
+
+    // Converts jump height in blocks to jump velocity using vanilla math
+    private static final double JUMP_DRAG = 0.98;
+
+    public static float addJumpHeight(float velocity, double gravity, float extraHeight) {
+        if (velocity <= 0 || gravity <= 0 || extraHeight <= 0 ||
+                !Float.isFinite(velocity) || !Double.isFinite(gravity) || !Float.isFinite(extraHeight))
+            return velocity;
+        double target = jumpHeight(velocity, gravity) + extraHeight;
+        double low = velocity;
+        double high = velocity + extraHeight;
+        for (int i = 0; i < 40; i++) {
+            double middle = (low + high) / 2;
+            if (jumpHeight(middle, gravity) < target) low = middle;
+            else high = middle;
+        }
+        return (float) ((low + high) / 2);
+    }
+
+    private static double jumpHeight(double velocity, double gravity) {
+        double offset = gravity * JUMP_DRAG / (1 - JUMP_DRAG);
+        double ticks = Math.ceil(Math.log(offset / (velocity + offset)) / Math.log(JUMP_DRAG));
+        return (velocity + offset) * (1 - Math.pow(JUMP_DRAG, ticks)) / (1 - JUMP_DRAG) - offset * ticks;
+    }
 
     public static final float PI = (float) Math.PI;
     public static final float PI2 = 2f * PI;
@@ -86,13 +111,20 @@ public class GTMath {
         return start + Mth.floor(delta * (end - start));
     }
 
-    public static List<ItemStack> splitStacks(ItemStack stack, long amount) {
+    public static @Unmodifiable List<ItemStack> splitStacks(ItemStack stack, long amount) {
+        if (amount < 0) {
+            return Collections.emptyList();
+        }
+        if (amount <= Integer.MAX_VALUE) {
+            return Collections.singletonList(stack.copyWithCount((int) amount));
+        }
+
         int fullStacks = (int) (amount / Integer.MAX_VALUE);
         int rem = (int) (amount % Integer.MAX_VALUE);
         List<ItemStack> stacks = new ObjectArrayList<>(fullStacks + 1);
         if (fullStacks > 0) stacks.addAll(Collections.nCopies(fullStacks, stack.copyWithCount(Integer.MAX_VALUE)));
         if (rem > 0) stacks.add(stack.copyWithCount(rem));
-        return stacks;
+        return Collections.unmodifiableList(stacks);
     }
 
     public static List<FluidStack> splitFluidStacks(FluidStack stack, long amount) {

@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.mui.widgets.textfield;
 
 import brachy.modularui.api.value.IStringValue;
+import brachy.modularui.api.value.ISyncOrValue;
+import brachy.modularui.api.widget.Interactable;
 import brachy.modularui.screen.viewport.ModularGuiContext;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.StringValue;
@@ -19,6 +21,19 @@ public class TextEditorWidget<W extends TextEditorWidget<W>> extends BaseTextFie
     public TextEditorWidget() {
         this.handler.setMaxLines(10000);
         this.setTextAlignment(Alignment.TopLeft);
+    }
+
+    @Override
+    public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
+        return syncOrValue.isTypeOrEmpty(IStringValue.class);
+    }
+
+    @Override
+    public Interactable.@NotNull Result onMousePressed(int button) {
+        if (button == 1) {
+            return Result.IGNORE;
+        }
+        return super.onMousePressed(button);
     }
 
     @Override

@@ -329,7 +329,6 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 }
 
                 if (changed) {
-                    getMachine().markAsChanged();
                     checkOutputSubscription();
                 }
 
@@ -390,7 +389,6 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 }
 
                 if (changed) {
-                    getMachine().markAsChanged();
                     getMachine().changeState(BatteryBufferMachine.State.RUNNING);
                     checkOutputSubscription();
                 }
@@ -400,6 +398,29 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 return usedAmps;
             }
             return 0;
+        }
+
+        @Override
+        public long removeEnergy(long energy) {
+            var batteries = getMachine().getNonEmptyBatteries();
+            if (batteries.isEmpty()) return 0;
+            long distributed = energy / batteries.size();
+            long removed = 0;
+
+            boolean changed = false;
+            for (IElectricItem electricItem : batteries) {
+                var charged = electricItem.discharge(distributed, tier, false, true, false);
+                if (charged > 0) {
+                    changed = true;
+                }
+                removed += charged;
+                energyOutputPerSec += charged;
+            }
+            if (changed) {
+                getMachine().markAsChanged();
+                checkOutputSubscription();
+            }
+            return removed;
         }
 
         @Override

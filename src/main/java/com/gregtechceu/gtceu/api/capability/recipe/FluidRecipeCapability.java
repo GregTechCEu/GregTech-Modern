@@ -172,7 +172,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         if (inputs == null || inputs.isEmpty()) return limit;
 
         // Find all the fluids in the combined Fluid Input inventories and create oversized FluidStacks
-        List<Object2LongMap<FluidStack>> inventoryGroups = getInputContents(holder);
+        var inventoryGroups = getInputContentsByGroup(holder);
         if (inventoryGroups.isEmpty()) return 0;
 
         // map the recipe ingredients to account for duplicated and notConsumable ingredients.
@@ -183,7 +183,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             FluidIngredient ing = of(content.content());
 
             int amount;
-            if (ing instanceof IRangedIngredient provider) amount = provider.getMaxRoll();
+            if (ing instanceof IRangedIngredient<?> ranged) amount = ranged.getMaxRoll();
             else amount = ing.getAmount();
 
             if (content.chance() == 0) {
@@ -264,7 +264,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         return maxMultiplier;
     }
 
-    private static List<Object2LongMap<FluidStack>> getInputContents(IRecipeCapabilityHolder holder) {
+    public static List<? extends Object2LongMap<FluidStack>> getInputContentsByGroup(IRecipeCapabilityHolder holder) {
         var handlerLists = holder.getCapabilitiesForIO(IO.IN);
         if (handlerLists.isEmpty()) return Collections.emptyList();
 
@@ -277,48 +277,69 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         List<RecipeHandlerList> distinctHandlerLists = handlerGroups.getOrDefault(
                 RecipeHandlerGroupDistinctness.BUS_DISTINCT,
                 Collections.emptyList());
-        List<Object2LongMap<FluidStack>> invs = new ArrayList<>(distinctHandlerLists.size() + 1);
+        List<Object2LongOpenHashMap<FluidStack>> grouped = new ArrayList<>(distinctHandlerLists.size() + 1);
         // Handle distinct groups first, adding an inventory based on their contents individually.
         for (RecipeHandlerList handlerList : distinctHandlerLists) {
             var handlers = handlerList.getCapability(FluidRecipeCapability.CAP);
             Object2LongOpenHashMap<FluidStack> distinctInv = new Object2LongOpenHashMap<>();
 
-            for (IRecipeHandler<?> handler : handlers) {
-                for (var content : handler.getContents()) {
-                    if (content instanceof FluidStack stack && !stack.isEmpty()) {
-                        distinctInv.addTo(stack, stack.getAmount());
-                    }
-                }
-            }
-            if (!distinctInv.isEmpty()) invs.add(distinctInv);
+            addHandlersContentsToGroup(distinctInv, handlers);
+            if (!distinctInv.isEmpty()) grouped.add(distinctInv);
         }
 
         // Then handle other groups. The logic of undyed hatches belonging to
         // everything has already been taken care of by addToRecipeMap()
         for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
             if (handlerListEntry.getKey() == RecipeHandlerGroupDistinctness.BUS_DISTINCT) continue;
+            // handle all bypass handlers in one step at the end
+            if (handlerListEntry.getKey() == RecipeHandlerGroupDistinctness.BYPASS_DISTINCT) continue;
 
             Object2LongOpenHashMap<FluidStack> inventory = new Object2LongOpenHashMap<>();
             for (RecipeHandlerList handlerList : handlerListEntry.getValue()) {
                 var handlers = handlerList.getCapability(FluidRecipeCapability.CAP);
-                for (var handler : handlers) {
-                    for (var content : handler.getContents()) {
-                        if (content instanceof FluidStack stack && !stack.isEmpty()) {
-                            inventory.addTo(stack, stack.getAmount());
-                        }
-                    }
-                }
+                addHandlersContentsToGroup(inventory, handlers);
             }
-            if (!inventory.isEmpty()) invs.add(inventory);
+            if (!inventory.isEmpty()) grouped.add(inventory);
         }
 
-        return invs;
+        List<RecipeHandlerList> bypassHandlerLists = handlerGroups.getOrDefault(
+                RecipeHandlerGroupDistinctness.BYPASS_DISTINCT,
+                Collections.emptyList());
+        Object2LongOpenHashMap<FluidStack> bypassDistinct = new Object2LongOpenHashMap<>();
+        // Handle bypass groups last, adding an inventory based on their contents individually.
+        for (RecipeHandlerList handlerList : bypassHandlerLists) {
+            var handlers = handlerList.getCapability(FluidRecipeCapability.CAP);
+            addHandlersContentsToGroup(bypassDistinct, handlers);
+        }
+        if (!bypassDistinct.isEmpty()) {
+            var iterator = Object2LongMaps.fastIterator(bypassDistinct);
+            while (iterator.hasNext()) {
+                Object2LongMap.Entry<FluidStack> entry = iterator.next();
+                for (var inventory : grouped) {
+                    inventory.addTo(entry.getKey(), entry.getLongValue());
+                }
+            }
+            grouped.add(bypassDistinct);
+        }
+
+        return grouped;
+    }
+
+    private static void addHandlersContentsToGroup(Object2LongOpenHashMap<FluidStack> inventory,
+                                                   List<IRecipeHandler<?>> handlers) {
+        for (var handler : handlers) {
+            for (var content : handler.getContents()) {
+                if (content instanceof FluidStack stack && !stack.isEmpty()) {
+                    inventory.addTo(stack, stack.getAmount());
+                }
+            }
+        }
     }
 
     // Maps fluids to a FluidEntryList for XEI: either a FluidTagList or a FluidStackList
     public static FluidEntryList mapIngredientToEntryList(FluidIngredient ingredient) {
         int amount;
-        if (ingredient instanceof IRangedIngredient provider) {
+        if (ingredient instanceof IRangedIngredient<?> provider) {
             amount = provider.getMaxRoll();
         } else {
             amount = ingredient.getAmount();

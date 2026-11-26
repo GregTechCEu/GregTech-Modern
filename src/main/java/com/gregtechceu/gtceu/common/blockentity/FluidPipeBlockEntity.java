@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.api.fluids.FluidConstants;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.misc.IOFluidHandlerList;
@@ -23,10 +25,7 @@ import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.PipeTankList;
-import com.gregtechceu.gtceu.utils.EntityDamageUtil;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.*;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -38,6 +37,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -53,6 +53,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -466,6 +467,34 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
             fluids[i] = fluidTanks[i].getFluid();
         }
         return fluids;
+    }
+
+    @Override
+    public Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
+        var player = context.getPlayer();
+        if (player == null) return Pair.of(null, InteractionResult.PASS);
+
+        Pair result = super.onToolClick(context);
+        if (result.getSecond() != InteractionResult.PASS) return result;
+
+        var toolType = context.getToolType();
+        var stack = context.getItemInHand();
+
+        if (toolType.contains(GTToolType.PLUNGER)) {
+            boolean didEmpty = false;
+            for (CustomFluidTank pipeTank : getFluidTanks()) {
+                FluidStack drained = pipeTank.drain(pipeTank.getFluidAmount(), IFluidHandler.FluidAction.SIMULATE);
+                if (!drained.isEmpty()) {
+                    pipeTank.drain(pipeTank.getFluidAmount(), IFluidHandler.FluidAction.EXECUTE);
+                    didEmpty = true;
+                }
+            }
+            if (didEmpty) {
+                ToolHelper.onActionDone(player, stack, level, context.getClickLocation());
+                return Pair.of(GTToolType.PLUNGER, InteractionResult.sidedSuccess(isRemote()));
+            }
+        }
+        return Pair.of(null, InteractionResult.PASS);
     }
 
     public static void spawnParticles(Level worldIn, BlockPos pos, Direction direction, ParticleOptions particleType,

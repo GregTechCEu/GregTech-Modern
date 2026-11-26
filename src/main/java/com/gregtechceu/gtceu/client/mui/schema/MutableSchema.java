@@ -79,9 +79,11 @@ public class MutableSchema implements ISchema {
         }
 
         if (controller != null) {
-            controller.getParts().addAll(parts);
-            controller.getPatternState(DEFAULT_STRUCTURE).setState(PatternState.CheckState.VALID_UNCACHED);
-            controller.formStructure(DEFAULT_STRUCTURE);
+            PatternState patternState = controller.getPatternState(DEFAULT_STRUCTURE);
+            controller.checkStructurePattern(DEFAULT_STRUCTURE);
+            if (patternState.getState().isValid()) {
+                controller.formStructure(DEFAULT_STRUCTURE);
+            }
         }
 
         this.origin = min.immutable();

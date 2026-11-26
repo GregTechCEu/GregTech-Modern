@@ -1,10 +1,17 @@
 package com.gregtechceu.gtceu.api.machine.trait.notifiable;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.item.spoilage.ISpoilableItem;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilContext;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
@@ -12,8 +19,8 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -80,16 +87,17 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     @Override
-    public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+    public List<Ingredient> handleRecipeInner(IO io, @Nullable GTRecipe recipe, List<Ingredient> left,
                                               boolean simulate) {
-        return handleRecipe(io, recipe, left, simulate, handlerIO, storage);
+        return handleRecipe(io, recipe, left, simulate, handlerIO, storage, getMachine());
     }
 
     // TODO: See if implementable in outside callers and unstatic; or move to different common class if not
     // Notable caller is ItemRecipeHandler, used for MinerLogic
-    public static List<Ingredient> handleRecipe(IO io, GTRecipe recipe, List<Ingredient> left,
+    public static List<Ingredient> handleRecipe(IO io, @Nullable GTRecipe recipe, List<Ingredient> left,
                                                 boolean simulate,
-                                                IO handlerIO, CustomItemStackHandler storage) {
+                                                IO handlerIO, CustomItemStackHandler storage,
+                                                @Nullable MetaMachine machine) {
         if (io != handlerIO) return left;
         if (io != IO.IN && io != IO.OUT) return left;
 
@@ -101,6 +109,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         // Store the ItemStack in each slot after an operation
         // Necessary for simulation since we don't actually modify the slot's contents
         // Doesn't hurt for execution, and definitely cheaper than copying the entire storage
+        @Nullable
         ItemStack[] visited = new ItemStack[storage.getSlots()];
         for (var it = left.listIterator(); it.hasNext();) {
             var ingredient = it.next();
@@ -111,23 +120,9 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
             ItemStack[] items;
             int amount;
-            if (ingredient instanceof IntProviderIngredient provider) {
-                provider.setItemStacks(null);
-                provider.setSampledCount(-1);
-
-                ItemStack output;
-                if (simulate) {
-                    output = provider.getMaxSizeStack();
-                    items = new ItemStack[] { output };
-                } else {
-                    items = provider.getItems();
-                    if (items.length == 0 || items[0].isEmpty()) {
-                        it.remove();
-                        continue;
-                    }
-                    output = items[0];
-                }
-                amount = output.getCount();
+            if (ingredient instanceof IntProviderIngredient provider && simulate) {
+                items = new ItemStack[] { provider.getMaxSizeStack() };
+                amount = provider.getMaxRoll();
             } else {
                 items = ingredient.getItems();
                 if (items.length == 0 || items[0].isEmpty()) {
@@ -139,26 +134,52 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
             }
 
             for (int slot = 0; slot < storage.getSlots(); ++slot) {
-                ItemStack current = visited[slot] == null ? storage.getStackInSlot(slot) : visited[slot];
+                ItemStack cached = visited[slot];
+                ItemStack current = cached != null ? cached : storage.getStackInSlot(slot);
                 int count = current.getCount();
 
                 if (io == IO.IN) {
                     if (current.isEmpty()) continue;
                     if (ingredient.test(current)) {
-                        var extracted = getActioned(storage, slot, recipe.ingredientActions);
+                        var extracted = recipe == null ? null : getActioned(storage, slot, recipe.ingredientActions);
                         if (extracted == null) extracted = storage.extractItem(slot, Math.min(count, amount), simulate);
                         if (!extracted.isEmpty()) {
                             changed = true;
                             visited[slot] = extracted.copyWithCount(count - extracted.getCount());
+                            if (!simulate) {
+                                ItemStack copied = extracted.copy();
+                                ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(copied);
+                                if (spoilable != null) spoilable.freezeSpoiling();
+                                if (machine instanceof MultiblockPartMachine partMachine) {
+                                    for (MultiblockControllerMachine controller : partMachine.getControllers()) {
+                                        RecipeLogic logic = controller.getTrait(RecipeLogic.class);
+                                        if (logic != null && logic.getStartingRecipe() == recipe) {
+                                            logic.getConsumedInputs().addConsumedInput(GTRecipeCapabilities.ITEM,
+                                                    Ingredient.of(copied));
+                                        }
+                                    }
+                                } else if (machine != null) machine.getTraitOptional(RecipeLogic.class)
+                                        .map(RecipeLogic::getConsumedInputs)
+                                        .ifPresent(inputs -> inputs.addConsumedInput(GTRecipeCapabilities.ITEM,
+                                                Ingredient.of(copied)));
+                            }
                         }
                         amount -= extracted.getCount();
                     }
                 } else { // IO.OUT
                     ItemStack output = items[0].copyWithCount(amount);
+
+                    ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(output);
+                    if (spoilable != null) {
+                        spoilable.updateFreshness(SpoilContext.EMPTY, true);
+                    }
+
+                    if (recipe != null) recipe.mutateOutput(output);
                     // Only try this slot if not visited or if visited with the same type of item
-                    if (visited[slot] == null || GTUtil.isSameItemSameTags(visited[slot], output)) {
+                    if (cached == null || ItemStack.isSameItemSameTags(cached, output)) {
                         if (count < output.getMaxStackSize() && count < storage.getSlotLimit(slot)) {
-                            var remainder = getActioned(storage, slot, recipe.ingredientActions);
+                            var remainder = recipe == null ? null :
+                                    getActioned(storage, slot, recipe.ingredientActions);
                             if (remainder == null) remainder = storage.insertItem(slot, output, simulate);
                             if (remainder.getCount() < amount) {
                                 changed = true;

@@ -79,7 +79,7 @@ public class AutoOutputBlockProvider extends MachineTraitProvider<AutoOutputTrai
         if (direction != null) {
             iTooltip.add(Component.translatable(text, StringUtils.capitalize(direction.getName())));
             if (blockAccessor.showDetails()) {
-                var block = BuiltInRegistries.BLOCK.get(new ResourceLocation(compoundTag.getString("block"))).asItem()
+                var block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(compoundTag.getString("block"))).asItem()
                         .getDefaultInstance();
                 if (!block.isEmpty()) {
                     iTooltip.append(iTooltip.getElementHelper().smallItem(block));

@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
@@ -88,9 +89,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 } else if (ingredient instanceof SizedIngredient sized &&
                         sized.getInner() instanceof IntCircuitIngredient) {
                     list.add(0, ingredient);
-                } else if (ingredient instanceof IntProviderIngredient intProvider &&
-                        intProvider.getInner() instanceof IntCircuitIngredient) {
-                    list.add(0, ingredient);
                 } else {
                     list.add(ingredient);
                 }
@@ -104,7 +102,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                             break;
                         }
                     } else if (obj instanceof ItemStack stack1) {
-                        if (GTUtil.isSameItemSameTags(stack, stack1)) {
+                        if (ItemStack.isSameItemSameTags(stack, stack1)) {
                             isEqual = true;
                             break;
                         }
@@ -152,7 +150,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
             int count;
             if (ing instanceof SizedIngredient sized) count = sized.getAmount();
-            else if (ing instanceof IntProviderIngredient provider) count = provider.getCountProvider().getMaxValue();
+            else if (ing instanceof IntProviderIngredient provider) count = provider.getMaxRoll();
             else count = 1;
 
             maxCount = Math.max(maxCount, count);
@@ -191,7 +189,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         if (inputs == null || inputs.isEmpty()) return limit;
 
         // Find all the items in the combined Item Input inventories and create oversized ItemStacks
-        List<Object2LongMap<ItemStack>> inventoryGroups = getInputContents(holder);
+        var inventoryGroups = getInputContentsByGroup(holder);
         if (inventoryGroups.isEmpty()) return 0;
 
         // map the recipe ingredients to account for duplicated and notConsumable ingredients.
@@ -204,7 +202,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
             int count;
             if (ing instanceof SizedIngredient sized) count = sized.getAmount();
-            else if (ing instanceof IntProviderIngredient provider) count = provider.getCountProvider().getMaxValue();
+            else if (ing instanceof IRangedIngredient<?> ranged) count = ranged.getMaxRoll();
             else count = 1;
 
             if (content.chance() == 0) {
@@ -285,7 +283,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         return maxMultiplier;
     }
 
-    private static List<Object2LongMap<ItemStack>> getInputContents(IRecipeCapabilityHolder holder) {
+    public static List<? extends Object2LongMap<ItemStack>> getInputContentsByGroup(IRecipeCapabilityHolder holder) {
         var handlerLists = holder.getCapabilitiesForIO(IO.IN);
         if (handlerLists.isEmpty()) return Collections.emptyList();
 
@@ -300,42 +298,63 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         List<RecipeHandlerList> distinctHandlerLists = handlerGroups.getOrDefault(
                 RecipeHandlerGroupDistinctness.BUS_DISTINCT,
                 Collections.emptyList());
-        List<Object2LongMap<ItemStack>> invs = new ArrayList<>(distinctHandlerLists.size() + 1);
+        List<Object2LongOpenCustomHashMap<ItemStack>> grouped = new ArrayList<>(distinctHandlerLists.size() + 1);
         // Handle distinct groups first, adding an inventory based on their contents individually.
         for (RecipeHandlerList handlerList : distinctHandlerLists) {
             var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
             Object2LongOpenCustomHashMap<ItemStack> distinctInv = new Object2LongOpenCustomHashMap<>(strat);
 
-            for (IRecipeHandler<?> handler : handlers) {
-                for (var content : handler.getContents()) {
-                    if (content instanceof ItemStack stack && !stack.isEmpty()) {
-                        distinctInv.addTo(stack, stack.getCount());
-                    }
-                }
-            }
-            if (!distinctInv.isEmpty()) invs.add(distinctInv);
+            addHandlersContentsToGroup(distinctInv, handlers);
+            if (!distinctInv.isEmpty()) grouped.add(distinctInv);
         }
 
         // Then handle other groups. The logic of undyed buses belonging to
         // everything has already been taken care of by addToRecipeMap()
         for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
             if (handlerListEntry.getKey() == RecipeHandlerGroupDistinctness.BUS_DISTINCT) continue;
+            // handle all bypass handlers in one step at the end
+            if (handlerListEntry.getKey() == RecipeHandlerGroupDistinctness.BYPASS_DISTINCT) continue;
 
             Object2LongOpenCustomHashMap<ItemStack> inventory = new Object2LongOpenCustomHashMap<>(strat);
             for (RecipeHandlerList handlerList : handlerListEntry.getValue()) {
                 var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
-                for (var handler : handlers) {
-                    for (var content : handler.getContents()) {
-                        if (content instanceof ItemStack stack && !stack.isEmpty()) {
-                            inventory.addTo(stack, stack.getCount());
-                        }
-                    }
-                }
+                addHandlersContentsToGroup(inventory, handlers);
             }
-            if (!inventory.isEmpty()) invs.add(inventory);
+            if (!inventory.isEmpty()) grouped.add(inventory);
         }
 
-        return invs;
+        List<RecipeHandlerList> bypassHandlerLists = handlerGroups.getOrDefault(
+                RecipeHandlerGroupDistinctness.BYPASS_DISTINCT,
+                Collections.emptyList());
+        Object2LongOpenCustomHashMap<ItemStack> bypassDistinct = new Object2LongOpenCustomHashMap<>(strat);
+        // Handle bypass groups last, adding an inventory based on their contents individually.
+        for (RecipeHandlerList handlerList : bypassHandlerLists) {
+            var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
+            addHandlersContentsToGroup(bypassDistinct, handlers);
+        }
+        if (!bypassDistinct.isEmpty()) {
+            var iterator = Object2LongMaps.fastIterator(bypassDistinct);
+            while (iterator.hasNext()) {
+                Object2LongMap.Entry<ItemStack> entry = iterator.next();
+                for (var inventory : grouped) {
+                    inventory.addTo(entry.getKey(), entry.getLongValue());
+                }
+            }
+            grouped.add(bypassDistinct);
+        }
+
+        return grouped;
+    }
+
+    private static void addHandlersContentsToGroup(Object2LongOpenCustomHashMap<ItemStack> inventory,
+                                                   List<IRecipeHandler<?>> handlers) {
+        for (var handler : handlers) {
+            for (var content : handler.getContents()) {
+                if (content instanceof ItemStack stack && !stack.isEmpty()) {
+                    inventory.addTo(stack, stack.getCount());
+                }
+            }
+        }
     }
 
     // Maps ingredients to an ItemEntryList for XEI: either an ItemTagList or an ItemStackList
@@ -346,6 +365,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             if (mapped != null) return mapped;
 
             if (sizedIngredient.getInner() instanceof IntProviderIngredient intProvider) {
+                mapped = tryMapInner(intProvider.getInner(), amount);
+                if (mapped != null) return mapped;
+
                 ItemStackList stackList = new ItemStackList();
                 for (ItemStack i : intProvider.getInner().getItems()) {
                     stackList.add(i);

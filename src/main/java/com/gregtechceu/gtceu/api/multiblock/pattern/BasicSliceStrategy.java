@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import com.google.common.base.Preconditions;
@@ -55,11 +56,17 @@ public class BasicSliceStrategy extends SliceStrategy {
     protected int checkMultiSlice(PatternState state, MultiblockSlice multiblockSlice, int offset, boolean flip) {
         int sliceOffset = 0;
         int temp = 0;
+        PredicateContext context = state.getContext();
         for (int i = 1; i <= multiblockSlice.maxRepeats; i++) {
             for (int j = multiblockSlice.startInclusive; j < multiblockSlice.endExclusive; j++) {
                 int res = checkRepeatSlice(state, j, offset + temp, flip);
                 if (res == -1) {
-                    if (i <= multiblockSlice.minRepeats) return -1;
+                    if (i <= multiblockSlice.minRepeats) {
+                        context.commitSliceErrors();
+                        return -1;
+                    }
+                    // invalid, but within min/max repeats so may be valid overall
+                    context.popSlice();
                     multiblockSlice.actualRepeats = i - 1;
                     return sliceOffset;
                 }
@@ -74,13 +81,19 @@ public class BasicSliceStrategy extends SliceStrategy {
 
     protected int checkRepeatSlice(PatternState state, int index, int offset, boolean flip) {
         PatternSlice slice = slices.get(index);
+        PredicateContext context = state.getContext();
         for (int i = 1; i <= slice.maxRepeats; i++) {
+            context.pushSlice();
             boolean res = checkSlice(state, index, offset + i - 1, flip);
             if (!res) {
                 if (i <= slice.minRepeats) return -1;
 
+                // invalid, but within min/max repeats so may be valid overall
+                context.popSlice();
                 return slices.get(index).actualRepeats = i - 1;
             }
+            // valid slice, clear errors just in case
+            context.clearErrors();
         }
         return slices.get(index).actualRepeats = slice.maxRepeats;
     }

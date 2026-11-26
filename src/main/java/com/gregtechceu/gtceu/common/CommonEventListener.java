@@ -2,9 +2,8 @@ package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.BlockAttributes;
+import com.gregtechceu.gtceu.api.block.GTAttributeModifierIds;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
@@ -15,7 +14,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.api.item.module.AttributeItemModule;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
+import com.gregtechceu.gtceu.api.item.module.TieredAttributeItemModule;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -28,13 +33,18 @@ import com.gregtechceu.gtceu.common.commands.HazardCommands;
 import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
 import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.armor.IJetpack;
-import com.gregtechceu.gtceu.common.item.armor.QuarkTechSuite;
 import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.common.module.AttackDamageItemModule;
+import com.gregtechceu.gtceu.common.module.AttackSpeedItemModule;
+import com.gregtechceu.gtceu.common.module.JetpackModule;
+import com.gregtechceu.gtceu.common.module.JumpBoostItemModule;
+import com.gregtechceu.gtceu.common.module.LiquidFuelJetpackModule;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSendWorldID;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
@@ -54,27 +64,27 @@ import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.*;
@@ -86,18 +96,21 @@ import net.minecraftforge.event.level.ChunkWatchEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.MissingMappingsEvent;
 
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Either;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
+import java.util.Set;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -167,37 +180,23 @@ public class CommonEventListener {
 
         for (int i = 0; i < inventory.getSlots(); ++i) {
             ItemStack stack = inventory.getStackInSlot(i);
-            MaterialEntry entry = HazardProperty.getValidHazardMaterial(stack);
-            if (entry.material().isNull()) {
+            Either<Material, MaterialEntry> hazardMaterial = HazardProperty.getValidHazardMaterial(stack);
+            if (hazardMaterial == null) {
                 continue;
             }
-            HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
+
+            var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
+
+            HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+            if (property == null) continue;
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
                 property.hazardTrigger.protectionType().damageEquipment(player, 1);
                 // don't progress this material condition if entity is protected
                 continue;
             }
-            tracker.progressRelatedCondition(entry, stack.getCount());
-        }
-    }
-
-    @SubscribeEvent
-    public static void onMobEffectEvent(MobEffectEvent.Applicable event) {
-        if (event.getEntity() instanceof Player player) {
-            ItemStack item = player.getItemBySlot(EquipmentSlot.HEAD);
-            if (item.is(GTItems.QUANTUM_HELMET.asItem()) && GTCapabilityHelper.getElectricItem(item) != null) {
-                IElectricItem helmet = GTCapabilityHelper.getElectricItem(item);
-                MobEffectInstance effect = event.getEffectInstance();
-                int cost = QuarkTechSuite.potionRemovalCost.getOrDefault(effect.getEffect(), -1);
-                if (cost != -1) {
-                    cost = cost * (effect.getAmplifier() + 1);
-                    if (helmet.canUse(cost)) {
-                        helmet.discharge(cost, helmet.getTier(), true, false, false);
-                        event.setResult(Event.Result.DENY);
-                    }
-                }
-            }
+            hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, stack.getCount()));
+            hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, stack.getCount()));
         }
     }
 
@@ -216,13 +215,17 @@ public class CommonEventListener {
             return;
         }
 
-        MaterialEntry entry = HazardProperty.getValidHazardMaterial(usedItem);
-        if (entry.material().isNull()) {
+        var hazardMaterial = HazardProperty.getValidHazardMaterial(usedItem);
+        if (hazardMaterial == null) {
             return;
         }
-        HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
+
+        var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
+
+        HazardProperty property = material.getProperty(PropertyKey.HAZARD);
         if (property.hazardTrigger == HazardProperty.HazardTrigger.CONSUMPTION) {
-            tracker.progressRelatedCondition(entry, 1);
+            hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, 1));
+            hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, 1));
         }
     }
 
@@ -283,7 +286,6 @@ public class CommonEventListener {
     public static void worldUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
             TaskHandler.onWorldUnLoad(serverLevel);
-            // MultiblockWorldSavedData.getOrCreate(serverLevel).releaseExecutorService();
             ServerCache.instance.invalidateWorld(serverLevel);
         } else if (event.getLevel().isClientSide()) {
             ClientCacheManager.saveCaches();
@@ -300,18 +302,6 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void serverStopped(ServerStoppedEvent event) {
         ServerCache.instance.clear();
-    }
-
-    @SubscribeEvent
-    public static void serverStopping(ServerStoppingEvent event) {
-        /*
-         * var levels = event.getServer().getAllLevels();
-         * for (var level : levels) {
-         * if (!level.isClientSide()) {
-         * MultiblockWorldSavedData.getOrCreate(level).releaseExecutorService();
-         * }
-         * }
-         */
     }
 
     @SubscribeEvent
@@ -350,26 +340,58 @@ public class CommonEventListener {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onEntityLivingFallEvent(LivingFallEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player) {
-            if (player.fallDistance < 3.2f)
+        LivingEntity entity = event.getEntity();
+        if (entity.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.FALL_IMMUNE_WEARABLES)) {
+            entity.fallDistance = 0;
+            event.setCanceled(true);
+            return;
+        }
+        if (entity instanceof ServerPlayer player) {
+            if (player.fallDistance < 3.2f) {
                 return;
+            }
 
-            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 
-            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor) {
-                armor.getArmorLogic().damageArmor(player, boots, player.damageSources().fall(),
-                        (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
-                player.fallDistance = 0;
-                event.setCanceled(true);
-            } else if (chest.getItem() instanceof ArmorComponentItem armor &&
+            if (chest.getItem() instanceof ArmorComponentItem armor &&
                     armor.getArmorLogic() instanceof IJetpack jetpack &&
                     jetpack.canUseEnergy(chest, jetpack.getEnergyPerUse()) &&
                     player.fallDistance >= player.getHealth() + 3.2f) {
-                        IJetpack.performEHover(chest, player);
-                        player.fallDistance = 0;
-                        event.setCanceled(true);
-                    }
+                IJetpack.performEHover(chest, player);
+                player.fallDistance = 0;
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingTick(LivingEvent.LivingTickEvent event) {
+        LivingEntity entity = event.getEntity();
+
+        if (entity.getItemBySlot(EquipmentSlot.CHEST).is(CustomTags.FIRE_IMMUNE_WEARABLES)) {
+            entity.clearFire();
+        }
+
+        for (ItemStack stack : entity.getArmorSlots()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+            if (modularItem == null) continue;
+            if (entity.level().isClientSide() && entity instanceof Player player && player.isLocalPlayer())
+                modularItem.runForEachModule((m, a) -> m.clientSideArmorTick(a, player));
+            else if (!entity.level().isClientSide()) modularItem.runForEachModule((m, a) -> m.onArmorTick(a, entity));
+        }
+
+        if (entity instanceof Player player && !entity.level().isClientSide()) {
+            var inv = player.getInventory();
+            for (var group : ImmutableList.of(inv.items, inv.armor, inv.offhand)) {
+                for (ItemStack stack : group) {
+                    IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+                    if (modularItem == null) continue;
+                    modularItem.runForEachModule((m, a) -> {
+                        if (m.isEnabled(a)) m.onInventoryTick(a, player);
+                        m.onTickRaw(a, player, player.level(), player.getOnPos());
+                    });
+                }
+            }
         }
     }
 
@@ -379,7 +401,7 @@ public class CommonEventListener {
         if (event.phase == TickEvent.Phase.START && !player.level().isClientSide) {
             var speedAttrib = player.getAttribute(Attributes.MOVEMENT_SPEED);
             if (speedAttrib == null) return;
-            var speedMod = speedAttrib.getModifier(BlockAttributes.BLOCK_SPEED_BOOST);
+            var speedMod = speedAttrib.getModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST);
 
             float speedBoost = 0.0f;
             if (!player.onGround() || player.isInWater() || player.isCrouching()) {
@@ -398,36 +420,135 @@ public class CommonEventListener {
                 if (speedBoost == speedMod.getAmount()) {
                     return;
                 } else {
-                    speedAttrib.removeModifier(BlockAttributes.BLOCK_SPEED_BOOST);
+                    speedAttrib.removeModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST);
                 }
             } else {
                 if (speedBoost == 0.0f) return;
             }
             if (speedBoost != 0.0f) {
                 speedAttrib.addTransientModifier(
-                        new AttributeModifier(BlockAttributes.BLOCK_SPEED_BOOST, "GT Block Speed Boost",
+                        new AttributeModifier(GTAttributeModifierIds.BLOCK_SPEED_BOOST, "GT Block Speed Boost",
                                 speedBoost, AttributeModifier.Operation.MULTIPLY_BASE));
             }
         }
     }
 
     @SubscribeEvent
-    public static void stepAssistHandler(LivingEvent.LivingTickEvent event) {
-        float MAGIC_STEP_HEIGHT = 1.0023f;
-        if (event.getEntity() == null || !(event.getEntity() instanceof Player player)) return;
-        CompoundTag tag = player.getItemBySlot(EquipmentSlot.FEET).getOrCreateTag();
-        if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS) &&
-                (!tag.contains("stepAssist") || tag.getBoolean("stepAssist"))) {
-            if (player.getStepHeight() < MAGIC_STEP_HEIGHT) {
-                player.setMaxUpStep(MAGIC_STEP_HEIGHT);
+    public static void onLivingEquipmentChange(LivingEquipmentChangeEvent event) {
+        if (!event.getSlot().isArmor()) return;
+
+        final LivingEntity entity = event.getEntity();
+        final ItemStack old = event.getFrom();
+        final ItemStack current = event.getTo();
+
+        if (IModularItem.isSameItemSameModules(old, current)) return;
+
+        if (entity instanceof Player player) {
+            if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() != null) {
+                armor.getArmorLogic().onUnequip(player);
             }
-        } else if (player.getStepHeight() == MAGIC_STEP_HEIGHT) {
-            player.setMaxUpStep(0.6f);
+            if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor &&
+                    armor.getArmorLogic() != null) {
+                armor.getArmorLogic().onEquip(player);
+            }
+        }
+
+        if (!old.isEmpty()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(old);
+            if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onUnequip(a, entity));
+        }
+
+        if (!current.isEmpty()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(current);
+            if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onEquip(a, entity));
         }
     }
 
     @SubscribeEvent
-    public static void onEntityDie(LivingDeathEvent event) {
+    public static void onItemStackAttributeQuery(ItemAttributeModifierEvent modifierEvent) {
+        var modular = GTCapabilityHelper.getModularItem(modifierEvent.getItemStack());
+        if (modular == null) return;
+
+        var equipable = Equipable.get(modifierEvent.getItemStack());
+        if (equipable != null && equipable.getEquipmentSlot() != modifierEvent.getSlotType()) return;
+
+        for (var ctx : modular.getAllModuleInstances()) {
+            if (ctx.getModule() instanceof AttributeItemModule attributeModule) {
+                var attribute = attributeModule.getAttribute(ctx);
+                var modifier = attributeModule.getModifierToAdd(ctx);
+                if (modifier != null) {
+                    modifierEvent.addModifier(attribute, modifier);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onModuleJump(LivingEvent.LivingJumpEvent event) {
+        var entity = event.getEntity();
+        if (entity.level().isClientSide) return;
+        for (var stack : entity.getArmorSlots()) {
+            var modular = GTCapabilityHelper.getModularItem(stack);
+            if (modular == null) continue;
+            for (var context : modular.getAllModuleInstances()) {
+                if (context.getModule() instanceof JumpBoostItemModule jump && jump.isEnabled(context)) {
+                    ArmorUtils.useModuleEnergy(stack, ArmorUtils.toModuleEnergyCredits(jump.getEnergyCost(context)),
+                            false);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onModuleMeleeHit(LivingDamageEvent event) {
+        var source = event.getSource();
+        if (!(source.is(DamageTypes.PLAYER_ATTACK) || source.is(DamageTypes.MOB_ATTACK) ||
+                source.is(DamageTypes.MOB_ATTACK_NO_AGGRO)) ||
+                !(source.getDirectEntity() instanceof LivingEntity attacker))
+            return;
+        for (var stack : attacker.getArmorSlots()) {
+            var modular = GTCapabilityHelper.getModularItem(stack);
+            if (modular == null) continue;
+            for (var context : modular.getAllModuleInstances()) {
+                if (!(context.getModule() instanceof AttackDamageItemModule ||
+                        context.getModule() instanceof AttackSpeedItemModule))
+                    continue;
+                var module = (TieredAttributeItemModule) context.getModule();
+                if (module.getModifierToAdd(context) != null) {
+                    ArmorUtils.useModuleEnergy(stack, ArmorUtils.toModuleEnergyCredits(module.getEnergyCost(context)),
+                            false);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHurt(LivingHurtEvent event) {
+        final LivingEntity entity = event.getEntity();
+        final DamageSource source = event.getSource();
+        // GT heat also has the fire tag; hot ingots use a separate insulation multiplier.
+        if (source.is(DamageTypeTags.IS_FIRE) && !source.is(GTDamageTypes.HEAT.key) &&
+                entity.getItemBySlot(EquipmentSlot.CHEST).is(CustomTags.FIRE_IMMUNE_WEARABLES)) {
+            entity.clearFire();
+            event.setCanceled(true);
+            return;
+        }
+
+        for (final ItemStack stack : entity.getArmorSlots()) {
+            float amount = event.getAmount();
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+            if (modularItem == null) continue;
+            for (ModuleContext data : modularItem.getAllModuleInstances()) {
+                if (!data.getModule().isEnabled(data)) continue;
+                amount = data.getModule().changeDamage(data, entity, amount, source);
+            }
+            event.setAmount(amount);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingDie(LivingDeathEvent event) {
         if (event.getEntity() instanceof Player player) {
             MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
             if (tracker == null) {
@@ -489,28 +610,19 @@ public class CommonEventListener {
     }
 
     @SubscribeEvent
-    public static void onEquipmentChange(LivingEquipmentChangeEvent event) {
-        if (!event.getSlot().isArmor()) return;
-        if (!(event.getEntity() instanceof Player player)) return;
-
-        if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor) {
-            armor.getArmorLogic().onUnequip(player);
-        }
-        if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor) {
-            armor.getArmorLogic().onEquip(player);
-        }
-    }
-
-    @SubscribeEvent
     public static void modifyBreakSpeed(PlayerEvent.BreakSpeed event) {
         Player player = event.getEntity();
         for (ItemStack stack : player.getArmorSlots()) {
-            if (!(stack.getItem() instanceof ArmorComponentItem componentItem)) {
-                continue;
+            boolean removesPenalty = stack.getItem() instanceof ArmorComponentItem componentItem &&
+                    componentItem.getArmorLogic() instanceof IJetpack jetpack && jetpack.removeMiningSpeedPenalty();
+            var modular = GTCapabilityHelper.getModularItem(stack);
+            if (modular != null) {
+                removesPenalty |= modular.getAllModuleInstances().stream()
+                        .anyMatch(context -> context.getModule().isEnabled(context) &&
+                                (context.getModule() instanceof JetpackModule ||
+                                        context.getModule() instanceof LiquidFuelJetpackModule));
             }
-            if (!(componentItem.getArmorLogic() instanceof IJetpack jetpack) || !jetpack.removeMiningSpeedPenalty()) {
-                continue;
-            }
+            if (!removesPenalty) continue;
             // undo flight mining speed debuff
             if (!player.onGround()) {
                 event.setNewSpeed(event.getNewSpeed() * 5);
@@ -519,6 +631,7 @@ public class CommonEventListener {
             if (player.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) && !EnchantmentHelper.hasAquaAffinity(player)) {
                 event.setNewSpeed(event.getNewSpeed() * 5);
             }
+            break;
         }
 
         MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
@@ -533,8 +646,103 @@ public class CommonEventListener {
         }
     }
 
+    /** Migrate Legacy GT Molten fluids, strictly blind to addons to allow them to fail loudly. */
+    private static final Set<String> LEGACY_MOLTEN_MATERIALS = Set.of(
+            "bismuth_bronze",
+            "black_bronze",
+            "black_steel",
+            "blue_steel",
+            "enriched_naquadah_trinium_europium_duranide",
+            "gallium_arsenide",
+            "hastelloy_c_276",
+            "hastelloy_x",
+            "hsla_steel",
+            "hsse",
+            "hssg",
+            "hsss",
+            "incoloy_ma_956",
+            "indium_tin_barium_titanium_cuprate",
+            "kanthal",
+            "magnesium_diboride",
+            "manganese_phosphide",
+            "maraging_steel_300",
+            "mercury_barium_calcium_cuprate",
+            "molybdenum_disilicide",
+            "naquadah_alloy",
+            "nichrome",
+            "niobium_nitride",
+            "niobium_titanium",
+            "osmiridium",
+            "red_steel",
+            "rhodium_plated_palladium",
+            "rose_gold",
+            "rtm_alloy",
+            "ruridit",
+            "ruthenium_trinium_americium_neutronate",
+            "samarium_iron_arsenic_oxide",
+            "stainless_steel",
+            "stellite_100",
+            "sterling_silver",
+            "tantalum_carbide",
+            "titanium_carbide",
+            "titanium_tungsten_carbide",
+            "tungsten_carbide",
+            "tungsten_steel",
+            "ultimet",
+            "uranium_rhodium_dinaquadide",
+            "uranium_triplatinum",
+            "vanadium_gallium",
+            "vanadium_steel",
+            "watertight_steel",
+            "yttrium_barium_cuprate",
+            "zeron_100");
+
+    private static void remapLegacyMoltenFluids(MissingMappingsEvent event) {
+        event.getMappings(Registries.FLUID, GTCEu.MOD_ID).forEach(mapping -> {
+            String path = mapping.getKey().getPath();
+            boolean flowing = path.startsWith("flowing_");
+            String materialName = legacyMoltenMaterial(flowing ? path.substring("flowing_".length()) : path);
+            if (materialName == null) return;
+            var liquid = GTMaterials.get(materialName).getFluid(FluidStorageKeys.LIQUID);
+            if (flowing && liquid instanceof FlowingFluid fluid) {
+                mapping.remap(fluid.getFlowing());
+            } else if (!flowing && liquid != null) {
+                mapping.remap(liquid);
+            } else {
+                mapping.warn();
+            }
+        });
+        event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
+            String path = mapping.getKey().getPath();
+            if (!path.endsWith("_bucket")) return;
+            String materialName = legacyMoltenMaterial(path.substring(0, path.length() - "_bucket".length()));
+            if (materialName == null) return;
+            var liquid = GTMaterials.get(materialName).getFluid(FluidStorageKeys.LIQUID);
+            if (liquid != null && liquid.getBucket() != Items.AIR) {
+                mapping.remap(liquid.getBucket());
+            } else {
+                mapping.warn();
+            }
+        });
+        event.getMappings(ForgeRegistries.Keys.FLUID_TYPES, GTCEu.MOD_ID).forEach(mapping -> {
+            String materialName = legacyMoltenMaterial(mapping.getKey().getPath());
+            if (materialName == null) return;
+            var liquid = GTMaterials.get(materialName).getFluid(FluidStorageKeys.LIQUID);
+            if (liquid != null) mapping.remap(liquid.getFluidType());
+            else mapping.warn();
+        });
+        // We never defined placable moltens, no need to handle them!
+    }
+
+    private static String legacyMoltenMaterial(String path) {
+        if (!path.startsWith("molten_")) return null;
+        String materialName = path.substring("molten_".length());
+        return LEGACY_MOLTEN_MATERIALS.contains(materialName) ? materialName : null;
+    }
+
     @SubscribeEvent
     public static void remapIds(MissingMappingsEvent event) {
+        remapLegacyMoltenFluids(event);
         event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
                 mapping.remap(GTBlocks.COIL_RTMALLOY.get());
@@ -544,6 +752,48 @@ public class CommonEventListener {
             }
         });
         event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
+
+            if (mapping.getKey().equals(GTCEu.id("nanomuscle_helmet"))) {
+                mapping.remap(GTItems.NANO_HELMET.get());
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("nanomuscle_chestplate"))) {
+                mapping.remap(GTItems.NANO_CHESTPLATE.get());
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("advanced_nanomuscle_chestplate"))) {
+                mapping.remap(GTItems.NANO_CHESTPLATE.get());
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("nanomuscle_leggings"))) {
+                mapping.remap(GTItems.NANO_LEGGINGS.get());
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("nanomuscle_boots"))) {
+                mapping.remap(GTItems.NANO_BOOTS.get());
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("quarktech_helmet"))) {
+                mapping.remap(GTItems.QUANTUM_HELMET.get());
+
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("quarktech_chestplate"))) {
+                mapping.remap(GTItems.QUANTUM_CHESTPLATE.get());
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("advanced_quarktech_chestplate"))) {
+                mapping.remap(GTItems.QUANTUM_CHESTPLATE.get());
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("quarktech_leggings"))) {
+                mapping.remap(GTItems.QUANTUM_LEGGINGS.get());
+            }
+
+            if (mapping.getKey().equals(GTCEu.id("quarktech_boots"))) {
+                mapping.remap(GTItems.QUANTUM_BOOTS.get());
+            }
+
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
                 mapping.remap(GTBlocks.COIL_RTMALLOY.get().asItem());
             }
@@ -553,9 +803,6 @@ public class CommonEventListener {
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_fluid_cell"))) {
                 mapping.remap(GTItems.FLUID_CELL_LARGE_TUNGSTEN_STEEL.get().asItem());
             }
-            if (mapping.getKey().equals(GTCEu.id("avanced_nanomuscle_chestplate"))) {
-                mapping.remap(GTItems.NANO_CHESTPLATE_ADVANCED.get());
-            }
             String path = mapping.getKey().getPath();
             if (path.matches("[lhi]v_.+_wirecutter")) {
                 String suffix = "_wirecutter";
@@ -564,7 +811,7 @@ public class CommonEventListener {
 
                 GTToolType type = GTToolType.getTypes().get(typeString);
                 Material material = GTMaterials.get(matString);
-                if (type == null || material.isNull()) {
+                if (type == null || material == null) {
                     mapping.warn();
                     return;
                 }
@@ -660,7 +907,7 @@ public class CommonEventListener {
             }
         });
 
-        for (TagPrefix prefix : TagPrefix.values()) {
+        for (TagPrefix prefix : GTRegistries.TAG_PREFIXES) {
             String first = prefix.invertedName ? toLowerCaseUnderscore(prefix.name) : "(.+?)";
             String last = prefix.invertedName ? "(.+?)" : toLowerCaseUnderscore(prefix.name);
             Pattern idPattern = Pattern.compile(first + "_" + last);
@@ -677,16 +924,14 @@ public class CommonEventListener {
             event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
                 Matcher matcher = idPattern.matcher(mapping.getKey().getPath());
                 if (matcher.matches()) {
-                    BlockEntry<? extends Block> block = GTMaterialBlocks.MATERIAL_BLOCKS.get(prefix,
-                            GTRegistries.MATERIALS.get(GTCEu.id(matcher.group(1))));
+                    Material material = GTRegistries.MATERIALS.get(GTCEu.id(matcher.group(1)));
+                    if (material == null) return;
+                    BlockEntry<? extends Block> block = GTMaterialBlocks.MATERIAL_BLOCKS.get(prefix, material);
                     if (block != null && block.isPresent()) {
                         mapping.remap(block.asItem());
                     } else {
-                        ItemEntry<? extends Item> item = GTMaterialItems.MATERIAL_ITEMS.get(prefix,
-                                GTRegistries.MATERIALS.get(GTCEu.id(matcher.group(1))));
-                        if (item != null && item.isPresent()) {
-                            mapping.remap(item.asItem());
-                        }
+                        ItemEntry<? extends Item> item = GTMaterialItems.MATERIAL_ITEMS.get(prefix, material);
+                        if (item != null && item.isPresent()) mapping.remap(item.asItem());
                     }
                 }
             });

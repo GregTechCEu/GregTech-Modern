@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.error;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ExtraCodecs;
 
@@ -10,12 +11,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
-import java.util.Collections;
-
 public class PatternStringError extends PatternError {
 
-    public static Codec<PatternStringError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ExtraCodecs.COMPONENT.fieldOf("component").forGetter(PatternStringError::getComponent))
+    public static final Codec<PatternStringError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ExtraCodecs.COMPONENT.fieldOf("component").forGetter(PatternStringError::getComponent),
+            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::pos))
             .apply(instance, PatternStringError::new));
 
     public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("pattern_string_error"), CODEC);
@@ -23,16 +23,43 @@ public class PatternStringError extends PatternError {
     @Getter
     public final Component component;
 
-    public PatternStringError(Component component) {
-        super(null, Collections.emptyList());
+    public PatternStringError(Component component, BlockPos pos) {
+        super(pos);
         this.component = component;
+    }
+
+    public PatternStringError(Component component) {
+        super();
+        this.component = component;
+    }
+
+    public static PatternStringError of(Component component) {
+        return new PatternStringError(component);
+    }
+
+    public static PatternStringError of(Component component, BlockPos pos) {
+        return new PatternStringError(component, pos);
+    }
+
+    public static PatternStringError literal(String s) {
+        return new PatternStringError(Component.literal(s));
+    }
+
+    public static PatternStringError literal(String s, Object... args) {
+        return new PatternStringError(Component.literal(String.format(s, args)));
+    }
+
+    public static PatternStringError translatable(String langKey) {
+        return new PatternStringError(Component.translatable(langKey));
+    }
+
+    public static PatternStringError translatable(String langKey, Object... args) {
+        return new PatternStringError(Component.translatable(langKey, args));
     }
 
     @Override
     public PatternErrorUI getPatternErrorUIModifier() {
-        return (parent) -> {
-            parent.child(Text.of(component).asWidget());
-        };
+        return (parent) -> parent.child(Text.of(component).asWidget());
     }
 
     @Override

@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.api;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.util.RandomSource;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntFunction;
 
@@ -108,7 +111,6 @@ public class GTValues {
     }
 
     public static final String MODID_JEI = "jei",
-            MODID_REI = "roughlyenoughitems",
             MODID_EMI = "emi",
             MODID_APPENG = "ae2",
             MODID_KUBEJS = "kubejs",
@@ -119,7 +121,6 @@ public class GTValues {
             MODID_OPTIFINE = "optifine",
             MODID_CREATE = "create",
             MODID_CURIOS = "curios",
-            MODID_AE2WTLIB = "ae2wtlib",
             MODID_MODERNFIX = "modernfix",
             MODID_JOURNEYMAP = "journeymap",
             MODID_XAEROS_MINIMAP = "xaerominimap",
@@ -133,7 +134,6 @@ public class GTValues {
             MODID_CCTWEAKED = "computercraft",
             MODID_ENDERIO = "enderio",
             MODID_ENSORCELLATION = "ensorcellation";
-
     /**
      * Spray painting compat modids
      */
@@ -144,6 +144,11 @@ public class GTValues {
      */
     public static final String[] VN = new String[] { "ULV", "LV", "MV", "HV", "EV", "IV", "LuV", "ZPM", "UV", "UHV",
             "UEV", "UIV", "UXV", "OpV", "MAX" };
+
+    /**
+     * The lowercase short names for the voltages, used for registration
+     */
+    public static final String[] VNL = Arrays.stream(VN).map(v -> v.toLowerCase(Locale.ROOT)).toArray(String[]::new);
 
     public static final IntFunction<String> MAX_PLUS_FORMAT = (value) -> "" + RED + BOLD + "M" +
             GREEN + BOLD + "A" +
@@ -295,17 +300,13 @@ public class GTValues {
             "Ultra High Voltage", "Ultra Excessive Voltage", "Ultra Immense Voltage", "Ultra Extreme Voltage",
             "Overpowered Voltage", "Maximum Voltage" };
 
-    public static final String[] COLORS = new String[] {
-            "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan",
-            "purple", "blue", "brown", "green", "red", "black"
-    };
-
     /**
      * Used to tell if any high-tier machine (UHV+) was registered.
      */
     public static boolean HT = false;
 
     public static BooleanSupplier FOOLS = () -> {
+        if (ConfigHolder.INSTANCE != null && ConfigHolder.INSTANCE.client.aprilFoolsMode) return true;
         var now = LocalDate.now();
         return now.getMonth() == Month.APRIL && now.getDayOfMonth() == 1;
     };

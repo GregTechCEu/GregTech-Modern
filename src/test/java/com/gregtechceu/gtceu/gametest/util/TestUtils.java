@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.gametest.util;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -17,6 +18,7 @@ import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.fakeplayer.FakeServerGamePacketListenerImpl;
 
 import net.minecraft.core.BlockPos;
@@ -37,11 +39,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.IItemHandler;
 
 import com.mojang.authlib.GameProfile;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -254,8 +259,7 @@ public class TestUtils {
                 }
             }
         }
-        helper.assertTrue(coverDefinition != null, "attempted to place cover with item that is not a cover");
-        assert coverDefinition != null;
+        TestUtils.assertNotNull(helper, coverDefinition, "attempted to place cover with item that is not a cover");
         helper.assertTrue(shouldFail ^ machine.getCoverContainer().placeCoverOnSide(
                 direction, stack, coverDefinition, null), "failed to place cover");
         return machine.getCoverContainer().getCoverAtSide(direction);
@@ -272,6 +276,20 @@ public class TestUtils {
                 "strings not equal: \"%s\" != \"%s\"".formatted(component.toString(), s));
     }
 
+    public static void assertBetween(GameTestHelper helper, long x, long min, long max, String message) {
+        helper.assertTrue(min <= x && x <= max, "%s (%d was not between %d and %d)".formatted(message, x, min, max));
+    }
+
+    public static void assertEqual(GameTestHelper helper, long a, long b, String message) {
+        helper.assertTrue(a == b, "%s (%d != %d)".formatted(message, a, b));
+    }
+
+    public static void assertEqual(GameTestHelper helper, ItemStack stack1, ItemStack stack2, String message) {
+        helper.assertTrue(
+                isItemStackEqual(stack1, stack2),
+                "%s (%s != %s)".formatted(message, stack1, stack2));
+    }
+
     public static void assertEqual(GameTestHelper helper, ItemStack stack1, ItemStack stack2) {
         helper.assertTrue(isItemStackEqual(stack1, stack2),
                 "Item stacks not equal: \"%s\" != \"%s\"".formatted(stack1.toString(), stack2.toString()));
@@ -282,6 +300,10 @@ public class TestUtils {
                 "Fluid stacks not equal: \"%s %d\" != \"%s %d\"".formatted(
                         stack1.getDisplayName().getString(), stack1.getAmount(),
                         stack2.getDisplayName().getString(), stack2.getAmount()));
+    }
+
+    public static <T> void assertEqual(GameTestHelper helper, T object1, T object2, String message) {
+        helper.assertTrue(Objects.equals(object1, object2), "%s (%s != %s)".formatted(message, object1, object2));
     }
 
     public static void assertLampOn(GameTestHelper helper, BlockPos pos) {
@@ -311,8 +333,25 @@ public class TestUtils {
         helper.runAtTickTime(timeout, helper::succeed);
     }
 
+    public static IItemHandler getItemHandler(GameTestHelper helper, BlockPos pos, Direction direction) {
+        return GTCapabilityHelper.getItemHandler(helper.getLevel(), helper.absolutePos(pos), direction);
+    }
+
+    public static IItemHandler getItemHandler(GameTestHelper helper, BlockPos pos) {
+        return GTCapabilityHelper.getItemHandler(helper.getLevel(), helper.absolutePos(pos), null);
+    }
+
     public static void assertEqual(GameTestHelper helper, @Nullable BlockPos pos1, @Nullable BlockPos pos2) {
         helper.assertTrue(pos1 != null && pos1.equals(pos2), "Expected %s to equal to %s".formatted(pos1, pos2));
+    }
+
+    /**
+     * Use this instead of {@code helper.assertTrue(obj != null, ...)} to stop IntelliJ from complaining
+     * about nullability.
+     */
+    @Contract("_, null, _ -> fail")
+    public static void assertNotNull(GameTestHelper helper, Object object, String failureMessage) {
+        helper.assertTrue(object != null, failureMessage);
     }
 
     public static void assertRedstone(GameTestHelper helper, BlockPos pos, int min, int max) {
@@ -406,5 +445,15 @@ public class TestUtils {
 
     public static void assertEntityAlive(GameTestHelper helper, Entity entity) {
         helper.assertTrue(entity.isAlive(), "Entity " + entity + " should be alive");
+    }
+
+    public static void insertItem(GameTestHelper helper, IItemHandler handler, ItemLike item, boolean shouldSucceed,
+                                  String failureMessage) {
+        insertItem(helper, handler, new ItemStack(item), shouldSucceed, failureMessage);
+    }
+
+    public static void insertItem(GameTestHelper helper, IItemHandler handler, ItemStack stack, boolean shouldSucceed,
+                                  String failureMessage) {
+        helper.assertTrue(GTTransferUtils.insertItem(handler, stack, false).isEmpty() == shouldSucceed, failureMessage);
     }
 }

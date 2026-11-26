@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -192,12 +193,12 @@ public class MiscRecipeLoader {
                 .addMaterialInfo(true)
                 .save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("power_thruster_advanced").duration(200).EUt(30)
-                .inputItems(ELECTRIC_MOTOR_HV)
-                .inputItems(ring, StainlessSteel, 2)
-                .inputItems(rod, StainlessSteel)
-                .inputItems(rotor, Chromium)
-                .inputItems(cableGtSingle, Gold, 2)
+        ASSEMBLER_RECIPES.recipeBuilder("power_thruster_advanced").duration(200).EUt(VA[EV])
+                .inputItems(ELECTRIC_MOTOR_EV)
+                .inputItems(ring, Titanium, 2)
+                .inputItems(rod, Titanium)
+                .inputItems(rotor, Titanium)
+                .inputItems(cableGtSingle, Aluminium, 2)
                 .outputItems(POWER_THRUSTER_ADVANCED)
                 .addMaterialInfo(true)
                 .save(provider);
@@ -260,23 +261,6 @@ public class MiscRecipeLoader {
                 .inputItems(wireFine, Rhodium, 16)
                 .inputFluids(Titanium.getFluid(L * 8))
                 .outputItems(QUANTUM_BOOTS)
-                .addMaterialInfo(true, true)
-                .save(provider);
-
-        ASSEMBLY_LINE_RECIPES.recipeBuilder("quantum_chestplate_advanced").duration(1000).EUt(VA[LuV])
-                .inputItems(QUANTUM_CHESTPLATE.asItem())
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(wireFine, NiobiumTitanium, 64)
-                .inputItems(wireGtQuadruple, Osmium, 6)
-                .inputItems(plateDouble, Iridium, 4)
-                .inputItems(GRAVITATION_ENGINE, 2)
-                .inputItems(CustomTags.ZPM_CIRCUITS)
-                .inputItems(plateDense, RhodiumPlatedPalladium, 2)
-                .inputItems(ENERGY_LAPOTRONIC_ORB_CLUSTER)
-                .inputItems(FIELD_GENERATOR_LuV, 2)
-                .inputItems(ELECTRIC_MOTOR_LuV, 2)
-                .inputItems(screw, HSSS, 8)
-                .outputItems(QUANTUM_CHESTPLATE_ADVANCED)
                 .addMaterialInfo(true, true)
                 .save(provider);
 
@@ -409,9 +393,10 @@ public class MiscRecipeLoader {
         final int dyeAmount = 288;
 
         // skip white lens
-        for (int i = 1; i < CHEMICAL_DYES.length; i++) {
-            builder.copy(CHEMICAL_DYES[i].getName() + "_lens").inputFluids(CHEMICAL_DYES[i].getFluid(dyeAmount))
-                    .outputItems(GLASS_LENSES.get(COLORS[i]))
+        for (DyeColor color : DyeColor.values()) {
+            if (color == DyeColor.WHITE) continue;
+            builder.copy(color.getName() + "_lens").inputFluids(DYE_MATERIALS.get(color).getFluid(dyeAmount))
+                    .outputItems(GLASS_LENSES.get(color))
                     .save(provider);
         }
 
@@ -629,5 +614,10 @@ public class MiscRecipeLoader {
                 new MaterialEntry(gem, Lazurite));
         VanillaRecipeHelper.addShapelessRecipe(provider, "sodalite_to_dye", new ItemStack(Items.BLUE_DYE),
                 new MaterialEntry(gem, Sodalite));
+
+        POLARIZER_RECIPES.recipeBuilder("magnetize_golden_carrot")
+                .inputItems(Items.GOLDEN_CARROT)
+                .outputItems(MAGNETIC_GOLDEN_CARROT)
+                .duration(100).EUt(8).save(provider);
     }
 }

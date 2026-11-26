@@ -7,7 +7,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 
-import brachy.modularui.api.ITheme;
 import brachy.modularui.api.IThemeApi;
 import brachy.modularui.drawable.UITexture;
 import brachy.modularui.screen.RichTooltip;
@@ -53,6 +52,10 @@ public class GTGuiTheme {
             .textColor(IMuiCover.UI_TEXT_COLOR)
             .build();
 
+    public static final GTGuiTheme MULTIBLOCK_DISPLAY = templateBuilder("gtceu:multiblock_display")
+            .textColor(0xFFFFFFFF)
+            .build();
+
     // TODO Multiblock theme for display texture, logo changes
 
     public static final GTGuiTheme BRONZE = templateBuilder("gtceu:bronze")
@@ -71,6 +74,10 @@ public class GTGuiTheme {
             .fluidSlot(GTGuiTextures.IDs.PRIMITIVE_SLOT)
             .build();
 
+    public static final GTGuiTheme EQUIPMENT_FOUNDRY = templateBuilder("equipment_foundry")
+            .color(0xff69645f)
+            .build();
+
     private final String themeId;
 
     private final List<Consumer<JsonBuilder>> elementBuilder;
@@ -87,10 +94,6 @@ public class GTGuiTheme {
 
     public String getId() {
         return themeId;
-    }
-
-    public ITheme getMuiTheme() {
-        return IThemeApi.get().getTheme(themeId);
     }
 
     public @Nullable UITexture getLogo() {

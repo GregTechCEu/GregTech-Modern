@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -19,8 +20,10 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 
+import com.mojang.datafixers.util.Either;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
@@ -115,8 +118,9 @@ public class HazardProperty implements IMaterialProperty {
             Set<ArmorItem.Type> correctArmorItems = new HashSet<>();
             for (ArmorItem.Type equipmentType : equipmentTypes) {
                 ItemStack armor = livingEntity.getItemBySlot(equipmentType.getSlot());
+
                 if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
-                        armorItem.getArmorLogic().isPPE()) ||
+                        armorItem.isPPE(armor)) ||
                         armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
                     correctArmorItems.add(equipmentType);
                 }
@@ -135,7 +139,7 @@ public class HazardProperty implements IMaterialProperty {
             for (SlotResult result : results) {
                 ItemStack armor = result.stack();
                 if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
-                        armorItem.getArmorLogic().isPPE()) ||
+                        armorItem.isPPE(armor)) ||
                         armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
                     correctCurios.add(result.slotContext().identifier());
                 }
@@ -149,7 +153,7 @@ public class HazardProperty implements IMaterialProperty {
                 for (ArmorItem.Type type : this.getEquipmentTypes()) {
                     ItemStack armor = player.getItemBySlot(type.getSlot());
                     if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
-                            armorItem.getArmorLogic().isPPE()) ||
+                            armorItem.isPPE(armor)) ||
                             armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
                         armor.hurtAndBreak(amount, player, p -> p.broadcastBreakEvent(type.getSlot()));
                     }
@@ -165,7 +169,7 @@ public class HazardProperty implements IMaterialProperty {
                                 for (int i = 0; i < handler.getSlots(); ++i) {
                                     ItemStack armor = stackHandler.getStackInSlot(i);
                                     if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
-                                            armorItem.getArmorLogic().isPPE()) ||
+                                            armorItem.isPPE(armor)) ||
                                             armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
                                         armor.hurtAndBreak(amount, player, p -> {});
                                     }
@@ -178,27 +182,29 @@ public class HazardProperty implements IMaterialProperty {
         }
     }
 
-    public static MaterialEntry getValidHazardMaterial(ItemStack item) {
-        MaterialEntry entry = MaterialEntry.NULL_ENTRY;
-        boolean isFluid = false;
+    public static @Nullable Either<Material, MaterialEntry> getValidHazardMaterial(ItemStack item) {
+        Material material = null;
+        TagPrefix prefix = null;
+
         if (item.getItem() instanceof TagPrefixItem prefixItem) {
-            entry = new MaterialEntry(prefixItem.tagPrefix, prefixItem.material);
+            material = prefixItem.material;
+            prefix = prefixItem.tagPrefix;
         } else if (item.getItem() instanceof BucketItem bucket) {
             if (ConfigHolder.INSTANCE.gameplay.universalHazards || bucket instanceof GTBucketItem) {
-                entry = new MaterialEntry(TagPrefix.NULL_PREFIX, ChemicalHelper.getMaterial(bucket.getFluid()));
-                isFluid = true;
+                material = ChemicalHelper.getMaterial(bucket.getFluid());
             }
         } else if (ConfigHolder.INSTANCE.gameplay.universalHazards) {
-            entry = ChemicalHelper.getMaterialEntry(item.getItem());
+            var entry = ChemicalHelper.getMaterialEntry(item.getItem());
+            if (entry == null) return null;
+            material = entry.material();
+            prefix = entry.tagPrefix();
         }
 
-        HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
-        if (property == null) {
-            return MaterialEntry.NULL_ENTRY;
+        HazardProperty property = (material == null) ? null : material.getProperty(PropertyKey.HAZARD);
+        if (property == null || prefix != null && !property.hazardTrigger.isAffected(prefix)) {
+            return null;
         }
-        if (!isFluid && !property.hazardTrigger.isAffected(entry.tagPrefix())) {
-            return MaterialEntry.NULL_ENTRY;
-        }
-        return entry;
+
+        return prefix == null ? Either.left(material) : Either.right(new MaterialEntry(prefix, material));
     }
 }

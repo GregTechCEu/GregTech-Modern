@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.utils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 public class OverlayedItemHandler {
@@ -56,7 +58,7 @@ public class OverlayedItemHandler {
             initSlot(i);
             // if it's the same item or there is no item in the slot
             ItemStack slotKey = this.slots[i].getItemStack();
-            if (slotKey.isEmpty() || GTUtil.isSameItemSameTags(slotKey, stack)) {
+            if (slotKey.isEmpty() || ItemStack.isSameItemSameTags(slotKey, stack)) {
                 // if the slot is not full
                 int canInsertUpTo = Math.min(this.slots[i].getSlotLimit() - this.slots[i].getCount(),
                         stack.getMaxStackSize());
@@ -102,7 +104,10 @@ public class OverlayedItemHandler {
     private static class OverlayedItemHandlerSlot {
 
         private ItemStack itemStack = ItemStack.EMPTY;
+        @Getter
+        @Setter
         private int count = 0;
+        @Getter
         private int slotLimit;
 
         protected OverlayedItemHandlerSlot(@NotNull ItemStack stackToMirror, int slotLimit) {
@@ -121,14 +126,6 @@ public class OverlayedItemHandler {
             this.slotLimit = slotLimit;
         }
 
-        public int getSlotLimit() {
-            return slotLimit;
-        }
-
-        public int getCount() {
-            return count;
-        }
-
         /**
          * Storage of this ItemStack elsewhere will require copying it
          * 
@@ -140,14 +137,10 @@ public class OverlayedItemHandler {
         }
 
         public void setItemStack(@NotNull ItemStack itemStack) {
-            if (!GTUtil.isSameItemSameTags(this.itemStack, itemStack)) {
+            if (!ItemStack.isSameItemSameTags(this.itemStack, itemStack)) {
                 this.itemStack = itemStack;
                 this.slotLimit = Math.min(itemStack.getMaxStackSize(), slotLimit);
             }
-        }
-
-        public void setCount(int count) {
-            this.count = count;
         }
 
         @NotNull

@@ -5,13 +5,14 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.*;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
-import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilUtils;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.transfer.item.ITransferAmountLimiter;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
@@ -19,7 +20,6 @@ import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -28,6 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.IItemHandler;
@@ -50,6 +51,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.ToIntFunction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -87,7 +89,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     @SaveField
     @SyncToClient
     @Getter
-    protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
+    protected final FilterHandler<ItemStack> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
 
     public ConveyorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
@@ -101,7 +103,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         this.distributionMode = DistributionMode.INSERT_FIRST;
 
         subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
-        filterHandler = FilterHandlers.item(this)
+        filterHandler = new FilterHandler<>(this, ItemStack.class)
                 .onFilterLoaded(f -> configureFilter())
                 .onFilterUpdated(f -> configureFilter())
                 .onFilterRemoved(this::configureFilter);
@@ -134,9 +136,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     }
 
     public void setTransferRate(int transferRate) {
-        if (transferRate <= maxItemTransferRate) {
-            this.transferRate = transferRate;
-        }
+        this.transferRate = Mth.clamp(transferRate, 1, maxItemTransferRate);
     }
 
     public void setIo(IO io) {
@@ -213,7 +213,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
 
     protected int moveInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory,
                                      int maxTransferAmount) {
-        ItemFilter filter = filterHandler.getFilter();
+        Filter<ItemStack> filter = filterHandler.getFilter();
         int itemsLeftToTransfer = maxTransferAmount;
 
         for (int srcIndex = 0; srcIndex < sourceInventory.getSlots(); srcIndex++) {
@@ -257,7 +257,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
             int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, true);
             if (!extractedStack.isEmpty() &&
-                    GTUtil.isSameItemSameTags(resultStack, extractedStack)) {
+                    SpoilUtils.isSameItemSameTagsSpoilable(resultStack, extractedStack)) {
                 totalExtractedCount += extractedStack.getCount();
                 itemsLeftToExtract -= extractedStack.getCount();
             }
@@ -275,13 +275,13 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
 
         // now, see how much we can insert into destination inventory
         // if we can't insert as much as itemInfo requires, and remainder is empty, abort, abort
-        ItemStack remainder = ItemHandlerHelper.insertItem(targetInventory, resultStack, true);
+        ItemStack remainder = GTTransferUtils.insertItemBundle(targetInventory, resultStack, true);
         if (!remainder.isEmpty()) {
             return false;
         }
 
         // otherwise, perform real insertion and then remove items from the source inventory
-        ItemHandlerHelper.insertItem(targetInventory, resultStack, false);
+        GTTransferUtils.insertItemBundle(targetInventory, resultStack, false);
 
         // perform real extraction of the items from the source inventory now
         itemsLeftToExtract = itemInfo.totalCount;
@@ -289,7 +289,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
             int slotIndex = itemInfo.slots.getInt(i);
             ItemStack extractedStack = sourceInventory.extractItem(slotIndex, itemsLeftToExtract, false);
             if (!extractedStack.isEmpty() &&
-                    GTUtil.isSameItemSameTags(resultStack, extractedStack)) {
+                    SpoilUtils.isSameItemSameTagsSpoilable(resultStack, extractedStack)) {
                 itemsLeftToExtract -= extractedStack.getCount();
             }
             if (itemsLeftToExtract == 0) {
@@ -299,51 +299,8 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         return true;
     }
 
-    protected int moveInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory,
-                                     Map<ItemStack, GroupItemInfo> itemInfos, int maxTransferAmount) {
-        ItemFilter filter = filterHandler.getFilter();
-        int itemsLeftToTransfer = maxTransferAmount;
-
-        for (int i = 0; i < sourceInventory.getSlots(); i++) {
-            ItemStack itemStack = sourceInventory.getStackInSlot(i);
-            if (itemStack.isEmpty() || !filter.test(itemStack) || !itemInfos.containsKey(itemStack)) {
-                continue;
-            }
-
-            GroupItemInfo itemInfo = itemInfos.get(itemStack);
-
-            ItemStack extractedStack = sourceInventory.extractItem(i,
-                    Math.min(itemInfo.totalCount, itemsLeftToTransfer), true);
-
-            ItemStack remainderStack = ItemHandlerHelper.insertItemStacked(targetInventory, extractedStack, true);
-            int amountToInsert = extractedStack.getCount() - remainderStack.getCount();
-
-            if (amountToInsert > 0) {
-                extractedStack = sourceInventory.extractItem(i, amountToInsert, false);
-
-                if (!extractedStack.isEmpty()) {
-
-                    ItemHandlerHelper.insertItemStacked(targetInventory, extractedStack, false);
-                    itemsLeftToTransfer -= extractedStack.getCount();
-                    itemInfo.totalCount -= extractedStack.getCount();
-
-                    if (itemInfo.totalCount == 0) {
-                        itemInfos.remove(itemStack);
-                        if (itemInfos.isEmpty()) {
-                            break;
-                        }
-                    }
-                    if (itemsLeftToTransfer == 0) {
-                        break;
-                    }
-                }
-            }
-        }
-        return maxTransferAmount - itemsLeftToTransfer;
-    }
-
     protected Map<ItemStack, TypeItemInfo> countInventoryItemsByType(IItemHandler inventory) {
-        ItemFilter filter = filterHandler.getFilter();
+        Filter<ItemStack> filter = filterHandler.getFilter();
         Map<ItemStack, TypeItemInfo> result = new Object2ObjectOpenCustomHashMap<>(
                 ItemStackHashStrategy.comparingAllButCount());
 
@@ -362,36 +319,11 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         return result;
     }
 
-    protected Map<ItemStack, GroupItemInfo> countInventoryItemsByMatchSlot(IItemHandler inventory) {
-        ItemFilter filter = filterHandler.getFilter();
-        Map<ItemStack, GroupItemInfo> result = new Object2ObjectOpenCustomHashMap<>(
-                ItemStackHashStrategy.comparingAllButCount());
-
-        for (int srcIndex = 0; srcIndex < inventory.getSlots(); srcIndex++) {
-            ItemStack itemStack = inventory.getStackInSlot(srcIndex);
-            if (itemStack.isEmpty() || !filter.test(itemStack)) {
-                continue;
-            }
-
-            var itemInfo = result.computeIfAbsent(itemStack, s -> new GroupItemInfo(s, 0));
-
-            itemInfo.totalCount += itemStack.getCount();
-        }
-        return result;
-    }
-
     @AllArgsConstructor
     protected static class TypeItemInfo {
 
         public final ItemStack itemStack;
         public final IntList slots;
-        public int totalCount;
-    }
-
-    @AllArgsConstructor
-    protected static class GroupItemInfo {
-
-        public final ItemStack itemStack;
         public int totalCount;
     }
 
@@ -523,6 +455,42 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                 return ItemStack.EMPTY;
             }
             return simulate ? result : super.extractItem(slot, amount, false);
+        }
+
+        @Override
+        public ItemStack insertItemBundle(ItemStack stack, boolean simulate) {
+            if (io == IO.OUT) {
+                if (manualIOMode == ManualIOMode.DISABLED) {
+                    return stack;
+                }
+                if (manualIOMode == ManualIOMode.UNFILTERED) {
+                    return super.insertItemBundle(stack, simulate);
+                }
+            }
+            if (!filterHandler.test(stack)) {
+                return stack;
+            }
+            return super.insertItemBundle(stack, simulate);
+        }
+
+        @Override
+        public void stockInventoryItems(IItemHandler sourceInventory, ITransferAmountLimiter transferAmountLimiter,
+                                        ToIntFunction<ItemStack> itemKeepAmountProvider) {
+            ToIntFunction<ItemStack> wrappedItemKeepAmountProvider = itemStack -> {
+                if (io == IO.OUT) {
+                    if (manualIOMode == ManualIOMode.DISABLED) {
+                        return 0;
+                    }
+                    if (manualIOMode == ManualIOMode.UNFILTERED) {
+                        return itemKeepAmountProvider.applyAsInt(itemStack);
+                    }
+                }
+                if (!filterHandler.test(itemStack)) {
+                    return 0;
+                }
+                return itemKeepAmountProvider.applyAsInt(itemStack);
+            };
+            super.stockInventoryItems(sourceInventory, transferAmountLimiter, wrappedItemKeepAmountProvider);
         }
     }
 

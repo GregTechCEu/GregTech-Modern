@@ -3,16 +3,19 @@ package com.gregtechceu.gtceu.utils;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
+import com.gregtechceu.gtceu.common.item.TieredBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.emi.EmiApiAccessor;
 import com.gregtechceu.gtceu.core.mixins.jei.RecipesGuiAccessor;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
-import com.gregtechceu.gtceu.integration.recipeviewer.rei.recipe.GTRecipeREICategory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -36,6 +39,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -61,8 +65,6 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.screen.RecipeScreen;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
-import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.runtime.IRecipesGui;
@@ -600,7 +602,7 @@ public class GTUtil {
 
     public static ItemStack loadItemStack(CompoundTag compoundTag) {
         try {
-            Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(compoundTag.getString("id")));
+            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(compoundTag.getString("id")));
             int count = compoundTag.getInt("Count");
             ItemStack stack = new ItemStack(item, count);
             if (compoundTag.contains("tag", Tag.TAG_COMPOUND)) {
@@ -654,10 +656,6 @@ public class GTUtil {
                     Component.literal(String.valueOf(100 * probability))
                             .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))));
         });
-    }
-
-    public static boolean isSameItemSameTags(ItemStack s1, ItemStack s2) {
-        return (ItemStack.isSameItem(s1, s2) && Objects.equals(s1.getTag(), s2.getTag()));
     }
 
     public static <T> T getLast(List<T> list) {
@@ -751,15 +749,21 @@ public class GTUtil {
     }
 
     public static boolean textureResourceExists(@NotNull ResourceLocation location) {
-        var textureLocation = new ResourceLocation(location.getNamespace(),
-                "textures/%s.png".formatted(location.getPath()));
-        return resourceExists(textureLocation);
+        return resourceExists(GTDynamicResourcePack.TEXTURE_ID_CONVERTER.idToFile(location));
     }
 
     public static boolean modelResourceExists(@NotNull ResourceLocation location) {
-        var modelLocation = new ResourceLocation(location.getNamespace(),
-                "models/%s.json".formatted(location.getPath()));
-        return resourceExists(modelLocation);
+        return resourceExists(GTDynamicResourcePack.MODEL_ID_CONVERTER.idToFile(location));
+    }
+
+    public static int getTier(ItemLike itemLike) {
+        Item item = itemLike.asItem();
+        if (item instanceof IComponentItem componentItem) {
+            for (IItemComponent component : componentItem.getComponents()) {
+                if (component instanceof TieredBehaviour tieredBehaviour) return tieredBehaviour.tier();
+            }
+        }
+        return -1;
     }
 
     public static void openRecipeViewerCategory(GTRecipeCategory category) {
@@ -767,8 +771,6 @@ public class GTUtil {
             EmiCallWrapper.openRecipeCategory(category);
         } else if (GTCEu.Mods.isJEILoaded()) {
             JeiCallWrapper.openRecipeCategory(category);
-        } else if (GTCEu.Mods.isREILoaded()) {
-            ReiCallWrapper.openRecipeCategory(category);
         }
     }
 
@@ -806,20 +808,6 @@ public class GTUtil {
                         .getRecipeCategory(GTRecipeJEICategory.machineType(category));
                 accessor.gtceu$getLogic().setRecipeCategory(specificCategory);
             }
-        }
-    }
-
-    private static class ReiCallWrapper {
-
-        public static void openRecipeCategory(GTRecipeCategory category) {
-            List<CategoryIdentifier<?>> categories = category.getRecipeType().getCategories().stream()
-                    .map(GTRecipeREICategory::machineCategory)
-                    .collect(Collectors.toList());
-            ViewSearchBuilder.builder()
-                    .addCategories(categories)
-                    // switch to the requested category if possible
-                    .setPreferredOpenedCategory(GTRecipeREICategory.machineCategory(category))
-                    .open();
         }
     }
 }

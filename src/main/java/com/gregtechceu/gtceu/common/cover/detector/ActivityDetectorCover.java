@@ -31,7 +31,8 @@ public class ActivityDetectorCover extends DetectorCover {
 
         var workable = GTCapabilityHelper.getWorkable(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide);
 
-        boolean isCurrentlyWorking = workable.isActive() && workable.isWorkingEnabled();
+        boolean isCurrentlyWorking = workable.isActive() &&
+                (workable.isWorkingEnabled() || workable.isSuspendAfterFinish());
 
         setRedstoneSignalOutput(isCurrentlyWorking != isInverted() ? 15 : 0);
     }

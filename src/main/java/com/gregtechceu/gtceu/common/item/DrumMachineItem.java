@@ -6,27 +6,26 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProp
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class DrumMachineItem extends MetaMachineItem {
 
-    @NotNull
-    private Material mat = GTMaterials.NULL;
+    private final Material mat;
 
-    protected DrumMachineItem(MetaMachineBlock block, Properties properties, @NotNull Material mat) {
+    protected DrumMachineItem(MetaMachineBlock block, Properties properties, Material mat) {
         super(block, properties);
-        this.mat = mat;
+        this.mat = Objects.requireNonNull(mat, "Drum Material cannot be null");
     }
 
-    public static DrumMachineItem create(MetaMachineBlock block, Properties properties, @NotNull Material mat) {
+    public static DrumMachineItem create(MetaMachineBlock block, Properties properties, Material mat) {
         return new DrumMachineItem(block, properties, mat);
     }
 

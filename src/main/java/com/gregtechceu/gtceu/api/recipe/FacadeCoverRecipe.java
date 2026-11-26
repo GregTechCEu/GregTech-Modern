@@ -61,7 +61,7 @@ public class FacadeCoverRecipe implements CraftingRecipe {
                     return false;
                 }
                 foundBlockItem = true;
-            } else if (item.is(ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron))) {
+            } else if (item.is(ChemicalHelper.getTagOrThrow(TagPrefix.plate, GTMaterials.Iron))) {
                 if (platesCount > 1) {
                     return false;
                 }
@@ -97,7 +97,7 @@ public class FacadeCoverRecipe implements CraftingRecipe {
     @Override
     public NonNullList<Ingredient> getIngredients() {
         return NonNullList.of(Ingredient.EMPTY,
-                Ingredient.of(ChemicalHelper.getTag(TagPrefix.plate, GTMaterials.Iron)),
+                Ingredient.of(ChemicalHelper.getTagOrThrow(TagPrefix.plate, GTMaterials.Iron)),
                 Ingredient.of(Blocks.STONE));
     }
 

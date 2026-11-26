@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.trait.miner;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
 import net.minecraft.core.BlockPos;
@@ -17,7 +18,6 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 import lombok.Getter;
@@ -28,8 +28,6 @@ import java.util.List;
 public class LargeMinerLogic extends MinerLogic {
 
     private static final int CHUNK_LENGTH = 16;
-    private static final LootItemFunction DROP_MULTIPLIER = ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)
-            .build();
 
     @Setter
     @Getter
@@ -127,15 +125,18 @@ public class LargeMinerLogic extends MinerLogic {
             super.dropPostProcessing(blockDrops, outputs, blockState, builder);
             return;
         }
+        ServerLevel level = builder.getLevel();
+
         ItemStack fortunePick = this.pickaxeTool.copy();
         fortunePick.enchant(Enchantments.BLOCK_FORTUNE, getDropCountMultiplier());
-        LootParams params = builder.withParameter(LootContextParams.TOOL, fortunePick)
-                .create(LootContextParamSets.BLOCK);
-        LootContext context = new LootContext.Builder(params).create(null);
+
+        LootItemFunction fortuneDropMultiplier = ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE).build();
+        LootContext lootContext = ToolHelper.createBlockLootContext(level, blockState,
+                builder.withParameter(LootContextParams.TOOL, fortunePick));
 
         for (ItemStack outputStack : outputs) {
             if (ChemicalHelper.getPrefix(outputStack.getItem()) == TagPrefix.crushed) {
-                outputStack = DROP_MULTIPLIER.apply(outputStack, context);
+                outputStack = fortuneDropMultiplier.apply(outputStack.copy(), lootContext);
             }
             blockDrops.add(outputStack);
         }

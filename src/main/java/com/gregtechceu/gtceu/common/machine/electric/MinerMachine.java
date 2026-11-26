@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
@@ -141,25 +142,26 @@ public class MinerMachine extends WorkableTieredMachine
                 .coverChildrenWidth()
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .childSeparator(IIcon.EMPTY_2PX)
+                .themeOverride(GTGuiTheme.MULTIBLOCK_DISPLAY.getId())
                 .child(Text
                         .dynamic(() -> Objects.requireNonNull(
-                                getRecipeLogic().getCustomProgressLine().copy().withStyle(ChatFormatting.WHITE)))
+                                getRecipeLogic().getCustomProgressLine().copy()))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component.translatable("gtceu.machine.miner.x", startX.getIntValue(), mineX.getIntValue())
-                                .withStyle(ChatFormatting.WHITE))
+                        () -> Component.translatable("gtceu.machine.miner.x", startX.getIntValue(),
+                                mineX.getIntValue()))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component.translatable("gtceu.machine.miner.y", startY.getIntValue(), mineY.getIntValue())
-                                .withStyle(ChatFormatting.WHITE))
+                        () -> Component.translatable("gtceu.machine.miner.y", startY.getIntValue(),
+                                mineY.getIntValue()))
                         .asWidget())
                 .child(Text.dynamic(
-                        () -> Component.translatable("gtceu.machine.miner.z", startZ.getIntValue(), mineZ.getIntValue())
-                                .withStyle(ChatFormatting.WHITE))
+                        () -> Component.translatable("gtceu.machine.miner.z", startZ.getIntValue(),
+                                mineZ.getIntValue()))
                         .asWidget())
                 .child(Text
                         .dynamic(() -> Component.translatable("gtceu.universal.tooltip.working_area",
-                                workingArea.getIntValue(), workingArea.getIntValue()).withStyle(ChatFormatting.WHITE))
+                                workingArea.getIntValue(), workingArea.getIntValue()))
                         .asWidget())
                 .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.done")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))).asWidget()
@@ -190,7 +192,10 @@ public class MinerMachine extends WorkableTieredMachine
                                 .background(GuiTextures.DISPLAY)
                                 .child(textList.heightRel(1.0f).padding(3)))
                         .child(GTMuiMachineUtil
-                                .createSquareSlotGroupFromInventory(exportItems, "export_inv", syncManager)
+                                .createSquareSlotGroupFromInventory(exportItems.storage, "export_inv", slot -> {
+                                    slot.getSlot().accessibility(false, true);
+                                    return slot;
+                                }, syncManager)
                                 .verticalCenter())
                         .padding(4, 0));
     }

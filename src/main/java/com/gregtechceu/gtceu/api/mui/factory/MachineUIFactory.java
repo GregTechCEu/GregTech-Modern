@@ -19,6 +19,7 @@ import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -35,13 +36,13 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
     public void open(ServerPlayer player, IMuiMachine machine) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(machine);
-        if (machine.isRemoved()) {
+        if (machine.self().isRemoved()) {
             throw new IllegalArgumentException("Can't open invalid MetaMachine GUI!");
         }
-        if (player.level() != machine.getLevel()) {
+        if (player.level() != machine.self().getLevel()) {
             throw new IllegalArgumentException("MetaMachine must be in same dimension as the player!");
         }
-        BlockPos pos = machine.getBlockPos();
+        BlockPos pos = machine.self().getBlockPos();
         PosGuiData data = new PosGuiData(player, pos);
         GuiManager.open(this, data, player);
     }
@@ -54,9 +55,9 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
     }
 
     @Override
-    public @NotNull IUIHolder<PosGuiData> getGuiHolder(PosGuiData data) {
+    public IUIHolder<PosGuiData> getGuiHolder(PosGuiData data) {
         MetaMachine machine = getMachine(data);
-        if (machine.getDefinition().getUI() != null) {
+        if (Objects.requireNonNull(machine).getDefinition().getUI() != null) {
             return machine.getDefinition().getUI();
         }
         return Objects.requireNonNull(castUIHolder(machine), "Found MetaMachine is not a gui holder!");
@@ -78,7 +79,7 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
         return new PosGuiData(player, buffer.readBlockPos());
     }
 
-    public static MetaMachine getMachine(PosGuiData data) {
+    public static @Nullable MetaMachine getMachine(PosGuiData data) {
         return MetaMachine.getMachine(data.getLevel(), data.getBlockPos());
     }
 
@@ -89,6 +90,6 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
     }
 
     public String getThemeId(PosGuiData data) {
-        return getMachine(data).getDefinition().getThemeId();
+        return Objects.requireNonNull(getMachine(data)).getDefinition().getThemeId();
     }
 }

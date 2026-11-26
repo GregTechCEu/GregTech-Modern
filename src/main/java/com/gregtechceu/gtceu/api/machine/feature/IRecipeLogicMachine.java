@@ -37,7 +37,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     @NotNull
     RecipeLogic getRecipeLogic();
 
-    default GTRecipe fullModifyRecipe(GTRecipe recipe) {
+    default @Nullable GTRecipe fullModifyRecipe(GTRecipe recipe) {
         return doModifyRecipe(RecipeHelper.trimRecipeOutputs(recipe, this.getOutputLimits()));
     }
 
@@ -187,5 +187,13 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     @Override
     default boolean isActive() {
         return getRecipeLogic().isActive();
+    }
+
+    default boolean isWaiting() {
+        return getRecipeLogic().isWaiting();
+    }
+
+    default boolean isSuspend() {
+        return getRecipeLogic().isSuspend();
     }
 }

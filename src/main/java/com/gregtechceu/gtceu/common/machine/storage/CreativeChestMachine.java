@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -57,13 +57,13 @@ public class CreativeChestMachine extends QuantumChestMachine {
     }
 
     private void setTicksPerCycle(int value) {
-        ticksPerCycle = value;
+        ticksPerCycle = Mth.clamp(value, 1, Integer.MAX_VALUE);
         autoOutput.setTicksPerCycle(ticksPerCycle);
         onItemChanged();
     }
 
     private void setItemsPerCycle(int value) {
-        itemsPerCycle = value;
+        itemsPerCycle = Mth.clamp(value, 1, Integer.MAX_VALUE);;
         onItemChanged();
     }
 
@@ -175,7 +175,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            if (!stored.isEmpty() && GTUtil.isSameItemSameTags(stored, stack)) return ItemStack.EMPTY;
+            if (!stored.isEmpty() && ItemStack.isSameItemSameTags(stored, stack)) return ItemStack.EMPTY;
             return stack;
         }
 

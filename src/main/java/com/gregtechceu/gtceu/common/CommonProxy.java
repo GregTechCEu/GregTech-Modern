@@ -15,8 +15,13 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
+import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
+import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilableBehavior;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.mui.modular_item.ModularArmorUIFactory;
+import com.gregtechceu.gtceu.api.mui.modular_item.ModularItemUIFactory;
 import com.gregtechceu.gtceu.api.multiblock.error.GTPatternErrors;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
@@ -43,18 +48,20 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
+import com.gregtechceu.gtceu.integration.ae2.AECompat;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
-import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -91,6 +98,8 @@ public class CommonProxy {
         // MUI stuff
         GuiManager.registerFactory(MachineUIFactory.INSTANCE);
         GuiManager.registerFactory(CoverUIFactory.INSTANCE);
+        GuiManager.registerFactory(ModularItemUIFactory.INSTANCE);
+        GuiManager.registerFactory(ModularArmorUIFactory.INSTANCE);
 
         // GTGuiTheme.registerThemes();
 
@@ -139,9 +148,6 @@ public class CommonProxy {
         GTCovers.init();
         GTCreativeModeTabs.init();
 
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-        GTMenuTypes.init(modBus);
-
         GTBlocks.init();
         GTFluids.init();
         GTEntityTypes.init();
@@ -153,6 +159,7 @@ public class CommonProxy {
         GTMachines.init();
 
         GTFoods.init();
+        GTItemModules.init();
         GTItems.init();
         GTDimensionMarkers.init();
         ChanceLogic.init();
@@ -166,9 +173,9 @@ public class CommonProxy {
         IndicatorGenerators.registerAddonGenerators();
 
         CustomBlockRotations.init();
-        KeyBind.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
+        SpoilableBehavior.init(FMLJavaModLoadingContext.get().getModEventBus());
 
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
@@ -225,6 +232,49 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
+    public void addSpoilTransferModifier(ModifyMachineEvent event) {
+        event.getBuilder().addRecipeModifier(GTRecipeModifiers.SPOILAGE_TRANSFER);
+    }
+
+    @SubscribeEvent
+    public void registerSpoilables(RegisterSpoilablesEvent event) {
+        if (GTCEu.isDev()) {
+            event.getBuilder()
+                    .ticks(10)
+                    .result(GTItems.SPOILABLE_2)
+                    .build()
+                    .attachTo(GTItems.SPOILABLE_1);
+            event.getBuilder()
+                    .ticks(40)
+                    .result(GTItems.SPOILABLE_3)
+                    .build()
+                    .attachTo(GTItems.SPOILABLE_2);
+            event.getBuilder()
+                    .ticks(10)
+                    .result(GTItems.SPOILABLE_4)
+                    .build()
+                    .attachTo(GTItems.SPOILABLE_3);
+            event.getBuilder()
+                    .ticks(10)
+                    .result(GTItems.SPOILABLE_5)
+                    .build()
+                    .attachTo(GTItems.SPOILABLE_4);
+            event.getBuilder()
+                    .ticks(10)
+                    .result(Items.DRAGON_EGG)
+                    .result(EntityType.PIG)
+                    .multiplyResult(3)
+                    .build()
+                    .attachTo(GTItems.ENTITY_SPOILABLE);
+        }
+        event.getBuilder()
+                .ticks(20 * 60 * 30)
+                .result(Items.GOLDEN_CARROT)
+                .build()
+                .attachTo(GTItems.MAGNETIC_GOLDEN_CARROT);
+    }
+
+    @SubscribeEvent
     public void modConstruct(FMLConstructModEvent event) {
         // this is done to delay initialization of content to be after KJS has set up.
         event.enqueueWork(CommonProxy::init);
@@ -271,6 +321,10 @@ public class CommonProxy {
             if (GTCEu.Mods.isCCTweakedLoaded()) {
                 GTCEu.LOGGER.info("CC: Tweaked found. Enabling integration...");
                 CCTweakedPlugin.init();
+            }
+
+            if (GTCEu.Mods.isAE2Loaded()) {
+                AECompat.init();
             }
         });
     }

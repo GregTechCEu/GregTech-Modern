@@ -40,9 +40,11 @@ public class PropertyKey<T extends IMaterialProperty> {
 
     protected T constructDefault() {
         try {
-            return type.newInstance();
+            return type.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
-            return null;
+            if (e instanceof NoSuchMethodException)
+                throw new IllegalStateException("Material property should have a no-args constructor");
+            throw new RuntimeException(e);
         }
     }
 

@@ -1,10 +1,14 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
 import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.NBTPredicateIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.EqualsNBTPredicate;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
@@ -13,14 +17,22 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.DifferenceIngredient;
 
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
@@ -30,8 +42,7 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 public class CraftingRecipeLoader {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        // todo facades
-        // registerFacadeRecipe(provider, Iron, 4);
+        netheritePlatingRecipes(provider);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "small_wooden_pipe", ChemicalHelper.get(pipeSmallFluid, Wood),
                 "sWr", 'W', ItemTags.PLANKS);
@@ -76,6 +87,23 @@ public class CraftingRecipeLoader {
                 "XCX", "XEX", 'X', new MaterialEntry(foil, Zinc), 'C', CustomTags.LV_CIRCUITS, 'E',
                 new MaterialEntry(plate, Ruby));
 
+        VanillaRecipeHelper.addShapedRecipe(provider, "item_composite_filter", COMPOSITE_ITEM_FILTER.asStack(), "XCX",
+                "SFS", "XCX", 'X', new MaterialEntry(foil, Zinc), 'F', ITEM_FILTER.asStack(), 'C',
+                CustomTags.LV_CIRCUITS, 'S', new MaterialEntry(plate, Steel));
+
+        VanillaRecipeHelper.addShapedRecipe(provider, "fluid_composite_filter_lapis", COMPOSITE_FLUID_FILTER.asStack(),
+                "XCX",
+                "SFS", "XCX", 'X', new MaterialEntry(foil, Zinc), 'F', FLUID_FILTER.asStack(), 'C',
+                CustomTags.LV_CIRCUITS, 'S', new MaterialEntry(plate, Lapis));
+        VanillaRecipeHelper.addShapedRecipe(provider, "fluid_composite_filter_lazurite",
+                COMPOSITE_FLUID_FILTER.asStack(), "XCX",
+                "SFS", "XCX", 'X', new MaterialEntry(foil, Zinc), 'F', FLUID_FILTER.asStack(), 'C',
+                CustomTags.LV_CIRCUITS, 'S', new MaterialEntry(plate, Lazurite));
+        VanillaRecipeHelper.addShapedRecipe(provider, "fluid_composite_filter_sodalite",
+                COMPOSITE_FLUID_FILTER.asStack(), "XCX",
+                "SFS", "XCX", 'X', new MaterialEntry(foil, Zinc), 'F', FLUID_FILTER.asStack(), 'C',
+                CustomTags.LV_CIRCUITS, 'S', new MaterialEntry(plate, Sodalite));
+
         VanillaRecipeHelper.addShapedRecipe(provider, "plank_to_wooden_shape", WOODEN_FORM_EMPTY.asStack(), "   ",
                 " X ", "s  ", 'X', ItemTags.PLANKS);
         VanillaRecipeHelper.addShapedRecipe(provider, "wooden_shape_brick", WOODEN_FORM_BRICK.asStack(), "k ", " X",
@@ -91,8 +119,12 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addSmeltingRecipe(provider, "fireclay_brick", COMPRESSED_FIRECLAY.asStack(),
                 FIRECLAY_BRICK.asStack(), 0.3f);
 
-        VanillaRecipeHelper.addSmeltingRecipe(provider, "wrought_iron_nugget", ChemicalHelper.getTag(nugget, Iron),
+        VanillaRecipeHelper.addSmeltingRecipe(provider, "wrought_iron_nugget",
+                ChemicalHelper.getTagOrThrow(nugget, Iron),
                 ChemicalHelper.get(nugget, WroughtIron));
+        VanillaRecipeHelper.addSmeltingRecipe(provider, "wrought_iron_ingot",
+                ChemicalHelper.getTagOrThrow(ingot, Iron),
+                ChemicalHelper.get(ingot, WroughtIron));
         VanillaRecipeHelper.addShapelessRecipe(provider, "nugget_disassembling_iron",
                 new ItemStack(Items.IRON_NUGGET, 9), new ItemStack(Items.IRON_INGOT), 's');
 
@@ -174,41 +206,30 @@ public class CraftingRecipeLoader {
 
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_bottle", SHAPE_EXTRUDER_BOTTLE.asStack(),
                 "  x", " S ", "   ", 'S', SHAPE_EXTRUDER_RING.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_gear", SHAPE_EXTRUDER_GEAR.asStack(), "x  ",
-                " S ", "   ", 'S', SHAPE_EXTRUDER_RING.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_block", SHAPE_EXTRUDER_BLOCK.asStack(),
                 "x  ", " S ", "   ", 'S', SHAPE_EXTRUDER_INGOT.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_pipe_huge",
-                SHAPE_EXTRUDER_PIPE_HUGE.asStack(), "   ", " S ", "  x", 'S', SHAPE_EXTRUDER_BOLT.asStack());
+                SHAPE_EXTRUDER_PIPE_HUGE.asStack(), "   ", "S x", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_pipe_large",
-                SHAPE_EXTRUDER_PIPE_LARGE.asStack(), "   ", " Sx", "   ", 'S', SHAPE_EXTRUDER_BOLT.asStack());
+                SHAPE_EXTRUDER_PIPE_LARGE.asStack(), "   ", " S ", "x  ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_pipe_normal",
-                SHAPE_EXTRUDER_PIPE_NORMAL.asStack(), "  x", " S ", "   ", 'S', SHAPE_EXTRUDER_BOLT.asStack());
+                SHAPE_EXTRUDER_PIPE_NORMAL.asStack(), "   ", "xS ", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_pipe_small",
-                SHAPE_EXTRUDER_PIPE_SMALL.asStack(), " x ", " S ", "   ", 'S', SHAPE_EXTRUDER_BOLT.asStack());
+                SHAPE_EXTRUDER_PIPE_SMALL.asStack(), "   ", " Sx", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_pipe_tiny",
-                SHAPE_EXTRUDER_PIPE_TINY.asStack(), "x  ", " S ", "   ", 'S', SHAPE_EXTRUDER_BOLT.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_wire", SHAPE_EXTRUDER_WIRE.asStack(), " x ",
-                " S ", "   ", 'S', SHAPE_EXTRUDER_ROD.asStack());
+                SHAPE_EXTRUDER_PIPE_TINY.asStack(), "  x", " S ", "   ", 'S', SHAPE_EMPTY.asStack());
+        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_wire",
+                SHAPE_EXTRUDER_WIRE.asStack(), " x ", " S ", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_ingot", SHAPE_EXTRUDER_INGOT.asStack(),
                 "x  ", " S ", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_cell", SHAPE_EXTRUDER_CELL.asStack(), "   ",
                 " Sx", "   ", 'S', SHAPE_EXTRUDER_RING.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_ring", SHAPE_EXTRUDER_RING.asStack(), "   ",
                 " S ", " x ", 'S', SHAPE_EMPTY.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_bolt", SHAPE_EXTRUDER_BOLT.asStack(), "x  ",
-                " S ", "   ", 'S', SHAPE_EXTRUDER_ROD.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_rod", SHAPE_EXTRUDER_ROD.asStack(), "   ",
-                " Sx", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_plate", SHAPE_EXTRUDER_PLATE.asStack(),
                 "x  ", " S ", "   ", 'S', SHAPE_EXTRUDER_FOIL.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_gear_small",
-                SHAPE_EXTRUDER_GEAR_SMALL.asStack(), " x ", " S ", "   ", 'S', SHAPE_EXTRUDER_RING.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_foil", SHAPE_EXTRUDER_FOIL.asStack(), "   ",
                 " S ", "  x", 'S', SHAPE_EMPTY.asStack());
-        VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_extruder_rotor", SHAPE_EXTRUDER_ROTOR.asStack(),
-                "   ", " S ", "x  ", 'S', SHAPE_EMPTY.asStack());
-
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_pill", SHAPE_MOLD_PILL.asStack(), "  h",
                 "  S", "   ", 'S', SHAPE_EMPTY.asStack());
         VanillaRecipeHelper.addStrictShapedRecipe(provider, "shape_mold_rotor", SHAPE_MOLD_ROTOR.asStack(), "  h",
@@ -253,18 +274,25 @@ public class CraftingRecipeLoader {
                 "CSC", "RBR", "LdL", 'C', CustomTags.ULV_CIRCUITS, 'S', new MaterialEntry(screw, Steel), 'R',
                 new MaterialEntry(ring, Rubber), 'B', GTItems.BATTERY_LV_SODIUM, 'L',
                 new MaterialEntry(lens, Glass));
-        VanillaRecipeHelper.addShapedRecipe(provider, "fluid_jetpack", GTItems.LIQUID_FUEL_JETPACK.asStack(), "xCw",
+        VanillaRecipeHelper.addShapedRecipe(provider, "liquid_fuel_thruster", GTItems.LIQUID_FUEL_THRUSTER.asStack(),
+                "xCw",
                 "SUS", "RIR", 'C', CustomTags.LV_CIRCUITS, 'S', GTItems.FLUID_CELL_LARGE_STEEL.asStack(), 'U',
                 GTItems.ELECTRIC_PUMP_LV.asStack(), 'R', new MaterialEntry(rotor, Lead), 'I',
                 new MaterialEntry(pipeSmallFluid, Potin));
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_jetpack", GTItems.ELECTRIC_JETPACK.asStack(), "xCd",
-                "TBT", "I I", 'C', CustomTags.MV_CIRCUITS, 'T', GTItems.POWER_THRUSTER.asStack(), 'B',
-                GTItems.BATTERY_MV_LITHIUM.asStack(), 'I', new MaterialEntry(wireGtDouble, AnnealedCopper));
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_jetpack_advanced",
-                GTItems.ELECTRIC_JETPACK_ADVANCED.asStack(), "xJd", "TBT", "WCW", 'J',
-                GTItems.ELECTRIC_JETPACK.asStack(), 'T', GTItems.POWER_THRUSTER_ADVANCED.asStack(), 'B',
-                ENERGIUM_CRYSTAL.asStack(), 'W', new MaterialEntry(wireGtQuadruple, Gold), 'C',
-                CustomTags.HV_CIRCUITS);
+        VanillaRecipeHelper.addShapedRecipe(provider, "hydraulic_helmet", HYDRAULIC_HELMET.asStack(),
+                "SPS", "FAF", "PdP", 'S', new MaterialEntry(screw, Steel), 'P', new MaterialEntry(plateDouble, Steel),
+                'F', new MaterialEntry(frameGt, Steel), 'A', Items.IRON_HELMET);
+        VanillaRecipeHelper.addShapedRecipe(provider, "hydraulic_chestplate", HYDRAULIC_CHESTPLATE.asStack(),
+                "PdP", "FAF", "SPS", 'S', new MaterialEntry(screw, Steel), 'P', new MaterialEntry(plateDouble, Steel),
+                'F', new MaterialEntry(frameGt, Steel), 'A', Items.IRON_CHESTPLATE);
+        VanillaRecipeHelper.addShapedRecipe(provider, "hydraulic_leggings", HYDRAULIC_LEGGINGS.asStack(),
+                "ISI", "FAF", "PdP", 'I', ELECTRIC_PISTON_LV.asStack(), 'S', new MaterialEntry(screw, Steel),
+                'F', new MaterialEntry(frameGt, Steel), 'P', new MaterialEntry(plateDouble, Steel),
+                'A', Items.IRON_LEGGINGS);
+        VanillaRecipeHelper.addShapedRecipe(provider, "hydraulic_boots", HYDRAULIC_BOOTS.asStack(),
+                "ISI", "PAP", "FdF", 'I', ELECTRIC_PISTON_LV.asStack(), 'S', new MaterialEntry(screw, Steel),
+                'F', new MaterialEntry(frameGt, Steel), 'P', new MaterialEntry(plateDouble, Steel), 'A',
+                Items.IRON_BOOTS);
         VanillaRecipeHelper.addShapedRecipe(provider, "nano_helmet", GTItems.NANO_HELMET.asStack(), "PPP", "PNP", "xEd",
                 'P', GTItems.CARBON_FIBER_PLATE.asStack(), 'N', GTItems.NIGHTVISION_GOGGLES.asStack(), 'E',
                 GTItems.ENERGIUM_CRYSTAL.asStack());
@@ -274,11 +302,6 @@ public class CraftingRecipeLoader {
                 "PxP", 'P', GTItems.CARBON_FIBER_PLATE.asStack(), 'E', GTItems.ENERGIUM_CRYSTAL.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, "nano_boots", GTItems.NANO_BOOTS.asStack(), "PxP", "PEP", 'P',
                 GTItems.CARBON_FIBER_PLATE.asStack(), 'E', GTItems.ENERGIUM_CRYSTAL.asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, "nano_chestplate_advanced",
-                GTItems.NANO_CHESTPLATE_ADVANCED.asStack(), "xJd", "PNP", "WCW", 'J',
-                GTItems.ELECTRIC_JETPACK_ADVANCED.asStack(), 'P', GTItems.LOW_POWER_INTEGRATED_CIRCUIT.asStack(), 'N',
-                GTItems.NANO_CHESTPLATE.asStack(), 'W', new MaterialEntry(wireGtQuadruple, Platinum), 'C',
-                CustomTags.IV_CIRCUITS);
         VanillaRecipeHelper.addShapedRecipe(provider, "gravitation_engine", GTItems.GRAVITATION_ENGINE.asStack(), "ESE",
                 "POP", "ESE", 'E', GTItems.EMITTER_LuV.asStack(), 'S', new MaterialEntry(wireGtQuadruple, Osmium),
                 'P', new MaterialEntry(plateDouble, Iridium), 'O', GTItems.ENERGY_LAPOTRONIC_ORB.asStack());
@@ -314,6 +337,51 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "huge_duct_%s".formatted(material.getName()),
                 GTBlocks.DUCT_PIPES[DuctPipeType.HUGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
                 'X', new MaterialEntry(plateDouble, material));
+    }
+
+    private static void netheritePlatingRecipes(Consumer<FinishedRecipe> provider) {
+        for (var armor : List.of(HYDRAULIC_HELMET, HYDRAULIC_CHESTPLATE, HYDRAULIC_LEGGINGS, HYDRAULIC_BOOTS,
+                NANO_HELMET, NANO_CHESTPLATE, NANO_LEGGINGS, NANO_BOOTS,
+                QUANTUM_HELMET, QUANTUM_CHESTPLATE, QUANTUM_LEGGINGS, QUANTUM_BOOTS)) {
+            ItemStack result = new ItemStack(armor.get());
+            result.getOrCreateTag().putBoolean(ModularArmorItem.NETHERITE_PLATED_TAG, true);
+
+            var armorItem = armor.get().getDefaultInstance();
+            Ingredient base = DifferenceIngredient.of(Ingredient.of(armorItem),
+                    NBTPredicateIngredient.of(armorItem,
+                            new EqualsNBTPredicate(ModularArmorItem.NETHERITE_PLATED_TAG, ByteTag.valueOf(true))));
+
+            provider.accept(new FinishedRecipe() {
+
+                @Override
+                public void serializeRecipeData(JsonObject json) {
+                    json.add("template", Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE).toJson());
+                    json.add("addition", Ingredient.of(Items.NETHERITE_INGOT).toJson());
+                    json.add("base", base.toJson());
+                    json.add("result", Ingredient.of(result).toJson());
+                }
+
+                @Override
+                public ResourceLocation getId() {
+                    return GTCEu.id("netherite_plated_" + armor.getId().getPath());
+                }
+
+                @Override
+                public RecipeSerializer<?> getType() {
+                    return RecipeSerializer.SMITHING_TRANSFORM;
+                }
+
+                @Override
+                public @Nullable JsonObject serializeAdvancement() {
+                    return null;
+                }
+
+                @Override
+                public @Nullable ResourceLocation getAdvancementId() {
+                    return null;
+                }
+            });
+        }
     }
 
     // private static void registerFacadeRecipe(Consumer<FinishedRecipe> provider, Material material, int facadeAmount)

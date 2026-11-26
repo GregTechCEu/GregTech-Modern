@@ -15,6 +15,9 @@ import net.minecraft.world.level.material.Fluid;
 
 public class CustomTags {
 
+    public static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = TagUtil.optionalTag(BuiltInRegistries.ITEM,
+            ResourceLocation.fromNamespaceAndPath("c", "hidden_from_recipe_viewers"));
+
     // Added Vanilla tags
     public static final TagKey<Item> PISTONS = TagUtil.createItemTag("pistons");
     public static final TagKey<Item> CONCRETE_ITEM = TagUtil.createItemTag("concretes");
@@ -123,8 +126,11 @@ public class CustomTags {
     public static final TagKey<Item> SENSORS = TagUtil.createModItemTag("sensors");
 
     public static final TagKey<Item> PPE_ARMOR = TagUtil.createModItemTag("ppe_armor");
-    public static final TagKey<Item> STEP_BOOTS = TagUtil.createModItemTag("step_boots");
+    public static final TagKey<Item> FIRE_IMMUNE_WEARABLES = TagUtil.createModItemTag("fire_immune_wearables");
+    public static final TagKey<Item> FALL_IMMUNE_WEARABLES = TagUtil.createModItemTag("fall_immune_wearables");
+
     public static final TagKey<Item> RUBBER_LOGS = TagUtil.createModItemTag("rubber_logs");
+    public static final TagKey<Item> FLUID_CELLS = TagUtil.createModItemTag("fluid_cells");
 
     public static final TagKey<Block> CLEANROOM_DOORS = TagUtil.createModBlockTag("cleanroom_doors");
 
@@ -208,7 +214,7 @@ public class CustomTags {
     public static final TagKey<Block> CHARCOAL_PILE_IGNITER_WALLS = TagUtil.createModBlockTag(
             "charcoal_pile_igniter_walls");
     public static final TagKey<Block> CREATE_WRENCH_PICKUP = TagUtil.optionalTag(BuiltInRegistries.BLOCK,
-            new ResourceLocation("create", "wrench_pickup"));
+            ResourceLocation.fromNamespaceAndPath("create", "wrench_pickup"));
 
     public static final TagKey<Block> TALL_PLANTS = TagUtil.createModBlockTag("tall_plants");
 
@@ -223,11 +229,17 @@ public class CustomTags {
     public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createModFluidTag("lighter_fluids");
     public static final TagKey<Fluid> POTION_FLUIDS = TagUtil.createFluidTag("potion");
 
+    public static final TagKey<Fluid> FREEZABLE_FLUIDS = TagUtil.createModFluidTag("freezable_fluids");
+    /** @deprecated Use FREEZABLE_FLUIDS for fluids requiring metal freezing. */
+    @Deprecated
     public static final TagKey<Fluid> MOLTEN_FLUIDS = TagUtil.createFluidTag("molten");
     public static final TagKey<Fluid> LIQUID_FLUIDS = TagUtil.createFluidTag("liquid");
     public static final TagKey<Fluid> PLASMA_FLUIDS = TagUtil.createFluidTag("plasmatic");
 
     public static final TagKey<Fluid> HPCA_COOLANTS = TagUtil.createModFluidTag("hpca_coolants");
+
+    public static final TagKey<Item> LENSES = TagUtil.createItemTag("lenses");
+    public static final TagKey<Item> GLASS_LENS = TagUtil.createItemTag("lenses/glass");
 
     public static final TagKey<Item> WHITE_LENS = TagUtil.createItemTag("lenses/white");
     public static final TagKey<Item> ORANGE_LENS = TagUtil.createItemTag("lenses/orange");
@@ -247,7 +259,7 @@ public class CustomTags {
     public static final TagKey<Item> BLACK_LENS = TagUtil.createItemTag("lenses/black");
 
     @SuppressWarnings("unchecked")
-    public static final TagKey<Item>[] LENSES = new TagKey[] {
+    public static final TagKey<Item>[] ALL_LENSES = new TagKey[] {
             WHITE_LENS,
             ORANGE_LENS,
             MAGENTA_LENS,
@@ -264,42 +276,5 @@ public class CustomTags {
             GREEN_LENS,
             RED_LENS,
             BLACK_LENS
-    };
-
-    public static final TagKey<Item> WHITE_DYE = TagUtil.createItemTag("dyes/white");
-    public static final TagKey<Item> ORANGE_DYE = TagUtil.createItemTag("dyes/orange");
-    public static final TagKey<Item> MAGENTA_DYE = TagUtil.createItemTag("dyes/magenta");
-    public static final TagKey<Item> LIGHT_BLUE_DYE = TagUtil.createItemTag("dyes/light_blue");
-    public static final TagKey<Item> YELLOW_DYE = TagUtil.createItemTag("dyes/yellow");
-    public static final TagKey<Item> LIME_DYE = TagUtil.createItemTag("dyes/lime");
-    public static final TagKey<Item> PINK_DYE = TagUtil.createItemTag("dyes/pink");
-    public static final TagKey<Item> GRAY_DYE = TagUtil.createItemTag("dyes/gray");
-    public static final TagKey<Item> LIGHT_GRAY_DYE = TagUtil.createItemTag("dyes/light_gray");
-    public static final TagKey<Item> CYAN_DYE = TagUtil.createItemTag("dyes/cyan");
-    public static final TagKey<Item> PURPLE_DYE = TagUtil.createItemTag("dyes/purple");
-    public static final TagKey<Item> BLUE_DYE = TagUtil.createItemTag("dyes/blue");
-    public static final TagKey<Item> BROWN_DYE = TagUtil.createItemTag("dyes/brown");
-    public static final TagKey<Item> GREEN_DYE = TagUtil.createItemTag("dyes/green");
-    public static final TagKey<Item> RED_DYE = TagUtil.createItemTag("dyes/red");
-    public static final TagKey<Item> BLACK_DYE = TagUtil.createItemTag("dyes/black");
-
-    @SuppressWarnings("unchecked")
-    public static final TagKey<Item>[] DYES = new TagKey[] {
-            WHITE_DYE,
-            ORANGE_DYE,
-            MAGENTA_DYE,
-            LIGHT_BLUE_DYE,
-            YELLOW_DYE,
-            LIME_DYE,
-            PINK_DYE,
-            GRAY_DYE,
-            LIGHT_GRAY_DYE,
-            CYAN_DYE,
-            PURPLE_DYE,
-            BLUE_DYE,
-            BROWN_DYE,
-            GREEN_DYE,
-            RED_DYE,
-            BLACK_DYE
     };
 }

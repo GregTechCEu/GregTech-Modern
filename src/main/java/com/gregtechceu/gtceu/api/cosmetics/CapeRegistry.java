@@ -118,7 +118,7 @@ public class CapeRegistry extends SavedData {
                 String capeId = capesTag.getString(j);
                 if (capeId.isEmpty())
                     continue;
-                capes.add(new ResourceLocation(capeId));
+                capes.add(ResourceLocation.parse(capeId));
             }
             UNLOCKED_CAPES.put(uuid, capes);
         }
@@ -130,7 +130,7 @@ public class CapeRegistry extends SavedData {
             if (capeId.isEmpty())
                 continue;
             UUID uuid = entryTag.getUUID("owner");
-            CURRENT_CAPES.put(uuid, new ResourceLocation(capeId));
+            CURRENT_CAPES.put(uuid, ResourceLocation.parse(capeId));
         }
 
         return this;

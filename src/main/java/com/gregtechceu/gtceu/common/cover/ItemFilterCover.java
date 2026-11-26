@@ -4,11 +4,13 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
+import com.gregtechceu.gtceu.api.cover.filter.Filters;
 import com.gregtechceu.gtceu.api.cover.filter.SmartItemFilter;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.transfer.item.ITransferAmountLimiter;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
@@ -19,6 +21,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import brachy.modularui.factory.SidedPosGuiData;
@@ -28,8 +31,9 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.ToIntFunction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -37,12 +41,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class ItemFilterCover extends CoverBehavior implements IMuiCover {
 
-    protected ItemFilter itemFilter;
+    protected @Nullable Filter<ItemStack> itemFilter;
     @Setter
     @SaveField
     @Getter
     protected FilterMode filterMode = FilterMode.FILTER_INSERT;
-    private FilteredItemHandlerWrapper itemFilterWrapper;
+    private @Nullable FilteredItemHandlerWrapper itemFilterWrapper;
     @Setter
     @SaveField
     @Getter
@@ -52,9 +56,9 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
         super(definition, coverHolder, attachedSide);
     }
 
-    public ItemFilter getItemFilter() {
+    public Filter<ItemStack> getItemFilter() {
         if (itemFilter == null) {
-            itemFilter = ItemFilter.loadFilter(attachItem);
+            itemFilter = Filters.loadItemFilter(attachItem);
             if (itemFilter instanceof SmartItemFilter smart && coverHolder instanceof MachineCoverContainer mcc) {
                 var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getBlockPos());
                 if (machine != null) smart.setModeFromMachine(machine.getDefinition().getName());
@@ -69,7 +73,7 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public @Nullable IItemHandlerModifiable getItemHandlerCap(IItemHandlerModifiable defaultValue) {
+    public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable IItemHandlerModifiable defaultValue) {
         if (defaultValue == null) {
             return null;
         }
@@ -125,7 +129,7 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
         }
 
         @Override
-        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if (filterMode == FilterMode.FILTER_INSERT) {
                 if (allowFlow == ManualIOMode.DISABLED) {
                     return ItemStack.EMPTY;
@@ -139,6 +143,42 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
                 return ItemStack.EMPTY;
             }
             return simulate ? result : super.extractItem(slot, amount, false);
+        }
+
+        @Override
+        public ItemStack insertItemBundle(ItemStack stack, boolean simulate) {
+            if (filterMode == FilterMode.FILTER_EXTRACT) {
+                if (allowFlow == ManualIOMode.DISABLED) {
+                    return stack;
+                }
+                if (allowFlow == ManualIOMode.UNFILTERED) {
+                    return super.insertItemBundle(stack, simulate);
+                }
+            }
+            if (!getItemFilter().test(stack)) {
+                return stack;
+            }
+            return super.insertItemBundle(stack, simulate);
+        }
+
+        @Override
+        public void stockInventoryItems(IItemHandler sourceInventory, ITransferAmountLimiter transferAmountLimiter,
+                                        ToIntFunction<ItemStack> itemKeepAmountProvider) {
+            ToIntFunction<ItemStack> wrappedItemKeepAmountProvider = itemStack -> {
+                if (filterMode == FilterMode.FILTER_EXTRACT) {
+                    if (allowFlow == ManualIOMode.DISABLED) {
+                        return 0;
+                    }
+                    if (allowFlow == ManualIOMode.UNFILTERED) {
+                        return itemKeepAmountProvider.applyAsInt(itemStack);
+                    }
+                }
+                if (!getItemFilter().test(itemStack)) {
+                    return 0;
+                }
+                return itemKeepAmountProvider.applyAsInt(itemStack);
+            };
+            super.stockInventoryItems(sourceInventory, transferAmountLimiter, wrappedItemKeepAmountProvider);
         }
     }
 
@@ -154,7 +194,7 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
         setAllowFlow(ManualIOMode.values()[tag.getInt("manualIO")]);
         setFilterMode(FilterMode.values()[tag.getInt("filterMode")]);
-        itemFilter = ItemFilter.loadFilter(ItemStack.of(tag.getCompound("filter")));
+        itemFilter = Filters.loadItemFilter(ItemStack.of(tag.getCompound("filter")));
         super.pasteConfig(player, tag);
     }
 }

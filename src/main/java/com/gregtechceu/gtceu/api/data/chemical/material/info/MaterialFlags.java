@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class MaterialFlags {
 
     private final Set<MaterialFlag> flags = new HashSet<>();
@@ -32,7 +33,7 @@ public class MaterialFlags {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        flags.forEach(f -> sb.append(f.toString()).append("\n"));
+        flags.forEach(f -> sb.append(f).append("\n"));
         return sb.toString();
     }
 

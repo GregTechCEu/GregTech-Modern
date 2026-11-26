@@ -3,3 +3,5 @@
 5f59025e1044042dcd0913799d873f810f2fb220
 # Drop Fabric Support (1.20) (#735)
 5f9f2d8303d19aa1c749ee5ca8cd4149d90520f0
+# apply spotless formatting to JSON files (#5274)
+f7b760a1915429945d17725ddc36a4735c9b3219

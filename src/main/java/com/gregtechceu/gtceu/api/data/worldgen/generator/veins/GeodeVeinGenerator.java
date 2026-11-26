@@ -294,7 +294,8 @@ public class GeodeVeinGenerator extends VeinGenerator {
     protected BlockState getStateFromEither(Either<BlockStateProvider, Material> either, GeodeBlockSettings settings,
                                             RandomSource random, BlockPos pos) {
         return either.map(provider -> provider.getState(random, pos),
-                material -> ChemicalHelper.getBlock(settings.providerMaterialPrefix, material).defaultBlockState());
+                material -> ChemicalHelper.getBlockOrThrow(settings.providerMaterialPrefix, material)
+                        .defaultBlockState());
     }
 
     @Override

@@ -1,56 +1,77 @@
 package com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
-import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.*;
+import net.minecraft.network.FriendlyByteBuf;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class MonitorGroupTransformer implements ValueTransformer<MonitorGroup> {
 
     @Override
-    public CompoundTag serializeNBT(MonitorGroup value, ValueTransformer.TransformerContext<MonitorGroup> context) {
-        CompoundTag tag = new CompoundTag();
-        tag.putString("name", value.getName());
-        ListTag list = new ListTag();
-        value.getMonitorPositions().forEach(pos -> list.add(NbtUtils.writeBlockPos(pos)));
-        if (value.getTargetRaw() != null) {
-            tag.put("targetPos", NbtUtils.writeBlockPos(value.getTargetRaw()));
-            if (value.getTargetCoverSide() != null) {
-                tag.putString("targetSide", value.getTargetCoverSide().getSerializedName());
-            }
-        }
-        tag.put("positions", list);
-        tag.putInt("dataSlot", value.getDataSlot());
-        tag.put("items", value.getItemStackHandler().serializeNBT());
-        tag.put("placeholderSlots", value.getPlaceholderSlotsHandler().serializeNBT());
-        return tag;
+    public Tag serializeNBT(MonitorGroup value, ValueTransformer.TransformerContext<MonitorGroup> context) {
+        return MonitorGroup.CODEC.encodeStart(context.nbtOps(), value).getOrThrow(false, GTCEu.LOGGER::error);
     }
 
     @Override
     public @Nullable MonitorGroup deserializeNBT(Tag tag, ValueTransformer.TransformerContext<MonitorGroup> context) {
         var compoundTag = ValueTransformer.assertTagType(CompoundTag.class, tag, context);
-        CustomItemStackHandler handler = new CustomItemStackHandler(),
-                placeholderSlotsHandler = new CustomItemStackHandler();
-        handler.deserializeNBT(compoundTag.getCompound("items"));
-        placeholderSlotsHandler.deserializeNBT(compoundTag.getCompound("placeholderSlots"));
-        var group = new MonitorGroup(compoundTag.getString("name"), handler, placeholderSlotsHandler);
-        ListTag list = compoundTag.getList("positions", Tag.TAG_COMPOUND);
-        for (int i = 0; i < list.size(); i++) {
-            group.add(NbtUtils.readBlockPos(list.getCompound(i)));
-        }
-        if (compoundTag.contains("targetPos", Tag.TAG_COMPOUND)) {
-            group.setTarget(NbtUtils.readBlockPos(compoundTag.getCompound("targetPos")));
-            if (compoundTag.contains("targetSide", Tag.TAG_STRING)) {
-                group.setTargetCoverSide(Direction.byName(compoundTag.getString("targetSide")));
+
+        // Backwards compat
+
+        var positions = compoundTag.contains("positions", Tag.TAG_LIST) ?
+                compoundTag.getList("positions", Tag.TAG_COMPOUND) : null;
+        var placeholderItems = compoundTag.contains("placeholderSlots", Tag.TAG_COMPOUND) ?
+                compoundTag.getCompound("placeholderSlots") : null;
+        var targetPos = compoundTag.contains("targetPos", Tag.TAG_COMPOUND) ? compoundTag.getCompound("targetPos") :
+                null;
+        var items = compoundTag.contains("items", Tag.TAG_COMPOUND) ? compoundTag.getCompound("items") : null;
+
+        if (positions != null && !compoundTag.contains("monitorPositions")) {
+            List<BlockPos> posList = new ArrayList<>();
+
+            for (int i = 0; i < positions.size(); i++) {
+                CompoundTag posTag = positions.getCompound(i);
+                posList.add(NbtUtils.readBlockPos(posTag));
             }
-            if (compoundTag.contains("dataSlot", Tag.TAG_INT)) {
-                group.setDataSlot(compoundTag.getInt("dataSlot"));
-            }
+
+            compoundTag.put("monitorPositions", BlockPos.CODEC.listOf().encodeStart(context.nbtOps(), posList)
+                    .getOrThrow(false, GTCEu.LOGGER::error));
         }
-        return group;
+
+        if (placeholderItems != null && !compoundTag.contains("placeholderItems")) {
+            compoundTag.put("placeholderItems", Objects.requireNonNull(placeholderItems.get("Items")));
+            compoundTag.remove("placeholderSlots");
+        }
+
+        if (targetPos != null) {
+            BlockPos pos = NbtUtils.readBlockPos(targetPos);
+            compoundTag.put("targetPos",
+                    BlockPos.CODEC.encodeStart(context.nbtOps(), pos).getOrThrow(false, GTCEu.LOGGER::error));
+        }
+
+        if (items != null) {
+            compoundTag.put("items", Objects.requireNonNull(items.get("Items")));
+        }
+
+        return MonitorGroup.CODEC.parse(context.nbtOps(), tag).getOrThrow(false, GTCEu.LOGGER::error);
+    }
+
+    @Override
+    public void writeToPacket(FriendlyByteBuf buf, MonitorGroup value, TransformerContext<MonitorGroup> context) {
+        buf.writeNbt((CompoundTag) serializeNBT(value, context));
+    }
+
+    @Override
+    public @Nullable MonitorGroup readFromPacket(FriendlyByteBuf buf, TransformerContext<MonitorGroup> context) {
+        return deserializeNBT(Objects.requireNonNull(buf.readNbt()), context);
     }
 }

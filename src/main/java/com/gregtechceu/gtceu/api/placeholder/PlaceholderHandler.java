@@ -357,7 +357,11 @@ public class PlaceholderHandler {
     }
 
     public static ModularPanel<?> createHelpPanel() {
-        return new ModularPanel<>("placeholder_language_help")
+        return createHelpPanel("placeholder_language_help");
+    }
+
+    public static ModularPanel<?> createHelpPanel(String name) {
+        return new ModularPanel<>(name)
                 .size(500, 250)
                 .child(Flow.column()
                         .padding(5)

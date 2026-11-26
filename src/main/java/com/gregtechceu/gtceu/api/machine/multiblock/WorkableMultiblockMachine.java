@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.machine.trait.feature.IRecipeLogicModifierTrait;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
@@ -99,11 +100,6 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     public void setMuffled(boolean muffled) {
         isMuffled = muffled;
         syncDataHolder.markClientSyncFieldDirty("isMuffled");
-    }
-
-    @Override
-    public WorkableMultiblockMachine self() {
-        return this;
     }
 
     //////////////////////////////////////
@@ -210,17 +206,21 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Nullable
     @Override
-    public final GTRecipe doModifyRecipe(GTRecipe recipe) {
+    @MustBeInvokedByOverriders
+    public GTRecipe doModifyRecipe(GTRecipe recipe) {
+        recipe = self().getDefinition().getRecipeModifier().applyModifier(self(), recipe);
+        if (recipe == null) return null;
+
         for (MultiblockPartMachine part : getParts()) {
             recipe = part.modifyRecipe(recipe);
             if (recipe == null) return null;
         }
-        return getRealRecipe(recipe);
-    }
 
-    @Nullable
-    protected GTRecipe getRealRecipe(GTRecipe recipe) {
-        return getDefinition().getRecipeModifier().applyModifier(this, recipe);
+        for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
+            recipe = rlTrait.modifyRecipe(recipe);
+            if (recipe == null) return null;
+        }
+        return recipe;
     }
 
     public void updateActiveBlocks(boolean active) {
@@ -326,9 +326,9 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
         List<IWidget> widgets = super.getWidgetsForDisplay(syncManager);
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
+        widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addRecipeTypeField(this, syncManager));
         widgets.addAll(getDefinition().getAdditionalDisplay().apply(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addParallelLine(this, syncManager));
@@ -336,7 +336,6 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         widgets.add(GTMultiblockTextUtil.addSubtickParallelsLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addTotalRunsLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addOutputLines(this, syncManager));
-        widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
         return widgets;
     }
 }

@@ -26,17 +26,17 @@ import com.gregtechceu.gtceu.utils.ISubscription;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 
-import brachy.modularui.drawable.GuiTextures;
-import brachy.modularui.drawable.Icon;
+import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.ListWidget;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -138,32 +138,24 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     }
 
     @Override
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        List<IWidget> widgets = new ArrayList<>();
+
+        widgets.add(GTMultiblockTextUtil.addSteamUsageLine(this.steamEnergy, syncManager));
+        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
+
+        widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
+
+        widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addParallelLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addOutputLines(this, syncManager));
+
+        return widgets;
+    }
+
+    @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        mainWidget.size(170, 76).background(GuiTextures.DISPLAY);
-
-        var listWidget = new ListWidget<>()
-                .width(170 - 6)
-                .height(76)
-                .childSeparator(Icon.EMPTY_2PX)
-                .crossAxisAlignment(Alignment.CrossAxis.START)
-                .posRel(Alignment.CenterLeft);
-
-        listWidget
-                .child(GTMultiblockTextUtil.addUnformedWarning(this, syncManager))
-                .child(GTMultiblockTextUtil.addSteamUsageLine(this.steamEnergy, syncManager))
-                .child(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager))
-                .child(GTMultiblockTextUtil.addProgressLine(this, syncManager))
-                .child(GTMultiblockTextUtil.addParallelLine(this, syncManager))
-                .child(GTMultiblockTextUtil.addOutputLines(this, syncManager));
-
-        mainWidget.child(listWidget.left(3).top(3));
-
-        /*
-         * 
-         * else if (pState.hasError()) {
-         * textList.addAll(pState.getError().getErrorInfo());
-         * }
-         */
+        mainWidget.child(getMainTextPanel(syncManager).margin(4, 2));
     }
 }
