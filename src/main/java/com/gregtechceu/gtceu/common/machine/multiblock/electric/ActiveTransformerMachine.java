@@ -17,6 +17,8 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
@@ -31,6 +33,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.LongSupplier;
+import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -198,6 +202,11 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
         LongSyncValue outputPerSec = new LongSyncValue(this.powerOutput::getOutputPerSec);
         syncManager.syncValue("outputPerSec", outputPerSec);
 
+        LongSupplier maxInput = () -> Math.abs(inputVoltage.getLongValue() * inputAmperage.getLongValue());
+        LongSupplier maxOutput = () -> Math.abs(outputVoltage.getLongValue() * outputAmperage.getLongValue());
+        LongSupplier avgInput = () -> Math.abs(inputPerSec.getLongValue() / 20);
+        LongSupplier avgOutput = () -> Math.abs(outputPerSec.getLongValue() / 20);
+
         widgets.add(Text.lang("gui.gtceu.machine.work_paused")
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !workingEnabled.getBoolValue()));
@@ -207,32 +216,33 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
-        widgets.add(Text.dynamic(() -> Component
-                .translatable("gui.gtceu.machine.active_transformer.max_input",
-                        FormattingUtil.formatNumbers(
-                                Math.abs(inputVoltage.getLongValue() * inputAmperage.getLongValue()))))
+        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.active_transformer.max_input",
+                        GTCommonComponents.euPerTick(maxInput.getAsLong()).withStyle(ChatFormatting.WHITE)
+                ))
                 .asWidget()
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
         widgets.add(Text.dynamic(() -> Component
                 .translatable("gui.gtceu.machine.active_transformer.max_output",
-                        FormattingUtil.formatNumbers(
-                                Math.abs(outputVoltage.getLongValue() * outputAmperage.getLongValue()))))
+                        GTCommonComponents.euPerTick(maxOutput.getAsLong()).withStyle(ChatFormatting.WHITE)
+                ))
                 .asWidget()
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
         widgets.add(Text.dynamic(() -> Component
                 .translatable("gui.gtceu.machine.active_transformer.average_in",
-                        FormattingUtil.formatNumbers(Math.abs(inputPerSec.getLongValue() / 20))))
+                        GTCommonComponents.euPerTick(avgInput.getAsLong()).withStyle(ChatFormatting.WHITE)
+                ))
                 .asWidget()
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
         widgets.add(Text.dynamic(() -> Component
                 .translatable("gui.gtceu.machine.active_transformer.average_out",
-                        FormattingUtil.formatNumbers(Math.abs(outputPerSec.getLongValue() / 20))))
+                        GTCommonComponents.euPerTick(avgOutput.getAsLong()).withStyle(ChatFormatting.WHITE)
+                ))
                 .asWidget()
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));

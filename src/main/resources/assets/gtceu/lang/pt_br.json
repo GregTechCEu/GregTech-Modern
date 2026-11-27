@@ -3342,7 +3342,7 @@
   "gui.gtceu.machine.large_boiler.efficiency": "Eficiência: %s",
   "gui.gtceu.machine.large_boiler.explosion_tooltip": "Explodirá se for fornecido Combustível sem Água",
   "gui.gtceu.machine.large_boiler.heat_time_tooltip": "§7Leva §f%d segundos §7para ferver",
-  "gui.gtceu.machine.large_boiler.max_temperature": "Temperatura Máxima: %dK, Produção de Vapor: %dmB/t",
+  "machine.gtceu.large_boiler.info_tooltip": "Temperatura Máxima: %dK, Produção de Vapor: %dmB/t",
   "gui.gtceu.machine.large_boiler.rate_tooltip": "§7Produz §f%d L §7de Vapor com §f1 Carvão",
   "gui.gtceu.machine.large_boiler.steam_output": "Saída de Vapor: %s mB/t",
   "gui.gtceu.machine.large_boiler.temperature": "Temperatura: %sK / %sK",

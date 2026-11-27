@@ -3225,7 +3225,7 @@
     "gui.gtceu.machine.large_boiler.efficiency": "效率：%s",
     "gui.gtceu.machine.large_boiler.explosion_tooltip": "無水時提供燃料將爆炸",
     "gui.gtceu.machine.large_boiler.heat_time_tooltip": "§7需要§f%d秒§7預熱",
-    "gui.gtceu.machine.large_boiler.max_temperature": "最高溫度：%dK，蒸汽產量：%dmB/t",
+    "machine.gtceu.large_boiler.info_tooltip": "最高溫度：%dK，蒸汽產量：%dmB/t",
     "gui.gtceu.machine.large_boiler.rate_tooltip": "§7每塊§1煤炭§7可以生產§f%dmB§7的蒸汽",
     "gui.gtceu.machine.large_boiler.steam_output": "蒸汽輸出：%s mB/t",
     "gui.gtceu.machine.large_boiler.temperature": "溫度：%sK / %sK",

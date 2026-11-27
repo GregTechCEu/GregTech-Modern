@@ -63,6 +63,8 @@ public class CommonLang {
         provider.add("common.gtceu.millibucket", "mB");
         provider.add("common.gtceu.bucket", "B");
         provider.add("common.gtceu.mb_per_tick", "mB/t");
+        provider.add("common.gtceu.mb_per_sec", "mB/s");
+        provider.add("common.gtceu.mb_per_hour", "mB/h");
 
         provider.add("common.gtceu.amperage", "A");
         provider.add("common.gtceu.eu", "EU");
@@ -114,7 +116,7 @@ public class CommonLang {
         provider.add("common.gtceu.tooltip.uses_per_tick_steam", "Uses §f%s mB/t§r of §fSteam§r while working");
 
         // General Production
-        provider.add("common.gtceu.tooltip.base_production_eut", "§eBase Production: §f%s EU/t");
+        provider.add("common.gtceu.tooltip.base_production", "§eBase Production: %s");
         provider.add("common.gtceu.tooltip.base_production_fluid", "§eBase Production: §f%s mB/t");
         provider.add("common.gtceu.tooltip.produces_fluid", "§eProduces: §f%s mB/t");
 

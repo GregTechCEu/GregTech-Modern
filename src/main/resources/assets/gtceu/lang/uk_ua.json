@@ -3328,7 +3328,7 @@
   "gui.gtceu.machine.large_boiler.efficiency": "Ефективність: %s",
   "gui.gtceu.machine.large_boiler.explosion_tooltip": "Вибухне, якщо подати паливо без води",
   "gui.gtceu.machine.large_boiler.heat_time_tooltip": "§7Закипає за§f %d секунд",
-  "gui.gtceu.machine.large_boiler.max_temperature": "Макс. температура: %dK, виробництво пари: %dмВ/т",
+  "machine.gtceu.large_boiler.info_tooltip": "Макс. температура: %dK, виробництво пари: %dмВ/т",
   "gui.gtceu.machine.large_boiler.rate_tooltip": "§7Виробляє§f %d л§7 пари за§f 1 вугілля",
   "gui.gtceu.machine.large_boiler.steam_output": "Вихід пари: %s мВ/т",
   "gui.gtceu.machine.large_boiler.temperature": "Температура: %sK / %sK",

@@ -24,6 +24,9 @@ public final class GTCommonComponents {
     public static final Component PART_SHARING_DISABLED = Component
             .translatable("multiblock.gtceu.part_sharing.disabled");
 
+    public static final Component CAN_PARALLEL = Component.translatable("gui.gtceu.supports_parallel")
+            .withStyle(ChatFormatting.AQUA);
+
     public static final Component COMMA_SPACE = Component.literal(", ");
 
     public static final Component HOLD_SHIFT_FOR_INFO = Component.translatable("common.gtceu.tooltip.hold_shift")
@@ -41,6 +44,14 @@ public final class GTCommonComponents {
 
     // Common units and amount components
 
+    public static MutableComponent temperature(int tempKelvin) {
+        return Component.literal(FormattingUtil.formatTemperature(tempKelvin));
+    }
+
+    public static MutableComponent seconds(long amount) {
+        return Component.translatable("common.gtceu.seconds", amount);
+    }
+
     public static MutableComponent milibuckets(long amount) {
         return FormattingUtil.prepend("common.gtceu.millibucket", FormattingUtil.formatNumbers(amount));
     }
@@ -51,6 +62,14 @@ public final class GTCommonComponents {
 
     public static MutableComponent mbPerTick(long amount) {
         return FormattingUtil.prepend("common.gtceu.mb_per_tick", FormattingUtil.formatNumbers(amount));
+    }
+
+    public static MutableComponent mbPerSec(long amount) {
+        return FormattingUtil.prepend("common.gtceu.mb_per_sec", FormattingUtil.formatNumbers(amount));
+    }
+
+    public static MutableComponent mbPerHour(long amount) {
+        return FormattingUtil.prepend("common.gtceu.mb_per_hour", FormattingUtil.formatNumbers(amount));
     }
 
     public static MutableComponent amps(long amount) {
@@ -68,7 +87,6 @@ public final class GTCommonComponents {
     public static MutableComponent euPerSec(long amount) {
         return FormattingUtil.prepend("common.gtceu.eu_per_sec", FormattingUtil.formatNumbers(amount));
     }
-
 
     /**
      * Common tooltips used for machine stats, cover stats, etc
@@ -114,7 +132,7 @@ public final class GTCommonComponents {
          * Creates an amperage tooltip in the format {@code Amperage [IN/OUT]: [amps]A}<br>
          * Colour formatting is applied to the label.
          *
-         * @param io   The voltage IO. Can be import/export/both.
+         * @param io       The voltage IO. Can be import/export/both.
          * @param amperage The number of amps.
          */
         public static MutableComponent amperage(IO io, long amperage) {
@@ -129,7 +147,7 @@ public final class GTCommonComponents {
          * Creates an amperage limit tooltip in the format {@code Amperage [IN/OUT] up to: [amps]A}<br>
          * Colour formatting is applied to the label.
          *
-         * @param io   The voltage IO. Can be import/export/both.
+         * @param io       The voltage IO. Can be import/export/both.
          * @param amperage The number of amps.
          */
         public static MutableComponent amperageUpTo(IO io, long amperage) {
@@ -216,7 +234,6 @@ public final class GTCommonComponents {
 
             return Component.empty()
                     .append(Component.translatable("common.gtceu.transfer_rate").withStyle(ChatFormatting.AQUA))
-                    .append(CommonComponents.SPACE)
                     .append(FormattingUtil.prepend(rateKey, itemStr).withStyle(ChatFormatting.WHITE));
         }
 

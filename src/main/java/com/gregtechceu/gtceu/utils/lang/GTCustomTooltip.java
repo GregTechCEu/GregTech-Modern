@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 @Accessors(fluent = true)
-@SuppressWarnings({"unused", "UnusedReturnValue"})
+@SuppressWarnings({ "unused", "UnusedReturnValue" })
 public class GTCustomTooltip {
 
     protected final Map<DisplayType, List<TooltipEntry>> tooltips = new Object2ObjectOpenHashMap<>();

@@ -92,8 +92,8 @@ public class MachineLang {
 
         provider.addMultiLang("gui.gtceu.auto_output.item.other_direction",
                 "Item Auto Output: §6Other Direction",
-                        "The machine's item output is set to another direction.",
-                        "Click to move the output to the currently selected side.");
+                "The machine's item output is set to another direction.",
+                "Click to move the output to the currently selected side.");
 
         provider.add("gui.gtceu.auto_output.fluid.allow_input.enabled",
                 "Allow fluids input from the output side.");
@@ -103,7 +103,7 @@ public class MachineLang {
         provider.add("gui.gtceu.auto_output.fluid.disabled", "Fluid Auto Output: §cDisabled");
         provider.addMultiLang("gui.gtceu.auto_output.fluid.unselected",
                 "Fluid Auto Output",
-                        "Select a side of the machine to configure its output.");
+                "Select a side of the machine to configure its output.");
         provider.addMultiLang("gui.gtceu.auto_output.fluid.other_direction",
                 "Fluid Auto Output: §6Other Direction",
                 "The machine's fluid output is set to another direction.",
@@ -330,8 +330,8 @@ public class MachineLang {
         provider.add("machine.gtceu.steam_bus.tooltip", "Does not work with non-steam multiblocks");
 
         // Large Boiler
-        provider.add("gui.gtceu.machine.large_boiler.max_temperature",
-                "Max Temperature: %sK, Steam Production: %smB/t");
+        provider.add("machine.gtceu.large_boiler.info_tooltip",
+                "Max Temperature: %s, Steam Production: %s");
         provider.add("gui.gtceu.machine.large_boiler.efficiency", "Efficiency: %s");
         provider.add("gui.gtceu.machine.large_boiler.temperature", "Temperature: %sK / %sK");
         provider.add("gui.gtceu.machine.large_boiler.steam_output", "Steam Output: %s mB/t");
@@ -339,7 +339,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.large_boiler.throttle.tooltip",
                 "Boiler can output less Steam and consume less fuel (efficiency is not lost, does not affect heat-up time)");
         provider.add("gui.gtceu.machine.large_boiler.throttle_modify", "Modify Throttle:");
-        provider.add("gui.gtceu.machine.large_boiler.heat_time_tooltip", "Takes §f%s seconds§r to boil up");
+        provider.add("gui.gtceu.machine.large_boiler.heat_time_tooltip", "Takes %s to boil up");
         provider.add("gui.gtceu.machine.large_boiler.explosion_tooltip",
                 "Will explode if provided Fuel with no Water");
 
@@ -361,12 +361,12 @@ public class MachineLang {
         provider.add("machine.gtceu.extreme_combustion_engine.tooltip", "Extreme Chemical Energy Releaser");
 
         provider.add("machine.gtceu.large_combustion_engine.tooltip.lubricant_use",
-                "Uses §f%s mB/hr§r of §6Lubricant§r while working");
+                "Uses %s of §6Lubricant§r while working");
 
         provider.add("machine.gtceu.large_combustion_engine.tooltip.boost_regular",
-                "Supply §f20 mB/s§r of §bOxygen§r to produce up to §f%s EU/t§r at §f2x§r fuel consumption.");
+                "Supply §f20 mB/s§r of §bOxygen§r to produce up to %s at §f2x§r fuel consumption.");
         provider.add("machine.gtceu.large_combustion_engine.tooltip.boost_extreme",
-                "Supply §f80 mB/s§r of §9Liquid Oxygen§r to produce up to §f%s EU/t§r at §f2x§r fuel consumption.");
+                "Supply §f80 mB/s§r of §9Liquid Oxygen§r to produce up to %s at §f2x§r fuel consumption.");
         provider.add("gui.gtceu.machine.large_combustion_engine.description",
                 "The Large Combustion Engine is a multiblock structure that acts as a Combustion Generator for EV power.");
         provider.add("gui.gtceu.machine.extreme_combustion_engine.description",
@@ -394,7 +394,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.large_turbine.energy_per_tick_maxed", "Energy Output: %s EU/t");
         provider.add("gui.gtceu.machine.large_turbine.obstructed", "Turbine Face Obstructed");
         provider.add("gui.gtceu.machine.large_turbine.efficiency_tooltip",
-                "Each Rotor Holder above %s§r adds §f10%% efficiency and multiplies EU/t by 2§r.");
+                "Each Rotor Holder above %s adds §f10%% efficiency and multiplies EU/t by 2§r.");
         provider.add("gui.gtceu.machine.large_turbine.fuel_needed", "Consumes %s per %s ticks");
 
         // Fusion Reactor
@@ -463,10 +463,10 @@ public class MachineLang {
                 "Can combine any number of Energy §fInputs§r into any number of Energy §fOutputs§r.",
                 "Can transmit power at incredible distance with",
                 " Lasers.");
-        provider.add("gui.gtceu.machine.active_transformer.average_in", "§bAvg. Input: §f%s EU/t");
-        provider.add("gui.gtceu.machine.active_transformer.average_out", "§bAvg. Output: §f%s EU/t");
-        provider.add("gui.gtceu.machine.active_transformer.max_input", "§aMax Input: §f%s EU/t");
-        provider.add("gui.gtceu.machine.active_transformer.max_output", "§cMax Output: §f%s EU/t");
+        provider.add("gui.gtceu.machine.active_transformer.average_in", "§bAvg. Input: %s");
+        provider.add("gui.gtceu.machine.active_transformer.average_out", "§bAvg. Output: %s");
+        provider.add("gui.gtceu.machine.active_transformer.max_input", "§aMax Input: %s");
+        provider.add("gui.gtceu.machine.active_transformer.max_output", "§cMax Output: %s");
         provider.add("gui.gtceu.machine.active_transformer.danger_enabled", "§c§bDANGER: Explosive");
 
         // Research Station
@@ -675,13 +675,13 @@ public class MachineLang {
                 "Computation Data Input for Multiblocks");
 
         // HPCA Parts
-        provider.add("machine.gtceu.hpca_component.tooltip.upkeep_eut", "§eUpkeep Energy: §f%s EU/t");
-        provider.add("machine.gtceu.hpca_component.tooltip.max_eut", "§6Max Energy: §f%s EU/t");
+        provider.add("machine.gtceu.hpca_component.tooltip.upkeep_eut", "§eUpkeep Energy: %s");
+        provider.add("machine.gtceu.hpca_component.tooltip.max_eut", "§6Max Energy: %s");
         provider.add("machine.gtceu.hpca_component.tooltip.cooler_passive", "§bCooler Type: §fPassive");
         provider.add("machine.gtceu.hpca_component.tooltip.cooler_active", "§bCooler Type: §fActive");
         provider.add("machine.gtceu.hpca_component.tooltip.cooler_cooling", "§aProvides: §f%s Cooling");
         provider.add("machine.gtceu.hpca_component.tooltip.cooler_active_coolant",
-                "§cRequires up to: §f%s mB/t %s");
+                "§cRequires up to: %s %s");
         provider.add("machine.gtceu.hpca_component.tooltip.computation_cwut", "§9Computation: §f%s CWU/t");
         provider.add("machine.gtceu.hpca_component.tooltip.computation_cooling", "§cRequires up to: §f%s Cooling");
         provider.add("machine.gtceu.hpca_component.tooltip.bridge",

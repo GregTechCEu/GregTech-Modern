@@ -660,12 +660,12 @@ public class GTMachineUtils {
                         GTCEu.id("block/multiblock/generator/large_%s_boiler".formatted(name)))
                         .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper.makeBoilerPartRender(firebox, casing))))
                 .tooltips(
-                        Component.translatable("gui.gtceu.machine.large_boiler.max_temperature", maxTemperature + 274,
-                                maxTemperature),
+                        Component.translatable("machine.gtceu.large_boiler.info_tooltip",
+                                GTCommonComponents.temperature(maxTemperature + 274).withStyle(ChatFormatting.WHITE),
+                                GTCommonComponents.mbPerTick(maxTemperature).withStyle(ChatFormatting.WHITE)),
                         Component.translatable("gui.gtceu.machine.large_boiler.heat_time_tooltip",
-                                maxTemperature / heatSpeed / 20),
-                        Component.translatable("machine.gtceu.large_combustion_engine.tooltip.boost_extreme", 40)
-                                .withStyle(ChatFormatting.DARK_RED))
+                                GTCommonComponents.seconds(maxTemperature / heatSpeed / 20).withStyle(ChatFormatting.WHITE)),
+                        Component.translatable("gui.gtceu.machine.large_boiler.explosion_tooltip").withStyle(ChatFormatting.RED))
                 .register();
         // spotless:on
     }
@@ -710,15 +710,16 @@ public class GTMachineUtils {
                         () -> new ItemLike[] {
                                 ChemicalHelper.getItemOrThrow(TagPrefix.dustTiny, GTMaterials.Ash) })
                 .workableCasingModel(casingTexture, overlayModel)
-                .tooltips(
-                        Component.translatable("common.gtceu.tooltip.base_production_eut", V[tier]),
-                        Component.translatable("machine.gtceu.large_combustion_engine.tooltip.lubricant_use",
-                                FluidType.BUCKET_VOLUME),
-                        tier > EV ?
-                                Component.translatable("machine.gtceu.large_combustion_engine.tooltip.boost_extreme",
-                                        V[tier] * 4) :
-                                Component.translatable("machine.gtceu.large_combustion_engine.tooltip.boost_regular",
-                                        V[tier] * 3))
+                .tooltip(t -> {
+                    t.tooltip(Component.translatable("common.gtceu.tooltip.base_production", GTCommonComponents.euPerTick(V[tier])
+                            .withStyle(ChatFormatting.WHITE)));
+                    t.tooltip(Component.translatable("machine.gtceu.large_combustion_engine.tooltip.lubricant_use",
+                            GTCommonComponents.mbPerHour(FluidType.BUCKET_VOLUME).withStyle(ChatFormatting.WHITE)));
+                    var boostKey = tier > EV ? "machine.gtceu.large_combustion_engine.tooltip.boost_extreme" :
+                            "machine.gtceu.large_combustion_engine.tooltip.boost_regular";
+                    var boostEU = tier > EV ? V[tier] * 4 : V[tier] * 3;
+                    t.tooltip(Component.translatable(boostKey, GTCommonComponents.euPerTick(boostEU).withStyle(ChatFormatting.WHITE)));
+                })
                 .register();
     }
 
@@ -859,7 +860,8 @@ public class GTMachineUtils {
     public static Component getAvailableRecipeMapTooltip(GTRecipeType... recipeTypes) {
         if (recipeTypes != null) {
             var components = Arrays.stream(recipeTypes)
-                    .map(s -> Component.translatable(s.getCategory().getLanguageKey()))
+                    .map(s ->
+                            Component.translatable(s.getCategory().getLanguageKey()).withStyle(ChatFormatting.YELLOW))
                     .collect(Component::empty, FormattingUtil::combineComponents,
                             FormattingUtil::combineComponents);
 

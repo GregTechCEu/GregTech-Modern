@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalDataHatchMach
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 
@@ -292,8 +293,10 @@ public class GTResearchMachines {
             "hpca_computation_component", "HPCA Computation Component",
             GTMachineInstanceFactories.HPCA_COMPUTATION, "computation", false)
             .tooltips(
-                    Component.translatable("machine.gtceu.hpca_component.tooltip.upkeep_eut", GTValues.VA[GTValues.EV]),
-                    Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut", GTValues.VA[GTValues.LuV]),
+                    Component.translatable("machine.gtceu.hpca_component.tooltip.upkeep_eut",
+                            GTCommonComponents.euPerTick(GTValues.VA[GTValues.EV]).withStyle(ChatFormatting.WHITE)),
+                    Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut",
+                            GTCommonComponents.euPerTick(GTValues.VA[GTValues.LuV]).withStyle(ChatFormatting.WHITE)),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cwut", 4),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cooling", 2),
                     OVERHEAT_TOOLTIP,
@@ -303,8 +306,10 @@ public class GTResearchMachines {
             "hpca_advanced_computation_component", "HPCA Advanced Computation Component",
             GTMachineInstanceFactories.HPCA_COMPUTATION_ADVANCED, "advanced_computation", true)
             .tooltips(
-                    Component.translatable("machine.gtceu.hpca_component.tooltip.upkeep_eut", GTValues.VA[GTValues.IV]),
-                    Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut", GTValues.VA[GTValues.ZPM]),
+                    Component.translatable("machine.gtceu.hpca_component.tooltip.upkeep_eut",
+                            GTCommonComponents.euPerTick(GTValues.VA[IV]).withStyle(ChatFormatting.WHITE)),
+                    Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut",
+                            GTCommonComponents.euPerTick(GTValues.VA[ZPM]).withStyle(ChatFormatting.WHITE)),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cwut", 16),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cooling", 4),
                     OVERHEAT_TOOLTIP,
@@ -320,10 +325,12 @@ public class GTResearchMachines {
     public static final MachineDefinition HPCA_ACTIVE_COOLER_COMPONENT = registerHPCAPart(
             "hpca_active_cooler_component", "HPCA Active Cooling Component",
             GTMachineInstanceFactories.HPCA_COOLER_ADVANCED, "active_cooler", true)
-            .tooltips(Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut", GTValues.VA[GTValues.IV]),
+            .tooltips(Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut",
+                            GTCommonComponents.euPerTick(GTValues.VA[IV]).withStyle(ChatFormatting.WHITE)),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.cooler_active"),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.cooler_active_coolant",
-                            8, GTMaterials.PCBCoolant.getLocalizedName()),
+                            GTCommonComponents.mbPerTick(8).withStyle(ChatFormatting.WHITE),
+                            GTMaterials.PCBCoolant.getLocalizedName()).withStyle(ChatFormatting.WHITE),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.cooler_cooling", 2),
                     GTCommonComponents.PART_SHARING_DISABLED)
             .register();
@@ -331,7 +338,8 @@ public class GTResearchMachines {
             "hpca_bridge_component", "HPCA Bridge Component",
             GTMachineInstanceFactories.HPCA_BRIDGE, "bridge", false)
             .tooltips(Component.translatable("machine.gtceu.hpca_component.tooltip.bridge"),
-                    Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut", GTValues.VA[GTValues.IV]),
+                    Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut",
+                            GTCommonComponents.euPerTick(GTValues.VA[IV]).withStyle(ChatFormatting.WHITE)),
                     GTCommonComponents.PART_SHARING_DISABLED)
             .register();
 
