@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -199,9 +200,7 @@ public interface CapabilityContentBuilder {
                     .withStyle(ChatFormatting.UNDERLINE);
 
             RichTooltip tooltip = new RichTooltip();
-            tooltip.addLine(
-                    FormattingUtil.prepend("common.gtceu.eu_per_tick", FormattingUtil.formatNumbers(eu.getTotalEU()))
-                            .withStyle(ChatFormatting.UNDERLINE));
+            tooltip.addLine(GTCommonComponents.euPerSec(eu.getTotalEU()).withStyle(ChatFormatting.UNDERLINE));
 
             if (euWidget != null) ((TextWidget<?>) euWidget).value(euText).tooltip(tooltip);
             else flow.child(euText.asWidget().tooltip(tooltip).marginBottom(1).name("eu"));

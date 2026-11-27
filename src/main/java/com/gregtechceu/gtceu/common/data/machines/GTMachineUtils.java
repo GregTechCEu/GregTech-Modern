@@ -243,7 +243,7 @@ public class GTMachineUtils {
                             .tooltips(Component.translatable("machine.gtceu." + tooltip + ".tooltip"))
                             .allowCoverOnFront(true);
 
-                    builder.tooltips(GTCommonComponents.fluidStorageCapacity(
+                    builder.tooltips(GTCommonComponents.Tooltips.fluidStorageCapacity(
                             FluidHatchPartMachine.getTankCapacity(initialCapacity, tier), slots));
 
                     return builder.register();
@@ -358,10 +358,10 @@ public class GTMachineUtils {
                                 VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
                                 batterySlotSize))
                         .tooltips(
-                                GTCommonComponents.itemSlots(batterySlotSize),
-                                GTCommonComponents.voltage(BOTH, tier),
-                                GTCommonComponents.amperageUpTo(IN, batterySlotSize * AMPS_PER_BATTERY_NORMAL),
-                                GTCommonComponents.amperageUpTo(OUT, batterySlotSize))
+                                GTCommonComponents.Tooltips.itemSlots(batterySlotSize),
+                                GTCommonComponents.Tooltips.voltage(BOTH, tier),
+                                GTCommonComponents.Tooltips.amperageUpTo(IN, batterySlotSize * AMPS_PER_BATTERY_NORMAL),
+                                GTCommonComponents.Tooltips.amperageUpTo(OUT, batterySlotSize))
                         .register(),
                 ALL_TIERS);
     }
@@ -377,9 +377,9 @@ public class GTMachineUtils {
                         .langValue("%s %sx Turbo Charger".formatted(
                                 VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
                                 itemSlotSize))
-                        .tooltips(GTCommonComponents.itemSlots(itemSlotSize),
-                                GTCommonComponents.voltage(IN, tier),
-                                GTCommonComponents.amperage(IN,
+                        .tooltips(GTCommonComponents.Tooltips.itemSlots(itemSlotSize),
+                                GTCommonComponents.Tooltips.voltage(IN, tier),
+                                GTCommonComponents.Tooltips.amperage(IN,
                                         itemSlotSize * BatteryBufferMachine.AMPS_PER_BATTERY_CHARGER))
                         .register(),
                 ALL_TIERS);
@@ -434,9 +434,9 @@ public class GTMachineUtils {
                                 Component.translatable("machine.gtceu.laser_hatch." + name + ".tooltip"),
                                 Component.translatable("machine.gtceu.laser_hatch.both.tooltip")
                                         .withStyle(ChatFormatting.RED),
-                                GTCommonComponents.voltage(io, tier),
-                                GTCommonComponents.amperage(IN, amperage),
-                                GTCommonComponents
+                                GTCommonComponents.Tooltips.voltage(io, tier),
+                                GTCommonComponents.Tooltips.amperage(IN, amperage),
+                                GTCommonComponents.Tooltips
                                         .energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, amperage)),
                                 GTCommonComponents.PART_SHARING_DISABLED)
                         .abilities(ability)
@@ -455,7 +455,7 @@ public class GTMachineUtils {
                         info -> new CrateMachine(info, material, capacity, rowLength))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
-                .tooltips(GTCommonComponents.itemSlots(capacity))
+                .tooltips(GTCommonComponents.Tooltips.itemSlots(capacity))
                 .modelProperty(GTMachineModelProperties.IS_TAPED, false)
                 .model(GTMachineModels.createCrateModel(wooden))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
@@ -477,7 +477,7 @@ public class GTMachineUtils {
                 .tooltip(t -> {
                     t.tooltip(TANK_TOOLTIP);
                     t.tooltip(Component.translatable("machine.gtceu.quantum_tank.tooltip"));
-                    t.tooltip(GTCommonComponents.fluidStorageCapacity(capacity));
+                    t.tooltip(GTCommonComponents.Tooltips.fluidStorageCapacity(capacity));
 
                     t.customTooltipBuilder((s, l, tooltips) -> {
                         if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
@@ -512,7 +512,7 @@ public class GTMachineUtils {
                     .tooltip(t -> {
                         t.tooltip(TANK_TOOLTIP);
                         t.tooltip(Component.translatable("machine.gtceu.quantum_tank.tooltip"));
-                        t.tooltip(GTCommonComponents.fluidStorageCapacity(maxAmount));
+                        t.tooltip(GTCommonComponents.Tooltips.fluidStorageCapacity(maxAmount));
                     })
                     .tier(tier)
                     .register();
@@ -537,7 +537,7 @@ public class GTMachineUtils {
                         .tooltip(t -> {
                             t.tooltip(CHEST_TOOLTIP);
                             t.tooltip(Component.translatable("machine.gtceu.quantum_chest.tooltip"));
-                            t.tooltip(GTCommonComponents.itemCapacity(tier == MAX ? Long.MAX_VALUE :
+                            t.tooltip(GTCommonComponents.Tooltips.itemCapacity(tier == MAX ? Long.MAX_VALUE :
                                     4_000_000 * (long) Math.pow(2, tier - 1)));
                         })
                         .register(),
@@ -560,7 +560,7 @@ public class GTMachineUtils {
                 .langValue(displayName)
                 .tooltips(
                         Component.translatable("machine.gtceu.multiblock.tank.tooltip"),
-                        GTCommonComponents.fluidStorageCapacity(capacity),
+                        GTCommonComponents.Tooltips.fluidStorageCapacity(capacity),
                         (filter != null) ? Component.translatable("tooltip.gtceu.fluid_pipe.max_temperature",
                                 FormattingUtil.formatTemperature(filter.getMaxFluidTemperature())) : null)
                 .rotationState(RotationState.ALL)
@@ -836,23 +836,23 @@ public class GTMachineUtils {
         FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement(key));
         long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
         if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
-        return GTCommonComponents.fluidStored(stored.getFluid(), storedAmount);
+        return GTCommonComponents.Tooltips.fluidStored(stored.getFluid(), storedAmount);
     }, ItemStack::hasTag);
 
     public static final GTCustomTooltip.TooltipEntry CHEST_TOOLTIP = new GTCustomTooltip.TooltipEntry(stack -> {
         ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
         long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
-        return GTCommonComponents.itemStored(itemStack.getItem(), storedAmount);
+        return GTCommonComponents.Tooltips.itemStored(itemStack.getItem(), storedAmount);
     }, ItemStack::hasTag);
 
     public static Component[] workableTiered(int tier, long energyCapacity, GTRecipeType recipeType,
                                              long tankCapacity, boolean input) {
         List<Component> tooltipComponents = new ArrayList<>();
-        tooltipComponents.add(GTCommonComponents.voltage(input ? IO.IN : IO.OUT, tier));
-        tooltipComponents.add(GTCommonComponents.energyCapacity(energyCapacity));
+        tooltipComponents.add(GTCommonComponents.Tooltips.voltage(input ? IO.IN : IO.OUT, tier));
+        tooltipComponents.add(GTCommonComponents.Tooltips.energyCapacity(energyCapacity));
         if (recipeType.getMaxInputs(FluidRecipeCapability.CAP) > 0 ||
                 recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0)
-            tooltipComponents.add(GTCommonComponents.fluidStorageCapacity(tankCapacity));
+            tooltipComponents.add(GTCommonComponents.Tooltips.fluidStorageCapacity(tankCapacity));
         return tooltipComponents.toArray(Component[]::new);
     }
 

@@ -778,7 +778,7 @@ public class GTItems {
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[tier])))
                 .onRegister(attach(new TooltipBehavior(t -> {
                     t.tooltip(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                    t.tooltip(GTCommonComponents.fluidTransferRate(PumpCover.PUMP_SCALING.applyAsInt(tier)));
+                    t.tooltip(GTCommonComponents.Tooltips.fluidTransferRate(PumpCover.PUMP_SCALING.applyAsInt(tier)));
                 })));
         if (tier <= GTValues.UV) builder.tag(CustomTags.ELECTRIC_PUMPS);
         return builder.register();
@@ -818,7 +818,7 @@ public class GTItems {
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[tier])))
                 .onRegister(attach(new TooltipBehavior(t -> {
                     t.tooltip(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                    t.tooltip(GTCommonComponents.fluidTransferRate(PumpCover.PUMP_SCALING.applyAsInt(tier)));
+                    t.tooltip(GTCommonComponents.Tooltips.fluidTransferRate(PumpCover.PUMP_SCALING.applyAsInt(tier)));
                 })));
         if (tier <= GTValues.UV) builder.tag(CustomTags.FLUID_REGULATORS);
         return builder.register();
@@ -859,7 +859,7 @@ public class GTItems {
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[tier])))
                 .onRegister(attach(new TooltipBehavior(t -> {
                     t.tooltip(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                    t.tooltip(GTCommonComponents.itemTransferRate(ConveyorCover.CONVEYOR_SCALING.applyAsInt(tier)));
+                    t.tooltip(GTCommonComponents.Tooltips.itemTransferRate(ConveyorCover.CONVEYOR_SCALING.applyAsInt(tier)));
                 })));
         if (tier <= GTValues.UV) builder.tag(CustomTags.CONVEYOR_MODULES);
         return builder.register();
@@ -935,7 +935,7 @@ public class GTItems {
                         attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[tier]), new TieredBehaviour(tier)))
                 .onRegister(attach(new TooltipBehavior(t -> {
                     t.tooltip(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                    t.tooltip(GTCommonComponents.itemTransferRate(ConveyorCover.CONVEYOR_SCALING.applyAsInt(tier)));
+                    t.tooltip(GTCommonComponents.Tooltips.itemTransferRate(ConveyorCover.CONVEYOR_SCALING.applyAsInt(tier)));
                 })));
         if (tier <= GTValues.UV) builder.tag(CustomTags.ROBOT_ARMS);
         return builder.register();
@@ -1897,7 +1897,7 @@ public class GTItems {
         return v -> v.attachComponents(new TooltipBehavior(
                 Component.translatable("item.gtceu.solar_panel.tooltip.0").withStyle(ChatFormatting.GRAY),
                 Component.translatable("item.gtceu.solar_panel.tooltip.1").withStyle(ChatFormatting.GRAY),
-                GTCommonComponents.voltage(IO.OUT, tier)));
+                GTCommonComponents.Tooltips.voltage(IO.OUT, tier)));
     }
 
     // Plugin

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -92,16 +93,14 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                     MutableComponent text;
 
                     if (isSteam) {
-                        text = FormattingUtil.prepend("common.gtceu.mb_per_tick", FormattingUtil.formatNumbers(EUt))
-                                .withStyle(ChatFormatting.GREEN);
+                        text = GTCommonComponents.euPerTick(EUt).withStyle(ChatFormatting.GREEN);
                     } else {
                         var voltage = recipeInfo.getLong("voltage");
                         float minAmperage = (float) EUt / voltage;
 
                         text = FormattingUtil.formattedEUt(minAmperage, voltage, true);
 
-                        text.append(FormattingUtil.wrap(FormattingUtil.prepend("common.gtceu.eu_per_tick",
-                                FormattingUtil.formatNumbers(EUt))
+                        text.append(FormattingUtil.wrap(GTCommonComponents.euPerTick(EUt)
                                 .withStyle(ChatFormatting.WHITE), " (", ") "));
                     }
 

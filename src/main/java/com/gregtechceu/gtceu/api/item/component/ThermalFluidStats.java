@@ -78,11 +78,11 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
         if (stack.hasTag()) {
             FluidUtil.getFluidContained(stack).ifPresent(tank -> {
                 tooltipComponents
-                        .add(GTCommonComponents.fluidStored(tank));
+                        .add(GTCommonComponents.Tooltips.fluidStored(tank));
                 TooltipsHandler.appendFluidTooltips(tank, tooltipComponents::add, null);
             });
         } else {
-            tooltipComponents.add(GTCommonComponents.fluidStorageCapacity(capacity));
+            tooltipComponents.add(GTCommonComponents.Tooltips.fluidStorageCapacity(capacity));
         }
         if (GTUtil.isShiftDown()) {
             tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.max_temperature",
