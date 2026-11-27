@@ -664,7 +664,7 @@ public class GTMachineUtils {
                                 maxTemperature),
                         Component.translatable("gui.gtceu.machine.large_boiler.heat_time_tooltip",
                                 maxTemperature / heatSpeed / 20),
-                        Component.translatable("gui.gtceu.machine.large_boiler.explosion_tooltip")
+                        Component.translatable("machine.gtceu.large_combustion_engine.tooltip.boost_extreme", 40)
                                 .withStyle(ChatFormatting.DARK_RED))
                 .register();
         // spotless:on

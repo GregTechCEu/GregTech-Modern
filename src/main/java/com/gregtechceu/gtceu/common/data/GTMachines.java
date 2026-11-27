@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
@@ -1231,10 +1232,8 @@ public class GTMachines {
                     .modelProperty(GTMachineModelProperties.DIODE_AMP_MODE, DiodePartMachine.AmpMode.MODE_1A)
                     .model(createDiodeModel())
                     .tooltips(
-                            Component.translatable("machine.gtceu.diode.tooltip_general")
-                                    .withStyle(ChatFormatting.GRAY),
-                            Component.translatable("machine.gtceu.diode.tooltip_starts_at")
-                                    .withStyle(ChatFormatting.GRAY),
+                            Component.translatable("machine.gtceu.diode.tooltip_general"),
+                            Component.translatable("machine.gtceu.diode.tooltip_starts_at"),
                             GTCommonComponents.voltage(BOTH, tier),
                             GTCommonComponents.amperageUpTo(BOTH, DiodePartMachine.MAX_AMPS))
                     .register(),

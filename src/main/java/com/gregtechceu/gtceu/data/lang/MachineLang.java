@@ -339,7 +339,7 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.large_boiler.throttle.tooltip",
                 "Boiler can output less Steam and consume less fuel (efficiency is not lost, does not affect heat-up time)");
         provider.add("gui.gtceu.machine.large_boiler.throttle_modify", "Modify Throttle:");
-        provider.add("gui.gtceu.machine.large_boiler.heat_time_tooltip", "Takes §f%s seconds §rto boiling up");
+        provider.add("gui.gtceu.machine.large_boiler.heat_time_tooltip", "Takes §f%s seconds§r to boil up");
         provider.add("gui.gtceu.machine.large_boiler.explosion_tooltip",
                 "Will explode if provided Fuel with no Water");
 
@@ -401,17 +401,15 @@ public class MachineLang {
         provider.add("machine.gtceu.fusion_reactor.capacity", "Maximum Energy Storage: §e%sM EU");
         provider.add("machine.gtceu.fusion_reactor.overclocking",
                 "Overclocks double energy and halve duration.");
-        provider.add("gui.gtceu.machine.fusion_reactor.energy", "EU: %s / %s");
-        provider.add("gui.gtceu.machine.fusion_reactor.heat", "Heat: %s");
         provider.add("machine.gtceu.luv_fusion_reactor.description",
                 "The Fusion Reactor MK 1 is a large multiblock structure used for fusing elements into heavier ones. It can only use LuV, ZPM, and UV Energy Hatches. For every Hatch it has, its buffer increases by 10M EU, and has a maximum of 160M.");
         provider.add("machine.gtceu.zpm_fusion_reactor.description",
                 "The Fusion Reactor MK 2 is a large multiblock structure used for fusing elements into heavier ones. It can only use ZPM and UV Energy Hatches. For every Hatch it has, its buffer increases by 20M EU, and has a maximum of 320M.");
         provider.add("machine.gtceu.uv_fusion_reactor.description",
                 "The Fusion Reactor MK 3 is a large multiblock structure used for fusing elements into heavier ones. It can only use UV Energy Hatches. For every Hatch it has, its buffer increases by 40M EU, and has a maximum of 640M.");
-        provider.add("machine.gtceu.fusion_reactor.heat", "Heat: %s EU");
-        provider.add("machine.gtceu.fusion_reactor.stored", "Stored: %s EU");
-        provider.add("machine.gtceu.fusion_reactor.capacity", "Capacity: %s EU");
+        provider.add("gui.gtceu.machine.fusion_reactor.heat", "Heat: %s EU");
+        provider.add("gui.gtceu.machine.fusion_reactor.stored", "Stored: %s EU");
+        provider.add("gui.gtceu.machine.fusion_reactor.capacity", "Capacity: %s EU");
 
         // Fluid Drilling Rig
         provider.add("machine.gtceu.fluid_drilling_rig.description",

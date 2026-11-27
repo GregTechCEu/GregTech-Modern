@@ -39,6 +39,8 @@ public final class GTCommonComponents {
                     .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))
             .append(Component.translatable("gui.gtceu.machine.creative_tooltip.3"));
 
+    // Common units and amount components
+
     // Energy
 
     /**
@@ -131,7 +133,7 @@ public final class GTCommonComponents {
     public static MutableComponent itemSlots(int slots) {
         return Component.empty().append(Component.translatable("common.gtceu.item_slots")
                 .withStyle(ChatFormatting.GOLD))
-                .append(Component.literal(String.valueOf(slots)));
+                .append(Component.literal(FormattingUtil.formatNumbers(slots)));
     }
 
     /**
@@ -143,7 +145,7 @@ public final class GTCommonComponents {
     public static MutableComponent itemCapacity(long capacity) {
         return Component.empty().append(Component.translatable("common.gtceu.item_capacity")
                 .withStyle(ChatFormatting.GOLD))
-                .append(Component.literal(String.valueOf(capacity)));
+                .append(Component.literal(FormattingUtil.formatNumbers(capacity)));
     }
 
     /**
