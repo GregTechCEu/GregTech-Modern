@@ -155,7 +155,7 @@ public class GCYMRecipes {
                 new MaterialEntry(plate, HSLASteel), 'C', MOLYBDENUM_DISILICIDE_COIL_BLOCK.asStack(), 'M',
                 ELECTRIC_PISTON_IV.asStack(), 'K', new MaterialEntry(cableGtSingle, Platinum));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_spooler", LARGE_SPOOLER.asStack(), "PZP", "SWS",
-                "MKM", 'Z', CustomTags.IV_CIRCUITS, 'W', SPOOLING[IV].asStack(), 'P',
+                "MKM", 'Z', CustomTags.IV_CIRCUITS, 'W', SPOOLER[IV].asStack(), 'P',
                 new MaterialEntry(plate, HSLASteel), 'S', new MaterialEntry(spring, HSLASteel), 'M',
                 ELECTRIC_MOTOR_IV.asStack(), 'K', new MaterialEntry(cableGtSingle, Platinum));
     }
