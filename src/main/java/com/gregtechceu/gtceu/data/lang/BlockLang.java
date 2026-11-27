@@ -41,7 +41,7 @@ public class BlockLang {
         // Cables
         provider.add("tooltip.gtceu.cable.voltage", "§aMax Voltage:§r §a%s §a(%s§a)");
         provider.add("tooltip.gtceu.cable.amperage", "§eMax Amperage:§r §e%s");
-        provider.add("tooltip.gtceu.cable.loss_per_block", "§cLoss/Meter/Ampere:§r §c%s§7 EU-Volt");
+        provider.add("tooltip.gtceu.cable.loss_per_block", "§cLoss/Meter/Ampere:§r §c%s§r EU-Volt");
         provider.add("tooltip.gtceu.cable.superconductor", "%s §dSuperconductor");
 
         // Fluid Pipes

@@ -87,16 +87,14 @@ public class MachineLang {
         provider.add("gui.gtceu.auto_output.item.enabled", "Item Auto Output: §aEnabled");
         provider.add("gui.gtceu.auto_output.item.disabled", "Item Auto Output: §cDisabled");
         provider.addMultiLang("gui.gtceu.auto_output.item.unselected",
-                """
-                        Item Auto Output
-                        Select a side of the machine to configure its output.
-                        """);
+                "Item Auto Output",
+                "Select a side of the machine to configure its output.");
+
         provider.addMultiLang("gui.gtceu.auto_output.item.other_direction",
-                """
-                        Item Auto Output: §6Other Direction
-                        The machine's item output is set to another direction.
-                        Click to move the output to the currently selected side.
-                        """);
+                "Item Auto Output: §6Other Direction",
+                        "The machine's item output is set to another direction.",
+                        "Click to move the output to the currently selected side.");
+
         provider.add("gui.gtceu.auto_output.fluid.allow_input.enabled",
                 "Allow fluids input from the output side.");
         provider.add("gui.gtceu.auto_output.fluid.allow_input.disabled",
@@ -104,16 +102,12 @@ public class MachineLang {
         provider.add("gui.gtceu.auto_output.fluid.enabled", "Fluid Auto Output: §aEnabled");
         provider.add("gui.gtceu.auto_output.fluid.disabled", "Fluid Auto Output: §cDisabled");
         provider.addMultiLang("gui.gtceu.auto_output.fluid.unselected",
-                """
-                        Fluid Auto Output
-                        §7Select a side of the machine to configure its output.
-                        """);
+                "Fluid Auto Output",
+                        "Select a side of the machine to configure its output.");
         provider.addMultiLang("gui.gtceu.auto_output.fluid.other_direction",
-                """
-                        Fluid Auto Output: §6Other Direction
-                        §7The machine's fluid output is set to another direction.
-                        §7Click to move the output to the currently selected side.
-                        """);
+                "Fluid Auto Output: §6Other Direction",
+                "The machine's fluid output is set to another direction.",
+                "Click to move the output to the currently selected side.");
         provider.add("gui.gtceu.directional_setting.title", "Directional Setting");
         provider.add("gui.gtceu.directional_setting.tab_tooltip", "Change Directional Setting");
     }
@@ -367,7 +361,7 @@ public class MachineLang {
         provider.add("machine.gtceu.extreme_combustion_engine.tooltip", "Extreme Chemical Energy Releaser");
 
         provider.add("machine.gtceu.large_combustion_engine.tooltip.lubricant_use",
-                "Uses §f%s mB/hr §7of §6Lubricant §7while working");
+                "Uses §f%s mB/hr§r of §6Lubricant§r while working");
 
         provider.add("machine.gtceu.large_combustion_engine.tooltip.boost_regular",
                 "Supply §f20 mB/s§r of §bOxygen§r to produce up to §f%s EU/t§r at §f2x§r fuel consumption.");
@@ -569,16 +563,16 @@ public class MachineLang {
 
         /// ME linked machines
 
-        provider.add("gui.gtceu.machine.me_part.network.online", "Network Status: §2Online§r");
-        provider.add("gui.gtceu.machine.me_part.network.offline", "Network Status: §4Offline§r");
+        provider.add("gui.gtceu.machine.me_part.network.online", "Network Status: §2Online");
+        provider.add("gui.gtceu.machine.me_part.network.offline", "Network Status: §4Offline");
         provider.add("gui.gtceu.machine.me_output.waiting_list", "Sending Queue:");
         provider.add("gui.gtceu.machine.me_output.waiting_list_empty", "Sending Queue: §2Empty");
-        provider.add("gui.gtceu.machine.me_input.config_slot", "§fConfig Slot§r");
-        provider.add("gui.gtceu.machine.me_input.config_slot.set", "§7Click to §bset/select§7 config slot.§r");
-        provider.add("gui.gtceu.machine.me_input.config_slot.scroll", "§7Scroll wheel to §achange§7 config amount.§r");
-        provider.add("gui.gtceu.machine.me_input.config_slot.remove", "§7Right click to §4clear§7 config slot.§r");
-        provider.add("gui.gtceu.machine.me_input.config_slot.set_only", "§7Click to §bset§7 config slot.§r");
-        provider.add("gui.gtceu.machine.me_input.config_slot.auto_pull_managed", "§4Disabled:§7 Managed by Auto-Pull");
+        provider.add("gui.gtceu.machine.me_input.config_slot", "§fConfig Slot");
+        provider.add("gui.gtceu.machine.me_input.config_slot.set", "Click to §bset/select§r config slot.");
+        provider.add("gui.gtceu.machine.me_input.config_slot.scroll", "Scroll wheel to §achange§r config amount.");
+        provider.add("gui.gtceu.machine.me_input.config_slot.remove", "Right click to §4clear§r config slot.");
+        provider.add("gui.gtceu.machine.me_input.config_slot.set_only", "Click to §bset§r config slot.");
+        provider.add("gui.gtceu.machine.me_input.config_slot.auto_pull_managed", "§4Disabled:§r Managed by Auto-Pull");
         provider.add("gui.gtceu.machine.me_input.auto_pull", "Click to toggle automatic item pulling from ME");
 
         // Pattern Buffer/Proxy

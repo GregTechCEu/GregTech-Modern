@@ -253,7 +253,7 @@ public class GTMachineUtils {
 
     public static MachineDefinition[] registerTransformerMachines(GTRegistrate registrate, String langName,
                                                                   int baseAmp) {
-        return registerTieredMachines(registrate, "transformer_%da".formatted(baseAmp),
+        return registerTieredMachines(registrate, "transformer_%sa".formatted(baseAmp),
                 (holder, tier) -> new TransformerMachine(holder, tier, baseAmp),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)

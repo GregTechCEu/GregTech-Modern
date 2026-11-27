@@ -80,7 +80,7 @@ public class CoverLang {
                 "§eVoid Matching§r will void anything matching the filter.",
                 "§eVoid Overflow§r will void anything matching the filter, up to the specified amount.");
         provider.add("cover.gtceu.voiding.warning_tooltip",
-                "§cWARNING!§7 Setting this to \"Enabled\" means that fluids or items WILL be voided.");
+                "§cWARNING!§r Setting this to \"Enabled\" means that fluids or items WILL be voided.");
         provider.add("cover.gtceu.voiding.message.disabled", "Voiding Cover Disabled");
         provider.add("cover.gtceu.voiding.message.enabled", "Voiding Cover Enabled");
 
@@ -91,13 +91,13 @@ public class CoverLang {
 
         provider.addMultiLang("cover.gtceu.conveyor.distribution_mode.round_robin_prio",
                 "Distribution Mode: §bRound Robin with Restriction",
-                "§7Tries to split items equally across connected inventories",
-                "§7Will not send items down Restrictive item pipes unless no other paths are available.");
+                "Tries to split items equally across connected inventories",
+                "Will not send items down Restrictive item pipes unless no other paths are available.");
 
         provider.addMultiLang("cover.gtceu.conveyor.distribution_mode.insert_first",
                 "Distribution Mode: §bPriority",
-                "§7Will insert into the first inventory with the highest priority it can find.",
-                "§7Restrictive item pipes lower the priority of a path.");
+                "Will insert into the first inventory with the highest priority it can find.",
+                "Restrictive item pipes lower the priority of a path.");
 
         // Robot arm
         provider.add("cover.gtceu.robot_arm.transfer_mode.transfer_any", "Transfer Any");
@@ -107,14 +107,14 @@ public class CoverLang {
                 "§eTransfer Any§r - in this mode, cover will transfer as many items matching its filter as possible.",
                 "§eSupply Exact§r - in this mode, cover will supply items in portions specified in item filter slots (or variable under this button for tag filter). If amount of items is less than portion size, items won't be moved.",
                 "§eKeep Exact§r - in this mode, cover will keep specified amount of items in the destination inventory, supplying additional amount of items if required.",
-                "§7Tip: left/right click on filter slots to change item amount,  use shift clicking to change amount faster.");
+                "Tip: left/right click on filter slots to change item amount,  use shift clicking to change amount faster.");
 
         // Fluid regulator
         provider.addMultiLang("cover.gtceu.fluid_regulator.transfer_mode.description",
                 "§eTransfer Any§r - in this mode, cover will transfer as many fluids matching its filter as possible.",
                 "§eSupply Exact§r - in this mode, cover will supply fluids in portions specified in the window underneath this button. If amount of fluids is less than portion size, fluids won't be moved.",
                 "§eKeep Exact§r - in this mode, cover will keep specified amount of fluids in the destination inventory, supplying additional amount of fluids if required.",
-                "§7Tip: shift click will multiply increase/decrease amounts by 10 and ctrl click will multiply by 100.");
+                "Tip: shift click will multiply increase/decrease amounts by 10 and ctrl click will multiply by 100.");
 
         provider.add("cover.gtceu.fluid_regulator.supply_exact", "Supply Exact: %s");
         provider.add("cover.gtceu.fluid_regulator.keep_exact", "Keep Exact: %s");

@@ -85,8 +85,8 @@ public class ItemLang {
 
         // Copy/Paste Configuration
         provider.add("item.gtceu.behavior.memory_card.tooltip.copy",
-                "§7Sneak + R-Click to copy configuration, or clear stored data if a block other than a machine or pipe is targeted.");
-        provider.add("item.gtceu.behavior.memory_card.tooltip.paste", "§7R-Click to paste machine configuration");
+                "Sneak + R-Click to copy configuration, or clear stored data if a block other than a machine or pipe is targeted.");
+        provider.add("item.gtceu.behavior.memory_card.tooltip.paste", "R-Click to paste machine configuration");
         provider.add("item.gtceu.behavior.memory_card.tooltip.view_stored", "§8<Sneak to view stored configuration>");
         provider.add("item.gtceu.behavior.memory_card.client_msg.cleared", "Stored configuration cleared");
         provider.add("item.gtceu.behavior.memory_card.client_msg.copied", "Copied machine configuration");

@@ -27,10 +27,10 @@ public class CommonLang {
 
         // Voiding Mode
         provider.add("common.gtceu.voiding_mode", "Voiding Mode:");
-        provider.add("common.gtceu.voiding_mode.item", "§7Voiding §6Items");
-        provider.add("common.gtceu.voiding_mode.fluid", "§7Voiding §9Fluids");
-        provider.add("common.gtceu.voiding_mode.all", "§7Voiding §cAll");
-        provider.add("common.gtceu.voiding_mode.none", "§7Voiding Nothing");
+        provider.add("common.gtceu.voiding_mode.item", "Voiding §6Items");
+        provider.add("common.gtceu.voiding_mode.fluid", "Voiding §9Fluids");
+        provider.add("common.gtceu.voiding_mode.all", "Voiding §cAll");
+        provider.add("common.gtceu.voiding_mode.none", "Voiding Nothing");
     }
 
     public static void generateCommonLang(GTLangProvider provider) {
@@ -107,11 +107,11 @@ public class CommonLang {
 
         // Fluid Storage/Transfer
         provider.add("common.gtceu.tooltip.fluid_storage_capacity_mult",
-                "%s §7Tanks, §f%s mB §7each");
+                "§f%s§r Tanks, §f%s mB§r each");
 
         // General Consumption
-        provider.add("common.gtceu.tooltip.uses_per_tick", "Uses §f%s EU/t §7while working");
-        provider.add("common.gtceu.tooltip.uses_per_tick_steam", "Uses §f%s mB/t §7of §fSteam §7while working");
+        provider.add("common.gtceu.tooltip.uses_per_tick", "Uses §f%s EU/t§r while working");
+        provider.add("common.gtceu.tooltip.uses_per_tick_steam", "Uses §f%s mB/t§r of §fSteam§r while working");
 
         // General Production
         provider.add("common.gtceu.tooltip.base_production_eut", "§eBase Production: §f%s EU/t");

@@ -166,9 +166,9 @@ public class GTMultiMachines {
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
                     GTCEu.id("block/multiblock/electric_blast_furnace"))
             .tooltipLang("Where's the electric smoker?",
-                    "For every §f900K§7 above the recipe temperature, a multiplicative §f95%%§7 energy multiplier is applied pre-overclocking.",
-                    "For every §f1800K§7 above the recipe temperature, one overclock becomes §f100%% efficient§7 (perfect overclock).",
-                    "For every voltage tier above §bMV§7, temperature is increased by §f100K§7.")
+                    "For every §f900K§r above the recipe temperature, a multiplicative §f95%%§r energy multiplier is applied pre-overclocking.",
+                    "For every §f1800K§r above the recipe temperature, one overclock becomes §f100%% efficient§r (perfect overclock).",
+                    "For every voltage tier above §bMV§r, temperature is increased by §f100K§r.")
             .defaultTooltip()
             .additionalDisplay((controller, syncManager) -> {
                 if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
@@ -263,7 +263,7 @@ public class GTMultiMachines {
             .workableCasingModel(GTCEu.id("block/casings/voltage/ulv/side"),
                     GTCEu.id("block/multiblock/pyrolyse_oven"))
             .tooltipLang("Electric Coke Oven",
-                    "§6Cupronickel §7coils are §f25%%§7 slower. Every coil after §bKanthal§7 increases speed by §f50%%§7.")
+                    "§6Cupronickel§r coils are §f25%%§r slower. Every coil after §bKanthal§r increases speed by §f50%%§r.")
             .defaultTooltip()
             .additionalDisplay((controller, syncManager) -> {
                 if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
@@ -343,7 +343,7 @@ public class GTMultiMachines {
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/cracking_unit"))
-            .tooltipLang("Makes Oil useful", "Every coil after §6Cupronickel§7 reduces energy usage by §f10%%§7.")
+            .tooltipLang("Makes Oil useful", "Every coil after §6Cupronickel§r reduces energy usage by §f10%%§r.")
             .defaultTooltip()
             .additionalDisplay((controller, syncManager) -> {
                 if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
@@ -718,13 +718,13 @@ public class GTMultiMachines {
             .recipeType(DUMMY_RECIPES)
             .appearanceBlock(PLASTCRETE)
             .tooltipLang("Place machines inside to run cleanroom recipes.",
-                    "Uses §f30 EU/t§7 when dirty, §f4 EU/t§7 when clean.",
+                    "Uses §f30 EU/t§r when dirty, §f4 EU/t§r when clean.",
                     "Overclocking increases cleaning per cycle.",
                     "§bSize: §f5x5x5 to 15x15x15",
-                    "Requires §fFilter Casings §7in the ceiling, excluding the edges.",
-                    "Accepts up to §f4 Doors§7! Remains clean when the door is open.",
+                    "Requires §fFilter Casings§r in the ceiling, excluding the edges.",
+                    "Accepts up to §f4 Doors§r! Remains clean when the door is open.",
                     "Generators, Mufflers, Drills, and Primitive Machines are too dirty for the cleanroom!",
-                    "Send power through §fHulls §7or §fDiodes §7in the walls.")
+                    "Send power through §fHulls§r or §fDiodes§r in the walls.")
             .tooltip(t -> {
                 t.tooltips(Component.translatable("machine.gtceu.cleanroom.tooltip.0"),
                         Component.translatable("machine.gtceu.cleanroom.tooltip.1"),
@@ -820,12 +820,12 @@ public class GTMultiMachines {
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .tooltipLang("The heart of a centralized power grid",
-                    "§fCapacitors§7 do not need to be all the same tier.",
-                    "Allows up to §f%d Capacitor Layers§7.",
-                    "Loses energy equal to §f1%%§7 of total capacity every §f24 hours§7.",
-                    "Capped at §f%d kEU/t§7 passive loss per Capacitor Block.",
+                    "§fCapacitors§r do not need to be all the same tier.",
+                    "Allows up to §f%s Capacitor Layers§r.",
+                    "Loses energy equal to §f1%%§r of total capacity every §f24 hours§r.",
+                    "Capped at §f%s kEU/t§r passive loss per Capacitor Block.",
                     "Can use",
-                    " Laser Hatches§7.")
+                    " Laser Hatches.")
             .tooltips(Component.translatable("machine.gtceu.power_substation.tooltip.0"),
                     Component.translatable("machine.gtceu.power_substation.tooltip.1"),
                     Component.translatable("machine.gtceu.power_substation.tooltip.2",
@@ -865,10 +865,10 @@ public class GTMultiMachines {
             .rotationState(RotationState.NONE)
             .recipeType(DUMMY_RECIPES)
             .appearanceBlock(BRONZE_HULL)
-            .tooltipLang("Turns Logs into §aCharcoal§7 when §cignited§7.",
+            .tooltipLang("Turns Logs into §aCharcoal§r when §cignited§r.",
                     "Right Click with fire-starting items to start.",
-                    "Pyrolysis occurs in up to a §b9x4x9§7 space beneath.",
-                    "Logs must be not be exposed to §eAir§7!")
+                    "Pyrolysis occurs in up to a §b9x4x9§r space beneath.",
+                    "Logs must be not be exposed to §eAir§r!")
             .defaultTooltip()
             .pattern(CharcoalPileIgniterMachine.getPattern())
             .allowFlip(false)

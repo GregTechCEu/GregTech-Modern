@@ -52,8 +52,8 @@ public class GTResearchMachines {
             .appearanceBlock(ADVANCED_COMPUTER_CASING)
             .tooltipLang(
                     "More than just a Multiblock Scanner",
-                    "Used to scan onto §fData Orbs§7 and §fData Modules§7.",
-                    "Requires §fComputation§7 to work.",
+                    "Used to scan onto §fData Orbs§r and §fData Modules§r.",
+                    "Requires §fComputation§r to work.",
                     "Providing more Computation allows the recipe to run faster.")
             .defaultTooltip()
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
@@ -102,8 +102,8 @@ public class GTResearchMachines {
                     "Your Personal NAS",
                     "Bulk Data Storage. Transfer with Optical Cables.",
                     "Data Banks can be chained together.",
-                    "Uses §f%s EU/t§7 per Data/Optical Hatch normally.",
-                    "Uses §f%s EU/t§7 per Data/Optical Hatch when chained.")
+                    "Uses §f%s EU/t§r per Data/Optical Hatch normally.",
+                    "Uses §f%s EU/t§r per Data/Optical Hatch when chained.")
             .tooltips(Component.translatable("machine.gtceu.data_bank.tooltip.0"),
                     Component.translatable("machine.gtceu.data_bank.tooltip.1"),
                     Component.translatable("machine.gtceu.data_bank.tooltip.2"),
@@ -137,9 +137,9 @@ public class GTResearchMachines {
             .appearanceBlock(COMPUTER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .tooltipLang("Ethernet Hub",
-                    "Used to route and distribute §fComputation§7.",
-                    "Can combine any number of Computation §fReceivers§7 into any number of Computation §fTransmitters§7.",
-                    "Uses §f%s EU/t§7 per Computation Data Hatch.")
+                    "Used to route and distribute §fComputation§r.",
+                    "Can combine any number of Computation §fReceivers§r into any number of Computation §fTransmitters§r.",
+                    "Uses §f%s EU/t§r per Computation Data Hatch.")
             .tooltips(Component.translatable("machine.gtceu.network_switch.tooltip.0"),
                     Component.translatable("machine.gtceu.network_switch.tooltip.1"),
                     Component.translatable("machine.gtceu.network_switch.tooltip.2"),
@@ -170,8 +170,8 @@ public class GTResearchMachines {
             .appearanceBlock(COMPUTER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .tooltipLang("Just your average Supercomputer",
-                    "Used to generate §fComputation§7 (and heat).",
-                    "Requires HPCA components to generate §fCWU/t§7 (Compute Work Units).")
+                    "Used to generate §fComputation§r (and heat).",
+                    "Requires HPCA components to generate §fCWU/t§r (Compute Work Units).")
             .defaultTooltip()
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("AA", "CC", "CC", "CC", "AA")
