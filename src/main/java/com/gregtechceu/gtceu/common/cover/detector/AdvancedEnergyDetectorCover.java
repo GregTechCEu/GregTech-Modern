@@ -9,10 +9,12 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTMath;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.server.level.ServerPlayer;
 
 import brachy.modularui.api.drawable.Text;
@@ -145,18 +147,32 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
                                 .value(new BooleanSyncValue(this::isInverted, this::setInverted).allowC2S())
                                 .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
                                 .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
-                                .tooltip(false, t -> t.add("cover.gtceu.advanced_energy_detector.invert.disabled"))
-                                .tooltip(true, t -> t.add("cover.gtceu.advanced_energy_detector.invert.enabled")))
+                                .tooltip(false, t -> {
+                                    t.addLine(Text.lang("cover.gtceu.advanced_energy_detector.invert.disabled"));
+                                    t.addLine(CommonComponents.EMPTY);
+                                    LangUtil.getListMultiLang("cover.gtceu.advanced_energy_detector.invert_info").forEach(t::addLine);
+                                })
+                                .tooltip(true, t -> {
+                                    t.addLine(Text.lang("cover.gtceu.advanced_energy_detector.invert.enabled"));
+                                    t.addLine(CommonComponents.EMPTY);
+                                    LangUtil.getListMultiLang("cover.gtceu.advanced_energy_detector.invert_info").forEach(t::addLine);
+                                }))
                         .child(new ToggleButton()
                                 .value(new BooleanSyncValue(this::isUsePercent, this::setUsePercent).allowC2S())
                                 .background(true, ThemeAPI.INSTANCE.getTheme(settings.getTheme())
                                         .getToggleButtonThemeEntry().theme().getBackground())
                                 .overlay(false, GTGuiTextures.BUTTON_EU)
                                 .overlay(true, GTGuiTextures.BUTTON_PERCENT)
-                                .tooltip(false,
-                                        t -> t.add("cover.gtceu.advanced_energy_detector.use_percent.disabled"))
-                                .tooltip(true,
-                                        t -> t.add("cover.gtceu.advanced_energy_detector.use_percent.enabled"))));
+                                .tooltip(false, t -> {
+                                    t.addLine(Text.lang("cover.gtceu.advanced_energy_detector.use_percent.disabled"));
+                                    t.addLine(CommonComponents.EMPTY);
+                                    t.addLine(Text.lang("cover.gtceu.advanced_energy_detector.use_percent_info"));
+                                })
+                                .tooltip(true, t -> {
+                                    t.addLine(Text.lang("cover.gtceu.advanced_energy_detector.use_percent.enabled"));
+                                    t.addLine(CommonComponents.EMPTY);
+                                    t.addLine(Text.lang("cover.gtceu.advanced_energy_detector.use_percent_info"));
+                                })));
     }
 
     private void updateEUValues(boolean wasPercent) {

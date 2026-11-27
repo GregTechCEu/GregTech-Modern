@@ -32,7 +32,6 @@ public final class GTCommonComponents {
     public static final Component HOLD_CTRL_FOR_INFO = Component.translatable("common.gtceu.tooltip.hold_ctrl")
             .withStyle(ChatFormatting.GRAY);
 
-
     public static final Component FLUID_AMOUNT = Component.translatable("common.gtceu.fluid_amount");
 
     public static final Component CREATIVE_NEEDED = Component.translatable("gui.gtceu.machine.creative_tooltip.1")

@@ -1,18 +1,20 @@
 package com.gregtechceu.gtceu.utils.lang;
 
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.mojang.datafixers.util.Either;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
+
+import com.mojang.datafixers.util.Either;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -36,7 +38,7 @@ public class GTCustomTooltip {
 
     /**
      * The prompt displayed when holding shift displays extra tooltips.
-      */
+     */
     @Getter
     @Setter
     private @Nullable Component shiftInfoPrompt = GTCommonComponents.HOLD_SHIFT_FOR_INFO;
@@ -57,7 +59,8 @@ public class GTCustomTooltip {
 
     /**
      * Adds a custom tooltip function which can add/modify all tooltips.
-     * @param type The display type when this custom tooltip function should be called.
+     * 
+     * @param type                 The display type when this custom tooltip function should be called.
      * @param customTooltipBuilder The custom tooltip builder.
      */
     public GTCustomTooltip customTooltipBuilder(DisplayType type, CustomTooltipBuilder customTooltipBuilder) {
@@ -67,6 +70,7 @@ public class GTCustomTooltip {
 
     /**
      * Adds a custom tooltip function which can add/modify all tooltips.
+     * 
      * @param customTooltipBuilder The custom tooltip builder.
      */
     public GTCustomTooltip customTooltipBuilder(CustomTooltipBuilder customTooltipBuilder) {
@@ -76,7 +80,8 @@ public class GTCustomTooltip {
 
     /**
      * Adds a tooltip entry
-     * @param type The display type of this tooltip line
+     * 
+     * @param type    The display type of this tooltip line
      * @param tooltip The tooltip entry
      */
     public GTCustomTooltip tooltip(DisplayType type, TooltipEntry tooltip) {
@@ -86,7 +91,8 @@ public class GTCustomTooltip {
 
     /**
      * Adds a tooltip
-     * @param type The display type of this tooltip line
+     * 
+     * @param type    The display type of this tooltip line
      * @param tooltip The tooltip component
      */
     public GTCustomTooltip tooltip(DisplayType type, Component tooltip) {
@@ -95,7 +101,8 @@ public class GTCustomTooltip {
 
     /**
      * Adds a dynamic tooltip
-     * @param type The display type of this tooltip line
+     * 
+     * @param type        The display type of this tooltip line
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip tooltip(DisplayType type, Function<ItemStack, Component> tooltipFunc) {
@@ -104,6 +111,7 @@ public class GTCustomTooltip {
 
     /**
      * Adds a tooltip with normal display type.
+     * 
      * @param tooltip The tooltip entry
      */
     public GTCustomTooltip tooltip(TooltipEntry tooltip) {
@@ -112,6 +120,7 @@ public class GTCustomTooltip {
 
     /**
      * Adds a tooltip with normal display type.
+     * 
      * @param tooltip The tooltip component
      */
     public GTCustomTooltip tooltip(Component tooltip) {
@@ -120,6 +129,7 @@ public class GTCustomTooltip {
 
     /**
      * Adds a dynamic tooltip with normal display type.
+     * 
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip tooltip(Function<ItemStack, Component> tooltipFunc) {
@@ -128,8 +138,9 @@ public class GTCustomTooltip {
 
     /**
      * Adds a conditional tooltip with normal display type.
+     * 
      * @param predicate A predicate determining if this tooltip should be displayed.
-     * @param tooltip The tooltip component
+     * @param tooltip   The tooltip component
      */
     public GTCustomTooltip conditionalTooltip(Predicate<ItemStack> predicate, Component tooltip) {
         return tooltip(new TooltipEntry(tooltip, predicate));
@@ -137,7 +148,8 @@ public class GTCustomTooltip {
 
     /**
      * Adds a conditional dynamic tooltip with normal display type.
-     * @param predicate A predicate determining if this tooltip should be displayed.
+     * 
+     * @param predicate   A predicate determining if this tooltip should be displayed.
      * @param tooltipFunc The tooltip function.
      */
     public GTCustomTooltip conditionalTooltip(Predicate<ItemStack> predicate, Function<ItemStack, Component> tooltipFunc) {
@@ -146,10 +158,11 @@ public class GTCustomTooltip {
 
     /**
      * Adds multiple components as tooltips with normal display type.
+     * 
      * @param tooltips The components to add.
      */
     public GTCustomTooltip tooltips(Component... tooltips) {
-        for (var tooltip: tooltips) {
+        for (var tooltip : tooltips) {
             tooltip(tooltip);
         }
         return this;
@@ -157,6 +170,7 @@ public class GTCustomTooltip {
 
     /**
      * Adds a tooltip displayed when shift is held.
+     * 
      * @param tooltip The tooltip entry
      */
     public GTCustomTooltip shiftTooltip(TooltipEntry tooltip) {
@@ -165,6 +179,7 @@ public class GTCustomTooltip {
 
     /**
      * Adds a tooltip displayed when shift is held.
+     * 
      * @param tooltip The tooltip component
      */
     public GTCustomTooltip shiftTooltip(Component tooltip) {
@@ -173,6 +188,7 @@ public class GTCustomTooltip {
 
     /**
      * Adds a dynamic tooltip displayed when shift is held.
+     * 
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip shiftTooltip(Function<ItemStack, Component> tooltipFunc) {
@@ -181,8 +197,9 @@ public class GTCustomTooltip {
 
     /**
      * Adds a conditional tooltip displayed when shift is held.
+     * 
      * @param predicate A predicate determining if this tooltip should be displayed.
-     * @param tooltip The tooltip component
+     * @param tooltip   The tooltip component
      */
     public GTCustomTooltip conditionalShiftTooltip(Predicate<ItemStack> predicate, Component tooltip) {
         return shiftTooltip(new TooltipEntry(tooltip, predicate));
@@ -190,7 +207,8 @@ public class GTCustomTooltip {
 
     /**
      * Adds a conditional dynamic tooltip displayed when shift is held.
-     * @param predicate A predicate determining if this tooltip should be displayed.
+     * 
+     * @param predicate   A predicate determining if this tooltip should be displayed.
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip conditionalShiftTooltip(Predicate<ItemStack> predicate, Function<ItemStack, Component> tooltipFunc) {
@@ -199,10 +217,11 @@ public class GTCustomTooltip {
 
     /**
      * Adds multiple components displayed when shift is held
+     * 
      * @param tooltips The components to add.
      */
     public GTCustomTooltip shiftTooltips(Component... tooltips) {
-        for (var tooltip: tooltips) {
+        for (var tooltip : tooltips) {
             shiftTooltip(tooltip);
         }
         return this;
@@ -210,6 +229,7 @@ public class GTCustomTooltip {
 
     /**
      * Adds a tooltip displayed when ctrl is held.
+     * 
      * @param tooltip The tooltip entry
      */
     public GTCustomTooltip ctrlTooltip(TooltipEntry tooltip) {
@@ -218,6 +238,7 @@ public class GTCustomTooltip {
 
     /**
      * Adds a tooltip displayed when ctrl is held.
+     * 
      * @param tooltip The tooltip component
      */
     public GTCustomTooltip ctrlTooltip(Component tooltip) {
@@ -226,6 +247,7 @@ public class GTCustomTooltip {
 
     /**
      * Adds a dynamic tooltip displayed when ctrl is held.
+     * 
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip ctrlTooltip(Function<ItemStack, Component> tooltipFunc) {
@@ -234,8 +256,9 @@ public class GTCustomTooltip {
 
     /**
      * Adds a conditional tooltip displayed when ctrl is held.
+     * 
      * @param predicate A predicate determining if this tooltip should be displayed.
-     * @param tooltip The tooltip component
+     * @param tooltip   The tooltip component
      */
     public GTCustomTooltip conditionalCtrlTooltip(Predicate<ItemStack> predicate, Component tooltip) {
         return ctrlTooltip(new TooltipEntry(tooltip, predicate));
@@ -243,7 +266,8 @@ public class GTCustomTooltip {
 
     /**
      * Adds a conditional dynamic tooltip displayed when ctrl is held.
-     * @param predicate A predicate determining if this tooltip should be displayed.
+     * 
+     * @param predicate   A predicate determining if this tooltip should be displayed.
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip conditionalCtrlTooltip(Predicate<ItemStack> predicate, Function<ItemStack, Component> tooltipFunc) {
@@ -252,18 +276,19 @@ public class GTCustomTooltip {
 
     /**
      * Adds multiple components displayed when ctrl is held
+     * 
      * @param tooltips The components to add.
      */
     public GTCustomTooltip ctrlTooltips(Component... tooltips) {
-        for (var tooltip: tooltips) {
+        for (var tooltip : tooltips) {
             ctrlTooltip(tooltip);
         }
         return this;
     }
 
-
     /**
      * Adds a tooltip displayed when alt is held.
+     * 
      * @param tooltip The tooltip entry
      */
     public GTCustomTooltip altTooltip(TooltipEntry tooltip) {
@@ -272,6 +297,7 @@ public class GTCustomTooltip {
 
     /**
      * Adds a tooltip displayed when alt is held.
+     * 
      * @param tooltip The tooltip component
      */
     public GTCustomTooltip altTooltip(Component tooltip) {
@@ -280,6 +306,7 @@ public class GTCustomTooltip {
 
     /**
      * Adds a dynamic tooltip displayed when alt is held.
+     * 
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip altTooltip(Function<ItemStack, Component> tooltipFunc) {
@@ -288,8 +315,9 @@ public class GTCustomTooltip {
 
     /**
      * Adds a conditional tooltip displayed when alt is held.
+     * 
      * @param predicate A predicate determining if this tooltip should be displayed.
-     * @param tooltip The tooltip component
+     * @param tooltip   The tooltip component
      */
     public GTCustomTooltip conditionalAltTooltip(Predicate<ItemStack> predicate, Component tooltip) {
         return altTooltip(new TooltipEntry(tooltip, predicate));
@@ -297,7 +325,8 @@ public class GTCustomTooltip {
 
     /**
      * Adds a conditional dynamic tooltip displayed when alt is held.
-     * @param predicate A predicate determining if this tooltip should be displayed.
+     * 
+     * @param predicate   A predicate determining if this tooltip should be displayed.
      * @param tooltipFunc The tooltip function
      */
     public GTCustomTooltip conditionalAltTooltip(Predicate<ItemStack> predicate, Function<ItemStack, Component> tooltipFunc) {
@@ -306,10 +335,11 @@ public class GTCustomTooltip {
 
     /**
      * Adds multiple components displayed when alt is held
+     * 
      * @param tooltips The components to add.
      */
     public GTCustomTooltip altTooltips(Component... tooltips) {
-        for (var tooltip: tooltips) {
+        for (var tooltip : tooltips) {
             altTooltip(tooltip);
         }
         return this;
@@ -320,7 +350,7 @@ public class GTCustomTooltip {
     }
 
     public void addTooltips(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltipList,
-                       TooltipFlag flag) {
+                            TooltipFlag flag) {
         addForType(DisplayType.NORMAL, stack, level, tooltipList);
         if (tooltips.containsKey(DisplayType.SHIFT) && !tooltips.get(DisplayType.SHIFT).isEmpty()) {
             if (GTUtil.isShiftDown()) {
@@ -352,7 +382,7 @@ public class GTCustomTooltip {
     protected void addForType(DisplayType type, ItemStack stack, @Nullable BlockGetter level, List<Component> tooltipList) {
         var tooltips = this.tooltips.computeIfAbsent(type, v -> new ObjectArrayList<>());
 
-        for (var tooltip: tooltips) {
+        for (var tooltip : tooltips) {
             var component = tooltip.get(stack);
             if (component == null) continue;
             if (component.getStyle().isEmpty() && defaultComponentStyle != null) {

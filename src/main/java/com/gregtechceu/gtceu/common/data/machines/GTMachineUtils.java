@@ -56,7 +56,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 import com.gregtechceu.gtceu.utils.lang.GTCustomTooltip;
-import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;
@@ -812,7 +811,8 @@ public class GTMachineUtils {
                 .addTooltips(Component.translatable("multiblock.gtceu.predicate.tier_must_match", VNC[tier]));
     }
 
-    public static final GTCustomTooltip.TooltipEntry DEFAULT_ENV_REQUIREMENT = new GTCustomTooltip.TooltipEntry(defaultEnvironmentRequirement(),
+    public static final GTCustomTooltip.TooltipEntry DEFAULT_ENV_REQUIREMENT = new GTCustomTooltip.TooltipEntry(
+            defaultEnvironmentRequirement(),
             s -> ConfigHolder.INSTANCE.gameplay.environmentalHazards);
 
     // Tooltips

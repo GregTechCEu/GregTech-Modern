@@ -739,9 +739,10 @@ public class GTMultiMachines {
                 t.ctrlTooltip(Component.translatable("machine.gtceu.cleanroom.tooltip.6"));
                 t.ctrlTooltip(Component.translatable("machine.gtceu.cleanroom.tooltip.7"));
 
-                t.conditionalCtrlTooltip(s -> GTCEu.Mods.isAE2Loaded(), s -> Component.translatable(AEConfig.instance().getChannelMode() == ChannelMode.INFINITE ?
-                        "machine.gtceu.cleanroom.tooltip.ae2.no_channels" :
-                        "machine.gtceu.cleanroom.tooltip.ae2.channels"));
+                t.conditionalCtrlTooltip(s -> GTCEu.Mods.isAE2Loaded(),
+                        s -> Component.translatable(AEConfig.instance().getChannelMode() == ChannelMode.INFINITE ?
+                                "machine.gtceu.cleanroom.tooltip.ae2.no_channels" :
+                                "machine.gtceu.cleanroom.tooltip.ae2.channels"));
                 t.ctrlTooltip(Component.empty());
             })
             .pattern(CleanroomMachine.getPattern())

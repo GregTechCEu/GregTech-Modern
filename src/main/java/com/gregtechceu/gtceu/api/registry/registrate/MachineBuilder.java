@@ -34,7 +34,6 @@ import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 import com.gregtechceu.gtceu.utils.lang.GTCustomTooltip;
-import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
@@ -535,7 +534,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     public SELF defaultTooltip() {
         if (langTooltips.size() == 1) return tooltips(Component.translatable(id.toLanguageKey("machine", "tooltip")));
         List<Component> components = new ArrayList<>();
-        for (int i=0; i < langTooltips.size(); i++) {
+        for (int i = 0; i < langTooltips.size(); i++) {
             components.add(Component.translatable(id.toLanguageKey("machine", "tooltip." + i)));
         }
         return tooltips(components.toArray(Component[]::new));

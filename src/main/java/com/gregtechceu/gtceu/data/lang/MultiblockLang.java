@@ -5,8 +5,9 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 public class MultiblockLang {
 
     public static void init(GTLangProvider provider) {
-        provider.addMultiline("multiblock.gtceu.dimensions", "Dimensions: \n" +
-                "  §c§lWidth§r: %s, §a§lHeight§r: %s, §9§lDepth§r: %s ");
+        provider.addMultiLang("multiblock.gtceu.dimensions",
+                "Dimensions:",
+                "  §c§lWidth§r: %s, §a§lHeight§r: %s, §9§lDepth§r: %s");
 
         provider.add("multiblock.gtceu.part_sharing.disabled", "Multiblock Sharing §4Disabled");
         provider.add("multiblock.gtceu.part_sharing.enabled", "Multiblock Sharing §aEnabled");
@@ -68,7 +69,6 @@ public class MultiblockLang {
         provider.add("multiblock.gtceu.pattern_error.limit_min", "§cMinimum:§r %d, §cHas:§r %d");
         provider.add("multiblock.gtceu.pattern_error.limit_layer_max", "§cMaximum:§r %d per layer, §cHas:§r %d");
         provider.add("multiblock.gtceu.pattern_error.limit_layer_min", "§cMinimum:§r %d per layer, §cHas:§r %d");
-
 
         // Autobuilding, Multiblock Preview & Terminal
 

@@ -48,10 +48,16 @@ public class MachineLang {
         provider.add("gui.gtceu.auto_input.item.tooltip.enabled", "Item Auto-Input Enabled");
         provider.add("gui.gtceu.auto_input.item.tooltip.disabled", "Item Auto-Input Disabled");
 
-        provider.addMultiline("gui.gtceu.charger_slot.tooltip",
-                "§fCharger Slot§r\n§7Draws power from %s batteries§r\n§7Charges %s tools and batteries");
-        provider.addMultiline("gui.gtceu.configurator_slot.tooltip",
-                "§fConfigurator Slot§r\n§7Place a §6Programmed Circuit§7 in this slot to\n§7change its configured value.\n§7Hold §6Shift§7 when clicking buttons to change by §65.\n§aA Programmed Circuit in this slot is also valid for recipe inputs.§r");
+        provider.addMultiLang("gui.gtceu.charger_slot.tooltip",
+                "§fCharger Slot§r",
+                "Draws power from %s batteries",
+                "Charges %s tools and batteries");
+
+        provider.addMultiLang("gui.gtceu.configurator_slot.tooltip",
+                "§fConfigurator Slot§r",
+                "Place a §6Programmed Circuit§r in this slot to change its configured value.",
+                "Hold §6Shift§r when clicking buttons to change by §65.",
+                "§aA Programmed Circuit in this slot is valid for recipe inputs.");
 
         provider.add("gui.gtceu.fluid_locking.enabled", "Fluid Locking Enabled");
         provider.add("gui.gtceu.fluid_locking.disabled", "Fluid Locking Disabled");
@@ -198,14 +204,18 @@ public class MachineLang {
 
         /// Miners (& Large Miners)
 
-        provider.addMultiline("gui.gtceu.machine.miner.silk_touch.enabled",
-                "Silk Touch Enabled: Click to Disable.\nSwitching requires an idle machine.");
-        provider.addMultiline("gui.gtceu.machine.miner.silk_touch.disabled",
-                "Silk Touch Disabled: Click to Enable.\nSwitching requires an idle machine.");
-        provider.addMultiline("gui.gtceu.machine.miner.chunk_mode.enabled",
-                "Chunk Mode Enabled: Click to Disable.\nSwitching requires an idle machine.");
-        provider.addMultiline("gui.gtceu.machine.miner.chunk_mode.disabled",
-                "Chunk Mode Disabled: Click to Enable.\nSwitching requires an idle machine.");
+        provider.addMultiLang("gui.gtceu.machine.miner.silk_touch.enabled",
+                "Silk Touch Enabled: Click to Disable.",
+                "Switching requires an idle machine.");
+        provider.addMultiLang("gui.gtceu.machine.miner.silk_touch.disabled",
+                "Silk Touch Disabled: Click to Enable.",
+                "Switching requires an idle machine.");
+        provider.addMultiLang("gui.gtceu.machine.miner.chunk_mode.enabled",
+                "Chunk Mode Enabled: Click to Disable.",
+                "Switching requires an idle machine.");
+        provider.addMultiLang("gui.gtceu.machine.miner.chunk_mode.disabled",
+                "Chunk Mode Disabled: Click to Enable.",
+                "Switching requires an idle machine.");
 
         provider.add("machine.gtceu.miner.working_area", "§bWorking Area: §f%sx%s");
         provider.add("machine.gtceu.miner.chunk_mode", "Chunk Mode");
@@ -268,8 +278,9 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.creative.activity.off", "Not active");
 
         /// Fisher
-        provider.addMultiline("gui.gtceu.machine.fisher.fisher_mode",
-                "Toggle junk items\nOff costs 2 string per operation");
+        provider.addMultiLang("gui.gtceu.machine.fisher.fisher_mode",
+                "Toggle junk items",
+                "Off costs 2 string per operation");
 
         /// Drums
         provider.add("machine.gtceu.drum.enable_output", "Will drain Fluid to downward adjacent Tanks");
@@ -296,10 +307,22 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.primitive_water_pump.production", "Production: %s mB/s");
         provider.add("gui.gtceu.machine.primitive_water_pump.description",
                 "The Primitive Water Pump is a pre-Steam Era multiblock that collects water once per second, depending on the Biome it is in. It can use a Pump, ULV, or LV Output Hatch, increasing the amount of water per tier. Follows the formula: Biome Coefficient * Hatch Multiplier.");
-        provider.addMultiline("gui.gtceu.machine.primitive_water_pump.extra1",
-                "Biome Coefficient:\n  Ocean, River: 1000 mB/s\n  Swamp: 800 mB/s\n  Jungle: 350 mB/s\n  Snowy: 300 mB/s\n  Plains, Forest: 250 mB/s\n  Taiga: 175 mB/s\n  Beach: 170 mB/s\n  Other: 100 mB/s");
-        provider.addMultiline("gui.gtceu.machine.primitive_water_pump.extra2",
-                "Hatch Multipliers:\n  Pump Hatch: 1x\n  ULV Output Hatch: 2x\n  LV Output Hatch: 4x\n\nWhile raining in the Pump's Biome, the total water production will be increased by 50%%.");
+        provider.addMultiLang("gui.gtceu.machine.primitive_water_pump.extra1",
+                "Biome Coefficient:",
+                "  Ocean, River: 1000 mB/s",
+                "  Swamp: 800 mB/s",
+                "  Jungle: 350 mB/s",
+                "  Snowy: 300 mB/s",
+                "  Plains, Forest: 250 mB/s",
+                "  Taiga: 175 mB/s",
+                "  Beach: 170 mB/s",
+                "  Other: 100 mB/s");
+        provider.addMultiLang("gui.gtceu.machine.primitive_water_pump.extra2",
+                "Hatch Multipliers:",
+                "  Pump Hatch: 1x",
+                "  ULV Output Hatch: 2x",
+                "  LV Output Hatch: 4x",
+                "While raining in the Pump's Biome, the total water production will be increased by 50%%.");
 
         // Electric Blast Furnace
         provider.add("gui.gtceu.machine.electric_blast_furnace.max_temp", "Heat Capacity: %s");
@@ -506,8 +529,8 @@ public class MachineLang {
     private static void generateCustomMultiblockPartLang(GTLangProvider provider) {
         // Maintenance Hatch
         provider.add("machine.gtceu.maintenance_hatch.tooltip", "For maintaining Multiblocks");
-        provider.addMultiline("machine.gtceu.maintenance_hatch_configurable.tooltip",
-                "For finer control over Multiblocks\nStarts with no Maintenance problems!");
+        provider.addMultiLang("machine.gtceu.maintenance_hatch_configurable.tooltip",
+                "For finer control over Multiblocks", "Starts with no Maintenance problems!");
         provider.add("machine.gtceu.maintenance_hatch_full_auto.tooltip",
                 "For automatically maintaining Multiblocks");
         provider.addMultiLang("machine.gtceu.maintenance_hatch_cleanroom_auto.tooltip",
@@ -1045,10 +1068,10 @@ public class MachineLang {
         provider.add("gui.gtceu.placeholder_editor.constant_value",
                 "This expression always evaluates to '%s'.Consider replacing it with a constant.");
 
-        provider.addMultiline("gui.gtceu.placeholder_editor.write_in_if", """
-                Placeholders inside {if} are executed regardless of the condition.
-                This means that, for example, "{if 0 {redstone set 15}}" will produce redstone output.
-                To avoid this, use "{eval {if <condition> "<code>" "<else_code>"}}".""");
+        provider.addMultiLang("gui.gtceu.placeholder_editor.write_in_if",
+                "Placeholders inside {if} are executed regardless of the condition.",
+                "This means that, for example, \"{if 0 {redstone set 15}}\" will produce redstone output.",
+                "To avoid this, use \"{eval {if <condition> \"<code>\" \"<else_code>\"}}\".");
 
         provider.add("gui.gtceu.machine.central_monitor.left_click", "Select/unselect a monitor by left-clicking it");
         provider.add("gui.gtceu.machine.central_monitor.right_click",
@@ -1071,16 +1094,14 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.central_monitor.gui_module_info",
                 "To select a block to get the GUI from, select a target in the monitor group editor.");
 
-        provider.addMultiline("gui.gtceu.machine.central_monitor.text_module_help",
-                """
-                        This module displays text that can have placeholders.
-                        Placeholders are strings like "{energy}" that when displayed, will display their value instead (in this case the amount of energy).
-                        They can also do some other things, such as set a redstone output/read redstone input, run calculations, etc.
-                        Some placeholders, like {energy} must have a target to function. A target is basically any block that can accept covers or is part of the
-                        central monitor multiblock. For example {energy} displays the amount of energy in its target block, usually a battery buffer or a PSS.
-                        Select a target in the monitor group editing window, check out the help page there for more info.
-                        Here's an example usage of placeholders, that displays some energy info and sends a redstone signal when energy is <50%:
-                        """);
+        provider.addMultiLang("gui.gtceu.machine.central_monitor.text_module_help",
+                "This module displays text that can have placeholders.",
+                "Placeholders are strings like \"{energy}\" that when displayed, will display their value instead (in this case the amount of energy).",
+                "They can also do some other things, such as set a redstone output/read redstone input, run calculations, etc.",
+                "Some placeholders, like {energy} must have a target to function. A target is basically any block that can accept covers or is part of the",
+                "central monitor multiblock. For example {energy} displays the amount of energy in its target block, usually a battery buffer or a PSS.",
+                "Select a target in the monitor group editing window, check out the help page there for more info.",
+                "Here's an example usage of placeholders, that displays some energy info and sends a redstone signal when energy is <50%:");
 
         provider.add("gui.gtceu.machine.central_monitor.image_url", "Input image URL:");
         provider.add("gui.gtceu.machine.central_monitor.image_url_tooltip", "Image URL: %s");

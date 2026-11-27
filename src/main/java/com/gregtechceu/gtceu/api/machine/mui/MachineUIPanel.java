@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.TooltipFlag;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.drawable.UITexture;
@@ -17,7 +18,6 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
-import net.minecraft.world.item.TooltipFlag;
 
 import java.util.ArrayList;
 import java.util.List;

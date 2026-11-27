@@ -22,7 +22,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.DistillationTowe
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.trait.LatheRecipeLogic;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 import com.gregtechceu.gtceu.utils.lang.LangUtil;
@@ -276,11 +275,11 @@ public class GCYMMachines {
             .multiblock("large_assembler", WorkableElectricMultiblockMachine::new)
             .langValue("Large Assembling Factory")
             .tooltip(t -> {
-                        t.tooltips(
-                                Component.translatable("gui.gtceu.supports_parallel"),
-                                Component.translatable("gui.gtceu.machine.single_energy_hatch_only.tooltip"),
-                                GTMachineUtils.getAvailableRecipeMapTooltip(ASSEMBLER_RECIPES));
-                        t.tooltip(DEFAULT_ENV_REQUIREMENT);
+                t.tooltips(
+                        Component.translatable("gui.gtceu.supports_parallel"),
+                        Component.translatable("gui.gtceu.machine.single_energy_hatch_only.tooltip"),
+                        GTMachineUtils.getAvailableRecipeMapTooltip(ASSEMBLER_RECIPES));
+                t.tooltip(DEFAULT_ENV_REQUIREMENT);
             })
             .rotationState(RotationState.ALL)
             .recipeType(ASSEMBLER_RECIPES)

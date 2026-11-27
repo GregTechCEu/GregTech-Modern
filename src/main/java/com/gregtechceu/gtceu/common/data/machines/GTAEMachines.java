@@ -111,9 +111,9 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_buffer_hatch"))
             .langValue("ME Pattern Buffer")
-            .tooltipLang("§fAllows direct §6AE2 pattern storage §rfor GregTech Multiblocks.",
-                    "§fAE2 Patterns can utilize anything stored in the §6shared inventory §rwidget.",
-                    "§fLink §6Pattern Buffer Proxies§r with a §bdatastick §rto link machines together!")
+            .tooltipLang("Allows direct §6AE2 pattern storage§r for GregTech Multiblocks.",
+                    "AE2 Patterns can utilize anything stored in the §6shared inventory§r widget.",
+                    "Link §6Pattern Buffer Proxies§r with a §bdatastick§r to link machines together!")
             .defaultTooltip()
             .tooltips(GTCommonComponents.PART_SHARING_ENABLED)
             .register();
@@ -126,9 +126,9 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_buffer_hatch_proxy"))
             .langValue("ME Pattern Buffer Proxy")
-            .tooltipLang("§fAllows linking many machines to a singular §6ME Pattern Buffer§r.",
-                    "§fAll connected proxies will share the patterns held within the §6original buffer§r.",
-                    "§fLet the factory grow!")
+            .tooltipLang("Allows linking many machines to a singular §6ME Pattern Buffer§r.",
+                    "All connected proxies will share the patterns held within the §6original buffer§r.",
+                    "Let the factory grow!")
             .defaultTooltip()
             .tooltips(GTCommonComponents.PART_SHARING_ENABLED)
             .register();

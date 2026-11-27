@@ -547,8 +547,8 @@ public class GTMachines {
             .tooltip(t -> {
                 t.tooltips(LangUtil.getMultiLang("machine.gtceu.long_distance_pipe.tooltip"));
                 t.conditionalTooltip(s -> ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance > 0,
-                                s -> Component.translatable("machine.gtceu.long_distance_pipe.tooltip.min_length",
-                                        ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance));
+                        s -> Component.translatable("machine.gtceu.long_distance_pipe.tooltip.min_length",
+                                ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance));
             })
             .register();
 

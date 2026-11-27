@@ -15,10 +15,10 @@ public class ItemLang {
         provider.add("item.gtceu.battery.charge_detailed", "%s/%s EU - Tier %s (%s/%s remaining)");
 
         // Cover Tooltips
-        provider.add("item.gtceu.electric.pump.tooltip", "§7Transfers §fFluids§7 at specific rates as §fCover§7.");
-        provider.add("item.gtceu.fluid.regulator.tooltip", "§7Limits §fFluids§7 to specific quantities as §fCover§7.");
-        provider.add("item.gtceu.conveyor.module.tooltip", "§7Transfers §fItems§7 at specific rates as §fCover§7.");
-        provider.add("item.gtceu.robot.arm.tooltip", "§7Limits §fItems§7 to specific quantities as §fCover§7.");
+        provider.add("item.gtceu.electric.pump.tooltip", "Transfers §fFluids§r at specific rates as §fCover§r.");
+        provider.add("item.gtceu.fluid.regulator.tooltip", "Limits §fFluids§r to specific quantities as §fCover§r.");
+        provider.add("item.gtceu.conveyor.module.tooltip", "Transfers §fItems§r at specific rates as §fCover§r.");
+        provider.add("item.gtceu.robot.arm.tooltip", "Limits §fItems§r to specific quantities as §fCover§r.");
 
         // Programmed Circuit
         provider.add("item.gtceu.circuit.integrated.gui", "Programmed Circuit Configuration");
@@ -28,8 +28,9 @@ public class ItemLang {
         provider.add("item.gtceu.turbine_rotor.tooltip", "Turbine Rotors for your power station");
 
         provider.add("item.gtceu.battery_hull.tooltip", "An empty %s Battery Hull");
-        provider.addMultiline("item.gtceu.solar_panel.tooltip",
-                "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r");
+        provider.addMultiLang("item.gtceu.solar_panel.tooltip",
+                "May the Sun be with you.",
+                "Produces §fEnergy§r from the §eSun§r as §fCover§r");
 
         // General Electric Tools
         provider.add("item.gtceu.electric.tooltip", "%s/%s EU - Tier %s");
