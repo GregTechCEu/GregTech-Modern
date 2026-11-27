@@ -791,7 +791,7 @@ public class MetaTileEntityLoader {
                 ROBOT_ARM, 'C', CIRCUIT, 'W', CABLE);
         registerMachineRecipe(provider, GTMachines.WELDER, "PCP", "EMA", "WCW", 'M', HULL, 'P', PLATE, 'C', CIRCUIT,
                 'E', MOTOR, 'A', ROBOT_ARM, 'W', CABLE);
-        registerMachineRecipe(provider, GTMachines.SPOOLING, "CPC", "VMV", "WBW", 'M', HULL, 'P', PISTON, 'C', CIRCUIT,
+        registerMachineRecipe(provider, GTMachines.SPOOLER, "CPC", "VMV", "WBW", 'M', HULL, 'P', PISTON, 'C', CIRCUIT,
                 'V', CONVEYOR, 'W', CABLE, 'B', PLATE);
         registerMachineRecipe(provider, GTMachines.BENDER, "PBP", "CMC", "EWE", 'M', HULL, 'E', MOTOR, 'P', PISTON, 'C',
                 CIRCUIT, 'W', CABLE, 'B', PLATE);
