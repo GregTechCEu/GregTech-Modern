@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
-import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
+import com.gregtechceu.gtceu.api.events.ContentModificationEvent;
 import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
 import com.gregtechceu.gtceu.api.item.spoilage.SpoilableBehavior;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
@@ -232,7 +232,7 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void addSpoilTransferModifier(ModifyMachineEvent event) {
+    public void addSpoilTransferModifier(ContentModificationEvent.Machine event) {
         event.getBuilder().addRecipeModifier(GTRecipeModifiers.SPOILAGE_TRANSFER);
     }
 

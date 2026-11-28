@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.events.ContentModificationEvent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -43,6 +44,11 @@ public class GTRecipeCategories {
             GTRegistryInfo.registerFor(GTRegistries.RECIPE_CATEGORIES.getRegistryName());
         }
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class));
+
+        for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
+            ModLoader.get().postEvent(new ContentModificationEvent.RecipeCategory(category));
+        }
+
         GTRegistries.RECIPE_CATEGORIES.freeze();
     }
 
