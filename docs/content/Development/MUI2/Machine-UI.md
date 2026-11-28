@@ -206,7 +206,8 @@ Give a widget a `setEnabledIf` to hide it without leaving a gap.
 ### Adding lines from the definition
 
 The usual way to add a line is `additionalDisplay` on the machine builder, which does not require a
-custom machine class. It is a `BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>>`:
+custom machine class. It takes an `AdditionalDisplayWidgetProvider`, a functional interface of
+`(MultiblockControllerMachine controller, PanelSyncManager syncManager) -> List<IWidget>`:
 
 ```java
 public static final MachineEntry<MultiblockMachineDefinition> MY_MULTIBLOCK = REGISTRATE
