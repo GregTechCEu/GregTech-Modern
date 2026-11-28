@@ -87,10 +87,16 @@ public class ClientImageCache {
                 currentIndex += part.length;
             }
 
-            saveTexture(url, imageBytes);
             imageParts.remove(url);
             downloading = false;
+            saveTexture(url, imageBytes);
         }
+    }
+
+    public static void imageLoadFailed(String url) {
+        imageParts.remove(url);
+        downloading = false;
+        CACHE.put(url, LOADING_TEXTURE_MARKER);
     }
 
     private static void saveTexture(String url, byte[] imageBytes) throws IOException {
@@ -98,7 +104,7 @@ public class ClientImageCache {
         buffer.put(imageBytes).flip();
         DynamicTexture texture = new DynamicTexture(NativeImage.read(buffer));
 
-        Minecraft.getInstance().getTextureManager().register(getUrlTextureId(url), texture);
+        Minecraft.getInstance().getTextureManager().register(getUrlTextureId(url), texture); // Todo: This line exits silently on given image formats (fails on: JPEG, doesn't fail on: PNG)
 
         CACHE.put(url, texture);
     }
