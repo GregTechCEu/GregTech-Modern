@@ -83,12 +83,18 @@ public class RobotArmCover extends ConveyorCover {
         int maxTotalTransferAmount = maxTransferAmount + itemsTransferBuffered;
         boolean notEnoughTransferRate = false;
         for (TypeItemInfo itemInfo : sourceItemAmount.values()) {
-            if (maxTotalTransferAmount >= itemInfo.totalCount) {
-                boolean result = moveInventoryItemsExact(sourceInventory, targetInventory, itemInfo);
-                itemsTransferred += result ? itemInfo.totalCount : 0;
-                maxTotalTransferAmount -= result ? itemInfo.totalCount : 0;
-            } else {
+            if (itemInfo.totalCount <= 0) {
+                continue;
+            }
+            if (maxTotalTransferAmount < itemInfo.totalCount) {
                 notEnoughTransferRate = true;
+                continue;
+            }
+            // move as many whole batches as the transfer rate allows
+            while (maxTotalTransferAmount >= itemInfo.totalCount &&
+                    moveInventoryItemsExact(sourceInventory, targetInventory, itemInfo)) {
+                itemsTransferred += itemInfo.totalCount;
+                maxTotalTransferAmount -= itemInfo.totalCount;
             }
         }
         // if we didn't transfer anything because of too small transfer rate, buffer it
