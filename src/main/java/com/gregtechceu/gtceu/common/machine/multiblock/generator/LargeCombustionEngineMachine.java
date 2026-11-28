@@ -270,7 +270,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         widgets.add(canBoost);
         widgets.add(isBoosted);
 
-        widgets.addAll(getDefinition().getAdditionalDisplay().apply(this, syncManager));
+        widgets.addAll(getDefinition().getAdditionalDisplay().getAdditionalWidgets(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addTotalRunsLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addOutputLines(this, syncManager));
         widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));

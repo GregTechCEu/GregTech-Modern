@@ -2,6 +2,9 @@ package com.gregtechceu.gtceu.api.machine.trait.feature;
 
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+
+import net.minecraft.network.chat.Component;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -59,4 +62,8 @@ public interface IRecipeLogicModifierTrait {
      * @see RecipeLogic#onRecipeFinish()
      */
     default void afterWorking() {}
+
+    default Component getFailReason() {
+        return ModifierFunction.DEFAULT_FAILURE;
+    }
 }

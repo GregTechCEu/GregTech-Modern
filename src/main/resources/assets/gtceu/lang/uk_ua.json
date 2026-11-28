@@ -4969,7 +4969,7 @@
   "item.gtceu.tool.tooltip.attack_damage": "%s§c шкоди при атаці",
   "item.gtceu.tool.tooltip.attack_speed": "%s§9 швидкості атаки",
   "item.gtceu.tool.tooltip.crafting_uses": "%s§a використань у майструванні",
-  "item.gtceu.tool.tooltip.default_enchantments": "§5Усталені чари:",
+  "item.gtceu.tool.tooltip.innate_enchantments": "§5Усталені чари:",
   "item.gtceu.tool.tooltip.general_uses": "%s§b міцності",
   "item.gtceu.tool.tooltip.harvest_level": "§eРівень добування %s",
   "item.gtceu.tool.tooltip.harvest_level_extra": "§eРівень добування %s§f (%s§f)",

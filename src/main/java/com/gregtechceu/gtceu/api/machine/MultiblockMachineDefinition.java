@@ -1,28 +1,22 @@
 package com.gregtechceu.gtceu.api.machine;
 
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.AdditionalDisplayWidgetProvider;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAppearanceProvider;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartSorter;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.value.sync.PanelSyncManager;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class MultiblockMachineDefinition extends MachineDefinition {
@@ -52,13 +46,13 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     private Supplier<ItemStack[]> recoveryItems;
     @Setter
     @Getter
-    private Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter;
+    private PartSorter partSorter;
     @Getter
     @Setter
-    private TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance;
+    private PartAppearanceProvider partAppearance;
     @Getter
     @Setter
-    private BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay;
+    private AdditionalDisplayWidgetProvider additionalDisplay;
 
     public MultiblockMachineDefinition(ResourceLocation id) {
         super(id);

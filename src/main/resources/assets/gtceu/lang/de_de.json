@@ -4882,7 +4882,7 @@
     "item.gtceu.tool.tooltip.attack_damage": "%s §cAngriffsschaden",
     "item.gtceu.tool.tooltip.attack_speed": "%s §9Angriffsgeschwindigkeit",
     "item.gtceu.tool.tooltip.crafting_uses": "%s §aHerstellungszwecke",
-    "item.gtceu.tool.tooltip.default_enchantments": "§5Standardverzauberungen:",
+    "item.gtceu.tool.tooltip.innate_enchantments": "§5Standardverzauberungen:",
     "item.gtceu.tool.tooltip.general_uses": "%s §bHaltbarkeit",
     "item.gtceu.tool.tooltip.harvest_level": "§eErntestufe %s",
     "item.gtceu.tool.tooltip.harvest_level_extra": "§eErntestufe %s §f(%s§f)",

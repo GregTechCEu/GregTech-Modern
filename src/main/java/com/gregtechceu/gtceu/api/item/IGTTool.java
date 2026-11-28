@@ -773,7 +773,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
         var defaultEnchants = getDefaultEnchantments(stack);
         if (!defaultEnchants.isEmpty()) {
-            tooltip.add(Component.translatable("item.gtceu.tool.tooltip.default_enchantments"));
+            tooltip.add(Component.translatable("item.gtceu.tool.tooltip.innate_enchantments"));
             for (var entry : defaultEnchants.entrySet()) {
                 Enchantment enchant = entry.getKey();
                 if (enchant == null) continue;

@@ -37,6 +37,12 @@ public class IntCircuitBehaviour implements IAddInformation, IItemUIHolder {
         return stack;
     }
 
+    public static ItemStack stack(int configuration, int count) {
+        var stack = GTItems.PROGRAMMED_CIRCUIT.asStack(count);
+        setCircuitConfiguration(stack, configuration);
+        return stack;
+    }
+
     public static void setCircuitConfiguration(ItemStack itemStack, int configuration) {
         if (configuration < 0 || configuration > CIRCUIT_MAX) {
             GTCEu.LOGGER.error("Given circuit configuration %d is out of range!".formatted(configuration));

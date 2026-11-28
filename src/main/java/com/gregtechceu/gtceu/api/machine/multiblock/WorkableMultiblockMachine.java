@@ -182,6 +182,14 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         recipeLogic.updateTickSubscription();
     }
 
+    @Override
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
+        if (shouldUpdateActiveBlocks()) {
+            updateActiveBlocks(false);
+        }
+    }
+
     //////////////////////////////////////
     // ****** RECIPE LOGIC *******//
     //////////////////////////////////////
@@ -205,12 +213,18 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
         for (MultiblockPartMachine part : getParts()) {
             recipe = part.modifyRecipe(recipe);
-            if (recipe == null) return null;
+            if (recipe == null) {
+                RecipeLogic.putFailureReason(this, recipe, part.getFailReason());
+                return null;
+            }
         }
 
         for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
             recipe = rlTrait.modifyRecipe(recipe);
-            if (recipe == null) return null;
+            if (recipe == null) {
+                RecipeLogic.putFailureReason(this, recipe, rlTrait.getFailReason());
+                return null;
+            }
         }
         return recipe;
     }
@@ -322,7 +336,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
         widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addRecipeTypeField(this, syncManager));
-        widgets.addAll(getDefinition().getAdditionalDisplay().apply(this, syncManager));
+        widgets.addAll(getDefinition().getAdditionalDisplay().getAdditionalWidgets(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addParallelLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addBatchModeLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addSubtickParallelsLine(this, syncManager));

@@ -865,6 +865,7 @@ public class MachineLang {
         provider.add("gtceu.machine.computation_receiver_hatch.tooltip",
                 "Computation Data Input for Multiblocks");
         provider.add("gtceu.machine.object_holder.tooltip", "Advanced Holding Mechanism for Research Station");
+        provider.add("gtceu.machine.data_access_hatch.missing_research", "Missing Research Data!");
 
         // Multiblock tooltips
         provider.add("gtceu.multiblock.general.max_power", "Max Power: %s");
