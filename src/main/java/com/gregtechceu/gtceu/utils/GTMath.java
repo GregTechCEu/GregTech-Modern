@@ -21,6 +21,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
@@ -110,13 +111,20 @@ public class GTMath {
         return start + Mth.floor(delta * (end - start));
     }
 
-    public static List<ItemStack> splitStacks(ItemStack stack, long amount) {
+    public static @Unmodifiable List<ItemStack> splitStacks(ItemStack stack, long amount) {
+        if (amount < 0) {
+            return Collections.emptyList();
+        }
+        if (amount <= Integer.MAX_VALUE) {
+            return Collections.singletonList(stack.copyWithCount((int) amount));
+        }
+
         int fullStacks = (int) (amount / Integer.MAX_VALUE);
         int rem = (int) (amount % Integer.MAX_VALUE);
         List<ItemStack> stacks = new ObjectArrayList<>(fullStacks + 1);
         if (fullStacks > 0) stacks.addAll(Collections.nCopies(fullStacks, stack.copyWithCount(Integer.MAX_VALUE)));
         if (rem > 0) stacks.add(stack.copyWithCount(rem));
-        return stacks;
+        return Collections.unmodifiableList(stacks);
     }
 
     public static List<FluidStack> splitFluidStacks(FluidStack stack, long amount) {

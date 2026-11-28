@@ -83,8 +83,8 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
         syncManager.syncValue("veinMaterial", veinMaterial);
         syncManager.syncValue("fluidAmount", fluidAmount);
 
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager));
 
         widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.ore_rig.ore_amount",
                 Component.literal(FormattingUtil.formatNumbers(

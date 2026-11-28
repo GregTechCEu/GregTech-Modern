@@ -87,7 +87,7 @@ public class LargeMacerationTowerMachine extends WorkableElectricMultiblockMachi
         for (ItemEntity item : itemEntities) {
             if (item.isRemoved()) continue;
             for (var holder : handlers) {
-                item.setItem(ItemHandlerHelper.insertItem(holder, item.getItem(), false));
+                item.setItem(ItemHandlerHelper.insertItemStacked(holder, item.getItem(), false));
                 if (item.getItem().isEmpty()) {
                     item.discard();
                     break;

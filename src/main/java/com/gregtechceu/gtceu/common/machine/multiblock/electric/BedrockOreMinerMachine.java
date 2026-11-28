@@ -101,7 +101,6 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
         syncManager.syncValue("veinMaterials", veinMaterialList);
         syncManager.syncValue("oreAmount", oreAmount);
 
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
 
         widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.ore_rig.ore_amount",

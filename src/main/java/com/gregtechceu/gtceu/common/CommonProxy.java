@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilUtils;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.misc.forge.QuantumFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
@@ -57,7 +58,6 @@ import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
-import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -68,8 +68,8 @@ import com.gregtechceu.gtceu.data.GTDatagen;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
-import com.gregtechceu.gtceu.data.recipe.*;
-import com.gregtechceu.gtceu.integration.ae2.AEItemCompat;
+import com.gregtechceu.gtceu.data.recipe.GTIngredientTypes;
+import com.gregtechceu.gtceu.integration.ae2.AECompat;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
@@ -204,7 +204,7 @@ public class CommonProxy {
         CustomBlockRotations.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
-        SpoilableBehavior.init();
+        SpoilUtils.initSpoilage();
 
         GTCreativeModeTabs.init();
         GTAttachmentTypes.init(modBus);
@@ -413,7 +413,7 @@ public class CommonProxy {
             }
 
             if (GTCEu.Mods.isAE2Loaded()) {
-                AEItemCompat.init();
+                AECompat.init();
             }
         });
     }

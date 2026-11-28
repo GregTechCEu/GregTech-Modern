@@ -74,7 +74,7 @@ public class ModularItemManagerUI implements IUIHolder<PlayerInventoryGuiData<?>
                 .horizontalCenter()
                 .coverChildren()
                 .padding(6)
-                .child(GTMuiWidgets.createTitleBar(Component.literal("Modules"), 250,
+                .child(GTMuiWidgets.createTitleBar(Component.translatable("gui.gtceu.modules"), 250,
                         GTGuiTextures.BACKGROUND))
                 .child(moduleList);
     }
@@ -102,13 +102,12 @@ public class ModularItemManagerUI implements IUIHolder<PlayerInventoryGuiData<?>
                         .margin(4)
                         .coverChildren()
                         .crossAxisAlignment(Alignment.CrossAxis.START)
-                        .childIf(moduleItem == null || moduleItem.isEmpty(),
+                        .childIf(moduleItem.isEmpty(),
                                 () -> new TextWidget<>(Text.dynamic(() -> module.getDisplayName(appliedModule)))
                                         .scale(0.75f)
                                         .horizontalCenter()
                                         .paddingBottom(2))
-                        .childIf(moduleItem != null && !moduleItem.isEmpty(), () -> {
-                            assert moduleItem != null;
+                        .childIf(!moduleItem.isEmpty(), () -> {
                             return Flow.row()
                                     .coverChildren()
                                     .padding(4)

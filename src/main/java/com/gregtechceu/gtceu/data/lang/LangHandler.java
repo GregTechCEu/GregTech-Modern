@@ -1182,10 +1182,12 @@ public class LangHandler {
         multilineLang(provider, "gtceu.multiblock.pattern.error", "Expected components at:\n  %s, %s, %s.");
         provider.add("gtceu.multiblock.pattern.error.limited.exact", "§cExactly: %d§r");
         provider.add("gtceu.multiblock.pattern.error.limited.range", "§cBetween %d and %d§r");
-        provider.add("gtceu.multiblock.pattern.error.limited.max_count", "§cMaximum:§r %d has %d");
-        provider.add("gtceu.multiblock.pattern.error.limited.min_count", "§cMinimum:§r %d has %d");
-        provider.add("gtceu.multiblock.pattern.error.limited.max_layer_count", "§cMaximum:§r %d per layer, has %d");
-        provider.add("gtceu.multiblock.pattern.error.limited.min_layer_count", "§cMinimum:§r %d per layer, has %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.max_count", "§cMaximum:§r %d, §cHas:§r %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.min_count", "§cMinimum:§r %d, §cHas:§r %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.max_layer_count",
+                "§cMaximum:§r %d per layer, §cHas:§r %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.min_layer_count",
+                "§cMinimum:§r %d per layer, §cHas:§r %d");
         provider.add("gtceu.multiblock.pattern.error.coils", "§cAll heating coils must be the same§r");
         provider.add("gtceu.multiblock.pattern.error.filters", "§cAll filters must be the same§r");
         provider.add("gtceu.multiblock.pattern.error.batteries", "§cAll batteries must be the same§r");
@@ -1843,17 +1845,14 @@ public class LangHandler {
                 "You may wish to select a target that is not in the multiblock, you have to use the wireless transmitter cover for that.",
                 "Place the cover on the target block, right-click it with a data stick and put that data stick into a data access hatch in the multiblock.",
                 "Then select the data access hatch as the target, and set the slot index of your data stick in the number field that appeared.");
+
         provider.add("gtceu.tooltip.player_bind", "Bound to player: %s");
         provider.add("gtceu.gui.item_collector.range", "Range: ");
         provider.add("gtceu.tooltip.spoil_time_remaining", "Time until spoils: %s");
         provider.add("gtceu.tooltip.spoil_time_total", "Total spoil time: %s");
         provider.add("gtceu.tooltip.spoils_into", "Spoils into: %s");
         provider.add("gtceu.tooltip.creation_tick", "Created on overworld tick %d");
-        provider.add("gtceu.tooltip.location", "Location: %s (%d, %d, %d)");
-        provider.add("gtceu.tooltip.location_entity", "Entity: %s");
-        provider.add("gtceu.tooltip.item_handler_source", "Handler source: %s");
-        provider.add("gtceu.tooltip.item_handler_data", "Handler data: %s");
-        provider.add("gtceu.tooltip.location_slot", "Slot: %s");
+        provider.add("gtceu.tooltip.spoil_imminent", "Imminent");
     }
 
     /**

@@ -85,7 +85,7 @@ public class GTMuiWidgets {
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth) {
         UITexture background = GTGuiTextures.BACKGROUND;
         if (!definition.getThemeId().equals(ThemeAPI.DEFAULT_ID)) {
-            background = (UITexture) ThemeAPI.INSTANCE.getTheme(definition.getThemeId()).getPanelTheme().theme()
+            background = (UITexture) ThemeAPI.INSTANCE.getTheme(definition.getThemeId()).getPanelThemeEntry().theme()
                     .getBackground();
         }
         if (background == null) {
@@ -103,19 +103,21 @@ public class GTMuiWidgets {
         return createTitleBarWithEnd(stackSupplier, panelWidth, background, null);
     }
 
-    public static Flow createTitleBar(Component name, int panelWidth, UITexture background) {
-        return createTitleBarWithEnd(null, name.getString(), panelWidth, background, null);
+    public static Flow createTitleBar(@Nullable Icon icon, Component title, int panelWidth, UITexture background) {
+        return createTitleBarWithEnd(icon, title, panelWidth, background, null);
+    }
+
+    public static Flow createTitleBar(Component title, int panelWidth, UITexture background) {
+        return createTitleBarWithEnd(null, title, panelWidth, background, null);
     }
 
     public static Flow createTitleBarWithEnd(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background,
                                              @Nullable Widget<?> end) {
         ItemStack stack = stackSupplier.get();
-        var name = stack.getHoverName().getString();
-        name = name.replaceAll("§.", "").trim();
-        return createTitleBarWithEnd(new ItemDrawable(stack).asIcon(), name, panelWidth, background, end);
+        return createTitleBarWithEnd(new ItemDrawable(stack).asIcon(), stack.getHoverName().plainCopy(), panelWidth, background, end);
     }
 
-    public static Flow createTitleBarWithEnd(@Nullable Icon icon, String text, int panelWidth, UITexture background,
+    public static Flow createTitleBarWithEnd(@Nullable Icon icon, Component text, int panelWidth, UITexture background,
                                              @Nullable Widget<?> end) {
         int sidePadding = 3;
         int topPadding = 3;
@@ -145,13 +147,12 @@ public class GTMuiWidgets {
                 .top(-(textHeight + topPadding))
                 .horizontalCenter()
                 .background(background.getSubArea(0f, 0f, 1.0f, 0.75f))
-                .childIf(icon != null, () -> icon.size(iconSize).asWidget().size(iconSize))
-                .child(Text.str(text).asWidget().size(Math.min(minPanelWidth, textTitleWidth), textHeight))
+                .childIf(icon != null, () -> Objects.requireNonNull(icon).size(iconSize).asWidget().size(iconSize))
+                .child(Text.of(text).asWidget().size(Math.min(minPanelWidth, textTitleWidth), textHeight))
                 .childIf(end != null, () -> end);
     }
 
-    public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture texture,
-                                                  String langKey) {
+    public static ToggleButton createToggleButton(BooleanSupplier getter, BooleanConsumer setter, UITexture texture, String langKey) {
         var value = new BooleanSyncValue(getter, setter).allowC2S();
         return new ToggleButton()
                 .value(value)
@@ -263,8 +264,7 @@ public class GTMuiWidgets {
                 .setEnabledIf((W) -> workableMultiblock.getRecipeTypes().length > 0);
     }
 
-    private static IntSyncValue createCircuitSlotSyncValue(Consumer<ItemStack> circuitSetter,
-                                                           Supplier<ItemStack> circuitGetter) {
+    private static IntSyncValue createCircuitSlotSyncValue(Consumer<ItemStack> circuitSetter, Supplier<ItemStack> circuitGetter) {
         return new IntSyncValue(() -> {
             if (circuitGetter.get().isEmpty()) return -1;
             return IntCircuitBehaviour.getCircuitConfiguration(circuitGetter.get());

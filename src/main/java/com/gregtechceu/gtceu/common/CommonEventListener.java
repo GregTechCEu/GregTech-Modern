@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
@@ -19,9 +18,6 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
-import com.gregtechceu.gtceu.api.item.armor.ModularArmorItem;
-import com.gregtechceu.gtceu.api.item.component.IAddInformation;
-import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.module.AttributeItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
@@ -119,7 +115,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Either;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
@@ -310,15 +305,15 @@ public class CommonEventListener {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onEntityLivingFallEvent(LivingFallEvent event) {
         LivingEntity entity = event.getEntity();
-        if (entity.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof ModularArmorItem armor &&
-                armor.protectsAgainstFalls()) {
+        if (entity.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.FALL_IMMUNE_WEARABLES)) {
             entity.fallDistance = 0;
             event.setCanceled(true);
             return;
         }
-        if (event.getEntity() instanceof ServerPlayer player) {
-            if (player.fallDistance < 3.2f)
+        if (entity instanceof ServerPlayer player) {
+            if (player.fallDistance < 3.2f) {
                 return;
+            }
 
             ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
@@ -340,8 +335,7 @@ public class CommonEventListener {
             return;
         }
 
-        if (entity.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ModularArmorItem armor &&
-                armor.protectsAgainstFire()) {
+        if (entity.getItemBySlot(EquipmentSlot.CHEST).is(CustomTags.FIRE_IMMUNE_WEARABLES)) {
             entity.clearFire();
         }
 
@@ -465,10 +459,9 @@ public class CommonEventListener {
     public static void onLivingHurt(LivingIncomingDamageEvent event) {
         final LivingEntity entity = event.getEntity();
         final DamageSource source = event.getSource();
-        // GT heat also has the fire tag; hot ingots use the separate insulation multiplier.
+        // GT heat also has the fire tag; hot ingots use a separate insulation multiplier.
         if (source.is(DamageTypeTags.IS_FIRE) && !source.is(GTDamageTypes.HEAT) &&
-                entity.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ModularArmorItem armor &&
-                armor.protectsAgainstFire()) {
+                entity.getItemBySlot(EquipmentSlot.CHEST).is(CustomTags.FIRE_IMMUNE_WEARABLES)) {
             entity.clearFire();
             event.setCanceled(true);
             return;
@@ -626,14 +619,6 @@ public class CommonEventListener {
         if (!stack.has(GTDataComponents.DATA_COPY_POS)) {
             stack.addToTooltip(GTDataComponents.RESEARCH_ITEM, event.getContext(),
                     event::addTooltipLines, event.getContext().flag());
-        }
-        if (stack.has(GTDataComponents.SPOILABLE)) {
-            ISpoilableItem spoilable = stack.getCapability(GTCapability.CAPABILITY_SPOILABLE_ITEM);
-            if (spoilable instanceof IAddInformation tooltipProvider) {
-                List<Component> tmp = new ArrayList<>();
-                tooltipProvider.appendHoverText(stack, event.getContext(), tmp, event.getContext().flag());
-                event.addTooltipLines(tmp.toArray(Component[]::new));
-            }
         }
     }
 

@@ -82,14 +82,14 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
         row.child(new ItemSlot().syncHandler(new ItemSlotSyncHandler(
                 new ModularSlot(importItems.storage, 0)
                         .slotGroup(new SlotGroup("import_items", 1))))
-                .background(uiTheme.getItemSlotTheme().theme().getBackground(),
+                .background(uiTheme.getItemSlotThemeEntry().theme().getBackground(),
                         GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY))
                 .child(progressWidget)
                 .child(new ItemSlot().syncHandler(new ItemSlotSyncHandler(
                         new ModularSlot(exportItems.storage, 0)
                                 .slotGroup(new SlotGroup("export_items", 1))
                                 .accessibility(false, true)))
-                        .background(uiTheme.getItemSlotTheme().theme().getBackground(),
+                        .background(uiTheme.getItemSlotThemeEntry().theme().getBackground(),
                                 GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY))
 
                 .child(createTankWidget()

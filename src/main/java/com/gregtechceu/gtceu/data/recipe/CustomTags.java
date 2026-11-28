@@ -17,6 +17,9 @@ import net.neoforged.neoforge.common.Tags;
 
 public class CustomTags {
 
+    public static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = TagUtil.optionalTag(Registries.ITEM,
+            ResourceLocation.fromNamespaceAndPath("c", "hidden_from_recipe_viewers"));
+
     // Added Vanilla tags
     public static final TagKey<Item> PISTONS = TagUtil.createItemTag("pistons");
     // common/mod compat tags
@@ -123,6 +126,9 @@ public class CustomTags {
     public static final TagKey<Item> SENSORS = TagUtil.createModItemTag("sensors");
 
     public static final TagKey<Item> PPE_ARMOR = TagUtil.createModItemTag("ppe_armor");
+    public static final TagKey<Item> FIRE_IMMUNE_WEARABLES = TagUtil.createModItemTag("fire_immune_wearables");
+    public static final TagKey<Item> FALL_IMMUNE_WEARABLES = TagUtil.createModItemTag("fall_immune_wearables");
+
     public static final TagKey<Item> RUBBER_LOGS = TagUtil.createModItemTag("rubber_logs");
     public static final TagKey<Item> FLUID_CELLS = TagUtil.createModItemTag("fluid_cells");
 

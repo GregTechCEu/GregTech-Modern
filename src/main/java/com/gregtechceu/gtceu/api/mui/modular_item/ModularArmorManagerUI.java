@@ -118,13 +118,12 @@ public class ModularArmorManagerUI implements IUIHolder<ModularArmorUIFactory.Ar
                         .margin(4)
                         .coverChildren()
                         .crossAxisAlignment(Alignment.CrossAxis.START)
-                        .childIf(moduleItem == null || moduleItem.isEmpty(),
+                        .childIf(moduleItem.isEmpty(),
                                 () -> new TextWidget<>(Text.dynamic(() -> module.getDisplayName(appliedModule)))
                                         .scale(0.75f)
                                         .horizontalCenter()
                                         .paddingBottom(2))
-                        .childIf(moduleItem != null && !moduleItem.isEmpty(), () -> {
-                            assert moduleItem != null;
+                        .childIf(!moduleItem.isEmpty(), () -> {
                             return Flow.row()
                                     .coverChildren()
                                     .padding(4)

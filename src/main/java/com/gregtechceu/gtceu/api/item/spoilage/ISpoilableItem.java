@@ -1,28 +1,22 @@
-package com.gregtechceu.gtceu.api.item.component;
+package com.gregtechceu.gtceu.api.item.spoilage;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
-import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
 
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
-
-import java.util.Optional;
+import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 /**
  * This is a capability! {@link Item} subclasses should not implement this directly!
  * <br>
  * Spoilable items will, as the name implies, spoil (who could've thought).
- * Due to Minecraft's limitations, items will only start spoiling only if:
+ * Due to Minecraft's limitations, items will only start spoiling if:
  * <ul>
- * <li>It is in an {@link IItemHandler}, which is a capability of a {@link BlockEntity} that had
- * {@link Level#getBlockEntity(BlockPos)} called (should cover most cases)</li>
+ * <li>It is in an {@link IItemHandlerModifiable}, which is exposed as a capability of a {@link Block} or
+ * {@link Entity}
  * <li>It is an output of a {@link GTRecipe}</li>
  * <li>It enters a player's inventory and gets ticked at least once</li>
  * <li>It is dropped (exists as an entity)</li>
@@ -33,10 +27,6 @@ import java.util.Optional;
  * <br>
  * Items that don't start spoiling will simply not have spoilable NBT, and as a result, won't spoil,
  * until any of the above conditions become true.
- * <p>
- * The only exception is if one of the stacks is frozen, in which case it works as normal, except that
- * frozen stacks will be equal to non-frozen stacks if all else is equal. This is done to make filtering work correctly.
- * </p>
  * <p>
  * Spoilable stacks will be frozen if they enter a phantom slot,
  * to prevent stacks spoiling in filters. If you are a developer of a mod that adds filters, consider calling
@@ -49,20 +39,22 @@ import java.util.Optional;
  * </p>
  * <p>
  * To make an item spoilable, you can simply use {@link SpoilableBehavior#attachTo(ItemLike)}.
- * <br>
- * If you want to implement this interface yourself, please note that {@link SpoilableItemStack}
- * calls a mixin method in its {@link ISpoilableItem#updateFreshness} implementation.
  * </p>
  */
 public interface ISpoilableItem {
 
     /**
-     * Checks if this stack is supposed to already be spoiled, and spoils it into the
-     * {@link ISpoilableItem#spoilResult}
-     * 
-     * @param createTag whether to start spoiling this stack if it didn't start spoiling yet (adds NBT)
+     * Get the item stack this capability is attached to.
      */
-    void updateFreshness(SpoilContext spoilContext, boolean createTag);
+    ItemStack getStack();
+
+    /**
+     * Checks if this stack is supposed to already be spoiled, and spoils it into the
+     * {@link ISpoilableItem#getSpoilResult}
+     * 
+     * @param startSpoiling whether to start spoiling this stack if it didn't start spoiling yet
+     */
+    void updateFreshness(SpoilContext spoilContext, boolean startSpoiling);
 
     /**
      * Should return the amount of ticks that this item can stay fresh.
@@ -91,13 +83,8 @@ public interface ISpoilableItem {
      * Freezes the stack's spoiling progress until it is unfrozen by
      * {@link ISpoilableItem#unfreezeSpoiling()}.
      * Frozen stacks will NOT spoil, even if {@link ISpoilableItem#getTicksUntilSpoiled()} is {@code <= 0}.
-     * This method modifies the provided stack's NBT data.
-     * Calls to {@link ItemHandlerHelper#canItemStacksStack(ItemStack, ItemStack)} with a frozen stack as one of the
-     * arguments
-     * will check equality of both stacks' {@link ISpoilableItem#getTicksUntilSpoiled()} values, as well as all
-     * non-spoilage
-     * related tags and the equality of the item itself.
-     * 
+     * This method modifies the provided stack's data.
+     *
      * @see ISpoilableItem#unfreezeSpoiling()
      */
     void freezeSpoiling();
@@ -120,10 +107,15 @@ public interface ISpoilableItem {
     /**
      * This function may have side effects (i.e. spawning an entity) when called with
      * {@code simulate = false}.
-     * 
+     *
+     * @param spoilContext The spoil context, may contain the level, position, and entity.|
+     * @param ticksOverdue The ticks elapsed since this item should have spoiled. An item may not spoil immediately in
+     *                     some cases, e.g. if in an unloaded chunk.
+     * @param simulate     True if side effects should not be performed.
+     *
      * @return the stack to replace the provided stack with when it spoils
      */
-    ItemStack spoilResult(SpoilContext spoilContext, boolean simulate);
+    ItemStack getSpoilResult(SpoilContext spoilContext, long ticksOverdue, boolean simulate);
 
     /**
      * Note: returning {@code false} in this method won't stop the item from spoiling if the spoiling NBT has already
@@ -144,16 +136,37 @@ public interface ISpoilableItem {
     void setCreationTick(long tick);
 
     /**
-     * Called when {@link ItemHandlerHelper#canItemStacksStack(ItemStack, ItemStack)} is called.
-     * If this returns an empty optional, {@link ItemHandlerHelper#canItemStacksStack(ItemStack, ItemStack)} will return
-     * its
-     * normal value, otherwise it will return the same value as this method.
-     * <br>
-     * This exists mostly for custom spoilable merging logic.
+     * This method averages the spoil progress of the two stacks (or, more
+     * accurately, their {@link ISpoilableItem#getCreationTick()}).
      *
-     * @return whether these two stacks should be considered equal
+     * @implNote This implementation may lead to spoil progress averaging in situations other
+     *           than stack merging, though I don't think this will lead to any big user-facing bugs.
      */
-    default Optional<Boolean> isEqualTo(ItemStack other) {
-        return Optional.empty();
-    };
+    default void prepareForComparisonWith(ISpoilableItem that) {
+        if (this.isFrozen() || that.isFrozen()) {
+            return;
+        }
+        long thisCreated = this.getCreationTick();
+        long thatCreated = that.getCreationTick();
+
+        if (thisCreated == Long.MAX_VALUE ^ thatCreated == Long.MAX_VALUE) {
+            boolean useThis = thisCreated != Long.MAX_VALUE;
+            if (useThis) that.setCreationTick(thisCreated);
+            else this.setCreationTick(thatCreated);
+        }
+
+        if (thisCreated != thatCreated) {
+            int thisCount = this.getStack().getCount(), thatCount = that.getStack().getCount();
+            long average;
+            if (thisCount > 0 && thatCount > 0) {
+                average = (thisCreated * thisCount + thatCreated * thatCount) / (thisCount + thatCount);
+            } else if (thisCount > 0) {
+                average = thisCreated;
+            } else {
+                average = thatCreated;
+            }
+            this.setCreationTick(average);
+            that.setCreationTick(average);
+        }
+    }
 }

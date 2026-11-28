@@ -69,7 +69,6 @@ import brachy.modularui.value.sync.StringSyncValue;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -122,8 +121,9 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     //////////////////////////////////////
 
     @Override
-    public void formStructure(@NotNull String substructureName) {
+    public void formStructure(String substructureName) {
         super.formStructure(substructureName);
+
         var pState = patternStates.get(substructureName);
 
         bounds = boundsFunction().apply(getLevel(), getBlockPos().mutable(), getFrontFacing(), getUpwardsFacing());
@@ -449,8 +449,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         BooleanSyncValue cleanroomTypeIsNull = new BooleanSyncValue(() -> this.cleanroomType == null);
         syncManager.syncValue("cleanroomTypeIsNull", cleanroomTypeIsNull);
 
-        BooleanSyncValue cleanroomProviderTraitIsActive = new BooleanSyncValue(
-                () -> this.cleanroomProviderTrait.isActive());
+        BooleanSyncValue cleanroomProviderTraitIsActive = new BooleanSyncValue(this.cleanroomProviderTrait::isActive);
         syncManager.syncValue("cleanroomProviderTrait", cleanroomProviderTraitIsActive);
 
         IntSyncValue cleanAmount = new IntSyncValue(() -> this.cleanAmount);
@@ -464,8 +463,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                         bounds.get(4) + bounds.get(5) + 1))
                 .build();
         syncManager.syncValue("distComponent", distComponent);
-
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
 
         widgets.add(Text.dynamic(() -> {
             String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage.getLongValue())];

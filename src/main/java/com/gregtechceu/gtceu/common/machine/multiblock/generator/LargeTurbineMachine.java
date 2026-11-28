@@ -164,33 +164,29 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                 .setEnabledIf(w -> isFormed.getBoolValue() && !hasRotor.getBoolValue());
         var rotorSpeedDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_speed",
                 FormattingUtil.formatNumbers(rotorSpeed.getIntValue()),
-                FormattingUtil.formatNumbers(maxRotorSpeed.getIntValue()))
-                .withStyle(ChatFormatting.WHITE))
+                FormattingUtil.formatNumbers(maxRotorSpeed.getIntValue())))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue());
         var turbineEfficiencyDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.efficiency",
-                efficiency.getIntValue())
-                .withStyle(ChatFormatting.WHITE))
+                efficiency.getIntValue()))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue());
         var turbinePowerDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
                 FormattingUtil.formatNumbers(euOutput.getIntValue()),
-                FormattingUtil.formatNumbers(maxOutput.getIntValue()))
-                .withStyle(ChatFormatting.WHITE))
+                FormattingUtil.formatNumbers(maxOutput.getIntValue())))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue() && isActive.getBoolValue());
         var rotorDurabilityDisplay = Text
                 .dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_durability",
                         rotorDurability.getIntValue())
                         .withStyle(rotorDurability.getIntValue() > MIN_DURABILITY_TO_WARN ?
-                                ChatFormatting.WHITE :
+                                ChatFormatting.GRAY :
                                 ChatFormatting.RED))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && hasRotor.getBoolValue());
 
         List<IWidget> widgets = new ArrayList<>();
 
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
 
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, euOutput, turbineVoltage, true));
