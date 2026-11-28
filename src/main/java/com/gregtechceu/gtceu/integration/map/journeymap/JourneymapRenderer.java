@@ -319,8 +319,8 @@ public class JourneymapRenderer extends GenericMapRenderer {
         @Override
         public void onOverlayMenuPopup(UIState mapState, Point2D.Double mousePosition, BlockPos blockPosition,
                                        ModPopupMenu modPopupMenu) {
-            modPopupMenu.addMenuItem("button.gtceu.mark_as_depleted.name", b -> this.markAsDepleted.run());
-            modPopupMenu.addMenuItem("button.gtceu.toggle_waypoint.name", b -> this.toggleWaypoint.run());
+            modPopupMenu.addMenuItem("map.gtceu.button.mark_as_depleted.name", b -> this.markAsDepleted.run());
+            modPopupMenu.addMenuItem("map.gtceu.button.toggle_waypoint.name", b -> this.toggleWaypoint.run());
         }
     }
 }

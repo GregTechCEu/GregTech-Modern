@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.dev.test;
 
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.gametest.framework.GameTestRegistry;
 

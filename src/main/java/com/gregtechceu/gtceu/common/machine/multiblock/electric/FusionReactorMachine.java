@@ -24,8 +24,8 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.bloom.BloomRenderTicket;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -190,7 +190,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
                 !recipe.data.contains("eu_to_start") ||
                 recipe.data.getLong("eu_to_start") > fusionReactorMachine.energyContainer.getEnergyCapacity()) {
             return ModifierFunction
-                    .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
+                    .cancel(Component.translatable("gui.gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
         }
 
         long heatDiff = recipe.data.getLong("eu_to_start") - fusionReactorMachine.heat;
@@ -202,7 +202,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         // if the remaining energy needed is more than stored, do not run
         if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff)
             return ModifierFunction
-                    .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
+                    .cancel(Component.translatable("gui.gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
 
         // remove the energy needed
         fusionReactorMachine.energyContainer.removeEnergy(heatDiff);
@@ -220,7 +220,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
             long heatDiff = recipe.data.getLong("eu_to_start") - this.heat;
             // if the remaining energy needed is more than stored, do not run
             if (heatDiff > 0) {
-                recipeLogic.setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_fuel"));
+                recipeLogic.setWaiting(Component.translatable("gui.gtceu.recipe.insufficient_fuel"));
 
                 // if the remaining energy needed is more than stored, do not run
                 if (this.energyContainer.getEnergyStored() < heatDiff)
@@ -296,7 +296,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         int fusionTier = findCeilingTier(euToStart);
         int tier = Math.max(MINIMUM_TIER, Math.max(recipeTier, fusionTier));
         widget.textComponents.child(new TextWidget<>(
-                Text.lang("gtceu.recipe.eu_to_start", FormattingUtil.formatNumberReadable2F(euToStart, false),
+                Text.lang("recipe_condition.gtceu.eu_to_start", FormattingUtil.formatNumberReadable2F(euToStart, false),
                         FUSION_NAMES.get(tier))));
     }
 
@@ -314,19 +314,19 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
         widgets.add(Text.dynamic(() -> {
             var storedComponent = Component.literal(FormattingUtil.formatNumbers(heatValue.getValue()));
-            return Component.translatable("gtceu.multiblock.fusion_reactor.heat",
+            return Component.translatable("machine.gtceu.fusion_reactor.heat",
                     storedComponent.withStyle(ChatFormatting.GOLD));
         }).asWidget());
 
         widgets.add(Text.dynamic(() -> {
             var storedComponent = Component.literal(FormattingUtil.formatNumbers(euStored.getValue()));
-            return Component.translatable("gtceu.multiblock.fusion_reactor.stored",
+            return Component.translatable("machine.gtceu.fusion_reactor.stored",
                     storedComponent.withStyle(ChatFormatting.GOLD));
         }).asWidget());
 
         widgets.add(Text.dynamic(() -> {
             var capacityComponent = Component.literal(FormattingUtil.formatNumbers(euCapacity.getValue()));
-            return Component.translatable("gtceu.multiblock.fusion_reactor.capacity",
+            return Component.translatable("machine.gtceu.fusion_reactor.capacity",
                     capacityComponent.withStyle(ChatFormatting.GOLD));
         }).asWidget());
 

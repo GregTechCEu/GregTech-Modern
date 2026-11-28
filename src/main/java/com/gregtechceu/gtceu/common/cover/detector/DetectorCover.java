@@ -79,8 +79,8 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
         if (!this.coverHolder.isRemote()) {
             toggleInvertedWithNotification();
 
-            String translationKey = isInverted() ? "cover.detector_base.message_inverted_state" :
-                    "cover.detector_base.message_normal_state";
+            String translationKey = isInverted() ? "cover.gtceu.detector_cover.message_inverted_state" :
+                    "cover.gtceu.detector_cover.message_normal_state";
             context.getPlayer().sendSystemMessage(Component.translatable(translationKey));
         }
 

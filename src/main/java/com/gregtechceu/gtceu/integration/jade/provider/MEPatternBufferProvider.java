@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.gregtechceu.gtceu.integration.jade.GTElementHelper;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -46,8 +46,9 @@ public class MEPatternBufferProvider extends MachineInfoProvider<MEPatternBuffer
                               BlockEntity blockEntity, IPluginConfig config) {
         if (!data.getBoolean("formed")) return;
 
-        tooltip.add(Component.translatable("gtceu.top.proxies_bound", data.getInt("proxies"))
-                .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
+        tooltip.add(
+                Component.translatable("integration.gtceu.jade.pattern_buffer.proxies_bound", data.getInt("proxies"))
+                        .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
         readBufferTag(tooltip, data);
     }
 

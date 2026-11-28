@@ -10,8 +10,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.biome.Biome.Precipitation;
@@ -146,7 +146,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine implements
                 () -> new IntSyncValue(this::getFluidProduction));
 
         widgets.add(Text.dynamic(() -> Text
-                .lang("gtceu.top.primitive_pump_production",
+                .lang("gui.gtceu.machine.primitive_water_pump.production",
                         FormattingUtil.formatNumbers(fluidProduction.getIntValue())))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));

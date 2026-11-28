@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -182,25 +182,19 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
         }
 
         if (time <= 0) {
-            timeTooltip = Component.translatable("gtceu.tooltip.spoil_imminent")
-                    .withStyle(ChatFormatting.DARK_GREEN);
+            timeTooltip = Component.translatable("tooltip.gtceu.spoilage.spoil_imminent").withStyle(ChatFormatting.DARK_GREEN);
         } else {
-            timeTooltip = Component.literal(FormattingUtil.formatTime(time))
-                    .withStyle(ChatFormatting.DARK_AQUA);
+            timeTooltip = Component.literal(FormattingUtil.formatTime(time)).withStyle(ChatFormatting.DARK_AQUA);
         }
-        tooltipComponents.add(Component.translatable(
-                "gtceu.tooltip.spoil_time_remaining",
-                timeTooltip));
-        tooltipComponents.add(Component.translatable(
-                "gtceu.tooltip.spoils_into", getSpoilResultTooltip()));
+        tooltipComponents.add(Component.translatable("tooltip.gtceu.spoilage.spoil_time_remaining", timeTooltip));
+        tooltipComponents.add(Component.translatable("tooltip.gtceu.spoilage.spoils_into", getSpoilResultTooltip()));
+
         if (isAdvanced.isAdvanced()) {
-            tooltipComponents.add(Component.translatable(
-                    "gtceu.tooltip.spoil_time_total",
+            tooltipComponents.add(Component.translatable("tooltip.gtceu.spoilage.spoil_time_total",
                     Component.literal(FormattingUtil.formatTime(getSpoilTicks()))
                             .withStyle(ChatFormatting.GREEN)));
-            if (getCreationTick() != 0) tooltipComponents.add(Component.translatable(
-                    "gtceu.tooltip.creation_tick",
-                    getCreationTick()));
+            if (getCreationTick() != 0)
+                tooltipComponents.add(Component.translatable("tooltip.gtceu.spoilage.creation_tick", getCreationTick()));
         }
     }
 

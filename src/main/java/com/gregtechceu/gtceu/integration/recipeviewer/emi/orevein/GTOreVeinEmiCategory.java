@@ -41,7 +41,7 @@ public class GTOreVeinEmiCategory extends EmiRecipeCategory {
 
     @Override
     public Component getName() {
-        return Component.translatable("gtceu.jei.ore_vein_diagram");
+        return Component.translatable("recipeviewer.gtceu.category.ore_veins");
     }
 
     public static class GTEmiOreVein extends ModularUIEmiRecipe {

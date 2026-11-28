@@ -109,6 +109,7 @@
         "mui.ModularUIJeiRecipeAccessor",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",
+        "registrate.LanguageProviderAccessor",
         "spoilage.AbstractContainerMenuMixin",
         "spoilage.ItemEntityMixin",
         "spoilage.ItemHandlerHelperMixin",

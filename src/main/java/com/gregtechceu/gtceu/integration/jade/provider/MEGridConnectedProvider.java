@@ -34,8 +34,8 @@ public class MEGridConnectedProvider extends MachineInfoProvider<MetaMachine, Co
         if (!data.contains("online")) return;
 
         var online = data.getBoolean("online");
-        var component = online ? Component.translatable("gtceu.gui.me_network.online") :
-                Component.translatable("gtceu.gui.me_network.offline");
+        var component = online ? Component.translatable("gui.gtceu.machine.me_part.network.online") :
+                Component.translatable("gui.gtceu.machine.me_part.network.offline");
         tooltip.add(component);
     }
 }

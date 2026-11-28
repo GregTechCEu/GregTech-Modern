@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.Block;

@@ -27,7 +27,7 @@ public enum FilterMode {
     }
 
     public String getTooltip() {
-        return "cover.filter.mode." + this.localeName;
+        return "cover.gtceu.filter.mode." + this.localeName;
     }
 
     public boolean filters(IO io) {

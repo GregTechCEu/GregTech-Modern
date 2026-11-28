@@ -20,9 +20,8 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.*;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -207,17 +206,15 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 .child(new ToggleButton()
                         .value(silk)
                         .overlay(new ItemDrawable(Items.FEATHER))
-                        .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.universal.tooltip.silk_touch")
-                                .append(Component.translatable(
-                                        "cover.voiding.label." + (silk.getBoolValue() ? "enabled" : "disabled")))))
+                        .tooltipDynamic(r -> r.addLine(Component.translatable("machine.gtceu.miner.silk_touch")
+                                .append(LangUtil.enabledBooleanKey("common.gtceu", chunk.getBoolValue()))))
                         .tooltipAutoUpdate(true))
                 .child(new ToggleButton()
                         .value(chunk)
                         .overlay(false, GTGuiTextures.BUTTON_CHUNK_ALIGN[0])
                         .overlay(true, GTGuiTextures.BUTTON_CHUNK_ALIGN[1])
-                        .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.universal.tooltip.chunk_mode")
-                                .append(Component.translatable(
-                                        "cover.voiding.label." + (chunk.getBoolValue() ? "enabled" : "disabled")))))
+                        .tooltipDynamic(r -> r.addLine(Component.translatable("machine.gtceu.miner.chunk_mode")
+                                .append(LangUtil.enabledBooleanKey("common.gtceu", chunk.getBoolValue()))))
                         .tooltipAutoUpdate(true));
 
         return machinePanel;
@@ -269,33 +266,33 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isFormed));
 
-        widgets.add(Text
-                .dynamic(() -> Component.translatable("gtceu.machine.miner.x", x.getLongValue(), startX.getLongValue()))
+        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.miner.x", x.getLongValue(),
+                startX.getLongValue()))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue()));
-        widgets.add(Text
-                .dynamic(() -> Component.translatable("gtceu.machine.miner.y", y.getLongValue(), startY.getLongValue()))
+        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.miner.y", y.getLongValue(),
+                startY.getLongValue()))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue()));
-        widgets.add(Text
-                .dynamic(() -> Component.translatable("gtceu.machine.miner.z", z.getLongValue(), startZ.getLongValue()))
+        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.miner.z", z.getLongValue(),
+                startZ.getLongValue()))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue()));
-
         widgets.add(Text.dynamic(() -> {
             if (chunk.getBoolValue()) {
-                return Component.translatable("gtceu.universal.tooltip.working_area_chunks",
+                return Component.translatable("machine.gtceu.miner.working_area_chunks",
                         workingArea.getIntValue() * 2 / CHUNK_LENGTH, workingArea.getIntValue() * 2 / CHUNK_LENGTH);
             }
-            return Component.translatable("gtceu.universal.tooltip.working_area", workingArea.getIntValue(),
+            return Component.translatable("machine.gtceu.miner.working_area", workingArea.getIntValue(),
                     workingArea.getIntValue());
         }).asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
-        widgets.add(Text.lang("gtceu.multiblock.large_miner.done")
+
+        widgets.add(Text.lang("gui.gtceu.machine.large_miner.done")
                 .withStyle(ChatFormatting.GREEN)
                 .asWidget()
                 .setEnabledIf((w) -> isFormed.getBoolValue() && done.getBoolValue()));
 
-        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.machine.miner.progress",
+        widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.miner.progress",
                 mineProgress.getIntValue(), totalMine.getIntValue())).asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue()));
 
@@ -320,7 +317,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 }
                 int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
                 context.getPlayer()
-                        .sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
+                        .sendSystemMessage(Component.translatable("machine.gtceu.miner.working_area_chunks",
                                 workingAreaChunks, workingAreaChunks));
             } else {
                 if (currentRadius - CHUNK_LENGTH / 2 <= 0) {
@@ -330,11 +327,12 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 }
                 int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
                 context.getPlayer().sendSystemMessage(
-                        Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
+                        Component.translatable("machine.gtceu.miner.working_area", workingArea, workingArea));
             }
             getRecipeLogic().resetArea(true);
         } else {
-            context.getPlayer().sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
+            context.getPlayer().sendSystemMessage(Component.translatable("gui.gtceu.machine.large_miner.error_radius")
+                    .withStyle(ChatFormatting.RED));
         }
         return InteractionResult.SUCCESS;
     }
@@ -345,7 +343,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
             int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
             return Collections.singletonList(
-                    Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
+                    Component.translatable("machine.gtceu.miner.working_area", workingArea, workingArea));
         }
         return new ArrayList<>();
     }

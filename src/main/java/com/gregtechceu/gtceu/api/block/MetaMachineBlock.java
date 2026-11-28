@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -60,6 +59,11 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
 
     @Getter
     public final MachineDefinition definition;
+
+    @Override
+    public String getDescriptionId() {
+        return definition.getDescriptionId();
+    }
 
     public MetaMachineBlock(Properties properties, MachineDefinition definition) {
         super(properties);
@@ -192,11 +196,6 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
         definition.getTooltipBuilder().accept(stack, tooltip);
-        String mainKey = String.format("%s.machine.%s.tooltip", definition.getId().getNamespace(),
-                definition.getId().getPath());
-        if (Language.getInstance().has(mainKey)) {
-            tooltip.add(1, Component.translatable(mainKey));
-        }
     }
 
     @Override

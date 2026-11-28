@@ -14,8 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -79,7 +78,7 @@ public class GTMultiblockTextUtil {
                             .crossAxisAlignment(Alignment.CrossAxis.START)
                             .widthRel(1);
 
-                    unformed.child(Text.lang("gtceu.multiblock.invalid_structure")
+                    unformed.child(Text.lang("gui.gtceu.machine.invalid_structure")
                             .withStyle(ChatFormatting.RED)
                             .asWidget()
                             .setEnabledIf(w -> !listSyncHandler.getValue().isEmpty()));
@@ -92,7 +91,7 @@ public class GTMultiblockTextUtil {
                     unformed.child(new ButtonWidget<>()
                             .coverChildren()
                             .padding(5)
-                            .child(Text.lang("gtceu.multiblock.show_error_pos")
+                            .child(Text.lang("gui.gtceu.multiblock_highlight_error")
                                     .asWidget())
                             .onMousePressed((c, b) -> {
                                 ((ModularGuiContext) c).getScreen().getMainPanel().closeIfOpen();
@@ -138,8 +137,8 @@ public class GTMultiblockTextUtil {
                 () -> new BooleanSyncValue(weMachine::isFormed));
 
         return buildAmpVoltEutHoverLine(
-                () -> Component.translatable("gtceu.multiblock.general.max_power",
-                        buildAmpVoltComponent(maxEnergyUsage, voltage)),
+                () -> Component.translatable("gui.gtceu.machine.max_eut",
+                        buildAmpVoltComponent(maxEnergyUsage, voltage), maxEnergyUsage.getLongValue()),
                 buildEutHoverTooltip(maxEnergyUsage, true),
                 ($ -> isFormed.getBoolValue()));
     }
@@ -206,22 +205,18 @@ public class GTMultiblockTextUtil {
         long EUt = energyUsage.getLongValue();
         long V = voltage.getLongValue();
         float minAmperage = (V == 0 ? 0 : (float) EUt / V);
-        int tier = GTUtil.getTierByVoltage(V);
 
-        return Component.translatable("gtceu.multiblock.general.amp_volt", // A @ V
-                Component.literal(FormattingUtil.formatNumber2Places(minAmperage))
-                        .withStyle(ChatFormatting.RED),
-                tier < GTValues.TIER_COUNT ? Component.literal(GTValues.VNF[tier]) : V);
+        return FormattingUtil.formattedEUt(minAmperage, V, true);
     }
 
     public static RichTooltip buildEutHoverTooltip(LongSyncValue energyUsage, boolean isMaxAvailable) {
         return new RichTooltip().autoUpdate(true).tooltipBuilder(builder -> {
             String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
 
-            builder.addLine(Component.translatable("gtceu.multiblock.general.eut",
+            builder.addLine(FormattingUtil.prepend("common.gtceu.eu_per_tick",
                     energyFormatted));
             if (isMaxAvailable)
-                builder.addLine(Component.translatable("gtceu.multiblock.max_energy_per_tick_hover")
+                builder.addLine(Component.translatable("gui.gtceu.machine.max_eut_hover")
                         .withStyle(ChatFormatting.GRAY));
         });
     }
@@ -244,11 +239,11 @@ public class GTMultiblockTextUtil {
         if (!formed || tier < GTValues.ULV || tier > GTValues.MAX)
             return Text.EMPTY;
 
-        Component voltageName = Component.literal(GTValues.VNF[tier]);
+        Component voltageName = GTValues.VNC[tier];
         MutableComponent bodyText = Component.translatable(
-                "gtceu.multiblock.max_recipe_tier",
+                "gui.gtceu.machine.max_recipe_tier",
                 voltageName);
-        Component hoverText = Component.translatable("gtceu.multiblock.max_recipe_tier_hover")
+        Component hoverText = Component.translatable("gui.gtceu.machine.max_recipe_tier_hover")
                 .withStyle(ChatFormatting.GRAY);
         return Text.dynamic(() -> bodyText
                 .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText))));
@@ -271,7 +266,7 @@ public class GTMultiblockTextUtil {
             int progress = (int) (progressPercent.getDoubleValue() * 100.f);
             float current = (float) currentProgress.getDoubleValue() / 20.f;
             float max = (float) maxProgress.getDoubleValue() / 20.f;
-            return Component.translatable("gtceu.multiblock.progress",
+            return Component.translatable("gui.gtceu.machine.progress",
                     String.format("%.2f", current), String.format("%.2f", max), progress);
         })
                 .asWidget()
@@ -289,7 +284,7 @@ public class GTMultiblockTextUtil {
 
         return Text.dynamic(() -> {
             int currentProgress = (int) (progressPercent.getDoubleValue() * 100);
-            return Component.translatable("gtceu.multiblock.progress_percent", currentProgress);
+            return Component.translatable("gui.gtceu.machine.progress_percent", currentProgress);
         })
                 .asWidget()
                 .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
@@ -304,13 +299,13 @@ public class GTMultiblockTextUtil {
                 () -> new IntSyncValue(rlMachine::getTier));
 
         return Text.dynamic(() -> {
-            Component voltageName = Component.literal(GTValues.VNF[tier.getIntValue()]);
+            Component voltageName = GTValues.VNC[tier.getIntValue()];
             return Component.translatable(
-                    "gtceu.multiblock.max_recipe_tier",
+                    "gui.gtceu.machine.max_recipe_tier",
                     voltageName);
         })
                 .asWidget()
-                .tooltip(new RichTooltip().add(Component.translatable("gtceu.multiblock.max_recipe_tier_hover")
+                .tooltip(new RichTooltip().add(Component.translatable("gui.gtceu.machine.max_recipe_tier_hover")
                         .withStyle(ChatFormatting.GRAY)))
                 .setEnabledIf(widget -> isFormed.getBoolValue());
     }
@@ -323,7 +318,7 @@ public class GTMultiblockTextUtil {
         return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(parallelAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
-            return Component.translatable("gtceu.multiblock.parallel", runs);
+            return Component.translatable("gui.gtceu.recipe.running_parallel", runs);
         }).asWidget()
                 .setEnabledIf(widget -> parallelAmount.getIntValue() > 1);
     }
@@ -340,7 +335,7 @@ public class GTMultiblockTextUtil {
         return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(batchAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
-            String key = "gtceu.multiblock.batch_enabled";
+            String key = "gui.gtceu.recipe.batch_parallel";
             return Component.translatable(key, runs);
         }).asWidget()
                 .setEnabledIf(widget -> batchEnabled.getBoolValue() && batchAmount.getIntValue() > 1);
@@ -357,7 +352,7 @@ public class GTMultiblockTextUtil {
         return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(subtickAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
-            String key = "gtceu.multiblock.subtick_parallels";
+            String key = "gui.gtceu.recipe.subtick_parallel";
             return Component.translatable(key, runs);
         }).asWidget()
                 .setEnabledIf(widget -> subtickAmount.getIntValue() > 1);
@@ -373,7 +368,7 @@ public class GTMultiblockTextUtil {
         return Text.dynamic(() -> {
             Component runs = Component.literal(FormattingUtil.formatNumbers(totalRunAmount.getIntValue()))
                     .withStyle(ChatFormatting.DARK_PURPLE);
-            String key = "gtceu.multiblock.total_runs";
+            String key = "gui.gtceu.recipe.total_parallel";
             return Component.translatable(key, runs);
         }).asWidget()
                 .setEnabledIf(widget -> totalRunAmount.getIntValue() > 1);
@@ -396,7 +391,7 @@ public class GTMultiblockTextUtil {
                 () -> new BooleanSyncValue(() -> steamRH != null));
 
         return Text
-                .dynamic(() -> Component.translatable("gtceu.multiblock.steam.steam_stored",
+                .dynamic(() -> Component.translatable("gui.gtceu.machine.steam.steam_stored",
                         FormattingUtil.formatNumbers(steamAmount.getIntValue()),
                         FormattingUtil.formatNumbers(steamCapacity.getIntValue())))
                 .asWidget()
@@ -406,20 +401,20 @@ public class GTMultiblockTextUtil {
     public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine,
                                                      PanelSyncManager syncManager) {
         return addWorkingStatusLine(rlMachine, syncManager,
-                () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
-                () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
-                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY),
-                () -> Component.translatable("gtceu.recipe_logic.recipe_waiting").withStyle(ChatFormatting.RED));
+                () -> Component.translatable("gui.gtceu.machine.work_paused").withStyle(ChatFormatting.GOLD),
+                () -> Component.translatable("gui.gtceu.machine.running").withStyle(ChatFormatting.GREEN),
+                () -> Component.translatable("gui.gtceu.machine.idling").withStyle(ChatFormatting.GRAY),
+                () -> Component.translatable("gui.gtceu.recipe.recipe_waiting").withStyle(ChatFormatting.RED));
     }
 
     public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine,
                                                      PanelSyncManager syncManager,
                                                      Supplier<Component> runningPerfectly) {
         return addWorkingStatusLine(rlMachine, syncManager,
-                () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
+                () -> Component.translatable("gui.gtceu.machine.work_paused").withStyle(ChatFormatting.GOLD),
                 runningPerfectly,
-                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY),
-                () -> Component.translatable("gtceu.recipe_logic.recipe_waiting").withStyle(ChatFormatting.RED));
+                () -> Component.translatable("gui.gtceu.machine.idling").withStyle(ChatFormatting.GRAY),
+                () -> Component.translatable("gui.gtceu.recipe.recipe_waiting").withStyle(ChatFormatting.RED));
     }
 
     public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine,
@@ -427,9 +422,9 @@ public class GTMultiblockTextUtil {
                                                      Supplier<Component> runningPerfectly,
                                                      Supplier<Component> waiting) {
         return addWorkingStatusLine(rlMachine, syncManager,
-                () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
+                () -> Component.translatable("gui.gtceu.machine.work_paused").withStyle(ChatFormatting.GOLD),
                 runningPerfectly,
-                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY),
+                () -> Component.translatable("gui.gtceu.machine.idling").withStyle(ChatFormatting.GRAY),
                 waiting);
     }
 
@@ -489,7 +484,7 @@ public class GTMultiblockTextUtil {
         var lineList = new ArrayList<TextWidget<?>>();
 
         lineList.add(Text
-                .dynamic(() -> Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED))
+                .dynamic(() -> Component.translatable("gui.gtceu.recipe.setup_fail").withStyle(ChatFormatting.RED))
                 .asWidget()
                 .setEnabledIf((w) -> isFormed.getBoolValue() && (isIdle.getBoolValue() || isWaiting.getBoolValue()) &&
                         !hasRunningRecipe.getBoolValue() && bestFailureReason.getValue() != null));
@@ -505,7 +500,6 @@ public class GTMultiblockTextUtil {
         return lineList;
     }
 
-    @SuppressWarnings("unchecked")
     public static TextWidget<?> addRecipeTypeField(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         StringSyncValue recipeTypeName = syncManager.getOrCreateSyncHandler("recipeTypeName", StringSyncValue.class,
                 () -> new StringSyncValue(
@@ -514,11 +508,12 @@ public class GTMultiblockTextUtil {
         // No need to sync the rlMachine.getRecipeTypes().length > 1 condition because the recipe type array is the same
         // on client side.
         return Text
-                .dynamic(() -> Component.translatable("gtceu.gui.machinemode",
+                .dynamic(() -> Component.translatable("gui.gtceu.machine.active_machine_mode",
                         Component.literal(recipeTypeName.getStringValue())
                                 .withStyle(ChatFormatting.GOLD)))
                 .asWidget()
-                .tooltip((tooltip) -> tooltip.add(Component.translatable("gtceu.gui.machinemode.title")))
+                .tooltip(
+                        (tooltip) -> tooltip.add(Component.translatable("gui.gtceu.machine.active_machine_mode.title")))
                 .setEnabledIf((w) -> rlMachine.getRecipeTypes().length > 1);
     }
 
@@ -586,7 +581,7 @@ public class GTMultiblockTextUtil {
         if (itemOutput.content() instanceof IntProviderIngredient provider) {
             rounded = true;
             stack = provider.getMaxSizeStack();
-            displaycount = Component.translatable("gtceu.gui.content.range",
+            displaycount = Component.translatable("gui.gtceu.recipe_content.range",
                     provider.getCountProvider().getMinValue(),
                     provider.getCountProvider().getMaxValue());
             if (itemOutput.chance() < itemOutput.maxChance()) {
@@ -608,7 +603,7 @@ public class GTMultiblockTextUtil {
             displaycount = Component.literal(String.valueOf(count));
         }
         if (countD < maxDurationSec) {
-            String key = "gtceu.multiblock.output_line." + (rounded ? "2" : "0");
+            String key = "gui.gtceu.machine.output_line." + (rounded ? "rounded" : "exact") + "_each";
             return Optional.of(
                     Flow.row()
                             .coverChildrenHeight()
@@ -622,7 +617,7 @@ public class GTMultiblockTextUtil {
                                             FormattingUtil.formatNumber2Places(maxDurationSec / countD))
                                             .asWidget()));
         } else {
-            String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
+            String key = "gui.gtceu.machine.output_line." + (rounded ? "rounded" : "exact") + "_per_sec";
             return Optional.of(
                     Flow.row()
                             .coverChildrenHeight()
@@ -654,7 +649,7 @@ public class GTMultiblockTextUtil {
         if (fluidOutput.content() instanceof IntProviderFluidIngredient provider) {
             rounded = true;
             stack = provider.getMaxSizeStack();
-            displaycount = Component.translatable("gtceu.gui.content.range",
+            displaycount = Component.translatable("gui.gtceu.recipe_content.range",
                     provider.getCountProvider().getMinValue(),
                     provider.getCountProvider().getMaxValue());
             if (fluidOutput.chance() < fluidOutput.maxChance()) {
@@ -676,7 +671,7 @@ public class GTMultiblockTextUtil {
             displaycount = Component.literal(String.valueOf(amount));
         }
         if (amountD < maxDurationSec) {
-            String key = "gtceu.multiblock.output_line." + (rounded ? "2" : "0");
+            String key = "gui.gtceu.machine.output_line." + (rounded ? "rounded" : "exact") + "_each";
             return Optional.of(
                     Flow.row()
                             .coverChildrenHeight()
@@ -690,7 +685,7 @@ public class GTMultiblockTextUtil {
                                             FormattingUtil.formatNumber2Places(maxDurationSec / amountD))
                                             .asWidget()));
         } else {
-            String key = "gtceu.multiblock.output_line." + (rounded ? "3" : "1");
+            String key = "gui.gtceu.machine.output_line." + (rounded ? "rounded" : "exact") + "_per_sec";
             return Optional.of(
                     Flow.row()
                             .coverChildrenHeight()

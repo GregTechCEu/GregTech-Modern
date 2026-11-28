@@ -20,7 +20,7 @@ import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -158,7 +158,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         if (batteries.isEmpty()) {
             // only empty batteries found in the structure
             pState.setError(new PatternStringError(
-                    Component.translatable("gtceu.predicate_error.power_substation.missing_batteries")));
+                    Component.translatable("multiblock.gtceu.pattern_error.power_substation.missing_batteries")));
             invalidateStructure();
             return;
         }
@@ -223,21 +223,21 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         long fillTime;
         if (duration.getSeconds() <= 180) {
             fillTime = duration.getSeconds();
-            key = "gtceu.multiblock.power_substation.time_seconds";
+            key = "gui.gtceu.machine.power_substation.time_seconds";
         } else if (duration.toMinutes() <= 180) {
             fillTime = duration.toMinutes();
-            key = "gtceu.multiblock.power_substation.time_minutes";
+            key = "gui.gtceu.machine.power_substation.time_minutes";
         } else if (duration.toHours() <= 72) {
             fillTime = duration.toHours();
-            key = "gtceu.multiblock.power_substation.time_hours";
+            key = "gui.gtceu.machine.power_substation.time_hours";
         } else if (duration.toDays() <= 730) { // 2 years
             fillTime = duration.toDays();
-            key = "gtceu.multiblock.power_substation.time_days";
+            key = "gui.gtceu.machine.power_substation.time_days";
         } else if (duration.toDays() / 365 < 1_000_000) {
             fillTime = duration.toDays() / 365;
-            key = "gtceu.multiblock.power_substation.time_years";
+            key = "gui.gtceu.machine.power_substation.time_years";
         } else {
-            return Component.translatable("gtceu.multiblock.power_substation.time_forever");
+            return Component.translatable("gui.gtceu.machine.power_substation.time_forever");
         }
 
         return Component.translatable(key, FormattingUtil.formatNumbers(fillTime));
@@ -305,52 +305,50 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         syncManager.syncValue("outputPerSec", outputPerSec);
 
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
-                () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
-                () -> Component.translatable("gtceu.multiblock.waiting").withStyle(ChatFormatting.RED)));
+                () -> Component.translatable("gui.gtceu.machine.running").withStyle(ChatFormatting.GREEN),
+                () -> Component.translatable("gui.gtceu.machine.waiting").withStyle(ChatFormatting.RED)));
 
         widgets.add(Text.dynamic(() -> {
             var storedComponent = Component.literal(FormattingUtil.formatNumbers(energyStored.getValue()));
-            return Component.translatable("gtceu.multiblock.power_substation.stored",
+            return Component.translatable("gui.gtceu.machine.power_substation.stored",
                     storedComponent.withStyle(ChatFormatting.GOLD));
         }).asWidget());
 
         widgets.add(Text.dynamic(() -> {
             var capacityComponent = Component.literal(FormattingUtil.formatNumbers(capacity.getValue()));
-            return Component.translatable("gtceu.multiblock.power_substation.capacity",
+            return Component.translatable("gui.gtceu.machine.power_substation.capacity",
                     capacityComponent.withStyle(ChatFormatting.GOLD));
         }).asWidget());
 
         widgets.add(Text.dynamic(() -> {
             var passiveDrainComponent = Component.literal(FormattingUtil.formatNumbers(passiveDrain.getLongValue()));
-            return Component.translatable("gtceu.multiblock.power_substation.passive_drain",
+            return Component.translatable("gui.gtceu.machine.power_substation.passive_drain",
                     passiveDrainComponent.withStyle(ChatFormatting.DARK_RED));
         }).asWidget());
 
         widgets.add(Text.dynamic(() -> {
             var avgInComponent = Component.literal(FormattingUtil.formatNumbers(inputPerSec.getLongValue() / 20));
-            return Component.translatable("gtceu.multiblock.power_substation.average_in",
+            return Component.translatable("gui.gtceu.machine.power_substation.average_in",
                     avgInComponent.withStyle(ChatFormatting.GREEN));
         })
                 .asWidget()
-                .tooltip(t -> t.addLine(Component.translatable("gtceu.multiblock.power_substation.average_in_hover"))));
+                .tooltip(t -> t.addLine(Component.translatable("gui.gtceu.machine.power_substation.average_in_hover"))));
 
         widgets.add(Text.dynamic(() -> {
             var avgOutComponent = Component
                     .literal(FormattingUtil.formatNumbers(Math.abs(outputPerSec.getLongValue() / 20)));
             return Component
-                    .translatable("gtceu.multiblock.power_substation.average_out",
+                    .translatable("gui.gtceu.machine.power_substation.average_out",
                             avgOutComponent.withStyle(ChatFormatting.RED));
-        })
-                .asWidget()
-                .tooltip(
-                        t -> t.addLine(Component.translatable("gtceu.multiblock.power_substation.average_out_hover"))));
+        }).asWidget()
+                .tooltip(t -> t.addLine(Component.translatable("gui.gtceu.machine.power_substation.average_out_hover"))));
 
         widgets.add(Text.dynamic(() -> {
             if (inputPerSec.getLongValue() <= outputPerSec.getLongValue())
                 return Component.empty();
             BigInteger timeToFillSeconds = capacity.getValue().subtract(energyStored.getValue())
                     .divide(BigInteger.valueOf(inputPerSec.getLongValue() - outputPerSec.getLongValue()));
-            return Component.translatable("gtceu.multiblock.power_substation.time_to_fill",
+            return Component.translatable("gui.gtceu.machine.power_substation.time_to_fill",
                     getTimeToFillDrainText(timeToFillSeconds).withStyle(ChatFormatting.GREEN));
         })
                 .asWidget()
@@ -361,7 +359,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 return Component.empty();
             BigInteger timeToDrainSeconds = energyStored.getValue()
                     .divide(BigInteger.valueOf(outputPerSec.getLongValue() - inputPerSec.getLongValue()));
-            return Component.translatable("gtceu.multiblock.power_substation.time_to_drain",
+            return Component.translatable("gui.gtceu.machine.power_substation.time_to_drain",
                     getTimeToFillDrainText(timeToDrainSeconds).withStyle(ChatFormatting.RED));
         })
                 .asWidget()

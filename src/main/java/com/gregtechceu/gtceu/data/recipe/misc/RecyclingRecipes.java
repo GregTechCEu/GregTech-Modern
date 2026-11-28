@@ -542,7 +542,6 @@ public class RecyclingRecipes {
         Material material = entry.material();
         long materialAmount = originalStack.getCount() * entry.tagPrefix().getMaterialAmount(material);
 
-        // noinspection ConstantConditions
         final List<TagPrefix> chosenList = material.hasProperty(PropertyKey.INGOT) ? INGOT_ORDER : DUST_ORDER;
 
         // Break materialAmount into a maximal stack

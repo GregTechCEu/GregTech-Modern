@@ -11,7 +11,8 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -81,7 +82,7 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
         mainWidget
                 .background(GTGuiTextures.DISPLAY)
                 .themeOverride(GTGuiTheme.MULTIBLOCK_DISPLAY.getId())
-                .child(Text.lang("gtceu.gui.fluid_amount").asWidget()
+                .child(Text.of(GTCommonComponents.FLUID_AMOUNT).asWidget()
                         .color(0xffffff)
                         .margin(8, 0, 8, 0))
                 .child(Text.dynamic(

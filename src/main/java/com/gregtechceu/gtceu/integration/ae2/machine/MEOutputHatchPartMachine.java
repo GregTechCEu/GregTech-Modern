@@ -12,8 +12,8 @@ import com.gregtechceu.gtceu.integration.ae2.gui.AEKeyStorageSyncHandler;
 import com.gregtechceu.gtceu.integration.ae2.gui.AEStackDisplayWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.ScrollPreservingGrid;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.CommonComponents;
@@ -108,8 +108,8 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
         var flow = Flow.col().coverChildren();
 
         flow.child(Text.dynamic(() -> isOnlineValue.getBoolValue() ?
-                Component.translatable("gtceu.gui.me_network.online") :
-                Component.translatable("gtceu.gui.me_network.offline"))
+                Component.translatable("gui.gtceu.machine.me_part.network.online") :
+                Component.translatable("gui.gtceu.machine.me_part.network.offline"))
                 .asWidget().marginTop(2).marginBottom(4));
 
         var storageSyncHandler = new AEKeyStorageSyncHandler(internalBuffer);
@@ -120,8 +120,9 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                 .widgetProvider((sm, value) -> {
                     var col = Flow.col().leftRel(0.5f).coverChildrenHeight();
                     var list = value.getValue();
-                    if (list.isEmpty()) return col.child(Text.lang("gtceu.gui.waiting_list_empty").asWidget());
-                    col.child(Text.lang("gtceu.gui.waiting_list").asWidget().margin(0, 2));
+                    if (list.isEmpty())
+                        return col.child(Text.lang("gui.gtceu.machine.me_output.waiting_list_empty").asWidget());
+                    col.child(Text.lang("gui.gtceu.machine.me_output.waiting_list").asWidget().margin(0, 2));
                     col.child(new ScrollPreservingGrid(savedScroll)
                             .size(167, 67)
                             .scrollable(new VerticalScrollData())
@@ -132,9 +133,8 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                                         .child(widget);
                                 var entry = list.get(index);
                                 return row
-                                        .child(Text.comp(Component
-                                                .translatable("gtceu.universal.liters",
-                                                        FormattingUtil.formatNumbers(entry.amount()))
+                                        .child(Text.comp(FormattingUtil.prepend("common.gtceu.bucket",
+                                                FormattingUtil.formatNumbers(entry.amount()))
                                                 .append(CommonComponents.SPACE)
                                                 .append(entry.what().getDisplayName()))
                                                 .asWidget()

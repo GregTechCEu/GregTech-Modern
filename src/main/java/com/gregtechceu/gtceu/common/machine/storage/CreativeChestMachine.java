@@ -115,9 +115,9 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
         syncManager.syncValue("stored", storedSlot);
 
-        IntSyncValue itemsPerCycle = new IntSyncValue(this::getItemsPerCycle, this::setItemsPerCycle).allowC2S();;
+        IntSyncValue itemsPerCycle = new IntSyncValue(this::getItemsPerCycle, this::setItemsPerCycle).allowC2S();
         syncManager.syncValue("itemsPerCycle", itemsPerCycle);
-        IntSyncValue ticksPerCycle = new IntSyncValue(this::getTicksPerCycle, this::setTicksPerCycle).allowC2S();;
+        IntSyncValue ticksPerCycle = new IntSyncValue(this::getTicksPerCycle, this::setTicksPerCycle).allowC2S();
         syncManager.syncValue("ticksPerCycle", ticksPerCycle);
 
         mainWidget
@@ -127,7 +127,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
                         .padding(7)
                         .mainAxisAlignment(Alignment.MainAxis.START)
                         .child(Flow.row().coverChildrenHeight()
-                                .child(Text.lang("gtceu.creative.chest.item").asWidget()
+                                .child(Text.lang("gui.gtceu.machine.creative_chest.item").asWidget()
                                         .marginRight(4)
                                         .verticalCenter())
                                 .child(new PhantomItemSlot().syncHandler("stored")))
@@ -135,7 +135,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
                                 .height(18)
-                                .child(Text.lang("gtceu.creative.chest.ipc").asWidget()
+                                .child(Text.lang("gui.gtceu.machine.creative_chest.ipc").asWidget()
                                         .marginRight(4)
                                         .width(80)
                                         .verticalCenter())
@@ -147,7 +147,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
                                 .height(18)
-                                .child(Text.lang("gtceu.creative.chest.tpc").asWidget()
+                                .child(Text.lang("gui.gtceu.machine.creative_chest.tpc").asWidget()
                                         .marginRight(4)
                                         .width(80)
                                         .verticalCenter())

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.module;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredAttributeItemModule;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

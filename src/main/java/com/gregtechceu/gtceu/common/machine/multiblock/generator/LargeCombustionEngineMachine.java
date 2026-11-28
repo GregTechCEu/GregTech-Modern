@@ -145,11 +145,12 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         }
         if (engineMachine.isIntakesObstructed()) {
             return ModifierFunction
-                    .cancel(Component.translatable("gtceu.multiblock.large_combustion_engine.obstructed"));
+                    .cancel(Component.translatable("gui.gtceu.machine.large_combustion_engine.obstructed"));
         }
         if (!engineMachine.hasLubricant()) {
             return ModifierFunction
-                    .cancel(Component.translatable("gtceu.multiblock.large_combustion_engine.no_lubricant"));
+                    .cancel(Component.translatable("gui.gtceu.machine.large_combustion_engine.no_lubricant")
+                            .withStyle(ChatFormatting.RED));
         }
 
         EnergyStack EUt = recipe.getOutputEUt();
@@ -205,14 +206,14 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
     protected Component getBoostPrompt() {
         return Component
-                .translatable(isExtreme() ? "gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost" :
-                        "gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost");
+                .translatable(isExtreme() ? "gui.gtceu.machine.large_combustion_engine.supply_liquid_oxygen_to_boost" :
+                        "gui.gtceu.machine.large_combustion_engine.supply_oxygen_to_boost");
     }
 
     protected Component getBoostMessage() {
         return Component.translatable(isExtreme() ?
-                "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
-                "gtceu.multiblock.large_combustion_engine.oxygen_boosted");
+                "gui.gtceu.machine.large_combustion_engine.liquid_oxygen_boosted" :
+                "gui.gtceu.machine.large_combustion_engine.oxygen_boosted");
     }
 
     @Override
@@ -237,13 +238,13 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         syncManager.syncValue("engineVoltage", engineVoltage);
 
         var hasLubricantWarning = Text.lang(
-                "gtceu.multiblock.large_combustion_engine.no_lubricant")
+                "gui.gtceu.machine.large_combustion_engine.no_lubricant")
                 .withStyle(ChatFormatting.RED)
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && !hasLubricant.getBoolValue());
 
         var boostDisallowed = Text.lang(
-                "gtceu.multiblock.large_combustion_engine.boost_disallowed")
+                "gui.gtceu.machine.large_combustion_engine.boost_disallowed")
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && !isBoostAllowed.getBoolValue());
 
