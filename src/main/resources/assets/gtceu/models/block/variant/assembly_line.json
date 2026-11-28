@@ -1,6 +1,0 @@
-{
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "gtceu:block/casings/mechanic/machine_casing_assembly_line"
-  }
-}

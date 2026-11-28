@@ -1,7 +1,0 @@
-{
-  "parent": "gtceu:block/cube_2_layer/all",
-  "textures": {
-    "bot_all": "gtceu:block/casings/mechanic/machine_casing_assembly_line",
-    "top_all": "gtceu:block/casings/mechanic/machine_casing_assembly_line_bloom"
-  }
-}
