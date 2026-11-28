@@ -317,7 +317,7 @@ public class MultiblockControllerMachine extends MetaMachine {
                     return true;
                 });
 
-                this.parts.sort(getDefinition().getPartSorter().apply(this));
+                this.parts.sort(getDefinition().getPartSorter().getSorter(this));
                 for (var part : parts) {
                     if (part instanceof ParallelHatchPartMachine pHatch) {
                         this.parallelHatch = pHatch;
@@ -474,9 +474,10 @@ public class MultiblockControllerMachine extends MetaMachine {
                                                   @Nullable BlockState sourceState,
                                                   @Nullable BlockPos sourcePos) {
         if (isFormed()) {
-            return getDefinition().getPartAppearance().apply(this, part, side);
+            return getDefinition().getPartAppearanceProvider().getPartAppearance(this, part, side);
+        } else {
+            return null;
         }
-        return null;
     }
 
     @Override
