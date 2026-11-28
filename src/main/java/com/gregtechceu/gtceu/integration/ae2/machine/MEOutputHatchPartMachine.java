@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.integration.ae2.gui.AEStackDisplayWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.ScrollPreservingGrid;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 import com.gregtechceu.gtceu.utils.GTMath;
-import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.CommonComponents;
@@ -133,8 +133,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                                         .child(widget);
                                 var entry = list.get(index);
                                 return row
-                                        .child(Text.comp(FormattingUtil.prepend("common.gtceu.bucket",
-                                                FormattingUtil.formatNumbers(entry.amount()))
+                                        .child(Text.comp(GTCommonComponents.buckets(entry.amount())
                                                 .append(CommonComponents.SPACE)
                                                 .append(entry.what().getDisplayName()))
                                                 .asWidget()

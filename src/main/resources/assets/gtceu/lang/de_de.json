@@ -3343,7 +3343,7 @@
     "gui.gtceu.machine.large_boiler.efficiency": "Effizienz: %s",
     "gui.gtceu.machine.large_boiler.explosion_tooltip": "Wird explodieren, wenn Kraftstoff ohne Wasser bereitgestellt wird",
     "gui.gtceu.machine.large_boiler.heat_time_tooltip": "§7Dauert §f%d Sekunden §7bis zum Kochen",
-    "gui.gtceu.machine.large_boiler.max_temperature": "Maximale Temperatur: %dK, Dampfproduktion: %dmB/t",
+    "machine.gtceu.large_boiler.info_tooltip": "Maximale Temperatur: %dK, Dampfproduktion: %dmB/t",
     "gui.gtceu.machine.large_boiler.rate_tooltip": "§7Produziert §f%d L §7Dampf mit §f1 Kohle",
     "gui.gtceu.machine.large_boiler.steam_output": "Dampfleistung: %s mB/t",
     "gui.gtceu.machine.large_boiler.temperature": "Temperatur: %sK / %sK",

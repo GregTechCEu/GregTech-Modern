@@ -11,10 +11,10 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCustomTooltip;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.IdMapper;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +36,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.*;
 
@@ -108,7 +107,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock>, ItemLike {
     private final Map<Direction, VoxelShape> cache = new EnumMap<>(Direction.class);
     @Getter
     @Setter
-    private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
+    private GTCustomTooltip tooltip;
     @Getter
     @Setter
     private Supplier<BlockState> appearance;

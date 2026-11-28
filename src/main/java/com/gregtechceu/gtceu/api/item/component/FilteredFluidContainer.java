@@ -42,6 +42,6 @@ public class FilteredFluidContainer implements IItemComponent, IComponentCapabil
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
         FluidUtil.getFluidContained(stack).ifPresent(fluid -> tooltipComponents
-                .add(GTCommonComponents.fluidStored(fluid)));
+                .add(GTCommonComponents.Tooltips.fluidStored(fluid)));
     }
 }

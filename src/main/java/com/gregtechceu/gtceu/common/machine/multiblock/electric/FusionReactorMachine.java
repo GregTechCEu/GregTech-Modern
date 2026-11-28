@@ -314,19 +314,19 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
         widgets.add(Text.dynamic(() -> {
             var storedComponent = Component.literal(FormattingUtil.formatNumbers(heatValue.getValue()));
-            return Component.translatable("machine.gtceu.fusion_reactor.heat",
+            return Component.translatable("gui.gtceu.machine.fusion_reactor.heat",
                     storedComponent.withStyle(ChatFormatting.GOLD));
         }).asWidget());
 
         widgets.add(Text.dynamic(() -> {
             var storedComponent = Component.literal(FormattingUtil.formatNumbers(euStored.getValue()));
-            return Component.translatable("machine.gtceu.fusion_reactor.stored",
+            return Component.translatable("gui.gtceu.machine.fusion_reactor.stored",
                     storedComponent.withStyle(ChatFormatting.GOLD));
         }).asWidget());
 
         widgets.add(Text.dynamic(() -> {
             var capacityComponent = Component.literal(FormattingUtil.formatNumbers(euCapacity.getValue()));
-            return Component.translatable("machine.gtceu.fusion_reactor.capacity",
+            return Component.translatable("gui.gtceu.machine.fusion_reactor.capacity",
                     capacityComponent.withStyle(ChatFormatting.GOLD));
         }).asWidget());
 

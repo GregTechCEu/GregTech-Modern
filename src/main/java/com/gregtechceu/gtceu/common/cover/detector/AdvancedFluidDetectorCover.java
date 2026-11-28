@@ -9,10 +9,12 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.utils.lang.LangUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -133,14 +135,30 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IM
                         .value(new BooleanSyncValue(this::isInverted, this::setInverted).allowC2S())
                         .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
                         .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
-                        .tooltip(false, t -> t.add("cover.gtceu.advanced_fluid_detector.invert.disabled"))
-                        .tooltip(true, t -> t.add("cover.gtceu.advanced_fluid_detector.invert.enabled")))
+                        .tooltip(false, t -> {
+                            t.addLine(Text.lang("cover.gtceu.advanced_fluid_detector.invert.disabled"));
+                            t.addLine(CommonComponents.EMPTY);
+                            LangUtil.getListMultiLang("cover.gtceu.advanced_fluid_detector.invert_info").forEach(t::addLine);
+                        })
+                        .tooltip(true, t -> {
+                            t.addLine(Text.lang("cover.gtceu.advanced_fluid_detector.invert.enabled"));
+                            t.addLine(CommonComponents.EMPTY);
+                            LangUtil.getListMultiLang("cover.gtceu.advanced_fluid_detector.invert_info").forEach(t::addLine);
+                        }))
                 .child(new ToggleButton()
                         .value(new BooleanSyncValue(this::isLatched, this::setLatched).allowC2S())
                         .overlay(false, GTGuiTextures.BUTTON_LOCK)
                         .overlay(true, GTGuiTextures.BUTTON_LOCK)
-                        .tooltip(false, t -> t.add("cover.gtceu.advanced_detector.latch.disabled"))
-                        .tooltip(true, t -> t.add("cover.gtceu.advanced_detector.latch.enabled")));
+                        .tooltip(false, t -> {
+                            t.addLine(Text.lang("cover.gtceu.advanced_detector.latch.disabled"));
+                            t.addLine(CommonComponents.EMPTY);
+                            LangUtil.getListMultiLang("cover.gtceu.advanced_detector.latch_info").forEach(t::addLine);
+                        })
+                        .tooltip(true, t -> {
+                            t.addLine(Text.lang("cover.gtceu.advanced_detector.latch.enabled"));
+                            t.addLine(CommonComponents.EMPTY);
+                            LangUtil.getListMultiLang("cover.gtceu.advanced_detector.latch_info").forEach(t::addLine);
+                        }));
 
         GTMuiWidgets.createFilterRow(buttonRow, filterHandler, data, syncManager, settings, data.getSide());
 

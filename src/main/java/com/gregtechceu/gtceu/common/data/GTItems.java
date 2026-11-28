@@ -776,9 +776,9 @@ public class GTItems {
                 .lang("%s Electric Pump".formatted(GTValues.VN[tier]))
                 .onRegister(attach(new TieredBehaviour(tier)))
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[tier])))
-                .onRegister(attach(new TooltipBehavior(lines -> {
-                    lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                    lines.add(GTCommonComponents.fluidTransferRate(PumpCover.PUMP_SCALING.applyAsInt(tier)));
+                .onRegister(attach(new TooltipBehavior(t -> {
+                    t.tooltip(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                    t.tooltip(GTCommonComponents.Tooltips.fluidTransferRate(PumpCover.PUMP_SCALING.applyAsInt(tier)));
                 })));
         if (tier <= GTValues.UV) builder.tag(CustomTags.ELECTRIC_PUMPS);
         return builder.register();
@@ -816,9 +816,9 @@ public class GTItems {
                 .item("%s_fluid_regulator".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
                 .lang("%s Fluid Regulator".formatted(GTValues.VN[tier]))
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[tier])))
-                .onRegister(attach(new TooltipBehavior(lines -> {
-                    lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                    lines.add(GTCommonComponents.fluidTransferRate(PumpCover.PUMP_SCALING.applyAsInt(tier)));
+                .onRegister(attach(new TooltipBehavior(t -> {
+                    t.tooltip(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                    t.tooltip(GTCommonComponents.Tooltips.fluidTransferRate(PumpCover.PUMP_SCALING.applyAsInt(tier)));
                 })));
         if (tier <= GTValues.UV) builder.tag(CustomTags.FLUID_REGULATORS);
         return builder.register();
@@ -857,9 +857,9 @@ public class GTItems {
                 .lang("%s Conveyor Module".formatted(GTValues.VN[tier]))
                 .onRegister(attach(new TieredBehaviour(tier)))
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[tier])))
-                .onRegister(attach(new TooltipBehavior(lines -> {
-                    lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                    lines.add(GTCommonComponents.itemTransferRate(ConveyorCover.CONVEYOR_SCALING.applyAsInt(tier)));
+                .onRegister(attach(new TooltipBehavior(t -> {
+                    t.tooltip(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                    t.tooltip(GTCommonComponents.Tooltips.itemTransferRate(ConveyorCover.CONVEYOR_SCALING.applyAsInt(tier)));
                 })));
         if (tier <= GTValues.UV) builder.tag(CustomTags.CONVEYOR_MODULES);
         return builder.register();
@@ -933,9 +933,9 @@ public class GTItems {
                 .lang("%s Robot Arm".formatted(GTValues.VN[tier]))
                 .onRegister(
                         attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[tier]), new TieredBehaviour(tier)))
-                .onRegister(attach(new TooltipBehavior(lines -> {
-                    lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                    lines.add(GTCommonComponents.itemTransferRate(ConveyorCover.CONVEYOR_SCALING.applyAsInt(tier)));
+                .onRegister(attach(new TooltipBehavior(t -> {
+                    t.tooltip(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                    t.tooltip(GTCommonComponents.Tooltips.itemTransferRate(ConveyorCover.CONVEYOR_SCALING.applyAsInt(tier)));
                 })));
         if (tier <= GTValues.UV) builder.tag(CustomTags.ROBOT_ARMS);
         return builder.register();
@@ -1897,7 +1897,7 @@ public class GTItems {
         return v -> v.attachComponents(new TooltipBehavior(
                 Component.translatable("item.gtceu.solar_panel.tooltip.0").withStyle(ChatFormatting.GRAY),
                 Component.translatable("item.gtceu.solar_panel.tooltip.1").withStyle(ChatFormatting.GRAY),
-                GTCommonComponents.voltage(IO.OUT, tier)));
+                GTCommonComponents.Tooltips.voltage(IO.OUT, tier)));
     }
 
     // Plugin
@@ -2243,9 +2243,9 @@ public class GTItems {
                             .setArmorLogic(new HazmatSuit(ArmorItem.Type.HELMET, "bad_hazmat")))
             .lang("Face Mask")
             .tag(Tags.Items.ARMORS_HELMETS, CustomTags.PPE_ARMOR)
-            .onRegister(attach(new TooltipBehavior(tooltips -> {
-                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.protection"));
-                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.inhalation"));
+            .onRegister(attach(new TooltipBehavior(t -> {
+                t.tooltip(Component.translatable("tooltip.gtceu.hazard_trigger.protection"));
+                t.tooltip(Component.translatable("tooltip.gtceu.hazard_trigger.inhalation"));
             })))
             .register();
     public static ItemEntry<ArmorComponentItem> RUBBER_GLOVES = REGISTRATE
@@ -2254,9 +2254,9 @@ public class GTItems {
                             .setArmorLogic(new HazmatSuit(ArmorItem.Type.CHESTPLATE, "bad_hazmat")))
             .lang("Rubber Gloves")
             .tag(Tags.Items.ARMORS_CHESTPLATES, CustomTags.PPE_ARMOR)
-            .onRegister(attach(new TooltipBehavior(tooltips -> {
-                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.protection"));
-                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.skin_contact"));
+            .onRegister(attach(new TooltipBehavior(t -> {
+                t.tooltip(Component.translatable("tooltip.gtceu.hazard_trigger.protection"));
+                t.tooltip(Component.translatable("tooltip.gtceu.hazard_trigger.skin_contact"));
             })))
             .register();
     public static ItemEntry<ArmorComponentItem> HAZMAT_CHESTPLATE = REGISTRATE
@@ -2464,7 +2464,7 @@ public class GTItems {
                         .map(v -> v.withStyle(ChatFormatting.GRAY))
                         .toArray(MutableComponent[]::new);
 
-                item.attachComponents(new TooltipBehavior(tooltipComponents));
+                item.attachComponents(new TooltipBehavior(t -> t.tooltips(tooltipComponents)));
             });
             return builder;
         };

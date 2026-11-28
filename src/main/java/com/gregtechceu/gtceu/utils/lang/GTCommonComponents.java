@@ -24,8 +24,15 @@ public final class GTCommonComponents {
     public static final Component PART_SHARING_DISABLED = Component
             .translatable("multiblock.gtceu.part_sharing.disabled");
 
+    public static final Component CAN_PARALLEL = Component.translatable("gui.gtceu.supports_parallel")
+            .withStyle(ChatFormatting.AQUA);
+
     public static final Component COMMA_SPACE = Component.literal(", ");
+
     public static final Component HOLD_SHIFT_FOR_INFO = Component.translatable("common.gtceu.tooltip.hold_shift")
+            .withStyle(ChatFormatting.GRAY);
+
+    public static final Component HOLD_CTRL_FOR_INFO = Component.translatable("common.gtceu.tooltip.hold_ctrl")
             .withStyle(ChatFormatting.GRAY);
 
     public static final Component FLUID_AMOUNT = Component.translatable("common.gtceu.fluid_amount");
@@ -35,221 +42,273 @@ public final class GTCommonComponents {
                     .withStyle(TooltipHelper.RAINBOW_HSL_SLOW))
             .append(Component.translatable("gui.gtceu.machine.creative_tooltip.3"));
 
-    // Energy
+    // Common units and amount components
 
-    /**
-     * Creates a voltage tooltip in the format {@code Voltage [IN/OUT]: [tier EU/t] EU/t ([tier name])}<br>
-     * Colour formatting is applied to the label & tier name.
-     *
-     * @param io   The voltage IO. Can be import/export/both.
-     * @param tier The voltage tier.
-     */
-    public static MutableComponent voltage(IO io, int tier) {
-        var key = "common.gtceu.tooltip.voltage_" + io.name().toLowerCase();
+    public static MutableComponent temperature(int tempKelvin) {
+        return Component.literal(FormattingUtil.formatTemperature(tempKelvin));
+    }
 
-        return Component.empty()
-                .append(Component.translatable(key).withStyle(ChatFormatting.GREEN))
-                .append(FormattingUtil.prepend("common.gtceu.eu_per_tick",
-                        FormattingUtil.formatNumbers(GTValues.VEX[tier])))
-                .append(CommonComponents.SPACE)
-                .append(FormattingUtil.wrap(GTValues.VNC[tier], "(", ")"));
+    public static MutableComponent seconds(long amount) {
+        return Component.translatable("common.gtceu.seconds", amount);
+    }
+
+    public static MutableComponent milibuckets(long amount) {
+        return FormattingUtil.prepend("common.gtceu.millibucket", FormattingUtil.formatNumbers(amount));
+    }
+
+    public static MutableComponent buckets(long amount) {
+        return FormattingUtil.prepend("common.gtceu.millibucket", FormattingUtil.formatNumbers(amount));
+    }
+
+    public static MutableComponent mbPerTick(long amount) {
+        return FormattingUtil.prepend("common.gtceu.mb_per_tick", FormattingUtil.formatNumbers(amount));
+    }
+
+    public static MutableComponent mbPerSec(long amount) {
+        return FormattingUtil.prepend("common.gtceu.mb_per_sec", FormattingUtil.formatNumbers(amount));
+    }
+
+    public static MutableComponent mbPerHour(long amount) {
+        return FormattingUtil.prepend("common.gtceu.mb_per_hour", FormattingUtil.formatNumbers(amount));
+    }
+
+    public static MutableComponent amps(long amount) {
+        return Component.literal(FormattingUtil.formatNumbers(amount)).append(Component.translatable("common.gtceu.amperage"));
+    }
+
+    public static MutableComponent eu(long amount) {
+        return FormattingUtil.prepend("common.gtceu.eu", FormattingUtil.formatNumbers(amount));
+    }
+
+    public static MutableComponent euPerTick(long amount) {
+        return FormattingUtil.prepend("common.gtceu.eu_per_tick", FormattingUtil.formatNumbers(amount));
+    }
+
+    public static MutableComponent euPerSec(long amount) {
+        return FormattingUtil.prepend("common.gtceu.eu_per_sec", FormattingUtil.formatNumbers(amount));
+    }
+
+    public static MutableComponent computation(long amount) {
+        return FormattingUtil.prepend("common.gtceu.cwu", FormattingUtil.formatNumbers(amount));
+    }
+
+    public static MutableComponent computationPerTick(long amount) {
+        return FormattingUtil.prepend("common.gtceu.cwu_per_tick", FormattingUtil.formatNumbers(amount));
     }
 
     /**
-     * Creates a max voltage tooltip in the format {@code Max Voltage [IN/OUT]: [tier EU/t] EU/t ([tier name])}<br>
-     * Colour formatting is applied to the label & tier name.
-     *
-     * @param io   The voltage IO. Can be import/export/both.
-     * @param tier The voltage tier.
+     * Common tooltips used for machine stats, cover stats, etc
      */
-    public static MutableComponent maxVoltage(IO io, int tier) {
-        var key = "common.gtceu.tooltip.max_voltage_" + io.name().toLowerCase();
+    public static class Tooltips {
 
-        return Component.empty()
-                .append(Component.translatable(key).withStyle(ChatFormatting.GREEN))
-                .append(FormattingUtil.prepend("common.gtceu.eu_per_tick",
-                        FormattingUtil.formatNumbers(GTValues.VEX[tier])))
-                .append(FormattingUtil.wrap(GTValues.VNC[tier], " (", ")"));
-    }
+        // Energy
 
-    /**
-     * Creates an amperage tooltip in the format {@code Amperage [IN/OUT]: [amps]A}<br>
-     * Colour formatting is applied to the label.
-     *
-     * @param io   The voltage IO. Can be import/export/both.
-     * @param amps The number of amps.
-     */
-    public static MutableComponent amperage(IO io, long amps) {
-        var key = "common.gtceu.tooltip.amperage_" + io.name().toLowerCase();
+        /**
+         * Creates a voltage tooltip in the format {@code Voltage [IN/OUT]: [tier EU/t] EU/t ([tier name])}<br>
+         * Colour formatting is applied to the label & tier name.
+         *
+         * @param io   The voltage IO. Can be import/export/both.
+         * @param tier The voltage tier.
+         */
+        public static MutableComponent voltage(IO io, int tier) {
+            var key = "common.gtceu.tooltip.voltage_" + io.name().toLowerCase();
 
-        return Component.empty()
-                .append(Component.translatable(key).withStyle(ChatFormatting.YELLOW))
-                .append(Component.literal(String.valueOf(amps))
-                        .append(Component.translatable("common.gtceu.amperage")));
-    }
-
-    /**
-     * Creates an amperage limit tooltip in the format {@code Amperage [IN/OUT] up to: [amps]A}<br>
-     * Colour formatting is applied to the label.
-     *
-     * @param io   The voltage IO. Can be import/export/both.
-     * @param amps The number of amps.
-     */
-    public static MutableComponent amperageUpTo(IO io, long amps) {
-        var key = "common.gtceu.tooltip.amperage_up_to_" + io.name().toLowerCase();
-
-        return Component.empty()
-                .append(Component.translatable(key).withStyle(ChatFormatting.YELLOW))
-                .append(Component.literal(String.valueOf(amps))
-                        .append(Component.translatable("common.gtceu.amperage")));
-    }
-
-    /**
-     * Creates an energy capacity tooltip in the format {@code Energy Capacity: [eu]}<br>
-     * Colour formatting is applied to the label.
-     *
-     * @param eu The EU value.
-     */
-    public static MutableComponent energyCapacity(long eu) {
-        return Component.empty()
-                .append(Component.translatable("common.gtceu.energy_capacity").withStyle(ChatFormatting.RED))
-                .append(FormattingUtil.prepend("common.gtceu.eu", FormattingUtil.formatNumbers(eu)));
-    }
-
-    /// Item Storage / Capacity
-
-    /**
-     * Creates an item slot capacity tooltip in the format {@code Item Slots: [slots]}<br>
-     * Colour formatting is applied to the label.
-     *
-     * @param slots The number of slots.
-     */
-    public static MutableComponent itemSlots(int slots) {
-        return Component.empty().append(Component.translatable("common.gtceu.item_slots")
-                .withStyle(ChatFormatting.GOLD))
-                .append(Component.literal(String.valueOf(slots)));
-    }
-
-    /**
-     * Creates an item capacity tooltip in the format {@code Item Capacity: [capacity]}<br>
-     * Colour formatting is applied to the label.
-     *
-     * @param capacity The item capacity.
-     */
-    public static MutableComponent itemCapacity(long capacity) {
-        return Component.empty().append(Component.translatable("common.gtceu.item_capacity")
-                .withStyle(ChatFormatting.GOLD))
-                .append(Component.literal(String.valueOf(capacity)));
-    }
-
-    /**
-     * Creates an item stored tooltip in the format {@code Item Stored: [item name], [count] items}<br>
-     * Colour formatting is applied to the label.
-     *
-     * @param stack The stored stack.
-     */
-    public static MutableComponent itemStored(ItemStack stack) {
-        return Component.empty().append(Component.translatable("common.gtceu.item_stored")
-                .withStyle(ChatFormatting.LIGHT_PURPLE))
-                .append(stack.getDisplayName())
-                .append(GTCommonComponents.COMMA_SPACE)
-                .append(Component.translatable("common.gtceu.tooltip.item_stored",
-                        FormattingUtil.formatNumbers(stack.getCount())));
-    }
-
-    /**
-     * Creates an item stored tooltip in the format {@code Item Stored: [item name], [count] items}<br>
-     * Colour formatting is applied to the label.
-     *
-     * @param item   The stored item.
-     * @param amount The amount of items stored.
-     */
-    public static MutableComponent itemStored(Item item, long amount) {
-        return Component.empty().append(Component.translatable("common.gtceu.item_stored")
-                .withStyle(ChatFormatting.LIGHT_PURPLE))
-                .append(item.getDefaultInstance().getDisplayName())
-                .append(GTCommonComponents.COMMA_SPACE)
-                .append(Component.translatable("common.gtceu.tooltip.item_stored",
-                        FormattingUtil.formatNumbers(amount)));
-    }
-
-    public static MutableComponent itemTransferRate(int items) {
-        String itemStr = items > 64 ? FormattingUtil.formatNumber2Places((double) items / 64) : String.valueOf(items);
-
-        var rateKey = items > 64 ? "common.gtceu.stacks_per_sec" : "common.gtceu.items_per_sec";
-
-        return Component.empty()
-                .append(Component.translatable("common.gtceu.transfer_rate").withStyle(ChatFormatting.AQUA))
-                .append(CommonComponents.SPACE)
-                .append(FormattingUtil.prepend(rateKey, itemStr));
-    }
-
-    /// Fluid Storage / Capacity
-
-    /**
-     * Creates a fluid capacity tooltip in the format {@code Fluid Capacity: [capacity] mB}<br>
-     * Colour formatting is applied to the label.
-     *
-     * @param capacityMillibuckets The capacity in mB.
-     */
-    public static MutableComponent fluidStorageCapacity(long capacityMillibuckets) {
-        return fluidStorageCapacity(capacityMillibuckets, 1);
-    }
-
-    /**
-     * Creates a fluid capacity tooltip in the format {@code Fluid Capacity: [capacity] mB}<br>
-     * For multiple tanks, the format is {@code Fluid Capacity: [tanks] tanks, [capacity] mB each}
-     * Colour formatting is applied to the label.
-     *
-     * @param capacityMillibuckets The capacity in mB.
-     */
-    public static MutableComponent fluidStorageCapacity(long capacityMillibuckets, int tanks) {
-        MutableComponent comp = Component.translatable("common.gtceu.fluid_capacity").withStyle(ChatFormatting.BLUE);
-
-        if (tanks == 1) {
-            return Component.empty().append(comp).append(FormattingUtil.prepend("common.gtceu.millibucket",
-                    FormattingUtil.formatNumbers(capacityMillibuckets)));
-        } else {
-            return Component.empty().append(comp)
-                    .append(Component.translatable("common.gtceu.tooltip.fluid_storage_capacity_mult",
-                            tanks, FormattingUtil.formatNumbers(capacityMillibuckets)));
+            return Component.empty()
+                    .append(Component.translatable(key).withStyle(ChatFormatting.GREEN))
+                    .append(euPerTick(GTValues.VEX[tier]).withStyle(ChatFormatting.WHITE))
+                    .append(CommonComponents.SPACE)
+                    .append(FormattingUtil.wrap(GTValues.VNC[tier], "(", ")"));
         }
-    }
 
-    /**
-     * Creates a fluid stored tooltip in the format {@code Fluid Stored: [fluid name], [count] mB}<br>
-     * Colour formatting is applied to the label.
-     *
-     * @param stack The stored fluid stack.
-     */
-    public static MutableComponent fluidStored(FluidStack stack) {
-        return Component.empty().append(Component.translatable("common.gtceu.fluid_stored")
-                .withStyle(ChatFormatting.DARK_GREEN))
-                .append(stack.getDisplayName())
-                .append(GTCommonComponents.COMMA_SPACE)
-                .append(FormattingUtil.prepend("common.gtceu.millibucket",
-                        FormattingUtil.formatNumbers(stack.getAmount())));
-    }
+        /**
+         * Creates a max voltage tooltip in the format {@code Max Voltage [IN/OUT]: [tier EU/t] EU/t ([tier name])}<br>
+         * Colour formatting is applied to the label & tier name.
+         *
+         * @param io   The voltage IO. Can be import/export/both.
+         * @param tier The voltage tier.
+         */
+        public static MutableComponent maxVoltage(IO io, int tier) {
+            var key = "common.gtceu.tooltip.max_voltage_" + io.name().toLowerCase();
 
-    /**
-     * Creates a fluid stored tooltip in the format {@code Fluid Stored: [fluid name], [count] mB}<br>
-     * Colour formatting is applied to the label.
-     *
-     * @param fluid  The stored fluid.
-     * @param amount The stored amount.
-     */
-    public static MutableComponent fluidStored(Fluid fluid, long amount) {
-        return Component.empty().append(Component.translatable("common.gtceu.fluid_stored")
-                .withStyle(ChatFormatting.DARK_GREEN))
-                .append(new FluidStack(fluid, 1).getDisplayName())
-                .append(GTCommonComponents.COMMA_SPACE)
-                .append(FormattingUtil.prepend("common.gtceu.millibucket",
-                        FormattingUtil.formatNumbers(amount)));
-    }
+            return Component.empty()
+                    .append(Component.translatable(key).withStyle(ChatFormatting.GREEN))
+                    .append(euPerTick(GTValues.VEX[tier]).withStyle(ChatFormatting.WHITE))
+                    .append(FormattingUtil.wrap(GTValues.VNC[tier], " (", ")"));
+        }
 
-    public static MutableComponent fluidTransferRate(int mb) {
-        return Component.empty()
-                .append(Component.translatable("common.gtceu.transfer_rate").withStyle(ChatFormatting.AQUA))
-                .append(FormattingUtil.prepend("common.gtceu.millibucket", FormattingUtil.formatNumbers(mb)));
+        /**
+         * Creates an amperage tooltip in the format {@code Amperage [IN/OUT]: [amps]A}<br>
+         * Colour formatting is applied to the label.
+         *
+         * @param io       The voltage IO. Can be import/export/both.
+         * @param amperage The number of amps.
+         */
+        public static MutableComponent amperage(IO io, long amperage) {
+            var key = "common.gtceu.tooltip.amperage_" + io.name().toLowerCase();
+
+            return Component.empty()
+                    .append(Component.translatable(key).withStyle(ChatFormatting.YELLOW))
+                    .append(amps(amperage).withStyle(ChatFormatting.WHITE));
+        }
+
+        /**
+         * Creates an amperage limit tooltip in the format {@code Amperage [IN/OUT] up to: [amps]A}<br>
+         * Colour formatting is applied to the label.
+         *
+         * @param io       The voltage IO. Can be import/export/both.
+         * @param amperage The number of amps.
+         */
+        public static MutableComponent amperageUpTo(IO io, long amperage) {
+            var key = "common.gtceu.tooltip.amperage_up_to_" + io.name().toLowerCase();
+
+            return Component.empty()
+                    .append(Component.translatable(key).withStyle(ChatFormatting.YELLOW))
+                    .append(amps(amperage).withStyle(ChatFormatting.WHITE));
+        }
+
+        /**
+         * Creates an energy capacity tooltip in the format {@code Energy Capacity: [eu]}<br>
+         * Colour formatting is applied to the label.
+         *
+         * @param eu The EU value.
+         */
+        public static MutableComponent energyCapacity(long eu) {
+            return Component.empty()
+                    .append(Component.translatable("common.gtceu.energy_capacity").withStyle(ChatFormatting.RED))
+                    .append(eu(eu).withStyle(ChatFormatting.WHITE));
+        }
+
+        /// Item Storage / Capacity
+
+        /**
+         * Creates an item slot capacity tooltip in the format {@code Item Slots: [slots]}<br>
+         * Colour formatting is applied to the label.
+         *
+         * @param slots The number of slots.
+         */
+        public static MutableComponent itemSlots(int slots) {
+            return Component.empty().append(Component.translatable("common.gtceu.item_slots")
+                    .withStyle(ChatFormatting.GOLD))
+                    .append(Component.literal(FormattingUtil.formatNumbers(slots)).withStyle(ChatFormatting.WHITE));
+        }
+
+        /**
+         * Creates an item capacity tooltip in the format {@code Item Capacity: [capacity]}<br>
+         * Colour formatting is applied to the label.
+         *
+         * @param capacity The item capacity.
+         */
+        public static MutableComponent itemCapacity(long capacity) {
+            return Component.empty().append(Component.translatable("common.gtceu.item_capacity")
+                    .withStyle(ChatFormatting.GOLD))
+                    .append(Component.literal(FormattingUtil.formatNumbers(capacity)).withStyle(ChatFormatting.WHITE));
+        }
+
+        /**
+         * Creates an item stored tooltip in the format {@code Item Stored: [item name], [count] items}<br>
+         * Colour formatting is applied to the label.
+         *
+         * @param stack The stored stack.
+         */
+        public static MutableComponent itemStored(ItemStack stack) {
+            return Component.empty().append(Component.translatable("common.gtceu.item_stored")
+                    .withStyle(ChatFormatting.LIGHT_PURPLE))
+                    .append(stack.getDisplayName())
+                    .append(GTCommonComponents.COMMA_SPACE)
+                    .append(Component.translatable("common.gtceu.tooltip.item_stored",
+                            FormattingUtil.formatNumbers(stack.getCount())));
+        }
+
+        /**
+         * Creates an item stored tooltip in the format {@code Item Stored: [item name], [count] items}<br>
+         * Colour formatting is applied to the label.
+         *
+         * @param item   The stored item.
+         * @param amount The amount of items stored.
+         */
+        public static MutableComponent itemStored(Item item, long amount) {
+            return Component.empty().append(Component.translatable("common.gtceu.item_stored")
+                    .withStyle(ChatFormatting.LIGHT_PURPLE))
+                    .append(item.getDefaultInstance().getDisplayName())
+                    .append(GTCommonComponents.COMMA_SPACE)
+                    .append(Component.translatable("common.gtceu.tooltip.item_stored",
+                            FormattingUtil.formatNumbers(amount)));
+        }
+
+        public static MutableComponent itemTransferRate(int items) {
+            String itemStr = items > 64 ? FormattingUtil.formatNumber2Places((double) items / 64) : String.valueOf(items);
+
+            var rateKey = items > 64 ? "common.gtceu.stacks_per_sec" : "common.gtceu.items_per_sec";
+
+            return Component.empty()
+                    .append(Component.translatable("common.gtceu.transfer_rate").withStyle(ChatFormatting.AQUA))
+                    .append(FormattingUtil.prepend(rateKey, itemStr).withStyle(ChatFormatting.WHITE));
+        }
+
+        /// Fluid Storage / Capacity
+
+        /**
+         * Creates a fluid capacity tooltip in the format {@code Fluid Capacity: [capacity] mB}<br>
+         * Colour formatting is applied to the label.
+         *
+         * @param capacityMillibuckets The capacity in mB.
+         */
+        public static MutableComponent fluidStorageCapacity(long capacityMillibuckets) {
+            return fluidStorageCapacity(capacityMillibuckets, 1);
+        }
+
+        /**
+         * Creates a fluid capacity tooltip in the format {@code Fluid Capacity: [capacity] mB}<br>
+         * For multiple tanks, the format is {@code Fluid Capacity: [tanks] tanks, [capacity] mB each}
+         * Colour formatting is applied to the label.
+         *
+         * @param capacityMillibuckets The capacity in mB.
+         */
+        public static MutableComponent fluidStorageCapacity(long capacityMillibuckets, int tanks) {
+            MutableComponent comp = Component.translatable("common.gtceu.fluid_capacity").withStyle(ChatFormatting.BLUE);
+
+            if (tanks == 1) {
+                return Component.empty().append(comp).append(milibuckets(capacityMillibuckets).withStyle(ChatFormatting.WHITE));
+            } else {
+                return Component.empty().append(comp)
+                        .append(Component.translatable("common.gtceu.tooltip.fluid_storage_capacity_mult",
+                                tanks, FormattingUtil.formatNumbers(capacityMillibuckets)));
+            }
+        }
+
+        /**
+         * Creates a fluid stored tooltip in the format {@code Fluid Stored: [fluid name], [count] mB}<br>
+         * Colour formatting is applied to the label.
+         *
+         * @param stack The stored fluid stack.
+         */
+        public static MutableComponent fluidStored(FluidStack stack) {
+            return Component.empty().append(Component.translatable("common.gtceu.fluid_stored")
+                    .withStyle(ChatFormatting.DARK_GREEN))
+                    .append(stack.getDisplayName())
+                    .append(GTCommonComponents.COMMA_SPACE)
+                    .append(milibuckets(stack.getAmount()).withStyle(ChatFormatting.WHITE));
+        }
+
+        /**
+         * Creates a fluid stored tooltip in the format {@code Fluid Stored: [fluid name], [count] mB}<br>
+         * Colour formatting is applied to the label.
+         *
+         * @param fluid  The stored fluid.
+         * @param amount The stored amount.
+         */
+        public static MutableComponent fluidStored(Fluid fluid, long amount) {
+            return Component.empty().append(Component.translatable("common.gtceu.fluid_stored")
+                    .withStyle(ChatFormatting.DARK_GREEN))
+                    .append(new FluidStack(fluid, 1).getDisplayName())
+                    .append(GTCommonComponents.COMMA_SPACE)
+                    .append(milibuckets(amount).withStyle(ChatFormatting.WHITE));
+        }
+
+        public static MutableComponent fluidTransferRate(int mb) {
+            return Component.empty()
+                    .append(Component.translatable("common.gtceu.transfer_rate").withStyle(ChatFormatting.AQUA))
+                    .append(milibuckets(mb).withStyle(ChatFormatting.WHITE));
+        }
     }
 }

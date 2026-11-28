@@ -15,10 +15,10 @@ public class ItemLang {
         provider.add("item.gtceu.battery.charge_detailed", "%s/%s EU - Tier %s (%s/%s remaining)");
 
         // Cover Tooltips
-        provider.add("item.gtceu.electric.pump.tooltip", "§7Transfers §fFluids§7 at specific rates as §fCover§7.");
-        provider.add("item.gtceu.fluid.regulator.tooltip", "§7Limits §fFluids§7 to specific quantities as §fCover§7.");
-        provider.add("item.gtceu.conveyor.module.tooltip", "§7Transfers §fItems§7 at specific rates as §fCover§7.");
-        provider.add("item.gtceu.robot.arm.tooltip", "§7Limits §fItems§7 to specific quantities as §fCover§7.");
+        provider.add("item.gtceu.electric.pump.tooltip", "Transfers §fFluids§r at specific rates as §fCover§r.");
+        provider.add("item.gtceu.fluid.regulator.tooltip", "Limits §fFluids§r to specific quantities as §fCover§r.");
+        provider.add("item.gtceu.conveyor.module.tooltip", "Transfers §fItems§r at specific rates as §fCover§r.");
+        provider.add("item.gtceu.robot.arm.tooltip", "Limits §fItems§r to specific quantities as §fCover§r.");
 
         // Programmed Circuit
         provider.add("item.gtceu.circuit.integrated.gui", "Programmed Circuit Configuration");
@@ -28,12 +28,13 @@ public class ItemLang {
         provider.add("item.gtceu.turbine_rotor.tooltip", "Turbine Rotors for your power station");
 
         provider.add("item.gtceu.battery_hull.tooltip", "An empty %s Battery Hull");
-        provider.addMultiline("item.gtceu.solar_panel.tooltip",
-                "May the Sun be with you.\nProduces §fEnergy§r from the §eSun§r as §fCover§r");
+        provider.addMultiLang("item.gtceu.solar_panel.tooltip",
+                "May the Sun be with you.",
+                "Produces §fEnergy§r from the §eSun§r as §fCover§r");
 
         // General Electric Tools
-        provider.add("item.gtceu.electric.tooltip", "%d/%d EU - Tier %s");
-        provider.add("item.gtceu.electric.stored", "%d/%d EU (%s)");
+        provider.add("item.gtceu.electric.tooltip", "%s/%s EU - Tier %s");
+        provider.add("item.gtceu.electric.stored", "%s/%s EU (%s)");
         provider.add("item.electric.discharge_mode.enabled", "Discharge Mode Enabled");
         provider.add("item.electric.discharge_mode.disabled", "Discharge Mode Disabled");
         provider.add("item.electric.discharge_mode.tooltip", "Use while sneaking to toggle discharge mode");
@@ -47,7 +48,7 @@ public class ItemLang {
         provider.add("item.gtceu.behavior.lighter.tooltip.description", "Can light things on fire");
         provider.add("item.gtceu.behavior.lighter.tooltip.usage", "Shift-right click to open/close");
         provider.add("item.gtceu.behavior.lighter.fluid.tooltip", "Can light things on fire with Butane or Propane");
-        provider.add("item.gtceu.behavior.lighter.uses", "Remaining uses: %d");
+        provider.add("item.gtceu.behavior.lighter.uses", "Remaining uses: %s");
 
         provider.add("item.gtceu.behavior.toggle_energy.tooltip", "Use to toggle mode");
         provider.add("item.gtceu.behavior.hammer", "Turns on and off Muffling for Machines (by hitting them)");
@@ -80,12 +81,12 @@ public class ItemLang {
         provider.add("item.gtceu.behavior.spray_paint.green.tooltip", "Can paint things in Green");
         provider.add("item.gtceu.behavior.spray_paint.red.tooltip", "Can paint things in Red");
         provider.add("item.gtceu.behavior.spray_paint.black.tooltip", "Can paint things in Black");
-        provider.add("item.gtceu.behavior.spray_paint.uses", "Remaining Uses: %d");
+        provider.add("item.gtceu.behavior.spray_paint.uses", "Remaining Uses: %s");
 
         // Copy/Paste Configuration
         provider.add("item.gtceu.behavior.memory_card.tooltip.copy",
-                "§7Sneak + R-Click to copy configuration, or clear stored data if a block other than a machine or pipe is targeted.");
-        provider.add("item.gtceu.behavior.memory_card.tooltip.paste", "§7R-Click to paste machine configuration");
+                "Sneak + R-Click to copy configuration, or clear stored data if a block other than a machine or pipe is targeted.");
+        provider.add("item.gtceu.behavior.memory_card.tooltip.paste", "R-Click to paste machine configuration");
         provider.add("item.gtceu.behavior.memory_card.tooltip.view_stored", "§8<Sneak to view stored configuration>");
         provider.add("item.gtceu.behavior.memory_card.client_msg.cleared", "Stored configuration cleared");
         provider.add("item.gtceu.behavior.memory_card.client_msg.copied", "Copied machine configuration");
@@ -201,6 +202,6 @@ public class ItemLang {
         provider.add("tooltip.gtceu.spoilage.spoil_imminent", "Imminent");
         provider.add("tooltip.gtceu.spoilage.spoil_time_total", "Total spoil time: %s");
         provider.add("tooltip.gtceu.spoilage.spoils_into", "Spoils into: %s");
-        provider.add("tooltip.gtceu.spoilage.creation_tick", "Created on overworld tick %d");
+        provider.add("tooltip.gtceu.spoilage.creation_tick", "Created on overworld tick %s");
     }
 }

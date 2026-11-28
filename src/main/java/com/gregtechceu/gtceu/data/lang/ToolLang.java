@@ -69,8 +69,9 @@ public class ToolLang {
 
         // Tool Tooltips
         provider.add("item.gtceu.tool.hammer.tooltip", "§8Crushes Blocks when harvesting them");
-        provider.addMultiline("item.gtceu.tool.mallet.tooltip",
-                "§8Sneak to Pause Machine After Current Recipe.\n§8Stops/Starts Machines");
+        provider.addMultiLang("item.gtceu.tool.mallet.tooltip",
+                "§8Sneak to Pause Machine After Current Recipe.",
+                "§8Stops/Starts Machines");
         provider.add("item.gtceu.tool.wrench.tooltip", "§8Hold left click to dismantle Machines");
         provider.add("item.gtceu.tool.crowbar.tooltip", "§8Dismounts Covers");
         provider.add("item.gtceu.tool.screwdriver.tooltip", "§8Adjusts Covers and Machines");
@@ -108,10 +109,10 @@ public class ToolLang {
         provider.add("tool.gtceu.tooltip.usable_as", "Usable as: %s");
 
         // Rotors
-        provider.add("item.gtceu.turbine_rotor.tooltip.primary_material", "§fMaterial: §e%s");
-        provider.add("item.gtceu.turbine_rotor.tooltip.durability", "§fDurability: §a%d / %d");
-        provider.add("item.gtceu.turbine_rotor.tooltip.efficiency", "Turbine Efficiency: §9%d%%");
-        provider.add("item.gtceu.turbine_rotor.tooltip.power", "Turbine Power: §9%d%%");
+        provider.add("item.gtceu.turbine_rotor.tooltip.primary_material", "§fMaterial:§e %s");
+        provider.add("item.gtceu.turbine_rotor.tooltip.durability", "§fDurability: §a%s / %s");
+        provider.add("item.gtceu.turbine_rotor.tooltip.efficiency", "Turbine Efficiency: §9%s%%");
+        provider.add("item.gtceu.turbine_rotor.tooltip.power", "Turbine Power: §9%s%%");
 
         // AOE
         provider.add("gui.gtceu.tool_aoe.rows", "Rows");

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.TooltipFlag;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.drawable.UITexture;
@@ -87,7 +88,7 @@ public class MachineUIPanel extends ModularPanel<MachineUIPanel> {
                 .child(GTGuiTextures.INFO.asWidget().tooltip(t -> {
                     List<Component> lines = new ArrayList<>();
                     lines.add(machine.getDefinition().asStack().getHoverName());
-                    machine.getDefinition().getTooltipBuilder().accept(machine.getDefinition().asStack(), lines);
+                    machine.getDefinition().getTooltip().addTooltips(machine.getDefinition().asStack(), null, lines, TooltipFlag.NORMAL);
                     lines.forEach(t::addLine);
                 })));
 

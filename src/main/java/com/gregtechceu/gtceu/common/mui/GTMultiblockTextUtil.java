@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -211,10 +212,7 @@ public class GTMultiblockTextUtil {
 
     public static RichTooltip buildEutHoverTooltip(LongSyncValue energyUsage, boolean isMaxAvailable) {
         return new RichTooltip().autoUpdate(true).tooltipBuilder(builder -> {
-            String energyFormatted = FormattingUtil.formatNumbers(energyUsage.getLongValue());
-
-            builder.addLine(FormattingUtil.prepend("common.gtceu.eu_per_tick",
-                    energyFormatted));
+            builder.addLine(GTCommonComponents.euPerTick(energyUsage.getLongValue()));
             if (isMaxAvailable)
                 builder.addLine(Component.translatable("gui.gtceu.machine.max_eut_hover")
                         .withStyle(ChatFormatting.GRAY));

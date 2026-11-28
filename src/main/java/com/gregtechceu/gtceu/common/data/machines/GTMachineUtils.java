@@ -55,7 +55,7 @@ import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
-import com.gregtechceu.gtceu.utils.lang.LangUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCustomTooltip;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;
@@ -243,7 +243,7 @@ public class GTMachineUtils {
                             .tooltips(Component.translatable("machine.gtceu." + tooltip + ".tooltip"))
                             .allowCoverOnFront(true);
 
-                    builder.tooltips(GTCommonComponents.fluidStorageCapacity(
+                    builder.tooltips(GTCommonComponents.Tooltips.fluidStorageCapacity(
                             FluidHatchPartMachine.getTankCapacity(initialCapacity, tier), slots));
 
                     return builder.register();
@@ -253,7 +253,7 @@ public class GTMachineUtils {
 
     public static MachineDefinition[] registerTransformerMachines(GTRegistrate registrate, String langName,
                                                                   int baseAmp) {
-        return registerTieredMachines(registrate, "transformer_%da".formatted(baseAmp),
+        return registerTieredMachines(registrate, "transformer_%sa".formatted(baseAmp),
                 (holder, tier) -> new TransformerMachine(holder, tier, baseAmp),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
@@ -358,10 +358,10 @@ public class GTMachineUtils {
                                 VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
                                 batterySlotSize))
                         .tooltips(
-                                GTCommonComponents.itemSlots(batterySlotSize),
-                                GTCommonComponents.voltage(BOTH, tier),
-                                GTCommonComponents.amperageUpTo(IN, batterySlotSize * AMPS_PER_BATTERY_NORMAL),
-                                GTCommonComponents.amperageUpTo(OUT, batterySlotSize))
+                                GTCommonComponents.Tooltips.itemSlots(batterySlotSize),
+                                GTCommonComponents.Tooltips.voltage(BOTH, tier),
+                                GTCommonComponents.Tooltips.amperageUpTo(IN, batterySlotSize * AMPS_PER_BATTERY_NORMAL),
+                                GTCommonComponents.Tooltips.amperageUpTo(OUT, batterySlotSize))
                         .register(),
                 ALL_TIERS);
     }
@@ -377,9 +377,9 @@ public class GTMachineUtils {
                         .langValue("%s %sx Turbo Charger".formatted(
                                 VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
                                 itemSlotSize))
-                        .tooltips(GTCommonComponents.itemSlots(itemSlotSize),
-                                GTCommonComponents.voltage(IN, tier),
-                                GTCommonComponents.amperage(IN,
+                        .tooltips(GTCommonComponents.Tooltips.itemSlots(itemSlotSize),
+                                GTCommonComponents.Tooltips.voltage(IN, tier),
+                                GTCommonComponents.Tooltips.amperage(IN,
                                         itemSlotSize * BatteryBufferMachine.AMPS_PER_BATTERY_CHARGER))
                         .register(),
                 ALL_TIERS);
@@ -434,9 +434,9 @@ public class GTMachineUtils {
                                 Component.translatable("machine.gtceu.laser_hatch." + name + ".tooltip"),
                                 Component.translatable("machine.gtceu.laser_hatch.both.tooltip")
                                         .withStyle(ChatFormatting.RED),
-                                GTCommonComponents.voltage(io, tier),
-                                GTCommonComponents.amperage(IN, amperage),
-                                GTCommonComponents
+                                GTCommonComponents.Tooltips.voltage(io, tier),
+                                GTCommonComponents.Tooltips.amperage(IN, amperage),
+                                GTCommonComponents.Tooltips
                                         .energyCapacity(EnergyHatchPartMachine.getHatchEnergyCapacity(tier, amperage)),
                                 GTCommonComponents.PART_SHARING_DISABLED)
                         .abilities(ability)
@@ -455,7 +455,7 @@ public class GTMachineUtils {
                         info -> new CrateMachine(info, material, capacity, rowLength))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
-                .tooltips(GTCommonComponents.itemSlots(capacity))
+                .tooltips(GTCommonComponents.Tooltips.itemSlots(capacity))
                 .modelProperty(GTMachineModelProperties.IS_TAPED, false)
                 .model(GTMachineModels.createCrateModel(wooden))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
@@ -474,15 +474,18 @@ public class GTMachineUtils {
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .simpleModel(GTCEu.id("block/machine/template/drum/" + (wooden ? "wooden" : "metal") + "_drum"))
-                .tooltipBuilder((stack, list) -> {
-                    TANK_TOOLTIPS.accept(stack, list);
-                    if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
-                        FluidPipeProperties pipeprops = material.getProperty(PropertyKey.FLUID_PIPE);
-                        pipeprops.appendTooltips(list, false, true);
-                    }
+                .tooltip(t -> {
+                    t.tooltip(TANK_TOOLTIP);
+                    t.tooltip(Component.translatable("machine.gtceu.quantum_tank.tooltip"));
+                    t.tooltip(GTCommonComponents.Tooltips.fluidStorageCapacity(capacity));
+
+                    t.customTooltipBuilder((s, l, tooltips) -> {
+                        if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
+                            FluidPipeProperties pipeprops = material.getPropertyOrThrow(PropertyKey.FLUID_PIPE);
+                            pipeprops.appendTooltips(tooltips, false, true);
+                        }
+                    });
                 })
-                .tooltips(Component.translatable("machine.gtceu.quantum_tank.tooltip"),
-                        GTCommonComponents.fluidStorageCapacity(capacity))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .itemColor((s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .register();
@@ -506,9 +509,11 @@ public class GTMachineUtils {
                     .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_tank"))
                             .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createQuantumTankRender)))
                     .hasBER(true)
-                    .tooltipBuilder(TANK_TOOLTIPS)
-                    .tooltips(Component.translatable("machine.gtceu.quantum_tank.tooltip"),
-                            GTCommonComponents.fluidStorageCapacity(maxAmount))
+                    .tooltip(t -> {
+                        t.tooltip(TANK_TOOLTIP);
+                        t.tooltip(Component.translatable("machine.gtceu.quantum_tank.tooltip"));
+                        t.tooltip(GTCommonComponents.Tooltips.fluidStorageCapacity(maxAmount));
+                    })
                     .tier(tier)
                     .register();
             TANK_CAPACITY.put(register, maxAmount);
@@ -529,10 +534,12 @@ public class GTMachineUtils {
                                 .andThen(
                                         b -> b.addDynamicRenderer(DynamicRenderHelper::createQuantumChestRender)))
                         .hasBER(true)
-                        .tooltipBuilder(CHEST_TOOLTIPS)
-                        .tooltips(Component.translatable("machine.gtceu.quantum_chest.tooltip"),
-                                GTCommonComponents.itemCapacity(tier == MAX ? Long.MAX_VALUE :
-                                        4_000_000 * (long) Math.pow(2, tier - 1)))
+                        .tooltip(t -> {
+                            t.tooltip(CHEST_TOOLTIP);
+                            t.tooltip(Component.translatable("machine.gtceu.quantum_chest.tooltip"));
+                            t.tooltip(GTCommonComponents.Tooltips.itemCapacity(tier == MAX ? Long.MAX_VALUE :
+                                    4_000_000 * (long) Math.pow(2, tier - 1)));
+                        })
                         .register(),
                 tiers);
     }
@@ -553,7 +560,7 @@ public class GTMachineUtils {
                 .langValue(displayName)
                 .tooltips(
                         Component.translatable("machine.gtceu.multiblock.tank.tooltip"),
-                        GTCommonComponents.fluidStorageCapacity(capacity),
+                        GTCommonComponents.Tooltips.fluidStorageCapacity(capacity),
                         (filter != null) ? Component.translatable("tooltip.gtceu.fluid_pipe.max_temperature",
                                 FormattingUtil.formatTemperature(filter.getMaxFluidTemperature())) : null)
                 .rotationState(RotationState.ALL)
@@ -653,12 +660,12 @@ public class GTMachineUtils {
                         GTCEu.id("block/multiblock/generator/large_%s_boiler".formatted(name)))
                         .andThen(b -> b.addDynamicRenderer(() -> DynamicRenderHelper.makeBoilerPartRender(firebox, casing))))
                 .tooltips(
-                        Component.translatable("gui.gtceu.machine.large_boiler.max_temperature", maxTemperature + 274,
-                                maxTemperature),
+                        Component.translatable("machine.gtceu.large_boiler.info_tooltip",
+                                GTCommonComponents.temperature(maxTemperature + 274).withStyle(ChatFormatting.WHITE),
+                                GTCommonComponents.mbPerTick(maxTemperature).withStyle(ChatFormatting.WHITE)),
                         Component.translatable("gui.gtceu.machine.large_boiler.heat_time_tooltip",
-                                maxTemperature / heatSpeed / 20),
-                        Component.translatable("gui.gtceu.machine.large_boiler.explosion_tooltip")
-                                .withStyle(ChatFormatting.DARK_RED))
+                                GTCommonComponents.seconds(maxTemperature / heatSpeed / 20).withStyle(ChatFormatting.WHITE)),
+                        Component.translatable("gui.gtceu.machine.large_boiler.explosion_tooltip").withStyle(ChatFormatting.RED))
                 .register();
         // spotless:on
     }
@@ -703,15 +710,16 @@ public class GTMachineUtils {
                         () -> new ItemLike[] {
                                 ChemicalHelper.getItemOrThrow(TagPrefix.dustTiny, GTMaterials.Ash) })
                 .workableCasingModel(casingTexture, overlayModel)
-                .tooltips(
-                        Component.translatable("common.gtceu.tooltip.base_production_eut", V[tier]),
-                        Component.translatable("machine.gtceu.large_combustion_engine.tooltip.lubricant_use",
-                                FluidType.BUCKET_VOLUME),
-                        tier > EV ?
-                                Component.translatable("machine.gtceu.large_combustion_engine.tooltip.boost_extreme",
-                                        V[tier] * 4) :
-                                Component.translatable("machine.gtceu.large_combustion_engine.tooltip.boost_regular",
-                                        V[tier] * 3))
+                .tooltip(t -> {
+                    t.tooltip(Component.translatable("common.gtceu.tooltip.base_production", GTCommonComponents.euPerTick(V[tier])
+                            .withStyle(ChatFormatting.WHITE)));
+                    t.tooltip(Component.translatable("machine.gtceu.large_combustion_engine.tooltip.lubricant_use",
+                            GTCommonComponents.mbPerHour(FluidType.BUCKET_VOLUME).withStyle(ChatFormatting.WHITE)));
+                    var boostKey = tier > EV ? "machine.gtceu.large_combustion_engine.tooltip.boost_extreme" :
+                            "machine.gtceu.large_combustion_engine.tooltip.boost_regular";
+                    var boostEU = tier > EV ? V[tier] * 4 : V[tier] * 3;
+                    t.tooltip(Component.translatable(boostKey, GTCommonComponents.euPerTick(boostEU).withStyle(ChatFormatting.WHITE)));
+                })
                 .register();
     }
 
@@ -804,6 +812,10 @@ public class GTMachineUtils {
                 .addTooltips(Component.translatable("multiblock.gtceu.predicate.tier_must_match", VNC[tier]));
     }
 
+    public static final GTCustomTooltip.TooltipEntry DEFAULT_ENV_REQUIREMENT = new GTCustomTooltip.TooltipEntry(
+            defaultEnvironmentRequirement(),
+            s -> ConfigHolder.INSTANCE.gameplay.environmentalHazards);
+
     // Tooltips
     public static Component explosion() {
         if (ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion)
@@ -820,39 +832,35 @@ public class GTMachineUtils {
         return environmentRequirement(GTMedicalConditions.CARBON_MONOXIDE_POISONING);
     }
 
-    public static BiConsumer<ItemStack, List<Component>> TANK_TOOLTIPS = (stack, list) -> {
-        if (stack.hasTag()) {
-            String key = stack.getTag().contains("stored") ? "stored" : "Fluid";
-            FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement(key));
-            long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
-            if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
-            list.add(1, GTCommonComponents.fluidStored(stored.getFluid(), storedAmount));
-        }
-    };
+    public static final GTCustomTooltip.TooltipEntry TANK_TOOLTIP = new GTCustomTooltip.TooltipEntry(stack -> {
+        String key = stack.getOrCreateTag().contains("stored") ? "stored" : "Fluid";
+        FluidStack stored = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement(key));
+        long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
+        if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
+        return GTCommonComponents.Tooltips.fluidStored(stored.getFluid(), storedAmount);
+    }, ItemStack::hasTag);
 
-    public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
-        if (stack.hasTag()) {
-            ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
-            long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
-            list.add(1, GTCommonComponents.itemStored(itemStack.getItem(), storedAmount));
-        }
-    };
+    public static final GTCustomTooltip.TooltipEntry CHEST_TOOLTIP = new GTCustomTooltip.TooltipEntry(stack -> {
+        ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
+        long storedAmount = stack.getOrCreateTag().getLong("storedAmount");
+        return GTCommonComponents.Tooltips.itemStored(itemStack.getItem(), storedAmount);
+    }, ItemStack::hasTag);
 
     public static Component[] workableTiered(int tier, long energyCapacity, GTRecipeType recipeType,
                                              long tankCapacity, boolean input) {
         List<Component> tooltipComponents = new ArrayList<>();
-        tooltipComponents.add(GTCommonComponents.voltage(input ? IO.IN : IO.OUT, tier));
-        tooltipComponents.add(GTCommonComponents.energyCapacity(energyCapacity));
+        tooltipComponents.add(GTCommonComponents.Tooltips.voltage(input ? IO.IN : IO.OUT, tier));
+        tooltipComponents.add(GTCommonComponents.Tooltips.energyCapacity(energyCapacity));
         if (recipeType.getMaxInputs(FluidRecipeCapability.CAP) > 0 ||
                 recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0)
-            tooltipComponents.add(GTCommonComponents.fluidStorageCapacity(tankCapacity));
+            tooltipComponents.add(GTCommonComponents.Tooltips.fluidStorageCapacity(tankCapacity));
         return tooltipComponents.toArray(Component[]::new);
     }
 
     public static Component getAvailableRecipeMapTooltip(GTRecipeType... recipeTypes) {
         if (recipeTypes != null) {
             var components = Arrays.stream(recipeTypes)
-                    .map(s -> Component.translatable(s.getCategory().getLanguageKey()))
+                    .map(s -> Component.translatable(s.getCategory().getLanguageKey()).withStyle(ChatFormatting.YELLOW))
                     .collect(Component::empty, FormattingUtil::combineComponents,
                             FormattingUtil::combineComponents);
 
@@ -928,8 +936,7 @@ public class GTMachineUtils {
                             builder.recipeModifiers(GTRecipeModifiers.ENVIRONMENT_REQUIREMENT
                                     .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 100 * tier),
                                     GTRecipeModifiers.OC_NON_PERFECT)
-                                    .conditionalTooltip(defaultEnvironmentRequirement(),
-                                            ConfigHolder.INSTANCE.gameplay.environmentalHazards);
+                                    .tooltip().tooltip(DEFAULT_ENV_REQUIREMENT);
                         } else {
                             builder.recipeModifier(GTRecipeModifiers.OC_NON_PERFECT);
                         }
@@ -946,9 +953,7 @@ public class GTMachineUtils {
                         } else if (defaultTooltipLang != null) {
                             builder.tooltipLang(defaultTooltipLang);
                         }
-                        builder.tooltips(Arrays
-                                .stream(LangUtil.getSingleOrMultiLang(builder.id.toLanguageKey("machine", "tooltip")))
-                                .map(c -> c.withStyle(ChatFormatting.GRAY)).toList());
+                        builder.defaultTooltip();
 
                         builder.tooltips(workableTiered(tier, GTValues.V[tier] * 64, recipeType,
                                 tankScalingFunction.applyAsInt(tier), true));

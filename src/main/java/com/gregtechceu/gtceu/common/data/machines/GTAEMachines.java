@@ -102,6 +102,7 @@ public class GTAEMachines {
                     Component.translatable("machine.gtceu.me.export.tooltip"),
                     GTCommonComponents.PART_SHARING_ENABLED)
             .register();
+
     public static final MachineDefinition ME_PATTERN_BUFFER = REGISTRATE
             .machine("me_pattern_buffer", MEPatternBufferPartMachine::new)
             .tier(IV)
@@ -110,12 +111,13 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_buffer_hatch"))
             .langValue("ME Pattern Buffer")
-            .tooltipLang("§fAllows direct §6AE2 pattern storage §ffor GregTech Multiblocks.",
-                    "§fAE2 Patterns can utilize anything stored in the §6shared inventory §fwidget.",
-                    "§fLink §6Pattern Buffer Proxies §fwith a §bdatastick §fto link machines together!")
+            .tooltipLang("Allows direct §6AE2 pattern storage§r for GregTech Multiblocks.",
+                    "AE2 Patterns can utilize anything stored in the §6shared inventory§r widget.",
+                    "Link §6Pattern Buffer Proxies§r with a §bdatastick§r to link machines together!")
             .defaultTooltip()
             .tooltips(GTCommonComponents.PART_SHARING_ENABLED)
             .register();
+
     public static final MachineDefinition ME_PATTERN_BUFFER_PROXY = REGISTRATE
             .machine("me_pattern_buffer_proxy", MEPatternBufferProxyPartMachine::new)
             .tier(LuV)
@@ -124,9 +126,9 @@ public class GTAEMachines {
             .rotationState(RotationState.ALL)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_buffer_hatch_proxy"))
             .langValue("ME Pattern Buffer Proxy")
-            .tooltipLang("§fAllows linking many machines to a singular §6ME Pattern Buffer§f.",
-                    "§fAll connected proxies will share the patterns held within the §6original buffer§f.",
-                    "§fLet the factory grow!")
+            .tooltipLang("Allows linking many machines to a singular §6ME Pattern Buffer§r.",
+                    "All connected proxies will share the patterns held within the §6original buffer§r.",
+                    "Let the factory grow!")
             .defaultTooltip()
             .tooltips(GTCommonComponents.PART_SHARING_ENABLED)
             .register();

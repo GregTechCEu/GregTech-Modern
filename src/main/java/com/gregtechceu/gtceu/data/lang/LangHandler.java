@@ -10,7 +10,7 @@ public class LangHandler {
     /**
      * MC language formatting is moving towards using {@link MutableComponent#withStyle(Style)} instead of § codes, so
      * {@link MutableComponent#withStyle(Style)} should be used where possible.<br>
-     * Unformatted text must be in light gray - §7
+     *
      * Items must be in gold - §6
      * Fluids must be in blue - §9
      * Directions must be in yellow - §e

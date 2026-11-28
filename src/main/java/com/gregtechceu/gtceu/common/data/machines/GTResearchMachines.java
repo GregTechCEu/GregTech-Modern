@@ -24,9 +24,9 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.DataAccessHatchMachi
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalDataHatchMachine;
-import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
 import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 
@@ -52,8 +52,8 @@ public class GTResearchMachines {
             .appearanceBlock(ADVANCED_COMPUTER_CASING)
             .tooltipLang(
                     "More than just a Multiblock Scanner",
-                    "Used to scan onto §fData Orbs§7 and §fData Modules§7.",
-                    "Requires §fComputation§7 to work.",
+                    "Used to scan onto §fData Orbs§r and §fData Modules§r.",
+                    "Requires §fComputation§r to work.",
                     "Providing more Computation allows the recipe to run faster.")
             .defaultTooltip()
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
@@ -102,15 +102,15 @@ public class GTResearchMachines {
                     "Your Personal NAS",
                     "Bulk Data Storage. Transfer with Optical Cables.",
                     "Data Banks can be chained together.",
-                    "Uses §f%s EU/t§7 per Data/Optical Hatch normally.",
-                    "Uses §f%s EU/t§7 per Data/Optical Hatch when chained.")
+                    "Uses %s per Data/Optical Hatch normally.",
+                    "Uses %s per Data/Optical Hatch when chained.")
             .tooltips(Component.translatable("machine.gtceu.data_bank.tooltip.0"),
                     Component.translatable("machine.gtceu.data_bank.tooltip.1"),
                     Component.translatable("machine.gtceu.data_bank.tooltip.2"),
                     Component.translatable("machine.gtceu.data_bank.tooltip.3",
-                            FormattingUtil.formatNumbers(DataBankMachine.EUT_PER_HATCH)),
+                            GTCommonComponents.euPerTick(DataBankMachine.EUT_PER_HATCH).withStyle(ChatFormatting.WHITE)),
                     Component.translatable("machine.gtceu.data_bank.tooltip.4",
-                            FormattingUtil.formatNumbers(DataBankMachine.EUT_PER_HATCH_CHAINED)))
+                            GTCommonComponents.euPerTick(DataBankMachine.EUT_PER_HATCH_CHAINED).withStyle(ChatFormatting.WHITE)))
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("XDDDX", "XDDDX", "XDDDX")
                     .slice("XDDDX", "XAAAX", "XDDDX")
@@ -137,14 +137,14 @@ public class GTResearchMachines {
             .appearanceBlock(COMPUTER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .tooltipLang("Ethernet Hub",
-                    "Used to route and distribute §fComputation§7.",
-                    "Can combine any number of Computation §fReceivers§7 into any number of Computation §fTransmitters§7.",
-                    "Uses §f%s EU/t§7 per Computation Data Hatch.")
+                    "Used to route and distribute §fComputation§r.",
+                    "Can combine any number of Computation §fReceivers§r into any number of Computation §fTransmitters§r.",
+                    "Uses %s per Computation Data Hatch.")
             .tooltips(Component.translatable("machine.gtceu.network_switch.tooltip.0"),
                     Component.translatable("machine.gtceu.network_switch.tooltip.1"),
                     Component.translatable("machine.gtceu.network_switch.tooltip.2"),
                     Component.translatable("machine.gtceu.network_switch.tooltip.3",
-                            FormattingUtil.formatNumbers(NetworkSwitchMachine.EUT_PER_HATCH)))
+                            GTCommonComponents.euPerTick(NetworkSwitchMachine.EUT_PER_HATCH).withStyle(ChatFormatting.WHITE)))
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("XXX", "XXX", "XXX")
                     .slice("XXX", "XAX", "XXX")
@@ -170,8 +170,8 @@ public class GTResearchMachines {
             .appearanceBlock(COMPUTER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .tooltipLang("Just your average Supercomputer",
-                    "Used to generate §fComputation§7 (and heat).",
-                    "Requires HPCA components to generate §fCWU/t§7 (Compute Work Units).")
+                    "Used to generate §fComputation§r (and heat).",
+                    "Requires HPCA components to generate §fCWU/t§r (Compute Work Units).")
             .defaultTooltip()
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("AA", "CC", "CC", "CC", "AA")
@@ -292,9 +292,12 @@ public class GTResearchMachines {
             "hpca_computation_component", "HPCA Computation Component",
             GTMachineInstanceFactories.HPCA_COMPUTATION, "computation", false)
             .tooltips(
-                    Component.translatable("machine.gtceu.hpca_component.tooltip.upkeep_eut", GTValues.VA[GTValues.EV]),
-                    Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut", GTValues.VA[GTValues.LuV]),
-                    Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cwut", 4),
+                    Component.translatable("machine.gtceu.hpca_component.tooltip.upkeep_eut",
+                            GTCommonComponents.euPerTick(GTValues.VA[GTValues.EV]).withStyle(ChatFormatting.WHITE)),
+                    Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut",
+                            GTCommonComponents.euPerTick(GTValues.VA[GTValues.LuV]).withStyle(ChatFormatting.WHITE)),
+                    Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cwut",
+                            GTCommonComponents.computationPerTick(4).withStyle(ChatFormatting.WHITE)),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cooling", 2),
                     OVERHEAT_TOOLTIP,
                     GTCommonComponents.PART_SHARING_DISABLED)
@@ -303,9 +306,12 @@ public class GTResearchMachines {
             "hpca_advanced_computation_component", "HPCA Advanced Computation Component",
             GTMachineInstanceFactories.HPCA_COMPUTATION_ADVANCED, "advanced_computation", true)
             .tooltips(
-                    Component.translatable("machine.gtceu.hpca_component.tooltip.upkeep_eut", GTValues.VA[GTValues.IV]),
-                    Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut", GTValues.VA[GTValues.ZPM]),
-                    Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cwut", 16),
+                    Component.translatable("machine.gtceu.hpca_component.tooltip.upkeep_eut",
+                            GTCommonComponents.euPerTick(GTValues.VA[IV]).withStyle(ChatFormatting.WHITE)),
+                    Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut",
+                            GTCommonComponents.euPerTick(GTValues.VA[ZPM]).withStyle(ChatFormatting.WHITE)),
+                    Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cwut",
+                            GTCommonComponents.computationPerTick(16).withStyle(ChatFormatting.WHITE)),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.computation_cooling", 4),
                     OVERHEAT_TOOLTIP,
                     GTCommonComponents.PART_SHARING_DISABLED)
@@ -320,10 +326,12 @@ public class GTResearchMachines {
     public static final MachineDefinition HPCA_ACTIVE_COOLER_COMPONENT = registerHPCAPart(
             "hpca_active_cooler_component", "HPCA Active Cooling Component",
             GTMachineInstanceFactories.HPCA_COOLER_ADVANCED, "active_cooler", true)
-            .tooltips(Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut", GTValues.VA[GTValues.IV]),
+            .tooltips(Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut",
+                    GTCommonComponents.euPerTick(GTValues.VA[IV]).withStyle(ChatFormatting.WHITE)),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.cooler_active"),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.cooler_active_coolant",
-                            8, GTMaterials.PCBCoolant.getLocalizedName()),
+                            GTCommonComponents.mbPerTick(8).withStyle(ChatFormatting.WHITE),
+                            GTMaterials.PCBCoolant.getLocalizedName()).withStyle(ChatFormatting.WHITE),
                     Component.translatable("machine.gtceu.hpca_component.tooltip.cooler_cooling", 2),
                     GTCommonComponents.PART_SHARING_DISABLED)
             .register();
@@ -331,7 +339,8 @@ public class GTResearchMachines {
             "hpca_bridge_component", "HPCA Bridge Component",
             GTMachineInstanceFactories.HPCA_BRIDGE, "bridge", false)
             .tooltips(Component.translatable("machine.gtceu.hpca_component.tooltip.bridge"),
-                    Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut", GTValues.VA[GTValues.IV]),
+                    Component.translatable("machine.gtceu.hpca_component.tooltip.max_eut",
+                            GTCommonComponents.euPerTick(GTValues.VA[IV]).withStyle(ChatFormatting.WHITE)),
                     GTCommonComponents.PART_SHARING_DISABLED)
             .register();
 

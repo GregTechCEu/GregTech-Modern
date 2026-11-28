@@ -27,10 +27,10 @@ public class CommonLang {
 
         // Voiding Mode
         provider.add("common.gtceu.voiding_mode", "Voiding Mode:");
-        provider.add("common.gtceu.voiding_mode.item", "§7Voiding §6Items");
-        provider.add("common.gtceu.voiding_mode.fluid", "§7Voiding §9Fluids");
-        provider.add("common.gtceu.voiding_mode.all", "§7Voiding §cAll");
-        provider.add("common.gtceu.voiding_mode.none", "§7Voiding Nothing");
+        provider.add("common.gtceu.voiding_mode.item", "Voiding §6Items");
+        provider.add("common.gtceu.voiding_mode.fluid", "Voiding §9Fluids");
+        provider.add("common.gtceu.voiding_mode.all", "Voiding §cAll");
+        provider.add("common.gtceu.voiding_mode.none", "Voiding Nothing");
     }
 
     public static void generateCommonLang(GTLangProvider provider) {
@@ -63,11 +63,16 @@ public class CommonLang {
         provider.add("common.gtceu.millibucket", "mB");
         provider.add("common.gtceu.bucket", "B");
         provider.add("common.gtceu.mb_per_tick", "mB/t");
+        provider.add("common.gtceu.mb_per_sec", "mB/s");
+        provider.add("common.gtceu.mb_per_hour", "mB/h");
 
         provider.add("common.gtceu.amperage", "A");
         provider.add("common.gtceu.eu", "EU");
         provider.add("common.gtceu.eu_per_tick", "EU/t");
         provider.add("common.gtceu.eu_per_sec", "EU/s");
+
+        provider.add("common.gtceu.cwu", "CWU");
+        provider.add("common.gtceu.cwu_per_tick", "CWU/t");
 
         provider.add("common.gtceu.items_per_sec", "items/s");
         provider.add("common.gtceu.stacks_per_sec", "stacks/s");
@@ -97,29 +102,30 @@ public class CommonLang {
         provider.add("common.gtceu.tooltip.amperage_up_to_both", "Amperage IN/OUT up to: ");
 
         // EU Storage
-        provider.add("common.gtceu.tooltip.energy_storage_capacity", "§cEnergy Capacity: §r%d EU");
+        provider.add("common.gtceu.tooltip.energy_storage_capacity", "§cEnergy Capacity: §r%s EU");
         provider.add("common.gtceu.tooltip.energy_tier_range", "§aAllowed Voltage Tiers: §f%s §f- %s");
 
         // Item Storage/Transfer
         provider.add("common.gtceu.tooltip.item_stored", "%s items");
-        provider.add("common.gtceu.tooltip.item_transfer_rate", "§bTransfer Rate: §f%d items/s");
-        provider.add("common.gtceu.tooltip.item_transfer_rate_stacks", "§bTransfer Rate: §f%d stacks/s");
+        provider.add("common.gtceu.tooltip.item_transfer_rate", "§bTransfer Rate: §f%s items/s");
+        provider.add("common.gtceu.tooltip.item_transfer_rate_stacks", "§bTransfer Rate: §f%s stacks/s");
 
         // Fluid Storage/Transfer
         provider.add("common.gtceu.tooltip.fluid_storage_capacity_mult",
-                "%s §7Tanks, §f%s mB §7each");
+                "§f%s§r Tanks, §f%s mB§r each");
 
         // General Consumption
-        provider.add("common.gtceu.tooltip.uses_per_tick", "Uses §f%d EU/t §7while working");
-        provider.add("common.gtceu.tooltip.uses_per_tick_steam", "Uses §f%d mB/t §7of §fSteam §7while working");
+        provider.add("common.gtceu.tooltip.uses_per_tick", "Uses §f%s EU/t§r while working");
+        provider.add("common.gtceu.tooltip.uses_per_tick_steam", "Uses §f%s mB/t§r of §fSteam§r while working");
 
         // General Production
-        provider.add("common.gtceu.tooltip.base_production_eut", "§eBase Production: §f%d EU/t");
-        provider.add("common.gtceu.tooltip.base_production_fluid", "§eBase Production: §f%d mB/t");
-        provider.add("common.gtceu.tooltip.produces_fluid", "§eProduces: §f%d mB/t");
+        provider.add("common.gtceu.tooltip.base_production", "§eBase Production: %s");
+        provider.add("common.gtceu.tooltip.base_production_fluid", "§eBase Production: §f%s mB/t");
+        provider.add("common.gtceu.tooltip.produces_fluid", "§eProduces: §f%s mB/t");
 
         // Tooltip Keybinds
         provider.add("common.gtceu.tooltip.hold_shift", "Hold SHIFT for more info");
+        provider.add("common.gtceu.tooltip.hold_ctrl", "Hold CTRL for more info");
         provider.add("common.gtceu.tooltip.hold_shift.fluid_pipe", "Hold SHIFT to show Fluid Containment Info");
         provider.add("common.gtceu.tooltip.hold_shift.tool_fluid",
                 "Hold SHIFT to show Fluid Containment and Tool Info");

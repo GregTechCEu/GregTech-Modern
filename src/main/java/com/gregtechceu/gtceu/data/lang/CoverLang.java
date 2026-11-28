@@ -22,7 +22,7 @@ public class CoverLang {
 
         provider.add("cover.gtceu.ender_item_link.title", "Ender Item Link");
         provider.add("cover.gtceu.ender_redstone_link.title", "Ender Redstone Link");
-        provider.add("cover.gtceu.ender_redstone_link.label", "Redstone power: %d");
+        provider.add("cover.gtceu.ender_redstone_link.label", "Redstone power: %s");
 
         // Common cover key entries
 
@@ -39,28 +39,26 @@ public class CoverLang {
         provider.addMultiLang("cover.gtceu.manual_io_mode.unfiltered.description",
                 "Manual I/O: §bUnfiltered",
                 "Items / Fluids can be moved independently of the cover mode. The filter only applies to what is inserted or extracted by this cover itself.");
-        provider.addMultiline("cover.gtceu.manual_io_mode.description",
-                """
-                        §eDisabled§r - Items/fluids will only move as specified by the cover and its filter.
-                        §eAllow Filtered§r - Items/fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any).
-                        §eAllow Unfiltered§r - Items/fluids can be moved independently of the cover mode. Filter applies to the items inserted or extracted by this cover
-                        """);
+        provider.addMultiLang("cover.gtceu.manual_io_mode.description",
+                "§eDisabled§r - Items/fluids will only move as specified by the cover and its filter.",
+                "§eAllow Filtered§r - Items/fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any).",
+                "§eAllow Unfiltered§r - Items/fluids can be moved independently of the cover mode. Filter applies to the items inserted or extracted by this cover");
 
         // Tag filter
-        provider.addMultiline("gui.gtceu.cover.tag_filter.info",
-                """
-                        §bAccepts complex expressions
-                        §6a & b§r = AND
-                        §6a | b§r = OR
-                        §6a ^ b§r = XOR
-                        §6!a§r = NOT
-                        §6(a)§r for grouping
-                        §6*§r for wildcard
-                        §6$§r for untagged
-                        §bTags come in the form 'namespace:tag/subtype'.
-                        The 'forge:' namespace is assumed if one isn't provided.
-                        §bExample: §6*dusts/gold | (gtceu:circuits & !*lv)
-                        This matches all gold dusts or all circuits except LV ones""");
+        provider.addMultiLang("gui.gtceu.cover.tag_filter.info",
+                "§bAccepts complex expressions",
+                "§6a & b§r = AND",
+                "§6a | b§r = OR",
+                "§6a ^ b§r = XOR",
+                "§6!a§r = NOT",
+                "§6(a)§r for grouping",
+                "§6*§r for wildcard",
+                "§6$§r for untagged",
+                "§bTags come in the form 'namespace:tag/subtype'.",
+                "The 'forge:' namespace is assumed if one isn't provided.",
+                "§bExample: §6*dusts/gold | (gtceu:circuits & !*lv)",
+                "This matches all gold dusts or all circuits except LV ones");
+
         provider.add("gui.gtceu.cover.filter.test_slot",
                 "Insert a item to test if it matches the filter expression");
         provider.add("gui.gtceu.cover.filter.test_slot.match", "Item matches");
@@ -71,62 +69,62 @@ public class CoverLang {
         provider.add("cover.gtceu.smart_item_filter.filtering_mode.centrifuge", "Centrifuge");
         provider.add("cover.gtceu.smart_item_filter.filtering_mode.sifter", "Sifter");
         provider.add("cover.gtceu.smart_item_filter.recipe_type", "Recipe Type");
-        provider.addMultiline("cover.gtceu.smart_item_filter.filtering_mode.description",
-                "Select Machine this Smart Filter will use for filtering.\nIt will automatically pick right portions of items for robotic arm.");
+        provider.addMultiLang("cover.gtceu.smart_item_filter.filtering_mode.description",
+                "Select Machine this Smart Filter will use for filtering.",
+                "It will automatically pick right portions of items for robotic arm.");
 
         // Voiding
         provider.add("cover.gtceu.voiding.voiding_mode.void_any", "Void Matching");
         provider.add("cover.gtceu.voiding.voiding_mode.void_overflow", "Void Overflow");
-        provider.addMultiline("cover.gtceu.voiding.voiding_mode.description",
-                "§eVoid Matching§r will void anything matching the filter. \n§eVoid Overflow§r will void anything matching the filter, up to the specified amount.");
+        provider.addMultiLang("cover.gtceu.voiding.voiding_mode.description",
+                "§eVoid Matching§r will void anything matching the filter.",
+                "§eVoid Overflow§r will void anything matching the filter, up to the specified amount.");
         provider.add("cover.gtceu.voiding.warning_tooltip",
-                "§cWARNING!§7 Setting this to \"Enabled\" means that fluids or items WILL be voided.");
+                "§cWARNING!§r Setting this to \"Enabled\" means that fluids or items WILL be voided.");
         provider.add("cover.gtceu.voiding.message.disabled", "Voiding Cover Disabled");
         provider.add("cover.gtceu.voiding.message.enabled", "Voiding Cover Enabled");
 
         // Conveyors
-        provider.addMultiline("cover.gtceu.conveyor.distribution_mode.round_robin_global",
-                "Distribution Mode: §bRound Robin\n§7Splits items equally across connected inventories");
-        provider.addMultiline("cover.gtceu.conveyor.distribution_mode.round_robin_prio",
-                """
-                        Distribution Mode: §bRound Robin with Restriction
-                        §7Tries to split items equally across connected inventories.
-                        §7Will not send items down Restrictive item pipes unless no other paths are available.""");
-        provider.addMultiline("cover.gtceu.conveyor.distribution_mode.insert_first", """
-                Distribution Mode: §bPriority
-                §7Will insert into the first inventory with the highest priority it can find.
-                §7Restrictive item pipes lower the priority of a path.
-                """);
+        provider.addMultiLang("cover.gtceu.conveyor.distribution_mode.round_robin_global",
+                "Distribution Mode: §bRound Robin",
+                "Splits items equally across connected inventories");
+
+        provider.addMultiLang("cover.gtceu.conveyor.distribution_mode.round_robin_prio",
+                "Distribution Mode: §bRound Robin with Restriction",
+                "Tries to split items equally across connected inventories",
+                "Will not send items down Restrictive item pipes unless no other paths are available.");
+
+        provider.addMultiLang("cover.gtceu.conveyor.distribution_mode.insert_first",
+                "Distribution Mode: §bPriority",
+                "Will insert into the first inventory with the highest priority it can find.",
+                "Restrictive item pipes lower the priority of a path.");
 
         // Robot arm
         provider.add("cover.gtceu.robot_arm.transfer_mode.transfer_any", "Transfer Any");
         provider.add("cover.gtceu.robot_arm.transfer_mode.transfer_exact", "Supply Exact");
         provider.add("cover.gtceu.robot_arm.transfer_mode.keep_exact", "Keep Exact");
-        provider.addMultiline("cover.gtceu.robot_arm.transfer_mode.description",
-                """
-                        §eTransfer Any§r - in this mode, cover will transfer as many items matching its filter as possible.
-                        §eSupply Exact§r - in this mode, cover will supply items in portions specified in item filter slots (or variable under this button for tag filter). If amount of items is less than portion size, items won't be moved.
-                        §eKeep Exact§r - in this mode, cover will keep specified amount of items in the destination inventory, supplying additional amount of items if required.
-                        §7Tip: left/right click on filter slots to change item amount,  use shift clicking to change amount faster.");
-                        """);
+        provider.addMultiLang("cover.gtceu.robot_arm.transfer_mode.description",
+                "§eTransfer Any§r - in this mode, cover will transfer as many items matching its filter as possible.",
+                "§eSupply Exact§r - in this mode, cover will supply items in portions specified in item filter slots (or variable under this button for tag filter). If amount of items is less than portion size, items won't be moved.",
+                "§eKeep Exact§r - in this mode, cover will keep specified amount of items in the destination inventory, supplying additional amount of items if required.",
+                "Tip: left/right click on filter slots to change item amount,  use shift clicking to change amount faster.");
 
         // Fluid regulator
-        provider.addMultiline("cover.gtceu.fluid_regulator.transfer_mode.description",
-                """
-                        §eTransfer Any§r - in this mode, cover will transfer as many fluids matching its filter as possible.
-                        §eSupply Exact§r - in this mode, cover will supply fluids in portions specified in the window underneath this button. If amount of fluids is less than portion size, fluids won't be moved.
-                        §eKeep Exact§r - in this mode, cover will keep specified amount of fluids in the destination inventory, supplying additional amount of fluids if required.
-                        §7Tip: shift click will multiply increase/decrease amounts by 10 and ctrl click will multiply by 100.
-                        """);
+        provider.addMultiLang("cover.gtceu.fluid_regulator.transfer_mode.description",
+                "§eTransfer Any§r - in this mode, cover will transfer as many fluids matching its filter as possible.",
+                "§eSupply Exact§r - in this mode, cover will supply fluids in portions specified in the window underneath this button. If amount of fluids is less than portion size, fluids won't be moved.",
+                "§eKeep Exact§r - in this mode, cover will keep specified amount of fluids in the destination inventory, supplying additional amount of fluids if required.",
+                "Tip: shift click will multiply increase/decrease amounts by 10 and ctrl click will multiply by 100.");
+
         provider.add("cover.gtceu.fluid_regulator.supply_exact", "Supply Exact: %s");
         provider.add("cover.gtceu.fluid_regulator.keep_exact", "Keep Exact: %s");
 
         // Machine controller
         provider.add("cover.gtceu.machine_controller.normal", "Normal");
         provider.add("cover.gtceu.machine_controller.inverted", "Inverted");
-        provider.addMultiline("cover.gtceu.machine_controller.invert.enabled",
+        provider.add("cover.gtceu.machine_controller.invert.enabled",
                 "§eInverted§r - in this mode, the cover will require a signal stronger than the set redstone level to run");
-        provider.addMultiline("cover.gtceu.machine_controller.invert.disabled",
+        provider.add("cover.gtceu.machine_controller.invert.disabled",
                 "§eNormal§r - in this mode, the cover will require a signal weaker than the set redstone level to run");
 
         provider.add("cover.gtceu.machine_controller.enable_with_redstone", "Enable with Redstone");
@@ -135,7 +133,7 @@ public class CoverLang {
         provider.add("cover.gtceu.machine_controller.cannot_control_cover", "Cannot Control Cover");
         provider.add("cover.gtceu.machine_controller.cannot_control_machine", "Cannot Control Machine");
 
-        provider.add("cover.gtceu.machine_controller.redstone", "Min Redstone Strength: %d");
+        provider.add("cover.gtceu.machine_controller.redstone", "Min Redstone Strength: %s");
         provider.add("cover.gtceu.machine_controller.suspend_powerfail", "Prevent Power Failing:");
         provider.add("cover.gtceu.machine_controller.mode.machine", "Control Machine");
         provider.add("cover.gtceu.machine_controller.mode.cover_up", "Control Cover (Top)");
@@ -154,65 +152,65 @@ public class CoverLang {
         provider.add("cover.gtceu.ender_link.tooltip.list_button", "Show channel list");
         provider.add("cover.gtceu.ender_link.tooltip.clear_button", "Clear channel description");
         provider.add("cover.gtceu.ender_link.tooltip.description_empty", "Empty Description");
-        provider.addMultiline("cover.gtceu.ender_link.private.tooltip.disabled",
-                "Switch to private mode\nPrivate mode uses the player who originally placed the cover");
+
+        provider.addMultiLang("cover.gtceu.ender_link.private.tooltip.disabled",
+                "Switch to private mode",
+                "Private mode uses the player who originally placed the cover");
         provider.add("cover.gtceu.ender_link.private.tooltip.enabled", "Switch to public mode");
-        provider.addMultiline("cover.gtceu.ender_link.incomplete_hex",
-                "Inputted color is incomplete!\nIt will be applied once complete (all 8 hex digits)\nClosing the gui will lose edits!");
+
+        provider.addMultiLang("cover.gtceu.ender_link.incomplete_hex",
+                "Inputted color is incomplete!",
+                "It will be applied once complete (all 8 hex digits)",
+                "Closing the gui will lose edits!");
 
         // Detector
         provider.add("cover.gtceu.detector_cover.message_normal_state", "Monitoring Status: Normal");
         provider.add("cover.gtceu.detector_cover.message_inverted_state", "Monitoring Status: Inverted");
 
-        var detectorLatchDescription = """
-                Change the redstone behavior of this Cover.
-                §eContinuous§7 - Default; values less than the minimum output 0; values higher than the maximum output 15; values between min and max output between 0 and 15
-                §eLatched§7 - output 15 until above max, then output 0 until below min""";
+        provider.addMultiLang("cover.gtceu.advanced_detector.latch_info",
+                "Change the redstone behavior of this Cover.",
+                "§eContinuous§r - Default; values less than the minimum output 0; values higher than the maximum output 15; values between min and max output between 0 and 15",
+                "§eLatched§r - output 15 until above max, then output 0 until below min");
 
-        provider.addMultiline("cover.gtceu.advanced_detector.latch.enabled",
-                "Behavior: Latched\n\n" + detectorLatchDescription);
-        provider.addMultiline("cover.gtceu.advanced_detector.latch.disabled",
-                "Behavior: Continuous\n\n" + detectorLatchDescription);
+        provider.add("cover.gtceu.advanced_detector.latch.enabled",
+                "Behavior: Latched");
+        provider.add("cover.gtceu.advanced_detector.latch.disabled",
+                "Behavior: Continuous");
 
         // Advanced energy detector
-        var advancedEnergyDetectorInvertDescription = """
-                        Toggle to invert the redstone logic
-                        By default, redstone is emitted when less than the minimum EU, and stops emitting when greater than the max EU
-                """;
 
-        provider.addMultiline("cover.gtceu.advanced_energy_detector.invert.enabled",
-                "Output: Inverted\n\n" + advancedEnergyDetectorInvertDescription);
-        provider.addMultiline("cover.gtceu.advanced_energy_detector.invert.disabled",
-                "Output: Normal\n\n" + advancedEnergyDetectorInvertDescription);
-        var advancedEnergyDetectorModeDescription = "Change between using discrete EU values or percentages for comparing min/max against an attached energy storage.";
-        provider.addMultiline("cover.gtceu.advanced_energy_detector.use_percent.enabled",
-                "Mode: Percentage\n\n" + advancedEnergyDetectorModeDescription);
-        provider.addMultiline("cover.gtceu.advanced_energy_detector.use_percent.disabled",
-                "Mode: Discrete EU\n\n" + advancedEnergyDetectorModeDescription);
+        provider.addMultiLang("cover.gtceu.advanced_energy_detector.invert_info",
+                "Toggle to invert the redstone logic",
+                "By default, redstone is emitted when less than the minimum EU, and stops emitting when greater than the max EU");
+
+        provider.add("cover.gtceu.advanced_energy_detector.invert.enabled", "Output: Inverted");
+        provider.add("cover.gtceu.advanced_energy_detector.invert.disabled", "Output: Normal");
+
+        provider.add("cover.gtceu.advanced_energy_detector.use_percent_info",
+                "Change between using discrete EU values or percentages for comparing min/max against an attached energy storage.");
+
+        provider.add("cover.gtceu.advanced_energy_detector.use_percent.enabled", "Mode: Percentage");
+        provider.add("cover.gtceu.advanced_energy_detector.use_percent.disabled", "Mode: Discrete EU");
 
         // Advanced fluid detector
-        var advancedFluidDetectorInvertDescription = """
-                Toggle to invert the redstone logic
-                By default, redstone stops emitting when less than the minimum mB of fluid, and starts emitting when greater than the min mB of fluid up to the set maximum.
-                """;
 
-        provider.addMultiline("cover.gtceu.advanced_fluid_detector.invert.enabled",
-                "Output: Inverted\n\n" + advancedFluidDetectorInvertDescription);
-        provider.addMultiline("cover.gtceu.advanced_fluid_detector.invert.disabled",
-                "Output: Normal\n\n" + advancedFluidDetectorInvertDescription);
+        provider.addMultiLang("cover.gtceu.advanced_fluid_detector.invert_info",
+                "Toggle to invert the redstone logic",
+                "By default, redstone stops emitting when less than the minimum mB of fluid, and starts emitting when greater than the min mB of fluid up to the set maximum.");
+
+        provider.add("cover.gtceu.advanced_fluid_detector.invert.enabled", "Output: Inverted");
+        provider.add("cover.gtceu.advanced_fluid_detector.invert.disabled", "Output: Normal");
         provider.add("cover.gtceu.advanced_fluid_detector.max", "Max Fluid (mB)");
         provider.add("cover.gtceu.advanced_fluid_detector.min", "Min Fluid (mB)");
 
         // Advanced item detector
-        var advancedItemDetectorInvertDescription = """
-                Toggle to invert the redstone logic
-                By default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum.
-                """;
 
-        provider.addMultiline("cover.gtceu.advanced_item_detector.invert.enabled",
-                "Output: Inverted\n\n" + advancedItemDetectorInvertDescription);
-        provider.addMultiline("cover.gtceu.advanced_item_detector.invert.disabled",
-                "Output: Normal\n\n" + advancedItemDetectorInvertDescription);
+        provider.addMultiLang("cover.gtceu.advanced_item_detector.invert_info",
+                "Toggle to invert the redstone logic",
+                "By default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum.");
+
+        provider.add("cover.gtceu.advanced_item_detector.invert.enabled", "Output: Inverted");
+        provider.add("cover.gtceu.advanced_item_detector.invert.disabled", "Output: Normal");
         provider.add("cover.gtceu.advanced_item_detector.max", "Max Items");
         provider.add("cover.gtceu.advanced_item_detector.min", "Min Items");
 

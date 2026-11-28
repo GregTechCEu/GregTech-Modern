@@ -1982,7 +1982,7 @@
     "gui.gtceu.machine.large_boiler.efficiency": "Эффективность: %s",
     "gui.gtceu.machine.large_boiler.explosion_tooltip": "Взорвется, если добавить топливо без воды",
     "gui.gtceu.machine.large_boiler.heat_time_tooltip": "§7Занимает §f%d секунды §7для нагрева",
-    "gui.gtceu.machine.large_boiler.max_temperature": "Макс. Температура: %dK, Выход пара: %dмВ/т",
+    "machine.gtceu.large_boiler.info_tooltip": "Макс. Температура: %dK, Выход пара: %dмВ/т",
     "gui.gtceu.machine.large_boiler.rate_tooltip": "§7Производит §f%d Л §7Пара с §f1 угля",
     "gui.gtceu.machine.large_boiler.steam_output": "Выход пара: %s мВ/т",
     "gui.gtceu.machine.large_boiler.temperature": "Температура: %sK / %sK",
