@@ -17,8 +17,8 @@ title: "Ore Processing Plant"
     ```
 === "JavaScript"
     ```js title="ore_processing_plant.js"
-    GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
-        event.create('ore_processing_plant')
+    GTCEuStartupEvents.registry('minecraft:recipe_type', event => {
+        event.create('ore_processing_plant', 'machine')
             .category('ore_processing_plant')
             .setEUIO('in')
             .setMaxIOSize(1, 8, 2, 1)
@@ -43,7 +43,7 @@ title: "Ore Processing Plant"
                 .slice("AFFFA", "F P F", "F P F", "F P F", " FPF ", " FMF ", " B B ")
                 .slice("AFFFA", "FG GF", "F   F", " F F ", " FFF ", "  F  ", "  B  ")
                 .slice(" AAA ", " FFF ", " FFF ", "  F  ", "     ", "     ", "     ")
-                .where('C', Predicates.controller(Predicates.blocks(definition.get())))
+                .where('C', Predicates.controller(definition))
                 .where('F', Predicates.blocks(GTBlocks.CASING_TUNGSTENSTEEL_ROBUST.get())
                     .and(Predicates.autoAbilities(definition.getRecipeTypes()))
                     .and(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
@@ -76,7 +76,7 @@ title: "Ore Processing Plant"
                     .slice("AFFFA", "F P F", "F P F", "F P F", " FPF ", " FMF ", " B B ")
                     .slice("AFFFA", "FG GF", "F   F", " F F ", " FFF ", "  F  ", "  B  ")
                     .slice(" AAA ", " FFF ", " FFF ", "  F  ", "     ", "     ", "     ")
-                    .where("C", Predicates.controller(Predicates.blocks(definition.get())))
+                    .where("C", Predicates.controller(definition))
                     .where("F", Predicates.blocks(GTBlocks.CASING_TUNGSTENSTEEL_ROBUST.get())
                         .and(Predicates.autoAbilities(definition.getRecipeTypes()))
                         .and(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))

@@ -9,39 +9,42 @@ To improve its generality, RecipeLogic has been rewritten in GTCEu Modern to sup
 EU, items and fluids.
 
 The new `RecipeLogic` no longer handles overclocked and parallel logic, but instead delegates it to the
-machine via `IRecipeLogicMachine`:
+machine's `RecipeModifier`s, which are set on the machine definition with `.recipeModifiers(...)`:
 
 ```java
 /**
- * Override it to modify recipe on the fly e.g. applying overclock,
+ * Used to modify a recipe on the fly e.g. applying overclock,
  * change chance, etc
- * 
- * @param recipe recipe from detected from GTRecipeType
- * @return modified recipe.
- *         null -- this recipe is unavailable
+ *
+ * @param machine the machine that is running the recipe
+ * @param recipe  recipe from detected from GTRecipeType
+ * @return a ModifierFunction that will be applied to the recipe.
+ *         ModifierFunction.NULL -- this recipe is unavailable
  */
-@Nullable
-GTRecipe modifyRecipe(GTRecipe recipe);
+ModifierFunction getModifier(MetaMachine machine, GTRecipe recipe);
 ```
 
 
 ## Electric Overclocking
 
-In general, a simple electric overclocking can be done this way. For details, see `OverclockingLogic` and `RecipeHelper`
+In general, a simple electric overclocking can be done this way. For details, see `OverclockingLogic` and `GTRecipeModifiers`
 
 ```java
-public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
-    if (RecipeHelper.getRecipeEUtTier(recipe) > getTier()) {
-        return null;
+public static ModifierFunction overclock(MetaMachine machine, GTRecipe recipe) {
+    if (!(machine instanceof IOverclockMachine overclockMachine)) return ModifierFunction.IDENTITY;
+    if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
+        return ModifierFunction.NULL;
     }
-    
-    return RecipeHelper.applyOverclock(
-        getDefinition().getOverclockingLogic(), 
+
+    return OverclockingLogic.NON_PERFECT_OVERCLOCK.getModifier(
+        machine,
         recipe,
-        getMaxVoltage()
+        overclockMachine.getOverclockVoltage()
     );
 }
 ```
+
+The common overclocking modifiers are already available in `GTRecipeModifiers`, e.g. `GTRecipeModifiers.OC_NON_PERFECT`.
 
 
 ## Parallel Logic
@@ -49,32 +52,24 @@ public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
 Parallel is also not complicated to implement. Let's take the `generator` as an example
 
 ```java
-public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
-    var EUt = RecipeHelper.getOutputEUt(recipe); // get the recipe's EU/t
-        
-    if (EUt > 0) {
-        // calculate the max parallel limitation.
-        var maxParallel = (int) (Math.min(
-            energyContainer.getOutputVoltage(),
-            GTValues.V[overclockTier]
-        ) / EUt);
-        
-        while (maxParallel > 0) {
-            // copy and apply parallel, it will affect all recipes' contents
-            // and the recipe duration.
-            var copied = recipe.copy(ContentModifier.multiplier(maxParallel));
-
-            // If the machine has enough ingredients, return copied recipe.
-            if (copied.matchRecipe(this)) {
-                copied.duration = copied.duration / maxParallel;
-        
-                return copied;
-            }
-            
-            // Trying to halve the number of parallelism
-            maxParallel /= 2;
-        }
+public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
+    if (!(machine instanceof SimpleGeneratorMachine generator)) {
+        return RecipeModifier.nullWrongType(SimpleGeneratorMachine.class, machine);
     }
-    return null;
+    long EUt = recipe.getOutputEUt().getTotalEU(); // get the recipe's EU/t
+    if (EUt <= 0) return ModifierFunction.NULL;
+
+    // calculate the max parallel limitation.
+    int maxParallel = (int) (generator.getOverclockVoltage() / EUt);
+    // check how many parallels the machine actually has enough ingredients for.
+    int parallels = ParallelLogic.getParallelAmountFast(generator, recipe, maxParallel);
+
+    // multiply the recipe's contents and EU/t by the amount of parallels.
+    return ModifierFunction.builder()
+            .inputModifier(ContentModifier.multiplier(parallels))
+            .outputModifier(ContentModifier.multiplier(parallels))
+            .eutMultiplier(parallels)
+            .parallels(parallels)
+            .build();
 }
 ```

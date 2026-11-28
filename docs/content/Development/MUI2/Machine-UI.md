@@ -29,7 +29,7 @@ which one you want to override:
 default ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
     var panelBuilder = getPanelBuilder(data, syncManager, settings);       // (1)
     panelBuilder.mainContents(parent -> buildMainUI(parent, data, syncManager, settings)); // (2)
-    return panelBuilder.build(syncManager, settings);                      // (3)
+    return panelBuilder.build(data, syncManager, settings);                // (3)
 }
 ```
 
@@ -147,7 +147,7 @@ One way to do this is to reproduce the default three steps, then keep working wi
 public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
     var panelBuilder = getPanelBuilder(data, syncManager, settings);
     panelBuilder.mainContents(parent -> buildMainUI(parent, data, syncManager, settings));
-    var machinePanel = panelBuilder.build(syncManager, settings);
+    var machinePanel = panelBuilder.build(data, syncManager, settings);
 
     // ... attach extra widgets and panels to or make further changes to machinePanel here
 
@@ -174,7 +174,7 @@ ModularPanel<?> buildUIFunction(PosGuiData data, PanelSyncManager syncManager, U
 REGISTRATE.machine("my_machine", MyMachine::new)
         .ui((data, syncManager, settings, machine) -> MachineUIPanelBuilder.panelBuilder(machine)
                 .mainContents(parent -> parent.child(Text.str("Hello").asWidget()))
-                .build(syncManager, settings))
+                .build(data, syncManager, settings))
         .register();
 ```
 
@@ -206,7 +206,8 @@ Give a widget a `setEnabledIf` to hide it without leaving a gap.
 ### Adding lines from the definition
 
 The usual way to add a line is `additionalDisplay` on the machine builder, which does not require a
-custom machine class. It is a `BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>>`:
+custom machine class. It takes an `AdditionalDisplayWidgetProvider`, a functional interface of
+`(MultiblockControllerMachine controller, PanelSyncManager syncManager) -> List<IWidget>`:
 
 ```java
 public static final MachineEntry<MultiblockMachineDefinition> MY_MULTIBLOCK = REGISTRATE
@@ -250,6 +251,10 @@ above becomes:
 
 ```java
 public class MyMultiblockMachine extends WorkableElectricMultiblockMachine {
+
+    public MyMultiblockMachine(BlockEntityCreationInfo info) {
+        super(info);
+    }
 
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {

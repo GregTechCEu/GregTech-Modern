@@ -9,8 +9,8 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
     }
 
     @Override
-    public ModularPanel buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        var panel = GTGuis.createPanel(this, 176, 168);
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panel = new ModularPanel<>("mui_test").size(176, 168);
         // Do stuff with your panel here, add children, etc.
         // For example:
         panel.child(Text.str("Test machine")

@@ -89,7 +89,7 @@ It is also possible to modify or even delete existing ones.
     
             // Define where the vein can generate
             vein.layer("deepslate") // [*] (5)
-            vein.dimensions("minecraft:overworld") // (6)
+            vein.dimensions(["minecraft:overworld"]) // (6)
             vein.biomes("#minecraft:is_overworld") // (7)
     
             // Define a height range:
@@ -99,10 +99,10 @@ It is also possible to modify or even delete existing ones.
             vein.heightRange(/* ... */) // (10)
     
             // Define the vein's generator:
-            vein.generator(/* ... */) // [*] (11)
+            vein.layeredVeinGenerator(/* ... */) // [*] (11)
     
             // Add one or more type of surface indicator to the vein:
-            vein.addIndicator(/* ... */) // (12)
+            vein.surfaceIndicatorGenerator(/* ... */) // (12)
         })
     })
     ```
@@ -117,7 +117,7 @@ It is also possible to modify or even delete existing ones.
 6. Limits vein generation to the supplied dimensions. Note that these vein's layer must be applicable for them.  
    **Default:** All dimensions of the vein's layer.  
    <br>
-   _Accepts any number of parameters._
+   _Accepts a list of dimensions._
 7. Determines the biome (or biome tag) the vein can generate in.  
    **Default:** If no biome is explicitly set, the vein will generate in any biome.  
    <br>
@@ -126,7 +126,7 @@ It is also possible to modify or even delete existing ones.
 9. Biased towards the center of the height range
 10. You can also use Minecraft's `HeightRangePlacement` directly, instead of the above shorthand versions:  
     ```js
-    vein.heightRange(
+    vein.heightRange({
         height: {
             type: "uniform",
             min_inclusive: {
@@ -135,7 +135,8 @@ It is also possible to modify or even delete existing ones.
             max_inclusive: {
                 absolute: 20
             }
-        })
+        }
+    })
     ```
 11. See [Generators](./02-Generators.md#vein-generators) for a list of available generators.
 12. See [Generators](./02-Generators.md#indicator-generators) for a list of available generators.
@@ -189,7 +190,7 @@ It is also possible to modify or even delete existing ones.
 
 ```js title="server_scripts/modify_ore_vein.js"
 GTCEuServerEvents.oreVeins(event => {
-    event.modify("gtceu:cassiterite_vein", vein => {
+    event.modify("gtceu:cassiterite", vein => {
         vein.density(1.0)
     })
 })

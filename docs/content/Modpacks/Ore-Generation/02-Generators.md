@@ -12,14 +12,17 @@ title: "Generators"
 
 ```js
 vein.layeredVeinGenerator(generator => generator
-    .buildLayerPattern(pattern => pattern
-        .layer(l => l.weight(3).mat(GTMaterials.Silver).size(2, 4))
-        .layer(l => l.weight(2).mat(GTMaterials.Gold).size(1, 1))
+    .withLayerPattern(() => GTLayerPattern.builder(GTWorldGenLayers.STONE.value().getTarget()) // (1)
+        .layer(l => l.weight(3).mat(GTMaterials.Silver.get()).size(2, 4))
+        .layer(l => l.weight(2).mat(GTMaterials.Gold.get()).size(1, 1))
         .layer(l => l.weight(1).block(() => Block.getBlock('minecraft:oak_log')).size(1, 1))
         .layer(l => l.weight(1).state(() => Block.getBlock('minecraft:oak_planks').defaultBlockState()).size(1, 1))
+        .build()
     )
 )
 ```
+
+1. The blocks this layer pattern can replace. Here, we use the replacement rules of the `stone` worldgen layer.
 
 
 ### Veined Vein Generator
@@ -114,7 +117,7 @@ vein.geodeVeinGenerator(generator => /* ... */)
 
 ```js
 vein.surfaceIndicatorGenerator(indicator => indicator
-    .surfaceRock(GTMaterials.Platinum) // [*] (1)
+    .surfaceRock(GTMaterials.Platinum.get()) // [*] (1)
     .placement("above") // (2)
     .density(0.4)
     .radius(5)

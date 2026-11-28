@@ -13,7 +13,7 @@ These conditions can be used in both Java and KubeJS recipes. However, custom co
 
 - Biome: `.biome("namespace:biome_id")`
     - Locks a recipe behind being inside a certain biome, works with any biome a pack has loaded. 
-    For example, you could use `minecraft:plains`. We also have `biomeTag("minecraft:biome")`.
+    For example, you could use `minecraft:plains`. We also have `.biomeTag("minecraft:is_forest")`.
 - Dimension: `.dimension("namespace:dimension_id")`
     - Locks a recipe being behind a certain dimension, the gas collector is a good example of this.  
     - For example, you could do `.dimension("minecraft:the_end")`
@@ -26,11 +26,11 @@ These conditions can be used in both Java and KubeJS recipes. However, custom co
 - Adjacent Fluids: `.adjacentFluids("namespace:fluid_id", ...)`
     - You can pass any amount of fluids into the array. Moreover, any fluid passed into the array will make the recipe require a full source block touching the machine.
     - For example, you could use `.adjacentFluids("minecraft:water", "minecraft:lava")` to make a recipe require BOTH a water source and a lava source next to the machine.
-    - We also have `.adjacentFluidTag("forge:water", "forge:lava")`, which does the same, but allows fluid _tags_ to be used.
+    - We also have `.adjacentFluidTag(["minecraft:water", "minecraft:lava"])`, which does the same, but allows fluid _tags_ to be used.
 - Adjacent Blocks: `.adjacentBlocks("namespace:block_id", ...)`
     - Much like the fluid condition, you can pass blocks into the array that lock the recipe behind needing the machine to touch these blocks.
     - For example, you could use `.adjacentBlocks("minecraft:stone", "minecraft:iron_block")` to make a recipe require a Stone block and a Block of Iron.
-    - We also have `.adjacentBlockTag("forge:stone", "forge:storage_blocks/iron")`, which does the same, but allows block _tags_ to be used.
+    - We also have `.adjacentBlockTag(["c:stones", "c:storage_blocks/iron"])`, which does the same, but allows block _tags_ to be used.
 - Thunder: `.thunder(float level)`
     - Locks a recipe behind a certain level of rain.
     - For example, you could use `.thunder(1.0)` to make a recipe need a strong thunderstorm.
@@ -59,6 +59,7 @@ These conditions can be used in both Java and KubeJS recipes. However, custom co
     - An example can't be easily given since every quest book is different.
 - Game Stages: `.gameStage("gamestage_id")`
     - Locks a recipe behind a certain game stage.  
+    - This condition is currently not available on 1.21.1.
 - Odyssey Quests (Heracles): `.heraclesQuest("quest_id")`
     - Locks a recipe behind the owner of a machine completing a quest with Heracles.
     - An example can't be easily given since every quest book is different.

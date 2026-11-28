@@ -29,7 +29,7 @@ StartupEvents.registry('block', event => {
         .soundType('metal')
         .resistance(6).hardness(5)
         .tagBlock("mineable/pickaxe")
-        .tagBlock("forge:mineable/wrench")
+        .tagBlock("c:mineable/wrench")
         .requiresTool(true)
 
     event.create('custom_firebox', 'gtceu:active')
@@ -40,7 +40,7 @@ StartupEvents.registry('block', event => {
         .soundType('metal')
         .resistance(6).hardness(5)
         .tagBlock("mineable/pickaxe")
-        .tagBlock("forge:mineable/wrench")
+        .tagBlock("c:mineable/wrench")
         .requiresTool(true)
 
     event.create('custom_bloom', 'gtceu:active')
@@ -50,7 +50,7 @@ StartupEvents.registry('block', event => {
         .soundType('metal')
         .resistance(6).hardness(5)
         .tagBlock("mineable/pickaxe")
-        .tagBlock("forge:mineable/wrench")
+        .tagBlock("c:mineable/wrench")
         .requiresTool(true)
 })
 ```

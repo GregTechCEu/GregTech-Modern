@@ -13,7 +13,7 @@ Any recipe that crafts an item, whether it be through a crafting table or a GT m
 Before 7.0, the way to specify the decomposition information (called the `ItemMaterialInfo`) of an item was to strictly append it like the following:
 
 ```java title="ItemMaterialInfo.java"
-ChemicalHelper.registerMaterialInfo(GTBlocks.COIL_KANTHAL.get(),
+ItemMaterialData.registerMaterialInfo(GTBlocks.COIL_KANTHAL.get(),
                 new ItemMaterialInfo(new MaterialStack(GTMaterials.Kanthal, M * 8), // double wire
                         new MaterialStack(GTMaterials.Aluminium, M * 2), // foil
                         new MaterialStack(GTMaterials.Copper, M)) // ingot
@@ -89,7 +89,7 @@ ServerEvents.recipes(event => {
             A: "gtceu:steel_ingot",
             B: "minecraft:nether_star"
         })
-        .addMaterialInfo(true) // (1) 
+        .addMaterialInfo() // (1) 
 })
 ```
 

@@ -32,6 +32,7 @@ class MySyncObject implements ISyncManaged {
     private BlockPos syncPos = BlockPos.ZERO;
     
     @Getter
+    @SyncToClient
     private String syncString = "";
      
     public MySyncObject(MetaMachine machine) {
@@ -97,8 +98,7 @@ To add support for an additional type, call one of the following:
 
 - `ValueTransformers.registerTransformer(Class<T> cls, ValueTransformer<T> transformer)`
 - `ValueTransformers.registerGenericTransformerSupplier(Class<T> cls, Supplier<ValueTransformer<T>> func)`
-- `ValueTransformers.registerCodecTransformer(Class<T> type, Codec<T> codec)`
-- `ValueTransformers.registerCodecTransformer(Class<T> type, Codec<T> codec, BiConsumer<FriendlyByteBuf, T> writePacket, Function<FriendlyByteBuf, @Nullable T> readPacket)`
+- `ValueTransformers.registerCodecTransformer(Class<T> type, Codec<T> codec, StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec)`
 - `ValueTransformers.registerRegistryTransformer(Class<T> type, Registry<T> registry)`
 
 Additionally, fields can be explicitly directed to use a specific value transformer:
@@ -115,7 +115,7 @@ private static class GridNodeHostTransformer implements ValueTransformer<Object>
   @Override
   public Tag serializeNBT(Object value, TransformerContext<Object> context) {
     if (GTCEu.Mods.isAE2Loaded() &&
-            (context.currentValue()) instanceof IGridConnectedBlockEntity connectedBlockEntity) {
+            context.currentValue() instanceof GridNodeHostTrait connectedBlockEntity) {
       var compound = new CompoundTag();
       connectedBlockEntity.getMainNode().saveToNBT(compound);
       return compound;
@@ -126,17 +126,30 @@ private static class GridNodeHostTransformer implements ValueTransformer<Object>
   @Override
   public @Nullable Object deserializeNBT(Tag tag, TransformerContext<Object> context) {
     if (GTCEu.Mods.isAE2Loaded() &&
-            context.currentValue() instanceof IGridConnectedBlockEntity connectedBlockEntity &&
+            context.currentValue() instanceof GridNodeHostTrait connectedBlockEntity &&
             tag instanceof CompoundTag c) {
       connectedBlockEntity.getMainNode().loadFromNBT(c);
+      return context.currentValue();
     }
+    return null;
+  }
+
+  // No-op as this isn't synced to client
+  @Override
+  public void writeToPacket(RegistryFriendlyByteBuf buf, Object value, TransformerContext<Object> context) {}
+
+  // No-op as this isn't synced to client
+  @Override
+  public @Nullable Object readFromPacket(RegistryFriendlyByteBuf buf, TransformerContext<Object> context) {
     return null;
   }
 }
 
 static {
-  ClassSyncData.getClassData(HullMachine.class).setCustomTransformerForField("gridNodeHost",
-          new GridNodeHostTransformer());
+  if (GTCEu.Mods.isAE2Loaded()) {
+    ClassSyncData.getClassData(HullMachine.class).setCustomTransformerForField("gridNodeHost",
+            new GridNodeHostTransformer());
+  }
 }
 
 ```

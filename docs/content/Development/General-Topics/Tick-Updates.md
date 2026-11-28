@@ -22,78 +22,77 @@ But most of the time this logic doesn't need to be executed if any of the follow
 - the automatic output is not set to active
 - there is no adjacent block that can accept the item.
 
-Lets look at how we implement it in `QuantumChest`.
+Lets look at how we implement it in `AutoOutputTrait` (used by e.g. the `QuantumChest`).
 
 
-??? example "Implementation in `QuantumChest`"
+??? example "Implementation in `AutoOutputTrait`"
 
     ```java
-    @Getter @Persisted @DescSynced
-    protected boolean autoOutputItems;
-    @Persisted @DropSaved
-    protected final NotifiableItemStackHandler cache; // inner inventory
-    protected TickableSubscription autoOutputSubs;
-    protected ISubscription exportItemSubs;
+    @Getter @SaveField @SyncToClient
+    protected boolean autoOutputItems = false;
+    protected final List<IItemHandler> itemHandlers; // inner inventories
+    protected @Nullable TickableSubscription itemOutputSub;
+    protected List<ISubscription> itemSubs = new ArrayList<>();
     
     // update subscription, subscribe if tick logic subscription is required, unsubscribe otherwise.
-    protected void updateAutoOutputSubscription() {
-        var outputFacing = getOutputFacingItems(); // get output facing
-        if ((isAutoOutputItems() && !cache.isEmpty()) // inner item non empty
-                && outputFacing != null // has output facing
-                && ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacing), outputFacing.getOpposite()) != null) { // adjacent block has inventory.
-            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput); // subscribe tick logic
-        } else if (autoOutputSubs != null) { // unsubscribe tick logic
-            autoOutputSubs.unsubscribe();
-            autoOutputSubs = null;
+    protected void updateItemOutputSubscription() {
+        if (isAutoOutputItems() && getItemOutputDirection() != null // has output facing
+                && GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), getItemOutputDirection())) { // adjacent block has inventory.
+            itemOutputSub = subscribeServerTick(itemOutputSub, this::autoOutputItems); // subscribe tick logic
+        } else if (itemOutputSub != null) { // unsubscribe tick logic
+            itemOutputSub.unsubscribe();
+            itemOutputSub = null;
         }
     }
     
     // output to nearby block.
-    protected void checkAutoOutput() {
-        if (getOffsetTimer() % 5 == 0) {
-            if (isAutoOutputItems() && getOutputFacingItems() != null) {
-                cache.exportToNearby(getOutputFacingItems());
-            }
-            updateAutoOutputSubscription(); // dont foget to check if it's still available
+    protected void autoOutputItems() {
+        if (getMachine().getOffsetTimer() % 5 == 0 && getItemOutputDirection() != null) {
+            itemHandlers.forEach(this::exportItemToNearby);
         }
+        updateItemOutputSubscription(); // dont foget to check if it's still available
     }
     
     @Override
-    public void onLoad() {
-        super.onLoad();
+    public void onMachineLoad() {
+        super.onMachineLoad();
         
-        // you cant call ItemTransferHelper.getItemTransfer while chunk is loading, so lets defer it next tick.
-        scheduleForNextServerTick(this::updateAutoOutputSubscription);
+        // you cant check for adjacent inventories while chunk is loading, so lets defer it next tick.
+        getMachine().scheduleForNextServerTick(this::updateItemOutputSubscription);
         // add a listener to listen the changes of inner inventory. (for ex, if inventory not empty anymore, we may need to unpdate logic)
-        exportItemSubs = cache.addChangedListener(this::updateAutoOutputSubscription);
-    }
-    
-    @Override
-    public void onUnload() {
-        super.onUnload(); //autoOutputSubs will be released automatically when machine unload
-        if (exportItemSubs != null) {  //we should mannually release it.
-            exportItemSubs.unsubscribe();
-            exportItemSubs = null;
+        for (var handler : itemHandlers) {
+            if (handler instanceof NotifiableItemStackHandler notifiable)
+                itemSubs.add(notifiable.addChangedListener(this::updateItemOutputSubscription));
         }
     }
     
-    // For any change may affect the logic to invoke updateAutoOutputSubscription at a time
     @Override
-    public void setAutoOutputItems(boolean allow) {
+    public void onMachineUnload() {
+        if (itemOutputSub != null) {
+            itemOutputSub.unsubscribe();
+            itemOutputSub = null;
+        }
+        itemSubs.forEach(ISubscription::unsubscribe); // we should mannually release it.
+        itemSubs.clear();
+        super.onMachineUnload();
+    }
+    
+    // For any change may affect the logic to invoke updateItemOutputSubscription at a time
+    public void setAllowAutoOutputItems(boolean allow) {
         this.autoOutputItems = allow;
-        updateAutoOutputSubscription();
+        syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
+        updateItemOutputSubscription();
+    }
+    
+    public void setItemOutputDirection(@Nullable Direction outputFacing) {
+        this.itemOutputDirection = outputFacing;
+        syncDataHolder.markClientSyncFieldDirty("itemOutputDirection");
+        updateItemOutputSubscription();
     }
     
     @Override
-    public void setOutputFacingItems(Direction outputFacing) {
-        this.outputFacingItems = outputFacing;
-        updateAutoOutputSubscription();
-    }
-    
-    @Override
-    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        super.onNeighborChanged(block, fromPos, isMoving);
-        updateAutoOutputSubscription();
+    public void onMachineNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
+        updateItemOutputSubscription();
     }
     ```
 
@@ -118,13 +117,13 @@ stay active any longer than it needs to.
 
     ```java
     class MyMachine extends MetaMachine implements IControllable {
-        @Persisted @Getter
+        @SaveField @Getter
         private boolean workingEnabled = true;
         
         private final ConditionalSubscriptionHandler subscriptionHandler;
         
-        public MyMachine() {
-            super(/* ... */);
+        public MyMachine(BlockEntityCreationInfo info) {
+            super(info);
     
             this.subscriptionHandler = new ConditionalSubscriptionHandler(
                 this, this::update, this::isSubscriptionActive

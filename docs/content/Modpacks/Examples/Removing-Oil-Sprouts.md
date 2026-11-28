@@ -23,6 +23,6 @@ or create a datapack containing the equivalent. This will disable the GT raw oil
 ## Adjusting Oil Sprout Placement Conditions
 
 If you just want to adjust the rarity of oil sprouts, that is configured via the "Placed Feature" system. Copy the
-[current version](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/generated/resources/data/gtceu/worldgen/placed_feature/raw_oil_sprout.json)
+[current version](https://github.com/GregTechCEu/GregTech-Modern/blob/1.21/src/generated/resources/data/gtceu/worldgen/placed_feature/raw_oil_sprout.json)
 of the placed feature file to `kubejs/data/gtceu/worldgen/placed_feature/raw_oil_sprout.json`, and modify the settings
 as desired. (The default file uses a `"minecraft:rarity_filter"` to give a 1/64 chance of each chunk containing a sprout.)
