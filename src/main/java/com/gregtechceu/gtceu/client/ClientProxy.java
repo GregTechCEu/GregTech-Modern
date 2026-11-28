@@ -19,10 +19,7 @@ import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.particle.MufflerParticle;
 import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
-import com.gregtechceu.gtceu.client.renderer.item.decorator.GTComponentItemDecorator;
-import com.gregtechceu.gtceu.client.renderer.item.decorator.GTLampItemOverlayRenderer;
-import com.gregtechceu.gtceu.client.renderer.item.decorator.GTTankItemFluidPreview;
-import com.gregtechceu.gtceu.client.renderer.item.decorator.GTToolBarRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.decorator.*;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.BoilerMultiPartRender;
@@ -131,6 +128,8 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public void onRegisterItemDecorations(RegisterItemDecorationsEvent event) {
         for (Item item : ForgeRegistries.ITEMS) {
+            event.register(item, SpoilProgressDecorator.INSTANCE);
+
             if (item instanceof IComponentItem) {
                 event.register(item, GTComponentItemDecorator.INSTANCE);
             }

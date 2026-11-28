@@ -128,7 +128,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
         List<IWidget> widgets = new ArrayList<>();
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
+
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
                 () -> Component.translatable("gtceu.multiblock.research_station.researching")
                         .withStyle(ChatFormatting.GREEN)));
@@ -138,6 +138,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         // .addComputationUsageExactLine(computationProvider.getMaxCWUt()) // TODO: (Onion)
         widgets.add(GTMultiblockTextUtil.addProgressLinePercentOnly(this, syncManager));
         widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
+
         return widgets;
     }
 

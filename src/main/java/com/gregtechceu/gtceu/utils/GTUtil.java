@@ -658,10 +658,6 @@ public class GTUtil {
         });
     }
 
-    public static boolean isSameItemSameTags(ItemStack s1, ItemStack s2) {
-        return (ItemStack.isSameItem(s1, s2) && Objects.equals(s1.getTag(), s2.getTag()));
-    }
-
     public static <T> T getLast(List<T> list) {
         return list.get(list.size() - 1);
     }

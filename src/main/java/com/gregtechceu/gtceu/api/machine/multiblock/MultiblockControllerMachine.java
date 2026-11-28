@@ -23,6 +23,8 @@ import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
@@ -578,8 +580,10 @@ public class MultiblockControllerMachine extends MetaMachine {
                 .left(3)
                 .top(3);
         parentWidget.size(width, height)
+                .themeOverride(GTGuiTheme.MULTIBLOCK_DISPLAY.getId())
                 .background(GTGuiTextures.DISPLAY);
 
+        listWidget.child(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         listWidget.children(getWidgetsForDisplay(syncManager));
         parentWidget.child(listWidget.left(3).top(3));
         return parentWidget;

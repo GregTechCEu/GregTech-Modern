@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.core.mixins.client.GuiGraphicsAccessor;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.Util;
@@ -376,7 +375,7 @@ public class RenderUtil {
                 ItemStack[] items = ItemRecipeCapability.CAP.of(outputs.get(0).content()).getItems();
                 if (items.length > 0) {
                     ItemStack output = items[0];
-                    if (!output.isEmpty() && !GTUtil.isSameItemSameTags(output, stack)) {
+                    if (!output.isEmpty() && !ItemStack.isSameItemSameTags(output, stack)) {
                         originalMethod.call(entity, level, output, x, y, seed, z);
                         return true;
                     }

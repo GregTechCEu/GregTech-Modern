@@ -10,11 +10,9 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraftforge.fluids.FluidType;
@@ -143,18 +141,13 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine implements
 
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isFormed));
-        // Sync these values for use in getFluidProduction()
-        syncManager.getOrCreateSyncHandler("biomeModifier", IntSyncValue.class,
-                () -> new IntSyncValue(() -> this.biomeModifier, value -> this.biomeModifier = value));
-        syncManager.getOrCreateSyncHandler("hatchModifier", IntSyncValue.class,
-                () -> new IntSyncValue(() -> this.hatchModifier, value -> this.hatchModifier = value));
 
-        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
-        widgets.add(Text
-                .dynamic(() -> Text
-                        .lang("gtceu.top.primitive_pump_production",
-                                FormattingUtil.formatNumbers(this.getFluidProduction()))
-                        .withStyle(ChatFormatting.WHITE))
+        IntSyncValue fluidProduction = syncManager.getOrCreateSyncHandler("fluidProduction", IntSyncValue.class,
+                () -> new IntSyncValue(this::getFluidProduction));
+
+        widgets.add(Text.dynamic(() -> Text
+                .lang("gtceu.top.primitive_pump_production",
+                        FormattingUtil.formatNumbers(fluidProduction.getIntValue())))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));
 

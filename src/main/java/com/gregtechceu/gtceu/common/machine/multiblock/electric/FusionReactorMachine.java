@@ -27,11 +27,15 @@ import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.LongSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.TextWidget;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -294,6 +298,39 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         widget.textComponents.child(new TextWidget<>(
                 Text.lang("gtceu.recipe.eu_to_start", FormattingUtil.formatNumberReadable2F(euToStart, false),
                         FUSION_NAMES.get(tier))));
+    }
+
+    @Override
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        var widgets = super.getWidgetsForDisplay(syncManager);
+
+        LongSyncValue euStored = new LongSyncValue(energyContainer::getEnergyStored);
+        LongSyncValue euCapacity = new LongSyncValue(energyContainer::getEnergyCapacity);
+        LongSyncValue heatValue = new LongSyncValue(() -> heat);
+
+        syncManager.syncValue("euStored", euStored);
+        syncManager.syncValue("euCapacity", euCapacity);
+        syncManager.syncValue("heatValue", heatValue);
+
+        widgets.add(Text.dynamic(() -> {
+            var storedComponent = Component.literal(FormattingUtil.formatNumbers(heatValue.getValue()));
+            return Component.translatable("gtceu.multiblock.fusion_reactor.heat",
+                    storedComponent.withStyle(ChatFormatting.GOLD));
+        }).asWidget());
+
+        widgets.add(Text.dynamic(() -> {
+            var storedComponent = Component.literal(FormattingUtil.formatNumbers(euStored.getValue()));
+            return Component.translatable("gtceu.multiblock.fusion_reactor.stored",
+                    storedComponent.withStyle(ChatFormatting.GOLD));
+        }).asWidget());
+
+        widgets.add(Text.dynamic(() -> {
+            var capacityComponent = Component.literal(FormattingUtil.formatNumbers(euCapacity.getValue()));
+            return Component.translatable("gtceu.multiblock.fusion_reactor.capacity",
+                    capacityComponent.withStyle(ChatFormatting.GOLD));
+        }).asWidget());
+
+        return widgets;
     }
 
     //////////////////////////////////////
