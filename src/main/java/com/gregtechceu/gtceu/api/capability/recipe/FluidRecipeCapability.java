@@ -308,7 +308,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         Object2LongOpenHashMap<FluidStack> bypassDistinct = new Object2LongOpenHashMap<>();
         // Handle bypass groups last, adding an inventory based on their contents individually.
         for (RecipeHandlerList handlerList : bypassHandlerLists) {
-            var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
+            var handlers = handlerList.getCapability(FluidRecipeCapability.CAP);
             addHandlersContentsToGroup(bypassDistinct, handlers);
         }
         if (!bypassDistinct.isEmpty()) {
@@ -319,6 +319,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                     inventory.addTo(entry.getKey(), entry.getLongValue());
                 }
             }
+            grouped.add(bypassDistinct);
         }
 
         return grouped;

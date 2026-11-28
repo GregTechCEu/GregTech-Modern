@@ -215,24 +215,12 @@ public class GTMachines {
             .tooltipLang("Metal Amalgamator")
             .register();
 
-    public static final MachineDefinition[] ARC_FURNACE = registerTieredMachines(REGISTRATE, "arc_furnace",
-            SimpleTieredMachine::new, (tier, builder) -> builder
-                    .langValue("%s Arc Furnace %s".formatted(VLVH[tier], VLVT[tier]))
-                    .rotationState(RotationState.NON_Y_AXIS)
-                    .recipeType(GTRecipeTypes.ARC_FURNACE_RECIPES)
-                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
-                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
-                    .workableTieredHullModel(GTCEu.id("block/machines/arc_furnace"))
-                    .tooltipLang(switch (tier) {
-                        case LV, MV, HV, EV -> "Who needs a Blast Furnace?";
-                        case IV, LuV, ZPM -> "Discharge Heater";
-                        default -> "Short Circuit Heater";
-                    })
-                    .defaultTooltip()
-                    .tooltips(workableTiered(tier, GTValues.V[tier] * 64,
-                            GTRecipeTypes.ARC_FURNACE_RECIPES, defaultTankSizeFunction.applyAsInt(tier), true))
-                    .register(),
-            ELECTRIC_TIERS);
+    public static final MachineDefinition[] ARC_FURNACE = new SimpleMachineBuilder(REGISTRATE, "arc_furnace",
+            GTRecipeTypes.ARC_FURNACE_RECIPES)
+            .tooltipLang("Who needs a Blast Furnace?", LV, MV, HV, EV)
+            .tooltipLang("Discharge Heater", IV, LuV, ZPM)
+            .tooltipLang("Short Circuit Heater")
+            .register();
     public static final MachineDefinition[] ASSEMBLER = new SimpleMachineBuilder(REGISTRATE, "assembler",
             GTRecipeTypes.ASSEMBLER_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
@@ -241,28 +229,10 @@ public class GTMachines {
             .tooltipLang("NOT a Crafting Table", IV, LuV, ZPM)
             .tooltipLang("Assembly Constructor")
             .register();
-    public static final MachineDefinition[] WELDER = registerTieredMachines(REGISTRATE,
-            "welder",
-            SimpleTieredMachine::new, (tier, builder) -> builder
-                    .langValue("%s Welder %s".formatted(VLVH[tier], VLVT[tier]))
-                    .rotationState(RotationState.NON_Y_AXIS)
-                    .recipeType(GTRecipeTypes.WELDER_RECIPES)
-                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
-                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
-                    .workableTieredHullModel(GTCEu.id("block/machines/welder"))
-                    .register(),
-            ELECTRIC_TIERS);
-    public static final MachineDefinition[] SPOOLING = registerTieredMachines(REGISTRATE,
-            "spooler",
-            SimpleTieredMachine::new, (tier, builder) -> builder
-                    .langValue("%s Spooler %s".formatted(VLVH[tier], VLVT[tier]))
-                    .rotationState(RotationState.NON_Y_AXIS)
-                    .recipeType(GTRecipeTypes.SPOOLING_RECIPES)
-                    .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
-                    .recipeModifier(GTRecipeModifiers.OC_NON_PERFECT)
-                    .workableTieredHullModel(GTCEu.id("block/machines/spooling"))
-                    .register(),
-            ELECTRIC_TIERS);
+    public static final MachineDefinition[] WELDER = new SimpleMachineBuilder(REGISTRATE, "welder", GTRecipeTypes.WELDER_RECIPES)
+            .register();
+    public static final MachineDefinition[] SPOOLER = new SimpleMachineBuilder(REGISTRATE, "spooler", GTRecipeTypes.SPOOLING_RECIPES)
+            .register();
     public static final MachineDefinition[] AUTOCLAVE = new SimpleMachineBuilder(REGISTRATE, "autoclave",
             GTRecipeTypes.AUTOCLAVE_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
