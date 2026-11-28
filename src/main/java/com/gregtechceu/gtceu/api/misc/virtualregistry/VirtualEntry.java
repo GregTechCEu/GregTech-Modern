@@ -51,8 +51,7 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag> {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof VirtualEntry other)) return false;
-        return this.getType() == other.getType() && this.color == other.color &&
-                this.description.equals(other.description);
+        return this.getType() == other.getType() && this.color == other.color;
     }
 
     @Override

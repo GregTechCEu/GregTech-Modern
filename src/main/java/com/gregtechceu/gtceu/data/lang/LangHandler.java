@@ -508,6 +508,7 @@ public class LangHandler {
         provider.add("cover.ender_link.description_empty", "Empty Description");
         provider.add("cover.ender_link.tooltip.list_button", "Show channel list");
         provider.add("cover.ender_link.tooltip.clear_button", "Clear channel description");
+        provider.add("cover.ender_link.tooltip.select_button", "Click to set channel");
 
         provider.add("cover.ender_link.public.tooltip", "Public mode: Accessible to all players");
         provider.add("cover.ender_link.protected.tooltip", "Protected Mode: Accessible to players on the same team.");
