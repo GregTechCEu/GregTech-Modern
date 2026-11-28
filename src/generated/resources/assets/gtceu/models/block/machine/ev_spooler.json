@@ -7,8 +7,8 @@
       "model": {
         "parent": "gtceu:block/casings/voltage/ev",
         "textures": {
-          "overlay_front": "gtceu:block/machines/spooling/overlay_front",
-          "overlay_front_emissive": "gtceu:block/machines/spooling/overlay_front_emissive"
+          "overlay_front": "gtceu:block/machines/spooler/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/spooler/overlay_front_emissive"
         }
       }
     },
@@ -16,8 +16,8 @@
       "model": {
         "parent": "gtceu:block/casings/voltage/ev",
         "textures": {
-          "overlay_front": "gtceu:block/machines/spooling/overlay_front_paused",
-          "overlay_front_emissive": "gtceu:block/machines/spooling/overlay_front_paused_emissive"
+          "overlay_front": "gtceu:block/machines/spooler/overlay_front_paused",
+          "overlay_front_emissive": "gtceu:block/machines/spooler/overlay_front_paused_emissive"
         }
       }
     },
@@ -25,8 +25,8 @@
       "model": {
         "parent": "gtceu:block/casings/voltage/ev",
         "textures": {
-          "overlay_front": "gtceu:block/machines/spooling/overlay_front_active",
-          "overlay_front_emissive": "gtceu:block/machines/spooling/overlay_front_active_emissive"
+          "overlay_front": "gtceu:block/machines/spooler/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/spooler/overlay_front_active_emissive"
         }
       }
     },
@@ -34,8 +34,8 @@
       "model": {
         "parent": "gtceu:block/casings/voltage/ev",
         "textures": {
-          "overlay_front": "gtceu:block/machines/spooling/overlay_front_active",
-          "overlay_front_emissive": "gtceu:block/machines/spooling/overlay_front_active_emissive"
+          "overlay_front": "gtceu:block/machines/spooler/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/spooler/overlay_front_active_emissive"
         }
       }
     }
