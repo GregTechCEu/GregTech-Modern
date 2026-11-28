@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.events.ContentModificationEvent;
 import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -81,7 +82,12 @@ public class TagPrefix {
         if (GTCEu.Mods.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.TAG_PREFIXES.getRegistryName());
         }
+
         GTRegistries.TAG_PREFIXES.freeze();
+
+        for (TagPrefix tagPrefix : GTRegistries.TAG_PREFIXES) {
+            ModLoader.get().postEvent(new ContentModificationEvent.TagPrefix(tagPrefix));
+        }
     }
 
     /**

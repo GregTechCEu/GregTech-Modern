@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
+import com.gregtechceu.gtceu.api.events.ContentModificationEvent;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
@@ -94,6 +94,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory;
     protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
+    @Getter
     protected MachineInstanceFactory<MACHINE> instanceFactory;
 
     protected final Function<ResourceLocation, DEFINITION> definition;
@@ -678,11 +679,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     @HideFromJS
     public DEFINITION register() {
-        ModifyMachineEvent event = new ModifyMachineEvent(this);
+        ContentModificationEvent.Machine event = new ContentModificationEvent.Machine(this);
         FMLJavaModLoadingContext.get().getModEventBus().post(event);
         if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSCallWrapper.fireKJSEvent(event);
         }
+
         this.registrate.object(name);
         var definition = createDefinition();
 
@@ -859,7 +861,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
             }
         }
 
-        public static void fireKJSEvent(ModifyMachineEvent event) {
+        public static void fireKJSEvent(ContentModificationEvent.Machine event) {
             GTCEuStartupEvents.MACHINE_MODIFICATION.post(new ModifyMachineEventJS(event));
         }
     }
