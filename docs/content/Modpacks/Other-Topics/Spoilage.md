@@ -17,6 +17,9 @@ or, more specifically, from one of these events (due to Minecraft's limitations)
 By default, all block entities with item handlers will be updated by the spoilage handler. To blacklist a block entity from being updated, call `BlockEntitySpoilTicker.blacklistBlockEntityClass(Class)`.
 By default, all AE2 block entities are blacklisted.
 
+The whole spoilage system can be disabled with the `spoilage` option in `config/gtceu-early.properties` (requires a restart).
+You can check whether it is enabled with `SpoilUtils.spoilageEnabled()`.
+
 If you want to make an item spoil, you need to attach the `ISpoilableItem` capability to it.
 Please note that the spoilage timer still decrements even if the stack is in an unloaded chunk.
 
