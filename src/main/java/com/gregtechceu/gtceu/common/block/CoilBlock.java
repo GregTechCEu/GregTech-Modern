@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -39,23 +41,31 @@ public class CoilBlock extends ActiveBlock {
         super.appendHoverText(stack, level, tooltip, flag);
         if (GTUtil.isShiftDown()) {
             int coilTier = coilType.getTier();
-            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.heat", coilType.getCoilTemperature()));
-            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.smelter")
-                    .withStyle(ChatFormatting.DARK_GRAY));
-            tooltip.add(
-                    Component.translatable("block.gtceu.wire_coil.tooltip.parallel_smelter", coilType.getLevel() * 32));
+
+            int coilTemp = coilType.getCoilTemperature();
+            int smelterParallels = coilType.getLevel() * 32;
+            int smelterEnergy = Math.max(1, (4 * coilType.getLevel() * 32 / (8 * coilType.getEnergyDiscount())));
+            int pyroSpeed = coilTier == 0 ? 75 : 50 * (coilTier + 1);
+            int crackingDiscount = 100 - 10 * coilTier;
+
+            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.heat",
+                    GTCommonComponents.temperature(coilTemp).withStyle(ChatFormatting.WHITE)));
+
+            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.smelter").withStyle(ChatFormatting.DARK_GRAY));
+            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.parallel_smelter",
+                    Component.literal(FormattingUtil.formatNumbers(smelterParallels)).withStyle(ChatFormatting.WHITE)));
             tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.energy_smelter",
-                    Math.max(1, (4 * coilType.getLevel() * 32 / (8 * coilType.getEnergyDiscount())))));
-            tooltip.add(
-                    Component.translatable("block.gtceu.wire_coil.tooltip.pyro").withStyle(ChatFormatting.DARK_GRAY));
+                    GTCommonComponents.euPerTick(smelterEnergy).withStyle(ChatFormatting.WHITE)));
+
+            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.pyro").withStyle(ChatFormatting.DARK_GRAY));
             tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.speed_pyro",
-                    coilTier == 0 ? 75 : 50 * (coilTier + 1)));
-            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.cracking")
-                    .withStyle(ChatFormatting.DARK_GRAY));
-            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.energy_cracking", 100 - 10 * coilTier));
+                    Component.literal(FormattingUtil.formatNumbers(pyroSpeed)).withStyle(ChatFormatting.WHITE)));
+
+            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.cracking").withStyle(ChatFormatting.DARK_GRAY));
+            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.energy_cracking",
+                    Component.literal(FormattingUtil.formatNumbers(crackingDiscount)).withStyle(ChatFormatting.WHITE)));
         } else {
-            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.extended_info")
-                    .withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.extended_info").withStyle(ChatFormatting.GRAY));
         }
     }
 

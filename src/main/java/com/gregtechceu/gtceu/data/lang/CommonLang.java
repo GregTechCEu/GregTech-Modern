@@ -71,6 +71,9 @@ public class CommonLang {
         provider.add("common.gtceu.eu_per_tick", "EU/t");
         provider.add("common.gtceu.eu_per_sec", "EU/s");
 
+        provider.add("common.gtceu.cwu", "CWU");
+        provider.add("common.gtceu.cwu_per_tick", "CWU/t");
+
         provider.add("common.gtceu.items_per_sec", "items/s");
         provider.add("common.gtceu.stacks_per_sec", "stacks/s");
 

@@ -88,6 +88,14 @@ public final class GTCommonComponents {
         return FormattingUtil.prepend("common.gtceu.eu_per_sec", FormattingUtil.formatNumbers(amount));
     }
 
+    public static MutableComponent computation(long amount) {
+        return FormattingUtil.prepend("common.gtceu.cwu", FormattingUtil.formatNumbers(amount));
+    }
+
+    public static MutableComponent computationPerTick(long amount) {
+        return FormattingUtil.prepend("common.gtceu.cwu_per_tick", FormattingUtil.formatNumbers(amount));
+    }
+
     /**
      * Common tooltips used for machine stats, cover stats, etc
      */

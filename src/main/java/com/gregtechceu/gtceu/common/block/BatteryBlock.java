@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
-import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
+import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -40,7 +40,7 @@ public class BatteryBlock extends Block {
             tooltip.add(Component.translatable("block.gtceu.substation_capacitor.tooltip.empty").withStyle(ChatFormatting.GRAY));
         } else {
             tooltip.add(Component.translatable("block.gtceu.substation_capacitor.tooltip.filled",
-                    FormattingUtil.formatNumbers(this.data.getCapacity())));
+                    GTCommonComponents.eu(this.data.getCapacity()).withStyle(ChatFormatting.WHITE)));
         }
     }
 

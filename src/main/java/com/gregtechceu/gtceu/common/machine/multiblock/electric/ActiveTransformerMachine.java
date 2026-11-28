@@ -15,9 +15,8 @@ import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.utils.lang.FormattingUtil;
-
 import com.gregtechceu.gtceu.utils.lang.GTCommonComponents;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -34,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.LongSupplier;
-import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -217,32 +215,28 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
         widgets.add(Text.dynamic(() -> Component.translatable("gui.gtceu.machine.active_transformer.max_input",
-                        GTCommonComponents.euPerTick(maxInput.getAsLong()).withStyle(ChatFormatting.WHITE)
-                ))
+                GTCommonComponents.euPerTick(maxInput.getAsLong()).withStyle(ChatFormatting.WHITE)))
                 .asWidget()
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
         widgets.add(Text.dynamic(() -> Component
                 .translatable("gui.gtceu.machine.active_transformer.max_output",
-                        GTCommonComponents.euPerTick(maxOutput.getAsLong()).withStyle(ChatFormatting.WHITE)
-                ))
+                        GTCommonComponents.euPerTick(maxOutput.getAsLong()).withStyle(ChatFormatting.WHITE)))
                 .asWidget()
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
         widgets.add(Text.dynamic(() -> Component
                 .translatable("gui.gtceu.machine.active_transformer.average_in",
-                        GTCommonComponents.euPerTick(avgInput.getAsLong()).withStyle(ChatFormatting.WHITE)
-                ))
+                        GTCommonComponents.euPerTick(avgInput.getAsLong()).withStyle(ChatFormatting.WHITE)))
                 .asWidget()
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
         widgets.add(Text.dynamic(() -> Component
                 .translatable("gui.gtceu.machine.active_transformer.average_out",
-                        GTCommonComponents.euPerTick(avgOutput.getAsLong()).withStyle(ChatFormatting.WHITE)
-                ))
+                        GTCommonComponents.euPerTick(avgOutput.getAsLong()).withStyle(ChatFormatting.WHITE)))
                 .asWidget()
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));

@@ -860,8 +860,7 @@ public class GTMachineUtils {
     public static Component getAvailableRecipeMapTooltip(GTRecipeType... recipeTypes) {
         if (recipeTypes != null) {
             var components = Arrays.stream(recipeTypes)
-                    .map(s ->
-                            Component.translatable(s.getCategory().getLanguageKey()).withStyle(ChatFormatting.YELLOW))
+                    .map(s -> Component.translatable(s.getCategory().getLanguageKey()).withStyle(ChatFormatting.YELLOW))
                     .collect(Component::empty, FormattingUtil::combineComponents,
                             FormattingUtil::combineComponents);
 

@@ -323,7 +323,7 @@ public class MachineLang {
 
         // General Steam Multiblocks
         provider.add("gui.gtceu.machine.steam.low_steam", "Not enough Steam to run!");
-        provider.add("gui.gtceu.machine.steam.steam_stored", "Steam: %s / %s mb");
+        provider.add("gui.gtceu.machine.steam.steam_stored", "Steam: %s / %s mB");
         provider.add("gui.gtceu.machine.steam.duration_modifier",
                 "Takes §f1.5x §rbase duration to process, not affected by number of items.");
         provider.add("machine.gtceu.steam.steam_hatch.tooltip", "§eAccepted Fluid: §fSteam");
@@ -682,7 +682,7 @@ public class MachineLang {
         provider.add("machine.gtceu.hpca_component.tooltip.cooler_cooling", "§aProvides: §f%s Cooling");
         provider.add("machine.gtceu.hpca_component.tooltip.cooler_active_coolant",
                 "§cRequires up to: %s %s");
-        provider.add("machine.gtceu.hpca_component.tooltip.computation_cwut", "§9Computation: §f%s CWU/t");
+        provider.add("machine.gtceu.hpca_component.tooltip.computation_cwut", "§9Computation: %s");
         provider.add("machine.gtceu.hpca_component.tooltip.computation_cooling", "§cRequires up to: §f%s Cooling");
         provider.add("machine.gtceu.hpca_component.tooltip.bridge",
                 "Allows §fHPCA§r to connect to §fNetwork Switches§r");
@@ -1181,7 +1181,6 @@ public class MachineLang {
         provider.add("gui.gtceu.machine.machine_mode.header", "Machine Mode:");
         provider.add("gui.gtceu.machine.machine_mode.tooltip",
                 "Screwdriver the controller to change which machine mode to use.");
-        provider.add("gui.gtceu.machine.machine_mode_recipes.tooltip", "Machine Modes: §e%s§r");
         provider.add("gui.gtceu.machine.machine_mode.switch_message",
                 "The machine must be off to switch modes!");
         provider.add("gui.gtceu.machine.active_machine_mode.title", "Active Machine Mode");
