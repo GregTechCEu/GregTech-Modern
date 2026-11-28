@@ -50,7 +50,9 @@ public class ConsumedInputsData {
 
     public <T> void addConsumedInput(RecipeCapability<T> recipeCapability, T t) {
         // noinspection unchecked why can't I just add whatever I want to a List<?>
-        ((List<T>) consumedInputs.computeIfAbsent(recipeCapability, cap -> new ArrayList<>())).add(t);
+        var inputs = (List<T>) consumedInputs.computeIfAbsent(recipeCapability, cap -> new ArrayList<>());
+        inputs.add(t);
+        RecipeTransaction.record(() -> inputs.remove(t));
     }
 
     @Unmodifiable

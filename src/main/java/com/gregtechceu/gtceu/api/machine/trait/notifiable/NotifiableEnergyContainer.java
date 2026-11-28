@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeTransaction;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.machine.trait.EnvironmentalExplosionTrait;
@@ -313,7 +314,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
                     this.getEnergyCapacity() - this.getEnergyStored()));
             if (!simulate) {
                 // invert the EU value if we're doing inputs (inputting *to the recipe* -> removing from handlers)
-                this.changeEnergy(io == IO.IN ? -canTransfer : canTransfer);
+                var applied = this.changeEnergy(io == IO.IN ? -canTransfer : canTransfer);
+                if (applied != 0) RecipeTransaction.record(() -> this.changeEnergy(-applied));
             }
 
             totalEU -= canTransfer;
