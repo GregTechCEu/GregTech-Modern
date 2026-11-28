@@ -208,6 +208,14 @@ public abstract class RecipeCapability<T> {
     }
 
     /**
+     * Whether an empty recipe search may be cached while inputs are unchanged.
+     * Return false when this capability's availability changes without bumping inputVersion, like computation.
+     */
+    public boolean canCacheRecipeSearch() {
+        return true;
+    }
+
+    /**
      * Gets all {@link NotifiableRecipeHandlerTrait} traits that can handle this capability.
      *
      * @param machine The machine to get traits from
