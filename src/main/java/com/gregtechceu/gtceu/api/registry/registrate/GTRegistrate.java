@@ -35,6 +35,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.Builder;
+import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.builders.NoConfigBuilder;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.OneTimeEventReceiver;
@@ -219,6 +220,26 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     public SoundEntryBuilder sound(ResourceLocation name) {
         return new SoundEntryBuilder(name);
+    }
+
+    public ItemBuilder<Item, GTRegistrate> item() {
+        return item(Item::new);
+    }
+
+    public ItemBuilder<Item, GTRegistrate> item(String name) {
+        return item(name, Item::new);
+    }
+
+    public <P> ItemBuilder<Item, P> item(P parent) {
+        return item(parent, Item::new);
+    }
+
+    public <P> ItemBuilder<Item, P> item(P parent, String name) {
+        return item(parent, name, Item::new);
+    }
+
+    public ItemEntry<Item> simpleItem(String name) {
+        return item(name).register();
     }
 
     // Blocks
