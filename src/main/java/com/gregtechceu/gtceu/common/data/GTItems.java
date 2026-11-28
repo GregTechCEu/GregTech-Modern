@@ -868,7 +868,7 @@ public class GTItems {
 
     private static ItemEntry<ComponentItem> registerRobotArm(int tier) {
         var builder = REGISTRATE.item("%s_robot_arm".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
-                .lang("%s Robot Arm".formatted(tier))
+                .lang("%s Robot Arm".formatted(GTValues.VN[tier]))
                 .onRegister(
                         attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[tier]), new TieredBehaviour(tier)))
                 .onRegister(attach(new TooltipBehavior(lines -> {
