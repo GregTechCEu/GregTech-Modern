@@ -28,30 +28,34 @@ You need two model files - one for the base state and one for the active state -
             .lang("Test Engine Intake")
             .properties(properties -> properties.strength(5.0f, 6.0f).sound(SoundType.METAL))
             .addLayer(() -> RenderType::cutoutMipped)
-            .blockstate(GTModels.createActiveModel(AddonMod.id("block/casings/custom_engine_intake")))
+            .blockstate(GTModels.createActiveModel(ExampleMod.id("block/casings/custom_engine_intake")))
             .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .item(BlockItem::new)
-            .model((ctx, prov) -> prov.withExistingParent(prov.name(ctx), AddonMod.id("block/casings/custom_engine_intake")))
+            .model((ctx, prov) -> prov.withExistingParent(prov.name(ctx), ExampleMod.id("block/casings/custom_engine_intake")))
             .build()
             .register();
     
+        public static final BoilerFireboxType CUSTOM_FIREBOX = new BoilerFireboxType("custom_firebox", // name, bottom, top, side
+            GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
+            GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
+            GTCEu.id("block/casings/firebox/machine_casing_firebox_bronze"));
+
         public static final BlockEntry<ActiveBlock> CUSTOM_FIREBOX_CASING =  REGISTRATE.block("custom_firebox_casing", ActiveBlock::new)
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .addLayer(() -> RenderType::cutoutMipped)
-            .blockstate(GTModels.createFireboxModel(AddonMod.id("block/casings/custom_firebox_casing")))
+            .blockstate(GTModels.createFireboxModel(CUSTOM_FIREBOX))
             .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .item(BlockItem::new)
-            .model((ctx, prov) -> prov.withExistingParent(prov.name(ctx), AddonMod.id("block/casings/custom_firebox_casing")))
             .build()
             .register();
     
         public static final BlockEntry<ActiveBlock> CUSTOM_BLOOM_CASING =  REGISTRATE.block("custom_bloom_casing", ActiveBlock::new)
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .addLayer(() -> RenderType::cutoutMipped)
-            .blockstate(GTModels.createFusionCasingModel(AddonMod.id("block/casings/custom_bloom_casing")))
+            .blockstate(GTModels.createActiveModel(ExampleMod.id("block/casings/custom_bloom_casing"))) // requires custom_bloom_casing.json and custom_bloom_casing_active.json models
             .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .item(BlockItem::new)
-            .model((ctx, prov) -> prov.withExistingParent(prov.name(ctx), AddonMod.id("block/casings/custom_bloom_casing")))
+            .model((ctx, prov) -> prov.withExistingParent(prov.name(ctx), ExampleMod.id("block/casings/custom_bloom_casing")))
             .build()
             .register();
     

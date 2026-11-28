@@ -13,7 +13,7 @@ These conditions can be used in both Java and KubeJS recipes. However, custom co
 
 - Biome: `.biome("namespace:biome_id")`
     - Locks a recipe behind being inside a certain biome, works with any biome a pack has loaded. 
-    For example, you could use `minecraft:plains`. We also have `biomeTag("minecraft:biome")`.
+    For example, you could use `minecraft:plains`. We also have `.biomeTag("minecraft:is_forest")`.
 - Dimension: `.dimension("namespace:dimension_id")`
     - Locks a recipe being behind a certain dimension, the gas collector is a good example of this.  
     - For example, you could do `.dimension("minecraft:the_end")`
@@ -26,7 +26,7 @@ These conditions can be used in both Java and KubeJS recipes. However, custom co
 - Adjacent Fluids: `.adjacentFluids("namespace:fluid_id", ...)`
     - You can pass any amount of fluids into the array. Moreover, any fluid passed into the array will make the recipe require a full source block touching the machine.
     - For example, you could use `.adjacentFluids("minecraft:water", "minecraft:lava")` to make a recipe require BOTH a water source and a lava source next to the machine.
-    - We also have `.adjacentFluidTag("forge:water", "forge:lava")`, which does the same, but allows fluid _tags_ to be used.
+    - We also have `.adjacentFluidTag("minecraft:water", "minecraft:lava")`, which does the same, but allows fluid _tags_ to be used.
 - Adjacent Blocks: `.adjacentBlocks("namespace:block_id", ...)`
     - Much like the fluid condition, you can pass blocks into the array that lock the recipe behind needing the machine to touch these blocks.
     - For example, you could use `.adjacentBlocks("minecraft:stone", "minecraft:iron_block")` to make a recipe require a Stone block and a Block of Iron.

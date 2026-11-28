@@ -15,18 +15,22 @@ public class GreenhouseMachine extends WorkableElectricMultiblockMachine {
 
     private TickableSubscription tickSubscription;
 
+    public GreenhouseMachine(BlockEntityCreationInfo info) {
+        super(info);
+    }
+
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
-        if (!isRemote()) {
-            tickSubscription = this.subscribeServerTick(this::turnGreenery);
+    public void formStructure(String substructureName) {
+        super.formStructure(substructureName);
+        if (!isRemote() && isFormed()) {
+            tickSubscription = this.subscribeServerTick(tickSubscription, this::turnGreenery);
         }
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
-        if (!isRemote()) {
+    public void invalidateStructure(String substructureName) {
+        super.invalidateStructure(substructureName);
+        if (!isRemote() && tickSubscription != null) {
             tickSubscription.unsubscribe();
             tickSubscription = null;
         }
@@ -34,10 +38,10 @@ public class GreenhouseMachine extends WorkableElectricMultiblockMachine {
     
     private void turnGreenery(){
         if(!getRecipeLogic().isActive()) return;
-        BlockPos currentPosition = getRecipeLogic().getMachine().getHolder().getCurrentPos();
+        BlockPos currentPosition = getBlockPos();
         BlockPos abovePosition = currentPosition.above();
         if(this.getLevel().getBlockState(abovePosition).equals(Blocks.DIRT.defaultBlockState())){
-            this.getLevel().setBlock(abovePosition, Blocks.GRASS.defaultBlockState(), 3);
+            this.getLevel().setBlock(abovePosition, Blocks.GRASS_BLOCK.defaultBlockState(), 3);
         }
     }
 }
@@ -49,7 +53,7 @@ In there, we simply check if the recipe logic is active, and if so, we turn the 
 To use it, you would do:
 ```java
     public static final MultiblockMachineDefinition GREENHOUSE = REGISTRATE
-        .multiblock("green_house", Greenhouse::new)
+        .multiblock("green_house", GreenhouseMachine::new)
         .rotationState(RotationState.ALL)
         .recipeType(MyRecipeTypes.GREENHOUSE)
         .recipeModifiers(OC_PERFECT_SUBTICK, BATCH_MODE)

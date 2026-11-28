@@ -14,8 +14,11 @@ or, more specifically, from one of these events (due to Minecraft's limitations)
 - The item was dropped
 - `SpoilUtils.update(ItemStack, SpoilContext)` was called
 
-By default, all block entities with item handlers will be updated by the spoilage handler. To blacklist a block entity from being updated, add the class to `BlockEntitySpoilTicker#BLACKLISTED_BLOCK_ENTITIES`.
+By default, all block entities with item handlers will be updated by the spoilage handler. To blacklist a block entity from being updated, call `BlockEntitySpoilTicker.blacklistBlockEntityClass(Class)`.
 By default, all AE2 block entities are blacklisted.
+
+The whole spoilage system can be disabled with the `spoilage` option in `config/gtceu-early.properties` (requires a restart).
+You can check whether it is enabled with `SpoilUtils.spoilageEnabled()`.
 
 If you want to make an item spoil, you need to attach the `ISpoilableItem` capability to it.
 Please note that the spoilage timer still decrements even if the stack is in an unloaded chunk.
@@ -40,7 +43,7 @@ The `SpoilableBehavior.builder()` can accept a function as a `result`, so you ca
 
 - `.ticks(long)`
     used to specify ticks until spoiled
-- `.ticks(Function<ItemStack, Long>)`
+- `.ticks(ToLongFunction<ItemStack>)`
     used to specify a ticks until spoiled value that may depend on the stack itself, for example having more items in the stack may make it spoil slower
 - `.result(ItemLike)`
     used to specify the resulting item
@@ -96,23 +99,23 @@ It can be chained if you want to make multiple items spoil using the same behavi
             // If spoilable is null, it means the stack cannot spoil
             if (spoilable != null) {
                 // Get amount of ticks until a completely fresh stack spoils
-                long totalTicks = spoilable.getSpoilTicks(stack);
+                long totalTicks = spoilable.getSpoilTicks();
                 // Get amount of ticks until this stack spoils (may be more than the previous value in some cases)
-                long ticksRemaining = spoilable.getTicksUntilSpoiled(stack);
-                // Get the stack this stack spoils into
-                ItemStack spoilResult = spoilable.spoilResult(stack);
+                long ticksRemaining = spoilable.getTicksUntilSpoiled();
+                // Get the stack this stack spoils into (simulate = true, so no entities are spawned)
+                ItemStack spoilResult = spoilable.getSpoilResult(SpoilContext.EMPTY, 0, true);
                 // Get whether this stack should START spoiling
-                boolean shouldStartSpoiling = spoilable.shouldSpoil(stack);
-                // Get the amount of ticks until this stack spoils (may be more than spoilable.getSpoilTicks(stack))
-                spoilable.setTicksUntilSpoiled(stack, 12345);
+                boolean shouldStartSpoiling = spoilable.shouldSpoil();
+                // Set the amount of ticks until this stack spoils (may be more than spoilable.getSpoilTicks())
+                spoilable.setTicksUntilSpoiled(12345);
                 // Freeze the spoiling progress of this stack
-                spoilable.freezeSpoiling(stack);
+                spoilable.freezeSpoiling();
                 // Unfreeze the spoiling progress of this stack
-                spoilable.unfreezeSpoiling(stack);
+                spoilable.unfreezeSpoiling();
             }
         }
         
-        public void makeStackStartSpoiling(ItemStack stack, Level level, BlockPos pos, IItemHandler handler, int slot) {
+        public void makeStackStartSpoiling(ItemStack stack, Level level, BlockPos pos, IItemHandlerModifiable handler, int slot) {
             // If for some reason the stack still hasn't started spoiling, you can start the spoiling progress using this
             // That may happen if it is the result of a non-GT recipe and not a crafting result for example
             SpoilUtils.update(stack, new SpoilContext(level, pos, handler, slot));
@@ -124,26 +127,18 @@ It can be chained if you want to make multiple items spoil using the same behavi
 
 ### Frozen stacks
 
-To freeze a stack's spoiling progress, you can use `spoilable.freezeSpoiling(stack)`, and `spoilable.unfreezeSpoiling(stack)`
-to unfreeze. A frozen stack's freshness will never be changed unless `spoilable.setTicksUntilSpoiled(stack, value)` is called.
+To freeze a stack's spoiling progress, you can use `spoilable.freezeSpoiling()`, and `spoilable.unfreezeSpoiling()`
+to unfreeze. A frozen stack's freshness will never be changed unless `spoilable.setTicksUntilSpoiled(value)` is called.
 Currently, a stack is frozen only if it is in a phantom slot (in a GregTech filter).
-!!! warning "`ItemHandlerHelper.canItemStacksStack` behaviour is completely different for spoilables"
+!!! warning "`ItemHandlerHelper.canItemStacksStack` behaviour is different for spoilables"
 
-    `ItemHandlerHelper.canItemStacksStack` returns `true` if:
+    Before comparing NBT, `ItemHandlerHelper.canItemStacksStack` (and `canItemStacksStackRelaxed`) calls `SpoilUtils.mergeSpoilables`:
 
-    - Both items are not frozen and:
-        - They are the same item
-        - They have the same NBT
-        - **Their ticks until spoiling are averaged before the equality check**
-    - One of the items is frozen and:
-        - They are the same item
-        - They have the same non-spoilage-related NBT
-        - **One of them MAY be not frozen, and they will still be equal if `ISpoilableItem.FROZEN_EQUALITY` is `true`**
-        - **Their ticks until spoiling are NOT modified in any way in this method**
+    - If neither stack is frozen, **their spoiling progress (creation tick) is averaged, weighted by stack size, and written to both stacks** before the equality check
+    - If either stack is frozen, nothing is modified, so a frozen and a non-frozen stack will not stack
 
-    !!! info "The following only applies if `ISpoilableItem.FROZEN_EQUALITY` is `true`:"
-        That means that frozen and non-frozen spoilables may stack, this is done mostly to make filtering by remaining ticks possible.
-        **Please prevent the player from having direct access to frozen stacks, as they could use them to bypass the spoiling system entirely.**
+    If you need to compare two stacks while ignoring all spoilage-related NBT (e.g. for filtering), use `SpoilUtils.isSameItemSameTagsSpoilable(a, b)`.
+    **Please prevent the player from having direct access to frozen stacks, as they could use them to bypass the spoiling system entirely.**
 
 ### Spoilables in recipes
 

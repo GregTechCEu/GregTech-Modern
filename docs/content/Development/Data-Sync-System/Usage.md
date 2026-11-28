@@ -32,6 +32,7 @@ class MySyncObject implements ISyncManaged {
     private BlockPos syncPos = BlockPos.ZERO;
     
     @Getter
+    @SyncToClient
     private String syncString = "";
      
     public MySyncObject(MetaMachine machine) {
@@ -115,7 +116,7 @@ private static class GridNodeHostTransformer implements ValueTransformer<Object>
   @Override
   public Tag serializeNBT(Object value, TransformerContext<Object> context) {
     if (GTCEu.Mods.isAE2Loaded() &&
-            (context.currentValue()) instanceof IGridConnectedBlockEntity connectedBlockEntity) {
+            context.currentValue() instanceof GridNodeHostTrait connectedBlockEntity) {
       var compound = new CompoundTag();
       connectedBlockEntity.getMainNode().saveToNBT(compound);
       return compound;
@@ -126,17 +127,30 @@ private static class GridNodeHostTransformer implements ValueTransformer<Object>
   @Override
   public @Nullable Object deserializeNBT(Tag tag, TransformerContext<Object> context) {
     if (GTCEu.Mods.isAE2Loaded() &&
-            context.currentValue() instanceof IGridConnectedBlockEntity connectedBlockEntity &&
+            context.currentValue() instanceof GridNodeHostTrait connectedBlockEntity &&
             tag instanceof CompoundTag c) {
       connectedBlockEntity.getMainNode().loadFromNBT(c);
+      return context.currentValue();
     }
+    return null;
+  }
+
+  // No-op as this isn't synced to client
+  @Override
+  public void writeToPacket(FriendlyByteBuf buf, Object value, TransformerContext<Object> context) {}
+
+  // No-op as this isn't synced to client
+  @Override
+  public @Nullable Object readFromPacket(FriendlyByteBuf buf, TransformerContext<Object> context) {
     return null;
   }
 }
 
 static {
-  ClassSyncData.getClassData(HullMachine.class).setCustomTransformerForField("gridNodeHost",
-          new GridNodeHostTransformer());
+  if (GTCEu.Mods.isAE2Loaded()) {
+    ClassSyncData.getClassData(HullMachine.class).setCustomTransformerForField("gridNodeHost",
+            new GridNodeHostTransformer());
+  }
 }
 
 ```

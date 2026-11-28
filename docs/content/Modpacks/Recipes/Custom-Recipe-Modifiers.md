@@ -30,9 +30,10 @@ Custom recipe modifiers in are done through a function. For this example, we wil
     ```js title="temperature_recipe_modifier.js"
     const $GTRecipe = Java.loadClass("com.gregtechceu.gtceu.api.recipe.GTRecipe");
     const $MetaMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.MetaMachine");
+    const $RecipeModifier = Java.loadClass("com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier");
     
     function TemperatureModifier(machine, recipe) {
-        if (!machine instanceof $CoilWorkableElectricMultiblockMachine) {
+        if (!(machine instanceof $CoilWorkableElectricMultiblockMachine)) {
             return $RecipeModifier.nullWrongType($CoilWorkableElectricMultiblockMachine, machine);
         } else {
     
@@ -68,8 +69,8 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 
 	event.create('example_smelter', 'multiblock')
 		.rotationState(RotationState.NON_Y_AXIS)
-		.machine((holder) => new $CoilWorkableElectricMultiblockMachine(holder)) // (1)
-		.recipeType('alchemy')
+		.machine((info) => new $CoilWorkableElectricMultiblockMachine(info)) // (1)
+		.recipeType('example_smelting')
 		.recipeModifiers([(machine, recipe) => TemperatureModifier(machine, recipe)]) // (2)
 		.appearanceBlock(() => Block.getBlock("gtceu:solid_machine_casing"))
 		.pattern(definition => MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)

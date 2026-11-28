@@ -9,7 +9,7 @@ When you register some block or machine, you can set that block or machine as th
 public static PartAbility myPartAbility = new PartAbility("myPartAbility"); // (1)
 
 static {
-    myPartAbility.register(0, Blocks.WOOD); // (2)
+    myPartAbility.register(0, Blocks.OAK_WOOD); // (2)
 }
 ...
 ```

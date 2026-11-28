@@ -32,10 +32,10 @@ GTCEuServerEvents.oreVeins(event => {
         vein.heightRange(/* ... */) // (10)
 
         // Define the vein's generator:
-        vein.generator(/* ... */) // [*] (11)
+        vein.layeredVeinGenerator(/* ... */) // [*] (11)
 
         // Add one or more type of surface indicator to the vein:
-        vein.addIndicator(/* ... */) // (12)
+        vein.surfaceIndicatorGenerator(/* ... */) // (12)
     })
 })
 ```
@@ -59,7 +59,7 @@ GTCEuServerEvents.oreVeins(event => {
 9. Biased towards the center of the height range
 10. You can also use Minecraft's `HeightRangePlacement` directly, instead of the above shorthand versions:  
     ```js
-    vein.heightRange(
+    vein.heightRange({
         height: {
             type: "uniform",
             min_inclusive: {
@@ -68,7 +68,8 @@ GTCEuServerEvents.oreVeins(event => {
             max_inclusive: {
                 absolute: 20
             }
-        })
+        }
+    })
     ```
 11. See [Generators](./02-Generators.md#vein-generators) for a list of available generators.
 12. See [Generators](./02-Generators.md#indicator-generators) for a list of available generators.
